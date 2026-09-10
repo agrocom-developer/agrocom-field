@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "agrocom-field (app de campo, Flutter)",
+			"path": "."
+		},
+		{
+			"name": "agrocom-api (backend + panel, Laravel)",
+			"path": "/Applications/MAMP/htdocs/agrocom-api"
+		}
+	],
+	"settings": {}
+}
