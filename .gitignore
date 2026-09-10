@@ -7,6 +7,23 @@
 .buildlog/
 .history
 
+# pubspec.lock SÍ se versiona: es una app (no un package), y builds
+# reproducibles entre CI y los dos flavors dependen de fijar versiones.
+!pubspec.lock
+
+# IDE
+.idea/
+.vscode/
+
+# Código generado (drift, freezed, json_serializable) — build_runner en CI lo regenera
+**/*.g.dart
+**/*.freezed.dart
+**/*.drift.dart
+
+# Configuración de entorno real — el .example se versiona
+config/*.json
+!config/*.json.example
+
 
 
 # Flutter repo-specific
