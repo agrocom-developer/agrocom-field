@@ -87,7 +87,7 @@ Resumen de especificación §2.1 (leer el original antes de tocar el motor de sy
 Del modelo de datos completo (especificación §4.3), lo que toca este repo:
 
 - **Crea** (con `uuid_cliente`, vía `POST /api/sync`): `trabajos`, `sesiones`, `condiciones`, `recargas`, `incidencias`, `evidencias`, `estadias_hacienda` (entrada/salida del equipo en la hacienda). El caldo recibido y su sobrante van por los endpoints dedicados (`/api/trabajos/{id}/caldo`, `/caldo/sobrante`), no por el genérico de sync.
-- **Presenta** (no firma): el acta — la firma es del agrónomo (`POST /api/actas/{id}/firmar`), capturada como firma en pantalla o foto del acta física (especificación §16); confirmar en qué dispositivo ocurre eso antes de construir la pantalla.
+- **No genera ni presenta el acta.** Decisión del dueño del 11/9/2026: el acta (`POST /api/trabajos/{id}/acta`) y su firma por el agrónomo (`POST /api/actas/{id}/firmar`, especificación §16) se manejan desde el panel web (`agrocom-api`), no desde esta app — queda fuera de alcance de `agrocom-field`.
 - **Lee** (pull de catálogo con cursor): órdenes de aplicación vigentes, lotes, personal. **No lee ni construye** recetas/productos con fines de fórmula (ver la nota de arriba sobre §7 vs. §4.3).
 
 ## Roles que usan esta app
