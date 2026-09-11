@@ -13,6 +13,7 @@ import '../auth/token_store.dart';
 import '../catalogo/catalogo_repository.dart';
 import '../db/database.dart';
 import '../flavor.dart';
+import '../linterna/linterna_controlador.dart';
 import '../notificaciones/notificador_local.dart';
 import '../preferencias/preferencias_store.dart';
 import '../sync/outbox_repository.dart';
@@ -39,6 +40,9 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
   getIt.registerLazySingleton<RolActivoStore>(RolActivoStoreSeguro.new);
   getIt.registerLazySingleton<PreferenciasStore>(PreferenciasStoreLocal.new);
   getIt.registerLazySingleton<NotificadorLocal>(NotificadorLocalPlugin.new);
+  getIt.registerLazySingleton<LinternaControlador>(
+    LinternaControladorTorchLight.new,
+  );
   getIt.registerLazySingleton<IdsVistosStore>(IdsVistosStoreLocal.new);
   getIt.registerLazySingleton<ApiClient>(
     () => ApiClient(baseUrl: _apiBaseUrl, tokenStore: getIt<TokenStore>()),
