@@ -2,7 +2,11 @@ import 'package:get_it/get_it.dart';
 
 import '../api/api_client.dart';
 import '../auth/token_store.dart';
+import '../db/database.dart';
 import '../flavor.dart';
+import '../sync/outbox_repository.dart';
+import '../sync/sync_cubit.dart';
+import '../sync/sync_engine.dart';
 
 final getIt = GetIt.instance;
 
@@ -20,6 +24,17 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
   getIt.registerLazySingleton<ApiClient>(
     () => ApiClient(baseUrl: _apiBaseUrl, tokenStore: getIt<TokenStore>()),
   );
-  // AppDatabase, SyncEngine, SyncCubit y los repositorios de cada feature se
-  // registran acá cuando TE-04/TE-05/TE-06 los agreguen — no antes.
+  getIt.registerLazySingleton<AppDatabase>(AppDatabase.new);
+  getIt.registerLazySingleton<OutboxRepository>(
+    () => OutboxRepository(getIt<AppDatabase>()),
+  );
+  getIt.registerLazySingleton<SyncEngine>(
+    () => SyncEngine(
+      apiClient: getIt<ApiClient>(),
+      outbox: getIt<OutboxRepository>(),
+    ),
+  );
+  getIt.registerLazySingleton<SyncCubit>(() => SyncCubit(getIt<SyncEngine>()));
+  // Los repositorios de cada feature (trabajos, sesiones, recargas...) se
+  // registran acá cuando esa feature los agregue — no antes.
 }
