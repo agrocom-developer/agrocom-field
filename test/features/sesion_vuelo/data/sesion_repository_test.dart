@@ -9,6 +9,7 @@ import 'dart:convert';
 
 import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
+import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_condiciones.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_sesion.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/sesion.dart';
 import 'package:agrocom_field/nucleo/db/database.dart';
@@ -17,6 +18,13 @@ import 'package:decimal/decimal.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+// Condiciones climáticas dentro de rango por defecto (viento <= 17,
+// temperatura <= 30, humedad <= 90) — usadas en los tests que no ejercitan
+// específicamente HU-06, para no repetir el literal en cada llamado.
+final _vientoDentroDeRango = Decimal.parse('10');
+final _temperaturaDentroDeRango = Decimal.parse('20');
+final _humedadDentroDeRango = Decimal.parse('50');
 
 void main() {
   late AppDatabase db;
@@ -49,6 +57,9 @@ void main() {
           trabajoUuidCliente: 'inexistente',
           pilotoId: 7,
           inicio: DateTime.utc(2026, 9, 11, 10, 5),
+          vientoKmh: _vientoDentroDeRango,
+          temperaturaC: _temperaturaDentroDeRango,
+          humedadPct: _humedadDentroDeRango,
         ),
         throwsA(isA<TrabajoInexistenteExcepcion>()),
       );
@@ -66,6 +77,9 @@ void main() {
         trabajoUuidCliente: trabajoUuidCliente,
         pilotoId: 7,
         inicio: inicio,
+        vientoKmh: _vientoDentroDeRango,
+        temperaturaC: _temperaturaDentroDeRango,
+        humedadPct: _humedadDentroDeRango,
       );
 
       expect(sesion.estado, EstadoSesion.abierta);
@@ -112,11 +126,17 @@ void main() {
         trabajoUuidCliente: trabajoUuidCliente,
         pilotoId: 7,
         inicio: DateTime.utc(2026, 9, 11, 10, 5),
+        vientoKmh: _vientoDentroDeRango,
+        temperaturaC: _temperaturaDentroDeRango,
+        humedadPct: _humedadDentroDeRango,
       );
       final segunda = await sesionRepositorio.abrirSesion(
         trabajoUuidCliente: trabajoUuidCliente,
         pilotoId: 7,
         inicio: DateTime.utc(2026, 9, 11, 11, 5),
+        vientoKmh: _vientoDentroDeRango,
+        temperaturaC: _temperaturaDentroDeRango,
+        humedadPct: _humedadDentroDeRango,
       );
 
       expect(primera.secuencia, 1);
@@ -139,6 +159,9 @@ void main() {
         trabajoUuidCliente: trabajoUuidCliente,
         pilotoId: 7,
         inicio: DateTime.utc(2026, 9, 11, 10, 5),
+        vientoKmh: _vientoDentroDeRango,
+        temperaturaC: _temperaturaDentroDeRango,
+        humedadPct: _humedadDentroDeRango,
       );
       final fin = DateTime.utc(2026, 9, 11, 11);
 
@@ -201,6 +224,9 @@ void main() {
         trabajoUuidCliente: trabajoUuidCliente,
         pilotoId: 7,
         inicio: DateTime.utc(2026, 9, 11, 10, 5),
+        vientoKmh: _vientoDentroDeRango,
+        temperaturaC: _temperaturaDentroDeRango,
+        humedadPct: _humedadDentroDeRango,
       );
 
       await sesionRepositorio.cerrarSesion(
@@ -231,6 +257,9 @@ void main() {
       trabajoUuidCliente: trabajo.uuidCliente,
       pilotoId: 7,
       inicio: DateTime.utc(2026, 9, 11, 10, 5),
+      vientoKmh: _vientoDentroDeRango,
+      temperaturaC: _temperaturaDentroDeRango,
+      humedadPct: _humedadDentroDeRango,
     );
     await sesionRepositorio.cerrarSesion(
       sesionUuidCliente: sesion.uuidCliente,
@@ -243,11 +272,127 @@ void main() {
       db.colaSync,
     )..orderBy([(t) => OrderingTerm.asc(t.secuencia)])).get();
 
-    expect(filas.map((f) => f.secuencia).toList(), [1, 2, 3]);
+    expect(filas.map((f) => f.secuencia).toList(), [1, 2, 3, 4]);
     expect(filas.map((f) => f.tipoEntidad).toList(), [
       'trabajo',
       'sesion',
+      'condiciones',
       'cierre_sesion',
     ]);
+  });
+
+  group('abrirSesion — condiciones (HU-06)', () {
+    test('dentro de rango, sin observación ni firma, inserta igual las tres '
+        'filas', () async {
+      final trabajoUuidCliente = await abrirTrabajoDePrueba();
+
+      final sesion = await sesionRepositorio.abrirSesion(
+        trabajoUuidCliente: trabajoUuidCliente,
+        pilotoId: 7,
+        inicio: DateTime.utc(2026, 9, 11, 10, 5),
+        vientoKmh: _vientoDentroDeRango,
+        temperaturaC: _temperaturaDentroDeRango,
+        humedadPct: _humedadDentroDeRango,
+      );
+
+      expect(await db.select(db.sesionLocal).get(), hasLength(1));
+      final condicion = (await db.select(db.condicionLocal).get()).single;
+      expect(condicion.sesionUuidCliente, sesion.uuidCliente);
+      expect(condicion.momento, 'inicio_sesion');
+      expect(condicion.vientoKmh, _vientoDentroDeRango);
+      expect(condicion.temperaturaC, _temperaturaDentroDeRango);
+      expect(condicion.humedadPct, _humedadDentroDeRango);
+      expect(condicion.observacionAgronomo, isNull);
+      expect(condicion.firmaObservacion, isNull);
+
+      final filasOutbox = await (db.select(
+        db.colaSync,
+      )..where((t) => t.tipoEntidad.equals('condiciones'))).get();
+      expect(filasOutbox, hasLength(1));
+    });
+
+    test('fuera de rango sin observación ni firma lanza la excepción ANTES '
+        'de escribir nada', () async {
+      final trabajoUuidCliente = await abrirTrabajoDePrueba();
+
+      await expectLater(
+        sesionRepositorio.abrirSesion(
+          trabajoUuidCliente: trabajoUuidCliente,
+          pilotoId: 7,
+          inicio: DateTime.utc(2026, 9, 11, 10, 5),
+          vientoKmh: Decimal.parse('20'),
+          temperaturaC: _temperaturaDentroDeRango,
+          humedadPct: _humedadDentroDeRango,
+        ),
+        throwsA(isA<ObservacionAgronomoRequeridaExcepcion>()),
+      );
+
+      expect(await db.select(db.sesionLocal).get(), isEmpty);
+      expect(await db.select(db.condicionLocal).get(), isEmpty);
+      // `abrirTrabajoDePrueba` ya encoló su propia fila `trabajo` — la
+      // precondición fallida no debe agregar ninguna fila `sesion` ni
+      // `condiciones` encima de esa.
+      expect(
+        await (db.select(
+          db.colaSync,
+        )..where((t) => t.tipoEntidad.isNotValue('trabajo'))).get(),
+        isEmpty,
+      );
+    });
+
+    test('fuera de rango con observación y firma presentes inserta las tres '
+        'filas correctas, con el payload de condiciones exacto contra el '
+        'contrato', () async {
+      final trabajoUuidCliente = await abrirTrabajoDePrueba();
+      final inicio = DateTime.utc(2026, 9, 11, 10, 5);
+
+      final sesion = await sesionRepositorio.abrirSesion(
+        trabajoUuidCliente: trabajoUuidCliente,
+        pilotoId: 7,
+        inicio: inicio,
+        vientoKmh: Decimal.parse('20'),
+        temperaturaC: Decimal.parse('35'),
+        humedadPct: Decimal.parse('95'),
+        observacionAgronomo:
+            'Viento y humedad por encima del umbral, se '
+            'autoriza a rociar.',
+        firmaObservacion: 'Ing. Agr. Juana Pérez',
+      );
+
+      expect(await db.select(db.sesionLocal).get(), hasLength(1));
+
+      final condicion = (await db.select(db.condicionLocal).get()).single;
+      expect(condicion.sesionUuidCliente, sesion.uuidCliente);
+      expect(condicion.observacionAgronomo, isNotNull);
+      expect(condicion.firmaObservacion, 'Ing. Agr. Juana Pérez');
+
+      final filaOutbox = await (db.select(
+        db.colaSync,
+      )..where((t) => t.tipoEntidad.equals('condiciones'))).getSingle();
+      expect(filaOutbox.uuidCliente, condicion.uuidCliente);
+      expect(filaOutbox.uuidCliente, isNot(sesion.uuidCliente));
+
+      final payload = jsonDecode(filaOutbox.payload) as Map<String, dynamic>;
+      expect(payload, {
+        'sesion_uuid_cliente': sesion.uuidCliente,
+        'momento': 'inicio_sesion',
+        'viento_kmh': Decimal.parse('20').toString(),
+        'temperatura_c': Decimal.parse('35').toString(),
+        'humedad_pct': Decimal.parse('95').toString(),
+        'observacion_agronomo':
+            'Viento y humedad por encima del umbral, se '
+            'autoriza a rociar.',
+        'firma_observacion': 'Ing. Agr. Juana Pérez',
+      });
+      expect(payload.containsKey('tipo'), isFalse);
+      expect(payload.containsKey('uuid_cliente'), isFalse);
+
+      // La secuencia de `condiciones` va después de la de `sesion` — mismo
+      // criterio que `cierre_sesion` después de `sesion` (invariante 5).
+      final filaSesion = await (db.select(
+        db.colaSync,
+      )..where((t) => t.tipoEntidad.equals('sesion'))).getSingle();
+      expect(filaOutbox.secuencia, greaterThan(filaSesion.secuencia));
+    });
   });
 }

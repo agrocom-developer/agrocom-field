@@ -8,9 +8,28 @@ sealed class SesionEvento {
 }
 
 final class SesionAbrirSolicitada extends SesionEvento {
-  const SesionAbrirSolicitada({this.hectareasDeclaradas});
+  const SesionAbrirSolicitada({
+    this.hectareasDeclaradas,
+    required this.vientoKmh,
+    required this.temperaturaC,
+    required this.humedadPct,
+    this.observacionAgronomo,
+    this.firmaObservacion,
+  });
 
   final Decimal? hectareasDeclaradas;
+
+  /// Condiciones al abrir sesión (HU-06) — obligatorias, ver
+  /// `docs/api/openapi.yaml` de `agrocom-api`, `RegistroSync` tipo
+  /// `condiciones`.
+  final Decimal vientoKmh;
+  final Decimal temperaturaC;
+  final Decimal humedadPct;
+
+  /// Obligatorias juntas cuando alguna medición cae fuera de rango — ver
+  /// `reglas_condiciones.dart`.
+  final String? observacionAgronomo;
+  final String? firmaObservacion;
 }
 
 final class SesionCerrarSolicitada extends SesionEvento {

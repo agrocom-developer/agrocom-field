@@ -83,6 +83,45 @@ void main() {
         ),
       );
 
+  /// Abre el formulario de condiciones (tocando `boton_abrir_sesion` o
+  /// `boton_reintentar`, según [key]), completa viento/temperatura/humedad
+  /// (y observación/firma si se pasan) y confirma. No asume que el
+  /// formulario siga abierto al final: falla la validación y no confirma
+  /// si algún campo obligatorio quedó vacío.
+  Future<void> completarFormularioApertura(
+    WidgetTester tester, {
+    String viento = '10',
+    String temperatura = '20',
+    String humedad = '50',
+    String? observacion,
+    String? firma,
+    String key = 'boton_abrir_sesion',
+  }) async {
+    await tester.tap(find.byKey(Key(key)));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byKey(const Key('apertura_viento')), viento);
+    await tester.enterText(
+      find.byKey(const Key('apertura_temperatura')),
+      temperatura,
+    );
+    await tester.enterText(find.byKey(const Key('apertura_humedad')), humedad);
+    await tester.pumpAndSettle();
+
+    if (observacion != null) {
+      await tester.enterText(
+        find.byKey(const Key('apertura_observacion')),
+        observacion,
+      );
+    }
+    if (firma != null) {
+      await tester.enterText(find.byKey(const Key('apertura_firma')), firma);
+    }
+
+    await tester.tap(find.byKey(const Key('boton_confirmar_apertura')));
+    await tester.pumpAndSettle();
+  }
+
   testWidgets('estado inicial: muestra botón de abrir sesión', (tester) async {
     when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
     final bloc = SesionBloc(
@@ -106,6 +145,11 @@ void main() {
         pilotoId: any(named: 'pilotoId'),
         hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
         inicio: any(named: 'inicio'),
+        vientoKmh: any(named: 'vientoKmh'),
+        temperaturaC: any(named: 'temperaturaC'),
+        humedadPct: any(named: 'humedadPct'),
+        observacionAgronomo: any(named: 'observacionAgronomo'),
+        firmaObservacion: any(named: 'firmaObservacion'),
       ),
     ).thenAnswer((_) async {
       await Future<void>.delayed(const Duration(milliseconds: 100));
@@ -121,6 +165,11 @@ void main() {
 
     await bombear(tester, bloc);
     await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const Key('apertura_viento')), '10');
+    await tester.enterText(find.byKey(const Key('apertura_temperatura')), '20');
+    await tester.enterText(find.byKey(const Key('apertura_humedad')), '50');
+    await tester.tap(find.byKey(const Key('boton_confirmar_apertura')));
     await tester.pump();
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -138,6 +187,11 @@ void main() {
         pilotoId: any(named: 'pilotoId'),
         hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
         inicio: any(named: 'inicio'),
+        vientoKmh: any(named: 'vientoKmh'),
+        temperaturaC: any(named: 'temperaturaC'),
+        humedadPct: any(named: 'humedadPct'),
+        observacionAgronomo: any(named: 'observacionAgronomo'),
+        firmaObservacion: any(named: 'firmaObservacion'),
       ),
     ).thenAnswer((_) async => _sesionAbierta());
 
@@ -149,8 +203,7 @@ void main() {
     addTearDown(bloc.close);
 
     await bombear(tester, bloc);
-    await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
-    await tester.pumpAndSettle();
+    await completarFormularioApertura(tester);
 
     expect(find.text('Sesión activa'), findsOneWidget);
     expect(find.text('Secuencia: 1'), findsOneWidget);
@@ -168,6 +221,11 @@ void main() {
         pilotoId: any(named: 'pilotoId'),
         hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
         inicio: any(named: 'inicio'),
+        vientoKmh: any(named: 'vientoKmh'),
+        temperaturaC: any(named: 'temperaturaC'),
+        humedadPct: any(named: 'humedadPct'),
+        observacionAgronomo: any(named: 'observacionAgronomo'),
+        firmaObservacion: any(named: 'firmaObservacion'),
       ),
     ).thenAnswer((_) async => sesionAbierta);
 
@@ -194,8 +252,7 @@ void main() {
     addTearDown(bloc.close);
 
     await bombear(tester, bloc);
-    await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
-    await tester.pumpAndSettle();
+    await completarFormularioApertura(tester);
 
     await tester.tap(find.byKey(const Key('boton_cerrar_sesion')));
     await tester.pumpAndSettle();
@@ -227,8 +284,7 @@ void main() {
     addTearDown(bloc.close);
 
     await bombear(tester, bloc);
-    await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
-    await tester.pumpAndSettle();
+    await completarFormularioApertura(tester);
 
     // El mensaje aparece dos veces a propósito: el listener lo muestra como
     // SnackBar transitorio Y el builder lo deja fijo en el cuerpo (con botón
@@ -251,6 +307,11 @@ void main() {
         pilotoId: any(named: 'pilotoId'),
         hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
         inicio: any(named: 'inicio'),
+        vientoKmh: any(named: 'vientoKmh'),
+        temperaturaC: any(named: 'temperaturaC'),
+        humedadPct: any(named: 'humedadPct'),
+        observacionAgronomo: any(named: 'observacionAgronomo'),
+        firmaObservacion: any(named: 'firmaObservacion'),
       ),
     ).thenAnswer((_) async => _sesionAbierta());
 
@@ -262,8 +323,7 @@ void main() {
     addTearDown(bloc.close);
 
     await bombear(tester, bloc);
-    await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
-    await tester.pumpAndSettle();
+    await completarFormularioApertura(tester);
 
     await tester.tap(find.byKey(const Key('boton_cerrar_sesion')));
     await tester.pumpAndSettle();
@@ -296,6 +356,11 @@ void main() {
         pilotoId: any(named: 'pilotoId'),
         hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
         inicio: any(named: 'inicio'),
+        vientoKmh: any(named: 'vientoKmh'),
+        temperaturaC: any(named: 'temperaturaC'),
+        humedadPct: any(named: 'humedadPct'),
+        observacionAgronomo: any(named: 'observacionAgronomo'),
+        firmaObservacion: any(named: 'firmaObservacion'),
       ),
     ).thenAnswer((_) async => _sesionAbierta());
 
@@ -307,8 +372,7 @@ void main() {
     addTearDown(bloc.close);
 
     await bombear(tester, bloc);
-    await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
-    await tester.pumpAndSettle();
+    await completarFormularioApertura(tester);
 
     await tester.tap(find.byKey(const Key('boton_cerrar_sesion')));
     await tester.pumpAndSettle();
@@ -323,5 +387,161 @@ void main() {
     expect(find.text('Clima'), findsOneWidget);
     expect(find.text('Fin de jornada'), findsOneWidget);
     expect(find.text('Otro'), findsOneWidget);
+  });
+
+  group('condiciones al abrir sesión (HU-06)', () {
+    testWidgets('dentro de rango: el campo de observación no aparece', (
+      tester,
+    ) async {
+      when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+
+      final bloc = SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaStore,
+        trabajoUuidCliente: 'uuid-trabajo-1',
+      );
+      addTearDown(bloc.close);
+
+      await bombear(tester, bloc);
+      await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byKey(const Key('apertura_viento')), '10');
+      await tester.enterText(
+        find.byKey(const Key('apertura_temperatura')),
+        '20',
+      );
+      await tester.enterText(find.byKey(const Key('apertura_humedad')), '50');
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('apertura_observacion')), findsNothing);
+      expect(find.byKey(const Key('apertura_firma')), findsNothing);
+    });
+
+    testWidgets(
+      'fuera de rango: el campo de observación aparece recién cuando el '
+      'valor ingresado supera el umbral',
+      (tester) async {
+        when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+
+        final bloc = SesionBloc(
+          sesionRepositorio: sesionRepositorio,
+          personaOperativaStore: personaStore,
+          trabajoUuidCliente: 'uuid-trabajo-1',
+        );
+        addTearDown(bloc.close);
+
+        await bombear(tester, bloc);
+        await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byKey(const Key('apertura_viento')), '10');
+        await tester.enterText(
+          find.byKey(const Key('apertura_temperatura')),
+          '20',
+        );
+        await tester.enterText(find.byKey(const Key('apertura_humedad')), '50');
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('apertura_observacion')), findsNothing);
+
+        // Viento por encima del umbral (17 km/h): aparece observación/firma.
+        await tester.enterText(find.byKey(const Key('apertura_viento')), '20');
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('apertura_observacion')), findsOneWidget);
+        expect(find.byKey(const Key('apertura_firma')), findsOneWidget);
+
+        // Vuelve a estar dentro de rango: desaparece de nuevo.
+        await tester.enterText(find.byKey(const Key('apertura_viento')), '10');
+        await tester.pumpAndSettle();
+
+        expect(find.byKey(const Key('apertura_observacion')), findsNothing);
+        expect(find.byKey(const Key('apertura_firma')), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'fuera de rango sin observación ni firma: la validación bloquea la '
+      'confirmación sin llamar al repositorio',
+      (tester) async {
+        when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+
+        final bloc = SesionBloc(
+          sesionRepositorio: sesionRepositorio,
+          personaOperativaStore: personaStore,
+          trabajoUuidCliente: 'uuid-trabajo-1',
+        );
+        addTearDown(bloc.close);
+
+        await bombear(tester, bloc);
+        await completarFormularioApertura(
+          tester,
+          viento: '20',
+          temperatura: '20',
+          humedad: '50',
+        );
+
+        expect(find.text('La observación es obligatoria'), findsOneWidget);
+        expect(find.text('La firma es obligatoria'), findsOneWidget);
+        // El diálogo sigue abierto — nunca se dispachó el evento.
+        expect(
+          find.byKey(const Key('boton_confirmar_apertura')),
+          findsOneWidget,
+        );
+        verifyNever(
+          () => sesionRepositorio.abrirSesion(
+            trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+            pilotoId: any(named: 'pilotoId'),
+            hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+            inicio: any(named: 'inicio'),
+            vientoKmh: any(named: 'vientoKmh'),
+            temperaturaC: any(named: 'temperaturaC'),
+            humedadPct: any(named: 'humedadPct'),
+            observacionAgronomo: any(named: 'observacionAgronomo'),
+            firmaObservacion: any(named: 'firmaObservacion'),
+          ),
+        );
+      },
+    );
+
+    testWidgets(
+      'fuera de rango con observación y firma: abre la sesión pasando '
+      'ambas al repositorio',
+      (tester) async {
+        when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+        when(
+          () => sesionRepositorio.abrirSesion(
+            trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+            pilotoId: any(named: 'pilotoId'),
+            hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+            inicio: any(named: 'inicio'),
+            vientoKmh: Decimal.parse('20'),
+            temperaturaC: Decimal.parse('20'),
+            humedadPct: Decimal.parse('50'),
+            observacionAgronomo: 'Viento fuerte, se autoriza',
+            firmaObservacion: 'Ing. Agr. Juana Pérez',
+          ),
+        ).thenAnswer((_) async => _sesionAbierta());
+
+        final bloc = SesionBloc(
+          sesionRepositorio: sesionRepositorio,
+          personaOperativaStore: personaStore,
+          trabajoUuidCliente: 'uuid-trabajo-1',
+        );
+        addTearDown(bloc.close);
+
+        await bombear(tester, bloc);
+        await completarFormularioApertura(
+          tester,
+          viento: '20',
+          temperatura: '20',
+          humedad: '50',
+          observacion: 'Viento fuerte, se autoriza',
+          firma: 'Ing. Agr. Juana Pérez',
+        );
+
+        expect(find.text('Sesión activa'), findsOneWidget);
+      },
+    );
   });
 }

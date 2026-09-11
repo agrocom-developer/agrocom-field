@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../nucleo/db/database.dart';
 import '../../../nucleo/db/tablas/sesion_local.dart' show EstadoSesionLocal;
+import '../domain/reglas_condiciones.dart';
 import '../domain/reglas_sesion.dart';
 import '../domain/sesion.dart';
 
@@ -20,15 +21,30 @@ class SesionRepository {
   final AppDatabase _db;
   final Uuid _uuid;
 
-  /// Lanza [TrabajoInexistenteExcepcion] ANTES de escribir nada (ni
-  /// [SesionLocal] ni `ColaSync`) si [trabajoUuidCliente] no tiene un
-  /// [TrabajoLocal] local. [inicio] es obligatorio, no `DateTime.now()`
-  /// interno, por el mismo motivo que en `TrabajoRepository.abrirTrabajo`.
+  /// Lanza [TrabajoInexistenteExcepcion] o [ObservacionAgronomoRequeridaExcepcion]
+  /// ANTES de escribir nada (ni [SesionLocal] ni [CondicionLocal] ni
+  /// `ColaSync`) — la segunda si [vientoKmh]/[temperaturaC]/[humedadPct] caen
+  /// fuera de rango y falta [observacionAgronomo] u [firmaObservacion]: el
+  /// servidor va a rechazar igual ese registro (contrato explícito), así que
+  /// no tiene sentido encolarlo para enterarse recién con señal. [inicio] es
+  /// obligatorio, no `DateTime.now()` interno, por el mismo motivo que en
+  /// `TrabajoRepository.abrirTrabajo`.
+  ///
+  /// Las condiciones climáticas viajan como un registro `condiciones`
+  /// separado (propio `uuid_cliente`, referenciando esta sesión por
+  /// [CondicionLocal.sesionUuidCliente]) — nunca como columnas de la sesión:
+  /// el contrato real (`RegistroSync` en `docs/api/openapi.yaml`) los separa
+  /// porque `momento` podría crecer más allá de `inicio_sesion` a futuro.
   Future<Sesion> abrirSesion({
     required String trabajoUuidCliente,
     required int pilotoId,
     Decimal? hectareasDeclaradas,
     required DateTime inicio,
+    required Decimal vientoKmh,
+    required Decimal temperaturaC,
+    required Decimal humedadPct,
+    String? observacionAgronomo,
+    String? firmaObservacion,
   }) async {
     final trabajoExiste = await _existeTrabajo(trabajoUuidCliente);
     verificarTrabajoExiste(
@@ -36,7 +52,19 @@ class SesionRepository {
       trabajoUuidCliente: trabajoUuidCliente,
     );
 
+    final fueraDeRango = condicionesFueraDeRango(
+      vientoKmh: vientoKmh,
+      temperaturaC: temperaturaC,
+      humedadPct: humedadPct,
+    );
+    verificarObservacionSiFueraDeRango(
+      fueraDeRango: fueraDeRango,
+      observacionAgronomo: observacionAgronomo,
+      firmaObservacion: firmaObservacion,
+    );
+
     final uuidCliente = _uuid.v4();
+    final uuidClienteCondicion = _uuid.v4();
     final hectareas = hectareasDeclaradas ?? Decimal.parse('0');
 
     return _db.transaction(() async {
@@ -58,7 +86,7 @@ class SesionRepository {
             ),
           );
 
-      final secuenciaGlobal = await _proximaSecuenciaGlobal();
+      final secuenciaSesionGlobal = await _proximaSecuenciaGlobal();
       await _db
           .into(_db.colaSync)
           .insert(
@@ -80,7 +108,44 @@ class SesionRepository {
                 'hectarea_inicial_acumulada': null,
                 'inicio': inicio.toUtc().toIso8601String(),
               }),
-              secuencia: secuenciaGlobal,
+              secuencia: secuenciaSesionGlobal,
+            ),
+          );
+
+      await _db
+          .into(_db.condicionLocal)
+          .insert(
+            CondicionLocalCompanion.insert(
+              uuidCliente: uuidClienteCondicion,
+              sesionUuidCliente: uuidCliente,
+              momento: 'inicio_sesion',
+              vientoKmh: vientoKmh,
+              temperaturaC: temperaturaC,
+              humedadPct: humedadPct,
+              observacionAgronomo: Value(observacionAgronomo),
+              firmaObservacion: Value(firmaObservacion),
+            ),
+          );
+
+      // Secuencia global propia, después de la de `sesion` (invariante 5 de
+      // CLAUDE.md: orden causal explícito, nunca por reloj de dispositivo).
+      final secuenciaCondicionGlobal = await _proximaSecuenciaGlobal();
+      await _db
+          .into(_db.colaSync)
+          .insert(
+            ColaSyncCompanion.insert(
+              uuidCliente: uuidClienteCondicion,
+              tipoEntidad: 'condiciones',
+              payload: jsonEncode({
+                'sesion_uuid_cliente': uuidCliente,
+                'momento': 'inicio_sesion',
+                'viento_kmh': vientoKmh.toString(),
+                'temperatura_c': temperaturaC.toString(),
+                'humedad_pct': humedadPct.toString(),
+                'observacion_agronomo': observacionAgronomo,
+                'firma_observacion': firmaObservacion,
+              }),
+              secuencia: secuenciaCondicionGlobal,
             ),
           );
 

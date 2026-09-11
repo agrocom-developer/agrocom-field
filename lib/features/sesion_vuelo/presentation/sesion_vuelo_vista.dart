@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../domain/reglas_condiciones.dart';
 import 'sesion_bloc.dart';
 import 'sesion_estado.dart';
 import 'sesion_evento.dart';
@@ -19,9 +20,16 @@ class SesionVueloVista extends StatefulWidget {
 
 class _SesionVueloVistaState extends State<SesionVueloVista> {
   late GlobalKey<FormState> _formKey;
+  late GlobalKey<FormState> _formAperturaKey;
   late TextEditingController _hectareasController;
   late TextEditingController _litrosController;
+  late TextEditingController _vientoController;
+  late TextEditingController _temperaturaController;
+  late TextEditingController _humedadController;
+  late TextEditingController _observacionController;
+  late TextEditingController _firmaController;
   String? _motivoSeleccionado;
+  bool _condicionesFueraDeRango = false;
 
   static const _motivosCierre = [
     ('completado', 'Completado'),
@@ -37,19 +45,224 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
   void initState() {
     super.initState();
     _formKey = GlobalKey<FormState>();
+    _formAperturaKey = GlobalKey<FormState>();
     _hectareasController = TextEditingController();
     _litrosController = TextEditingController();
+    _vientoController = TextEditingController();
+    _temperaturaController = TextEditingController();
+    _humedadController = TextEditingController();
+    _observacionController = TextEditingController();
+    _firmaController = TextEditingController();
   }
 
   @override
   void dispose() {
     _hectareasController.dispose();
     _litrosController.dispose();
+    _vientoController.dispose();
+    _temperaturaController.dispose();
+    _humedadController.dispose();
+    _observacionController.dispose();
+    _firmaController.dispose();
     super.dispose();
   }
 
-  void _abrirSesion(BuildContext context) {
-    context.read<SesionBloc>().add(const SesionAbrirSolicitada());
+  /// Recalcula si los valores ingresados están fuera de rango — mientras
+  /// alguno de los tres campos no tenga un decimal válido todavía, no se
+  /// muestra observación/firma (evita mostrarlas de entrada, con el campo
+  /// vacío).
+  bool _calcularFueraDeRango() {
+    final viento = Decimal.tryParse(_vientoController.text);
+    final temperatura = Decimal.tryParse(_temperaturaController.text);
+    final humedad = Decimal.tryParse(_humedadController.text);
+    if (viento == null || temperatura == null || humedad == null) {
+      return false;
+    }
+    return condicionesFueraDeRango(
+      vientoKmh: viento,
+      temperaturaC: temperatura,
+      humedadPct: humedad,
+    );
+  }
+
+  void _mostrarFormularioApertura(BuildContext context) {
+    _vientoController.clear();
+    _temperaturaController.clear();
+    _humedadController.clear();
+    _observacionController.clear();
+    _firmaController.clear();
+    _condicionesFueraDeRango = false;
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        // El `context` de este builder es descendiente del propio diálogo
+        // (otra rama del Overlay, no del árbol de `SesionVueloVista`) — se
+        // ignora a propósito y se usa el `context` del método de arriba
+        // (capturado por closure) para `Theme.of`/`context.read<SesionBloc>`,
+        // que sí es descendiente del `BlocProvider<SesionBloc>`.
+        builder: (_, setStateDialog) {
+          void alCambiarMedicion(String _) {
+            final fueraDeRango = _calcularFueraDeRango();
+            if (fueraDeRango != _condicionesFueraDeRango) {
+              setStateDialog(() => _condicionesFueraDeRango = fueraDeRango);
+            }
+          }
+
+          return AlertDialog(
+            title: const Text('Condiciones al abrir sesión'),
+            content: SingleChildScrollView(
+              child: Form(
+                key: _formAperturaKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      key: const Key('apertura_viento'),
+                      controller: _vientoController,
+                      decoration: const InputDecoration(
+                        labelText: 'Viento (km/h) *',
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      onChanged: alCambiarMedicion,
+                      validator: (valor) {
+                        if (valor == null || valor.isEmpty) {
+                          return 'El viento es obligatorio';
+                        }
+                        final decimal = Decimal.tryParse(valor);
+                        if (decimal == null) return 'Ingresá un número válido';
+                        if (decimal < Decimal.zero) {
+                          return 'El viento no puede ser negativo';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      key: const Key('apertura_temperatura'),
+                      controller: _temperaturaController,
+                      decoration: const InputDecoration(
+                        labelText: 'Temperatura (°C) *',
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                        signed: true,
+                      ),
+                      onChanged: alCambiarMedicion,
+                      validator: (valor) {
+                        if (valor == null || valor.isEmpty) {
+                          return 'La temperatura es obligatoria';
+                        }
+                        if (Decimal.tryParse(valor) == null) {
+                          return 'Ingresá un número válido';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      key: const Key('apertura_humedad'),
+                      controller: _humedadController,
+                      decoration: const InputDecoration(
+                        labelText: 'Humedad (%) *',
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      onChanged: alCambiarMedicion,
+                      validator: (valor) {
+                        if (valor == null || valor.isEmpty) {
+                          return 'La humedad es obligatoria';
+                        }
+                        final decimal = Decimal.tryParse(valor);
+                        if (decimal == null) return 'Ingresá un número válido';
+                        if (decimal < Decimal.zero) {
+                          return 'La humedad no puede ser negativa';
+                        }
+                        return null;
+                      },
+                    ),
+                    if (_condicionesFueraDeRango) ...[
+                      const SizedBox(height: 16),
+                      Text(
+                        'Condiciones fuera de rango: se necesita la '
+                        'observación y firma del agrónomo.',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      TextFormField(
+                        key: const Key('apertura_observacion'),
+                        controller: _observacionController,
+                        decoration: const InputDecoration(
+                          labelText: 'Observación del agrónomo *',
+                        ),
+                        maxLines: 3,
+                        validator: (valor) {
+                          if (!_condicionesFueraDeRango) return null;
+                          if (valor == null || valor.trim().isEmpty) {
+                            return 'La observación es obligatoria';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        key: const Key('apertura_firma'),
+                        controller: _firmaController,
+                        decoration: const InputDecoration(
+                          labelText: 'Firma del agrónomo *',
+                        ),
+                        validator: (valor) {
+                          if (!_condicionesFueraDeRango) return null;
+                          if (valor == null || valor.trim().isEmpty) {
+                            return 'La firma es obligatoria';
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: const Text('Cancelar'),
+              ),
+              FilledButton(
+                key: const Key('boton_confirmar_apertura'),
+                onPressed: () {
+                  if (!_formAperturaKey.currentState!.validate()) return;
+
+                  context.read<SesionBloc>().add(
+                    SesionAbrirSolicitada(
+                      vientoKmh: Decimal.parse(_vientoController.text),
+                      temperaturaC: Decimal.parse(_temperaturaController.text),
+                      humedadPct: Decimal.parse(_humedadController.text),
+                      observacionAgronomo: _condicionesFueraDeRango
+                          ? _observacionController.text.trim()
+                          : null,
+                      firmaObservacion: _condicionesFueraDeRango
+                          ? _firmaController.text.trim()
+                          : null,
+                    ),
+                  );
+
+                  Navigator.pop(dialogContext);
+                },
+                child: const Text('Abrir sesión'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   void _mostrarFormularioCierre(BuildContext context) {
@@ -191,7 +404,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
           SesionInicial() => Center(
             child: FilledButton(
               key: const Key('boton_abrir_sesion'),
-              onPressed: () => _abrirSesion(context),
+              onPressed: () => _mostrarFormularioApertura(context),
               child: const Text('Abrir sesión'),
             ),
           ),
@@ -278,9 +491,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                   const SizedBox(height: 24),
                   OutlinedButton(
                     key: const Key('boton_reintentar'),
-                    onPressed: () => context.read<SesionBloc>().add(
-                      const SesionAbrirSolicitada(),
-                    ),
+                    onPressed: () => _mostrarFormularioApertura(context),
                     child: const Text('Reintentar'),
                   ),
                 ],

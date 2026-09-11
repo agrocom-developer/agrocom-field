@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../nucleo/auth/persona_operativa_store.dart';
 import '../data/sesion_repository.dart';
+import '../domain/reglas_condiciones.dart';
 import '../domain/reglas_sesion.dart';
 import 'sesion_estado.dart';
 import 'sesion_evento.dart';
@@ -78,6 +79,11 @@ class SesionBloc extends Bloc<SesionEvento, SesionEstado> {
         pilotoId: pilotoId,
         hectareasDeclaradas: evento.hectareasDeclaradas,
         inicio: DateTime.now(),
+        vientoKmh: evento.vientoKmh,
+        temperaturaC: evento.temperaturaC,
+        humedadPct: evento.humedadPct,
+        observacionAgronomo: evento.observacionAgronomo,
+        firmaObservacion: evento.firmaObservacion,
       );
       emit(SesionActiva(sesion));
     } on TrabajoInexistenteExcepcion catch (e) {
@@ -85,6 +91,13 @@ class SesionBloc extends Bloc<SesionEvento, SesionEstado> {
         SesionError(
           'El trabajo ya no existe localmente: ${e.trabajoUuidCliente}. '
           'Recargá la pantalla.',
+        ),
+      );
+    } on ObservacionAgronomoRequeridaExcepcion {
+      emit(
+        const SesionError(
+          'Las condiciones están fuera de rango — se necesita la '
+          'observación y la firma del agrónomo antes de abrir la sesión.',
         ),
       );
     } catch (e) {
