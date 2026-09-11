@@ -53,7 +53,16 @@ conserva el texto).
 
 ## Deuda técnica detectada
 
-Ninguna fila registrada todavía. Es material para que el usuario decida qué
-hacer con él, no trabajo que el ciclo se autoasigna: ver
-`prompts/plantillas/planificar.md`, sección "El trabajo sale del plan, nunca
-de tu criterio".
+Material para que el usuario decida qué hacer con él, no trabajo que el ciclo
+se autoasigna: ver `prompts/plantillas/planificar.md`, sección "El trabajo
+sale del plan, nunca de tu criterio". Filas agregadas por la revisión línea
+por línea (11/9/2026) de los tres PR marcados crítica en
+`runs/revision-pendiente.txt` (motor de sync TE-05, esquema `drift` TE-06,
+tablas `drift` HU-05) — ninguna bloqueó el merge, ya integrado.
+
+| Origen | Hallazgo | Severidad | Dónde tocar |
+|---|---|---|---|
+| HU-05 (PR #17) | "Reintentar" tras un error al **cerrar** sesión despacha `SesionAbrirSolicitada()` en vez de reintentar el cierre — un fallo real de escritura local durante el cierre (no hace falta que la app se reinicie) deja la sesión `abierta` para siempre en `SesionLocal` y el piloto termina abriendo una tercera sesión sobre el mismo trabajo. Sin test que lo cubra. | Medio | `sesion_bloc.dart` (~103-125), `sesion_vuelo_vista.dart` (botón "Reintentar", ~280-282) |
+| TE-05 (PR #10/#11) | `_registroDesdeFila` arma el body con `{'tipo': ..., 'uuid_cliente': ..., ...payload}` — el spread pisa esas dos claves si un payload futuro las incluyera por error (p. ej. un `toJson()` genérico de una feature nueva). Hoy no alcanzable, sostenido solo por comentario. | Menor | `lib/nucleo/sync/sync_engine.dart` (~86-90) — invertir el orden del spread |
+| TE-05 (PR #10/#11) | Cast no defensivo (`as String`) sobre `uuid_cliente`/`tipo`/`estado` de la respuesta de `POST /api/sync`, pese a que `ResultadoSync` en `openapi.yaml` los marca `nullable`. Una respuesta fuera de contrato corta el `for` a mitad de lote sin emitir `EstadoMotorSync.error` — el motor queda en `sincronizando` para siempre. | Menor | `lib/nucleo/sync/sync_engine.dart` (~68-69) — envolver el `for` en try/catch |
+| TE-06 (PR #13) | `CatalogoRepository.pull()` trae una sola página (200 filas/sección) por llamada, a propósito. Quien conecte el disparador real del pull (motor de sync) tiene que invocarlo en loop hasta agotar el catálogo — si no, el primer login de un dispositivo con más de 200 órdenes/lotes/personas pendientes queda con catálogo incompleto. No es defecto del PR, es una dependencia para esa tarea futura. | Informativo | Quien conecte el trigger real de `pull()` en el motor de sync |
