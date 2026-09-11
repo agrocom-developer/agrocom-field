@@ -13,6 +13,7 @@ import 'nucleo/auth/persona_operativa_store.dart';
 import 'nucleo/auth/token_store.dart';
 import 'nucleo/di/service_locator.dart';
 import 'nucleo/flavor.dart';
+import 'nucleo/linterna/linterna_controlador.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,7 @@ Future<void> main() async {
     AgrocomApp(
       flavor: Flavor.piloto,
       tokenStore: getIt<TokenStore>(),
+      linternaControlador: getIt<LinternaControlador>(),
       crearLoginCubit: () => LoginCubit(getIt<LoginService>(), Flavor.piloto),
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
       crearTrabajoCubit: () => TrabajoCubit(getIt<TrabajoRepository>()),
