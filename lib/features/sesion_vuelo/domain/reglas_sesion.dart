@@ -1,3 +1,5 @@
+import 'package:decimal/decimal.dart';
+
 /// Reglas de dominio de `sesion_vuelo`, Dart puro (sin `drift`): decidir es
 /// responsabilidad de acá, consultar el estado local es responsabilidad del
 /// repositorio (ADR 0005 de `agrocom-api` — domain no toca infraestructura).
@@ -43,3 +45,47 @@ void verificarTrabajoExiste({
 /// previas ya contada contra `drift` (`COUNT(*) WHERE trabajo_uuid_cliente
 /// = X`).
 int proximaSecuenciaSesion(int sesionesPrevias) => sesionesPrevias + 1;
+
+/// El acumulado final que el piloto ingresó al cerrar (lo que muestra el RC
+/// del dron en ese momento) es menor al acumulado inicial que había
+/// registrado al abrir — dato mal ingresado, nunca un caso válido (el
+/// acumulado del RC solo crece). HU-07, control de doble conteo
+/// (especificación funcional/técnica §2, "si la misión de DJI se retoma...").
+class AcumuladoFinalMenorQueInicialExcepcion implements Exception {
+  const AcumuladoFinalMenorQueInicialExcepcion({
+    required this.hectareaInicialAcumulada,
+    required this.hectareaFinalAcumulada,
+  });
+
+  final Decimal hectareaInicialAcumulada;
+  final Decimal hectareaFinalAcumulada;
+
+  @override
+  String toString() =>
+      'AcumuladoFinalMenorQueInicialExcepcion: acumulado final '
+      '($hectareaFinalAcumulada) menor al inicial '
+      '($hectareaInicialAcumulada)';
+}
+
+/// Hectáreas reales de una sesión que arrancó en relevo (HU-07): cuando la
+/// misión de DJI se retoma, el RC del segundo piloto muestra el acumulado
+/// del LOTE completo, no el propio, así que las hectáreas de ESTA sesión son
+/// la diferencia entre el acumulado final (al cerrar) y el inicial (el que
+/// ya traía el RC al abrir, registrado aparte) — nunca le pide al piloto que
+/// reste a mano bajo presión de campo.
+///
+/// Lanza [AcumuladoFinalMenorQueInicialExcepcion] si el resultado sería
+/// negativo, ANTES de que el llamador escriba nada.
+Decimal calcularHectareasDeCierrePorAcumulado({
+  required Decimal hectareaInicialAcumulada,
+  required Decimal hectareaFinalAcumulada,
+}) {
+  final diferencia = hectareaFinalAcumulada - hectareaInicialAcumulada;
+  if (diferencia < Decimal.zero) {
+    throw AcumuladoFinalMenorQueInicialExcepcion(
+      hectareaInicialAcumulada: hectareaInicialAcumulada,
+      hectareaFinalAcumulada: hectareaFinalAcumulada,
+    );
+  }
+  return diferencia;
+}
