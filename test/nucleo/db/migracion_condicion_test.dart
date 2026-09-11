@@ -135,25 +135,22 @@ Future<void> _insertarCondicionDePrueba(
 
 void main() {
   group('migración de esquema drift (HU-06: condiciones al abrir sesión)', () {
-    test(
-      'base nueva sin historial: onCreate deja condicion_local creada y '
-      'usable',
-      () async {
-        final db = AppDatabase(NativeDatabase.memory());
-        addTearDown(db.close);
+    test('base nueva sin historial: onCreate deja condicion_local creada y '
+        'usable', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
 
-        await _insertarCondicionDePrueba(db, sufijo: 'a');
-        final condicion = (await db.select(db.condicionLocal).get()).single;
-        expect(condicion.uuidCliente, 'condicion-a');
-        expect(condicion.sesionUuidCliente, 'sesion-a');
-        expect(condicion.momento, 'inicio_sesion');
-        expect(condicion.vientoKmh, Decimal.parse('12.50'));
-        expect(condicion.temperaturaC, Decimal.parse('24.00'));
-        expect(condicion.humedadPct, Decimal.parse('65.00'));
-        expect(condicion.observacionAgronomo, isNull);
-        expect(condicion.firmaObservacion, isNull);
-      },
-    );
+      await _insertarCondicionDePrueba(db, sufijo: 'a');
+      final condicion = (await db.select(db.condicionLocal).get()).single;
+      expect(condicion.uuidCliente, 'condicion-a');
+      expect(condicion.sesionUuidCliente, 'sesion-a');
+      expect(condicion.momento, 'inicio_sesion');
+      expect(condicion.vientoKmh, Decimal.parse('12.50'));
+      expect(condicion.temperaturaC, Decimal.parse('24.00'));
+      expect(condicion.humedadPct, Decimal.parse('65.00'));
+      expect(condicion.observacionAgronomo, isNull);
+      expect(condicion.firmaObservacion, isNull);
+    });
 
     test(
       'base v3 preexistente con datos reales en cola_sync y sesion_local '
@@ -214,10 +211,7 @@ void main() {
         );
         final sesionPreexistente = filasSesion.single;
         expect(sesionPreexistente.uuidCliente, 'sesion-preexistente');
-        expect(
-          sesionPreexistente.trabajoUuidCliente,
-          'trabajo-preexistente',
-        );
+        expect(sesionPreexistente.trabajoUuidCliente, 'trabajo-preexistente');
         expect(sesionPreexistente.secuencia, 1);
         expect(sesionPreexistente.pilotoId, 7);
         expect(sesionPreexistente.hectareasDeclaradas, Decimal.parse('0'));
