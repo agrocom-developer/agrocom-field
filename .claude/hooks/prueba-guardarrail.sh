@@ -27,9 +27,10 @@ HOOK_ARCHIVOS=.claude/hooks/guardarrail-archivos.sh
 fallos=0
 
 # El hook, cuando deja pasar, no imprime nada y sale 0. "pasa" es esa ausencia.
+# comando · variables de entorno opcionales "CLAVE=valor CLAVE=valor"
 decision_bash() {
     local salida
-    salida=$(printf '%s' "$1" | jq -Rs '{tool_input:{command:.}}' | "$HOOK_BASH" 2>/dev/null |
+    salida=$(printf '%s' "$1" | jq -Rs '{tool_input:{command:.}}' | env ${2:-} "$HOOK_BASH" 2>/dev/null |
              jq -r '.hookSpecificOutput.permissionDecision // empty' 2>/dev/null)
     printf '%s' "${salida:-pasa}"
 }
@@ -92,6 +93,33 @@ case "$(git rev-parse --abbrev-ref HEAD 2>/dev/null)" in
     *)
         caso pasa "push a una rama feature"          "$(decision_bash "$G push -u origin feature/algo")" ;;
 esac
+
+# AGROCOM_SESION_HEADLESS=1 es la marca que bin/ciclo pone en toda sesión que
+# spawnea (implementar/verificar/corregir/planificar) — nunca en una sesión
+# interactiva. Sin esta regla, la tarea 01 de este repo mostró el costo real:
+# una sesión de implementación abrió y dejó mergear su propio PR antes de que
+# la verificación crítica corriera.
+printf '\n\033[1m── guardarrail-bash.sh · AGROCOM_SESION_HEADLESS · tiene que denegar ──\033[0m\n'
+caso deny "push a rama feature, sesión headless del ciclo" \
+    "$(decision_bash "$G push -u origin feature/algo" "AGROCOM_SESION_HEADLESS=1")"
+caso deny "gh pr create, sesión headless del ciclo" \
+    "$(decision_bash "gh pr create --base develop --head feature/algo --title x --body y" "AGROCOM_SESION_HEADLESS=1")"
+caso deny "gh pr merge, sesión headless del ciclo" \
+    "$(decision_bash "gh pr merge 11 --squash" "AGROCOM_SESION_HEADLESS=1")"
+caso deny "gh pr ready, sesión headless del ciclo" \
+    "$(decision_bash "gh pr ready 11" "AGROCOM_SESION_HEADLESS=1")"
+caso deny "push encadenado tras un echo, sesión headless" \
+    "$(decision_bash "${ECHO_ANTES}$G push -u origin feature/algo" "AGROCOM_SESION_HEADLESS=1")"
+
+printf '\n\033[1m── guardarrail-bash.sh · AGROCOM_SESION_HEADLESS · tiene que dejar pasar ──\033[0m\n'
+caso pasa "push a rama feature, sesión interactiva (sin la marca)" \
+    "$(decision_bash "$G push -u origin feature/algo")"
+caso pasa "gh pr create, sesión interactiva (sin la marca)" \
+    "$(decision_bash "gh pr create --base develop --head feature/algo --title x --body y")"
+caso pasa "gh pr view no es gh pr create/merge/ready/close, sesión headless" \
+    "$(decision_bash "gh pr view 11" "AGROCOM_SESION_HEADLESS=1")"
+caso pasa "gh pr list no es gh pr create/merge/ready/close, sesión headless" \
+    "$(decision_bash "gh pr list --head feature/algo" "AGROCOM_SESION_HEADLESS=1")"
 
 printf '\n\033[1m── guardarrail-archivos.sh · tiene que denegar ──\033[0m\n'
 caso deny "escritura del .env real"              "$(decision_archivo "$PWD/.env" 'ALGO=1')"

@@ -105,6 +105,23 @@ if coincide '\bgit[[:space:]]+push\b'; then
         decidir deny "Estás parado en $rama y este push iría directo a la rama base. Creá una rama feature/* primero."
 fi
 
+# AGROCOM_SESION_HEADLESS la pone bin/ciclo (ver sesion() en ese script) en
+# TODA sesión que spawnea — implementar, verificar, corregir, planificar,
+# arreglar CI — nunca en una sesión interactiva de un humano. La tarea 01 de
+# este mismo repo mostró el costo de no tener esto: una sesión de
+# implementación abrió y dejó mergear su propio PR antes de que la
+# verificación crítica corriera, y el hallazgo real que esa verificación
+# encontró después nunca llegó a integrarse. La rama la crea el ciclo, el
+# ciclo la pushea y abre/mergea su PR en `fase_pr` — eso corre como bash del
+# propio orquestador (nunca pasa por `sesion()`), así que esta regla no lo
+# alcanza.
+if [ "${AGROCOM_SESION_HEADLESS:-0}" = "1" ]; then
+    coincide '\bgit[[:space:]]+push\b' &&
+        decidir deny 'Esta sesión no pushea: eso lo hace el ciclo en su fase de PR, después de la verificación crítica. Dejá el trabajo commiteado en la rama y terminá.'
+    coincide '\bgh[[:space:]]+pr[[:space:]]+(create|merge|ready|close|reopen)\b' &&
+        decidir deny 'Esta sesión no abre, mergea ni cierra PRs: eso lo hace el ciclo en su fase de PR. Dejá runs/NN.pr.md con título y cuerpo, como pide el prompt, y nada más.'
+fi
+
 coincide '\bgit[[:space:]]+reset\b[^;&|]*--hard' &&
     decidir deny 'git reset --hard descarta cambios sin papelera. Si querés descartar, decilo y lo hacemos archivo por archivo.'
 coincide '\bgit[[:space:]]+clean\b[^;&|]*-[[:alnum:]]*[fdx]' &&

@@ -152,7 +152,25 @@ Repetí esa última línea, una llamada Bash cada vez, hasta que el log termine 
 **Nunca termines la sesión con `bin/verify` corriendo ni sin haber escrito
 `runs/NN.estado`**: si no llegás, escribí `PARCIAL` y dejá en `runs/NN.md` qué
 falta. Una sesión que termina sin estado cuenta como fallida, no como "sigo
-después".'
+después".
+
+---
+## No toques el remoto
+
+Esta sesión no pushea ni abre, mergea o cierra PRs — eso lo hace el propio
+ciclo, en su fase de PR, y solo después de que la verificación crítica haya
+corrido. `git push`, `gh pr create`, `gh pr merge`, `gh pr ready` y `gh pr
+close` están bloqueados por el guardarraíl de este repo para toda sesión
+headless del ciclo, sin excepción de fase — no lo vas a poder ejecutar aunque
+lo intentes.
+
+Ya pasó una vez en este mismo repo: una sesión de implementación abrió y dejó
+mergear su propio PR antes de que la verificación crítica corriera, y el
+hallazgo real que esa verificación encontró después (una prueba de replay que
+no probaba lo que decía probar) nunca llegó a integrarse — quedó huérfano en
+una rama que el ciclo ya daba por mergeada. Dejá el título/cuerpo del PR en
+`runs/NN.pr.md`, como ya se te pide más abajo, y nada más: abrir el PR vos
+mismo no ahorra una vuelta, la salta.'
 pie_verify() { printf '%s' "$PIE_VERIFY" | sed "s/NN/$1/g"; }
 
 # --- Salida ----------------------------------------------------------
@@ -319,7 +337,13 @@ sesion() {
     SESION_CORTE=0
     SESION_CORTE_MOTIVO=""
     log "  modelo: $modelo${zonas:+ · descongela: $zonas}"
-    AGROCOM_TURNO_NOCHE="$noche" AGROCOM_DESCONGELA="$zonas" claude -p "$texto" \
+    # AGROCOM_SESION_HEADLESS marca, para guardarrail-bash.sh, que este proceso
+    # es una sesión spawneada por el ciclo (nunca la interactiva de un
+    # humano): ese hook deniega git push / gh pr create|merge|ready|close acá
+    # adentro, sea cual sea la fase. La rama la crea el ciclo, el ciclo la
+    # pushea y abre su PR en fase_pr — eso corre como bash del propio
+    # orquestador, nunca pasa por esta función, así que la marca no lo alcanza.
+    AGROCOM_TURNO_NOCHE="$noche" AGROCOM_DESCONGELA="$zonas" AGROCOM_SESION_HEADLESS=1 claude -p "$texto" \
         --model "$modelo" \
         --permission-mode dontAsk \
         --allowedTools "$herramientas" \
