@@ -7,6 +7,7 @@ import '../api/api_client.dart';
 import '../auth/dispositivo_store.dart';
 import '../auth/login_service.dart';
 import '../auth/persona_operativa_store.dart';
+import '../auth/rol_activo_store.dart';
 import '../auth/token_store.dart';
 import '../catalogo/catalogo_repository.dart';
 import '../db/database.dart';
@@ -32,6 +33,7 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
   getIt.registerLazySingleton<PersonaOperativaStore>(
     PersonaOperativaStoreSeguro.new,
   );
+  getIt.registerLazySingleton<RolActivoStore>(RolActivoStoreSeguro.new);
   getIt.registerLazySingleton<ApiClient>(
     () => ApiClient(baseUrl: _apiBaseUrl, tokenStore: getIt<TokenStore>()),
   );
@@ -41,6 +43,7 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
       tokenStore: getIt<TokenStore>(),
       dispositivoStore: getIt<DispositivoStore>(),
       personaOperativaStore: getIt<PersonaOperativaStore>(),
+      rolActivoStore: getIt<RolActivoStore>(),
     ),
   );
   getIt.registerLazySingleton<AppDatabase>(AppDatabase.new);

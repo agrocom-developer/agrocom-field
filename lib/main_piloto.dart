@@ -21,7 +21,7 @@ Future<void> main() async {
     AgrocomApp(
       flavor: Flavor.piloto,
       tokenStore: getIt<TokenStore>(),
-      crearLoginCubit: () => LoginCubit(getIt<LoginService>()),
+      crearLoginCubit: () => LoginCubit(getIt<LoginService>(), Flavor.piloto),
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
       crearTrabajoCubit: () => TrabajoCubit(getIt<TrabajoRepository>()),
       crearSesionBloc: (trabajoUuidCliente) => SesionBloc(

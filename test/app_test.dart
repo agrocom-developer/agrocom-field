@@ -65,7 +65,7 @@ void main() {
       AgrocomApp(
         flavor: Flavor.piloto,
         tokenStore: tokenStore,
-        crearLoginCubit: () => LoginCubit(_LoginServiceFalso()),
+        crearLoginCubit: () => LoginCubit(_LoginServiceFalso(), Flavor.piloto),
         // Nunca se invoca: la rama de login no llega a montar
         // `OrdenesPantalla`, así que no hay cubit que cerrar acá.
         crearOrdenesCubit: _crearOrdenesCubit(db, (_) {}),
@@ -105,7 +105,8 @@ void main() {
         AgrocomApp(
           flavor: Flavor.auxiliar,
           tokenStore: tokenStore,
-          crearLoginCubit: () => LoginCubit(_LoginServiceFalso()),
+          crearLoginCubit: () =>
+              LoginCubit(_LoginServiceFalso(), Flavor.auxiliar),
           crearOrdenesCubit: _crearOrdenesCubit(
             db,
             (cubit) => ordenesCubit = cubit,

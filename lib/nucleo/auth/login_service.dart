@@ -5,6 +5,8 @@ import '../api/api_excepcion.dart';
 import 'dispositivo_store.dart';
 import 'persona_operativa_store.dart';
 import 'resultado_login.dart';
+import 'rol_activo.dart';
+import 'rol_activo_store.dart';
 import 'token_store.dart';
 
 /// Caso de uso de HU-03: intercambia usuario/contraseña por el token de
@@ -13,31 +15,34 @@ import 'token_store.dart';
 /// También persiste `usuario.persona_id` (HU-05: lo necesita
 /// `AperturaSesion.piloto_id`) con [PersonaOperativaStore] — nullable, así
 /// que un usuario sin persona operativa enlazada queda con `null` guardado,
-/// nunca con un valor de un login anterior.
+/// nunca con un valor de un login anterior — y el `rol` del `201` con
+/// [RolActivoStore] (ADR 0005 de este repo).
 ///
-/// No maneja el selector de rol del `409` (HU-69, fuera de alcance de esta
-/// tarea) — lo expone como [LoginRolAmbiguo], un resultado distinguible
-/// para que la pantalla muestre un mensaje, sin guardar ningún token a
-/// medias.
+/// Acepta [roleId] opcional (`role_id` en el body) para reintentar el login
+/// una vez elegido un rol tras un `409` — ver [LoginRolAmbiguo].
 class LoginService {
   LoginService({
     required ApiClient apiClient,
     required TokenStore tokenStore,
     required DispositivoStore dispositivoStore,
     required PersonaOperativaStore personaOperativaStore,
+    required RolActivoStore rolActivoStore,
   }) : _apiClient = apiClient,
        _tokenStore = tokenStore,
        _dispositivoStore = dispositivoStore,
-       _personaOperativaStore = personaOperativaStore;
+       _personaOperativaStore = personaOperativaStore,
+       _rolActivoStore = rolActivoStore;
 
   final ApiClient _apiClient;
   final TokenStore _tokenStore;
   final DispositivoStore _dispositivoStore;
   final PersonaOperativaStore _personaOperativaStore;
+  final RolActivoStore _rolActivoStore;
 
   Future<ResultadoLogin> login({
     required String usuario,
     required String contrasena,
+    int? roleId,
   }) async {
     final uuidDispositivo = await _dispositivoStore.obtenerUuidDispositivo();
 
@@ -49,6 +54,7 @@ class LoginService {
           'username': usuario,
           'password': contrasena,
           'uuid_dispositivo': uuidDispositivo,
+          'role_id': ?roleId,
         },
       );
     } on ApiExcepcionRed {
@@ -65,6 +71,9 @@ class LoginService {
     await _personaOperativaStore.guardarPersonaId(
       datosUsuario['persona_id'] as int?,
     );
+    await _rolActivoStore.guardarRolActivo(
+      RolActivo.fromJson(cuerpo['rol'] as Map<String, dynamic>),
+    );
     return const LoginExitoso();
   }
 
@@ -73,12 +82,32 @@ class LoginService {
       case 401:
         return const LoginCredencialesInvalidas();
       case 409:
-        return const LoginRolAmbiguo();
+        return _resultadoDeRolAmbiguo(e.cuerpo);
       case 422:
         return LoginDatosInvalidos(_mensajeDe(e.cuerpo));
       default:
         return const LoginErrorDesconocido();
     }
+  }
+
+  /// El body del `409` no viene vacío nunca según el contrato (`roles` es
+  /// obligatorio) — si viniera mal formado, cae a
+  /// [LoginErrorDesconocido] en vez de asumir una lista vacía.
+  ResultadoLogin _resultadoDeRolAmbiguo(Object? cuerpo) {
+    if (cuerpo is Map) {
+      final rolesJson = cuerpo['roles'];
+      if (rolesJson is List && rolesJson.isNotEmpty) {
+        try {
+          final roles = rolesJson
+              .map((rol) => RolActivo.fromJson(rol as Map<String, dynamic>))
+              .toList();
+          return LoginRolAmbiguo(roles);
+        } on TypeError {
+          return const LoginErrorDesconocido();
+        }
+      }
+    }
+    return const LoginErrorDesconocido();
   }
 
   String _mensajeDe(Object? cuerpo) {

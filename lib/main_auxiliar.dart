@@ -16,7 +16,7 @@ Future<void> main() async {
     AgrocomApp(
       flavor: Flavor.auxiliar,
       tokenStore: getIt<TokenStore>(),
-      crearLoginCubit: () => LoginCubit(getIt<LoginService>()),
+      crearLoginCubit: () => LoginCubit(getIt<LoginService>(), Flavor.auxiliar),
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
       // Stubs: el flavor auxiliar no usa trabajo/sesión, pero AgrocomApp
       // requiere las factories para mantener la interfaz consistente. Estas
