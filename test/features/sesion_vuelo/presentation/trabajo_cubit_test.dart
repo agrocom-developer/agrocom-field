@@ -73,7 +73,6 @@ void main() {
           ordenId: any(named: 'ordenId'),
           loteId: any(named: 'loteId'),
           nroAplicacion: any(named: 'nroAplicacion'),
-          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
           inicio: any(named: 'inicio'),
         ),
       ).thenAnswer((_) async => _trabajo());
@@ -84,27 +83,25 @@ void main() {
   );
 
   blocTest<TrabajoCubit, TrabajoEstado>(
-    'abrir con hectareas: pasa loteHectareas de la orden al repositorio',
+    'abrir: nunca pasa hectareasDeclaradas (ni siquiera con loteHectareas '
+    'presente en la orden) — el stub solo matchea una llamada SIN ese '
+    'parámetro; si el Cubit lo pasara, la llamada real no matchearía este '
+    'stub y el test fallaría con MissingStubError. loteHectareas es la '
+    'superficie del LOTE, no lo que el piloto declaró haber cubierto',
     setUp: () {
       when(
         () => repositorio.abrirTrabajo(
           ordenId: any(named: 'ordenId'),
           loteId: any(named: 'loteId'),
           nroAplicacion: any(named: 'nroAplicacion'),
-          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
           inicio: any(named: 'inicio'),
         ),
-      ).thenAnswer(
-        (_) async => _trabajo(hectareasDeclaradas: Decimal.parse('100.50')),
-      );
+      ).thenAnswer((_) async => _trabajo());
     },
     build: () => TrabajoCubit(repositorio),
     act: (cubit) =>
         cubit.abrir(orden: _orden(loteHectareas: Decimal.parse('100.50'))),
-    expect: () => [
-      const TrabajoCargando(),
-      TrabajoExitoso(_trabajo(hectareasDeclaradas: Decimal.parse('100.50'))),
-    ],
+    expect: () => [const TrabajoCargando(), TrabajoExitoso(_trabajo())],
   );
 
   blocTest<TrabajoCubit, TrabajoEstado>(
@@ -115,7 +112,6 @@ void main() {
           ordenId: any(named: 'ordenId'),
           loteId: any(named: 'loteId'),
           nroAplicacion: any(named: 'nroAplicacion'),
-          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
           inicio: any(named: 'inicio'),
         ),
       ).thenThrow(Exception('Error en base de datos'));

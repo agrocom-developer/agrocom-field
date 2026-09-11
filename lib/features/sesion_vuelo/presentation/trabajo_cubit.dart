@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:decimal/decimal.dart';
 
 import '../data/trabajo_repository.dart';
 import '../../../features/ordenes/domain/orden_vigente.dart';
@@ -17,6 +16,12 @@ class TrabajoCubit extends Cubit<TrabajoEstado> {
   /// cargando y luego exitoso o error. [orden] contiene `id`, `loteId`,
   /// `nroAplicacion` que se necesitan; la pantalla lo tiene completo porque
   /// viene de `OrdenDetallePantalla`.
+  ///
+  /// No pasa `hectareasDeclaradas`: ese campo es lo que el piloto CUBRIÓ, no
+  /// la superficie del lote (`orden.loteHectareas`) — a la apertura el
+  /// piloto todavía no sabe cuánto va a cubrir (mismo criterio que
+  /// `AperturaSesion.hectareasDeclaradas` del lado servidor), así que se deja
+  /// en el default `'0'` de `TrabajoRepository.abrirTrabajo`.
   Future<void> abrir({required OrdenVigente orden}) async {
     emit(const TrabajoCargando());
     try {
@@ -24,7 +29,6 @@ class TrabajoCubit extends Cubit<TrabajoEstado> {
         ordenId: orden.id,
         loteId: orden.loteId,
         nroAplicacion: orden.nroAplicacion,
-        hectareasDeclaradas: orden.loteHectareas ?? Decimal.parse('0'),
         inicio: DateTime.now(),
       );
       emit(TrabajoExitoso(trabajo));
