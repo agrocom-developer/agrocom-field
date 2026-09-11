@@ -2,9 +2,12 @@
 // real conectado a un `OrdenesRepository` mockeado, para probar
 // lista/detalle/estado vacío sin pasar por `OrdenesPantalla`/GetIt (mismo
 // patrón que `test/features/auth/login_vista_test.dart`). Etapa 4 agrega
-// factories de trabajo/sesión — `crearTrabajoCubit` sí se invoca al navegar
-// al detalle (ver `bombear`), `crearSesionCubit` no, porque ningún test acá
-// abre un trabajo con éxito.
+// factories de trabajo/sesión — `crearTrabajoCubit` solo se invoca al navegar
+// al detalle con flavor piloto (ver `bombear`); con flavor auxiliar,
+// `OrdenDetallePantalla` nunca la invoca, así que puede lanzar como en
+// `main_auxiliar.dart` real (ver 'flavor auxiliar' más abajo).
+// `crearSesionBloc` no se invoca en ningún test acá, porque ninguno abre un
+// trabajo con éxito.
 
 import 'package:agrocom_field/features/ordenes/data/ordenes_repository.dart';
 import 'package:agrocom_field/features/ordenes/domain/orden_vigente.dart';
@@ -62,26 +65,31 @@ void main() {
     repositorio = _OrdenesRepositoryFalso();
   });
 
-  Future<void> bombear(WidgetTester tester, OrdenesCubit cubit) =>
-      tester.pumpWidget(
-        MaterialApp(
-          home: BlocProvider<OrdenesCubit>.value(
-            value: cubit,
-            child: OrdenesVista(
-              flavor: Flavor.piloto,
-              // OrdenDetallePantalla arma su BlocProvider<TrabajoCubit> sin
-              // condicionarlo al flavor (solo el botón lo está), así que
-              // navegar al detalle SÍ construye un TrabajoCubit — necesita
-              // una factory real, no un stub que explote.
-              crearTrabajoCubit: () => TrabajoCubit(_TrabajoRepositoryFalso()),
-              // crearSesionCubit solo se invoca tras abrir un trabajo con
-              // éxito, algo que ningún test de este archivo ejercita.
-              crearSesionCubit: (_) =>
-                  throw UnimplementedError('stub no invocado'),
-            ),
-          ),
+  Future<void> bombear(
+    WidgetTester tester,
+    OrdenesCubit cubit, {
+    Flavor flavor = Flavor.piloto,
+  }) => tester.pumpWidget(
+    MaterialApp(
+      home: BlocProvider<OrdenesCubit>.value(
+        value: cubit,
+        child: OrdenesVista(
+          flavor: flavor,
+          // Con flavor piloto, OrdenDetallePantalla SÍ arma su
+          // BlocProvider<TrabajoCubit> al navegar al detalle — necesita una
+          // factory real, no un stub que explote. Con flavor auxiliar, la
+          // pantalla nunca la invoca (ver 'flavor auxiliar' más abajo), así
+          // que esta misma factory que lanza serviría para ambos casos; se
+          // mantiene real acá para no depender de esa garantía en los tests
+          // de flavor piloto.
+          crearTrabajoCubit: () => TrabajoCubit(_TrabajoRepositoryFalso()),
+          // crearSesionBloc solo se invoca tras abrir un trabajo con éxito,
+          // algo que ningún test de este archivo ejercita.
+          crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
         ),
-      );
+      ),
+    ),
+  );
 
   testWidgets('lista las ordenes vigentes que llegan por el stream', (
     tester,
@@ -173,4 +181,41 @@ void main() {
       expect(find.text('Hectáreas: sin datos'), findsOneWidget);
     },
   );
+
+  testWidgets('flavor auxiliar: tocar una orden navega al detalle sin crashear '
+      '(factories que lanzan, como main_auxiliar.dart real)', (tester) async {
+    when(
+      () => repositorio.ordenesVigentes(),
+    ).thenAnswer((_) => Stream.value([_orden(id: 1)]));
+    final cubit = OrdenesCubit(repositorio);
+    addTearDown(cubit.close);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider<OrdenesCubit>.value(
+          value: cubit,
+          child: OrdenesVista(
+            flavor: Flavor.auxiliar,
+            // Idénticas a las de `main_auxiliar.dart`: el flavor auxiliar
+            // nunca debería invocarlas al navegar al detalle de una orden
+            // (regresión de HU-04 corregida en OrdenDetallePantalla).
+            crearTrabajoCubit: () => throw UnimplementedError(
+              'El flavor auxiliar no dispone de trabajo/sesión',
+            ),
+            crearSesionBloc: (_) => throw UnimplementedError(
+              'El flavor auxiliar no dispone de trabajo/sesión',
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('orden_1')));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Orden N.º 1'), findsOneWidget);
+    expect(find.byKey(const Key('boton_abrir_trabajo')), findsNothing);
+  });
 }

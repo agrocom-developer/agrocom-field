@@ -20,12 +20,13 @@ Future<void> main() async {
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
       // Stubs: el flavor auxiliar no usa trabajo/sesión, pero AgrocomApp
       // requiere las factories para mantener la interfaz consistente. Estas
-      // nunca se invocan en el flujo auxiliar (el botón "Abrir trabajo" solo
-      // aparece con flavor == piloto).
+      // nunca se invocan en el flujo auxiliar: `OrdenDetallePantalla` solo
+      // arma el `BlocProvider<TrabajoCubit>` (y por lo tanto solo puede
+      // llegar a necesitar `crearSesionBloc`) cuando flavor == piloto.
       crearTrabajoCubit: () => throw UnimplementedError(
         'El flavor auxiliar no dispone de trabajo/sesión',
       ),
-      crearSesionCubit: (_) => throw UnimplementedError(
+      crearSesionBloc: (_) => throw UnimplementedError(
         'El flavor auxiliar no dispone de trabajo/sesión',
       ),
     ),

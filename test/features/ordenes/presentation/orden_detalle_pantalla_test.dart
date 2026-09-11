@@ -6,7 +6,7 @@ import 'package:agrocom_field/features/ordenes/domain/orden_vigente.dart';
 import 'package:agrocom_field/features/ordenes/presentation/orden_detalle_pantalla.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/trabajo.dart';
-import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_cubit.dart';
+import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_bloc.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/trabajo_cubit.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
 import 'package:agrocom_field/nucleo/auth/persona_operativa_store.dart';
@@ -24,11 +24,11 @@ class _PersonaOperativaStoreFalso extends Mock
     implements PersonaOperativaStore {}
 
 // Al abrir trabajo con éxito, `OrdenDetallePantalla` navega a
-// `SesionVueloPantalla`, que sí invoca `crearSesionCubit` — a diferencia de
+// `SesionVueloPantalla`, que sí invoca `crearSesionBloc` — a diferencia de
 // lo que supone el resto de los tests de este archivo (que no llegan a
 // completar la apertura), el camino feliz necesita una factory real, aunque
 // sus dependencias nunca se ejerciten más allá de la construcción.
-SesionCubit _crearSesionCubitDeSobra(String trabajoUuidCliente) => SesionCubit(
+SesionBloc _crearSesionBlocDeSobra(String trabajoUuidCliente) => SesionBloc(
   sesionRepositorio: _SesionRepositoryFalso(),
   personaOperativaStore: _PersonaOperativaStoreFalso(),
   trabajoUuidCliente: trabajoUuidCliente,
@@ -102,7 +102,7 @@ void main() {
           // `addTearDown(cubit.close)` sobre la misma instancia duplica
           // el cierre y cuelga la finalización del test.
           crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
-          crearSesionCubit: (_) =>
+          crearSesionBloc: (_) =>
               throw UnimplementedError('no se invoca en este test'),
         ),
       ),
@@ -122,13 +122,39 @@ void main() {
           orden: _orden(),
           flavor: Flavor.auxiliar,
           crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
-          crearSesionCubit: (_) =>
+          crearSesionBloc: (_) =>
               throw UnimplementedError('no se invoca en este test'),
         ),
       ),
     );
     await tester.pumpAndSettle();
 
+    expect(_botonAbrirTrabajo(), findsNothing);
+  });
+
+  testWidgets('flavor auxiliar: no invoca crearTrabajoCubit ni crearSesionBloc '
+      '(factories que lanzan, como main_auxiliar.dart real)', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: OrdenDetallePantalla(
+          orden: _orden(),
+          flavor: Flavor.auxiliar,
+          // Idénticas a las de `main_auxiliar.dart`: si la pantalla llegara
+          // a invocarlas (regresión de HU-04), este test explota igual que
+          // la app real lo haría.
+          crearTrabajoCubit: () => throw UnimplementedError(
+            'El flavor auxiliar no dispone de trabajo/sesión',
+          ),
+          crearSesionBloc: (_) => throw UnimplementedError(
+            'El flavor auxiliar no dispone de trabajo/sesión',
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+    expect(find.text('Orden N.º 1'), findsOneWidget);
     expect(_botonAbrirTrabajo(), findsNothing);
   });
 
@@ -153,8 +179,8 @@ void main() {
           flavor: Flavor.piloto,
           crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
           // Camino feliz: la apertura exitosa navega a SesionVueloPantalla,
-          // que sí construye un SesionCubit.
-          crearSesionCubit: _crearSesionCubitDeSobra,
+          // que sí construye un SesionBloc.
+          crearSesionBloc: _crearSesionBlocDeSobra,
         ),
       ),
     );
@@ -190,7 +216,7 @@ void main() {
           orden: _orden(),
           flavor: Flavor.piloto,
           crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
-          crearSesionCubit: (_) =>
+          crearSesionBloc: (_) =>
               throw UnimplementedError('no se invoca en este test'),
         ),
       ),
@@ -227,8 +253,8 @@ void main() {
           flavor: Flavor.piloto,
           crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
           // Camino feliz (tras el segundo transcurrido): navega a
-          // SesionVueloPantalla, que sí construye un SesionCubit.
-          crearSesionCubit: _crearSesionCubitDeSobra,
+          // SesionVueloPantalla, que sí construye un SesionBloc.
+          crearSesionBloc: _crearSesionBlocDeSobra,
         ),
       ),
     );
