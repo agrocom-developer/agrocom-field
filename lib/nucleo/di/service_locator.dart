@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 
+import '../../features/avisos_locales/data/ids_vistos_store.dart';
 import '../../features/ordenes/data/ordenes_repository.dart';
 import '../../features/sesion_vuelo/data/trabajo_repository.dart';
 import '../../features/sesion_vuelo/data/sesion_repository.dart';
@@ -38,6 +39,7 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
   getIt.registerLazySingleton<RolActivoStore>(RolActivoStoreSeguro.new);
   getIt.registerLazySingleton<PreferenciasStore>(PreferenciasStoreLocal.new);
   getIt.registerLazySingleton<NotificadorLocal>(NotificadorLocalPlugin.new);
+  getIt.registerLazySingleton<IdsVistosStore>(IdsVistosStoreLocal.new);
   getIt.registerLazySingleton<ApiClient>(
     () => ApiClient(baseUrl: _apiBaseUrl, tokenStore: getIt<TokenStore>()),
   );
