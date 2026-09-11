@@ -12,6 +12,7 @@ import 'package:agrocom_field/nucleo/auth/login_service.dart';
 import 'package:agrocom_field/nucleo/auth/token_store.dart';
 import 'package:agrocom_field/nucleo/db/database.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
+import 'package:agrocom_field/nucleo/linterna/linterna_controlador.dart';
 import 'package:decimal/decimal.dart';
 import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
@@ -22,6 +23,8 @@ import 'package:mocktail/mocktail.dart';
 class _TokenStoreFalso extends Mock implements TokenStore {}
 
 class _LoginServiceFalso extends Mock implements LoginService {}
+
+class _LinternaControladorFalso extends Mock implements LinternaControlador {}
 
 // `OrdenesCubit` se suscribe al `Stream` del repositorio apenas se
 // construye y no lo suelta hasta `close()` — a diferencia de `LoginCubit`,
@@ -49,9 +52,14 @@ OrdenesCubit Function() _crearOrdenesCubit(
 
 void main() {
   late _TokenStoreFalso tokenStore;
+  late _LinternaControladorFalso linterna;
 
   setUp(() {
     tokenStore = _TokenStoreFalso();
+    linterna = _LinternaControladorFalso();
+    when(() => linterna.disponible()).thenAnswer((_) async => true);
+    when(() => linterna.encender()).thenAnswer((_) async {});
+    when(() => linterna.apagar()).thenAnswer((_) async {});
   });
 
   testWidgets('sin token guardado, arranca en la pantalla de login', (
@@ -65,6 +73,7 @@ void main() {
       AgrocomApp(
         flavor: Flavor.piloto,
         tokenStore: tokenStore,
+        linternaControlador: linterna,
         crearLoginCubit: () => LoginCubit(_LoginServiceFalso(), Flavor.piloto),
         // Nunca se invoca: la rama de login no llega a montar
         // `OrdenesPantalla`, así que no hay cubit que cerrar acá.
@@ -78,6 +87,79 @@ void main() {
     expect(find.byKey(const Key('login_usuario')), findsOneWidget);
     expect(find.byKey(const Key('ordenes_lista')), findsNothing);
   });
+
+  testWidgets(
+    'en el flavor piloto, el botón de emergencia no aparece (HU-68 es exclusivo de auxiliar)',
+    (tester) async {
+      when(() => tokenStore.leerToken()).thenAnswer((_) async => null);
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+
+      await tester.pumpWidget(
+        AgrocomApp(
+          flavor: Flavor.piloto,
+          tokenStore: tokenStore,
+          linternaControlador: linterna,
+          crearLoginCubit: () =>
+              LoginCubit(_LoginServiceFalso(), Flavor.piloto),
+          crearOrdenesCubit: _crearOrdenesCubit(db, (_) {}),
+          crearTrabajoCubit: () => throw UnimplementedError('stub no invocado'),
+          crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('login_usuario')), findsOneWidget);
+      expect(find.byKey(const Key('emergencia_boton')), findsNothing);
+    },
+  );
+
+  testWidgets(
+    'en el flavor auxiliar, el botón de emergencia aparece incluso sin token y controla la linterna',
+    (tester) async {
+      when(() => tokenStore.leerToken()).thenAnswer((_) async => null);
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+
+      await tester.pumpWidget(
+        AgrocomApp(
+          flavor: Flavor.auxiliar,
+          tokenStore: tokenStore,
+          linternaControlador: linterna,
+          crearLoginCubit: () =>
+              LoginCubit(_LoginServiceFalso(), Flavor.auxiliar),
+          crearOrdenesCubit: _crearOrdenesCubit(db, (_) {}),
+          crearTrabajoCubit: () =>
+              throw UnimplementedError('stub no invocado en auxiliar'),
+          crearSesionBloc: (_) =>
+              throw UnimplementedError('stub no invocado en auxiliar'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // Visible sobre LoginPantalla, sin token ni sesión iniciada.
+      expect(find.byKey(const Key('login_usuario')), findsOneWidget);
+      expect(find.byKey(const Key('emergencia_boton')), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('emergencia_boton')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('linterna_switch')), findsOneWidget);
+      expect(find.text('Apagada'), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('linterna_switch')));
+      await tester.pumpAndSettle();
+
+      verify(() => linterna.encender()).called(1);
+      expect(find.text('Encendida'), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('linterna_switch')));
+      await tester.pumpAndSettle();
+
+      verify(() => linterna.apagar()).called(1);
+      expect(find.text('Apagada'), findsOneWidget);
+    },
+  );
 
   testWidgets(
     'con token guardado, salta el login y muestra la lista de órdenes',
@@ -105,6 +187,7 @@ void main() {
         AgrocomApp(
           flavor: Flavor.auxiliar,
           tokenStore: tokenStore,
+          linternaControlador: linterna,
           crearLoginCubit: () =>
               LoginCubit(_LoginServiceFalso(), Flavor.auxiliar),
           crearOrdenesCubit: _crearOrdenesCubit(
@@ -122,6 +205,7 @@ void main() {
       expect(find.byKey(const Key('ordenes_lista')), findsOneWidget);
       expect(find.byKey(const Key('orden_1')), findsOneWidget);
       expect(find.byKey(const Key('login_usuario')), findsNothing);
+      expect(find.byKey(const Key('emergencia_boton')), findsOneWidget);
 
       await tester.runAsync(() => ordenesCubit!.close());
     },

@@ -12,6 +12,7 @@ import 'nucleo/auth/login_service.dart';
 import 'nucleo/auth/token_store.dart';
 import 'nucleo/di/service_locator.dart';
 import 'nucleo/flavor.dart';
+import 'nucleo/linterna/linterna_controlador.dart';
 import 'nucleo/notificaciones/notificador_local.dart';
 
 Future<void> main() async {
@@ -36,6 +37,7 @@ Future<void> main() async {
     AgrocomApp(
       flavor: Flavor.auxiliar,
       tokenStore: getIt<TokenStore>(),
+      linternaControlador: getIt<LinternaControlador>(),
       crearLoginCubit: () => LoginCubit(getIt<LoginService>(), Flavor.auxiliar),
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
       // Stubs: el flavor auxiliar no usa trabajo/sesión, pero AgrocomApp
