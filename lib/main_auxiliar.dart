@@ -18,6 +18,16 @@ Future<void> main() async {
       tokenStore: getIt<TokenStore>(),
       crearLoginCubit: () => LoginCubit(getIt<LoginService>()),
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
+      // Stubs: el flavor auxiliar no usa trabajo/sesión, pero AgrocomApp
+      // requiere las factories para mantener la interfaz consistente. Estas
+      // nunca se invocan en el flujo auxiliar (el botón "Abrir trabajo" solo
+      // aparece con flavor == piloto).
+      crearTrabajoCubit: () => throw UnimplementedError(
+        'El flavor auxiliar no dispone de trabajo/sesión',
+      ),
+      crearSesionCubit: (_) => throw UnimplementedError(
+        'El flavor auxiliar no dispone de trabajo/sesión',
+      ),
     ),
   );
 }

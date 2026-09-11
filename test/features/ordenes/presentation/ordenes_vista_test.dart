@@ -1,12 +1,18 @@
-// Etapa 2 de HU-04: widget test de `OrdenesVista` — cubit real conectado a
-// un `OrdenesRepository` mockeado, para probar lista/detalle/estado vacío
-// sin pasar por `OrdenesPantalla`/GetIt (mismo patrón que
-// `test/features/auth/login_vista_test.dart`).
+// Etapa 2 de HU-04 + etapa 4 (HU-05): widget test de `OrdenesVista` — cubit
+// real conectado a un `OrdenesRepository` mockeado, para probar
+// lista/detalle/estado vacío sin pasar por `OrdenesPantalla`/GetIt (mismo
+// patrón que `test/features/auth/login_vista_test.dart`). Etapa 4 agrega
+// factories de trabajo/sesión — `crearTrabajoCubit` sí se invoca al navegar
+// al detalle (ver `bombear`), `crearSesionCubit` no, porque ningún test acá
+// abre un trabajo con éxito.
 
 import 'package:agrocom_field/features/ordenes/data/ordenes_repository.dart';
 import 'package:agrocom_field/features/ordenes/domain/orden_vigente.dart';
 import 'package:agrocom_field/features/ordenes/presentation/ordenes_cubit.dart';
 import 'package:agrocom_field/features/ordenes/presentation/ordenes_vista.dart';
+import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
+import 'package:agrocom_field/features/sesion_vuelo/presentation/trabajo_cubit.dart';
+import 'package:agrocom_field/nucleo/flavor.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +20,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _OrdenesRepositoryFalso extends Mock implements OrdenesRepository {}
+
+class _TrabajoRepositoryFalso extends Mock implements TrabajoRepository {}
 
 // Nota sobre los decimales: `Decimal.toString()` recorta ceros finales
 // (`Decimal.parse('12.50').toString()` == '12.5'), así que los valores acá
@@ -59,7 +67,18 @@ void main() {
         MaterialApp(
           home: BlocProvider<OrdenesCubit>.value(
             value: cubit,
-            child: const OrdenesVista(),
+            child: OrdenesVista(
+              flavor: Flavor.piloto,
+              // OrdenDetallePantalla arma su BlocProvider<TrabajoCubit> sin
+              // condicionarlo al flavor (solo el botón lo está), así que
+              // navegar al detalle SÍ construye un TrabajoCubit — necesita
+              // una factory real, no un stub que explote.
+              crearTrabajoCubit: () => TrabajoCubit(_TrabajoRepositoryFalso()),
+              // crearSesionCubit solo se invoca tras abrir un trabajo con
+              // éxito, algo que ningún test de este archivo ejercita.
+              crearSesionCubit: (_) =>
+                  throw UnimplementedError('stub no invocado'),
+            ),
           ),
         ),
       );

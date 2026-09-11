@@ -4,7 +4,12 @@ import 'app.dart';
 import 'features/auth/login_cubit.dart';
 import 'features/ordenes/data/ordenes_repository.dart';
 import 'features/ordenes/presentation/ordenes_cubit.dart';
+import 'features/sesion_vuelo/data/trabajo_repository.dart';
+import 'features/sesion_vuelo/data/sesion_repository.dart';
+import 'features/sesion_vuelo/presentation/trabajo_cubit.dart';
+import 'features/sesion_vuelo/presentation/sesion_cubit.dart';
 import 'nucleo/auth/login_service.dart';
+import 'nucleo/auth/persona_operativa_store.dart';
 import 'nucleo/auth/token_store.dart';
 import 'nucleo/di/service_locator.dart';
 import 'nucleo/flavor.dart';
@@ -18,6 +23,12 @@ Future<void> main() async {
       tokenStore: getIt<TokenStore>(),
       crearLoginCubit: () => LoginCubit(getIt<LoginService>()),
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
+      crearTrabajoCubit: () => TrabajoCubit(getIt<TrabajoRepository>()),
+      crearSesionCubit: (trabajoUuidCliente) => SesionCubit(
+        sesionRepositorio: getIt<SesionRepository>(),
+        personaOperativaStore: getIt<PersonaOperativaStore>(),
+        trabajoUuidCliente: trabajoUuidCliente,
+      ),
     ),
   );
 }

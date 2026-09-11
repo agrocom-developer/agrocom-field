@@ -1,6 +1,8 @@
 import 'package:get_it/get_it.dart';
 
 import '../../features/ordenes/data/ordenes_repository.dart';
+import '../../features/sesion_vuelo/data/trabajo_repository.dart';
+import '../../features/sesion_vuelo/data/sesion_repository.dart';
 import '../api/api_client.dart';
 import '../auth/dispositivo_store.dart';
 import '../auth/login_service.dart';
@@ -61,6 +63,12 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
   getIt.registerLazySingleton<OrdenesRepository>(
     () => OrdenesRepository(getIt<AppDatabase>()),
   );
-  // Los repositorios de cada feature (trabajos, sesiones, recargas...) se
+  getIt.registerLazySingleton<TrabajoRepository>(
+    () => TrabajoRepository(getIt<AppDatabase>()),
+  );
+  getIt.registerLazySingleton<SesionRepository>(
+    () => SesionRepository(getIt<AppDatabase>()),
+  );
+  // Los repositorios de cada feature (recargas...) se
   // registran acá cuando esa feature los agregue — no antes.
 }
