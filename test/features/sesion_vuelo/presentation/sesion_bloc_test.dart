@@ -5,6 +5,7 @@
 // validación local), y que las excepciones se traduzcan a mensajes legibles.
 
 import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart';
+import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_condiciones.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_sesion.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/sesion.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_bloc.dart';
@@ -20,6 +21,16 @@ class _SesionRepositorioFalso extends Mock implements SesionRepository {}
 
 class _PersonaOperativaStoreFalso extends Mock
     implements PersonaOperativaStore {}
+
+// Condiciones dentro de rango por defecto — los tests de esta suite
+// ejercitan el ciclo de vida del bloc, no las reglas de rango (esas están
+// en `reglas_condiciones_test.dart`), así que alcanza con valores fijos que
+// nunca disparen `ObservacionAgronomoRequeridaExcepcion`.
+SesionAbrirSolicitada _abrirSolicitada() => SesionAbrirSolicitada(
+  vientoKmh: Decimal.parse('10'),
+  temperaturaC: Decimal.parse('20'),
+  humedadPct: Decimal.parse('50'),
+);
 
 Sesion _sesion({
   String uuidCliente = 'sesion-uuid-1',
@@ -80,6 +91,11 @@ void main() {
             pilotoId: any(named: 'pilotoId'),
             hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
             inicio: any(named: 'inicio'),
+            vientoKmh: any(named: 'vientoKmh'),
+            temperaturaC: any(named: 'temperaturaC'),
+            humedadPct: any(named: 'humedadPct'),
+            observacionAgronomo: any(named: 'observacionAgronomo'),
+            firmaObservacion: any(named: 'firmaObservacion'),
           ),
         ).thenAnswer((_) async => _sesion());
       },
@@ -88,7 +104,45 @@ void main() {
         personaOperativaStore: personaOperativaStore,
         trabajoUuidCliente: 'trabajo-1',
       ),
-      act: (bloc) => bloc.add(const SesionAbrirSolicitada()),
+      act: (bloc) => bloc.add(_abrirSolicitada()),
+      expect: () => [const SesionAbriendo(), SesionActiva(_sesion())],
+    );
+
+    blocTest<SesionBloc, SesionEstado>(
+      'pasa viento/temperatura/humedad/observación/firma exactos del evento '
+      'al repositorio',
+      setUp: () {
+        when(
+          () => personaOperativaStore.leerPersonaId(),
+        ).thenAnswer((_) async => 100);
+        when(
+          () => sesionRepositorio.abrirSesion(
+            trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+            pilotoId: any(named: 'pilotoId'),
+            hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+            inicio: any(named: 'inicio'),
+            vientoKmh: Decimal.parse('20'),
+            temperaturaC: Decimal.parse('35'),
+            humedadPct: Decimal.parse('95'),
+            observacionAgronomo: 'viento fuerte, se autoriza',
+            firmaObservacion: 'Ing. Agr. Juana Pérez',
+          ),
+        ).thenAnswer((_) async => _sesion());
+      },
+      build: () => SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaOperativaStore,
+        trabajoUuidCliente: 'trabajo-1',
+      ),
+      act: (bloc) => bloc.add(
+        SesionAbrirSolicitada(
+          vientoKmh: Decimal.parse('20'),
+          temperaturaC: Decimal.parse('35'),
+          humedadPct: Decimal.parse('95'),
+          observacionAgronomo: 'viento fuerte, se autoriza',
+          firmaObservacion: 'Ing. Agr. Juana Pérez',
+        ),
+      ),
       expect: () => [const SesionAbriendo(), SesionActiva(_sesion())],
     );
 
@@ -104,7 +158,7 @@ void main() {
         personaOperativaStore: personaOperativaStore,
         trabajoUuidCliente: 'trabajo-1',
       ),
-      act: (bloc) => bloc.add(const SesionAbrirSolicitada()),
+      act: (bloc) => bloc.add(_abrirSolicitada()),
       expect: () => [
         const SesionAbriendo(),
         isA<SesionError>().having(
@@ -120,6 +174,11 @@ void main() {
             pilotoId: any(named: 'pilotoId'),
             hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
             inicio: any(named: 'inicio'),
+            vientoKmh: any(named: 'vientoKmh'),
+            temperaturaC: any(named: 'temperaturaC'),
+            humedadPct: any(named: 'humedadPct'),
+            observacionAgronomo: any(named: 'observacionAgronomo'),
+            firmaObservacion: any(named: 'firmaObservacion'),
           ),
         );
       },
@@ -137,6 +196,11 @@ void main() {
             pilotoId: any(named: 'pilotoId'),
             hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
             inicio: any(named: 'inicio'),
+            vientoKmh: any(named: 'vientoKmh'),
+            temperaturaC: any(named: 'temperaturaC'),
+            humedadPct: any(named: 'humedadPct'),
+            observacionAgronomo: any(named: 'observacionAgronomo'),
+            firmaObservacion: any(named: 'firmaObservacion'),
           ),
         ).thenThrow(const TrabajoInexistenteExcepcion('trabajo-inexistente'));
       },
@@ -145,7 +209,7 @@ void main() {
         personaOperativaStore: personaOperativaStore,
         trabajoUuidCliente: 'trabajo-inexistente',
       ),
-      act: (bloc) => bloc.add(const SesionAbrirSolicitada()),
+      act: (bloc) => bloc.add(_abrirSolicitada()),
       expect: () => [
         const SesionAbriendo(),
         isA<SesionError>().having(
@@ -168,6 +232,11 @@ void main() {
             pilotoId: any(named: 'pilotoId'),
             hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
             inicio: any(named: 'inicio'),
+            vientoKmh: any(named: 'vientoKmh'),
+            temperaturaC: any(named: 'temperaturaC'),
+            humedadPct: any(named: 'humedadPct'),
+            observacionAgronomo: any(named: 'observacionAgronomo'),
+            firmaObservacion: any(named: 'firmaObservacion'),
           ),
         ).thenThrow(Exception('Error en base de datos'));
       },
@@ -176,13 +245,50 @@ void main() {
         personaOperativaStore: personaOperativaStore,
         trabajoUuidCliente: 'trabajo-1',
       ),
-      act: (bloc) => bloc.add(const SesionAbrirSolicitada()),
+      act: (bloc) => bloc.add(_abrirSolicitada()),
       expect: () => [
         const SesionAbriendo(),
         isA<SesionError>().having(
           (e) => e.mensaje,
           'mensaje',
           contains('Error al abrir sesión'),
+        ),
+      ],
+    );
+
+    blocTest<SesionBloc, SesionEstado>(
+      'condiciones fuera de rango sin observación/firma: traduce la '
+      'excepción de dominio a un mensaje legible',
+      setUp: () {
+        when(
+          () => personaOperativaStore.leerPersonaId(),
+        ).thenAnswer((_) async => 100);
+        when(
+          () => sesionRepositorio.abrirSesion(
+            trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+            pilotoId: any(named: 'pilotoId'),
+            hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+            inicio: any(named: 'inicio'),
+            vientoKmh: any(named: 'vientoKmh'),
+            temperaturaC: any(named: 'temperaturaC'),
+            humedadPct: any(named: 'humedadPct'),
+            observacionAgronomo: any(named: 'observacionAgronomo'),
+            firmaObservacion: any(named: 'firmaObservacion'),
+          ),
+        ).thenThrow(const ObservacionAgronomoRequeridaExcepcion());
+      },
+      build: () => SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaOperativaStore,
+        trabajoUuidCliente: 'trabajo-1',
+      ),
+      act: (bloc) => bloc.add(_abrirSolicitada()),
+      expect: () => [
+        const SesionAbriendo(),
+        isA<SesionError>().having(
+          (e) => e.mensaje,
+          'mensaje',
+          contains('observación y la firma del agrónomo'),
         ),
       ],
     );
@@ -234,6 +340,11 @@ void main() {
             pilotoId: any(named: 'pilotoId'),
             hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
             inicio: any(named: 'inicio'),
+            vientoKmh: any(named: 'vientoKmh'),
+            temperaturaC: any(named: 'temperaturaC'),
+            humedadPct: any(named: 'humedadPct'),
+            observacionAgronomo: any(named: 'observacionAgronomo'),
+            firmaObservacion: any(named: 'firmaObservacion'),
           ),
         ).thenAnswer((_) async => _sesion());
         when(
@@ -257,7 +368,7 @@ void main() {
         trabajoUuidCliente: 'trabajo-1',
       ),
       act: (bloc) {
-        bloc.add(const SesionAbrirSolicitada());
+        bloc.add(_abrirSolicitada());
         bloc.add(
           SesionCerrarSolicitada(
             motivoCierre: 'completado',
@@ -290,6 +401,11 @@ void main() {
             pilotoId: any(named: 'pilotoId'),
             hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
             inicio: any(named: 'inicio'),
+            vientoKmh: any(named: 'vientoKmh'),
+            temperaturaC: any(named: 'temperaturaC'),
+            humedadPct: any(named: 'humedadPct'),
+            observacionAgronomo: any(named: 'observacionAgronomo'),
+            firmaObservacion: any(named: 'firmaObservacion'),
           ),
         ).thenAnswer((_) async => _sesion());
         when(
@@ -313,7 +429,7 @@ void main() {
         trabajoUuidCliente: 'trabajo-1',
       ),
       act: (bloc) {
-        bloc.add(const SesionAbrirSolicitada());
+        bloc.add(_abrirSolicitada());
         bloc.add(
           SesionCerrarSolicitada(
             motivoCierre: 'completado',
@@ -347,6 +463,11 @@ void main() {
             pilotoId: any(named: 'pilotoId'),
             hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
             inicio: any(named: 'inicio'),
+            vientoKmh: any(named: 'vientoKmh'),
+            temperaturaC: any(named: 'temperaturaC'),
+            humedadPct: any(named: 'humedadPct'),
+            observacionAgronomo: any(named: 'observacionAgronomo'),
+            firmaObservacion: any(named: 'firmaObservacion'),
           ),
         ).thenAnswer((_) async => _sesion());
         when(
@@ -365,7 +486,7 @@ void main() {
         trabajoUuidCliente: 'trabajo-1',
       ),
       act: (bloc) {
-        bloc.add(const SesionAbrirSolicitada());
+        bloc.add(_abrirSolicitada());
         bloc.add(
           SesionCerrarSolicitada(
             motivoCierre: 'falla',
