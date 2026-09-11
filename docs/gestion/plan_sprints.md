@@ -16,11 +16,28 @@
 | TE-04 | Base local `drift` + outbox (tabla `ColaSync`) | **hecho** (esquema mínimo) — PR #2. Faltan las tablas espejo de negocio |
 | — | Cliente API (`dio`), `TokenStore`, DI, tipo `Decimal`, esqueleto de `nucleo/sync` | **hecho** (infraestructura, sin lógica real) — PR #3 |
 | TE-02 | Spike RC Agras: instalar APK propio, confirmar Android/minSdk del hardware | **pendiente**, sin dependencias técnicas — necesita el RC en mano |
-| TE-05 (lado app) | Lógica real de `SyncEngine` (push/pull contra `POST /api/sync`) + **prueba de replay obligatoria** (invariante 10 de `CLAUDE.md`) antes de la primera pantalla | **pendiente** |
-| TE-06 | Completar pull de catálogo con cursor (recetas/productos quedan obsoletos por CR-01, no se hacen) | **parcial** (lado servidor); lado app **pendiente** |
-| HU-03 (consumo) | Guardar/usar el token de dispositivo del lado app | **hecho** (infraestructura) — PR #3; falta la pantalla de login real |
-| HU-04 | Ver órdenes vigentes offline | **pendiente** |
-| HU-05 | Esqueleto vertical (abrir trabajo/sesión, cerrar con hectáreas) | **pendiente** |
+| TE-05 (lado app) | Lógica real de `SyncEngine` (push/pull contra `POST /api/sync`) + **prueba de replay obligatoria** (invariante 10 de `CLAUDE.md`) antes de la primera pantalla | **hecho** — PR #10 (+ fix #11) |
+| TE-06 | Completar pull de catálogo con cursor (recetas/productos quedan obsoletos por CR-01, no se hacen) | **hecho** — PR #13 |
+| HU-03 (consumo) | Guardar/usar el token de dispositivo del lado app | **hecho** — PR #14 (pantalla de login real) |
+| HU-04 | Ver órdenes vigentes offline | **pendiente** — en curso vía ciclo automatizado |
+| HU-05 | Esqueleto vertical (abrir trabajo/sesión, cerrar con hectáreas) | **pendiente** — encolada tras HU-04 |
+
+### Continuación heredada (11/9/2026) — lo que le sigue a HU-05 en Sprint 3/4 de `agrocom-api`
+
+HU-05 corta expresamente el esqueleto vertical en "sesión cerrada" — deja afuera condiciones, hectárea acumulada, incidencias, cierre de trabajo (con captura), caldo y recargas (ver `runs/05.md` cuando esa tarea cierre). Esas piezas ya tenían HU/TE propios en el plan original de `agrocom-api` (Sprint 3 "App del piloto completa" y Sprint 4 "App del auxiliar"); esta tabla los trae a la cola de este repo, en el orden real de dependencia técnica, para que `bin/ciclo` no se quede sin trabajo después de la tarea 06.
+
+| ID | Qué | Estado |
+|---|---|---|
+| HU-06 | Registrar condiciones al abrir trabajo (viento/temp./humedad) y bloquear o autorizar con observación firmada del agrónomo fuera de rango (`autorizado_con_observacion`) | **pendiente** — depende de HU-05 |
+| HU-07 (resto) | Hectárea inicial acumulada + dron/auxiliar en la sesión, para que el piloto que entra en un relevo cobre solo lo suyo — HU-05 ya cubre "cerrar sesión con motivo y hectáreas"; esto es lo que esa tarea deja afuera a propósito | **pendiente** — depende de HU-05 |
+| TE-07 | Cola de evidencias: compresión <300 KB, hash SHA-256, subida en segundo plano con reintentos (invariante 8 de `CLAUDE.md`) — nada en `lib/` la toca hoy | **pendiente** — HU-08 y HU-09 la necesitan para poder cerrarse |
+| HU-08 | Registrar incidencia con foto (caldo/ESC/batería/mecánica/clima) ligada a la sesión | **pendiente** — depende de TE-07 |
+| HU-09 | Cerrar el trabajo con captura del RC + imagen del campo — sin captura no cierra | **pendiente** — depende de TE-07; HU-05 deja "cerrar trabajo" explícitamente afuera por esto mismo |
+| HU-10 | Auxiliar registra el caldo recibido (litros, hora, quién entrega) y el sobrante al cerrar — nunca fórmula ni dosis (CR-01, §7 de la especificación) | **pendiente** |
+| HU-13 | Auxiliar registra cada recarga (batería, temperatura, litros) y el retraso o rechazo por calidad del caldo | **pendiente** |
+| HU-20 (lado app) | La app bloquea por debajo de la versión mínima autorizada (`GET /api/version`, polling, sin FCM) — la autorización en sí es del panel, fuera de este repo | **pendiente** |
+
+> **HU-17 (acta) queda fuera de `agrocom-field` — decisión del dueño, 11/9/2026.** La generación del acta y la captura de la firma del agrónomo se manejan desde el panel web (`agrocom-api`), nunca desde esta app. `docs/vision.md` señalaba que faltaba confirmar en qué dispositivo ocurría esto antes de construir la pantalla — queda resuelto así; no se encola acá.
 
 ---
 
