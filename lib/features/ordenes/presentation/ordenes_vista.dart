@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../nucleo/flavor.dart';
+import '../../sesion_vuelo/presentation/trabajo_cubit.dart';
+import '../../sesion_vuelo/presentation/sesion_bloc.dart';
 import '../domain/orden_vigente.dart';
 import 'orden_detalle_pantalla.dart';
 import 'ordenes_cubit.dart';
@@ -10,8 +13,20 @@ import 'ordenes_estado.dart';
 /// está provisto más arriba en el árbol (`OrdenesPantalla`, o
 /// `BlocProvider.value` en tests). Mismo split que `features/auth`
 /// (`LoginPantalla`/`LoginVista`).
+///
+/// Propaga las factories de [TrabajoCubit] y [SesionBloc] a
+/// [OrdenDetallePantalla] (HU-05, etapa 4).
 class OrdenesVista extends StatelessWidget {
-  const OrdenesVista({super.key});
+  const OrdenesVista({
+    required this.flavor,
+    required this.crearTrabajoCubit,
+    required this.crearSesionBloc,
+    super.key,
+  });
+
+  final Flavor flavor;
+  final TrabajoCubit Function() crearTrabajoCubit;
+  final SesionBloc Function(String) crearSesionBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +43,12 @@ class OrdenesVista extends StatelessWidget {
             key: const Key('ordenes_lista'),
             itemCount: ordenes.length,
             separatorBuilder: (_, _) => const Divider(height: 1),
-            itemBuilder: (context, indice) =>
-                _OrdenTile(orden: ordenes[indice]),
+            itemBuilder: (context, indice) => _OrdenTile(
+              orden: ordenes[indice],
+              flavor: flavor,
+              crearTrabajoCubit: crearTrabajoCubit,
+              crearSesionBloc: crearSesionBloc,
+            ),
           ),
         },
       ),
@@ -38,9 +57,17 @@ class OrdenesVista extends StatelessWidget {
 }
 
 class _OrdenTile extends StatelessWidget {
-  const _OrdenTile({required this.orden});
+  const _OrdenTile({
+    required this.orden,
+    required this.flavor,
+    required this.crearTrabajoCubit,
+    required this.crearSesionBloc,
+  });
 
   final OrdenVigente orden;
+  final Flavor flavor;
+  final TrabajoCubit Function() crearTrabajoCubit;
+  final SesionBloc Function(String) crearSesionBloc;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +79,14 @@ class _OrdenTile extends StatelessWidget {
         '${orden.fechaEmision}',
       ),
       onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => OrdenDetallePantalla(orden: orden)),
+        MaterialPageRoute(
+          builder: (_) => OrdenDetallePantalla(
+            orden: orden,
+            flavor: flavor,
+            crearTrabajoCubit: crearTrabajoCubit,
+            crearSesionBloc: crearSesionBloc,
+          ),
+        ),
       ),
     );
   }

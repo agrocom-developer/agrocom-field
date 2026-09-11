@@ -1,9 +1,12 @@
 import 'package:get_it/get_it.dart';
 
 import '../../features/ordenes/data/ordenes_repository.dart';
+import '../../features/sesion_vuelo/data/trabajo_repository.dart';
+import '../../features/sesion_vuelo/data/sesion_repository.dart';
 import '../api/api_client.dart';
 import '../auth/dispositivo_store.dart';
 import '../auth/login_service.dart';
+import '../auth/persona_operativa_store.dart';
 import '../auth/token_store.dart';
 import '../catalogo/catalogo_repository.dart';
 import '../db/database.dart';
@@ -26,6 +29,9 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
   getIt.registerLazySingleton<Flavor>(() => flavor);
   getIt.registerLazySingleton<TokenStore>(TokenStoreSeguro.new);
   getIt.registerLazySingleton<DispositivoStore>(DispositivoStoreSeguro.new);
+  getIt.registerLazySingleton<PersonaOperativaStore>(
+    PersonaOperativaStoreSeguro.new,
+  );
   getIt.registerLazySingleton<ApiClient>(
     () => ApiClient(baseUrl: _apiBaseUrl, tokenStore: getIt<TokenStore>()),
   );
@@ -34,6 +40,7 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
       apiClient: getIt<ApiClient>(),
       tokenStore: getIt<TokenStore>(),
       dispositivoStore: getIt<DispositivoStore>(),
+      personaOperativaStore: getIt<PersonaOperativaStore>(),
     ),
   );
   getIt.registerLazySingleton<AppDatabase>(AppDatabase.new);
@@ -56,6 +63,12 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
   getIt.registerLazySingleton<OrdenesRepository>(
     () => OrdenesRepository(getIt<AppDatabase>()),
   );
-  // Los repositorios de cada feature (trabajos, sesiones, recargas...) se
+  getIt.registerLazySingleton<TrabajoRepository>(
+    () => TrabajoRepository(getIt<AppDatabase>()),
+  );
+  getIt.registerLazySingleton<SesionRepository>(
+    () => SesionRepository(getIt<AppDatabase>()),
+  );
+  // Los repositorios de cada feature (recargas...) se
   // registran acá cuando esa feature los agregue — no antes.
 }

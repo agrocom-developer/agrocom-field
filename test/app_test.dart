@@ -1,7 +1,8 @@
-// Etapa 2 de HU-03 + etapa 2 de HU-04: arranque de la app — sin token
-// guardado muestra login, con token guardado salta directo a la lista de
-// órdenes vigentes (HU-04), leída de una `AppDatabase` en memoria (mismo
-// patrón que `test/nucleo/catalogo/catalogo_repository_test.dart`).
+// Etapa 2 de HU-03 + etapa 2 de HU-04 + etapa 4 de HU-05: arranque de la app
+// — sin token guardado muestra login, con token guardado salta directo a la
+// lista de órdenes vigentes (HU-04), leída de una `AppDatabase` en memoria
+// (mismo patrón que `test/nucleo/catalogo/catalogo_repository_test.dart`).
+// Etapa 4 agrega factories de trabajo/sesión pero no las invoca en estos tests.
 
 import 'package:agrocom_field/app.dart';
 import 'package:agrocom_field/features/auth/login_cubit.dart';
@@ -68,6 +69,8 @@ void main() {
         // Nunca se invoca: la rama de login no llega a montar
         // `OrdenesPantalla`, así que no hay cubit que cerrar acá.
         crearOrdenesCubit: _crearOrdenesCubit(db, (_) {}),
+        crearTrabajoCubit: () => throw UnimplementedError('stub no invocado'),
+        crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
       ),
     );
     await tester.pumpAndSettle();
@@ -107,6 +110,10 @@ void main() {
             db,
             (cubit) => ordenesCubit = cubit,
           ),
+          crearTrabajoCubit: () =>
+              throw UnimplementedError('stub no invocado en auxiliar'),
+          crearSesionBloc: (_) =>
+              throw UnimplementedError('stub no invocado en auxiliar'),
         ),
       );
       await tester.pumpAndSettle();

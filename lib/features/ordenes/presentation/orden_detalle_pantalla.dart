@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../../nucleo/flavor.dart';
+import '../../sesion_vuelo/presentation/trabajo_cubit.dart';
+import '../../sesion_vuelo/presentation/trabajo_estado.dart';
+import '../../sesion_vuelo/presentation/sesion_vuelo_pantalla.dart';
+import '../../sesion_vuelo/presentation/sesion_bloc.dart';
 import '../domain/orden_vigente.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Detalle de una orden vigente — recibe el `OrdenVigente` ya cargado en
 /// memoria desde la lista (`OrdenesVista`), sin volver a consultar
@@ -8,16 +14,69 @@ import '../domain/orden_vigente.dart';
 /// repositorio.
 ///
 /// No deserializa `LoteCatalogo.geometria` (HU-61, mapa, fuera de
-/// alcance) ni agrega ningún flujo de "abrir trabajo" (HU-05, otra rama).
+/// alcance). Agrega el botón "Abrir trabajo" (HU-05) — exclusivo del flavor
+/// `piloto` — que navega a [SesionVueloPantalla] con el trabajo recién abierto.
 class OrdenDetallePantalla extends StatelessWidget {
-  const OrdenDetallePantalla({required this.orden, super.key});
+  const OrdenDetallePantalla({
+    required this.orden,
+    required this.flavor,
+    required this.crearTrabajoCubit,
+    required this.crearSesionBloc,
+    super.key,
+  });
 
   final OrdenVigente orden;
+  final Flavor flavor;
+  final TrabajoCubit Function() crearTrabajoCubit;
+  final SesionBloc Function(String) crearSesionBloc;
 
   static const _sinDatos = 'sin datos';
 
   @override
   Widget build(BuildContext context) {
+    // El BlocProvider<TrabajoCubit> se arma solo para flavor piloto: el
+    // BlocConsumer lo lee en su initState (eager, no en el tap del botón), así
+    // que envolverlo también para auxiliar invocaría `crearTrabajoCubit` —que
+    // en `main_auxiliar.dart` lanza `UnimplementedError`— apenas se navega al
+    // detalle de una orden, aunque el botón "Abrir trabajo" ya esté oculto.
+    if (flavor != Flavor.piloto) {
+      return _construirScaffold(context, cargandoTrabajo: false);
+    }
+
+    return BlocProvider<TrabajoCubit>(
+      create: (_) => crearTrabajoCubit(),
+      child: BlocConsumer<TrabajoCubit, TrabajoEstado>(
+        listener: (context, estado) {
+          if (estado is TrabajoExitoso) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => SesionVueloPantalla(
+                  crearBloc: () => crearSesionBloc(estado.trabajo.uuidCliente),
+                ),
+              ),
+            );
+          }
+          if (estado is TrabajoError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(estado.mensaje),
+                backgroundColor: Theme.of(context).colorScheme.error,
+              ),
+            );
+          }
+        },
+        builder: (context, estadoTrabajo) {
+          final cargandoTrabajo = estadoTrabajo is TrabajoCargando;
+          return _construirScaffold(context, cargandoTrabajo: cargandoTrabajo);
+        },
+      ),
+    );
+  }
+
+  Widget _construirScaffold(
+    BuildContext context, {
+    required bool cargandoTrabajo,
+  }) {
     return Scaffold(
       appBar: AppBar(title: Text('Orden N.º ${orden.id}')),
       body: ListView(
@@ -85,6 +144,22 @@ class OrdenDetallePantalla extends StatelessWidget {
             titulo: 'Observaciones',
             campos: [_Campo(null, orden.observaciones ?? _sinDatos)],
           ),
+          if (flavor == Flavor.piloto) ...[
+            const SizedBox(height: 24),
+            FilledButton(
+              key: const Key('boton_abrir_trabajo'),
+              onPressed: cargandoTrabajo
+                  ? null
+                  : () => context.read<TrabajoCubit>().abrir(orden: orden),
+              child: cargandoTrabajo
+                  ? const SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Abrir trabajo'),
+            ),
+          ],
         ],
       ),
     );

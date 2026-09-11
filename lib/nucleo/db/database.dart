@@ -8,14 +8,18 @@ import 'tablas/cursor_catalogo.dart';
 import 'tablas/lote_catalogo.dart';
 import 'tablas/orden_catalogo.dart';
 import 'tablas/persona_catalogo.dart';
+import 'tablas/sesion_local.dart';
+import 'tablas/trabajo_local.dart';
 
 part 'database.g.dart';
 
 /// Base local SQLite (invariante 1 de CLAUDE.md: la UI nunca lee de la red
 /// directo, siempre de acá). Versión 1 solo traía el outbox ([ColaSync]);
-/// TE-06 agrega las tablas espejo de catálogo (solo lectura, PK = id de
-/// servidor, sin `uuid_cliente`) y su cursor de pull. Las tablas espejo de
-/// cada feature de escritura (trabajos, sesiones, recargas, incidencias...)
+/// TE-06 (v2) agrega las tablas espejo de catálogo (solo lectura, PK = id de
+/// servidor, sin `uuid_cliente`) y su cursor de pull; HU-05 (v3) agrega las
+/// primeras tablas espejo de escritura ([TrabajoLocal], [SesionLocal]), con
+/// `uuid_cliente` generado en el dispositivo como identidad. Las tablas
+/// espejo del resto de las features de escritura (recargas, incidencias...)
 /// se agregan en tareas técnicas posteriores, cada una subiendo
 /// [schemaVersion] con su propia migración — nunca reescribiendo la
 /// anterior, para no perder datos ya capturados en dispositivos reales.
@@ -26,6 +30,8 @@ part 'database.g.dart';
     LoteCatalogo,
     PersonaCatalogo,
     CursorCatalogo,
+    TrabajoLocal,
+    SesionLocal,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -33,7 +39,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -46,6 +52,12 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(loteCatalogo);
         await m.createTable(personaCatalogo);
         await m.createTable(cursorCatalogo);
+      }
+      // v3 agrega las tablas espejo de trabajo y sesión (HU-05), sin tocar
+      // ninguna de las anteriores.
+      if (from < 3) {
+        await m.createTable(trabajoLocal);
+        await m.createTable(sesionLocal);
       }
     },
   );

@@ -7,6 +7,7 @@ import 'package:agrocom_field/nucleo/api/api_client.dart';
 import 'package:agrocom_field/nucleo/api/api_excepcion.dart';
 import 'package:agrocom_field/nucleo/auth/dispositivo_store.dart';
 import 'package:agrocom_field/nucleo/auth/login_service.dart';
+import 'package:agrocom_field/nucleo/auth/persona_operativa_store.dart';
 import 'package:agrocom_field/nucleo/auth/resultado_login.dart';
 import 'package:agrocom_field/nucleo/auth/token_store.dart';
 import 'package:dio/dio.dart';
@@ -19,10 +20,14 @@ class _TokenStoreFalso extends Mock implements TokenStore {}
 
 class _DispositivoStoreFalso extends Mock implements DispositivoStore {}
 
+class _PersonaOperativaStoreFalso extends Mock
+    implements PersonaOperativaStore {}
+
 void main() {
   late _ApiClientFalso apiClient;
   late _TokenStoreFalso tokenStore;
   late _DispositivoStoreFalso dispositivoStore;
+  late _PersonaOperativaStoreFalso personaOperativaStore;
   late LoginService servicio;
 
   setUpAll(() {
@@ -33,14 +38,19 @@ void main() {
     apiClient = _ApiClientFalso();
     tokenStore = _TokenStoreFalso();
     dispositivoStore = _DispositivoStoreFalso();
+    personaOperativaStore = _PersonaOperativaStoreFalso();
     when(
       () => dispositivoStore.obtenerUuidDispositivo(),
     ).thenAnswer((_) async => 'uuid-del-dispositivo');
     when(() => tokenStore.guardarToken(any())).thenAnswer((_) async {});
+    when(
+      () => personaOperativaStore.guardarPersonaId(any()),
+    ).thenAnswer((_) async {});
     servicio = LoginService(
       apiClient: apiClient,
       tokenStore: tokenStore,
       dispositivoStore: dispositivoStore,
+      personaOperativaStore: personaOperativaStore,
     );
   });
 
@@ -50,29 +60,64 @@ void main() {
     data: data,
   );
 
-  test('201: guarda el token y devuelve LoginExitoso', () async {
+  test(
+    '201: guarda el token y el persona_id del usuario, devuelve LoginExitoso',
+    () async {
+      when(() => apiClient.post(any(), data: any(named: 'data'))).thenAnswer(
+        (_) async => respuesta(201, {
+          'token': '12|aB3cD4',
+          'token_type': 'Bearer',
+          'usuario': {
+            'id': 7,
+            'name': 'Camila Rojas',
+            'username': 'camila.rojas',
+            'persona_id': 3,
+          },
+        }),
+      );
+
+      final resultado = await servicio.login(
+        usuario: 'camila.rojas',
+        contrasena: 'password',
+      );
+
+      expect(resultado, isA<LoginExitoso>());
+      verify(() => tokenStore.guardarToken('12|aB3cD4')).called(1);
+      verify(() => personaOperativaStore.guardarPersonaId(3)).called(1);
+      verify(
+        () => apiClient.post(
+          '/api/auth/token',
+          data: {
+            'username': 'camila.rojas',
+            'password': 'password',
+            'uuid_dispositivo': 'uuid-del-dispositivo',
+          },
+        ),
+      ).called(1);
+    },
+  );
+
+  test('201 con persona_id nulo: guarda null, no falla ni lo omite', () async {
     when(() => apiClient.post(any(), data: any(named: 'data'))).thenAnswer(
-      (_) async =>
-          respuesta(201, {'token': '12|aB3cD4', 'token_type': 'Bearer'}),
+      (_) async => respuesta(201, {
+        'token': '12|aB3cD4',
+        'token_type': 'Bearer',
+        'usuario': {
+          'id': 7,
+          'name': 'Sin Persona',
+          'username': 'sin.persona',
+          'persona_id': null,
+        },
+      }),
     );
 
     final resultado = await servicio.login(
-      usuario: 'camila.rojas',
+      usuario: 'sin.persona',
       contrasena: 'password',
     );
 
     expect(resultado, isA<LoginExitoso>());
-    verify(() => tokenStore.guardarToken('12|aB3cD4')).called(1);
-    verify(
-      () => apiClient.post(
-        '/api/auth/token',
-        data: {
-          'username': 'camila.rojas',
-          'password': 'password',
-          'uuid_dispositivo': 'uuid-del-dispositivo',
-        },
-      ),
-    ).called(1);
+    verify(() => personaOperativaStore.guardarPersonaId(null)).called(1);
   });
 
   test('401: credenciales inválidas, no guarda ningún token', () async {
