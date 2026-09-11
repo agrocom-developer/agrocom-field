@@ -9,6 +9,7 @@ import 'dart:convert';
 
 import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
+import 'package:agrocom_field/features/sesion_vuelo/domain/auxiliar.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_condiciones.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_sesion.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/sesion.dart';
@@ -218,6 +219,89 @@ void main() {
       expect(payload.containsKey('uuid_cliente'), isFalse);
     });
 
+    test(
+      'con hectareaInicialAcumulada en la apertura, el acumulado final '
+      'calcula la diferencia y la encola como hectareas_declaradas',
+      () async {
+        final trabajoUuidCliente = await abrirTrabajoDePrueba();
+        final sesionAbierta = await sesionRepositorio.abrirSesion(
+          trabajoUuidCliente: trabajoUuidCliente,
+          pilotoId: 7,
+          inicio: DateTime.utc(2026, 9, 11, 10, 5),
+          vientoKmh: _vientoDentroDeRango,
+          temperaturaC: _temperaturaDentroDeRango,
+          humedadPct: _humedadDentroDeRango,
+          hectareaInicialAcumulada: Decimal.parse('100.50'),
+        );
+
+        final sesionCerrada = await sesionRepositorio.cerrarSesion(
+          sesionUuidCliente: sesionAbierta.uuidCliente,
+          fin: DateTime.utc(2026, 9, 11, 11),
+          motivoCierre: 'relevo_piloto',
+          hectareaFinalAcumulada: Decimal.parse('120.75'),
+        );
+
+        expect(sesionCerrada.hectareasDeclaradasCierre, Decimal.parse('20.25'));
+
+        final filaSesion =
+            await (db.select(db.sesionLocal)..where(
+                  (t) => t.uuidCliente.equals(sesionAbierta.uuidCliente),
+                ))
+                .getSingle();
+        expect(filaSesion.hectareasDeclaradasCierre, Decimal.parse('20.25'));
+
+        final filaOutbox = await (db.select(
+          db.colaSync,
+        )..where((t) => t.tipoEntidad.equals('cierre_sesion'))).getSingle();
+        final payload = jsonDecode(filaOutbox.payload) as Map<String, dynamic>;
+        expect(
+          payload['hectareas_declaradas'],
+          Decimal.parse('20.25').toString(),
+        );
+      },
+    );
+
+    test(
+      'acumulado final menor al inicial lanza '
+      'AcumuladoFinalMenorQueInicialExcepcion antes de escribir nada',
+      () async {
+        final trabajoUuidCliente = await abrirTrabajoDePrueba();
+        final sesionAbierta = await sesionRepositorio.abrirSesion(
+          trabajoUuidCliente: trabajoUuidCliente,
+          pilotoId: 7,
+          inicio: DateTime.utc(2026, 9, 11, 10, 5),
+          vientoKmh: _vientoDentroDeRango,
+          temperaturaC: _temperaturaDentroDeRango,
+          humedadPct: _humedadDentroDeRango,
+          hectareaInicialAcumulada: Decimal.parse('100.50'),
+        );
+
+        await expectLater(
+          sesionRepositorio.cerrarSesion(
+            sesionUuidCliente: sesionAbierta.uuidCliente,
+            fin: DateTime.utc(2026, 9, 11, 11),
+            motivoCierre: 'relevo_piloto',
+            hectareaFinalAcumulada: Decimal.parse('90'),
+          ),
+          throwsA(isA<AcumuladoFinalMenorQueInicialExcepcion>()),
+        );
+
+        final filaSesion =
+            await (db.select(db.sesionLocal)..where(
+                  (t) => t.uuidCliente.equals(sesionAbierta.uuidCliente),
+                ))
+                .getSingle();
+        expect(filaSesion.estado, EstadoSesionLocal.abierta);
+        expect(filaSesion.hectareasDeclaradasCierre, isNull);
+        expect(
+          await (db.select(
+            db.colaSync,
+          )..where((t) => t.tipoEntidad.equals('cierre_sesion'))).get(),
+          isEmpty,
+        );
+      },
+    );
+
     test('litrosConsumidos ausente encola litros_consumidos en null', () async {
       final trabajoUuidCliente = await abrirTrabajoDePrueba();
       final sesionAbierta = await sesionRepositorio.abrirSesion(
@@ -393,6 +477,101 @@ void main() {
         db.colaSync,
       )..where((t) => t.tipoEntidad.equals('sesion'))).getSingle();
       expect(filaOutbox.secuencia, greaterThan(filaSesion.secuencia));
+    });
+  });
+
+  group('abrirSesion — relevo de piloto (HU-07)', () {
+    test('con auxiliarId/dronId/hectareaInicialAcumulada, persiste los tres y '
+        'los manda en el payload de sesion', () async {
+      final trabajoUuidCliente = await abrirTrabajoDePrueba();
+      final inicio = DateTime.utc(2026, 9, 11, 10, 5);
+
+      final sesion = await sesionRepositorio.abrirSesion(
+        trabajoUuidCliente: trabajoUuidCliente,
+        pilotoId: 7,
+        auxiliarId: 42,
+        dronId: 9,
+        hectareaInicialAcumulada: Decimal.parse('100.50'),
+        inicio: inicio,
+        vientoKmh: _vientoDentroDeRango,
+        temperaturaC: _temperaturaDentroDeRango,
+        humedadPct: _humedadDentroDeRango,
+      );
+
+      final filaSesion = await (db.select(
+        db.sesionLocal,
+      )..where((t) => t.uuidCliente.equals(sesion.uuidCliente))).getSingle();
+      expect(filaSesion.auxiliarId, 42);
+      expect(filaSesion.dronId, 9);
+      expect(filaSesion.hectareaInicialAcumulada, Decimal.parse('100.50'));
+
+      final filaOutbox = await (db.select(
+        db.colaSync,
+      )..where((t) => t.tipoEntidad.equals('sesion'))).getSingle();
+      final payload = jsonDecode(filaOutbox.payload) as Map<String, dynamic>;
+      expect(payload['auxiliar_id'], 42);
+      expect(payload['dron_id'], 9);
+      expect(
+        payload['hectarea_inicial_acumulada'],
+        Decimal.parse('100.50').toString(),
+      );
+    });
+  });
+
+  group('auxiliaresDisponibles', () {
+    test('devuelve solo personas activas con rol auxiliar, ordenadas por '
+        'nombre', () async {
+      await db
+          .into(db.personaCatalogo)
+          .insert(
+            PersonaCatalogoCompanion.insert(
+              id: Value(1),
+              nombre: 'Zulema Auxiliar',
+              rol: 'auxiliar',
+              activo: true,
+              updatedAt: DateTime.utc(2026, 9, 1),
+            ),
+          );
+      await db
+          .into(db.personaCatalogo)
+          .insert(
+            PersonaCatalogoCompanion.insert(
+              id: Value(2),
+              nombre: 'Ana Auxiliar',
+              rol: 'auxiliar',
+              activo: true,
+              updatedAt: DateTime.utc(2026, 9, 1),
+            ),
+          );
+      await db
+          .into(db.personaCatalogo)
+          .insert(
+            PersonaCatalogoCompanion.insert(
+              id: Value(3),
+              nombre: 'Piloto Inactivo Como Auxiliar',
+              rol: 'auxiliar',
+              activo: false,
+              updatedAt: DateTime.utc(2026, 9, 1),
+            ),
+          );
+      await db
+          .into(db.personaCatalogo)
+          .insert(
+            PersonaCatalogoCompanion.insert(
+              id: Value(4),
+              nombre: 'Un Piloto',
+              rol: 'piloto',
+              activo: true,
+              updatedAt: DateTime.utc(2026, 9, 1),
+            ),
+          );
+
+      final auxiliares = await sesionRepositorio.auxiliaresDisponibles();
+
+      expect(auxiliares, [
+        const Auxiliar(id: 2, nombre: 'Ana Auxiliar'),
+        const Auxiliar(id: 1, nombre: 'Zulema Auxiliar'),
+      ]);
     });
   });
 }

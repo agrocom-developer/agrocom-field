@@ -2,7 +2,9 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../domain/auxiliar.dart';
 import '../domain/reglas_condiciones.dart';
+import '../domain/sesion.dart';
 import 'sesion_bloc.dart';
 import 'sesion_estado.dart';
 import 'sesion_evento.dart';
@@ -28,8 +30,17 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
   late TextEditingController _humedadController;
   late TextEditingController _observacionController;
   late TextEditingController _firmaController;
+  late TextEditingController _dronIdController;
+  late TextEditingController _hectareaInicialController;
+  late TextEditingController _acumuladoFinalController;
   String? _motivoSeleccionado;
   bool _condicionesFueraDeRango = false;
+  int? _auxiliarSeleccionadoId;
+
+  /// HU-07: se dispara una sola vez por apertura de diálogo, no en cada
+  /// `build` del `StatefulBuilder` — evita repetir la consulta a `drift` en
+  /// cada rebuild mientras el piloto completa el resto del formulario.
+  Future<List<Auxiliar>>? _auxiliaresFuture;
 
   static const _motivosCierre = [
     ('completado', 'Completado'),
@@ -53,6 +64,9 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     _humedadController = TextEditingController();
     _observacionController = TextEditingController();
     _firmaController = TextEditingController();
+    _dronIdController = TextEditingController();
+    _hectareaInicialController = TextEditingController();
+    _acumuladoFinalController = TextEditingController();
   }
 
   @override
@@ -64,6 +78,9 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     _humedadController.dispose();
     _observacionController.dispose();
     _firmaController.dispose();
+    _dronIdController.dispose();
+    _hectareaInicialController.dispose();
+    _acumuladoFinalController.dispose();
     super.dispose();
   }
 
@@ -91,7 +108,11 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     _humedadController.clear();
     _observacionController.clear();
     _firmaController.clear();
+    _dronIdController.clear();
+    _hectareaInicialController.clear();
     _condicionesFueraDeRango = false;
+    _auxiliarSeleccionadoId = null;
+    _auxiliaresFuture = context.read<SesionBloc>().auxiliaresDisponibles();
 
     showDialog(
       context: context,
@@ -226,6 +247,79 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                         },
                       ),
                     ],
+                    const SizedBox(height: 24),
+                    const Divider(),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Relevo de piloto (opcional)',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 8),
+                    FutureBuilder<List<Auxiliar>>(
+                      future: _auxiliaresFuture,
+                      builder: (context, snapshot) {
+                        final auxiliares = snapshot.data ?? const <Auxiliar>[];
+                        return DropdownButtonFormField<int?>(
+                          key: const Key('apertura_auxiliar'),
+                          initialValue: _auxiliarSeleccionadoId,
+                          decoration: const InputDecoration(
+                            labelText: 'Auxiliar (opcional)',
+                          ),
+                          items: [
+                            const DropdownMenuItem<int?>(
+                              child: Text('Sin auxiliar'),
+                            ),
+                            ...auxiliares.map(
+                              (auxiliar) => DropdownMenuItem<int?>(
+                                value: auxiliar.id,
+                                child: Text(auxiliar.nombre),
+                              ),
+                            ),
+                          ],
+                          onChanged: (valor) => setStateDialog(
+                            () => _auxiliarSeleccionadoId = valor,
+                          ),
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      key: const Key('apertura_dron_id'),
+                      controller: _dronIdController,
+                      decoration: const InputDecoration(
+                        labelText: 'Id de dron (opcional)',
+                      ),
+                      keyboardType: TextInputType.number,
+                      validator: (valor) {
+                        if (valor == null || valor.isEmpty) return null;
+                        if (int.tryParse(valor) == null) {
+                          return 'Ingresá un número entero válido';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      key: const Key('apertura_hectarea_inicial_acumulada'),
+                      controller: _hectareaInicialController,
+                      decoration: const InputDecoration(
+                        labelText:
+                            'Hectárea inicial acumulada (opcional, si es '
+                            'relevo)',
+                      ),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      validator: (valor) {
+                        if (valor == null || valor.isEmpty) return null;
+                        final decimal = Decimal.tryParse(valor);
+                        if (decimal == null) return 'Ingresá un número válido';
+                        if (decimal < Decimal.zero) {
+                          return 'No puede ser negativa';
+                        }
+                        return null;
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -251,6 +345,14 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                       firmaObservacion: _condicionesFueraDeRango
                           ? _firmaController.text.trim()
                           : null,
+                      auxiliarId: _auxiliarSeleccionadoId,
+                      dronId: _dronIdController.text.isEmpty
+                          ? null
+                          : int.parse(_dronIdController.text),
+                      hectareaInicialAcumulada:
+                          _hectareaInicialController.text.isEmpty
+                          ? null
+                          : Decimal.parse(_hectareaInicialController.text),
                     ),
                   );
 
@@ -265,10 +367,12 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     );
   }
 
-  void _mostrarFormularioCierre(BuildContext context) {
+  void _mostrarFormularioCierre(BuildContext context, Sesion sesion) {
+    final hectareaInicialAcumulada = sesion.hectareaInicialAcumulada;
     _motivoSeleccionado = null;
     _hectareasController.clear();
     _litrosController.clear();
+    _acumuladoFinalController.clear();
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -280,30 +384,57 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextFormField(
-                  key: const Key('cierre_hectareas'),
-                  controller: _hectareasController,
-                  decoration: const InputDecoration(
-                    labelText: 'Hectáreas declaradas *',
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  validator: (valor) {
-                    if (valor == null || valor.isEmpty) {
-                      return 'Las hectáreas son obligatorias';
-                    }
-                    try {
-                      final decimal = Decimal.parse(valor);
-                      if (decimal < Decimal.zero) {
-                        return 'Las hectáreas no pueden ser negativas';
+                if (hectareaInicialAcumulada == null)
+                  TextFormField(
+                    key: const Key('cierre_hectareas'),
+                    controller: _hectareasController,
+                    decoration: const InputDecoration(
+                      labelText: 'Hectáreas declaradas *',
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    validator: (valor) {
+                      if (valor == null || valor.isEmpty) {
+                        return 'Las hectáreas son obligatorias';
                       }
-                    } catch (e) {
-                      return 'Ingresá un número válido';
-                    }
-                    return null;
-                  },
-                ),
+                      try {
+                        final decimal = Decimal.parse(valor);
+                        if (decimal < Decimal.zero) {
+                          return 'Las hectáreas no pueden ser negativas';
+                        }
+                      } catch (e) {
+                        return 'Ingresá un número válido';
+                      }
+                      return null;
+                    },
+                  )
+                else
+                  TextFormField(
+                    key: const Key('cierre_acumulado_final'),
+                    controller: _acumuladoFinalController,
+                    decoration: InputDecoration(
+                      labelText: 'Acumulado final del RC *',
+                      helperText:
+                          'Acumulado inicial registrado: '
+                          '$hectareaInicialAcumulada',
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    validator: (valor) {
+                      if (valor == null || valor.isEmpty) {
+                        return 'El acumulado final es obligatorio';
+                      }
+                      final decimal = Decimal.tryParse(valor);
+                      if (decimal == null) return 'Ingresá un número válido';
+                      if (decimal < hectareaInicialAcumulada) {
+                        return 'No puede ser menor al acumulado inicial '
+                            '($hectareaInicialAcumulada)';
+                      }
+                      return null;
+                    },
+                  ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
                   key: const Key('cierre_motivo'),
@@ -363,7 +494,6 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
             onPressed: () {
               if (!_formKey.currentState!.validate()) return;
 
-              final hectareas = Decimal.parse(_hectareasController.text);
               final litros = _litrosController.text.isEmpty
                   ? null
                   : Decimal.parse(_litrosController.text);
@@ -371,7 +501,12 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
               context.read<SesionBloc>().add(
                 SesionCerrarSolicitada(
                   motivoCierre: _motivoSeleccionado!,
-                  hectareasDeclaradas: hectareas,
+                  hectareasDeclaradas: hectareaInicialAcumulada == null
+                      ? Decimal.parse(_hectareasController.text)
+                      : null,
+                  hectareaFinalAcumulada: hectareaInicialAcumulada == null
+                      ? null
+                      : Decimal.parse(_acumuladoFinalController.text),
                   litrosConsumidos: litros,
                 ),
               );
@@ -433,7 +568,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                   const SizedBox(height: 24),
                   FilledButton(
                     key: const Key('boton_cerrar_sesion'),
-                    onPressed: () => _mostrarFormularioCierre(context),
+                    onPressed: () => _mostrarFormularioCierre(context, sesion),
                     child: const Text('Cerrar sesión'),
                   ),
                 ],

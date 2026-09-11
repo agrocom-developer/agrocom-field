@@ -3,6 +3,7 @@
 // estados de sesión (inicial, abriendo, activa, cerrando, cerrada, error) y
 // el formulario de cierre sin pasar por `SesionVueloPantalla`/GetIt.
 
+import 'package:agrocom_field/features/sesion_vuelo/domain/auxiliar.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/sesion.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_bloc.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_vuelo_vista.dart';
@@ -25,12 +26,14 @@ Sesion _sesionAbierta({
   int secuencia = 1,
   int pilotoId = 1,
   Decimal? hectareasDeclaradas,
+  Decimal? hectareaInicialAcumulada,
 }) => Sesion(
   uuidCliente: uuidCliente,
   trabajoUuidCliente: trabajoUuidCliente,
   secuencia: secuencia,
   pilotoId: pilotoId,
   hectareasDeclaradas: hectareasDeclaradas ?? Decimal.parse('0'),
+  hectareaInicialAcumulada: hectareaInicialAcumulada,
   inicio: DateTime.utc(2026, 9, 11, 10, 0),
   estado: EstadoSesion.abierta,
 );
@@ -71,6 +74,11 @@ void main() {
   setUp(() {
     sesionRepositorio = _SesionRepositoryFalso();
     personaStore = _PersonaOperativaStoreFalso();
+    // Por defecto sin auxiliares — los tests de HU-07 que necesitan poblar
+    // el dropdown lo re-stubean explícitamente.
+    when(
+      () => sesionRepositorio.auxiliaresDisponibles(),
+    ).thenAnswer((_) async => const <Auxiliar>[]);
   });
 
   Future<void> bombear(WidgetTester tester, SesionBloc bloc) =>
@@ -95,6 +103,9 @@ void main() {
     String humedad = '50',
     String? observacion,
     String? firma,
+    String? auxiliarNombre,
+    String? dronId,
+    String? hectareaInicialAcumulada,
     String key = 'boton_abrir_sesion',
   }) async {
     await tester.tap(find.byKey(Key(key)));
@@ -116,6 +127,21 @@ void main() {
     }
     if (firma != null) {
       await tester.enterText(find.byKey(const Key('apertura_firma')), firma);
+    }
+    if (auxiliarNombre != null) {
+      await tester.tap(find.byKey(const Key('apertura_auxiliar')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text(auxiliarNombre).last);
+      await tester.pumpAndSettle();
+    }
+    if (dronId != null) {
+      await tester.enterText(find.byKey(const Key('apertura_dron_id')), dronId);
+    }
+    if (hectareaInicialAcumulada != null) {
+      await tester.enterText(
+        find.byKey(const Key('apertura_hectarea_inicial_acumulada')),
+        hectareaInicialAcumulada,
+      );
     }
 
     await tester.tap(find.byKey(const Key('boton_confirmar_apertura')));
@@ -143,6 +169,9 @@ void main() {
       () => sesionRepositorio.abrirSesion(
         trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
         pilotoId: any(named: 'pilotoId'),
+        auxiliarId: any(named: 'auxiliarId'),
+        dronId: any(named: 'dronId'),
+        hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
         hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
         inicio: any(named: 'inicio'),
         vientoKmh: any(named: 'vientoKmh'),
@@ -185,6 +214,9 @@ void main() {
       () => sesionRepositorio.abrirSesion(
         trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
         pilotoId: any(named: 'pilotoId'),
+        auxiliarId: any(named: 'auxiliarId'),
+        dronId: any(named: 'dronId'),
+        hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
         hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
         inicio: any(named: 'inicio'),
         vientoKmh: any(named: 'vientoKmh'),
@@ -219,6 +251,9 @@ void main() {
       () => sesionRepositorio.abrirSesion(
         trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
         pilotoId: any(named: 'pilotoId'),
+        auxiliarId: any(named: 'auxiliarId'),
+        dronId: any(named: 'dronId'),
+        hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
         hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
         inicio: any(named: 'inicio'),
         vientoKmh: any(named: 'vientoKmh'),
@@ -237,6 +272,7 @@ void main() {
     when(
       () => sesionRepositorio.cerrarSesion(
         sesionUuidCliente: any(named: 'sesionUuidCliente'),
+        hectareaFinalAcumulada: any(named: 'hectareaFinalAcumulada'),
         fin: any(named: 'fin'),
         motivoCierre: any(named: 'motivoCierre'),
         hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
@@ -305,6 +341,9 @@ void main() {
       () => sesionRepositorio.abrirSesion(
         trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
         pilotoId: any(named: 'pilotoId'),
+        auxiliarId: any(named: 'auxiliarId'),
+        dronId: any(named: 'dronId'),
+        hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
         hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
         inicio: any(named: 'inicio'),
         vientoKmh: any(named: 'vientoKmh'),
@@ -354,6 +393,9 @@ void main() {
       () => sesionRepositorio.abrirSesion(
         trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
         pilotoId: any(named: 'pilotoId'),
+        auxiliarId: any(named: 'auxiliarId'),
+        dronId: any(named: 'dronId'),
+        hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
         hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
         inicio: any(named: 'inicio'),
         vientoKmh: any(named: 'vientoKmh'),
@@ -492,6 +534,9 @@ void main() {
           () => sesionRepositorio.abrirSesion(
             trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
             pilotoId: any(named: 'pilotoId'),
+            auxiliarId: any(named: 'auxiliarId'),
+            dronId: any(named: 'dronId'),
+            hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
             hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
             inicio: any(named: 'inicio'),
             vientoKmh: any(named: 'vientoKmh'),
@@ -513,6 +558,9 @@ void main() {
           () => sesionRepositorio.abrirSesion(
             trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
             pilotoId: any(named: 'pilotoId'),
+            auxiliarId: any(named: 'auxiliarId'),
+            dronId: any(named: 'dronId'),
+            hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
             hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
             inicio: any(named: 'inicio'),
             vientoKmh: Decimal.parse('20'),
@@ -543,5 +591,247 @@ void main() {
         expect(find.text('Sesión activa'), findsOneWidget);
       },
     );
+  });
+
+  group('relevo de piloto al abrir sesión (HU-07)', () {
+    testWidgets('el dropdown de auxiliar se puebla con los auxiliares del '
+        'repositorio', (tester) async {
+      when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+      when(() => sesionRepositorio.auxiliaresDisponibles()).thenAnswer(
+        (_) async => const [
+          Auxiliar(id: 1, nombre: 'Ana Auxiliar'),
+          Auxiliar(id: 2, nombre: 'Beto Auxiliar'),
+        ],
+      );
+
+      final bloc = SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaStore,
+        trabajoUuidCliente: 'uuid-trabajo-1',
+      );
+      addTearDown(bloc.close);
+
+      await bombear(tester, bloc);
+      await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('apertura_auxiliar')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Ana Auxiliar'), findsOneWidget);
+      expect(find.text('Beto Auxiliar'), findsOneWidget);
+    });
+
+    testWidgets('pasa auxiliarId/dronId/hectareaInicialAcumulada exactos al '
+        'repositorio', (tester) async {
+      when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+      when(() => sesionRepositorio.auxiliaresDisponibles()).thenAnswer(
+        (_) async => const [Auxiliar(id: 2, nombre: 'Beto Auxiliar')],
+      );
+      when(
+        () => sesionRepositorio.abrirSesion(
+          trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+          pilotoId: any(named: 'pilotoId'),
+          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+          inicio: any(named: 'inicio'),
+          vientoKmh: any(named: 'vientoKmh'),
+          temperaturaC: any(named: 'temperaturaC'),
+          humedadPct: any(named: 'humedadPct'),
+          observacionAgronomo: any(named: 'observacionAgronomo'),
+          firmaObservacion: any(named: 'firmaObservacion'),
+          auxiliarId: 2,
+          dronId: 9,
+          hectareaInicialAcumulada: Decimal.parse('100.50'),
+        ),
+      ).thenAnswer((_) async => _sesionAbierta());
+
+      final bloc = SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaStore,
+        trabajoUuidCliente: 'uuid-trabajo-1',
+      );
+      addTearDown(bloc.close);
+
+      await bombear(tester, bloc);
+      await completarFormularioApertura(
+        tester,
+        auxiliarNombre: 'Beto Auxiliar',
+        dronId: '9',
+        hectareaInicialAcumulada: '100.50',
+      );
+
+      expect(find.text('Sesión activa'), findsOneWidget);
+    });
+  });
+
+  group('cierre por acumulado (HU-07)', () {
+    testWidgets('sesión con hectareaInicialAcumulada: muestra el campo de '
+        'acumulado final en vez del de hectáreas directas', (tester) async {
+      when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+      when(
+        () => sesionRepositorio.abrirSesion(
+          trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+          pilotoId: any(named: 'pilotoId'),
+          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+          inicio: any(named: 'inicio'),
+          vientoKmh: any(named: 'vientoKmh'),
+          temperaturaC: any(named: 'temperaturaC'),
+          humedadPct: any(named: 'humedadPct'),
+          observacionAgronomo: any(named: 'observacionAgronomo'),
+          firmaObservacion: any(named: 'firmaObservacion'),
+          auxiliarId: any(named: 'auxiliarId'),
+          dronId: any(named: 'dronId'),
+          hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            _sesionAbierta(hectareaInicialAcumulada: Decimal.parse('100.50')),
+      );
+
+      final bloc = SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaStore,
+        trabajoUuidCliente: 'uuid-trabajo-1',
+      );
+      addTearDown(bloc.close);
+
+      await bombear(tester, bloc);
+      await completarFormularioApertura(tester);
+
+      await tester.tap(find.byKey(const Key('boton_cerrar_sesion')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('cierre_acumulado_final')), findsOneWidget);
+      expect(find.byKey(const Key('cierre_hectareas')), findsNothing);
+    });
+
+    testWidgets('acumulado final menor al inicial: la validación bloquea la '
+        'confirmación sin llamar al repositorio', (tester) async {
+      when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+      when(
+        () => sesionRepositorio.abrirSesion(
+          trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+          pilotoId: any(named: 'pilotoId'),
+          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+          inicio: any(named: 'inicio'),
+          vientoKmh: any(named: 'vientoKmh'),
+          temperaturaC: any(named: 'temperaturaC'),
+          humedadPct: any(named: 'humedadPct'),
+          observacionAgronomo: any(named: 'observacionAgronomo'),
+          firmaObservacion: any(named: 'firmaObservacion'),
+          auxiliarId: any(named: 'auxiliarId'),
+          dronId: any(named: 'dronId'),
+          hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            _sesionAbierta(hectareaInicialAcumulada: Decimal.parse('100.50')),
+      );
+
+      final bloc = SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaStore,
+        trabajoUuidCliente: 'uuid-trabajo-1',
+      );
+      addTearDown(bloc.close);
+
+      await bombear(tester, bloc);
+      await completarFormularioApertura(tester);
+
+      await tester.tap(find.byKey(const Key('boton_cerrar_sesion')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('cierre_acumulado_final')),
+        '90',
+      );
+      await tester.tap(find.byKey(const Key('cierre_motivo')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Relevo de piloto'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('boton_confirmar_cierre')));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.text('No puede ser menor al acumulado inicial (100.5)'),
+        findsOneWidget,
+      );
+      verifyNever(
+        () => sesionRepositorio.cerrarSesion(
+          sesionUuidCliente: any(named: 'sesionUuidCliente'),
+          fin: any(named: 'fin'),
+          motivoCierre: any(named: 'motivoCierre'),
+          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+          hectareaFinalAcumulada: any(named: 'hectareaFinalAcumulada'),
+          litrosConsumidos: any(named: 'litrosConsumidos'),
+        ),
+      );
+    });
+
+    testWidgets('acumulado final válido: pasa hectareaFinalAcumulada al '
+        'repositorio y muestra la diferencia calculada', (tester) async {
+      when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+      when(
+        () => sesionRepositorio.abrirSesion(
+          trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+          pilotoId: any(named: 'pilotoId'),
+          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+          inicio: any(named: 'inicio'),
+          vientoKmh: any(named: 'vientoKmh'),
+          temperaturaC: any(named: 'temperaturaC'),
+          humedadPct: any(named: 'humedadPct'),
+          observacionAgronomo: any(named: 'observacionAgronomo'),
+          firmaObservacion: any(named: 'firmaObservacion'),
+          auxiliarId: any(named: 'auxiliarId'),
+          dronId: any(named: 'dronId'),
+          hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
+        ),
+      ).thenAnswer(
+        (_) async =>
+            _sesionAbierta(hectareaInicialAcumulada: Decimal.parse('100.50')),
+      );
+      when(
+        () => sesionRepositorio.cerrarSesion(
+          sesionUuidCliente: any(named: 'sesionUuidCliente'),
+          fin: any(named: 'fin'),
+          motivoCierre: any(named: 'motivoCierre'),
+          hectareasDeclaradas: null,
+          hectareaFinalAcumulada: Decimal.parse('120.75'),
+          litrosConsumidos: any(named: 'litrosConsumidos'),
+        ),
+      ).thenAnswer(
+        (_) async => _sesionCerrada(
+          motivoCierre: 'relevo_piloto',
+          hectareasDeclaradasCierre: Decimal.parse('20.25'),
+        ),
+      );
+
+      final bloc = SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaStore,
+        trabajoUuidCliente: 'uuid-trabajo-1',
+      );
+      addTearDown(bloc.close);
+
+      await bombear(tester, bloc);
+      await completarFormularioApertura(tester);
+
+      await tester.tap(find.byKey(const Key('boton_cerrar_sesion')));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(
+        find.byKey(const Key('cierre_acumulado_final')),
+        '120.75',
+      );
+      await tester.tap(find.byKey(const Key('cierre_motivo')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Relevo de piloto'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('boton_confirmar_cierre')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Sesión cerrada'), findsOneWidget);
+      expect(find.text('Hectáreas declaradas (cierre): 20.25'), findsOneWidget);
+    });
   });
 }

@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import '../../../nucleo/auth/persona_operativa_store.dart';
 import '../data/sesion_repository.dart';
+import '../domain/auxiliar.dart';
 import '../domain/reglas_condiciones.dart';
 import '../domain/reglas_sesion.dart';
 import 'sesion_estado.dart';
@@ -77,7 +78,10 @@ class SesionBloc extends Bloc<SesionEvento, SesionEstado> {
       final sesion = await _sesionRepositorio.abrirSesion(
         trabajoUuidCliente: _trabajoUuidCliente,
         pilotoId: pilotoId,
+        auxiliarId: evento.auxiliarId,
+        dronId: evento.dronId,
         hectareasDeclaradas: evento.hectareasDeclaradas,
+        hectareaInicialAcumulada: evento.hectareaInicialAcumulada,
         inicio: DateTime.now(),
         vientoKmh: evento.vientoKmh,
         temperaturaC: evento.temperaturaC,
@@ -131,6 +135,7 @@ class SesionBloc extends Bloc<SesionEvento, SesionEstado> {
         fin: DateTime.now(),
         motivoCierre: evento.motivoCierre,
         hectareasDeclaradas: evento.hectareasDeclaradas,
+        hectareaFinalAcumulada: evento.hectareaFinalAcumulada,
         litrosConsumidos: evento.litrosConsumidos,
       );
       emit(SesionCerrada(sesionCerrada));
@@ -138,4 +143,11 @@ class SesionBloc extends Bloc<SesionEvento, SesionEstado> {
       emit(SesionError('Error al cerrar sesión: ${e.toString()}'));
     }
   }
+
+  /// Auxiliares para el dropdown del formulario de apertura (HU-07) —
+  /// delega en el repositorio sin agregar estado propio: el formulario la
+  /// pide una sola vez al abrirse, no necesita reactividad (mismo criterio
+  /// que el resto de este Bloc, que tampoco relee `drift` reactivamente).
+  Future<List<Auxiliar>> auxiliaresDisponibles() =>
+      _sesionRepositorio.auxiliaresDisponibles();
 }
