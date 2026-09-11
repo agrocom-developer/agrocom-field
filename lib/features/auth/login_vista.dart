@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../nucleo/auth/rol_activo.dart';
 import 'login_cubit.dart';
 import 'login_estado.dart';
 
@@ -51,6 +52,9 @@ class _LoginVistaState extends State<LoginVista> {
                   }
                 },
                 builder: (context, estado) {
+                  if (estado is LoginRequiereSeleccionRol) {
+                    return _SelectorRol(roles: estado.roles);
+                  }
                   final cargando = estado is LoginCargando;
                   return Column(
                     mainAxisSize: MainAxisSize.min,
@@ -120,6 +124,37 @@ class _LoginVistaState extends State<LoginVista> {
           ),
         ),
       ),
+    );
+  }
+}
+
+/// Selector de rol tras un `409` en el flavor `auxiliar` (HU-69, ADR 0005
+/// de este repo) — solo se muestra ahí, `LoginCubit` nunca emite
+/// `LoginRequiereSeleccionRol` en el flavor `piloto`.
+class _SelectorRol extends StatelessWidget {
+  const _SelectorRol({required this.roles});
+
+  final List<RolActivo> roles;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Tu usuario tiene más de un rol activo. Elegí con cuál entrar:',
+          style: Theme.of(context).textTheme.titleMedium,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 16),
+        for (final rol in roles)
+          ListTile(
+            key: Key('login_rol_${rol.id}'),
+            title: Text(rol.description ?? rol.name),
+            onTap: () => context.read<LoginCubit>().elegirRol(rol.id),
+          ),
+      ],
     );
   }
 }

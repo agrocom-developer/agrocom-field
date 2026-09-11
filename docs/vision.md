@@ -17,7 +17,7 @@ Cuatro superficies en todo el sistema; dos de ellas son este repo (especificaci�
 | Panel web | Jefe de campo, encargado, dueño | Todo lo demás (validación, contratos, planilla, mantenimiento...) | `agrocom-api` |
 | Portal cliente | Dueño del campo, agrónomo | Reportes de sus lotes, solo lectura | `agrocom-api` |
 
-Piloto y auxiliar **se instalan por separado** (dos APK), pero para el desarrollo **son una sola base de código** con dos puntos de entrada (`main_piloto.dart` / `main_auxiliar.dart`) que comparten sincronización, autenticación, cola offline y evidencias. Un rol tiene, en la práctica, más permisos que su propio flavor: el jefe de campo puede abrir trabajo, registrar recarga, cerrar lote y validar trabajos de otros pilotos (especificación §3) — la especificación no resuelve todavía si eso lo hace desde una de estas dos apps o desde el panel web cuando está en el campo; confirmarlo antes de construir pantallas específicas para ese rol acá.
+Piloto y auxiliar **se instalan por separado** (dos APK), pero para el desarrollo **son una sola base de código** con dos puntos de entrada (`main_piloto.dart` / `main_auxiliar.dart`) que comparten sincronización, autenticación, cola offline y evidencias. Un rol tiene, en la práctica, más permisos que su propio flavor: el jefe de campo puede abrir trabajo, registrar recarga, cerrar lote y validar trabajos de otros pilotos (especificación §3). ADR 0005 de este repo resuelve la parte de esa nota que le tocaba a este repo: para las acciones que ya tienen pantalla en alguno de los dos flavors (abrir trabajo, registrar recarga, cerrar lote), una persona con más de un rol asignado entra desde el celular (flavor `auxiliar`) y elige el rol que corresponde en el selector de login — no hace falta pantalla nueva ni operar desde el panel en el campo. Validar trabajos de otros pilotos sigue sin pantalla en ninguna de las dos apps — eso lo sigue haciendo el jefe de campo o el encargado desde el panel (ver más abajo, "El flujo de un lote, de punta a punta", punto 8).
 
 ## El flujo de un lote, de punta a punta
 
@@ -102,7 +102,7 @@ Tabla completa en especificación §3. Lo que aplica directo a los dos flavors:
 | Cerrar lote (ha + captura RC) | ✔ | — |
 | Generar y presentar acta | ✔ | — |
 
-Identidad: token por dispositivo (Sanctum, revocable desde el panel sin bloquear al usuario), no login de usuario/contraseña en cada sesión de uso — pero si la persona tiene más de un rol, el rol activo lo determina el flavor que abrió, no una elección en pantalla (a diferencia del panel web, donde sí se elige rol activo al iniciar sesión).
+Identidad: token por dispositivo (Sanctum, revocable desde el panel sin bloquear al usuario), no login de usuario/contraseña en cada sesión de uso. Si la persona tiene más de un rol, quién resuelve la ambigüedad depende del flavor (ADR 0005 de este repo): en `piloto` (RC, hardware dedicado de un solo uso) el rol activo lo sigue determinando el flavor que abrió, sin selector; en `auxiliar` (celular), si `POST /api/auth/token` responde `409` (más de un rol vivo), la app muestra un selector con los roles vivos y reintenta el login con el `role_id` elegido — mismo criterio de ambigüedad que el panel web, pero solo al loguear: cambiar de rol sin volver a loguearse sigue sin estar resuelto del lado servidor (ADR 0005, punto 3).
 
 ## Máquinas de estado que la app dispara pero no decide
 
