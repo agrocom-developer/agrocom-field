@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 
+import '../../features/ordenes/data/ordenes_repository.dart';
 import '../api/api_client.dart';
 import '../auth/dispositivo_store.dart';
 import '../auth/login_service.dart';
@@ -51,6 +52,9 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
       db: getIt<AppDatabase>(),
       apiClient: getIt<ApiClient>(),
     ),
+  );
+  getIt.registerLazySingleton<OrdenesRepository>(
+    () => OrdenesRepository(getIt<AppDatabase>()),
   );
   // Los repositorios de cada feature (trabajos, sesiones, recargas...) se
   // registran acá cuando esa feature los agregue — no antes.
