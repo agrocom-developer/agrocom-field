@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 
 import '../api/api_client.dart';
 import '../auth/dispositivo_store.dart';
+import '../auth/login_service.dart';
 import '../auth/token_store.dart';
 import '../catalogo/catalogo_repository.dart';
 import '../db/database.dart';
@@ -26,6 +27,13 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
   getIt.registerLazySingleton<DispositivoStore>(DispositivoStoreSeguro.new);
   getIt.registerLazySingleton<ApiClient>(
     () => ApiClient(baseUrl: _apiBaseUrl, tokenStore: getIt<TokenStore>()),
+  );
+  getIt.registerLazySingleton<LoginService>(
+    () => LoginService(
+      apiClient: getIt<ApiClient>(),
+      tokenStore: getIt<TokenStore>(),
+      dispositivoStore: getIt<DispositivoStore>(),
+    ),
   );
   getIt.registerLazySingleton<AppDatabase>(AppDatabase.new);
   getIt.registerLazySingleton<OutboxRepository>(
