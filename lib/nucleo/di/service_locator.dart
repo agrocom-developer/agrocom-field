@@ -12,6 +12,7 @@ import '../auth/token_store.dart';
 import '../catalogo/catalogo_repository.dart';
 import '../db/database.dart';
 import '../flavor.dart';
+import '../preferencias/preferencias_store.dart';
 import '../sync/outbox_repository.dart';
 import '../sync/sync_cubit.dart';
 import '../sync/sync_engine.dart';
@@ -34,6 +35,7 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
     PersonaOperativaStoreSeguro.new,
   );
   getIt.registerLazySingleton<RolActivoStore>(RolActivoStoreSeguro.new);
+  getIt.registerLazySingleton<PreferenciasStore>(PreferenciasStoreLocal.new);
   getIt.registerLazySingleton<ApiClient>(
     () => ApiClient(baseUrl: _apiBaseUrl, tokenStore: getIt<TokenStore>()),
   );
