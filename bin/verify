@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+#
+# Cascada de verificación de agrocom-field — la "compuerta".
+#
+# Devuelve exit 0 solo si TODO pasa. Es el único criterio de aceptación que un
+# cambio necesita cumplir para poder commitearse sin revisión humana previa
+# (ver docs/gestion/automatizacion_desarrollo.md).
+#
+# Más simple que el de agrocom-api: sin Docker, sin base de datos de
+# servicio — todo corre directo sobre el SDK de Flutter instalado en la
+# máquina. El orden de las etapas espeja el job `flutter-tests` de
+# `.github/workflows/ci.yml` a propósito: si el orden difiriera, un verde
+# local podría no predecir el verde de CI (p. ej. analizar antes de generar
+# el código deja afuera errores que solo aparecen con el `.g.dart` al día).
+#
+#   bin/verify
+#
+set -uo pipefail
+cd "$(dirname "$0")/.." || exit 1
+
+FALLO=""
+
+etapa() {
+    local nombre="$1"; shift
+    printf '\n\033[1m▸ %s\033[0m\n' "$nombre"
+    if "$@"; then
+        printf '\033[32m  ✓ %s\033[0m\n' "$nombre"
+    else
+        printf '\033[31m  ✗ %s\033[0m\n' "$nombre"
+        FALLO="$nombre"
+        return 1
+    fi
+}
+
+printf '\033[1mVerificación de agrocom-field\033[0m\n'
+
+etapa "Dependencias (flutter pub get)" flutter pub get || true
+
+if [ -z "$FALLO" ] && grep -q 'build_runner' pubspec.yaml 2>/dev/null; then
+    etapa "Codegen limpio (build_runner)" dart run build_runner build --delete-conflicting-outputs || true
+fi
+
+if [ -z "$FALLO" ]; then
+    etapa "Estilo de código (dart format)" dart format --output=none --set-exit-if-changed . || true
+fi
+
+if [ -z "$FALLO" ]; then
+    etapa "Análisis estático (flutter analyze)" flutter analyze || true
+fi
+
+if [ -z "$FALLO" ]; then
+    etapa "Tests (flutter test)" flutter test || true
+fi
+
+echo
+if [ -n "$FALLO" ]; then
+    printf '\033[31m✗ La cascada falló en: %s\033[0m\n' "$FALLO"
+    printf '  El cambio NO está listo para commitear.\n'
+    exit 1
+fi
+
+printf '\033[32m✓ Cascada completa en verde.\033[0m\n'
+exit 0

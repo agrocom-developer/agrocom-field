@@ -1,6 +1,6 @@
-# Automatización del desarrollo — diseño propuesto
+# Automatización del desarrollo
 
-**Estado: propuesta, no implementada.** Este documento describe el mecanismo de ciclo automatizado que TE-18 (`docs/gestion/plan_sprints.md` de `agrocom-api`, Sprint 15) va a construir para `agrocom-field` — espejo del que ya funciona en `agrocom-api` (`docs/gestion/automatizacion_desarrollo.md` de ese repo, léelo primero: acá solo se documentan las diferencias y lo específico de este repo), pero corriendo como proceso aparte, sobre este working tree, sin tocar `agrocom-api`.
+**Estado: implementada (TE-18).** Este documento describe el mecanismo de ciclo automatizado de `agrocom-field` — espejo del que ya funciona en `agrocom-api` (`docs/gestion/automatizacion_desarrollo.md` de ese repo, léelo primero: acá solo se documentan las diferencias y lo específico de este repo), corriendo como proceso aparte, sobre este working tree, sin tocar `agrocom-api`.
 
 **Por qué otro proceso y no extender el existente**: la propia plantilla de planificación de `agrocom-api` (`prompts/plantillas/planificar.md`) excluye explícitamente a `agrocom-field` ("otro repo, este ciclo no lo toca") — es una decisión ya tomada, no un olvido. Dos repos con GitFlow independiente, CI independiente y ritmo de cambio independiente no comparten bien una sola cola ni un solo working tree.
 
@@ -53,7 +53,7 @@ Mismas 5 fases, mismo criterio "una tarea = una HU o TE completa = un PR", misma
 | esperar CI | Sondea `auto-merge`; corta rápido si hay conflicto o si no aparecen checks a los 3 min |
 | planificar | Lee `plan_sprints.md` de `agrocom-api` (Sprint 15 en adelante es lo que le toca a este repo) + `docs/gestion/cola_tareas.md` propio de este repo + git real; escribe el prompt de la siguiente tarea, sin commitear nada |
 
-**Fuente del backlog**: `plan_sprints.md` sigue siendo compartido entre ambos repos (documento oficial único) — la planificación de este ciclo lee ahí las filas que le corresponden a `agrocom-field` (Sprint 15 en adelante, más TE-04/TE-05-lado-app/TE-06/HU-03-consumo/HU-04/HU-05 de sprints anteriores que sigan pendientes del lado app). La cola de ejecución (`docs/gestion/cola_tareas.md`, con criterio ejecutable por fila) es propia de este repo — mismo formato que la de `agrocom-api`, pero no se mezclan: cada una consume su propio `plan_sprints.md`-subset y escribe en su propio `prompts/`/`runs/`.
+**Fuente del backlog**: `docs/gestion/plan_sprints.md` **de este repo** — ya no es un documento compartido. Nació como "Sprint 15" dentro del `plan_sprints.md` de `agrocom-api` (10/9/2026), pero se movió acá para no tener que abrir rama/PR en `agrocom-api` cada vez que se ajusta la planificación de la app (los IDs HU-69/TE-15 a TE-18 se conservaron tal cual para no romper referencias ya hechas en commits/PRs). `agrocom-api` sigue siendo la fuente de la especificación funcional/técnica y de las decisiones de negocio — no del backlog de tareas de este repo. La planificación de este ciclo lee su propio `plan_sprints.md` entero, sin cruzar al de `agrocom-api`. La cola de ejecución (`docs/gestion/cola_tareas.md`, con criterio ejecutable por fila) es propia de este repo — mismo formato que la de `agrocom-api`, pero no se mezclan: cada una consume su propio `plan_sprints.md` y escribe en su propio `prompts/`/`runs/`.
 
 **Críticas de este repo**: motor de sync (`nucleo/sync`) y esquema `drift` (`nucleo/db`) — mismo tratamiento que `agrocom-api` con lo del motor de sync backend: se integran igual que cualquier tarea, quedan anotadas en `runs/revision-pendiente.txt` para revisión humana posterior sobre `develop`, **nunca en borrador** (la lección ya está documentada del lado `agrocom-api`: retener un PR crítico bloqueó doce HU seguidas hasta que el ciclo se quedó sin trabajo).
 
@@ -71,4 +71,4 @@ Mismo mecanismo (LaunchAgent de macOS), **proceso separado** del de `agrocom-api
 
 ## Nota de proceso
 
-Este documento se escribe **antes** de que TE-18 exista como código — es la especificación que esa tarea implementa, no una descripción de algo ya funcionando. Actualizarlo para que refleje la realidad (quitar "diseño propuesto" del encabezado) es parte del criterio de aceptación de TE-18, no un paso aparte.
+Este documento describía, antes del 11/9/2026, un mecanismo todavía no construido — la especificación que TE-18 implementó, no una descripción de algo ya funcionando. Con TE-18 integrada, las cinco piezas de arriba (`bin/verify`, `auto-merge.yml`, los guardarraíles, `bin/ciclo`, `bin/ciclo-servicio`) existen en el árbol; lo que sigue pendiente es lo que ya listaba "Lo que falta para un turno desatendido en este repo" — la prueba de replay del motor de sync sigue siendo el gate más importante, y se escribe junto con TE-05, no antes.
