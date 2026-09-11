@@ -353,7 +353,8 @@ void main() {
         vientoKmh: Decimal.parse('20'),
         temperaturaC: Decimal.parse('35'),
         humedadPct: Decimal.parse('95'),
-        observacionAgronomo: 'Viento y humedad por encima del umbral, se '
+        observacionAgronomo:
+            'Viento y humedad por encima del umbral, se '
             'autoriza a rociar.',
         firmaObservacion: 'Ing. Agr. Juana Pérez',
       );
@@ -378,7 +379,8 @@ void main() {
         'viento_kmh': Decimal.parse('20').toString(),
         'temperatura_c': Decimal.parse('35').toString(),
         'humedad_pct': Decimal.parse('95').toString(),
-        'observacion_agronomo': 'Viento y humedad por encima del umbral, se '
+        'observacion_agronomo':
+            'Viento y humedad por encima del umbral, se '
             'autoriza a rociar.',
         'firma_observacion': 'Ing. Agr. Juana Pérez',
       });
