@@ -124,6 +124,11 @@ unlinked_spec.ds
 # Coverage
 coverage/
 
+# bin/ciclo: bitácora local del turno desatendido (TE-18) — se audita en el
+# disco, nunca en git; un id de tarea no se reutiliza aunque su prompt se
+# borre del árbol, así que perder este directorio no pierde historial real.
+/runs/
+
 # Symbols
 app.*.symbols
 
