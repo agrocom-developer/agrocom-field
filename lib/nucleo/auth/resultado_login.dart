@@ -1,3 +1,5 @@
+import 'rol_activo.dart';
+
 /// Resultado distinguible de un intento de `LoginService.login` — un
 /// resultado por cada respuesta del contrato (`POST /api/auth/token`,
 /// operationId `emitirTokenDispositivo`) más el caso sin red.
@@ -15,12 +17,29 @@ final class LoginCredencialesInvalidas extends ResultadoLogin {
   const LoginCredencialesInvalidas();
 }
 
-/// `409` — el usuario tiene más de un rol vivo. El selector de rol es
-/// HU-69 (ADR 0005 de este repo), fuera de alcance acá: este resultado
-/// solo existe para que la pantalla avise que ese caso no está soportado
-/// todavía, sin guardar ningún token a medias.
+/// `409` — el usuario tiene más de un rol vivo, sin guardar ningún token a
+/// medias. [roles] trae los roles vivos del cuerpo del error (ADR 0005 de
+/// este repo): en el flavor `auxiliar`, `LoginCubit` los usa para mostrar
+/// un selector y reintentar el login con el `role_id` elegido; en
+/// `piloto`, sigue mostrando un mensaje genérico sin selector.
 final class LoginRolAmbiguo extends ResultadoLogin {
-  const LoginRolAmbiguo();
+  const LoginRolAmbiguo(this.roles);
+
+  final List<RolActivo> roles;
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! LoginRolAmbiguo || other.roles.length != roles.length) {
+      return false;
+    }
+    for (var i = 0; i < roles.length; i++) {
+      if (other.roles[i] != roles[i]) return false;
+    }
+    return true;
+  }
+
+  @override
+  int get hashCode => Object.hashAll(roles);
 }
 
 /// `422` — falta algún campo obligatorio o el payload es inválido.
