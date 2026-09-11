@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 
 import '../api/api_client.dart';
 import '../auth/token_store.dart';
+import '../catalogo/catalogo_repository.dart';
 import '../db/database.dart';
 import '../flavor.dart';
 import '../sync/outbox_repository.dart';
@@ -35,6 +36,12 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
     ),
   );
   getIt.registerLazySingleton<SyncCubit>(() => SyncCubit(getIt<SyncEngine>()));
+  getIt.registerLazySingleton<CatalogoRepository>(
+    () => CatalogoRepository(
+      db: getIt<AppDatabase>(),
+      apiClient: getIt<ApiClient>(),
+    ),
+  );
   // Los repositorios de cada feature (trabajos, sesiones, recargas...) se
   // registran acá cuando esa feature los agregue — no antes.
 }
