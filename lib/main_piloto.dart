@@ -7,7 +7,7 @@ import 'features/ordenes/presentation/ordenes_cubit.dart';
 import 'features/sesion_vuelo/data/trabajo_repository.dart';
 import 'features/sesion_vuelo/data/sesion_repository.dart';
 import 'features/sesion_vuelo/presentation/trabajo_cubit.dart';
-import 'features/sesion_vuelo/presentation/sesion_cubit.dart';
+import 'features/sesion_vuelo/presentation/sesion_bloc.dart';
 import 'nucleo/auth/login_service.dart';
 import 'nucleo/auth/persona_operativa_store.dart';
 import 'nucleo/auth/token_store.dart';
@@ -24,7 +24,7 @@ Future<void> main() async {
       crearLoginCubit: () => LoginCubit(getIt<LoginService>()),
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
       crearTrabajoCubit: () => TrabajoCubit(getIt<TrabajoRepository>()),
-      crearSesionCubit: (trabajoUuidCliente) => SesionCubit(
+      crearSesionBloc: (trabajoUuidCliente) => SesionBloc(
         sesionRepositorio: getIt<SesionRepository>(),
         personaOperativaStore: getIt<PersonaOperativaStore>(),
         trabajoUuidCliente: trabajoUuidCliente,

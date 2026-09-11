@@ -1,6 +1,6 @@
 import '../domain/sesion.dart';
 
-/// Estado de `SesionCubit` — modeliza el ciclo de vida de una sesión:
+/// Estado de `SesionBloc` — modeliza el ciclo de vida de una sesión:
 /// inicial (sin sesión abierta), abriendo, activa (en vuelo), cerrando,
 /// cerrada (con datos de cierre), error. No hay una transición de máquina de
 /// estados del lado del servidor (eso es autoridad de `agrocom-api`, ver

@@ -5,7 +5,7 @@ import 'features/auth/login_pantalla.dart';
 import 'features/ordenes/presentation/ordenes_cubit.dart';
 import 'features/ordenes/presentation/ordenes_pantalla.dart';
 import 'features/sesion_vuelo/presentation/trabajo_cubit.dart';
-import 'features/sesion_vuelo/presentation/sesion_cubit.dart';
+import 'features/sesion_vuelo/presentation/sesion_bloc.dart';
 import 'nucleo/auth/token_store.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/ui/tema.dart';
@@ -19,7 +19,7 @@ class AgrocomApp extends StatelessWidget {
   final LoginCubit Function() crearLoginCubit;
   final OrdenesCubit Function() crearOrdenesCubit;
   final TrabajoCubit Function() crearTrabajoCubit;
-  final SesionCubit Function(String) crearSesionCubit;
+  final SesionBloc Function(String) crearSesionBloc;
 
   const AgrocomApp({
     required this.flavor,
@@ -27,7 +27,7 @@ class AgrocomApp extends StatelessWidget {
     required this.crearLoginCubit,
     required this.crearOrdenesCubit,
     required this.crearTrabajoCubit,
-    required this.crearSesionCubit,
+    required this.crearSesionBloc,
     super.key,
   });
 
@@ -44,7 +44,7 @@ class AgrocomApp extends StatelessWidget {
         crearLoginCubit: crearLoginCubit,
         crearOrdenesCubit: crearOrdenesCubit,
         crearTrabajoCubit: crearTrabajoCubit,
-        crearSesionCubit: crearSesionCubit,
+        crearSesionBloc: crearSesionBloc,
       ),
     );
   }
@@ -60,7 +60,7 @@ class _RaizApp extends StatefulWidget {
     required this.crearLoginCubit,
     required this.crearOrdenesCubit,
     required this.crearTrabajoCubit,
-    required this.crearSesionCubit,
+    required this.crearSesionBloc,
   });
 
   final Flavor flavor;
@@ -68,7 +68,7 @@ class _RaizApp extends StatefulWidget {
   final LoginCubit Function() crearLoginCubit;
   final OrdenesCubit Function() crearOrdenesCubit;
   final TrabajoCubit Function() crearTrabajoCubit;
-  final SesionCubit Function(String) crearSesionCubit;
+  final SesionBloc Function(String) crearSesionBloc;
 
   @override
   State<_RaizApp> createState() => _RaizAppState();
@@ -106,7 +106,7 @@ class _RaizAppState extends State<_RaizApp> {
           crearCubit: widget.crearOrdenesCubit,
           flavor: widget.flavor,
           crearTrabajoCubit: widget.crearTrabajoCubit,
-          crearSesionCubit: widget.crearSesionCubit,
+          crearSesionBloc: widget.crearSesionBloc,
         );
       },
     );

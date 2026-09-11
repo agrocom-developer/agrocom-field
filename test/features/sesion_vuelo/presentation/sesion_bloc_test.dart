@@ -1,4 +1,4 @@
-// Etapa 3 de HU-05: `SesionCubit` contra `SesionRepository` y
+// Etapa 3 de HU-05: `SesionBloc` contra `SesionRepository` y
 // `PersonaOperativaStore` mockeados — verifica que la apertura y cierre de
 // sesión emitan los estados correctos, que la validación del `persona_id`
 // ocurra ANTES de invocar el repositorio (sin error de base, sino una
@@ -7,8 +7,9 @@
 import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_sesion.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/sesion.dart';
-import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_cubit.dart';
+import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_bloc.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_estado.dart';
+import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_evento.dart';
 import 'package:agrocom_field/nucleo/auth/persona_operativa_store.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:decimal/decimal.dart';
@@ -56,18 +57,18 @@ void main() {
     personaOperativaStore = _PersonaOperativaStoreFalso();
   });
 
-  blocTest<SesionCubit, SesionEstado>(
+  blocTest<SesionBloc, SesionEstado>(
     'estado inicial es SesionInicial',
-    build: () => SesionCubit(
+    build: () => SesionBloc(
       sesionRepositorio: sesionRepositorio,
       personaOperativaStore: personaOperativaStore,
       trabajoUuidCliente: 'trabajo-1',
     ),
-    verify: (cubit) => expect(cubit.state, const SesionInicial()),
+    verify: (bloc) => expect(bloc.state, const SesionInicial()),
   );
 
   group('abrir sesión', () {
-    blocTest<SesionCubit, SesionEstado>(
+    blocTest<SesionBloc, SesionEstado>(
       'con pilotoId presente: emite abriendo y luego activa',
       setUp: () {
         when(
@@ -82,28 +83,28 @@ void main() {
           ),
         ).thenAnswer((_) async => _sesion());
       },
-      build: () => SesionCubit(
+      build: () => SesionBloc(
         sesionRepositorio: sesionRepositorio,
         personaOperativaStore: personaOperativaStore,
         trabajoUuidCliente: 'trabajo-1',
       ),
-      act: (cubit) => cubit.abrir(),
+      act: (bloc) => bloc.add(const SesionAbrirSolicitada()),
       expect: () => [const SesionAbriendo(), SesionActiva(_sesion())],
     );
 
-    blocTest<SesionCubit, SesionEstado>(
+    blocTest<SesionBloc, SesionEstado>(
       'con pilotoId null: emite error DIRECTO sin llamar al repositorio',
       setUp: () {
         when(
           () => personaOperativaStore.leerPersonaId(),
         ).thenAnswer((_) async => null);
       },
-      build: () => SesionCubit(
+      build: () => SesionBloc(
         sesionRepositorio: sesionRepositorio,
         personaOperativaStore: personaOperativaStore,
         trabajoUuidCliente: 'trabajo-1',
       ),
-      act: (cubit) => cubit.abrir(),
+      act: (bloc) => bloc.add(const SesionAbrirSolicitada()),
       expect: () => [
         const SesionAbriendo(),
         isA<SesionError>().having(
@@ -112,7 +113,7 @@ void main() {
           contains('persona operativa asignada'),
         ),
       ],
-      verify: (cubit) {
+      verify: (bloc) {
         verifyNever(
           () => sesionRepositorio.abrirSesion(
             trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
@@ -124,7 +125,7 @@ void main() {
       },
     );
 
-    blocTest<SesionCubit, SesionEstado>(
+    blocTest<SesionBloc, SesionEstado>(
       'trabajo inexistente: emite error con mensaje del repositorio',
       setUp: () {
         when(
@@ -139,12 +140,12 @@ void main() {
           ),
         ).thenThrow(const TrabajoInexistenteExcepcion('trabajo-inexistente'));
       },
-      build: () => SesionCubit(
+      build: () => SesionBloc(
         sesionRepositorio: sesionRepositorio,
         personaOperativaStore: personaOperativaStore,
         trabajoUuidCliente: 'trabajo-inexistente',
       ),
-      act: (cubit) => cubit.abrir(),
+      act: (bloc) => bloc.add(const SesionAbrirSolicitada()),
       expect: () => [
         const SesionAbriendo(),
         isA<SesionError>().having(
@@ -155,7 +156,7 @@ void main() {
       ],
     );
 
-    blocTest<SesionCubit, SesionEstado>(
+    blocTest<SesionBloc, SesionEstado>(
       'error genérico del repositorio: emite error con mensaje',
       setUp: () {
         when(
@@ -170,12 +171,12 @@ void main() {
           ),
         ).thenThrow(Exception('Error en base de datos'));
       },
-      build: () => SesionCubit(
+      build: () => SesionBloc(
         sesionRepositorio: sesionRepositorio,
         personaOperativaStore: personaOperativaStore,
         trabajoUuidCliente: 'trabajo-1',
       ),
-      act: (cubit) => cubit.abrir(),
+      act: (bloc) => bloc.add(const SesionAbrirSolicitada()),
       expect: () => [
         const SesionAbriendo(),
         isA<SesionError>().having(
@@ -188,7 +189,40 @@ void main() {
   });
 
   group('cerrar sesión', () {
-    blocTest<SesionCubit, SesionEstado>(
+    blocTest<SesionBloc, SesionEstado>(
+      'sin sesión activa: emite error DIRECTO sin llamar al repositorio',
+      build: () => SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaOperativaStore,
+        trabajoUuidCliente: 'trabajo-1',
+      ),
+      act: (bloc) => bloc.add(
+        SesionCerrarSolicitada(
+          motivoCierre: 'completado',
+          hectareasDeclaradas: Decimal.parse('50'),
+        ),
+      ),
+      expect: () => [
+        isA<SesionError>().having(
+          (e) => e.mensaje,
+          'mensaje',
+          contains('No hay sesión abierta para cerrar'),
+        ),
+      ],
+      verify: (bloc) {
+        verifyNever(
+          () => sesionRepositorio.cerrarSesion(
+            sesionUuidCliente: any(named: 'sesionUuidCliente'),
+            fin: any(named: 'fin'),
+            motivoCierre: any(named: 'motivoCierre'),
+            hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+            litrosConsumidos: any(named: 'litrosConsumidos'),
+          ),
+        );
+      },
+    );
+
+    blocTest<SesionBloc, SesionEstado>(
       'con sesión activa: emite cerrando y luego cerrada',
       setUp: () {
         when(
@@ -217,16 +251,18 @@ void main() {
           ),
         );
       },
-      build: () => SesionCubit(
+      build: () => SesionBloc(
         sesionRepositorio: sesionRepositorio,
         personaOperativaStore: personaOperativaStore,
         trabajoUuidCliente: 'trabajo-1',
       ),
-      act: (cubit) async {
-        await cubit.abrir();
-        await cubit.cerrar(
-          motivoCierre: 'completado',
-          hectareasDeclaradas: Decimal.parse('50'),
+      act: (bloc) {
+        bloc.add(const SesionAbrirSolicitada());
+        bloc.add(
+          SesionCerrarSolicitada(
+            motivoCierre: 'completado',
+            hectareasDeclaradas: Decimal.parse('50'),
+          ),
         );
       },
       expect: () => [
@@ -242,7 +278,7 @@ void main() {
       ],
     );
 
-    blocTest<SesionCubit, SesionEstado>(
+    blocTest<SesionBloc, SesionEstado>(
       'con litros consumidos: se pasan al repositorio',
       setUp: () {
         when(
@@ -271,17 +307,19 @@ void main() {
           ),
         );
       },
-      build: () => SesionCubit(
+      build: () => SesionBloc(
         sesionRepositorio: sesionRepositorio,
         personaOperativaStore: personaOperativaStore,
         trabajoUuidCliente: 'trabajo-1',
       ),
-      act: (cubit) async {
-        await cubit.abrir();
-        await cubit.cerrar(
-          motivoCierre: 'completado',
-          hectareasDeclaradas: Decimal.parse('50'),
-          litrosConsumidos: Decimal.parse('100'),
+      act: (bloc) {
+        bloc.add(const SesionAbrirSolicitada());
+        bloc.add(
+          SesionCerrarSolicitada(
+            motivoCierre: 'completado',
+            hectareasDeclaradas: Decimal.parse('50'),
+            litrosConsumidos: Decimal.parse('100'),
+          ),
         );
       },
       expect: () => [
@@ -297,7 +335,7 @@ void main() {
       ],
     );
 
-    blocTest<SesionCubit, SesionEstado>(
+    blocTest<SesionBloc, SesionEstado>(
       'error del repositorio al cerrar: emite error',
       setUp: () {
         when(
@@ -321,16 +359,18 @@ void main() {
           ),
         ).thenThrow(Exception('Error en base de datos'));
       },
-      build: () => SesionCubit(
+      build: () => SesionBloc(
         sesionRepositorio: sesionRepositorio,
         personaOperativaStore: personaOperativaStore,
         trabajoUuidCliente: 'trabajo-1',
       ),
-      act: (cubit) async {
-        await cubit.abrir();
-        await cubit.cerrar(
-          motivoCierre: 'falla',
-          hectareasDeclaradas: Decimal.parse('50'),
+      act: (bloc) {
+        bloc.add(const SesionAbrirSolicitada());
+        bloc.add(
+          SesionCerrarSolicitada(
+            motivoCierre: 'falla',
+            hectareasDeclaradas: Decimal.parse('50'),
+          ),
         );
       },
       expect: () => [

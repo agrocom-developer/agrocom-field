@@ -1,10 +1,10 @@
-// Etapa 4 de HU-05: widget test de `SesionVueloVista` — cubit real conectado
-// a un `SesionRepository` mockeado (a través del Cubit), para probar los
+// Etapa 4 de HU-05: widget test de `SesionVueloVista` — bloc real conectado
+// a un `SesionRepository` mockeado (a través del Bloc), para probar los
 // estados de sesión (inicial, abriendo, activa, cerrando, cerrada, error) y
 // el formulario de cierre sin pasar por `SesionVueloPantalla`/GetIt.
 
 import 'package:agrocom_field/features/sesion_vuelo/domain/sesion.dart';
-import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_cubit.dart';
+import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_bloc.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_vuelo_vista.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart';
 import 'package:agrocom_field/nucleo/auth/persona_operativa_store.dart';
@@ -73,26 +73,26 @@ void main() {
     personaStore = _PersonaOperativaStoreFalso();
   });
 
-  Future<void> bombear(WidgetTester tester, SesionCubit cubit) =>
+  Future<void> bombear(WidgetTester tester, SesionBloc bloc) =>
       tester.pumpWidget(
         MaterialApp(
-          home: BlocProvider<SesionCubit>.value(
-            value: cubit,
-            child: const SesionVueloVista(trabajoUuidCliente: 'uuid-trabajo-1'),
+          home: BlocProvider<SesionBloc>.value(
+            value: bloc,
+            child: const SesionVueloVista(),
           ),
         ),
       );
 
   testWidgets('estado inicial: muestra botón de abrir sesión', (tester) async {
     when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
-    final cubit = SesionCubit(
+    final bloc = SesionBloc(
       sesionRepositorio: sesionRepositorio,
       personaOperativaStore: personaStore,
       trabajoUuidCliente: 'uuid-trabajo-1',
     );
-    addTearDown(cubit.close);
+    addTearDown(bloc.close);
 
-    await bombear(tester, cubit);
+    await bombear(tester, bloc);
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('boton_abrir_sesion')), findsOneWidget);
@@ -112,14 +112,14 @@ void main() {
       return _sesionAbierta();
     });
 
-    final cubit = SesionCubit(
+    final bloc = SesionBloc(
       sesionRepositorio: sesionRepositorio,
       personaOperativaStore: personaStore,
       trabajoUuidCliente: 'uuid-trabajo-1',
     );
-    addTearDown(cubit.close);
+    addTearDown(bloc.close);
 
-    await bombear(tester, cubit);
+    await bombear(tester, bloc);
     await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
     await tester.pump();
 
@@ -141,14 +141,14 @@ void main() {
       ),
     ).thenAnswer((_) async => _sesionAbierta());
 
-    final cubit = SesionCubit(
+    final bloc = SesionBloc(
       sesionRepositorio: sesionRepositorio,
       personaOperativaStore: personaStore,
       trabajoUuidCliente: 'uuid-trabajo-1',
     );
-    addTearDown(cubit.close);
+    addTearDown(bloc.close);
 
-    await bombear(tester, cubit);
+    await bombear(tester, bloc);
     await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
     await tester.pumpAndSettle();
 
@@ -186,14 +186,14 @@ void main() {
       ),
     ).thenAnswer((_) async => sesionCerrada);
 
-    final cubit = SesionCubit(
+    final bloc = SesionBloc(
       sesionRepositorio: sesionRepositorio,
       personaOperativaStore: personaStore,
       trabajoUuidCliente: 'uuid-trabajo-1',
     );
-    addTearDown(cubit.close);
+    addTearDown(bloc.close);
 
-    await bombear(tester, cubit);
+    await bombear(tester, bloc);
     await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
     await tester.pumpAndSettle();
 
@@ -219,14 +219,14 @@ void main() {
   testWidgets('error: muestra mensaje y botón de reintentar', (tester) async {
     when(() => personaStore.leerPersonaId()).thenAnswer((_) async => null);
 
-    final cubit = SesionCubit(
+    final bloc = SesionBloc(
       sesionRepositorio: sesionRepositorio,
       personaOperativaStore: personaStore,
       trabajoUuidCliente: 'uuid-trabajo-1',
     );
-    addTearDown(cubit.close);
+    addTearDown(bloc.close);
 
-    await bombear(tester, cubit);
+    await bombear(tester, bloc);
     await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
     await tester.pumpAndSettle();
 
@@ -254,14 +254,14 @@ void main() {
       ),
     ).thenAnswer((_) async => _sesionAbierta());
 
-    final cubit = SesionCubit(
+    final bloc = SesionBloc(
       sesionRepositorio: sesionRepositorio,
       personaOperativaStore: personaStore,
       trabajoUuidCliente: 'uuid-trabajo-1',
     );
-    addTearDown(cubit.close);
+    addTearDown(bloc.close);
 
-    await bombear(tester, cubit);
+    await bombear(tester, bloc);
     await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
     await tester.pumpAndSettle();
 
@@ -299,14 +299,14 @@ void main() {
       ),
     ).thenAnswer((_) async => _sesionAbierta());
 
-    final cubit = SesionCubit(
+    final bloc = SesionBloc(
       sesionRepositorio: sesionRepositorio,
       personaOperativaStore: personaStore,
       trabajoUuidCliente: 'uuid-trabajo-1',
     );
-    addTearDown(cubit.close);
+    addTearDown(bloc.close);
 
-    await bombear(tester, cubit);
+    await bombear(tester, bloc);
     await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
     await tester.pumpAndSettle();
 

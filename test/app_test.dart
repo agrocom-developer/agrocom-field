@@ -70,7 +70,7 @@ void main() {
         // `OrdenesPantalla`, así que no hay cubit que cerrar acá.
         crearOrdenesCubit: _crearOrdenesCubit(db, (_) {}),
         crearTrabajoCubit: () => throw UnimplementedError('stub no invocado'),
-        crearSesionCubit: (_) => throw UnimplementedError('stub no invocado'),
+        crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
       ),
     );
     await tester.pumpAndSettle();
@@ -112,7 +112,7 @@ void main() {
           ),
           crearTrabajoCubit: () =>
               throw UnimplementedError('stub no invocado en auxiliar'),
-          crearSesionCubit: (_) =>
+          crearSesionBloc: (_) =>
               throw UnimplementedError('stub no invocado en auxiliar'),
         ),
       );
