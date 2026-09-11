@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'features/auth/login_cubit.dart';
 import 'features/auth/login_pantalla.dart';
+import 'features/ordenes/presentation/ordenes_cubit.dart';
+import 'features/ordenes/presentation/ordenes_pantalla.dart';
 import 'nucleo/auth/token_store.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/ui/tema.dart';
@@ -13,11 +15,13 @@ class AgrocomApp extends StatelessWidget {
   final Flavor flavor;
   final TokenStore tokenStore;
   final LoginCubit Function() crearLoginCubit;
+  final OrdenesCubit Function() crearOrdenesCubit;
 
   const AgrocomApp({
     required this.flavor,
     required this.tokenStore,
     required this.crearLoginCubit,
+    required this.crearOrdenesCubit,
     super.key,
   });
 
@@ -32,24 +36,27 @@ class AgrocomApp extends StatelessWidget {
         flavor: flavor,
         tokenStore: tokenStore,
         crearLoginCubit: crearLoginCubit,
+        crearOrdenesCubit: crearOrdenesCubit,
       ),
     );
   }
 }
 
 /// Decide, al arrancar, si hay que pedir login (`TokenStore.leerToken()` ==
-/// null) o ir directo al placeholder — HU-03 solo cubre esa bifurcación,
-/// nunca decide una pantalla "home" nueva (eso es HU-04/HU-05).
+/// null) o ir directo a la lista de órdenes vigentes (HU-04) — HU-03 solo
+/// cubre esa bifurcación, nunca decidió qué pantalla "home" mostrar.
 class _RaizApp extends StatefulWidget {
   const _RaizApp({
     required this.flavor,
     required this.tokenStore,
     required this.crearLoginCubit,
+    required this.crearOrdenesCubit,
   });
 
   final Flavor flavor;
   final TokenStore tokenStore;
   final LoginCubit Function() crearLoginCubit;
+  final OrdenesCubit Function() crearOrdenesCubit;
 
   @override
   State<_RaizApp> createState() => _RaizAppState();
@@ -83,9 +90,7 @@ class _RaizAppState extends State<_RaizApp> {
           );
         }
 
-        return Scaffold(
-          body: Center(child: Text('agrocom-field — ${widget.flavor.name}')),
-        );
+        return OrdenesPantalla(crearCubit: widget.crearOrdenesCubit);
       },
     );
   }
