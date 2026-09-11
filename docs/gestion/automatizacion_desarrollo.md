@@ -1,6 +1,6 @@
-# Automatización del desarrollo — diseño propuesto
+# Automatización del desarrollo
 
-**Estado: propuesta, no implementada.** Este documento describe el mecanismo de ciclo automatizado que TE-18 (`docs/gestion/plan_sprints.md` de `agrocom-api`, Sprint 15) va a construir para `agrocom-field` — espejo del que ya funciona en `agrocom-api` (`docs/gestion/automatizacion_desarrollo.md` de ese repo, léelo primero: acá solo se documentan las diferencias y lo específico de este repo), pero corriendo como proceso aparte, sobre este working tree, sin tocar `agrocom-api`.
+**Estado: implementada (TE-18).** Este documento describe el mecanismo de ciclo automatizado de `agrocom-field` — espejo del que ya funciona en `agrocom-api` (`docs/gestion/automatizacion_desarrollo.md` de ese repo, léelo primero: acá solo se documentan las diferencias y lo específico de este repo), corriendo como proceso aparte, sobre este working tree, sin tocar `agrocom-api`.
 
 **Por qué otro proceso y no extender el existente**: la propia plantilla de planificación de `agrocom-api` (`prompts/plantillas/planificar.md`) excluye explícitamente a `agrocom-field` ("otro repo, este ciclo no lo toca") — es una decisión ya tomada, no un olvido. Dos repos con GitFlow independiente, CI independiente y ritmo de cambio independiente no comparten bien una sola cola ni un solo working tree.
 
@@ -71,4 +71,4 @@ Mismo mecanismo (LaunchAgent de macOS), **proceso separado** del de `agrocom-api
 
 ## Nota de proceso
 
-Este documento se escribe **antes** de que TE-18 exista como código — es la especificación que esa tarea implementa, no una descripción de algo ya funcionando. Actualizarlo para que refleje la realidad (quitar "diseño propuesto" del encabezado) es parte del criterio de aceptación de TE-18, no un paso aparte.
+Este documento describía, antes del 11/9/2026, un mecanismo todavía no construido — la especificación que TE-18 implementó, no una descripción de algo ya funcionando. Con TE-18 integrada, las cinco piezas de arriba (`bin/verify`, `auto-merge.yml`, los guardarraíles, `bin/ciclo`, `bin/ciclo-servicio`) existen en el árbol; lo que sigue pendiente es lo que ya listaba "Lo que falta para un turno desatendido en este repo" — la prueba de replay del motor de sync sigue siendo el gate más importante, y se escribe junto con TE-05, no antes.
