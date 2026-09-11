@@ -9,7 +9,10 @@ sealed class SesionEvento {
 
 final class SesionAbrirSolicitada extends SesionEvento {
   const SesionAbrirSolicitada({
+    this.auxiliarId,
+    this.dronId,
     this.hectareasDeclaradas,
+    this.hectareaInicialAcumulada,
     required this.vientoKmh,
     required this.temperaturaC,
     required this.humedadPct,
@@ -17,7 +20,13 @@ final class SesionAbrirSolicitada extends SesionEvento {
     this.firmaObservacion,
   });
 
+  /// HU-07 (relevo de piloto) — los tres opcionales: `null` cuando no hay
+  /// auxiliar asignado, no se conoce el id de servidor del dron, o no es un
+  /// relevo (primera sesión del lote, sin acumulado previo).
+  final int? auxiliarId;
+  final int? dronId;
   final Decimal? hectareasDeclaradas;
+  final Decimal? hectareaInicialAcumulada;
 
   /// Condiciones al abrir sesión (HU-06) — obligatorias, ver
   /// `docs/api/openapi.yaml` de `agrocom-api`, `RegistroSync` tipo
@@ -35,11 +44,18 @@ final class SesionAbrirSolicitada extends SesionEvento {
 final class SesionCerrarSolicitada extends SesionEvento {
   const SesionCerrarSolicitada({
     required this.motivoCierre,
-    required this.hectareasDeclaradas,
+    this.hectareasDeclaradas,
+    this.hectareaFinalAcumulada,
     this.litrosConsumidos,
   });
 
   final String motivoCierre;
-  final Decimal hectareasDeclaradas;
+
+  /// Ingreso directo — obligatorio salvo que la sesión activa tenga
+  /// `hectareaInicialAcumulada` no nulo, caso en el que el formulario pide
+  /// [hectareaFinalAcumulada] en su lugar (HU-07, control de doble conteo:
+  /// ver `SesionRepository.cerrarSesion`).
+  final Decimal? hectareasDeclaradas;
+  final Decimal? hectareaFinalAcumulada;
   final Decimal? litrosConsumidos;
 }
