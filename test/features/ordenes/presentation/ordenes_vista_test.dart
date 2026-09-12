@@ -83,9 +83,12 @@ void main() {
           // mantiene real acá para no depender de esa garantía en los tests
           // de flavor piloto.
           crearTrabajoCubit: () => TrabajoCubit(_TrabajoRepositoryFalso()),
-          // crearSesionBloc solo se invoca tras abrir un trabajo con éxito,
-          // algo que ningún test de este archivo ejercita.
+          // crearSesionBloc/crearIncidenciaCubit solo se invocan tras abrir
+          // un trabajo con éxito o reportar una incidencia, algo que ningún
+          // test de este archivo ejercita.
           crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
+          crearIncidenciaCubit: (_) =>
+              throw UnimplementedError('stub no invocado'),
         ),
       ),
     ),
@@ -203,6 +206,9 @@ void main() {
               'El flavor auxiliar no dispone de trabajo/sesión',
             ),
             crearSesionBloc: (_) => throw UnimplementedError(
+              'El flavor auxiliar no dispone de trabajo/sesión',
+            ),
+            crearIncidenciaCubit: (_) => throw UnimplementedError(
               'El flavor auxiliar no dispone de trabajo/sesión',
             ),
           ),

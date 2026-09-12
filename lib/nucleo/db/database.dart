@@ -7,6 +7,7 @@ import 'tablas/cola_sync.dart';
 import 'tablas/condicion_local.dart';
 import 'tablas/cursor_catalogo.dart';
 import 'tablas/evidencia_local.dart';
+import 'tablas/incidencia_local.dart';
 import 'tablas/lote_catalogo.dart';
 import 'tablas/orden_catalogo.dart';
 import 'tablas/persona_catalogo.dart';
@@ -24,11 +25,12 @@ part 'database.g.dart';
 /// agrega [CondicionLocal], las condiciones climáticas capturadas al abrir
 /// una sesión; TE-07 (v5) agrega [EvidenciaLocal], la cola de evidencias
 /// (fotos/capturas comprimidas), SEPARADA de [ColaSync] por invariante 8 de
-/// CLAUDE.md. Las tablas espejo del resto de las features de escritura
-/// (recargas, incidencias...) se agregan en tareas técnicas posteriores,
-/// cada una subiendo [schemaVersion] con su propia migración — nunca
-/// reescribiendo la anterior, para no perder datos ya capturados en
-/// dispositivos reales.
+/// CLAUDE.md; HU-08 (v6) agrega [IncidenciaLocal], el evento puntual que el
+/// piloto registra durante una sesión activa, siempre con foto obligatoria.
+/// Las tablas espejo del resto de las features de escritura (recargas...)
+/// se agregan en tareas técnicas posteriores, cada una subiendo
+/// [schemaVersion] con su propia migración — nunca reescribiendo la
+/// anterior, para no perder datos ya capturados en dispositivos reales.
 @DriftDatabase(
   tables: [
     ColaSync,
@@ -40,6 +42,7 @@ part 'database.g.dart';
     SesionLocal,
     CondicionLocal,
     EvidenciaLocal,
+    IncidenciaLocal,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -47,7 +50,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -76,6 +79,11 @@ class AppDatabase extends _$AppDatabase {
       // anteriores.
       if (from < 5) {
         await m.createTable(evidenciaLocal);
+      }
+      // v6 agrega la tabla espejo de incidencias (HU-08), sin tocar
+      // ninguna de las anteriores.
+      if (from < 6) {
+        await m.createTable(incidenciaLocal);
       }
     },
   );

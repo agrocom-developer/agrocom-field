@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 
 import '../../features/avisos_locales/data/ids_vistos_store.dart';
+import '../../features/incidencias/data/incidencia_repository.dart';
 import '../../features/ordenes/data/ordenes_repository.dart';
 import '../../features/sesion_vuelo/data/trabajo_repository.dart';
 import '../../features/sesion_vuelo/data/sesion_repository.dart';
@@ -10,8 +11,13 @@ import '../auth/login_service.dart';
 import '../auth/persona_operativa_store.dart';
 import '../auth/rol_activo_store.dart';
 import '../auth/token_store.dart';
+import '../camara/selector_foto.dart';
 import '../catalogo/catalogo_repository.dart';
 import '../db/database.dart';
+import '../evidencias/compresor_evidencia.dart';
+import '../evidencias/directorio_evidencias.dart';
+import '../evidencias/evidencia_repository.dart';
+import '../evidencias/evidencia_sync_engine.dart';
 import '../flavor.dart';
 import '../linterna/linterna_controlador.dart';
 import '../notificaciones/notificador_local.dart';
@@ -82,6 +88,30 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
   getIt.registerLazySingleton<SesionRepository>(
     () => SesionRepository(getIt<AppDatabase>()),
   );
-  // Los repositorios de cada feature (recargas...) se
+  getIt.registerLazySingleton<CompresorEvidencia>(
+    CompresorEvidenciaFlutterImageCompress.new,
+  );
+  final directorioEvidencias = await resolverDirectorioEvidencias();
+  getIt.registerLazySingleton<EvidenciaRepository>(
+    () => EvidenciaRepository(
+      getIt<AppDatabase>(),
+      compresor: getIt<CompresorEvidencia>(),
+      directorioEvidencias: directorioEvidencias,
+    ),
+  );
+  getIt.registerLazySingleton<EvidenciaSyncEngine>(
+    () => EvidenciaSyncEngine(
+      apiClient: getIt<ApiClient>(),
+      db: getIt<AppDatabase>(),
+    ),
+  );
+  getIt.registerLazySingleton<SelectorFoto>(SelectorFotoImagePicker.new);
+  getIt.registerLazySingleton<IncidenciaRepository>(
+    () => IncidenciaRepository(
+      getIt<AppDatabase>(),
+      evidenciaRepository: getIt<EvidenciaRepository>(),
+    ),
+  );
+  // Los repositorios del resto de las features (recargas...) se
   // registran acá cuando esa feature los agregue — no antes.
 }

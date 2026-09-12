@@ -80,6 +80,8 @@ void main() {
         crearOrdenesCubit: _crearOrdenesCubit(db, (_) {}),
         crearTrabajoCubit: () => throw UnimplementedError('stub no invocado'),
         crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
+        crearIncidenciaCubit: (_) =>
+            throw UnimplementedError('stub no invocado'),
       ),
     );
     await tester.pumpAndSettle();
@@ -105,6 +107,8 @@ void main() {
           crearOrdenesCubit: _crearOrdenesCubit(db, (_) {}),
           crearTrabajoCubit: () => throw UnimplementedError('stub no invocado'),
           crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
+          crearIncidenciaCubit: (_) =>
+              throw UnimplementedError('stub no invocado'),
         ),
       );
       await tester.pumpAndSettle();
@@ -132,6 +136,8 @@ void main() {
           crearTrabajoCubit: () =>
               throw UnimplementedError('stub no invocado en auxiliar'),
           crearSesionBloc: (_) =>
+              throw UnimplementedError('stub no invocado en auxiliar'),
+          crearIncidenciaCubit: (_) =>
               throw UnimplementedError('stub no invocado en auxiliar'),
         ),
       );
@@ -197,6 +203,8 @@ void main() {
           crearTrabajoCubit: () =>
               throw UnimplementedError('stub no invocado en auxiliar'),
           crearSesionBloc: (_) =>
+              throw UnimplementedError('stub no invocado en auxiliar'),
+          crearIncidenciaCubit: (_) =>
               throw UnimplementedError('stub no invocado en auxiliar'),
         ),
       );

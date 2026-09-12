@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/flavor.dart';
+import '../../incidencias/presentation/incidencia_cubit.dart';
 import '../../sesion_vuelo/presentation/trabajo_cubit.dart';
 import '../../sesion_vuelo/presentation/sesion_bloc.dart';
 import 'ordenes_cubit.dart';
@@ -14,13 +15,15 @@ import 'ordenes_vista.dart';
 /// `piloto/` ni `auxiliar/` (invariante 7 de CLAUDE.md).
 ///
 /// Propaga las factories de [TrabajoCubit] y [SesionBloc] para HU-05 (etapa 4)
-/// — solo serán usadas si el flavor es `piloto`.
+/// y de [IncidenciaCubit] para HU-08 — solo serán usadas si el flavor es
+/// `piloto`.
 class OrdenesPantalla extends StatelessWidget {
   const OrdenesPantalla({
     required this.crearCubit,
     required this.flavor,
     required this.crearTrabajoCubit,
     required this.crearSesionBloc,
+    required this.crearIncidenciaCubit,
     super.key,
   });
 
@@ -28,6 +31,7 @@ class OrdenesPantalla extends StatelessWidget {
   final Flavor flavor;
   final TrabajoCubit Function() crearTrabajoCubit;
   final SesionBloc Function(String) crearSesionBloc;
+  final IncidenciaCubit Function(String sesionUuidCliente) crearIncidenciaCubit;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +41,7 @@ class OrdenesPantalla extends StatelessWidget {
         flavor: flavor,
         crearTrabajoCubit: crearTrabajoCubit,
         crearSesionBloc: crearSesionBloc,
+        crearIncidenciaCubit: crearIncidenciaCubit,
       ),
     );
   }

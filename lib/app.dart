@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'features/auth/login_cubit.dart';
 import 'features/auth/login_pantalla.dart';
 import 'features/emergencia/presentation/emergencia_boton.dart';
+import 'features/incidencias/presentation/incidencia_cubit.dart';
 import 'features/ordenes/presentation/ordenes_cubit.dart';
 import 'features/ordenes/presentation/ordenes_pantalla.dart';
 import 'features/sesion_vuelo/presentation/trabajo_cubit.dart';
@@ -23,6 +24,7 @@ class AgrocomApp extends StatelessWidget {
   final OrdenesCubit Function() crearOrdenesCubit;
   final TrabajoCubit Function() crearTrabajoCubit;
   final SesionBloc Function(String) crearSesionBloc;
+  final IncidenciaCubit Function(String sesionUuidCliente) crearIncidenciaCubit;
 
   const AgrocomApp({
     required this.flavor,
@@ -32,6 +34,7 @@ class AgrocomApp extends StatelessWidget {
     required this.crearOrdenesCubit,
     required this.crearTrabajoCubit,
     required this.crearSesionBloc,
+    required this.crearIncidenciaCubit,
     super.key,
   });
 
@@ -52,6 +55,7 @@ class AgrocomApp extends StatelessWidget {
           crearOrdenesCubit: crearOrdenesCubit,
           crearTrabajoCubit: crearTrabajoCubit,
           crearSesionBloc: crearSesionBloc,
+          crearIncidenciaCubit: crearIncidenciaCubit,
         ),
       ),
     );
@@ -69,6 +73,7 @@ class _RaizApp extends StatefulWidget {
     required this.crearOrdenesCubit,
     required this.crearTrabajoCubit,
     required this.crearSesionBloc,
+    required this.crearIncidenciaCubit,
   });
 
   final Flavor flavor;
@@ -77,6 +82,7 @@ class _RaizApp extends StatefulWidget {
   final OrdenesCubit Function() crearOrdenesCubit;
   final TrabajoCubit Function() crearTrabajoCubit;
   final SesionBloc Function(String) crearSesionBloc;
+  final IncidenciaCubit Function(String sesionUuidCliente) crearIncidenciaCubit;
 
   @override
   State<_RaizApp> createState() => _RaizAppState();
@@ -115,6 +121,7 @@ class _RaizAppState extends State<_RaizApp> {
           flavor: widget.flavor,
           crearTrabajoCubit: widget.crearTrabajoCubit,
           crearSesionBloc: widget.crearSesionBloc,
+          crearIncidenciaCubit: widget.crearIncidenciaCubit,
         );
       },
     );

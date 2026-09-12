@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../nucleo/flavor.dart';
+import '../../incidencias/presentation/incidencia_cubit.dart';
 import '../../sesion_vuelo/presentation/trabajo_cubit.dart';
 import '../../sesion_vuelo/presentation/trabajo_estado.dart';
 import '../../sesion_vuelo/presentation/sesion_vuelo_pantalla.dart';
@@ -15,13 +16,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 ///
 /// No deserializa `LoteCatalogo.geometria` (HU-61, mapa, fuera de
 /// alcance). Agrega el botón "Abrir trabajo" (HU-05) — exclusivo del flavor
-/// `piloto` — que navega a [SesionVueloPantalla] con el trabajo recién abierto.
+/// `piloto` — que navega a [SesionVueloPantalla] con el trabajo recién
+/// abierto, propagándole también [crearIncidenciaCubit] (HU-08).
 class OrdenDetallePantalla extends StatelessWidget {
   const OrdenDetallePantalla({
     required this.orden,
     required this.flavor,
     required this.crearTrabajoCubit,
     required this.crearSesionBloc,
+    required this.crearIncidenciaCubit,
     super.key,
   });
 
@@ -29,6 +32,7 @@ class OrdenDetallePantalla extends StatelessWidget {
   final Flavor flavor;
   final TrabajoCubit Function() crearTrabajoCubit;
   final SesionBloc Function(String) crearSesionBloc;
+  final IncidenciaCubit Function(String sesionUuidCliente) crearIncidenciaCubit;
 
   static const _sinDatos = 'sin datos';
 
@@ -52,6 +56,7 @@ class OrdenDetallePantalla extends StatelessWidget {
               MaterialPageRoute(
                 builder: (_) => SesionVueloPantalla(
                   crearBloc: () => crearSesionBloc(estado.trabajo.uuidCliente),
+                  crearIncidenciaCubit: crearIncidenciaCubit,
                 ),
               ),
             );
