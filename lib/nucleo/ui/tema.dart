@@ -28,6 +28,7 @@ abstract final class AgrocomTheme {
         style: FilledButton.styleFrom(minimumSize: const Size(64, 56)),
       ),
       inputDecorationTheme: _inputDecorationTheme(colorScheme),
+      cardTheme: _cardTheme(colorScheme),
     );
   }
 
@@ -52,8 +53,19 @@ abstract final class AgrocomTheme {
         style: FilledButton.styleFrom(minimumSize: const Size(64, 56)),
       ),
       inputDecorationTheme: _inputDecorationTheme(colorScheme),
+      cardTheme: _cardTheme(colorScheme),
     );
   }
+
+  /// Mismo radio de 16 que los campos de formulario y el pill de los
+  /// botones — sin esto cada pantalla que agrupa contenido en un `Card`
+  /// termina con un radio distinto, a criterio de quien la escribió.
+  static CardThemeData _cardTheme(ColorScheme colorScheme) => CardThemeData(
+    elevation: 0,
+    color: colorScheme.surfaceContainerHighest,
+    surfaceTintColor: Colors.transparent,
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+  );
 
   /// Estilo "filled" de M3 para todos los campos de formulario — mismo
   /// radio redondeado en los cuatro flancos que el pill de los botones, en
