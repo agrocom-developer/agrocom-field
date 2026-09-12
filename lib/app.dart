@@ -12,6 +12,8 @@ import 'nucleo/auth/token_store.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
 import 'nucleo/ui/tema.dart';
+import 'nucleo/version/estado_version.dart';
+import 'nucleo/version/version_bloqueo_overlay.dart';
 
 /// App raíz de Agrocom Field.
 ///
@@ -20,6 +22,7 @@ class AgrocomApp extends StatelessWidget {
   final Flavor flavor;
   final TokenStore tokenStore;
   final LinternaControlador linternaControlador;
+  final Stream<EstadoVersion> estadoVersion;
   final LoginCubit Function() crearLoginCubit;
   final OrdenesCubit Function() crearOrdenesCubit;
   final TrabajoCubit Function() crearTrabajoCubit;
@@ -30,6 +33,7 @@ class AgrocomApp extends StatelessWidget {
     required this.flavor,
     required this.tokenStore,
     required this.linternaControlador,
+    required this.estadoVersion,
     required this.crearLoginCubit,
     required this.crearOrdenesCubit,
     required this.crearTrabajoCubit,
@@ -45,17 +49,20 @@ class AgrocomApp extends StatelessWidget {
       theme: AgrocomTheme.light(),
       darkTheme: AgrocomTheme.dark(),
       themeMode: ThemeMode.system,
-      home: EmergenciaBoton(
-        flavor: flavor,
-        linternaControlador: linternaControlador,
-        child: _RaizApp(
+      home: VersionBloqueoOverlay(
+        estadoVersion: estadoVersion,
+        child: EmergenciaBoton(
           flavor: flavor,
-          tokenStore: tokenStore,
-          crearLoginCubit: crearLoginCubit,
-          crearOrdenesCubit: crearOrdenesCubit,
-          crearTrabajoCubit: crearTrabajoCubit,
-          crearSesionBloc: crearSesionBloc,
-          crearIncidenciaCubit: crearIncidenciaCubit,
+          linternaControlador: linternaControlador,
+          child: _RaizApp(
+            flavor: flavor,
+            tokenStore: tokenStore,
+            crearLoginCubit: crearLoginCubit,
+            crearOrdenesCubit: crearOrdenesCubit,
+            crearTrabajoCubit: crearTrabajoCubit,
+            crearSesionBloc: crearSesionBloc,
+            crearIncidenciaCubit: crearIncidenciaCubit,
+          ),
         ),
       ),
     );

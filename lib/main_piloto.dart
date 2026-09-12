@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'app.dart';
@@ -18,15 +20,24 @@ import 'nucleo/di/service_locator.dart';
 import 'nucleo/evidencias/evidencia_repository.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
+import 'nucleo/version/version_watcher.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configurarDependencias(flavor: Flavor.piloto);
+
+  // HU-20: no se espera antes de `runApp` — el primer chequeo puede tardar
+  // (o directamente no tener red), y la app nunca depende de que la red
+  // responda para arrancar (invariante 1 de CLAUDE.md). Si la respuesta
+  // llega bloqueada, `VersionBloqueoOverlay` tapa la pantalla que sea.
+  unawaited(getIt<VersionWatcher>().iniciar());
+
   runApp(
     AgrocomApp(
       flavor: Flavor.piloto,
       tokenStore: getIt<TokenStore>(),
       linternaControlador: getIt<LinternaControlador>(),
+      estadoVersion: getIt<VersionWatcher>().estado,
       crearLoginCubit: () => LoginCubit(getIt<LoginService>(), Flavor.piloto),
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
       crearTrabajoCubit: () => TrabajoCubit(

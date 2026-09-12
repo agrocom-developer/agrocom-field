@@ -3,6 +3,10 @@
 // lista de órdenes vigentes (HU-04), leída de una `AppDatabase` en memoria
 // (mismo patrón que `test/nucleo/catalogo/catalogo_repository_test.dart`).
 // Etapa 4 agrega factories de trabajo/sesión pero no las invoca en estos tests.
+// Etapa 2 de HU-20 agrega el último grupo: `VersionBloqueoOverlay` tapando
+// login cuando `estadoVersion` emite `VersionBloqueada`.
+
+import 'dart:async';
 
 import 'package:agrocom_field/app.dart';
 import 'package:agrocom_field/features/auth/login_cubit.dart';
@@ -13,6 +17,8 @@ import 'package:agrocom_field/nucleo/auth/token_store.dart';
 import 'package:agrocom_field/nucleo/db/database.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
 import 'package:agrocom_field/nucleo/linterna/linterna_controlador.dart';
+import 'package:agrocom_field/nucleo/version/estado_version.dart';
+import 'package:agrocom_field/nucleo/version/version_apk.dart';
 import 'package:decimal/decimal.dart';
 import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
@@ -74,6 +80,7 @@ void main() {
         flavor: Flavor.piloto,
         tokenStore: tokenStore,
         linternaControlador: linterna,
+        estadoVersion: const Stream<EstadoVersion>.empty(),
         crearLoginCubit: () => LoginCubit(_LoginServiceFalso(), Flavor.piloto),
         // Nunca se invoca: la rama de login no llega a montar
         // `OrdenesPantalla`, así que no hay cubit que cerrar acá.
@@ -102,6 +109,7 @@ void main() {
           flavor: Flavor.piloto,
           tokenStore: tokenStore,
           linternaControlador: linterna,
+          estadoVersion: const Stream<EstadoVersion>.empty(),
           crearLoginCubit: () =>
               LoginCubit(_LoginServiceFalso(), Flavor.piloto),
           crearOrdenesCubit: _crearOrdenesCubit(db, (_) {}),
@@ -130,6 +138,7 @@ void main() {
           flavor: Flavor.auxiliar,
           tokenStore: tokenStore,
           linternaControlador: linterna,
+          estadoVersion: const Stream<EstadoVersion>.empty(),
           crearLoginCubit: () =>
               LoginCubit(_LoginServiceFalso(), Flavor.auxiliar),
           crearOrdenesCubit: _crearOrdenesCubit(db, (_) {}),
@@ -194,6 +203,7 @@ void main() {
           flavor: Flavor.auxiliar,
           tokenStore: tokenStore,
           linternaControlador: linterna,
+          estadoVersion: const Stream<EstadoVersion>.empty(),
           crearLoginCubit: () =>
               LoginCubit(_LoginServiceFalso(), Flavor.auxiliar),
           crearOrdenesCubit: _crearOrdenesCubit(
@@ -216,6 +226,52 @@ void main() {
       expect(find.byKey(const Key('emergencia_boton')), findsOneWidget);
 
       await tester.runAsync(() => ordenesCubit!.close());
+    },
+  );
+
+  testWidgets(
+    'HU-20: bloqueada tapa la pantalla de login, sin sesión ni token',
+    (tester) async {
+      when(() => tokenStore.leerToken()).thenAnswer((_) async => null);
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+      final controladorVersion = StreamController<EstadoVersion>();
+      addTearDown(controladorVersion.close);
+
+      await tester.pumpWidget(
+        AgrocomApp(
+          flavor: Flavor.piloto,
+          tokenStore: tokenStore,
+          linternaControlador: linterna,
+          estadoVersion: controladorVersion.stream,
+          crearLoginCubit: () =>
+              LoginCubit(_LoginServiceFalso(), Flavor.piloto),
+          crearOrdenesCubit: _crearOrdenesCubit(db, (_) {}),
+          crearTrabajoCubit: () => throw UnimplementedError('stub no invocado'),
+          crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
+          crearIncidenciaCubit: (_) =>
+              throw UnimplementedError('stub no invocado'),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('login_usuario')), findsOneWidget);
+      expect(find.byKey(const Key('version_bloqueada_pantalla')), findsNothing);
+
+      const minima = VersionApk(
+        version: '2.0.0',
+        versionCode: 20000,
+        urlDescarga: 'https://agrocom.example/apk/2.0.0',
+      );
+      controladorVersion.add(const VersionBloqueada(minima));
+      await tester.pumpAndSettle();
+
+      expect(
+        find.byKey(const Key('version_bloqueada_pantalla')),
+        findsOneWidget,
+      );
+      expect(find.textContaining('2.0.0'), findsWidgets);
+      expect(find.text(minima.urlDescarga), findsOneWidget);
     },
   );
 }
