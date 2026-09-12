@@ -5,12 +5,15 @@ import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../nucleo/db/database.dart';
+import '../../../nucleo/db/tablas/trabajo_local.dart' show EstadoTrabajoLocal;
+import '../domain/reglas_trabajo.dart';
 import '../domain/trabajo.dart';
 
-/// Escribe la apertura de un trabajo (`AperturaTrabajo`, ver
-/// `AperturaTrabajo.php` en `agrocom-api`): inserta [TrabajoLocal] y encola
-/// en `ColaSync` en una sola transacción (invariante 3 de CLAUDE.md) —
-/// ningún caso de uso espera la red para confirmar en pantalla.
+/// Escribe la apertura de un trabajo (`AperturaTrabajo`) y su cierre
+/// (`CierreTrabajo`, HU-09) — ver esos contratos en `agrocom-api`: inserta o
+/// actualiza [TrabajoLocal] y encola en `ColaSync` en una sola transacción
+/// (invariante 3 de CLAUDE.md) — ningún caso de uso espera la red para
+/// confirmar en pantalla.
 class TrabajoRepository {
   TrabajoRepository(this._db, {Uuid? uuid}) : _uuid = uuid ?? const Uuid();
 
@@ -77,6 +80,73 @@ class TrabajoRepository {
     });
   }
 
+  /// Actualiza la MISMA fila de [TrabajoLocal] con los campos de cierre, sin
+  /// tocar `ordenId`/`loteId`/`nroAplicacion`/`hectareasDeclaradas`/`inicio`
+  /// de apertura (invariante 6 de CLAUDE.md), y encola `cierre_trabajo` — un
+  /// evento nuevo con su propio `uuid_cliente` ([uuidClienteCierre]), nunca
+  /// el `uuid_cliente` de apertura del trabajo. Todo dentro de una sola
+  /// transacción (invariante 3 de CLAUDE.md) — mismo patrón que
+  /// `SesionRepository.cerrarSesion`.
+  ///
+  /// Lanza [EvidenciaImagenCampoRequeridaExcepcion] ANTES de escribir nada
+  /// si [evidenciaImagenCampoUuidCliente] es `null` o está vacío/en blanco
+  /// ("sin captura no cierra") — el contrato real (`CierreTrabajo.php` en
+  /// `agrocom-api`) solo exige esa evidencia, nunca un segundo campo de
+  /// `captura_rc` (no está enganchado a ningún DTO real todavía).
+  ///
+  /// Sin campo de hectáreas acá a propósito:
+  /// `trabajos.hectareas_declaradas` es derivado (suma de sesiones) del
+  /// lado servidor, nunca algo que el dispositivo declare al cerrar.
+  Future<Trabajo> cerrarTrabajo({
+    required String trabajoUuidCliente,
+    required DateTime fin,
+    Decimal? litrosSobrante,
+    required String evidenciaImagenCampoUuidCliente,
+  }) async {
+    verificarEvidenciaImagenCampo(evidenciaImagenCampoUuidCliente);
+
+    final uuidClienteCierre = _uuid.v4();
+
+    return _db.transaction(() async {
+      await (_db.update(
+        _db.trabajoLocal,
+      )..where((t) => t.uuidCliente.equals(trabajoUuidCliente))).write(
+        TrabajoLocalCompanion(
+          estado: const Value(EstadoTrabajoLocal.cerrado),
+          fin: Value(fin),
+          litrosSobrante: Value(litrosSobrante),
+          evidenciaImagenCampoUuidCliente: Value(
+            evidenciaImagenCampoUuidCliente,
+          ),
+          uuidClienteCierre: Value(uuidClienteCierre),
+        ),
+      );
+
+      final secuencia = await _proximaSecuenciaGlobal();
+      await _db
+          .into(_db.colaSync)
+          .insert(
+            ColaSyncCompanion.insert(
+              uuidCliente: uuidClienteCierre,
+              tipoEntidad: 'cierre_trabajo',
+              payload: jsonEncode({
+                'trabajo_uuid_cliente': trabajoUuidCliente,
+                'fin': fin.toUtc().toIso8601String(),
+                'litros_sobrante': litrosSobrante?.toString(),
+                'evidencia_imagen_campo_uuid_cliente':
+                    evidenciaImagenCampoUuidCliente,
+              }),
+              secuencia: secuencia,
+            ),
+          );
+
+      final fila = await (_db.select(
+        _db.trabajoLocal,
+      )..where((t) => t.uuidCliente.equals(trabajoUuidCliente))).getSingle();
+      return _trabajoDesdeFila(fila);
+    });
+  }
+
   /// Orden causal GLOBAL de todo lo que este dispositivo encola (invariante
   /// 5 de CLAUDE.md) — mezcla trabajos, sesiones, cierres y cualquier otro
   /// tipo futuro. Distinto de `SesionLocal.secuencia`, que es el orden de
@@ -87,5 +157,23 @@ class TrabajoRepository {
       _db.colaSync,
     )..addColumns([maximo])).getSingle();
     return (fila.read(maximo) ?? 0) + 1;
+  }
+
+  Trabajo _trabajoDesdeFila(TrabajoLocalData fila) {
+    return Trabajo(
+      uuidCliente: fila.uuidCliente,
+      ordenId: fila.ordenId,
+      loteId: fila.loteId,
+      nroAplicacion: fila.nroAplicacion,
+      hectareasDeclaradas: fila.hectareasDeclaradas,
+      inicio: fila.inicio,
+      estado: fila.estado == EstadoTrabajoLocal.abierto
+          ? EstadoTrabajo.abierto
+          : EstadoTrabajo.cerrado,
+      fin: fila.fin,
+      litrosSobrante: fila.litrosSobrante,
+      evidenciaImagenCampoUuidCliente: fila.evidenciaImagenCampoUuidCliente,
+      uuidClienteCierre: fila.uuidClienteCierre,
+    );
   }
 }
