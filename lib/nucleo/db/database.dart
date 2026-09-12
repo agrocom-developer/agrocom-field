@@ -26,7 +26,12 @@ part 'database.g.dart';
 /// una sesión; TE-07 (v5) agrega [EvidenciaLocal], la cola de evidencias
 /// (fotos/capturas comprimidas), SEPARADA de [ColaSync] por invariante 8 de
 /// CLAUDE.md; HU-08 (v6) agrega [IncidenciaLocal], el evento puntual que el
-/// piloto registra durante una sesión activa, siempre con foto obligatoria.
+/// piloto registra durante una sesión activa, siempre con foto obligatoria;
+/// HU-09 (v7) agrega a [TrabajoLocal] las columnas de cierre de trabajo
+/// (`estado`, `fin`, `litrosSobrante`, `evidenciaImagenCampoUuidCliente`,
+/// `uuidClienteCierre`) con `ALTER TABLE` — primera migración de este
+/// esquema que agrega columnas a una tabla existente en vez de crear una
+/// tabla nueva.
 /// Las tablas espejo del resto de las features de escritura (recargas...)
 /// se agregan en tareas técnicas posteriores, cada una subiendo
 /// [schemaVersion] con su propia migración — nunca reescribiendo la
@@ -50,7 +55,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -84,6 +89,37 @@ class AppDatabase extends _$AppDatabase {
       // ninguna de las anteriores.
       if (from < 6) {
         await m.createTable(incidenciaLocal);
+      }
+      // v7 agrega el cierre de trabajo (HU-09) a `trabajo_local` existente,
+      // vía `ALTER TABLE` — sin recrear la tabla, que ya tiene filas reales
+      // en dispositivos. `uuidClienteCierre` no lleva `UNIQUE` en la
+      // definición de columna (SQLite rechaza agregar una columna UNIQUE
+      // con ALTER TABLE ADD COLUMN); la unicidad se agrega aparte con
+      // `idxTrabajoLocalUuidClienteCierre`.
+      //
+      // `from >= 3` es a propósito, no solo `from < 7`: si el dispositivo
+      // viene de antes de v3, el bloque de arriba (`from < 3`) recién creó
+      // `trabajo_local` con `createTable` usando la clase Dart ACTUAL —que
+      // ya incluye estas columnas—, así que agregarlas de nuevo acá
+      // fallaría con "duplicate column name". Solo hace falta el
+      // `ALTER TABLE` cuando la tabla ya existía con el esquema viejo.
+      if (from >= 3 && from < 7) {
+        await m.addColumn(trabajoLocal, trabajoLocal.estado);
+        await m.addColumn(trabajoLocal, trabajoLocal.fin);
+        await m.addColumn(trabajoLocal, trabajoLocal.litrosSobrante);
+        await m.addColumn(
+          trabajoLocal,
+          trabajoLocal.evidenciaImagenCampoUuidCliente,
+        );
+        await m.addColumn(trabajoLocal, trabajoLocal.uuidClienteCierre);
+      }
+      // El índice, en cambio, hace falta siempre que `from < 7`: si
+      // `trabajo_local` se acaba de crear entera arriba (`from < 3`),
+      // `createTable` no crea los índices asociados — hay que pedirlo
+      // aparte, a diferencia de las columnas (que sí vienen incluidas en el
+      // `CREATE TABLE` porque son parte de la clase Dart actual).
+      if (from < 7) {
+        await m.createIndex(idxTrabajoLocalUuidClienteCierre);
       }
     },
   );
