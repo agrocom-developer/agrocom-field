@@ -6,6 +6,7 @@ import '../tipos/decimal_drift_converter.dart';
 import 'tablas/cola_sync.dart';
 import 'tablas/condicion_local.dart';
 import 'tablas/cursor_catalogo.dart';
+import 'tablas/evidencia_local.dart';
 import 'tablas/lote_catalogo.dart';
 import 'tablas/orden_catalogo.dart';
 import 'tablas/persona_catalogo.dart';
@@ -21,7 +22,9 @@ part 'database.g.dart';
 /// primeras tablas espejo de escritura ([TrabajoLocal], [SesionLocal]), con
 /// `uuid_cliente` generado en el dispositivo como identidad; HU-06 (v4)
 /// agrega [CondicionLocal], las condiciones climáticas capturadas al abrir
-/// una sesión. Las tablas espejo del resto de las features de escritura
+/// una sesión; TE-07 (v5) agrega [EvidenciaLocal], la cola de evidencias
+/// (fotos/capturas comprimidas), SEPARADA de [ColaSync] por invariante 8 de
+/// CLAUDE.md. Las tablas espejo del resto de las features de escritura
 /// (recargas, incidencias...) se agregan en tareas técnicas posteriores,
 /// cada una subiendo [schemaVersion] con su propia migración — nunca
 /// reescribiendo la anterior, para no perder datos ya capturados en
@@ -36,6 +39,7 @@ part 'database.g.dart';
     TrabajoLocal,
     SesionLocal,
     CondicionLocal,
+    EvidenciaLocal,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -43,7 +47,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -67,6 +71,11 @@ class AppDatabase extends _$AppDatabase {
       // de las anteriores.
       if (from < 4) {
         await m.createTable(condicionLocal);
+      }
+      // v5 agrega la cola de evidencias (TE-07), sin tocar ninguna de las
+      // anteriores.
+      if (from < 5) {
+        await m.createTable(evidenciaLocal);
       }
     },
   );
