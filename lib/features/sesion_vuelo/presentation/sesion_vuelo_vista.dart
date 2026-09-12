@@ -270,7 +270,10 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                     const Divider(),
                     const SizedBox(height: 8),
                     Text(
-                      'Relevo de piloto (opcional)',
+                      // Sin "(opcional)" acá: cada campo del grupo ya lo dice
+                      // en su propia etiqueta — repetirlo arriba solo
+                      // apilaba el mismo texto dos veces, pegado.
+                      'Relevo de piloto',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     const SizedBox(height: 8),
@@ -706,112 +709,123 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
             SesionAbriendo() => const Center(
               child: CircularProgressIndicator(),
             ),
-            SesionActiva(:final sesion) => Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Sesión activa',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 24),
-                    _InfoRow(label: 'Secuencia', value: '${sesion.secuencia}'),
-                    _InfoRow(
-                      label: 'Inicio',
-                      value: _formatearHora(sesion.inicio),
-                    ),
-                    _InfoRow(
-                      label: 'Hectáreas declaradas',
-                      value: sesion.hectareasDeclaradas.toString(),
-                    ),
-                    const SizedBox(height: 24),
-                    OutlinedButton(
-                      key: const Key('boton_reportar_incidencia'),
-                      onPressed: () =>
-                          _reportarIncidencia(context, sesion.uuidCliente),
-                      child: const Text('Reportar incidencia'),
-                    ),
-                    const SizedBox(height: 12),
-                    FilledButton(
-                      key: const Key('boton_cerrar_sesion'),
-                      onPressed: () =>
-                          _mostrarFormularioCierre(context, sesion),
-                      child: const Text('Cerrar sesión'),
-                    ),
-                  ],
+            SesionActiva(:final sesion) => Padding(
+              padding: const EdgeInsets.all(16),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Sesión activa',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                      const SizedBox(height: 24),
+                      _InfoRow(
+                        label: 'Secuencia',
+                        value: '${sesion.secuencia}',
+                      ),
+                      _InfoRow(
+                        label: 'Inicio',
+                        value: _formatearHora(sesion.inicio),
+                      ),
+                      _InfoRow(
+                        label: 'Hectáreas declaradas',
+                        value: sesion.hectareasDeclaradas.toString(),
+                      ),
+                      const SizedBox(height: 24),
+                      OutlinedButton(
+                        key: const Key('boton_reportar_incidencia'),
+                        onPressed: () =>
+                            _reportarIncidencia(context, sesion.uuidCliente),
+                        child: const Text('Reportar incidencia'),
+                      ),
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        key: const Key('boton_cerrar_sesion'),
+                        onPressed: () =>
+                            _mostrarFormularioCierre(context, sesion),
+                        child: const Text('Cerrar sesión'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
             SesionCerrando() => const Center(
               child: CircularProgressIndicator(),
             ),
-            SesionCerrada(:final sesion) => Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Sesión cerrada',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 24),
-                    _InfoRow(
-                      label: 'Motivo',
-                      value: _etiquetaMotivo(sesion.motivoCierre ?? ''),
-                    ),
-                    _InfoRow(
-                      label: 'Hectáreas declaradas (cierre)',
-                      value:
-                          sesion.hectareasDeclaradasCierre?.toString() ?? '—',
-                    ),
-                    if (sesion.litrosConsumidos != null)
-                      _InfoRow(
-                        label: 'Litros consumidos',
-                        value: sesion.litrosConsumidos!.toString(),
+            SesionCerrada(:final sesion) => Padding(
+              padding: const EdgeInsets.all(16),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        'Sesión cerrada',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.headlineSmall,
                       ),
-                    _InfoRow(
-                      label: 'Fin',
-                      value: _formatearHora(sesion.fin ?? DateTime.now()),
-                    ),
-                    const SizedBox(height: 24),
-                    const Divider(),
-                    const SizedBox(height: 8),
-                    BlocBuilder<TrabajoCubit, TrabajoEstado>(
-                      builder: (context, estadoTrabajo) {
-                        if (estadoTrabajo is TrabajoCerrado) {
-                          return Text(
-                            'Trabajo cerrado',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          );
-                        }
-                        final cerrandoTrabajo =
-                            estadoTrabajo is TrabajoCerrando;
-                        return FilledButton(
-                          key: const Key('boton_cerrar_trabajo'),
-                          onPressed: cerrandoTrabajo
-                              ? null
-                              : () => _mostrarFormularioCierreTrabajo(
-                                  context,
-                                  sesion.trabajoUuidCliente,
-                                ),
-                          child: cerrandoTrabajo
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
+                      const SizedBox(height: 24),
+                      _InfoRow(
+                        label: 'Motivo',
+                        value: _etiquetaMotivo(sesion.motivoCierre ?? ''),
+                      ),
+                      _InfoRow(
+                        label: 'Hectáreas declaradas (cierre)',
+                        value:
+                            sesion.hectareasDeclaradasCierre?.toString() ?? '—',
+                      ),
+                      if (sesion.litrosConsumidos != null)
+                        _InfoRow(
+                          label: 'Litros consumidos',
+                          value: sesion.litrosConsumidos!.toString(),
+                        ),
+                      _InfoRow(
+                        label: 'Fin',
+                        value: _formatearHora(sesion.fin ?? DateTime.now()),
+                      ),
+                      const SizedBox(height: 24),
+                      const Divider(),
+                      const SizedBox(height: 8),
+                      BlocBuilder<TrabajoCubit, TrabajoEstado>(
+                        builder: (context, estadoTrabajo) {
+                          if (estadoTrabajo is TrabajoCerrado) {
+                            return Text(
+                              'Trabajo cerrado',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            );
+                          }
+                          final cerrandoTrabajo =
+                              estadoTrabajo is TrabajoCerrando;
+                          return FilledButton(
+                            key: const Key('boton_cerrar_trabajo'),
+                            onPressed: cerrandoTrabajo
+                                ? null
+                                : () => _mostrarFormularioCierreTrabajo(
+                                    context,
+                                    sesion.trabajoUuidCliente,
                                   ),
-                                )
-                              : const Text('Cerrar trabajo'),
-                        );
-                      },
-                    ),
-                  ],
+                            child: cerrandoTrabajo
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Text('Cerrar trabajo'),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
