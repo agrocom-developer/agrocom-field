@@ -43,10 +43,10 @@ class OrdenesVista extends StatelessWidget {
             key: Key('ordenes_vacia'),
             child: Text('No hay órdenes vigentes.'),
           ),
-          OrdenesLista(:final ordenes) => ListView.separated(
+          OrdenesLista(:final ordenes) => ListView.builder(
             key: const Key('ordenes_lista'),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             itemCount: ordenes.length,
-            separatorBuilder: (_, _) => const Divider(height: 1),
             itemBuilder: (context, indice) => _OrdenTile(
               orden: ordenes[indice],
               flavor: flavor,
@@ -78,21 +78,26 @@ class _OrdenTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      key: Key('orden_${orden.id}'),
-      title: Text(orden.loteCodigo ?? 'Lote sin datos'),
-      subtitle: Text(
-        'Aplicación N.º ${orden.nroAplicacion} · ${orden.litrosHa} L/ha · '
-        '${orden.fechaEmision}',
-      ),
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (_) => OrdenDetallePantalla(
-            orden: orden,
-            flavor: flavor,
-            crearTrabajoCubit: crearTrabajoCubit,
-            crearSesionBloc: crearSesionBloc,
-            crearIncidenciaCubit: crearIncidenciaCubit,
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: ListTile(
+        key: Key('orden_${orden.id}'),
+        leading: const Icon(Icons.grass_outlined),
+        title: Text(orden.loteCodigo ?? 'Lote sin datos'),
+        subtitle: Text(
+          'Aplicación N.º ${orden.nroAplicacion} · ${orden.litrosHa} L/ha · '
+          '${orden.fechaEmision}',
+        ),
+        trailing: const Icon(Icons.chevron_right),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => OrdenDetallePantalla(
+              orden: orden,
+              flavor: flavor,
+              crearTrabajoCubit: crearTrabajoCubit,
+              crearSesionBloc: crearSesionBloc,
+              crearIncidenciaCubit: crearIncidenciaCubit,
+            ),
           ),
         ),
       ),
