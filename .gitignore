@@ -42,7 +42,9 @@ config/*.json
 /dev/integration_tests/**/xcuserdata
 /dev/integration_tests/**/Pods
 /packages/flutter/coverage/
-version
+# `version` (sin más) venía de acá arrastrado del .gitignore del propio SDK
+# de Flutter — ignoraba por error cualquier archivo/carpeta llamado
+# "version" en este repo, incluida `lib/nucleo/version/` (HU-20).
 analysis_benchmark.json
 
 # packages file containing multi-root paths
