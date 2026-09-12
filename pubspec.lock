@@ -210,7 +210,7 @@ packages:
     source: hosted
     version: "0.3.5+5"
   crypto:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: crypto
       sha256: c8ea0233063ba03258fbcf2ca4d6dadfefe14f02fab57702265467a19f27fadf
@@ -351,7 +351,7 @@ packages:
     source: hosted
     version: "2.5.1"
   flutter_image_compress_common:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: flutter_image_compress_common
       sha256: "76869e4d5f3d65f3431e7edff0b2d8ad1eea68b49c6a37772fdb1ae6016da9ed"
