@@ -14,6 +14,7 @@ import 'nucleo/di/service_locator.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
 import 'nucleo/notificaciones/notificador_local.dart';
+import 'nucleo/version/version_watcher.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,11 +34,16 @@ Future<void> main() async {
     idsVistosStore: getIt<IdsVistosStore>(),
   ).iniciar();
 
+  // HU-20: mismo criterio que en main_piloto.dart — no se espera, la app
+  // nunca depende de que la red responda para arrancar.
+  unawaited(getIt<VersionWatcher>().iniciar());
+
   runApp(
     AgrocomApp(
       flavor: Flavor.auxiliar,
       tokenStore: getIt<TokenStore>(),
       linternaControlador: getIt<LinternaControlador>(),
+      estadoVersion: getIt<VersionWatcher>().estado,
       crearLoginCubit: () => LoginCubit(getIt<LoginService>(), Flavor.auxiliar),
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
       // Stubs: el flavor auxiliar no usa trabajo/sesión/incidencia, pero

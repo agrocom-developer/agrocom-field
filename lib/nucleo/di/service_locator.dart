@@ -25,6 +25,9 @@ import '../preferencias/preferencias_store.dart';
 import '../sync/outbox_repository.dart';
 import '../sync/sync_cubit.dart';
 import '../sync/sync_engine.dart';
+import '../version/version_instalada.dart';
+import '../version/version_repository.dart';
+import '../version/version_watcher.dart';
 
 final getIt = GetIt.instance;
 
@@ -110,6 +113,18 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
     () => IncidenciaRepository(
       getIt<AppDatabase>(),
       evidenciaRepository: getIt<EvidenciaRepository>(),
+    ),
+  );
+  getIt.registerLazySingleton<VersionInstalada>(
+    VersionInstaladaPackageInfo.new,
+  );
+  getIt.registerLazySingleton<VersionRepository>(
+    () => VersionRepository(apiClient: getIt<ApiClient>()),
+  );
+  getIt.registerLazySingleton<VersionWatcher>(
+    () => VersionWatcher(
+      repositorio: getIt<VersionRepository>(),
+      versionInstalada: getIt<VersionInstalada>(),
     ),
   );
   // Los repositorios del resto de las features (recargas...) se
