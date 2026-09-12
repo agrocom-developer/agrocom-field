@@ -2,6 +2,8 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../incidencias/presentation/incidencia_cubit.dart';
+import '../../incidencias/presentation/incidencia_pantalla.dart';
 import '../domain/auxiliar.dart';
 import '../domain/reglas_condiciones.dart';
 import '../domain/sesion.dart';
@@ -13,8 +15,16 @@ import 'sesion_evento.dart';
 /// vuelo (inicial, abriendo, activa, cerrando, cerrada, error). Asume que un
 /// `SesionBloc` ya está provisto en el árbol (`SesionVueloPantalla`, o
 /// `BlocProvider.value` en tests).
+///
+/// [crearIncidenciaCubit] arma el `IncidenciaCubit` de HU-08 — se invoca
+/// recién al presionar "Reportar incidencia" con `sesion.uuidCliente` de la
+/// sesión activa, nunca antes (mismo motivo que en `OrdenDetallePantalla`
+/// con `crearTrabajoCubit`: construirlo eager en un flavor que no lo
+/// soporta rompería ese flavor incluso con el botón oculto).
 class SesionVueloVista extends StatefulWidget {
-  const SesionVueloVista({super.key});
+  const SesionVueloVista({required this.crearIncidenciaCubit, super.key});
+
+  final IncidenciaCubit Function(String sesionUuidCliente) crearIncidenciaCubit;
 
   @override
   State<SesionVueloVista> createState() => _SesionVueloVistaState();
@@ -566,6 +576,13 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                     value: sesion.hectareasDeclaradas.toString(),
                   ),
                   const SizedBox(height: 24),
+                  OutlinedButton(
+                    key: const Key('boton_reportar_incidencia'),
+                    onPressed: () =>
+                        _reportarIncidencia(context, sesion.uuidCliente),
+                    child: const Text('Reportar incidencia'),
+                  ),
+                  const SizedBox(height: 12),
                   FilledButton(
                     key: const Key('boton_cerrar_sesion'),
                     onPressed: () => _mostrarFormularioCierre(context, sesion),
@@ -634,6 +651,16 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
             ),
           ),
         },
+      ),
+    );
+  }
+
+  void _reportarIncidencia(BuildContext context, String sesionUuidCliente) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => IncidenciaPantalla(
+          crearCubit: () => widget.crearIncidenciaCubit(sesionUuidCliente),
+        ),
       ),
     );
   }

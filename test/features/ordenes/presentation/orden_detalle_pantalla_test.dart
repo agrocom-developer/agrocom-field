@@ -104,6 +104,8 @@ void main() {
           crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
           crearSesionBloc: (_) =>
               throw UnimplementedError('no se invoca en este test'),
+          crearIncidenciaCubit: (_) =>
+              throw UnimplementedError('no se invoca en este test'),
         ),
       ),
     );
@@ -123,6 +125,8 @@ void main() {
           flavor: Flavor.auxiliar,
           crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
           crearSesionBloc: (_) =>
+              throw UnimplementedError('no se invoca en este test'),
+          crearIncidenciaCubit: (_) =>
               throw UnimplementedError('no se invoca en este test'),
         ),
       ),
@@ -146,6 +150,9 @@ void main() {
             'El flavor auxiliar no dispone de trabajo/sesión',
           ),
           crearSesionBloc: (_) => throw UnimplementedError(
+            'El flavor auxiliar no dispone de trabajo/sesión',
+          ),
+          crearIncidenciaCubit: (_) => throw UnimplementedError(
             'El flavor auxiliar no dispone de trabajo/sesión',
           ),
         ),
@@ -181,6 +188,8 @@ void main() {
           // Camino feliz: la apertura exitosa navega a SesionVueloPantalla,
           // que sí construye un SesionBloc.
           crearSesionBloc: _crearSesionBlocDeSobra,
+          crearIncidenciaCubit: (_) =>
+              throw UnimplementedError('no se invoca en este test'),
         ),
       ),
     );
@@ -217,6 +226,8 @@ void main() {
           flavor: Flavor.piloto,
           crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
           crearSesionBloc: (_) =>
+              throw UnimplementedError('no se invoca en este test'),
+          crearIncidenciaCubit: (_) =>
               throw UnimplementedError('no se invoca en este test'),
         ),
       ),
@@ -255,6 +266,8 @@ void main() {
           // Camino feliz (tras el segundo transcurrido): navega a
           // SesionVueloPantalla, que sí construye un SesionBloc.
           crearSesionBloc: _crearSesionBlocDeSobra,
+          crearIncidenciaCubit: (_) =>
+              throw UnimplementedError('no se invoca en este test'),
         ),
       ),
     );

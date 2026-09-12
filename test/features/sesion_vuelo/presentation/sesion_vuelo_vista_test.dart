@@ -3,12 +3,16 @@
 // estados de sesión (inicial, abriendo, activa, cerrando, cerrada, error) y
 // el formulario de cierre sin pasar por `SesionVueloPantalla`/GetIt.
 
+import 'package:agrocom_field/features/incidencias/data/incidencia_repository.dart';
+import 'package:agrocom_field/features/incidencias/presentation/incidencia_cubit.dart';
+import 'package:agrocom_field/features/incidencias/presentation/incidencia_vista.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/auxiliar.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/sesion.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_bloc.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_vuelo_vista.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart';
 import 'package:agrocom_field/nucleo/auth/persona_operativa_store.dart';
+import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,6 +23,10 @@ class _SesionRepositoryFalso extends Mock implements SesionRepository {}
 
 class _PersonaOperativaStoreFalso extends Mock
     implements PersonaOperativaStore {}
+
+class _IncidenciaRepositoryFalso extends Mock implements IncidenciaRepository {}
+
+class _SelectorFotoFalso extends Mock implements SelectorFoto {}
 
 Sesion _sesionAbierta({
   String uuidCliente = 'uuid-sesion-1',
@@ -81,15 +89,22 @@ void main() {
     ).thenAnswer((_) async => const <Auxiliar>[]);
   });
 
-  Future<void> bombear(WidgetTester tester, SesionBloc bloc) =>
-      tester.pumpWidget(
-        MaterialApp(
-          home: BlocProvider<SesionBloc>.value(
-            value: bloc,
-            child: const SesionVueloVista(),
-          ),
+  Future<void> bombear(
+    WidgetTester tester,
+    SesionBloc bloc, {
+    IncidenciaCubit Function(String sesionUuidCliente)? crearIncidenciaCubit,
+  }) => tester.pumpWidget(
+    MaterialApp(
+      home: BlocProvider<SesionBloc>.value(
+        value: bloc,
+        child: SesionVueloVista(
+          crearIncidenciaCubit:
+              crearIncidenciaCubit ??
+              (_) => throw UnimplementedError('stub no invocado'),
         ),
-      );
+      ),
+    ),
+  );
 
   /// Abre el formulario de condiciones (tocando `boton_abrir_sesion` o
   /// `boton_reintentar`, según [key]), completa viento/temperatura/humedad
@@ -241,6 +256,61 @@ void main() {
     expect(find.text('Secuencia: 1'), findsOneWidget);
     expect(find.byKey(const Key('boton_cerrar_sesion')), findsOneWidget);
   });
+
+  testWidgets(
+    'sesión activa: "Reportar incidencia" navega a IncidenciaPantalla con '
+    'el uuid_cliente de ESTA sesión',
+    (tester) async {
+      when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+      when(
+        () => sesionRepositorio.abrirSesion(
+          trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+          pilotoId: any(named: 'pilotoId'),
+          auxiliarId: any(named: 'auxiliarId'),
+          dronId: any(named: 'dronId'),
+          hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
+          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+          inicio: any(named: 'inicio'),
+          vientoKmh: any(named: 'vientoKmh'),
+          temperaturaC: any(named: 'temperaturaC'),
+          humedadPct: any(named: 'humedadPct'),
+          observacionAgronomo: any(named: 'observacionAgronomo'),
+          firmaObservacion: any(named: 'firmaObservacion'),
+        ),
+      ).thenAnswer((_) async => _sesionAbierta(uuidCliente: 'uuid-sesion-x'));
+
+      final bloc = SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaStore,
+        trabajoUuidCliente: 'uuid-trabajo-1',
+      );
+      addTearDown(bloc.close);
+
+      String? sesionUuidClienteRecibido;
+      final incidenciaRepositorio = _IncidenciaRepositoryFalso();
+      final selectorFoto = _SelectorFotoFalso();
+
+      await bombear(
+        tester,
+        bloc,
+        crearIncidenciaCubit: (sesionUuidCliente) {
+          sesionUuidClienteRecibido = sesionUuidCliente;
+          return IncidenciaCubit(
+            incidenciaRepositorio: incidenciaRepositorio,
+            selectorFoto: selectorFoto,
+            sesionUuidCliente: sesionUuidCliente,
+          );
+        },
+      );
+      await completarFormularioApertura(tester);
+
+      await tester.tap(find.byKey(const Key('boton_reportar_incidencia')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(IncidenciaVista), findsOneWidget);
+      expect(sesionUuidClienteRecibido, 'uuid-sesion-x');
+    },
+  );
 
   testWidgets('sesión cerrada: muestra resumen con motivo y hectáreas', (
     tester,

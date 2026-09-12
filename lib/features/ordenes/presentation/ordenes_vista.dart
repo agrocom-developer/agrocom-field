@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/flavor.dart';
+import '../../incidencias/presentation/incidencia_cubit.dart';
 import '../../sesion_vuelo/presentation/trabajo_cubit.dart';
 import '../../sesion_vuelo/presentation/sesion_bloc.dart';
 import '../domain/orden_vigente.dart';
@@ -15,18 +16,21 @@ import 'ordenes_estado.dart';
 /// (`LoginPantalla`/`LoginVista`).
 ///
 /// Propaga las factories de [TrabajoCubit] y [SesionBloc] a
-/// [OrdenDetallePantalla] (HU-05, etapa 4).
+/// [OrdenDetallePantalla] (HU-05, etapa 4), y la de [IncidenciaCubit]
+/// (HU-08).
 class OrdenesVista extends StatelessWidget {
   const OrdenesVista({
     required this.flavor,
     required this.crearTrabajoCubit,
     required this.crearSesionBloc,
+    required this.crearIncidenciaCubit,
     super.key,
   });
 
   final Flavor flavor;
   final TrabajoCubit Function() crearTrabajoCubit;
   final SesionBloc Function(String) crearSesionBloc;
+  final IncidenciaCubit Function(String sesionUuidCliente) crearIncidenciaCubit;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +52,7 @@ class OrdenesVista extends StatelessWidget {
               flavor: flavor,
               crearTrabajoCubit: crearTrabajoCubit,
               crearSesionBloc: crearSesionBloc,
+              crearIncidenciaCubit: crearIncidenciaCubit,
             ),
           ),
         },
@@ -62,12 +67,14 @@ class _OrdenTile extends StatelessWidget {
     required this.flavor,
     required this.crearTrabajoCubit,
     required this.crearSesionBloc,
+    required this.crearIncidenciaCubit,
   });
 
   final OrdenVigente orden;
   final Flavor flavor;
   final TrabajoCubit Function() crearTrabajoCubit;
   final SesionBloc Function(String) crearSesionBloc;
+  final IncidenciaCubit Function(String sesionUuidCliente) crearIncidenciaCubit;
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +92,7 @@ class _OrdenTile extends StatelessWidget {
             flavor: flavor,
             crearTrabajoCubit: crearTrabajoCubit,
             crearSesionBloc: crearSesionBloc,
+            crearIncidenciaCubit: crearIncidenciaCubit,
           ),
         ),
       ),
