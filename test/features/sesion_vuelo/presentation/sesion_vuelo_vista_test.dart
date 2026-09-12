@@ -607,6 +607,67 @@ void main() {
       expect(find.byType(SnackBar), findsOneWidget);
       expect(find.textContaining('Error al cerrar trabajo'), findsOneWidget);
     });
+
+    testWidgets(
+      'validación: litros sobrante no numérico o negativo no rompe el '
+      'diálogo',
+      (tester) async {
+        await bombearHastaSesionCerrada(tester);
+
+        when(
+          () => selectorFotoTrabajo.tomarFoto(),
+        ).thenAnswer((_) async => _bytesFotoValidos);
+
+        await tester.tap(find.byKey(const Key('boton_cerrar_trabajo')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('boton_tomar_foto_campo')));
+        await tester.pumpAndSettle();
+
+        // Intenta con texto no numérico
+        await tester.enterText(
+          find.byKey(const Key('cierre_trabajo_litros_sobrante')),
+          'abc',
+        );
+        await tester.tap(
+          find.byKey(const Key('boton_confirmar_cierre_trabajo')),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Ingresá un número válido'), findsOneWidget);
+        verifyNever(
+          () => trabajoRepositorio.cerrarTrabajo(
+            trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+            fin: any(named: 'fin'),
+            litrosSobrante: any(named: 'litrosSobrante'),
+            evidenciaImagenCampoUuidCliente: any(
+              named: 'evidenciaImagenCampoUuidCliente',
+            ),
+          ),
+        );
+
+        // Intenta con número negativo
+        await tester.enterText(
+          find.byKey(const Key('cierre_trabajo_litros_sobrante')),
+          '-5',
+        );
+        await tester.tap(
+          find.byKey(const Key('boton_confirmar_cierre_trabajo')),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Los litros no pueden ser negativos'), findsOneWidget);
+        verifyNever(
+          () => trabajoRepositorio.cerrarTrabajo(
+            trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+            fin: any(named: 'fin'),
+            litrosSobrante: any(named: 'litrosSobrante'),
+            evidenciaImagenCampoUuidCliente: any(
+              named: 'evidenciaImagenCampoUuidCliente',
+            ),
+          ),
+        );
+      },
+    );
   });
 
   testWidgets('error: muestra mensaje y botón de reintentar', (tester) async {

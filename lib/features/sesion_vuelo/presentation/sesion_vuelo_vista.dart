@@ -37,6 +37,7 @@ class SesionVueloVista extends StatefulWidget {
 class _SesionVueloVistaState extends State<SesionVueloVista> {
   late GlobalKey<FormState> _formKey;
   late GlobalKey<FormState> _formAperturaKey;
+  late GlobalKey<FormState> _formCierreTrabajoKey;
   late TextEditingController _hectareasController;
   late TextEditingController _litrosController;
   late TextEditingController _vientoController;
@@ -72,6 +73,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     super.initState();
     _formKey = GlobalKey<FormState>();
     _formAperturaKey = GlobalKey<FormState>();
+    _formCierreTrabajoKey = GlobalKey<FormState>();
     _hectareasController = TextEditingController();
     _litrosController = TextEditingController();
     _vientoController = TextEditingController();
@@ -566,51 +568,66 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
           return AlertDialog(
             title: const Text('Cerrar trabajo'),
             content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextFormField(
-                    key: const Key('cierre_trabajo_litros_sobrante'),
-                    controller: _litrosSobranteController,
-                    decoration: const InputDecoration(
-                      labelText: 'Litros sobrantes (opcional)',
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  OutlinedButton(
-                    key: const Key('boton_tomar_foto_campo'),
-                    onPressed: tomarFoto,
-                    child: Text(
-                      bytesFoto == null
-                          ? 'Tomar foto del campo'
-                          : 'Volver a tomar foto',
-                    ),
-                  ),
-                  if (bytesFoto != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: Image.memory(
-                        bytesFoto!,
-                        key: const Key('preview_foto_campo'),
-                        height: 200,
+              child: Form(
+                key: _formCierreTrabajoKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormField(
+                      key: const Key('cierre_trabajo_litros_sobrante'),
+                      controller: _litrosSobranteController,
+                      decoration: const InputDecoration(
+                        labelText: 'Litros sobrantes (opcional)',
                       ),
-                    )
-                  else
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      validator: (valor) {
+                        if (valor == null || valor.isEmpty) return null;
+                        try {
+                          final decimal = Decimal.parse(valor);
+                          if (decimal < Decimal.zero) {
+                            return 'Los litros no pueden ser negativos';
+                          }
+                        } catch (e) {
+                          return 'Ingresá un número válido';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    OutlinedButton(
+                      key: const Key('boton_tomar_foto_campo'),
+                      onPressed: tomarFoto,
                       child: Text(
-                        'La foto del campo es obligatoria — sin captura no '
-                        'se puede cerrar el trabajo.',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
+                        bytesFoto == null
+                            ? 'Tomar foto del campo'
+                            : 'Volver a tomar foto',
+                      ),
+                    ),
+                    if (bytesFoto != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16),
+                        child: Image.memory(
+                          bytesFoto!,
+                          key: const Key('preview_foto_campo'),
+                          height: 200,
+                        ),
+                      )
+                    else
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          'La foto del campo es obligatoria — sin captura no '
+                          'se puede cerrar el trabajo.',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                          ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
             actions: [
@@ -623,6 +640,10 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                 onPressed: bytesFoto == null
                     ? null
                     : () {
+                        if (!_formCierreTrabajoKey.currentState!.validate()) {
+                          return;
+                        }
+
                         final litrosTexto = _litrosSobranteController.text
                             .trim();
                         context.read<TrabajoCubit>().cerrar(
