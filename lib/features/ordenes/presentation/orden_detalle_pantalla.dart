@@ -88,6 +88,14 @@ class OrdenDetallePantalla extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Chip(
+              label: Text(orden.estado),
+              avatar: const Icon(Icons.check_circle_outline, size: 18),
+            ),
+          ),
+          const SizedBox(height: 16),
           _Seccion(
             titulo: 'Lote',
             campos: [
@@ -101,7 +109,6 @@ class OrdenDetallePantalla extends StatelessWidget {
               _Campo('N.º de aplicación', '${orden.nroAplicacion}'),
               _Campo('Litros por hectárea', '${orden.litrosHa}'),
               _Campo('Fecha de emisión', orden.fechaEmision),
-              _Campo('Estado', orden.estado),
             ],
           ),
           _Seccion(
@@ -192,8 +199,13 @@ class _Seccion extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(titulo, style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: 8),
+          Text(
+            titulo,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+          const Divider(height: 16),
           for (final campo in campos)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 2),
