@@ -15,6 +15,8 @@ import 'package:agrocom_field/features/ordenes/presentation/ordenes_cubit.dart';
 import 'package:agrocom_field/features/ordenes/presentation/ordenes_vista.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/trabajo_cubit.dart';
+import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
+import 'package:agrocom_field/nucleo/evidencias/evidencia_repository.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +27,10 @@ import 'package:mocktail/mocktail.dart';
 class _OrdenesRepositoryFalso extends Mock implements OrdenesRepository {}
 
 class _TrabajoRepositoryFalso extends Mock implements TrabajoRepository {}
+
+class _EvidenciaRepositoryFalso extends Mock implements EvidenciaRepository {}
+
+class _SelectorFotoFalso extends Mock implements SelectorFoto {}
 
 // Nota sobre los decimales: `Decimal.toString()` recorta ceros finales
 // (`Decimal.parse('12.50').toString()` == '12.5'), así que los valores acá
@@ -82,7 +88,11 @@ void main() {
           // que esta misma factory que lanza serviría para ambos casos; se
           // mantiene real acá para no depender de esa garantía en los tests
           // de flavor piloto.
-          crearTrabajoCubit: () => TrabajoCubit(_TrabajoRepositoryFalso()),
+          crearTrabajoCubit: () => TrabajoCubit(
+            _TrabajoRepositoryFalso(),
+            evidenciaRepositorio: _EvidenciaRepositoryFalso(),
+            selectorFoto: _SelectorFotoFalso(),
+          ),
           // crearSesionBloc/crearIncidenciaCubit solo se invocan tras abrir
           // un trabajo con éxito o reportar una incidencia, algo que ningún
           // test de este archivo ejercita.

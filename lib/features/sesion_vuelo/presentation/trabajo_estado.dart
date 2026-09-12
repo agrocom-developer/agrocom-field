@@ -41,3 +41,24 @@ final class TrabajoError extends TrabajoEstado {
   @override
   int get hashCode => mensaje.hashCode;
 }
+
+/// HU-09: cerrando el trabajo (comprimiendo/persistiendo la evidencia de
+/// imagen de campo y escribiendo el cierre) — mismo rol que
+/// [TrabajoCargando] para la apertura.
+final class TrabajoCerrando extends TrabajoEstado {
+  const TrabajoCerrando();
+}
+
+/// HU-09: trabajo cerrado con éxito.
+final class TrabajoCerrado extends TrabajoEstado {
+  const TrabajoCerrado(this.trabajo);
+
+  final Trabajo trabajo;
+
+  @override
+  bool operator ==(Object other) =>
+      other is TrabajoCerrado && other.trabajo == trabajo;
+
+  @override
+  int get hashCode => trabajo.hashCode;
+}

@@ -56,6 +56,7 @@ class OrdenDetallePantalla extends StatelessWidget {
               MaterialPageRoute(
                 builder: (_) => SesionVueloPantalla(
                   crearBloc: () => crearSesionBloc(estado.trabajo.uuidCliente),
+                  crearTrabajoCubit: crearTrabajoCubit,
                   crearIncidenciaCubit: crearIncidenciaCubit,
                 ),
               ),

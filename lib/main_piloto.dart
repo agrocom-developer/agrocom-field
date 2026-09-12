@@ -15,6 +15,7 @@ import 'nucleo/auth/persona_operativa_store.dart';
 import 'nucleo/auth/token_store.dart';
 import 'nucleo/camara/selector_foto.dart';
 import 'nucleo/di/service_locator.dart';
+import 'nucleo/evidencias/evidencia_repository.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
 
@@ -28,7 +29,11 @@ Future<void> main() async {
       linternaControlador: getIt<LinternaControlador>(),
       crearLoginCubit: () => LoginCubit(getIt<LoginService>(), Flavor.piloto),
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
-      crearTrabajoCubit: () => TrabajoCubit(getIt<TrabajoRepository>()),
+      crearTrabajoCubit: () => TrabajoCubit(
+        getIt<TrabajoRepository>(),
+        evidenciaRepositorio: getIt<EvidenciaRepository>(),
+        selectorFoto: getIt<SelectorFoto>(),
+      ),
       crearSesionBloc: (trabajoUuidCliente) => SesionBloc(
         sesionRepositorio: getIt<SesionRepository>(),
         personaOperativaStore: getIt<PersonaOperativaStore>(),

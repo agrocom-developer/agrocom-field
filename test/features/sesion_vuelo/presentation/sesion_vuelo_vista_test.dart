@@ -3,16 +3,23 @@
 // estados de sesión (inicial, abriendo, activa, cerrando, cerrada, error) y
 // el formulario de cierre sin pasar por `SesionVueloPantalla`/GetIt.
 
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:agrocom_field/features/incidencias/data/incidencia_repository.dart';
 import 'package:agrocom_field/features/incidencias/presentation/incidencia_cubit.dart';
 import 'package:agrocom_field/features/incidencias/presentation/incidencia_vista.dart';
+import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/auxiliar.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/sesion.dart';
+import 'package:agrocom_field/features/sesion_vuelo/domain/trabajo.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_bloc.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_vuelo_vista.dart';
+import 'package:agrocom_field/features/sesion_vuelo/presentation/trabajo_cubit.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart';
 import 'package:agrocom_field/nucleo/auth/persona_operativa_store.dart';
 import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
+import 'package:agrocom_field/nucleo/evidencias/evidencia_repository.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +33,20 @@ class _PersonaOperativaStoreFalso extends Mock
 
 class _IncidenciaRepositoryFalso extends Mock implements IncidenciaRepository {}
 
+class _TrabajoRepositoryFalso extends Mock implements TrabajoRepository {}
+
+class _EvidenciaRepositoryFalso extends Mock implements EvidenciaRepository {}
+
 class _SelectorFotoFalso extends Mock implements SelectorFoto {}
+
+// PNG 1x1 real (no bytes arbitrarios): `Image.memory` en el preview del
+// diálogo de cierre de trabajo decodifica de verdad — bytes inválidos hacen
+// que el widget test falle por la excepción asincrónica del decodificador de
+// imagen, no por el fixture. Mismo bytes que `incidencia_vista_test.dart`.
+final _bytesFotoValidos = base64Decode(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42Y'
+  'AAAAASUVORK5CYII=',
+);
 
 Sesion _sesionAbierta({
   String uuidCliente = 'uuid-sesion-1',
@@ -74,14 +94,22 @@ Sesion _sesionCerrada({
 void main() {
   late _SesionRepositoryFalso sesionRepositorio;
   late _PersonaOperativaStoreFalso personaStore;
+  late _TrabajoRepositoryFalso trabajoRepositorio;
+  late _EvidenciaRepositoryFalso evidenciaRepositorio;
+  late _SelectorFotoFalso selectorFotoTrabajo;
 
   setUpAll(() {
     registerFallbackValue(Decimal.zero);
+    registerFallbackValue(DateTime.now());
+    registerFallbackValue(Uint8List(0));
   });
 
   setUp(() {
     sesionRepositorio = _SesionRepositoryFalso();
     personaStore = _PersonaOperativaStoreFalso();
+    trabajoRepositorio = _TrabajoRepositoryFalso();
+    evidenciaRepositorio = _EvidenciaRepositoryFalso();
+    selectorFotoTrabajo = _SelectorFotoFalso();
     // Por defecto sin auxiliares — los tests de HU-07 que necesitan poblar
     // el dropdown lo re-stubean explícitamente.
     when(
@@ -95,8 +123,24 @@ void main() {
     IncidenciaCubit Function(String sesionUuidCliente)? crearIncidenciaCubit,
   }) => tester.pumpWidget(
     MaterialApp(
-      home: BlocProvider<SesionBloc>.value(
-        value: bloc,
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<SesionBloc>.value(value: bloc),
+          // HU-09: `SesionVueloVista` lee `TrabajoCubit` del árbol (para el
+          // botón "Cerrar trabajo" en el estado `SesionCerrada`). El grupo
+          // 'cerrar trabajo (HU-09)' más abajo sí ejercita el cierre en sí,
+          // stubeando `trabajoRepositorio`/`selectorFotoTrabajo`; el resto de
+          // los tests de este archivo solo necesitan que el `BlocProvider`
+          // exista para no explotar con `ProviderNotFoundException` al
+          // renderizar el estado `SesionCerrada`.
+          BlocProvider<TrabajoCubit>(
+            create: (_) => TrabajoCubit(
+              trabajoRepositorio,
+              evidenciaRepositorio: evidenciaRepositorio,
+              selectorFoto: selectorFotoTrabajo,
+            ),
+          ),
+        ],
         child: SesionVueloVista(
           crearIncidenciaCubit:
               crearIncidenciaCubit ??
@@ -377,6 +421,253 @@ void main() {
     expect(find.text('Motivo: Completado'), findsOneWidget);
     expect(find.text('Hectáreas declaradas (cierre): 99.75'), findsOneWidget);
     expect(find.text('Litros consumidos: 150.5'), findsOneWidget);
+  });
+
+  group('cerrar trabajo (HU-09)', () {
+    /// Lleva la pantalla hasta el estado `SesionCerrada` (abre y cierra una
+    /// sesión) — mismo camino que 'sesión cerrada: muestra resumen...' de
+    /// arriba, factorizado para no repetirlo en cada test de este grupo.
+    Future<void> bombearHastaSesionCerrada(WidgetTester tester) async {
+      when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+      when(
+        () => sesionRepositorio.abrirSesion(
+          trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+          pilotoId: any(named: 'pilotoId'),
+          auxiliarId: any(named: 'auxiliarId'),
+          dronId: any(named: 'dronId'),
+          hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
+          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+          inicio: any(named: 'inicio'),
+          vientoKmh: any(named: 'vientoKmh'),
+          temperaturaC: any(named: 'temperaturaC'),
+          humedadPct: any(named: 'humedadPct'),
+          observacionAgronomo: any(named: 'observacionAgronomo'),
+          firmaObservacion: any(named: 'firmaObservacion'),
+        ),
+      ).thenAnswer(
+        (_) async => _sesionAbierta(trabajoUuidCliente: 'uuid-trabajo-1'),
+      );
+      when(
+        () => sesionRepositorio.cerrarSesion(
+          sesionUuidCliente: any(named: 'sesionUuidCliente'),
+          hectareaFinalAcumulada: any(named: 'hectareaFinalAcumulada'),
+          fin: any(named: 'fin'),
+          motivoCierre: any(named: 'motivoCierre'),
+          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+          litrosConsumidos: any(named: 'litrosConsumidos'),
+        ),
+      ).thenAnswer(
+        (_) async => _sesionCerrada(trabajoUuidCliente: 'uuid-trabajo-1'),
+      );
+
+      final bloc = SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaStore,
+        trabajoUuidCliente: 'uuid-trabajo-1',
+      );
+      addTearDown(bloc.close);
+
+      await bombear(tester, bloc);
+      await completarFormularioApertura(tester);
+
+      await tester.tap(find.byKey(const Key('boton_cerrar_sesion')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('cierre_hectareas')), '10');
+      await tester.tap(find.byKey(const Key('cierre_motivo')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Completado'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('boton_confirmar_cierre')));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Sesión cerrada'), findsOneWidget);
+    }
+
+    testWidgets(
+      'botón deshabilitado hasta tomar la foto — "sin captura no cierra"',
+      (tester) async {
+        await bombearHastaSesionCerrada(tester);
+
+        await tester.tap(find.byKey(const Key('boton_cerrar_trabajo')));
+        await tester.pumpAndSettle();
+
+        expect(
+          find.text(
+            'La foto del campo es obligatoria — sin captura no se puede '
+            'cerrar el trabajo.',
+          ),
+          findsOneWidget,
+        );
+        final botonConfirmar = tester.widget<FilledButton>(
+          find.byKey(const Key('boton_confirmar_cierre_trabajo')),
+        );
+        expect(botonConfirmar.onPressed, isNull);
+      },
+    );
+
+    testWidgets('con foto: captura evidencia imagen_campo, cierra el trabajo y '
+        'muestra confirmación', (tester) async {
+      await bombearHastaSesionCerrada(tester);
+
+      final bytesFoto = _bytesFotoValidos;
+      when(
+        () => selectorFotoTrabajo.tomarFoto(),
+      ).thenAnswer((_) async => bytesFoto);
+      when(
+        () => evidenciaRepositorio.capturarEvidencia(
+          bytesOriginales: any(named: 'bytesOriginales'),
+          tipo: any(named: 'tipo'),
+          fecha: any(named: 'fecha'),
+        ),
+      ).thenAnswer((_) async => 'uuid-evidencia-campo-1');
+      when(
+        () => trabajoRepositorio.cerrarTrabajo(
+          trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+          fin: any(named: 'fin'),
+          litrosSobrante: any(named: 'litrosSobrante'),
+          evidenciaImagenCampoUuidCliente: any(
+            named: 'evidenciaImagenCampoUuidCliente',
+          ),
+        ),
+      ).thenAnswer(
+        (_) async => Trabajo(
+          uuidCliente: 'uuid-trabajo-1',
+          ordenId: 1,
+          loteId: 1,
+          nroAplicacion: 1,
+          hectareasDeclaradas: Decimal.parse('0'),
+          inicio: DateTime.utc(2026, 9, 11, 8),
+          estado: EstadoTrabajo.cerrado,
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('boton_cerrar_trabajo')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('boton_tomar_foto_campo')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('preview_foto_campo')), findsOneWidget);
+
+      await tester.enterText(
+        find.byKey(const Key('cierre_trabajo_litros_sobrante')),
+        '5.25',
+      );
+      await tester.tap(find.byKey(const Key('boton_confirmar_cierre_trabajo')));
+      await tester.pumpAndSettle();
+
+      verify(
+        () => evidenciaRepositorio.capturarEvidencia(
+          bytesOriginales: bytesFoto,
+          tipo: 'imagen_campo',
+          fecha: any(named: 'fecha'),
+        ),
+      ).called(1);
+      verify(
+        () => trabajoRepositorio.cerrarTrabajo(
+          trabajoUuidCliente: 'uuid-trabajo-1',
+          fin: any(named: 'fin'),
+          litrosSobrante: Decimal.parse('5.25'),
+          evidenciaImagenCampoUuidCliente: 'uuid-evidencia-campo-1',
+        ),
+      ).called(1);
+      expect(find.text('Trabajo cerrado'), findsWidgets);
+    });
+
+    testWidgets('error al cerrar trabajo: muestra SnackBar', (tester) async {
+      await bombearHastaSesionCerrada(tester);
+
+      when(
+        () => selectorFotoTrabajo.tomarFoto(),
+      ).thenAnswer((_) async => _bytesFotoValidos);
+      when(
+        () => evidenciaRepositorio.capturarEvidencia(
+          bytesOriginales: any(named: 'bytesOriginales'),
+          tipo: any(named: 'tipo'),
+          fecha: any(named: 'fecha'),
+        ),
+      ).thenAnswer((_) async => 'uuid-evidencia-campo-2');
+      when(
+        () => trabajoRepositorio.cerrarTrabajo(
+          trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+          fin: any(named: 'fin'),
+          litrosSobrante: any(named: 'litrosSobrante'),
+          evidenciaImagenCampoUuidCliente: any(
+            named: 'evidenciaImagenCampoUuidCliente',
+          ),
+        ),
+      ).thenThrow(Exception('Error en base de datos'));
+
+      await tester.tap(find.byKey(const Key('boton_cerrar_trabajo')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('boton_tomar_foto_campo')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('boton_confirmar_cierre_trabajo')));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(SnackBar), findsOneWidget);
+      expect(find.textContaining('Error al cerrar trabajo'), findsOneWidget);
+    });
+
+    testWidgets(
+      'validación: litros sobrante no numérico o negativo no rompe el '
+      'diálogo',
+      (tester) async {
+        await bombearHastaSesionCerrada(tester);
+
+        when(
+          () => selectorFotoTrabajo.tomarFoto(),
+        ).thenAnswer((_) async => _bytesFotoValidos);
+
+        await tester.tap(find.byKey(const Key('boton_cerrar_trabajo')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('boton_tomar_foto_campo')));
+        await tester.pumpAndSettle();
+
+        // Intenta con texto no numérico
+        await tester.enterText(
+          find.byKey(const Key('cierre_trabajo_litros_sobrante')),
+          'abc',
+        );
+        await tester.tap(
+          find.byKey(const Key('boton_confirmar_cierre_trabajo')),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Ingresá un número válido'), findsOneWidget);
+        verifyNever(
+          () => trabajoRepositorio.cerrarTrabajo(
+            trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+            fin: any(named: 'fin'),
+            litrosSobrante: any(named: 'litrosSobrante'),
+            evidenciaImagenCampoUuidCliente: any(
+              named: 'evidenciaImagenCampoUuidCliente',
+            ),
+          ),
+        );
+
+        // Intenta con número negativo
+        await tester.enterText(
+          find.byKey(const Key('cierre_trabajo_litros_sobrante')),
+          '-5',
+        );
+        await tester.tap(
+          find.byKey(const Key('boton_confirmar_cierre_trabajo')),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Los litros no pueden ser negativos'), findsOneWidget);
+        verifyNever(
+          () => trabajoRepositorio.cerrarTrabajo(
+            trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+            fin: any(named: 'fin'),
+            litrosSobrante: any(named: 'litrosSobrante'),
+            evidenciaImagenCampoUuidCliente: any(
+              named: 'evidenciaImagenCampoUuidCliente',
+            ),
+          ),
+        );
+      },
+    );
   });
 
   testWidgets('error: muestra mensaje y botón de reintentar', (tester) async {

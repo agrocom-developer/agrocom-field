@@ -10,6 +10,8 @@ import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_bloc.dar
 import 'package:agrocom_field/features/sesion_vuelo/presentation/trabajo_cubit.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
 import 'package:agrocom_field/nucleo/auth/persona_operativa_store.dart';
+import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
+import 'package:agrocom_field/nucleo/evidencias/evidencia_repository.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,21 @@ class _SesionRepositoryFalso extends Mock implements SesionRepository {}
 
 class _PersonaOperativaStoreFalso extends Mock
     implements PersonaOperativaStore {}
+
+class _EvidenciaRepositoryFalso extends Mock implements EvidenciaRepository {}
+
+class _SelectorFotoFalso extends Mock implements SelectorFoto {}
+
+// `SesionVueloPantalla` (HU-09) arma su propio `TrabajoCubit` nuevo, además
+// del que `OrdenDetallePantalla` usa para abrir el trabajo — ninguno de los
+// dos se ejercita más allá de la construcción en este archivo, que solo
+// prueba `OrdenDetallePantalla`.
+TrabajoCubit _crearTrabajoCubitDeSobra(TrabajoRepository repositorio) =>
+    TrabajoCubit(
+      repositorio,
+      evidenciaRepositorio: _EvidenciaRepositoryFalso(),
+      selectorFoto: _SelectorFotoFalso(),
+    );
 
 // Al abrir trabajo con éxito, `OrdenDetallePantalla` navega a
 // `SesionVueloPantalla`, que sí invoca `crearSesionBloc` — a diferencia de
@@ -101,7 +118,8 @@ void main() {
           // posesión del cubit y lo cierra solo al desmontar — un
           // `addTearDown(cubit.close)` sobre la misma instancia duplica
           // el cierre y cuelga la finalización del test.
-          crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
+          crearTrabajoCubit: () =>
+              _crearTrabajoCubitDeSobra(trabajoRepositorio),
           crearSesionBloc: (_) =>
               throw UnimplementedError('no se invoca en este test'),
           crearIncidenciaCubit: (_) =>
@@ -123,7 +141,8 @@ void main() {
         home: OrdenDetallePantalla(
           orden: _orden(),
           flavor: Flavor.auxiliar,
-          crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
+          crearTrabajoCubit: () =>
+              _crearTrabajoCubitDeSobra(trabajoRepositorio),
           crearSesionBloc: (_) =>
               throw UnimplementedError('no se invoca en este test'),
           crearIncidenciaCubit: (_) =>
@@ -184,7 +203,8 @@ void main() {
         home: OrdenDetallePantalla(
           orden: _orden(),
           flavor: Flavor.piloto,
-          crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
+          crearTrabajoCubit: () =>
+              _crearTrabajoCubitDeSobra(trabajoRepositorio),
           // Camino feliz: la apertura exitosa navega a SesionVueloPantalla,
           // que sí construye un SesionBloc.
           crearSesionBloc: _crearSesionBlocDeSobra,
@@ -224,7 +244,8 @@ void main() {
         home: OrdenDetallePantalla(
           orden: _orden(),
           flavor: Flavor.piloto,
-          crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
+          crearTrabajoCubit: () =>
+              _crearTrabajoCubitDeSobra(trabajoRepositorio),
           crearSesionBloc: (_) =>
               throw UnimplementedError('no se invoca en este test'),
           crearIncidenciaCubit: (_) =>
@@ -262,7 +283,8 @@ void main() {
         home: OrdenDetallePantalla(
           orden: _orden(),
           flavor: Flavor.piloto,
-          crearTrabajoCubit: () => TrabajoCubit(trabajoRepositorio),
+          crearTrabajoCubit: () =>
+              _crearTrabajoCubitDeSobra(trabajoRepositorio),
           // Camino feliz (tras el segundo transcurrido): navega a
           // SesionVueloPantalla, que sí construye un SesionBloc.
           crearSesionBloc: _crearSesionBlocDeSobra,
