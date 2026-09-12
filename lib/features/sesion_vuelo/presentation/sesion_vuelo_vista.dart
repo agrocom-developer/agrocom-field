@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +12,8 @@ import '../domain/sesion.dart';
 import 'sesion_bloc.dart';
 import 'sesion_estado.dart';
 import 'sesion_evento.dart';
+import 'trabajo_cubit.dart';
+import 'trabajo_estado.dart';
 
 /// UI pura de la sesión de vuelo — muestra el ciclo de vida de una sesión de
 /// vuelo (inicial, abriendo, activa, cerrando, cerrada, error). Asume que un
@@ -43,6 +47,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
   late TextEditingController _dronIdController;
   late TextEditingController _hectareaInicialController;
   late TextEditingController _acumuladoFinalController;
+  late TextEditingController _litrosSobranteController;
   String? _motivoSeleccionado;
   bool _condicionesFueraDeRango = false;
   int? _auxiliarSeleccionadoId;
@@ -77,6 +82,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     _dronIdController = TextEditingController();
     _hectareaInicialController = TextEditingController();
     _acumuladoFinalController = TextEditingController();
+    _litrosSobranteController = TextEditingController();
   }
 
   @override
@@ -91,6 +97,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     _dronIdController.dispose();
     _hectareaInicialController.dispose();
     _acumuladoFinalController.dispose();
+    _litrosSobranteController.dispose();
     super.dispose();
   }
 
@@ -530,127 +537,289 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     );
   }
 
+  /// Cierra el TRABAJO (HU-09), no la sesión — distinto de
+  /// `_mostrarFormularioCierre`. Mismo motivo que en los diálogos de arriba
+  /// para usar el `context` de este método (capturado por closure) en vez
+  /// del `context` del `StatefulBuilder`: un diálogo es otra rama del
+  /// `Overlay`, no descendiente de `SesionVueloVista` — `context.read` ahí
+  /// no encontraría el `BlocProvider<TrabajoCubit>` real.
+  ///
+  /// La foto de campo es SIEMPRE obligatoria ("sin captura no cierra") — el
+  /// botón de confirmar queda deshabilitado hasta que haya una.
+  void _mostrarFormularioCierreTrabajo(
+    BuildContext context,
+    String trabajoUuidCliente,
+  ) {
+    _litrosSobranteController.clear();
+    Uint8List? bytesFoto;
+
+    showDialog(
+      context: context,
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (_, setStateDialog) {
+          Future<void> tomarFoto() async {
+            final bytes = await context.read<TrabajoCubit>().tomarFotoCampo();
+            if (bytes == null) return;
+            setStateDialog(() => bytesFoto = bytes);
+          }
+
+          return AlertDialog(
+            title: const Text('Cerrar trabajo'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextFormField(
+                    key: const Key('cierre_trabajo_litros_sobrante'),
+                    controller: _litrosSobranteController,
+                    decoration: const InputDecoration(
+                      labelText: 'Litros sobrantes (opcional)',
+                    ),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  OutlinedButton(
+                    key: const Key('boton_tomar_foto_campo'),
+                    onPressed: tomarFoto,
+                    child: Text(
+                      bytesFoto == null
+                          ? 'Tomar foto del campo'
+                          : 'Volver a tomar foto',
+                    ),
+                  ),
+                  if (bytesFoto != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: Image.memory(
+                        bytesFoto!,
+                        key: const Key('preview_foto_campo'),
+                        height: 200,
+                      ),
+                    )
+                  else
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Text(
+                        'La foto del campo es obligatoria — sin captura no '
+                        'se puede cerrar el trabajo.',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(dialogContext),
+                child: const Text('Cancelar'),
+              ),
+              FilledButton(
+                key: const Key('boton_confirmar_cierre_trabajo'),
+                onPressed: bytesFoto == null
+                    ? null
+                    : () {
+                        final litrosTexto = _litrosSobranteController.text
+                            .trim();
+                        context.read<TrabajoCubit>().cerrar(
+                          trabajoUuidCliente: trabajoUuidCliente,
+                          litrosSobrante: litrosTexto.isEmpty
+                              ? null
+                              : Decimal.parse(litrosTexto),
+                          bytesFoto: bytesFoto!,
+                        );
+                        Navigator.pop(dialogContext);
+                      },
+                child: const Text('Cerrar trabajo'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Sesión de vuelo')),
-      body: BlocConsumer<SesionBloc, SesionEstado>(
-        listener: (context, estado) {
-          if (estado is SesionError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(estado.mensaje),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-            );
-          }
-        },
-        builder: (context, estado) => switch (estado) {
-          SesionInicial() => Center(
-            child: FilledButton(
-              key: const Key('boton_abrir_sesion'),
-              onPressed: () => _mostrarFormularioApertura(context),
-              child: const Text('Abrir sesión'),
+    return BlocListener<TrabajoCubit, TrabajoEstado>(
+      listener: (context, estado) {
+        if (estado is TrabajoCerrado) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Trabajo cerrado')));
+        }
+        if (estado is TrabajoError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(estado.mensaje),
+              backgroundColor: Theme.of(context).colorScheme.error,
             ),
-          ),
-          SesionAbriendo() => const Center(child: CircularProgressIndicator()),
-          SesionActiva(:final sesion) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Sesión activa',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 24),
-                  _InfoRow(label: 'Secuencia', value: '${sesion.secuencia}'),
-                  _InfoRow(
-                    label: 'Inicio',
-                    value: _formatearHora(sesion.inicio),
-                  ),
-                  _InfoRow(
-                    label: 'Hectáreas declaradas',
-                    value: sesion.hectareasDeclaradas.toString(),
-                  ),
-                  const SizedBox(height: 24),
-                  OutlinedButton(
-                    key: const Key('boton_reportar_incidencia'),
-                    onPressed: () =>
-                        _reportarIncidencia(context, sesion.uuidCliente),
-                    child: const Text('Reportar incidencia'),
-                  ),
-                  const SizedBox(height: 12),
-                  FilledButton(
-                    key: const Key('boton_cerrar_sesion'),
-                    onPressed: () => _mostrarFormularioCierre(context, sesion),
-                    child: const Text('Cerrar sesión'),
-                  ),
-                ],
+          );
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Sesión de vuelo')),
+        body: BlocConsumer<SesionBloc, SesionEstado>(
+          listener: (context, estado) {
+            if (estado is SesionError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(estado.mensaje),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+            }
+          },
+          builder: (context, estado) => switch (estado) {
+            SesionInicial() => Center(
+              child: FilledButton(
+                key: const Key('boton_abrir_sesion'),
+                onPressed: () => _mostrarFormularioApertura(context),
+                child: const Text('Abrir sesión'),
               ),
             ),
-          ),
-          SesionCerrando() => const Center(child: CircularProgressIndicator()),
-          SesionCerrada(:final sesion) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    'Sesión cerrada',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                  const SizedBox(height: 24),
-                  _InfoRow(
-                    label: 'Motivo',
-                    value: _etiquetaMotivo(sesion.motivoCierre ?? ''),
-                  ),
-                  _InfoRow(
-                    label: 'Hectáreas declaradas (cierre)',
-                    value: sesion.hectareasDeclaradasCierre?.toString() ?? '—',
-                  ),
-                  if (sesion.litrosConsumidos != null)
+            SesionAbriendo() => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            SesionActiva(:final sesion) => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Sesión activa',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 24),
+                    _InfoRow(label: 'Secuencia', value: '${sesion.secuencia}'),
                     _InfoRow(
-                      label: 'Litros consumidos',
-                      value: sesion.litrosConsumidos!.toString(),
+                      label: 'Inicio',
+                      value: _formatearHora(sesion.inicio),
                     ),
-                  _InfoRow(
-                    label: 'Fin',
-                    value: _formatearHora(sesion.fin ?? DateTime.now()),
-                  ),
-                ],
+                    _InfoRow(
+                      label: 'Hectáreas declaradas',
+                      value: sesion.hectareasDeclaradas.toString(),
+                    ),
+                    const SizedBox(height: 24),
+                    OutlinedButton(
+                      key: const Key('boton_reportar_incidencia'),
+                      onPressed: () =>
+                          _reportarIncidencia(context, sesion.uuidCliente),
+                      child: const Text('Reportar incidencia'),
+                    ),
+                    const SizedBox(height: 12),
+                    FilledButton(
+                      key: const Key('boton_cerrar_sesion'),
+                      onPressed: () =>
+                          _mostrarFormularioCierre(context, sesion),
+                      child: const Text('Cerrar sesión'),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          SesionError(:final mensaje) => Center(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    mensaje,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+            SesionCerrando() => const Center(
+              child: CircularProgressIndicator(),
+            ),
+            SesionCerrada(:final sesion) => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Sesión cerrada',
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 24),
-                  OutlinedButton(
-                    key: const Key('boton_reintentar'),
-                    onPressed: () => _mostrarFormularioApertura(context),
-                    child: const Text('Reintentar'),
-                  ),
-                ],
+                    const SizedBox(height: 24),
+                    _InfoRow(
+                      label: 'Motivo',
+                      value: _etiquetaMotivo(sesion.motivoCierre ?? ''),
+                    ),
+                    _InfoRow(
+                      label: 'Hectáreas declaradas (cierre)',
+                      value:
+                          sesion.hectareasDeclaradasCierre?.toString() ?? '—',
+                    ),
+                    if (sesion.litrosConsumidos != null)
+                      _InfoRow(
+                        label: 'Litros consumidos',
+                        value: sesion.litrosConsumidos!.toString(),
+                      ),
+                    _InfoRow(
+                      label: 'Fin',
+                      value: _formatearHora(sesion.fin ?? DateTime.now()),
+                    ),
+                    const SizedBox(height: 24),
+                    const Divider(),
+                    const SizedBox(height: 8),
+                    BlocBuilder<TrabajoCubit, TrabajoEstado>(
+                      builder: (context, estadoTrabajo) {
+                        if (estadoTrabajo is TrabajoCerrado) {
+                          return Text(
+                            'Trabajo cerrado',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          );
+                        }
+                        final cerrandoTrabajo =
+                            estadoTrabajo is TrabajoCerrando;
+                        return FilledButton(
+                          key: const Key('boton_cerrar_trabajo'),
+                          onPressed: cerrandoTrabajo
+                              ? null
+                              : () => _mostrarFormularioCierreTrabajo(
+                                  context,
+                                  sesion.trabajoUuidCliente,
+                                ),
+                          child: cerrandoTrabajo
+                              ? const SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Text('Cerrar trabajo'),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        },
+            SesionError(:final mensaje) => Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      mensaje,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    OutlinedButton(
+                      key: const Key('boton_reintentar'),
+                      onPressed: () => _mostrarFormularioApertura(context),
+                      child: const Text('Reintentar'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          },
+        ),
       ),
     );
   }
