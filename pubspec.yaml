@@ -40,6 +40,7 @@ dev_dependencies:
   json_serializable: ^6.14.1
   bloc_test: ^10.0.0
   flutter_image_compress_common: ^1.1.1
+  flutter_launcher_icons: ^0.14.4
   image_picker_platform_interface: ^2.11.1
   mocktail: ^1.0.5
   sqlite3: ^3.4.0
@@ -48,3 +49,16 @@ flutter:
   uses-material-design: true
   assets:
     - assets/imagenes/
+
+# Ícono del launcher (ambos flavors comparten marca, se genera una sola vez
+# en android/app/src/main/res — ninguno de los dos flavors tiene res propio
+# que lo sobreescriba). Isotipo recortado del logo completo
+# (assets/imagenes/agrocom_logo.png): solo la "A" con la señal, sin el
+# wordmark "AGROCOM", porque un ícono de 48dp con texto no se lee. Regenerar
+# con `dart run flutter_launcher_icons` si el logo cambia.
+flutter_launcher_icons:
+  android: true
+  image_path: assets/icono_launcher/icono.png
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: assets/icono_launcher/icono_foreground.png
+  min_sdk_android: 29
