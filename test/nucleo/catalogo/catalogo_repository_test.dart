@@ -214,4 +214,70 @@ void main() {
     final lote = (await db.select(db.loteCatalogo).get()).single;
     expect(lote.geometria, '{"type":"Polygon","coordinates":[[[1,2],[3,4]]]}');
   });
+
+  test('pull() devuelve false cuando ordenes/lotes/personas vienen vacías '
+      '(catálogo al día)', () async {
+    when(
+      () => apiClient.get(any(), query: any(named: 'query')),
+    ).thenAnswer((_) async => _respuestaCatalogo(cursor: 'c1'));
+
+    expect(await repositorio.pull(), isFalse);
+  });
+
+  test('pull() devuelve true cuando alguna sección trajo filas', () async {
+    when(() => apiClient.get(any(), query: any(named: 'query'))).thenAnswer(
+      (_) async => _respuestaCatalogo(personas: [_personaJson()], cursor: 'c1'),
+    );
+
+    expect(await repositorio.pull(), isTrue);
+  });
+
+  test('pull() devuelve false ante ApiExcepcionRed (sin señal)', () async {
+    when(
+      () => apiClient.get(any(), query: any(named: 'query')),
+    ).thenThrow(const ApiExcepcionRed());
+
+    expect(await repositorio.pull(), isFalse);
+  });
+
+  test('llamado en loop mientras pull() devuelva true, agota el catálogo '
+      'página por página y para en la primera página vacía', () async {
+    var llamados = 0;
+    when(() => apiClient.get(any(), query: any(named: 'query'))).thenAnswer((
+      _,
+    ) async {
+      llamados++;
+      return switch (llamados) {
+        1 => _respuestaCatalogo(
+          ordenes: [_ordenJson(id: 1)],
+          cursor: 'cursor-1',
+        ),
+        2 => _respuestaCatalogo(
+          ordenes: [_ordenJson(id: 2)],
+          cursor: 'cursor-2',
+        ),
+        _ => _respuestaCatalogo(cursor: 'cursor-2'),
+      };
+    });
+
+    var hayMas = true;
+    var iteraciones = 0;
+    while (hayMas) {
+      hayMas = await repositorio.pull();
+      iteraciones++;
+    }
+
+    expect(iteraciones, 3);
+    expect(llamados, 3);
+    expect(await db.select(db.ordenCatalogo).get(), hasLength(2));
+    expect(await cursorGuardado(), 'cursor-2');
+
+    verify(() => apiClient.get('/api/sync/catalogo', query: null)).called(1);
+    verify(
+      () => apiClient.get('/api/sync/catalogo', query: {'desde': 'cursor-1'}),
+    ).called(1);
+    verify(
+      () => apiClient.get('/api/sync/catalogo', query: {'desde': 'cursor-2'}),
+    ).called(1);
+  });
 }
