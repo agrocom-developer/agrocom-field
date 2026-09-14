@@ -7,8 +7,8 @@ import '../db/database.dart';
 import 'compresor_evidencia.dart';
 import 'hash_evidencia.dart';
 
-/// Captura → comprime → hashea → persiste el archivo → encola, TODO en una
-/// operación coherente (invariante 3 de CLAUDE.md): la app no espera señal
+/// Captura → comprime → hashea → persiste el archivo → encola, todo en una
+/// sola operación coherente (invariante 3 de CLAUDE.md): la app no espera señal
 /// para confirmar que la evidencia "quedó guardada" localmente y puede
 /// seguir capturando. No hay pantalla de cámara en esta tarea (TE-07):
 /// quien llame a [capturarEvidencia] ya tiene los bytes originales en
