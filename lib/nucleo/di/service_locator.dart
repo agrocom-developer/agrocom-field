@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../features/avisos_locales/data/ids_vistos_store.dart';
@@ -22,6 +23,7 @@ import '../flavor.dart';
 import '../linterna/linterna_controlador.dart';
 import '../notificaciones/notificador_local.dart';
 import '../preferencias/preferencias_store.dart';
+import '../sync/disparador_sync.dart';
 import '../sync/outbox_repository.dart';
 import '../sync/sync_cubit.dart';
 import '../sync/sync_engine.dart';
@@ -106,6 +108,14 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
     () => EvidenciaSyncEngine(
       apiClient: getIt<ApiClient>(),
       db: getIt<AppDatabase>(),
+    ),
+  );
+  getIt.registerLazySingleton<DisparadorSync>(
+    () => DisparadorSync(
+      catalogoRepositorio: getIt<CatalogoRepository>(),
+      syncEngine: getIt<SyncEngine>(),
+      evidenciaSyncEngine: getIt<EvidenciaSyncEngine>(),
+      cambiosConectividad: Connectivity().onConnectivityChanged,
     ),
   );
   getIt.registerLazySingleton<SelectorFoto>(SelectorFotoImagePicker.new);

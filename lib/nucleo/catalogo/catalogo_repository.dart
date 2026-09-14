@@ -15,9 +15,11 @@ import '../db/database.dart';
 /// repositorio solo espeja lo que llega.
 ///
 /// Sin `Stream` de estado propio ni temporizador: [pull] corre una sola vez
-/// por llamada, disparado por conectividad, apertura de app o botón manual
-/// (pieza futura, fuera de este archivo) — mismo criterio que
-/// `SyncEngine.sincronizar()`.
+/// por llamada, disparado por conectividad o apertura de app (TE-19,
+/// `DisparadorSync`) — mismo criterio que `SyncEngine.sincronizar()`. Cada
+/// llamada trae una sola página por sección (200 filas, límite del
+/// servidor); quien agota el catálogo lo invoca en loop mientras [pull]
+/// devuelva `true`.
 class CatalogoRepository {
   CatalogoRepository({required AppDatabase db, required ApiClient apiClient})
     : _db = db,
@@ -30,7 +32,15 @@ class CatalogoRepository {
   /// aplica local. Nunca espera nada de vuelta: quien dispara el pull solo
   /// le importa que haya terminado, no una confirmación por fila (a
   /// diferencia del outbox, acá no hay nada que "reintentar" fila por fila).
-  Future<void> pull() async {
+  ///
+  /// Devuelve `true` cuando ordenes/lotes/personas trajeron alguna fila —
+  /// señal de que esta página pudo haber tocado el límite del servidor (200
+  /// filas por sección, ver `ObtenerCatalogoDesdeCursor` del lado servidor)
+  /// y quede más por traer con el cursor ya avanzado — y `false` cuando el
+  /// catálogo quedó al día (las tres vinieron vacías) o cuando no hubo señal
+  /// de red. Quien invoque `pull()` para agotar el catálogo repite mientras
+  /// devuelva `true`.
+  Future<bool> pull() async {
     final cursorActual = await _leerCursor();
 
     final respuesta = await _pedirCatalogo(cursorActual);
@@ -38,7 +48,7 @@ class CatalogoRepository {
       // ApiExcepcionRed: sin señal ahora, no es un error (ver
       // api_excepcion.dart). Ni el catálogo ni el cursor se tocan — el
       // próximo trigger externo vuelve a pedir desde el mismo cursor.
-      return;
+      return false;
     }
 
     // ApiExcepcionServidor/ApiExcepcionDesconocida se dejan propagar a
@@ -84,6 +94,8 @@ class CatalogoRepository {
             ),
           );
     });
+
+    return ordenes.isNotEmpty || lotes.isNotEmpty || personas.isNotEmpty;
   }
 
   Future<Response<dynamic>?> _pedirCatalogo(String? cursor) async {

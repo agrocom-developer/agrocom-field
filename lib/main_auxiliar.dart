@@ -14,6 +14,7 @@ import 'nucleo/di/service_locator.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
 import 'nucleo/notificaciones/notificador_local.dart';
+import 'nucleo/sync/disparador_sync.dart';
 import 'nucleo/version/version_watcher.dart';
 
 Future<void> main() async {
@@ -37,6 +38,10 @@ Future<void> main() async {
   // HU-20: mismo criterio que en main_piloto.dart — no se espera, la app
   // nunca depende de que la red responda para arrancar.
   unawaited(getIt<VersionWatcher>().iniciar());
+
+  // TE-19: mismo criterio — el primer ciclo de sync puede tardar o no
+  // tener red, y la app nunca espera la red para arrancar.
+  unawaited(getIt<DisparadorSync>().iniciar());
 
   runApp(
     AgrocomApp(
