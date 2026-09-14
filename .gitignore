@@ -7,23 +7,6 @@
 .buildlog/
 .history
 
-# pubspec.lock SÍ se versiona: es una app (no un package), y builds
-# reproducibles entre CI y los dos flavors dependen de fijar versiones.
-!pubspec.lock
-
-# IDE
-.idea/
-.vscode/
-
-# Código generado (drift, freezed, json_serializable) — build_runner en CI lo regenera
-**/*.g.dart
-**/*.freezed.dart
-**/*.drift.dart
-
-# Configuración de entorno real — el .example se versiona
-config/*.json
-!config/*.json.example
-
 
 
 # Flutter repo-specific
@@ -42,9 +25,7 @@ config/*.json
 /dev/integration_tests/**/xcuserdata
 /dev/integration_tests/**/Pods
 /packages/flutter/coverage/
-# `version` (sin más) venía de acá arrastrado del .gitignore del propio SDK
-# de Flutter — ignoraba por error cualquier archivo/carpeta llamado
-# "version" en este repo, incluida `lib/nucleo/version/` (HU-20).
+version
 analysis_benchmark.json
 
 # packages file containing multi-root paths
@@ -125,11 +106,6 @@ unlinked_spec.ds
 
 # Coverage
 coverage/
-
-# bin/ciclo: bitácora local del turno desatendido (TE-18) — se audita en el
-# disco, nunca en git; un id de tarea no se reutiliza aunque su prompt se
-# borre del árbol, así que perder este directorio no pierde historial real.
-/runs/
 
 # Symbols
 app.*.symbols
