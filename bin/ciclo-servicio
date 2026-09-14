@@ -1,0 +1,139 @@
+#!/bin/bash
+# El ciclo como servicio: que un reinicio no se lleve la noche entera.
+#
+# `bin/ciclo --fondo` ya sobrevive a cerrar la terminal —eso lo resuelve
+# nohup—, pero no a que la Mac se reinicie o se actualice de madrugada. Lo que
+# se pierde ahí no es una sesión: es el turno completo, y encima en silencio,
+# porque a la mañana no queda ni un proceso al que preguntarle qué pasó.
+#
+# Espejo del `bin/ciclo-servicio` de `agrocom-api`, con etiqueta y binario
+# instalado propios (`com.agrocom.ciclo-field`) — proceso, PID y plist
+# totalmente separados: un `git checkout` en un repo no pisa al otro, y un
+# reinicio del servicio de uno no toca el del otro.
+#
+#   bin/ciclo-servicio --instalar [ruta-del-repo]   lo deja instalado y cargado
+#   bin/ciclo-servicio --desinstalar                lo saca
+#   bin/ciclo-servicio --estado                     si está cargado y cómo salió
+#
+# Sin argumentos es lo que ejecuta launchd, y lo primero que hace es decidir si
+# corresponde arrancar.
+set -u
+
+ETIQUETA=com.agrocom.ciclo-field
+PLIST="$HOME/Library/LaunchAgents/$ETIQUETA.plist"
+
+# La copia que ejecuta launchd vive FUERA del repo a propósito. Si el servicio
+# apuntara a `bin/ciclo-servicio` dentro del árbol, dejaría de existir cada vez
+# que el ciclo se quedara parado en una rama anterior a este commit —que es el
+# estado normal mientras trabaja una tarea— y el arranque fallaría sin que
+# nadie entienda por qué.
+INSTALADO="$HOME/.local/bin/agrocom-ciclo-field"
+
+repo_del_script() { cd "$(dirname "$0")/.." && pwd; }
+
+sello() { printf '\n\033[1m── Servicio — %s ──\033[0m\n  %s\n' "$(date '+%d/%m %H:%M')" "$1"; }
+
+# --- Lo que corre launchd --------------------------------------------
+# Los dos motivos para no arrancar salen con 0, y el plist solo relanza cuando
+# la salida NO es 0: así el freno de mano puesto a mano sobrevive a un reinicio
+# en vez de convertirse en un bucle de arranques cada cinco minutos.
+arrancar() {
+    local repo="${AGROCOM_REPO:-$(repo_del_script)}" vivo
+    cd "$repo" || { sello "no puedo entrar a $repo"; exit 1; }
+
+    if [ -f runs/DETENER ]; then
+        sello "hay una parada pedida ($(head -1 runs/DETENER)): no arranco. Se levanta con bin/ciclo --reanudar."
+        exit 0
+    fi
+
+    vivo=$(cat runs/ciclo.pid 2>/dev/null || true)
+    if [ -n "$vivo" ] && kill -0 "$vivo" 2>/dev/null; then
+        sello "ya hay un ciclo vivo (PID $vivo): no arranco un segundo sobre el mismo árbol de trabajo."
+        exit 0
+    fi
+
+    sello "arranco el ciclo"
+    exec env CICLO_EN_FONDO=1 ./bin/ciclo
+}
+
+# --- Instalación ------------------------------------------------------
+instalar() {
+    local repo ruta
+    repo="${1:-$(repo_del_script)}"
+    [ -x "$repo/bin/ciclo" ] || { echo "No encuentro bin/ciclo en $repo"; exit 1; }
+
+    mkdir -p "$(dirname "$INSTALADO")" "$HOME/Library/LaunchAgents" || exit 1
+    cp "$0" "$INSTALADO" && chmod +x "$INSTALADO" || exit 1
+
+    # launchd arranca con un PATH mínimo que no incluye /usr/local/bin: sin
+    # esto el ciclo no encuentra ni claude ni gh y muere en la primera sesión.
+    # Sin Docker/PHP/Node: este repo corre directo sobre el SDK de Flutter.
+    ruta=""
+    for b in claude gh git flutter dart; do
+        local d; d=$(command -v "$b" 2>/dev/null) || continue
+        case ":$ruta:" in *":$(dirname "$d"):"*) ;; *) ruta="$ruta$(dirname "$d"):" ;; esac
+    done
+    ruta="$ruta/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
+    cat > "$PLIST" <<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key><string>$ETIQUETA</string>
+    <key>ProgramArguments</key>
+    <array><string>$INSTALADO</string></array>
+    <key>WorkingDirectory</key><string>$repo</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key><string>$ruta</string>
+        <key>AGROCOM_REPO</key><string>$repo</string>
+        <key>CICLO_EN_FONDO</key><string>1</string>
+    </dict>
+    <key>RunAtLoad</key><true/>
+    <key>KeepAlive</key>
+    <dict><key>SuccessfulExit</key><false/></dict>
+    <key>ThrottleInterval</key><integer>300</integer>
+    <key>StandardOutPath</key><string>$repo/runs/ciclo.log</string>
+    <key>StandardErrorPath</key><string>$repo/runs/ciclo.log</string>
+</dict>
+</plist>
+XML
+
+    launchctl bootout "gui/$UID/$ETIQUETA" 2>/dev/null
+    if ! launchctl bootstrap "gui/$UID" "$PLIST" 2>/dev/null; then
+        echo "launchctl no pudo cargar $PLIST"; exit 1
+    fi
+    printf 'Servicio %s instalado sobre %s\n' "$ETIQUETA" "$repo"
+    printf 'Arranca solo al iniciar sesión. Estado: bin/ciclo-servicio --estado\n'
+    printf 'Para sacarlo: bin/ciclo-servicio --desinstalar\n'
+}
+
+desinstalar() {
+    launchctl bootout "gui/$UID/$ETIQUETA" 2>/dev/null
+    rm -f "$PLIST" "$INSTALADO"
+    printf 'Servicio %s desinstalado. El ciclo que ya esté corriendo sigue vivo.\n' "$ETIQUETA"
+}
+
+estado() {
+    if [ ! -f "$PLIST" ]; then
+        printf 'Servicio     : no instalado (bin/ciclo-servicio --instalar)\n'
+        return 0
+    fi
+    printf 'Servicio     : instalado en %s\n' "$PLIST"
+    if launchctl print "gui/$UID/$ETIQUETA" >/dev/null 2>&1; then
+        printf 'Cargado      : sí\n'
+        launchctl print "gui/$UID/$ETIQUETA" 2>/dev/null |
+            grep -E '^[[:space:]]*(state|pid|last exit code) ' | sed 's/^[[:space:]]*/  /'
+    else
+        printf 'Cargado      : no — launchctl bootstrap gui/%s %s\n' "$UID" "$PLIST"
+    fi
+}
+
+case "${1:-}" in
+    --instalar)    shift; instalar "${1:-}" ;;
+    --desinstalar) desinstalar ;;
+    --estado)      estado ;;
+    "")            arrancar ;;
+    *)             echo "Uso: bin/ciclo-servicio [--instalar [repo] | --desinstalar | --estado]"; exit 1 ;;
+esac
