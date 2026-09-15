@@ -45,6 +45,8 @@ Consecuencia concreta para este repo: la app del auxiliar **no modela fórmula, 
 
 Si en algún momento se retoma el modelo de `recetas_mezcla`/`receta_items` de §4.3 para algo, es una señal de que la especificación cambió de nuevo — no construir sobre esas tablas sin confirmar primero que §7 sigue vigente.
 
+**Actualización (14/9/2026).** §7 se reescribió el 13/9/2026 con HU-78 de `agrocom-api` (PR #198, mergeado el 14/9): el piloto ahora **transcribe** qué productos y en qué cantidad se cargaron en el caldo (`RegistroSync.tipo = mezcla`: `trabajo_uuid_cliente`, `hora`, `productos[]` con `producto` de texto libre, `cantidad` decimal y `unidad` en `l`/`ml`/`kg`/`g`) — sin dosis por hectárea, orden de incorporación ni compatibilidad (§7.1 sigue vigente en eso). El deslinde de responsabilidad no cambió: Agrocom registra lo declarado, no lo valida. Del lado de esta app la pantalla y el tipo de registro **no están planificados todavía**, y el dueño pidió ese mismo día dejar la mezcla fuera de la vista previa del modo campo (ADR 0008) hasta que decida cómo entra. `recetas_mezcla`/`receta_items` siguen obsoletas: el módulo real es `ope_mezclas`/`ope_mezcla_items`.
+
 ## Arquitectura Flutter (ADR 0005 de `agrocom-api`, decisión completa ahí)
 
 BLoC, feature-first, tres capas por feature — espejo de la arquitectura modular del backend:

@@ -5,10 +5,12 @@ import '../componentes/componentes_campo.dart';
 import '../imagenes_campo.dart';
 import '../tipografia_campo.dart';
 
-/// 03 · Inicio del piloto (HU-70) — el trabajo asignado ya resuelto al
-/// entrar, clima resumido y accesos rápidos. Recreada del mockup de
-/// referencia (ADR 0008); "Rubén", "Lote 14" y los valores de clima son
-/// datos mock, no vienen de `drift`.
+/// 03 · Inicio del piloto (HU-70) — el trabajo asignado por el jefe de
+/// campo ya resuelto al entrar (`TrabajoCatalogo` del pull: `orden_id`,
+/// `lote_id`, `hectareas_declaradas`, `equipo_trabajo_id`), clima resumido
+/// y accesos rápidos. Recreada del mockup (ADR 0008); "Rubén", "Lote 14" y
+/// los valores de clima son datos mock, no vienen de `drift`. Cultivo y
+/// producto no viajan en el catálogo, por eso no se muestran.
 class InicioPilotoCampoVitrina extends StatelessWidget {
   const InicioPilotoCampoVitrina({super.key});
 
@@ -101,7 +103,7 @@ class InicioPilotoCampoVitrina extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Soja · Glifosato + 24D · líquido',
+                    'Orden 2431 · Equipo 2 · líquido · 12 L/ha',
                     style: TipografiaCampo.cuerpoSecundario,
                   ),
                   const SizedBox(height: 16),
@@ -119,7 +121,7 @@ class InicioPilotoCampoVitrina extends StatelessWidget {
                       ),
                       SizedBox(width: 10),
                       Expanded(
-                        child: StatChipCampo(etiqueta: 'Vuelos', valor: '6'),
+                        child: StatChipCampo(etiqueta: 'Lotes', valor: '2'),
                       ),
                     ],
                   ),
