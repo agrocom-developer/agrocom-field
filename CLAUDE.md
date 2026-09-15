@@ -31,6 +31,7 @@ Adaptación al lado cliente de las invariantes ya vigentes en `agrocom-api` — 
 Heredadas de `agrocom-api` — ver ese `CLAUDE.md` para el detalle completo, acá solo lo que aplica directo a este repo:
 
 - **Dominio en español, infraestructura en inglés**: mismo vocabulario que el backend (`Trabajo`, `Sesion`, `Mezcla`, `hectareas_declaradas`), pero `SyncEngine`, `Repository`, `Outbox`. No se traduce el dominio ni se reinventa un vocabulario propio del lado Flutter.
+- **El nombre visible de la app es «Agrocom»**, nunca «Agrocom Field». `agrocom-field`/`agrocom_field` es el nombre del repo y del paquete Dart (imports, `applicationId`, base local) y no aparece en ningún texto que vea el usuario: el logo ya lleva el wordmark, y el flavor se distingue aparte (`Agrocom Piloto` / `Agrocom Auxiliar` como label del launcher).
 - **Commits en español, imperativo**, sin trailer `Co-Authored-By` (`.claude/settings.json` ya lo declara).
 - **GitFlow simplificado** (ADR 0006, "en ambos repositorios"): `master` + `develop` + `feature/*` + `fix/*`, todo por PR, auto-merge cuando el CI está en verde. Ver el skill `flujo-git-pr` de este repo.
 - **Arquitectura**: BLoC feature-first en tres capas por feature (`presentation/`, `domain/`, `data/`), espejo de la arquitectura modular del backend (ADR 0003 de `agrocom-api`) — ver ADR 0005 para la estructura completa de carpetas.
