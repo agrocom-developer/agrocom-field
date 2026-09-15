@@ -13,7 +13,7 @@ class TemaCampo extends ThemeExtension<TemaCampo> {
     this.radioTarjetaGrande = 24,
     this.radioTarjetaChica = 18,
     this.radioBadge = 8,
-    this.familiaMonoespaciada = 'monospace',
+    this.familiaMonoespaciada = 'JetBrains Mono',
   });
 
   final double radioPill;
@@ -21,8 +21,8 @@ class TemaCampo extends ThemeExtension<TemaCampo> {
   final double radioTarjetaChica;
   final double radioBadge;
 
-  /// Familia monoespaciada del SO (sin paquete de fuente propio — ver ADR
-  /// 0008, mismo motivo de costo en el RC que ya fijó ADR 0003) para datos
+  /// JetBrains Mono (ADR 0008, ampliación 14/9/2026 — antes la
+  /// monoespaciada nativa del SO, ver `assets/fonts/FUENTES.md`) para datos
   /// técnicos: labels, badges, timestamps, notas de estado de sync.
   final String familiaMonoespaciada;
 

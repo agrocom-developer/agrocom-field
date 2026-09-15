@@ -7,18 +7,21 @@ import 'colores_campo.dart';
 /// familia, tamaño, peso y opacidad de una vez, para que ninguna pantalla
 /// arme su propio `TextStyle(fontFamily: 'monospace', ...)` suelto.
 ///
-/// Dos familias, sin paquete de fuentes (ADR 0008, tipografía): la de
-/// plataforma para texto humano y la monoespaciada nativa del SO (misma
-/// familia que `TemaCampo.familiaMonoespaciada`) para dato técnico — labels
-/// en mayúscula, timestamps, notas de sync. Un uso puntual ajusta con
-/// `copyWith` (tamaño, color semántico), nunca reescribe la familia.
+/// Dos familias (ADR 0008, ampliación 14/9/2026 — reabre la decisión
+/// original de no empaquetar fuente propia; ver `assets/fonts/FUENTES.md`
+/// para procedencia/licencia): Manrope para texto humano y JetBrains Mono
+/// para dato técnico — labels en mayúscula, timestamps, notas de sync. Un
+/// uso puntual ajusta con `copyWith` (tamaño, color semántico), nunca
+/// reescribe la familia.
 abstract final class TipografiaCampo {
-  static const String _mono = 'monospace';
+  static const String _humano = 'Manrope';
+  static const String _mono = 'JetBrains Mono';
 
-  // --- Texto humano (fuente de plataforma) ---
+  // --- Texto humano (Manrope) ---
 
   /// Titular de una pantalla de bienvenida ("El lote no tiene señal.").
   static const TextStyle tituloHero = TextStyle(
+    fontFamily: _humano,
     fontWeight: FontWeight.w800,
     fontSize: 38,
     height: 1.08,
@@ -28,6 +31,7 @@ abstract final class TipografiaCampo {
 
   /// Título principal de una pantalla ("Vincular dispositivo").
   static const TextStyle tituloPantalla = TextStyle(
+    fontFamily: _humano,
     fontWeight: FontWeight.w800,
     fontSize: 28,
     height: 1.15,
@@ -37,6 +41,7 @@ abstract final class TipografiaCampo {
 
   /// Título de sección o de encabezado ("Nueva aplicación", "Hola, Rubén").
   static const TextStyle tituloSeccion = TextStyle(
+    fontFamily: _humano,
     fontWeight: FontWeight.w700,
     fontSize: 18,
     color: ColoresCampo.textoPrincipal,
@@ -44,6 +49,7 @@ abstract final class TipografiaCampo {
 
   /// Dato protagonista dentro de una tarjeta ("Lote 14 — La Nena").
   static const TextStyle valorDestacado = TextStyle(
+    fontFamily: _humano,
     fontWeight: FontWeight.w800,
     fontSize: 24,
     height: 1.15,
@@ -53,6 +59,7 @@ abstract final class TipografiaCampo {
 
   /// Título de una tarjeta o de un ítem de lista ("Mezcla del caldo").
   static const TextStyle tituloTarjeta = TextStyle(
+    fontFamily: _humano,
     fontWeight: FontWeight.w700,
     fontSize: 14,
     color: ColoresCampo.textoPrincipal,
@@ -60,6 +67,7 @@ abstract final class TipografiaCampo {
 
   /// Párrafo de lectura (subtítulo de bienvenida, explicación corta).
   static final TextStyle cuerpo = TextStyle(
+    fontFamily: _humano,
     fontSize: 15,
     height: 1.5,
     color: ColoresCampo.textoPrincipal.withValues(alpha: OpacidadesCampo.alta),
@@ -67,12 +75,13 @@ abstract final class TipografiaCampo {
 
   /// Texto de apoyo bajo un título ("Soja · Glifosato + 24D · líquido").
   static final TextStyle cuerpoSecundario = TextStyle(
+    fontFamily: _humano,
     fontSize: 14,
     height: 1.4,
     color: ColoresCampo.textoPrincipal.withValues(alpha: OpacidadesCampo.media),
   );
 
-  // --- Dato técnico (monoespaciada nativa) ---
+  // --- Dato técnico (JetBrains Mono) ---
 
   /// Label en mayúscula sobre un valor ("USUARIO", "HECTÁREAS"). Quien lo
   /// usa aplica `toUpperCase()` — el estilo no transforma el texto.

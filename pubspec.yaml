@@ -49,6 +49,32 @@ flutter:
   uses-material-design: true
   assets:
     - assets/imagenes/
+  # Manrope/JetBrains Mono (ADR 0008, ampliación 14/9/2026) — fuentes
+  # variables: un solo archivo por familia cubre todos los pesos vía el eje
+  # `wght`, repetido acá una vez por peso realmente usado en
+  # `TipografiaCampo` (`lib/nucleo/ui/tipografia_campo.dart`). Ver
+  # `assets/fonts/FUENTES.md` para procedencia y licencia (SIL OFL 1.1).
+  fonts:
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope.ttf
+          weight: 400
+        - asset: assets/fonts/Manrope.ttf
+          weight: 500
+        - asset: assets/fonts/Manrope.ttf
+          weight: 600
+        - asset: assets/fonts/Manrope.ttf
+          weight: 700
+        - asset: assets/fonts/Manrope.ttf
+          weight: 800
+    - family: JetBrains Mono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono.ttf
+          weight: 400
+        - asset: assets/fonts/JetBrainsMono.ttf
+          weight: 500
+        - asset: assets/fonts/JetBrainsMono.ttf
+          weight: 600
 
 # Ícono del launcher (ambos flavors comparten marca, se genera una sola vez
 # en android/app/src/main/res — ninguno de los dos flavors tiene res propio
