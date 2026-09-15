@@ -21,7 +21,7 @@ OrdenCatalogoCompanion _ordenCompanion({
   contratoId: 1,
   loteId: loteId,
   nroAplicacion: 1,
-  litrosHa: Decimal.parse('10.00'),
+  litrosHa: Value(Decimal.parse('10.00')),
   fechaEmision: fechaEmision,
   estado: estado,
   updatedAt: DateTime.utc(2026, 8, 26, 12),

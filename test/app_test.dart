@@ -207,7 +207,7 @@ void main() {
               contratoId: 1,
               loteId: 1,
               nroAplicacion: 1,
-              litrosHa: Decimal.parse('10.00'),
+              litrosHa: Value(Decimal.parse('10.00')),
               fechaEmision: '2026-08-26',
               estado: 'vigente',
               updatedAt: DateTime.utc(2026, 8, 26, 12),

@@ -107,7 +107,16 @@ class OrdenDetallePantalla extends StatelessWidget {
             titulo: 'Aplicación',
             campos: [
               _Campo('N.º de aplicación', '${orden.nroAplicacion}'),
-              _Campo('Litros por hectárea', '${orden.litrosHa}'),
+              // Mutuamente excluyentes según la categoría de insumo (HU-79
+              // de `agrocom-api`) — nunca los dos con datos reales.
+              _Campo(
+                'Litros por hectárea',
+                orden.litrosHa?.toString() ?? _sinDatos,
+              ),
+              _Campo(
+                'Kilos por vuelo',
+                orden.kilosPorVuelo?.toString() ?? _sinDatos,
+              ),
               _Campo('Fecha de emisión', orden.fechaEmision),
             ],
           ),

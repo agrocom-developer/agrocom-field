@@ -48,6 +48,7 @@ class OrdenesRepository {
       loteId: orden.loteId,
       nroAplicacion: orden.nroAplicacion,
       litrosHa: orden.litrosHa,
+      kilosPorVuelo: orden.kilosPorVuelo,
       humedadMinPct: orden.humedadMinPct,
       vientoMaxKmh: orden.vientoMaxKmh,
       temperaturaMaxC: orden.temperaturaMaxC,

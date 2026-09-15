@@ -116,13 +116,19 @@ class CatalogoRepository {
     return fila?.cursor;
   }
 
+  /// `lotes.first` como `loteId` (TE-20, HU-92 de `agrocom-api` tarea 107):
+  /// una orden ya puede cubrir varios lotes, pero la UI de lista/detalle de
+  /// este repo sigue asumiendo uno solo — soporte multi-lote real queda para
+  /// HU-92 (lado app), planificada aparte (ver `orden_catalogo.dart`).
   OrdenCatalogoCompanion _ordenDesdeJson(Map<String, dynamic> json) {
+    final lotes = (json['lotes'] as List).cast<Map<String, dynamic>>();
     return OrdenCatalogoCompanion.insert(
       id: Value(json['id'] as int),
       contratoId: json['contrato_id'] as int,
-      loteId: json['lote_id'] as int,
+      loteId: lotes.first['lote_id'] as int,
       nroAplicacion: json['nro_aplicacion'] as int,
-      litrosHa: Decimal.parse(json['litros_ha'] as String),
+      litrosHa: Value(_decimalNullable(json['litros_ha'])),
+      kilosPorVuelo: Value(_decimalNullable(json['kilos_por_vuelo'])),
       humedadMinPct: Value(_decimalNullable(json['humedad_min_pct'])),
       vientoMaxKmh: Value(_decimalNullable(json['viento_max_kmh'])),
       temperaturaMaxC: Value(_decimalNullable(json['temperatura_max_c'])),

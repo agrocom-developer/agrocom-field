@@ -209,13 +209,35 @@ void main() {
         expect(filaPreexistente.secuencia, 1);
         expect(filaPreexistente.estado, EstadoSync.confirmado);
 
-        final filasOrden = await db.select(db.ordenCatalogo).get();
+        // `AppDatabase.schemaVersion` avanza con el tiempo (hoy 8, no 3):
+        // esta prueba, al abrir con la clase real, migra de punta a punta
+        // hasta la versión actual, no solo hasta v3. TE-20 (v8) recrea
+        // `orden_catalogo` entera (contrato de servidor incompatible,
+        // `lote_id` único → `lotes[]`) — la fila sembrada en v2, con el
+        // esquema VIEJO, se pierde a propósito ahí (ver el comentario de
+        // esa migración en `database.dart`): es un espejo de solo lectura,
+        // nunca datos capturados sin conectividad, así que no aplica la
+        // misma garantía que protege a `cola_sync`/`trabajo_local` arriba.
+        expect(await db.select(db.ordenCatalogo).get(), isEmpty);
+        // La tabla sigue creada y usable con el esquema nuevo.
+        await db
+            .into(db.ordenCatalogo)
+            .insert(
+              OrdenCatalogoCompanion.insert(
+                id: const Value(2),
+                contratoId: 10,
+                loteId: 20,
+                nroAplicacion: 1,
+                litrosHa: Value(Decimal.parse('15.5')),
+                fechaEmision: '2026-08-26',
+                estado: 'vigente',
+                updatedAt: DateTime.utc(2026, 8, 26),
+              ),
+            );
         expect(
-          filasOrden,
-          hasLength(1),
-          reason: 'las filas de catálogo de v2 tampoco deben perderse',
+          (await db.select(db.ordenCatalogo).get()).single.litrosHa,
+          Decimal.parse('15.5'),
         );
-        expect(filasOrden.single.litrosHa, Decimal.parse('15.5'));
 
         // trabajo_local/sesion_local no existían en v2: si onUpgrade no las
         // creó, estos insert+select fallarían con "no such table".

@@ -17,13 +17,32 @@ class OrdenCatalogo extends Table {
 
   IntColumn get contratoId => integer()();
 
+  /// Primer lote de `OrdenCatalogo.lotes` del contrato real (HU-92, tarea 107
+  /// de `agrocom-api`: una orden puede cubrir varios lotes de la propiedad,
+  /// confirmado en vivo contra `GET /api/sync/catalogo` el 14/9/2026).
+  /// Simplificación deliberada: hoy ningún dato real trae más de un lote por
+  /// orden, y la UI de lista/detalle sigue asumiendo un solo lote — soporte
+  /// real multi-lote queda para HU-92 (lado app), planificada aparte.
   IntColumn get loteId => integer()();
 
   IntColumn get nroAplicacion => integer()();
 
-  /// Litros por hectárea: dinero/hectáreas nunca en `double` (invariante 9 de
-  /// CLAUDE.md) — primera columna decimal de negocio de este esquema.
-  TextColumn get litrosHa => text().map(const DecimalDriftConverter())();
+  /// Litros por hectárea si la categoría de insumo es líquida; `null` si es
+  /// sólida (HU-79, tarea 110 de `agrocom-api` — mutuamente excluyente con
+  /// [kilosPorVuelo], confirmado en vivo el 14/9/2026: antes de esto la
+  /// columna era `NOT NULL` y el pull de catálogo tiraba en cualquier orden
+  /// de insumo sólido, o directamente en cualquier orden hoy — el contrato
+  /// real ya manda `litros_ha`/`kilos_por_vuelo` así). Dinero/hectáreas
+  /// nunca en `double` (invariante 9 de CLAUDE.md).
+  TextColumn get litrosHa => text().nullable().map(
+    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
+  )();
+
+  /// Kilos por vuelo si la categoría de insumo es sólida; `null` si es
+  /// líquida — ver [litrosHa].
+  TextColumn get kilosPorVuelo => text().nullable().map(
+    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
+  )();
 
   TextColumn get humedadMinPct => text().nullable().map(
     NullAwareTypeConverter.wrap(const DecimalDriftConverter()),

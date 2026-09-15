@@ -21,9 +21,12 @@ Map<String, dynamic> _ordenJson({
 }) => {
   'id': id,
   'contrato_id': 1,
-  'lote_id': loteId,
+  'lotes': [
+    {'lote_id': loteId, 'hectareas_solicitadas': '50.00'},
+  ],
   'nro_aplicacion': 1,
   'litros_ha': '10.00',
+  'kilos_por_vuelo': null,
   'humedad_min_pct': '60.00',
   'viento_max_kmh': '15.00',
   'temperatura_max_c': '32.00',
@@ -131,6 +134,37 @@ void main() {
     expect(personas, hasLength(1));
 
     expect(await cursorGuardado(), 'cursor-1');
+  });
+
+  test('TE-20: una orden con insumo sólido (litros_ha null, kilos_por_vuelo '
+      'con valor) se guarda sin tirar excepción, y loteId toma el primer '
+      'lote de `lotes[]` (HU-92 de agrocom-api reemplazó el `lote_id` único '
+      'por un arreglo)', () async {
+    when(() => apiClient.get(any(), query: any(named: 'query'))).thenAnswer(
+      (_) async => _respuestaCatalogo(
+        ordenes: [
+          {
+            ..._ordenJson(id: 9, loteId: 3),
+            'lotes': [
+              {'lote_id': 3, 'hectareas_solicitadas': '50.00'},
+              {'lote_id': 4, 'hectareas_solicitadas': '20.00'},
+            ],
+            'litros_ha': null,
+            'kilos_por_vuelo': '8.50',
+          },
+        ],
+        lotes: const [],
+        personas: const [],
+        cursor: 'cursor-solido',
+      ),
+    );
+
+    await repositorio.pull();
+
+    final orden = (await db.select(db.ordenCatalogo).get()).single;
+    expect(orden.loteId, 3, reason: 'toma el primer lote del arreglo');
+    expect(orden.litrosHa, isNull);
+    expect(orden.kilosPorVuelo, Decimal.parse('8.50'));
   });
 
   test(

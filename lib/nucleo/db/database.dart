@@ -31,7 +31,13 @@ part 'database.g.dart';
 /// (`estado`, `fin`, `litrosSobrante`, `evidenciaImagenCampoUuidCliente`,
 /// `uuidClienteCierre`) con `ALTER TABLE` — primera migración de este
 /// esquema que agrega columnas a una tabla existente en vez de crear una
-/// tabla nueva.
+/// tabla nueva. TE-20 (v8) recrea [OrdenCatalogo]: `litrosHa` pasa a
+/// nullable y se agrega `kilosPorVuelo` (HU-79 de `agrocom-api`, mutuamente
+/// excluyentes) — a diferencia de v7, acá SÍ se recrea la tabla entera en
+/// vez de `ALTER TABLE`, porque es un espejo de solo lectura (nunca pierde
+/// datos capturados sin conectividad, invariante que protege a
+/// `TrabajoLocal`/`SesionLocal`, no a este catálogo) y SQLite no permite
+/// aflojar una columna `NOT NULL` con `ALTER TABLE`.
 /// Las tablas espejo del resto de las features de escritura (recargas...)
 /// se agregan en tareas técnicas posteriores, cada una subiendo
 /// [schemaVersion] con su propia migración — nunca reescribiendo la
@@ -55,7 +61,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -120,6 +126,21 @@ class AppDatabase extends _$AppDatabase {
       // `CREATE TABLE` porque son parte de la clase Dart actual).
       if (from < 7) {
         await m.createIndex(idxTrabajoLocalUuidClienteCierre);
+      }
+      // v8 (TE-20): `orden_catalogo` es un espejo de solo lectura de
+      // `GET /api/sync/catalogo` — a diferencia de `trabajo_local` (v7,
+      // arriba), acá no hay ninguna fila que preserve algo capturado sin
+      // conectividad, así que recrearla entera es seguro (el próximo pull
+      // la vuelve a poblar). Se resetea también `cursor_catalogo`: el
+      // cursor es un único valor opaco que combina las cuatro secciones
+      // (`ordenes`/`lotes`/`personas`/`trabajos`), así que no se puede
+      // "retroceder" solo la parte de órdenes — un pull completo de las
+      // cuatro es el único camino correcto y ya es el comportamiento normal
+      // de una primera sincronización (`desde` vacío).
+      if (from < 8) {
+        await m.deleteTable(ordenCatalogo.actualTableName);
+        await m.createTable(ordenCatalogo);
+        await (delete(cursorCatalogo)).go();
       }
     },
   );
