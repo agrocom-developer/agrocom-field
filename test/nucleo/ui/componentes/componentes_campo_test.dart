@@ -495,4 +495,29 @@ void main() {
     expect(find.text('contenido'), findsOneWidget);
     expect(find.byType(Image), findsOneWidget);
   });
+
+  testWidgets('SelectorSegmentadoCampo desplazable admite muchas opciones', (
+    tester,
+  ) async {
+    var seleccionado = 0;
+    final opciones = [for (var i = 0; i < 9; i++) (i, 'Pestaña $i')];
+    await tester.pumpWidget(
+      _envolver(
+        StatefulBuilder(
+          builder: (context, setState) => SelectorSegmentadoCampo<int>(
+            opciones: opciones,
+            seleccionado: seleccionado,
+            desplazable: true,
+            onSeleccionar: (valor) => setState(() => seleccionado = valor),
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(SingleChildScrollView), findsOneWidget);
+    await tester.ensureVisible(find.text('Pestaña 8'));
+    await tester.tap(find.text('Pestaña 8'));
+    await tester.pump();
+    expect(seleccionado, 8);
+  });
 }
