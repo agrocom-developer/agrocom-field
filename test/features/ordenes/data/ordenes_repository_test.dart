@@ -33,7 +33,7 @@ LoteCatalogoCompanion _loteCompanion({
   String hectareas = '120.50',
 }) => LoteCatalogoCompanion.insert(
   id: Value(id),
-  campoId: 1,
+  propiedadId: 1,
   codigo: codigo,
   hectareas: Decimal.parse(hectareas),
   updatedAt: DateTime.utc(2026, 8, 26, 12),
