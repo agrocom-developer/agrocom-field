@@ -32,6 +32,13 @@ class AgrocomApp extends StatelessWidget {
   final SesionBloc Function(String) crearSesionBloc;
   final IncidenciaCubit Function(String sesionUuidCliente) crearIncidenciaCubit;
 
+  /// Se llama una vez, justo después de un login exitoso (TE-19 ampliada) —
+  /// hoy dispara `DisparadorSync.sincronizarAhora()`: el primer ciclo de
+  /// sync corre al abrir la app, antes de que exista sesión, así que sin
+  /// este segundo disparo un dispositivo recién logueado se queda sin
+  /// catálogo hasta el próximo reinicio.
+  final VoidCallback alIngresarConExito;
+
   const AgrocomApp({
     required this.flavor,
     required this.infoEntorno,
@@ -43,6 +50,7 @@ class AgrocomApp extends StatelessWidget {
     required this.crearTrabajoCubit,
     required this.crearSesionBloc,
     required this.crearIncidenciaCubit,
+    required this.alIngresarConExito,
     super.key,
   });
 
@@ -67,6 +75,7 @@ class AgrocomApp extends StatelessWidget {
             crearTrabajoCubit: crearTrabajoCubit,
             crearSesionBloc: crearSesionBloc,
             crearIncidenciaCubit: crearIncidenciaCubit,
+            alIngresarConExito: alIngresarConExito,
           ),
         ),
       ),
@@ -87,6 +96,7 @@ class _RaizApp extends StatefulWidget {
     required this.crearTrabajoCubit,
     required this.crearSesionBloc,
     required this.crearIncidenciaCubit,
+    required this.alIngresarConExito,
   });
 
   final Flavor flavor;
@@ -97,6 +107,7 @@ class _RaizApp extends StatefulWidget {
   final TrabajoCubit Function() crearTrabajoCubit;
   final SesionBloc Function(String) crearSesionBloc;
   final IncidenciaCubit Function(String sesionUuidCliente) crearIncidenciaCubit;
+  final VoidCallback alIngresarConExito;
 
   @override
   State<_RaizApp> createState() => _RaizAppState();
@@ -127,7 +138,10 @@ class _RaizAppState extends State<_RaizApp> {
           return LoginPantalla(
             crearCubit: widget.crearLoginCubit,
             infoEntorno: widget.infoEntorno,
-            onIngresoExitoso: () => setState(() => _ingresoExitoso = true),
+            onIngresoExitoso: () {
+              setState(() => _ingresoExitoso = true);
+              widget.alIngresarConExito();
+            },
           );
         }
 

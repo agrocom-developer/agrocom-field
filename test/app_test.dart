@@ -13,6 +13,7 @@ import 'package:agrocom_field/features/auth/login_cubit.dart';
 import 'package:agrocom_field/features/ordenes/data/ordenes_repository.dart';
 import 'package:agrocom_field/features/ordenes/presentation/ordenes_cubit.dart';
 import 'package:agrocom_field/nucleo/auth/login_service.dart';
+import 'package:agrocom_field/nucleo/auth/resultado_login.dart';
 import 'package:agrocom_field/nucleo/auth/token_store.dart';
 import 'package:agrocom_field/nucleo/db/database.dart';
 import 'package:agrocom_field/nucleo/entorno/info_entorno.dart';
@@ -95,6 +96,7 @@ void main() {
         crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
         crearIncidenciaCubit: (_) =>
             throw UnimplementedError('stub no invocado'),
+        alIngresarConExito: () {},
       ),
     );
     await tester.pumpAndSettle();
@@ -128,6 +130,7 @@ void main() {
           crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
           crearIncidenciaCubit: (_) =>
               throw UnimplementedError('stub no invocado'),
+          alIngresarConExito: () {},
         ),
       );
       await tester.pumpAndSettle();
@@ -164,6 +167,7 @@ void main() {
               throw UnimplementedError('stub no invocado en auxiliar'),
           crearIncidenciaCubit: (_) =>
               throw UnimplementedError('stub no invocado en auxiliar'),
+          alIngresarConExito: () {},
         ),
       );
       await tester.pumpAndSettle();
@@ -237,6 +241,7 @@ void main() {
               throw UnimplementedError('stub no invocado en auxiliar'),
           crearIncidenciaCubit: (_) =>
               throw UnimplementedError('stub no invocado en auxiliar'),
+          alIngresarConExito: () {},
         ),
       );
       await tester.pumpAndSettle();
@@ -249,6 +254,67 @@ void main() {
       await tester.runAsync(() => ordenesCubit!.close());
     },
   );
+
+  testWidgets('un login exitoso llama a alIngresarConExito además de mostrar '
+      'las órdenes (TE-19 ampliada: dispara un ciclo de sync sin esperar al '
+      'próximo reinicio de la app)', (tester) async {
+    when(() => tokenStore.leerToken()).thenAnswer((_) async => null);
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+    OrdenesCubit? ordenesCubit;
+    final loginService = _LoginServiceFalso();
+    when(
+      () => loginService.login(
+        usuario: any(named: 'usuario'),
+        contrasena: any(named: 'contrasena'),
+      ),
+    ).thenAnswer((_) async => const LoginExitoso());
+    var vecesLlamado = 0;
+
+    await tester.pumpWidget(
+      AgrocomApp(
+        flavor: Flavor.auxiliar,
+        infoEntorno: const InfoEntorno(
+          flavor: Flavor.auxiliar,
+          hostApi: 'localhost',
+          version: '0.1.0+1',
+        ),
+        tokenStore: tokenStore,
+        linternaControlador: linterna,
+        estadoVersion: const Stream<EstadoVersion>.empty(),
+        crearLoginCubit: () => LoginCubit(loginService, Flavor.auxiliar),
+        crearOrdenesCubit: _crearOrdenesCubit(
+          db,
+          (cubit) => ordenesCubit = cubit,
+        ),
+        crearTrabajoCubit: () =>
+            throw UnimplementedError('stub no invocado en auxiliar'),
+        crearSesionBloc: (_) =>
+            throw UnimplementedError('stub no invocado en auxiliar'),
+        crearIncidenciaCubit: (_) =>
+            throw UnimplementedError('stub no invocado en auxiliar'),
+        alIngresarConExito: () => vecesLlamado++,
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.enterText(
+      find.byKey(const Key('login_usuario')),
+      'david.rios',
+    );
+    await tester.enterText(
+      find.byKey(const Key('login_contrasena')),
+      'password',
+    );
+    await tester.tap(find.byKey(const Key('login_boton')));
+    await tester.pumpAndSettle();
+
+    expect(vecesLlamado, 1);
+    expect(find.byKey(const Key('login_usuario')), findsNothing);
+    expect(find.text('No hay órdenes vigentes.'), findsOneWidget);
+
+    await tester.runAsync(() => ordenesCubit!.close());
+  });
 
   testWidgets(
     'HU-20: bloqueada tapa la pantalla de login, sin sesión ni token',
@@ -277,6 +343,7 @@ void main() {
           crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
           crearIncidenciaCubit: (_) =>
               throw UnimplementedError('stub no invocado'),
+          alIngresarConExito: () {},
         ),
       );
       await tester.pumpAndSettle();

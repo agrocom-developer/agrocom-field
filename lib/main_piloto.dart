@@ -73,6 +73,8 @@ Future<void> main() async {
         selectorFoto: getIt<SelectorFoto>(),
         sesionUuidCliente: sesionUuidCliente,
       ),
+      alIngresarConExito: () =>
+          unawaited(getIt<DisparadorSync>().sincronizarAhora()),
     ),
   );
 }

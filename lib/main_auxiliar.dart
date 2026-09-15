@@ -79,6 +79,8 @@ Future<void> main() async {
       crearIncidenciaCubit: (_) => throw UnimplementedError(
         'El flavor auxiliar no dispone de trabajo/sesión',
       ),
+      alIngresarConExito: () =>
+          unawaited(getIt<DisparadorSync>().sincronizarAhora()),
     ),
   );
 }
