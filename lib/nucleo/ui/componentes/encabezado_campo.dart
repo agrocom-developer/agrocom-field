@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../colores_campo.dart';
+import '../tipografia_campo.dart';
+import 'boton_circular_campo.dart';
 
 /// Header con botón "volver" circular + título — reemplaza el `AppBar` de
 /// Material en pantallas que adoptan el modo campo (el `AppBar` estándar no
@@ -29,8 +30,9 @@ class EncabezadoCampo extends StatelessWidget implements PreferredSizeWidget {
       height: preferredSize.height,
       child: Row(
         children: [
-          _BotonCircular(
+          BotonCircularCampo(
             icono: Icons.arrow_back,
+            tooltip: 'Volver',
             onPressed: () => Navigator.of(context).maybePop(),
           ),
           const SizedBox(width: 14),
@@ -41,55 +43,21 @@ class EncabezadoCampo extends StatelessWidget implements PreferredSizeWidget {
               children: [
                 Text(
                   titulo,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                    color: ColoresCampo.textoPrincipal,
-                  ),
+                  style: TipografiaCampo.tituloSeccion,
                   overflow: TextOverflow.ellipsis,
                 ),
                 if (subtitulo != null)
                   Text(
                     subtitulo!,
-                    style: TextStyle(
-                      fontFamily: 'monospace',
-                      fontSize: 12,
-                      color: ColoresCampo.textoPrincipal.withValues(alpha: 0.5),
-                    ),
+                    style: TipografiaCampo.datoMono,
                     overflow: TextOverflow.ellipsis,
                   ),
               ],
             ),
           ),
           if (accion != null)
-            _BotonCircular(icono: accion!, onPressed: onAccionPresionada),
+            BotonCircularCampo(icono: accion!, onPressed: onAccionPresionada),
         ],
-      ),
-    );
-  }
-}
-
-class _BotonCircular extends StatelessWidget {
-  const _BotonCircular({required this.icono, required this.onPressed});
-
-  final IconData icono;
-  final VoidCallback? onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(
-          color: ColoresCampo.textoPrincipal.withValues(alpha: 0.16),
-        ),
-      ),
-      child: IconButton(
-        icon: Icon(icono, color: ColoresCampo.textoPrincipal, size: 18),
-        padding: EdgeInsets.zero,
-        onPressed: onPressed,
       ),
     );
   }

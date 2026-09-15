@@ -70,3 +70,25 @@ Un archivo por widget, cada uno consumiendo `TemaCampo`/`ColoresCampo` en vez de
 - El modo queda disponible para features nuevas que elijan adoptarlo; no migra ninguna pantalla existente por este ADR — login, órdenes y sesión de vuelo siguen con `AgrocomTheme` estándar hasta que se decida lo contrario.
 - Transiciones/animaciones estándar (la otra mitad del criterio de aceptación de TE-15, `Hero`/`PageRouteBuilder`/estados de carga) quedan **fuera de este ADR** — se documentan aparte cuando haya una pantalla real que las necesite, para no fijar una convención de movimiento sin un caso concreto que la valide.
 - `acentoRojo` sobre `fondoProfundo` pasa AA pero no AAA en texto normal (6.94:1) — aceptable para texto de alerta puntual (badge "RETRY"), no recomendado para bloques largos de texto en ese color.
+
+## Ampliación (14/9/2026) — ronda 2 del mockup: tokens de tipografía y átomos que faltaban
+
+El dueño trajo una segunda ronda del mismo mockup (`Agrocom Field.dc (1).html`, sección "Ronda 2 · pantalla de login": dos variantes de login sobre foto, 2a "foto plena" y 2b "hoja + último usuario") y fijó el criterio de construcción: **componentes reutilizables por pantalla, a la manera de atomic design pero más liviano** — tokens → átomos → moléculas → pantallas, sin la ceremonia de cinco niveles. Mismo estatus que la ronda 1: el HTML aporta el lenguaje visual, no el contenido — lo que la pantalla muestra sale de `docs/` y de `lib/`, nunca del demo. Y el nombre visible es «Agrocom» a secas (ver `CLAUDE.md`, convenciones): la etiqueta "FIELD · APLICACIÓN CON DRONES" del mockup no se reproduce.
+
+Al recrear las primeras pantallas con el catálogo (`lib/nucleo/ui/vitrina_campo/`, vista previa solo alcanzable en `kDebugMode`) quedó a la vista lo que el catálogo inicial no cubría y cada pantalla repetía a mano:
+
+**Tokens nuevos** (un nivel arriba de `componentes/`, junto a `ColoresCampo`):
+- `TipografiaCampo` (`tipografia_campo.dart`) — escala tipográfica con nombre: `tituloHero`, `tituloPantalla`, `tituloSeccion`, `valorDestacado`, `tituloTarjeta`, `cuerpo`, `cuerpoSecundario` en fuente de plataforma; `etiquetaMono`, `datoMono`, `datoMonoDestacado`, `notaMono` en la monoespaciada nativa. Cada estilo fija familia, tamaño, peso y opacidad; un uso puntual ajusta con `copyWith`, nunca reescribe la familia. Antes cada pantalla armaba `TextStyle(fontFamily: 'monospace', fontSize: 11, ...)` a mano — el mismo problema que la sección de tokens de color ya había resuelto para el color.
+- `ImagenesCampo` (`imagenes_campo.dart`) — rutas de los assets (logo y fondos de `assets/imagenes/` — el dueño reemplazó las tres fotos de Pexels de la ronda 1 por cinco fotos de drones Agras propias del proyecto el 14/9/2026; procedencia y peso en `FUENTES.md`), para que un rename se corrija en un solo lugar.
+
+**Átomos nuevos** (`componentes/`, exportados por el barrel):
+- `boton_circular_campo.dart` — extraído de `EncabezadoCampo` (era privado ahí) porque el onboarding y la vista previa lo necesitaban igual; `tamano` 40 por defecto, 56 junto a un CTA.
+- `fondo_foto_campo.dart` — foto + degradado a `fondoProfundo` + contenido, con dos coberturas (`plena` para onboarding/login, `superior` para inicio/detalle). Es la única forma de poner una foto detrás de una pantalla: los tokens de contraste de este ADR se midieron sobre `fondoProfundo`, y el degradado es lo que garantiza que el texto llegue a ese fondo sobre cualquier foto.
+- `logo_agrocom_campo.dart` — el logo tal como va sobre foto o fondo liso, con el `drop-shadow` del mockup hecho con una copia del PNG teñida y desenfocada (sigue la silueta; un `BoxShadow` rectangular no).
+- `campo_texto_campo.dart` — el campo de texto del modo campo (label mono arriba, valor grande, borde lima con foco, acción corta opcional tipo "VER"). Envuelve un `TextFormField` real para que `Form`/validadores y las pruebas por `Key` sigan funcionando como con el campo "filled" de ADR 0003.
+- `nota_inline_campo.dart` — "● texto" de una línea junto a un botón primario, color semántico.
+- `pie_entorno_campo.dart` — flavor · entorno · versión al pie, con el entorno en ámbar: la respuesta del mockup a "no cargar contra producción por error" (ADR 0004). El widget recibe texto ya resuelto — no lee configuración.
+
+**Cambios en átomos existentes**: `TarjetaCampo` y `ItemListaCampo` aceptan `onTap` (ripple recortado al radio, chevron en el ítem) — el patrón "fila que navega" aparecía en el mockup (roles, órdenes) y no tenía forma de hacerse sin un `GestureDetector` suelto por pantalla. `EncabezadoCampo` e `ItemListaCampo` pasan a leer sus estilos de `TipografiaCampo`.
+
+**Qué NO se decide acá**: qué pantalla real migra al modo campo. El login real es la candidata obvia (la ronda 2 es literalmente sobre él) y se resuelve en su propio cambio, con la variante que corresponda al flujo real (token por dispositivo persistido ⇒ no hay "último usuario" que ofrecer, así que 2b no aplica tal cual). Transiciones/animaciones estándar siguen fuera, por el mismo motivo de la sección Consecuencias.

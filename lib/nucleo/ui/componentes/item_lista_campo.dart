@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 import '../colores_campo.dart';
+import '../tipografia_campo.dart';
 import 'tarjeta_campo.dart';
 
 /// Fila ícono/avatar + título/subtítulo + valor — patrón "line item" que se
-/// repite para productos de una mezcla, baterías del reporte de equipos o
-/// registros de la cola de sync.
+/// repite para productos de una mezcla, baterías del reporte de equipos,
+/// registros de la cola de sync o roles a elegir. Con [onTap] la fila
+/// navega (y muestra un chevron a la derecha), como un `ListTile`.
 class ItemListaCampo extends StatelessWidget {
   const ItemListaCampo({
     required this.titulo,
@@ -14,6 +16,7 @@ class ItemListaCampo extends StatelessWidget {
     this.icono,
     this.iniciales,
     this.colorIcono = ColoresCampo.acentoLima,
+    this.onTap,
     super.key,
   });
 
@@ -26,11 +29,13 @@ class ItemListaCampo extends StatelessWidget {
   final IconData? icono;
   final String? iniciales;
   final Color colorIcono;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return TarjetaCampo(
       padding: const EdgeInsets.all(16),
+      onTap: onTap,
       child: Row(
         children: [
           if (icono != null || iniciales != null) ...[
@@ -46,10 +51,8 @@ class ItemListaCampo extends StatelessWidget {
                   ? Icon(icono, color: colorIcono, size: 18)
                   : Text(
                       iniciales!,
-                      style: TextStyle(
-                        fontFamily: 'monospace',
+                      style: TipografiaCampo.datoMonoDestacado.copyWith(
                         fontWeight: FontWeight.w700,
-                        fontSize: 12,
                         color: colorIcono,
                       ),
                     ),
@@ -63,25 +66,12 @@ class ItemListaCampo extends StatelessWidget {
               children: [
                 Text(
                   titulo,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                    color: ColoresCampo.textoPrincipal,
-                  ),
+                  style: TipografiaCampo.tituloTarjeta.copyWith(fontSize: 15),
                 ),
                 if (subtitulo != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 2),
-                    child: Text(
-                      subtitulo!,
-                      style: TextStyle(
-                        fontFamily: 'monospace',
-                        fontSize: 12,
-                        color: ColoresCampo.textoPrincipal.withValues(
-                          alpha: 0.5,
-                        ),
-                      ),
-                    ),
+                    child: Text(subtitulo!, style: TipografiaCampo.datoMono),
                   ),
               ],
             ),
@@ -95,6 +85,16 @@ class ItemListaCampo extends StatelessWidget {
                 color: ColoresCampo.textoPrincipal,
               ),
             ),
+          if (onTap != null) ...[
+            const SizedBox(width: 6),
+            Icon(
+              Icons.chevron_right,
+              size: 20,
+              color: ColoresCampo.textoPrincipal.withValues(
+                alpha: OpacidadesCampo.secundaria,
+              ),
+            ),
+          ],
         ],
       ),
     );
