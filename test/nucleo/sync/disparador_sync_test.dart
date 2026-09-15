@@ -103,11 +103,11 @@ void main() {
     controlador.add([ConnectivityResult.wifi]);
     await _flush();
 
-    expect(
-      orden,
-      ['pull', 'sync', 'evidencias'],
-      reason: 'una sola suscripción activa: un solo ciclo por la transición',
-    );
+    expect(orden, [
+      'pull',
+      'sync',
+      'evidencias',
+    ], reason: 'una sola suscripción activa: un solo ciclo por la transición');
   });
 
   test('la primera emisión de conectividad tras iniciar() no cuenta como '
