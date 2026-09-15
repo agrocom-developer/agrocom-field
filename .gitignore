@@ -141,3 +141,39 @@ app.*.symbols
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
+# --- Basura local que no es del proyecto (14/9/2026) ---
+
+# macOS / Finder
+.DS_Store
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Editores: módulos de IntelliJ/Android Studio (se regeneran al abrir el
+# proyecto; .idea/ y .vscode/ ya están arriba), workspaces de VS Code y
+# archivos temporales de vim/emacs
+*.iml
+*.code-workspace
+*.swo
+*~
+
+# Claude Code: la configuración local de permisos de cada máquina. La
+# compartida (.claude/settings.json, agentes, hooks, skills) SÍ se versiona.
+.claude/settings.local.json
+.claude/*.local.json
+
+# git: restos de merges/rebases con conflicto
+*.orig
+*.rej
+
+# Flutter/Dart: versión local del SDK (fvm), volcados de memoria y caché
+# nativa del NDK
+.fvm/
+*.hprof
+.cxx/
