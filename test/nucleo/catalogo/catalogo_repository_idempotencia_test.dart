@@ -23,9 +23,12 @@ Map<String, dynamic> _ordenJson({
 }) => {
   'id': id,
   'contrato_id': 1,
-  'lote_id': loteId,
+  'lotes': [
+    {'lote_id': loteId, 'hectareas_solicitadas': '50.00'},
+  ],
   'nro_aplicacion': 1,
   'litros_ha': '10.00',
+  'kilos_por_vuelo': null,
   'humedad_min_pct': null,
   'viento_max_kmh': null,
   'temperatura_max_c': null,

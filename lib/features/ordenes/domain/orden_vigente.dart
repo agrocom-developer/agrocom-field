@@ -14,10 +14,11 @@ class OrdenVigente {
     required this.contratoId,
     required this.loteId,
     required this.nroAplicacion,
-    required this.litrosHa,
     required this.fechaEmision,
     required this.estado,
     required this.updatedAt,
+    this.litrosHa,
+    this.kilosPorVuelo,
     this.humedadMinPct,
     this.vientoMaxKmh,
     this.temperaturaMaxC,
@@ -36,7 +37,12 @@ class OrdenVigente {
   final int contratoId;
   final int loteId;
   final int nroAplicacion;
-  final Decimal litrosHa;
+
+  /// Litros por hectárea si la categoría de insumo es líquida; `null` si es
+  /// sólida (HU-79 de `agrocom-api` — mutuamente excluyente con
+  /// [kilosPorVuelo], nunca ambos ni ninguno con datos reales).
+  final Decimal? litrosHa;
+  final Decimal? kilosPorVuelo;
   final Decimal? humedadMinPct;
   final Decimal? vientoMaxKmh;
   final Decimal? temperaturaMaxC;
@@ -65,6 +71,7 @@ class OrdenVigente {
           other.loteId == loteId &&
           other.nroAplicacion == nroAplicacion &&
           other.litrosHa == litrosHa &&
+          other.kilosPorVuelo == kilosPorVuelo &&
           other.humedadMinPct == humedadMinPct &&
           other.vientoMaxKmh == vientoMaxKmh &&
           other.temperaturaMaxC == temperaturaMaxC &&
@@ -88,6 +95,7 @@ class OrdenVigente {
     loteId,
     nroAplicacion,
     litrosHa,
+    kilosPorVuelo,
     humedadMinPct,
     vientoMaxKmh,
     temperaturaMaxC,

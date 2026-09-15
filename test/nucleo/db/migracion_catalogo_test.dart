@@ -44,7 +44,7 @@ Future<void> _insertarOrdenDePrueba(AppDatabase db) async {
           contratoId: 10,
           loteId: 20,
           nroAplicacion: 1,
-          litrosHa: Decimal.parse('15.5'),
+          litrosHa: Value(Decimal.parse('15.5')),
           fechaEmision: '2026-08-26',
           estado: 'vigente',
           updatedAt: DateTime.utc(2026, 8, 26, 12),

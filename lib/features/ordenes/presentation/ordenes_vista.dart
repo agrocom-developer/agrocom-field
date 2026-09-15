@@ -85,7 +85,7 @@ class _OrdenTile extends StatelessWidget {
         leading: const Icon(Icons.grass_outlined),
         title: Text(orden.loteCodigo ?? 'Lote sin datos'),
         subtitle: Text(
-          'Aplicación N.º ${orden.nroAplicacion} · ${orden.litrosHa} L/ha · '
+          'Aplicación N.º ${orden.nroAplicacion} · ${_dosis(orden)} · '
           '${orden.fechaEmision}',
         ),
         trailing: const Icon(Icons.chevron_right),
@@ -103,4 +103,17 @@ class _OrdenTile extends StatelessWidget {
       ),
     );
   }
+}
+
+/// `litrosHa`/`kilosPorVuelo` son mutuamente excluyentes según la categoría
+/// de insumo de la orden (HU-79 de `agrocom-api`) — nunca ambos, nunca
+/// ninguno con datos reales, pero el pull es incremental por cursor así que
+/// una orden recién llegada podría, en teoría, tener los dos en `null`
+/// todavía.
+String _dosis(OrdenVigente orden) {
+  final litrosHa = orden.litrosHa;
+  if (litrosHa != null) return '$litrosHa L/ha';
+  final kilosPorVuelo = orden.kilosPorVuelo;
+  if (kilosPorVuelo != null) return '$kilosPorVuelo kg/vuelo';
+  return 'sin dosis';
 }
