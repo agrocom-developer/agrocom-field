@@ -58,7 +58,7 @@ Future<void> _insertarLoteDePrueba(AppDatabase db) async {
       .insert(
         LoteCatalogoCompanion.insert(
           id: const Value(1),
-          campoId: 5,
+          propiedadId: 5,
           codigo: 'L-1',
           hectareas: Decimal.parse('120.75'),
           updatedAt: DateTime.utc(2026, 8, 26, 12),
