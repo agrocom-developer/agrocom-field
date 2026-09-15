@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'app.dart';
 import 'features/auth/login_cubit.dart';
@@ -17,6 +18,7 @@ import 'nucleo/auth/persona_operativa_store.dart';
 import 'nucleo/auth/token_store.dart';
 import 'nucleo/camara/selector_foto.dart';
 import 'nucleo/di/service_locator.dart';
+import 'nucleo/entorno/info_entorno.dart';
 import 'nucleo/evidencias/evidencia_repository.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
@@ -26,6 +28,16 @@ import 'nucleo/version/version_watcher.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configurarDependencias(flavor: Flavor.piloto);
+
+  // Lo que el pie del login muestra para reconocer el entorno (ADR 0004) y
+  // la versión instalada (ADR 0007). `PackageInfo` lee del propio APK — no
+  // es red, así que sí se espera antes de `runApp`.
+  final paquete = await PackageInfo.fromPlatform();
+  final infoEntorno = InfoEntorno(
+    flavor: Flavor.piloto,
+    hostApi: InfoEntorno.hostDe(apiBaseUrl),
+    version: '${paquete.version}+${paquete.buildNumber}',
+  );
 
   // HU-20: no se espera antes de `runApp` — el primer chequeo puede tardar
   // (o directamente no tener red), y la app nunca depende de que la red
@@ -40,6 +52,7 @@ Future<void> main() async {
   runApp(
     AgrocomApp(
       flavor: Flavor.piloto,
+      infoEntorno: infoEntorno,
       tokenStore: getIt<TokenStore>(),
       linternaControlador: getIt<LinternaControlador>(),
       estadoVersion: getIt<VersionWatcher>().estado,

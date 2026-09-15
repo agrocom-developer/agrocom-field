@@ -9,6 +9,7 @@ import 'features/ordenes/presentation/ordenes_pantalla.dart';
 import 'features/sesion_vuelo/presentation/trabajo_cubit.dart';
 import 'features/sesion_vuelo/presentation/sesion_bloc.dart';
 import 'nucleo/auth/token_store.dart';
+import 'nucleo/entorno/info_entorno.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
 import 'nucleo/ui/tema.dart';
@@ -21,6 +22,7 @@ import 'nucleo/version/version_bloqueo_overlay.dart';
 /// Se instancia desde main_piloto.dart o main_auxiliar.dart según el flavor.
 class AgrocomApp extends StatelessWidget {
   final Flavor flavor;
+  final InfoEntorno infoEntorno;
   final TokenStore tokenStore;
   final LinternaControlador linternaControlador;
   final Stream<EstadoVersion> estadoVersion;
@@ -32,6 +34,7 @@ class AgrocomApp extends StatelessWidget {
 
   const AgrocomApp({
     required this.flavor,
+    required this.infoEntorno,
     required this.tokenStore,
     required this.linternaControlador,
     required this.estadoVersion,
@@ -57,6 +60,7 @@ class AgrocomApp extends StatelessWidget {
           linternaControlador: linternaControlador,
           child: _RaizApp(
             flavor: flavor,
+            infoEntorno: infoEntorno,
             tokenStore: tokenStore,
             crearLoginCubit: crearLoginCubit,
             crearOrdenesCubit: crearOrdenesCubit,
@@ -76,6 +80,7 @@ class AgrocomApp extends StatelessWidget {
 class _RaizApp extends StatefulWidget {
   const _RaizApp({
     required this.flavor,
+    required this.infoEntorno,
     required this.tokenStore,
     required this.crearLoginCubit,
     required this.crearOrdenesCubit,
@@ -85,6 +90,7 @@ class _RaizApp extends StatefulWidget {
   });
 
   final Flavor flavor;
+  final InfoEntorno infoEntorno;
   final TokenStore tokenStore;
   final LoginCubit Function() crearLoginCubit;
   final OrdenesCubit Function() crearOrdenesCubit;
@@ -120,6 +126,7 @@ class _RaizAppState extends State<_RaizApp> {
         if (snapshot.data == null && !_ingresoExitoso) {
           return LoginPantalla(
             crearCubit: widget.crearLoginCubit,
+            infoEntorno: widget.infoEntorno,
             onIngresoExitoso: () => setState(() => _ingresoExitoso = true),
           );
         }

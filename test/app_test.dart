@@ -15,6 +15,7 @@ import 'package:agrocom_field/features/ordenes/presentation/ordenes_cubit.dart';
 import 'package:agrocom_field/nucleo/auth/login_service.dart';
 import 'package:agrocom_field/nucleo/auth/token_store.dart';
 import 'package:agrocom_field/nucleo/db/database.dart';
+import 'package:agrocom_field/nucleo/entorno/info_entorno.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
 import 'package:agrocom_field/nucleo/linterna/linterna_controlador.dart';
 import 'package:agrocom_field/nucleo/version/estado_version.dart';
@@ -78,6 +79,11 @@ void main() {
     await tester.pumpWidget(
       AgrocomApp(
         flavor: Flavor.piloto,
+        infoEntorno: const InfoEntorno(
+          flavor: Flavor.piloto,
+          hostApi: 'localhost',
+          version: '0.1.0+1',
+        ),
         tokenStore: tokenStore,
         linternaControlador: linterna,
         estadoVersion: const Stream<EstadoVersion>.empty(),
@@ -107,6 +113,11 @@ void main() {
       await tester.pumpWidget(
         AgrocomApp(
           flavor: Flavor.piloto,
+          infoEntorno: const InfoEntorno(
+            flavor: Flavor.piloto,
+            hostApi: 'localhost',
+            version: '0.1.0+1',
+          ),
           tokenStore: tokenStore,
           linternaControlador: linterna,
           estadoVersion: const Stream<EstadoVersion>.empty(),
@@ -136,6 +147,11 @@ void main() {
       await tester.pumpWidget(
         AgrocomApp(
           flavor: Flavor.auxiliar,
+          infoEntorno: const InfoEntorno(
+            flavor: Flavor.auxiliar,
+            hostApi: 'localhost',
+            version: '0.1.0+1',
+          ),
           tokenStore: tokenStore,
           linternaControlador: linterna,
           estadoVersion: const Stream<EstadoVersion>.empty(),
@@ -201,6 +217,11 @@ void main() {
       await tester.pumpWidget(
         AgrocomApp(
           flavor: Flavor.auxiliar,
+          infoEntorno: const InfoEntorno(
+            flavor: Flavor.auxiliar,
+            hostApi: 'localhost',
+            version: '0.1.0+1',
+          ),
           tokenStore: tokenStore,
           linternaControlador: linterna,
           estadoVersion: const Stream<EstadoVersion>.empty(),
@@ -241,6 +262,11 @@ void main() {
       await tester.pumpWidget(
         AgrocomApp(
           flavor: Flavor.piloto,
+          infoEntorno: const InfoEntorno(
+            flavor: Flavor.piloto,
+            hostApi: 'localhost',
+            version: '0.1.0+1',
+          ),
           tokenStore: tokenStore,
           linternaControlador: linterna,
           estadoVersion: controladorVersion.stream,

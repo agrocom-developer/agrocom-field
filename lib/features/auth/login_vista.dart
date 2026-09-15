@@ -1,16 +1,37 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../nucleo/auth/rol_activo.dart';
+import '../../nucleo/entorno/info_entorno.dart';
+import '../../nucleo/ui/colores_campo.dart';
+import '../../nucleo/ui/componentes/componentes_campo.dart';
+import '../../nucleo/ui/imagenes_campo.dart';
+import '../../nucleo/ui/tema_campo.dart';
+import '../../nucleo/ui/tipografia_campo.dart';
+import '../../nucleo/ui/vitrina_campo/vitrina_campo_pantalla.dart';
 import 'login_cubit.dart';
 import 'login_estado.dart';
 
 /// UI pura de login — asume que un `LoginCubit` ya está provisto más
 /// arriba en el árbol (`LoginPantalla`, o `BlocProvider.value` en tests).
+///
+/// Primera pantalla real en modo campo (ADR 0008, ampliación del
+/// 14/9/2026): variante "foto plena" de la ronda 2 del mockup — el logo
+/// sobre la foto en la mitad superior, los campos al alcance del pulgar,
+/// flavor/host/versión al pie. La variante "hoja + último usuario" no
+/// aplica: el token por dispositivo persiste (HU-03), así que un piloto
+/// habitual no vuelve a pasar por acá — no hay "último usuario" que ofrecer.
 class LoginVista extends StatefulWidget {
-  const LoginVista({required this.onIngresoExitoso, super.key});
+  const LoginVista({
+    required this.onIngresoExitoso,
+    required this.infoEntorno,
+    super.key,
+  });
 
   final VoidCallback onIngresoExitoso;
+  final InfoEntorno infoEntorno;
 
   @override
   State<LoginVista> createState() => _LoginVistaState();
@@ -39,101 +60,77 @@ class _LoginVistaState extends State<LoginVista> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
-            child: _EntradaAnimada(
-              child: Form(
-                key: _formKey,
-                child: BlocConsumer<LoginCubit, LoginEstado>(
-                  listener: (context, estado) {
-                    if (estado is LoginExitosoEstado) {
-                      widget.onIngresoExitoso();
-                    }
-                  },
-                  builder: (context, estado) {
-                    if (estado is LoginRequiereSeleccionRol) {
-                      return _SelectorRol(roles: estado.roles);
-                    }
-                    final cargando = estado is LoginCargando;
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Image.asset(
-                          'assets/imagenes/agrocom_logo.png',
-                          height: 120,
-                        ),
-                        const SizedBox(height: 32),
-                        TextFormField(
-                          key: const Key('login_usuario'),
-                          controller: _usuarioController,
-                          enabled: !cargando,
-                          textInputAction: TextInputAction.next,
-                          decoration: const InputDecoration(
-                            labelText: 'Usuario',
-                            prefixIcon: Icon(Icons.person_outline),
-                          ),
-                          validator: (valor) => (valor == null || valor.isEmpty)
-                              ? 'Ingresá tu usuario'
-                              : null,
-                        ),
-                        const SizedBox(height: 16),
-                        TextFormField(
-                          key: const Key('login_contrasena'),
-                          controller: _contrasenaController,
-                          enabled: !cargando,
-                          obscureText: _ocultarContrasena,
-                          textInputAction: TextInputAction.done,
-                          decoration: InputDecoration(
-                            labelText: 'Contraseña',
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _ocultarContrasena
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                              ),
-                              onPressed: () => setState(
-                                () => _ocultarContrasena = !_ocultarContrasena,
-                              ),
-                            ),
-                          ),
-                          onFieldSubmitted: (_) =>
-                              cargando ? null : _ingresar(context),
-                          validator: (valor) => (valor == null || valor.isEmpty)
-                              ? 'Ingresá tu contraseña'
-                              : null,
-                        ),
-                        if (estado is LoginFallido) ...[
-                          const SizedBox(height: 16),
-                          Text(
-                            estado.mensaje,
-                            key: const Key('login_error'),
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                          ),
-                        ],
-                        const SizedBox(height: 24),
-                        FilledButton(
-                          key: const Key('login_boton'),
-                          onPressed: cargando ? null : () => _ingresar(context),
-                          child: cargando
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
+    return Theme(
+      data: AgrocomThemeCampo.construir(),
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Scaffold(
+          backgroundColor: ColoresCampo.fondoProfundo,
+          body: FondoFotoCampo(
+            imagen: ImagenesCampo.dronPulverizando,
+            alineacion: const Alignment(0.15, 0),
+            child: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, restricciones) => SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(24, 16, 24, 20),
+                  child: ConstrainedBox(
+                    // El contenido ocupa al menos toda la pantalla (el
+                    // `Spacer` empuja el formulario al pulgar) y, si el
+                    // teclado lo achica, se vuelve desplazable.
+                    constraints: BoxConstraints(
+                      minHeight: (restricciones.maxHeight - 36).clamp(
+                        0.0,
+                        double.infinity,
+                      ),
+                    ),
+                    child: IntrinsicHeight(
+                      child: _EntradaAnimada(
+                        child: Form(
+                          key: _formKey,
+                          child: BlocConsumer<LoginCubit, LoginEstado>(
+                            listener: (context, estado) {
+                              if (estado is LoginExitosoEstado) {
+                                widget.onIngresoExitoso();
+                              }
+                            },
+                            builder: (context, estado) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const SizedBox(height: 40),
+                                const Center(child: LogoAgrocomCampo()),
+                                const SizedBox(height: 14),
+                                Text(
+                                  'APLICACIÓN CON DRONES',
+                                  textAlign: TextAlign.center,
+                                  style: TipografiaCampo.etiquetaMono.copyWith(
+                                    fontSize: 11,
+                                    letterSpacing: 2.6,
+                                    color: ColoresCampo.textoPrincipal
+                                        .withValues(
+                                          alpha: OpacidadesCampo.media,
+                                        ),
                                   ),
-                                )
-                              : const Text('Ingresar'),
+                                ),
+                                const Spacer(),
+                                const SizedBox(height: 32),
+                                if (estado is LoginRequiereSeleccionRol)
+                                  _SelectorRol(roles: estado.roles)
+                                else
+                                  ..._formulario(context, estado),
+                                const SizedBox(height: 18),
+                                PieEntornoCampo(
+                                  flavor: widget.infoEntorno.flavor,
+                                  entorno: widget.infoEntorno.hostApi,
+                                  version: widget.infoEntorno.version,
+                                ),
+                                if (kDebugMode) _AccesoVitrina(),
+                              ],
+                            ),
+                          ),
                         ),
-                      ],
-                    );
-                  },
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -141,6 +138,52 @@ class _LoginVistaState extends State<LoginVista> {
         ),
       ),
     );
+  }
+
+  List<Widget> _formulario(BuildContext context, LoginEstado estado) {
+    final cargando = estado is LoginCargando;
+    return [
+      CampoTextoCampo(
+        key: const Key('login_usuario'),
+        etiqueta: 'Usuario',
+        controller: _usuarioController,
+        enabled: !cargando,
+        autocorrect: false,
+        textInputAction: TextInputAction.next,
+        validator: (valor) =>
+            (valor == null || valor.isEmpty) ? 'Ingresá tu usuario' : null,
+      ),
+      const SizedBox(height: 12),
+      CampoTextoCampo(
+        key: const Key('login_contrasena'),
+        etiqueta: 'Contraseña',
+        controller: _contrasenaController,
+        enabled: !cargando,
+        obscureText: _ocultarContrasena,
+        textInputAction: TextInputAction.done,
+        accionTexto: _ocultarContrasena ? 'Ver' : 'Ocultar',
+        onAccion: () =>
+            setState(() => _ocultarContrasena = !_ocultarContrasena),
+        onFieldSubmitted: (_) => cargando ? null : _ingresar(context),
+        validator: (valor) =>
+            (valor == null || valor.isEmpty) ? 'Ingresá tu contraseña' : null,
+      ),
+      if (estado is LoginFallido) ...[
+        const SizedBox(height: 14),
+        NotaInlineCampo(
+          key: const Key('login_error'),
+          texto: estado.mensaje,
+          color: ColoresCampo.acentoRojo,
+        ),
+      ],
+      const SizedBox(height: 18),
+      BotonPrimarioCampo(
+        key: const Key('login_boton'),
+        texto: 'Ingresar',
+        cargando: cargando,
+        onPressed: () => _ingresar(context),
+      ),
+    ];
   }
 }
 
@@ -181,28 +224,28 @@ class _SelectorRol extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          'Tu usuario tiene más de un rol activo. Elegí con cuál entrar:',
-          style: Theme.of(context).textTheme.titleMedium,
-          textAlign: TextAlign.center,
+          'Elegí con qué rol entrar',
+          style: TipografiaCampo.tituloPantalla.copyWith(fontSize: 24),
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 6),
+        Text(
+          'Tu usuario tiene más de un rol activo.',
+          style: TipografiaCampo.cuerpo,
+        ),
+        const SizedBox(height: 18),
         for (final rol in roles) ...[
-          Card(
-            margin: EdgeInsets.zero,
-            clipBehavior: Clip.antiAlias,
-            child: ListTile(
-              key: Key('login_rol_${rol.id}'),
-              leading: Icon(_iconoRol(rol.name)),
-              title: Text(rol.description ?? rol.name),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () => context.read<LoginCubit>().elegirRol(rol.id),
-            ),
+          ItemListaCampo(
+            key: Key('login_rol_${rol.id}'),
+            titulo: rol.description ?? rol.name,
+            subtitulo: rol.description == null ? null : rol.name,
+            icono: _iconoRol(rol.name),
+            onTap: () => context.read<LoginCubit>().elegirRol(rol.id),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 10),
         ],
       ],
     );
@@ -213,4 +256,23 @@ class _SelectorRol extends StatelessWidget {
     'auxiliar' => Icons.support_agent,
     _ => Icons.person_outline,
   };
+}
+
+/// Acceso de depuración a la vista previa del modo campo (ADR 0008) — solo
+/// existe en `kDebugMode`; un build de release no lo compila.
+class _AccesoVitrina extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      key: const Key('vitrina_campo_boton'),
+      onPressed: () => Navigator.of(
+        context,
+      ).push(MaterialPageRoute(builder: (_) => const VitrinaCampoPantalla())),
+      style: TextButton.styleFrom(
+        foregroundColor: ColoresCampo.textoPrincipal.withValues(alpha: 0.45),
+        textStyle: TipografiaCampo.datoMono.copyWith(fontSize: 11),
+      ),
+      child: const Text('Vista previa · modo campo'),
+    );
+  }
 }
