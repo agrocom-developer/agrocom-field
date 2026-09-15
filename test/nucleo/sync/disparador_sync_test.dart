@@ -7,6 +7,7 @@
 
 import 'dart:async';
 
+import 'package:agrocom_field/nucleo/api/api_excepcion.dart';
 import 'package:agrocom_field/nucleo/catalogo/catalogo_repository.dart';
 import 'package:agrocom_field/nucleo/evidencias/evidencia_sync_engine.dart';
 import 'package:agrocom_field/nucleo/sync/disparador_sync.dart';
@@ -75,6 +76,38 @@ void main() {
 
     expect(llamadosPull, 3);
     expect(orden, ['pull', 'pull', 'pull', 'sync', 'evidencias']);
+  });
+
+  test('un error del catálogo (servidor, o respuesta mal formada) no impide '
+      'que el outbox y las evidencias sincronicen en el mismo ciclo', () async {
+    when(
+      () => catalogo.pull(),
+    ).thenThrow(const ApiExcepcionServidor(500, null));
+
+    await disparador.iniciar();
+
+    expect(orden, ['sync', 'evidencias']);
+  });
+
+  test('sincronizarAhora() dispara un ciclo completo sin tocar la suscripción '
+      'de conectividad — llamarlo dos veces no la duplica', () async {
+    await disparador.iniciar();
+    orden.clear();
+
+    await disparador.sincronizarAhora();
+    expect(orden, ['pull', 'sync', 'evidencias']);
+
+    orden.clear();
+    controlador.add([ConnectivityResult.none]);
+    await _flush();
+    controlador.add([ConnectivityResult.wifi]);
+    await _flush();
+
+    expect(
+      orden,
+      ['pull', 'sync', 'evidencias'],
+      reason: 'una sola suscripción activa: un solo ciclo por la transición',
+    );
   });
 
   test('la primera emisión de conectividad tras iniciar() no cuenta como '
