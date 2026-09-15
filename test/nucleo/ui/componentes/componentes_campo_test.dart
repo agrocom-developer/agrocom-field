@@ -91,7 +91,20 @@ void main() {
     );
 
     expect(find.text('VIENTO'), findsOneWidget);
+    // Valor + unidad concatenados en un solo Text.rich (ver
+    // stat_chip_campo.dart: RichText no hereda DefaultTextStyle — bug
+    // detectado por captura visual, no por este `find`, que no distingue
+    // RichText de Text.rich al comparar el texto plano renderizado).
+    expect(find.text('9 km/h'), findsOneWidget);
     expect(find.text('Ráfagas 21'), findsOneWidget);
+  });
+
+  testWidgets('StatChipCampo sin unidad muestra solo el valor', (tester) async {
+    await tester.pumpWidget(
+      _envolver(const StatChipCampo(etiqueta: 'Hectáreas', valor: '42,5')),
+    );
+
+    expect(find.text('42,5'), findsOneWidget);
   });
 
   testWidgets('BadgeEstadoCampo muestra el texto en mayúscula', (tester) async {
