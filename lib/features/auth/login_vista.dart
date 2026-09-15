@@ -66,12 +66,6 @@ class _LoginVistaState extends State<LoginVista> {
                           'assets/imagenes/agrocom_logo.png',
                           height: 120,
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Agrocom Field',
-                          style: Theme.of(context).textTheme.headlineSmall,
-                          textAlign: TextAlign.center,
-                        ),
                         const SizedBox(height: 32),
                         TextFormField(
                           key: const Key('login_usuario'),

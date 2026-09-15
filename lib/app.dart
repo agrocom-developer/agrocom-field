@@ -15,7 +15,8 @@ import 'nucleo/ui/tema.dart';
 import 'nucleo/version/estado_version.dart';
 import 'nucleo/version/version_bloqueo_overlay.dart';
 
-/// App raíz de Agrocom Field.
+/// App raíz de Agrocom — el nombre visible es siempre «Agrocom» (el logo
+/// lleva el wordmark); `agrocom-field` es solo el nombre del repo/paquete.
 ///
 /// Se instancia desde main_piloto.dart o main_auxiliar.dart según el flavor.
 class AgrocomApp extends StatelessWidget {
@@ -45,7 +46,7 @@ class AgrocomApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Agrocom Field',
+      title: 'Agrocom',
       theme: AgrocomTheme.light(),
       darkTheme: AgrocomTheme.dark(),
       themeMode: ThemeMode.system,
