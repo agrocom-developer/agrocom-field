@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../nucleo/entorno/info_entorno.dart';
 import 'login_cubit.dart';
 import 'login_vista.dart';
 
@@ -13,17 +14,22 @@ class LoginPantalla extends StatelessWidget {
   const LoginPantalla({
     required this.crearCubit,
     required this.onIngresoExitoso,
+    required this.infoEntorno,
     super.key,
   });
 
   final LoginCubit Function() crearCubit;
   final VoidCallback onIngresoExitoso;
+  final InfoEntorno infoEntorno;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<LoginCubit>(
       create: (_) => crearCubit(),
-      child: LoginVista(onIngresoExitoso: onIngresoExitoso),
+      child: LoginVista(
+        onIngresoExitoso: onIngresoExitoso,
+        infoEntorno: infoEntorno,
+      ),
     );
   }
 }

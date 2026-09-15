@@ -9,6 +9,7 @@ import 'package:agrocom_field/features/auth/login_vista.dart';
 import 'package:agrocom_field/nucleo/auth/login_service.dart';
 import 'package:agrocom_field/nucleo/auth/resultado_login.dart';
 import 'package:agrocom_field/nucleo/auth/rol_activo.dart';
+import 'package:agrocom_field/nucleo/entorno/info_entorno.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,7 +41,14 @@ void main() {
       MaterialApp(
         home: BlocProvider<LoginCubit>.value(
           value: cubit,
-          child: LoginVista(onIngresoExitoso: () => loginesExitosos++),
+          child: LoginVista(
+            onIngresoExitoso: () => loginesExitosos++,
+            infoEntorno: InfoEntorno(
+              flavor: flavor,
+              hostApi: '192.168.0.3:8000',
+              version: '0.1.0+1',
+            ),
+          ),
         ),
       ),
     );
@@ -257,5 +265,32 @@ void main() {
       find.text('Sin conexión. Probá de nuevo cuando tengas señal.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets(
+    'muestra flavor, host de la API y versión al pie (ADR 0004/0007)',
+    (tester) async {
+      await bombear(tester, flavor: Flavor.auxiliar);
+
+      expect(find.textContaining('AUXILIAR'), findsOneWidget);
+      expect(find.textContaining('192.168.0.3:8000'), findsOneWidget);
+      expect(find.textContaining('v0.1.0+1'), findsOneWidget);
+    },
+  );
+
+  testWidgets('VER/OCULTAR alterna la visibilidad de la contraseña', (
+    tester,
+  ) async {
+    await bombear(tester);
+    final editable = find.descendant(
+      of: find.byKey(const Key('login_contrasena')),
+      matching: find.byType(EditableText),
+    );
+
+    expect(tester.widget<EditableText>(editable).obscureText, isTrue);
+    await tester.tap(find.text('VER'));
+    await tester.pumpAndSettle();
+    expect(tester.widget<EditableText>(editable).obscureText, isFalse);
+    expect(find.text('OCULTAR'), findsOneWidget);
   });
 }

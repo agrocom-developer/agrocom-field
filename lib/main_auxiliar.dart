@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'app.dart';
 import 'features/auth/login_cubit.dart';
@@ -11,6 +12,7 @@ import 'features/ordenes/presentation/ordenes_cubit.dart';
 import 'nucleo/auth/login_service.dart';
 import 'nucleo/auth/token_store.dart';
 import 'nucleo/di/service_locator.dart';
+import 'nucleo/entorno/info_entorno.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
 import 'nucleo/notificaciones/notificador_local.dart';
@@ -20,6 +22,16 @@ import 'nucleo/version/version_watcher.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configurarDependencias(flavor: Flavor.auxiliar);
+
+  // Lo que el pie del login muestra para reconocer el entorno (ADR 0004) y
+  // la versión instalada (ADR 0007). `PackageInfo` lee del propio APK — no
+  // es red, así que sí se espera antes de `runApp`.
+  final paquete = await PackageInfo.fromPlatform();
+  final infoEntorno = InfoEntorno(
+    flavor: Flavor.auxiliar,
+    hostApi: InfoEntorno.hostDe(apiBaseUrl),
+    version: '${paquete.version}+${paquete.buildNumber}',
+  );
 
   // HU-62, Sprint 15 (enteramente auxiliar — el flavor piloto no recibe
   // trabajo nuevo todavía): de vida larga, no atado al ciclo de una
@@ -46,6 +58,7 @@ Future<void> main() async {
   runApp(
     AgrocomApp(
       flavor: Flavor.auxiliar,
+      infoEntorno: infoEntorno,
       tokenStore: getIt<TokenStore>(),
       linternaControlador: getIt<LinternaControlador>(),
       estadoVersion: getIt<VersionWatcher>().estado,
