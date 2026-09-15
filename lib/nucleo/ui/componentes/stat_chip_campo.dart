@@ -42,8 +42,8 @@ class StatChipCampo extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          RichText(
-            text: TextSpan(
+          Text.rich(
+            TextSpan(
               children: [
                 TextSpan(
                   text: valor,
