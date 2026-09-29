@@ -149,7 +149,7 @@ class CatalogoRepository {
     final geometria = json['geometria'];
     return LoteCatalogoCompanion.insert(
       id: Value(json['id'] as int),
-      campoId: json['campo_id'] as int,
+      propiedadId: json['propiedad_id'] as int,
       codigo: json['codigo'] as String,
       hectareas: Decimal.parse(json['hectareas'] as String),
       // `geometria` ya llega parseada por dio como Map/List — se vuelve a
