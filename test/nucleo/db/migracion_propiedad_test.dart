@@ -144,83 +144,86 @@ CREATE TABLE incidencia_local (
 ''';
 
 void main() {
-  group('migración de esquema drift (ADR 0020: propiedad_id en LoteCatalogo)', () {
-    test(
-      'base v8 preexistente con catálogo y cursor del esquema viejo migra a '
-      'v9: pierde el catálogo de lotes viejo a propósito, pero no toca '
-      'cola_sync ni trabajo_local, y la tabla queda usable con el contrato '
-      'nuevo (propiedad_id)',
-      () async {
-        // Arma a mano el estado "v8 preexistente" sobre un sqlite3.Database
-        // crudo, antes de que drift lo toque.
-        final rawDb = sqlite3.sqlite3.openInMemory();
-        rawDb.execute(_createEsquemaV8);
-        rawDb.execute('''
+  group(
+    'migración de esquema drift (ADR 0020: propiedad_id en LoteCatalogo)',
+    () {
+      test(
+        'base v8 preexistente con catálogo y cursor del esquema viejo migra a '
+        'v9: pierde el catálogo de lotes viejo a propósito, pero no toca '
+        'cola_sync ni trabajo_local, y la tabla queda usable con el contrato '
+        'nuevo (propiedad_id)',
+        () async {
+          // Arma a mano el estado "v8 preexistente" sobre un sqlite3.Database
+          // crudo, antes de que drift lo toque.
+          final rawDb = sqlite3.sqlite3.openInMemory();
+          rawDb.execute(_createEsquemaV8);
+          rawDb.execute('''
           INSERT INTO cola_sync
             (uuid_cliente, tipo_entidad, payload, secuencia, estado, creado_en)
           VALUES
             ('preexistente-v8', 'trabajo', '{"orden_id":1}', 1, 'confirmado', 1700000000);
         ''');
-        rawDb.execute('''
+          rawDb.execute('''
           INSERT INTO lote_catalogo
             (id, campo_id, codigo, hectareas, updated_at)
           VALUES
             (1, 5, 'L-1', '120.75', 1756209600000);
         ''');
-        rawDb.execute('''
+          rawDb.execute('''
           INSERT INTO cursor_catalogo (id, cursor) VALUES (0, 'cursor-viejo');
         ''');
-        rawDb.execute('''
+          rawDb.execute('''
           INSERT INTO trabajo_local
             (uuid_cliente, orden_id, lote_id, nro_aplicacion, hectareas_declaradas, inicio)
           VALUES
             ('trabajo-preexistente', 5, 9, 2, '37.40', 1700000000);
         ''');
-        rawDb.execute('PRAGMA user_version = 8;');
+          rawDb.execute('PRAGMA user_version = 8;');
 
-        // Mismo executor, ahora abierto por AppDatabase (schemaVersion real):
-        // drift compara el user_version (8) recién fijado contra
-        // schemaVersion y dispara onUpgrade(m, 8, 9) de verdad.
-        final db = AppDatabase(NativeDatabase.opened(rawDb));
-        addTearDown(db.close);
+          // Mismo executor, ahora abierto por AppDatabase (schemaVersion real):
+          // drift compara el user_version (8) recién fijado contra
+          // schemaVersion y dispara onUpgrade(m, 8, 9) de verdad.
+          final db = AppDatabase(NativeDatabase.opened(rawDb));
+          addTearDown(db.close);
 
-        // El catálogo de lotes viejo se pierde a propósito (ver comentario
-        // de cabecera) — y el cursor se resetea con él, para que el próximo
-        // pull traiga las cuatro secciones desde cero.
-        expect(await db.select(db.loteCatalogo).get(), isEmpty);
-        expect(
-          await (db.select(
-            db.cursorCatalogo,
-          )..where((t) => t.id.equals(0))).getSingleOrNull(),
-          isNull,
-        );
+          // El catálogo de lotes viejo se pierde a propósito (ver comentario
+          // de cabecera) — y el cursor se resetea con él, para que el próximo
+          // pull traiga las cuatro secciones desde cero.
+          expect(await db.select(db.loteCatalogo).get(), isEmpty);
+          expect(
+            await (db.select(
+              db.cursorCatalogo,
+            )..where((t) => t.id.equals(0))).getSingleOrNull(),
+            isNull,
+          );
 
-        // Nada de lo que protege la invariante 10 de CLAUDE.md se tocó.
-        final filasColaSync = await db.select(db.colaSync).get();
-        expect(filasColaSync, hasLength(1));
-        expect(filasColaSync.single.uuidCliente, 'preexistente-v8');
+          // Nada de lo que protege la invariante 10 de CLAUDE.md se tocó.
+          final filasColaSync = await db.select(db.colaSync).get();
+          expect(filasColaSync, hasLength(1));
+          expect(filasColaSync.single.uuidCliente, 'preexistente-v8');
 
-        final filasTrabajo = await db.select(db.trabajoLocal).get();
-        expect(filasTrabajo, hasLength(1));
-        expect(filasTrabajo.single.uuidCliente, 'trabajo-preexistente');
+          final filasTrabajo = await db.select(db.trabajoLocal).get();
+          expect(filasTrabajo, hasLength(1));
+          expect(filasTrabajo.single.uuidCliente, 'trabajo-preexistente');
 
-        // La tabla sigue creada y usable, ahora con el contrato nuevo:
-        // propiedad_id en vez de campo_id.
-        await db
-            .into(db.loteCatalogo)
-            .insert(
-              LoteCatalogoCompanion.insert(
-                id: const Value(2),
-                propiedadId: 7,
-                codigo: 'L-2',
-                hectareas: Decimal.parse('80.00'),
-                updatedAt: DateTime.utc(2026, 9, 15),
-              ),
-            );
-        final loteNuevo = (await db.select(db.loteCatalogo).get()).single;
-        expect(loteNuevo.propiedadId, 7);
-        expect(loteNuevo.hectareas, Decimal.parse('80.00'));
-      },
-    );
-  });
+          // La tabla sigue creada y usable, ahora con el contrato nuevo:
+          // propiedad_id en vez de campo_id.
+          await db
+              .into(db.loteCatalogo)
+              .insert(
+                LoteCatalogoCompanion.insert(
+                  id: const Value(2),
+                  propiedadId: 7,
+                  codigo: 'L-2',
+                  hectareas: Decimal.parse('80.00'),
+                  updatedAt: DateTime.utc(2026, 9, 15),
+                ),
+              );
+          final loteNuevo = (await db.select(db.loteCatalogo).get()).single;
+          expect(loteNuevo.propiedadId, 7);
+          expect(loteNuevo.hectareas, Decimal.parse('80.00'));
+        },
+      );
+    },
+  );
 }
