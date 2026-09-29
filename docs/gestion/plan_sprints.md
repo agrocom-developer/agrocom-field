@@ -93,3 +93,34 @@ HU-05 corta expresamente el esqueleto vertical en "sesión cerrada" — deja afu
 **Total: 6,5 d**
 
 **Orden real de ejecución**: TE-20 primero (bloquea a las otras cuatro — sin catálogo real no hay trabajo/orden sobre el que probar nada), después HU-70 (puerta de entrada — "Crear aplicación" de HU-79/HU-78 cuelga de un trabajo ya asignado), HU-79 y HU-78 en paralelo entre sí (ambas cuelgan de "Crear aplicación" pero tocan pantallas/tablas distintas), HU-80 en paralelo a cualquiera de esas dos (independiente).
+
+## Sprint 17 — App de campo: alineación con los cambios de `agrocom-api` del 15 al 23/9/2026
+
+*Objetivo: incorporar a esta app lo que el dueño cambió de enfoque, negocio y estructura en `agrocom-api` entre el 15 y el 23/9/2026 (ADR 0020 a 0026, `openapi.yaml`, especificación y políticas por rol), y dejar un mecanismo para que la próxima divergencia se detecte sola. Planificado el 29/9/2026 leyendo `git log` y `docs/` de `agrocom-api` (HEAD `44570a17`) contra el estado real de `develop` de este repo.*
+
+### Resultado del análisis (qué cambió del otro lado y cuánto toca a la app)
+
+| Cambio en `agrocom-api` | Impacto en la app | Tarea |
+|---|---|---|
+| ADR 0020 — se elimina `Campo`, `Lote` cuelga de `Propiedad`; `campo_id` → `propiedad_id` en el catálogo y en `estadia_entrada` | Catálogo de lotes ya renombrado (PR #49, migración v9). Falta confirmar `estadia_entrada` y textos de UI que digan «campo» | TE-21 |
+| ADR 0022 — la orden es una aplicación completa (todos los lotes del contrato, correlativa, una abierta por contrato); estados nuevos `pausada` y `cancelada` | El catálogo solo entrega órdenes `vigente`: una orden ya bajada que se pausa o cancela **sigue vigente en el dispositivo** (pendiente conocido del ADR). La app nunca pausa ni cancela | TE-22 (bloqueada por contrato) |
+| Orden de Trabajo replanteada (equipos fijos por orden, hectáreas por equipo, sin velocidad máxima, calda en casillas) — #251, #269, #270 | `OrdenVigente.velocidadMaxKmh` puede haber quedado sin fuente; `TrabajoCatalogo.hectareas_declaradas` ahora es por equipo | TE-23 |
+| ADR 0023 — el pago es del trabajo, no de la persona | Sin impacto: la app no muestra ni calcula dinero (invariante 9). Se anota para no reabrirlo | — |
+| ADR 0025 — motor de notificaciones del panel | Sin impacto directo. `TrabajoCerrado` (que ya envía la app) dispara el aviso al jefe de campo del lado servidor. HU-62 de la app sigue siendo solo avisos locales | — |
+| ADR 0026 — ruta de archivos por objeto | Sin impacto: la ruta la decide el servidor al recibir `POST /api/evidencias` | — |
+| ADR 0021, 0024 y homogeneización del panel | Solo servidor | — |
+| Documentación (`docs/vision.md`, `CLAUDE.md`) cita conceptos y ADR anteriores | Desfase documental, incluida la referencia a «campo» | TE-24 |
+
+| ID | Historia / tarea | CA esenciales | Est. |
+|---|---|---|---|
+| TE-21 | Cerrar ADR 0020 en la app: integrar PR #49 (`propiedad_id` en `LoteCatalogo`, migración v9) y auditar el resto — `estadia_entrada` (¿la app la emite? si sí, `propiedad_id`), textos de UI y nombres de dominio que aún digan «campo» donde ahora es «propiedad». **Crítica** (esquema `drift`) | `grep -rniE "campo_?id" lib test` sin resultados fuera de la migración; prueba de migración v8→v9 en verde; `bin/verify` en verde | 0,5 d |
+| TE-22 | Órdenes que dejan de estar vigentes: hoy la app no se entera de una orden pausada, cancelada o cerrada. Definir con `agrocom-api` cómo se retira (¿el catálogo entrega también el estado? ¿tombstone?) y cómo reacciona la app sin reescribir un registro ya confirmado (invariante 6): ocultar de «vigentes», no borrar; una sesión abierta sobre una orden pausada se decide con el dueño. **Bloqueada**: exige cambio de contrato en `agrocom-api` primero; esta tarea empieza por un ADR local + petición allá | ADR local aprobado y contrato confirmado en `openapi.yaml` antes de escribir código; después, prueba de replay con la orden que pasa de `vigente` a `pausada` entre dos pulls | 1,5 d |
+| TE-23 | Alinear `OrdenCatalogo`/`TrabajoCatalogo` con la Orden de Trabajo replanteada: contrastar campo por campo `openapi.yaml` actual contra las tablas `drift` (velocidad máxima, hectáreas por equipo, `lotes[]` como todos los del contrato) y quitar lo que ya no existe. **Crítica** (esquema `drift`). Depende de TE-21 (misma migración; una sola versión de esquema) | Test de contrato que parsea un ejemplo real de `GET /api/sync/catalogo` sin excepción; ningún campo de tabla sin fuente en el contrato | 1 d |
+| TE-24 | Sincronizar la documentación de este repo: `docs/vision.md`, `CLAUDE.md` (lista de ADR y secciones de la especificación citadas) y `docs/gestion/cola_tareas.md`; agregar `docs/gestion/alineacion_backend.md` con la fecha y el HEAD de `agrocom-api` contra el que se alineó por última vez | `vision.md` y `CLAUDE.md` no contradicen ADR 0020–0026; el documento de alineación tiene fecha y SHA | 0,5 d |
+| TE-25 | Detector de divergencia para el ciclo: paso de `bin/ciclo --planificar` que compara `git log <SHA de alineacion_backend.md>..HEAD -- docs/api docs/decisiones docs/especificacion docs/negocio/politicas` de `agrocom-api` y, si hay commits, escribe el prompt de una tarea de alineación en vez de seguir con la cola normal. Solo lectura sobre `agrocom-api` | Con el SHA actual el paso no genera nada; con un SHA viejo genera un prompt con la lista de commits; la ruta de `agrocom-api` sale de una variable, no fija | 1 d |
+
+**Total: 4,5 d**
+
+**Orden de ejecución**: PR #49 (TE-21, parte ya hecha) → TE-23 → TE-24 → TE-25. TE-22 se abre en paralelo solo como petición de contrato a `agrocom-api`, y no entra a la cola automática hasta que el contrato exista. Las tareas de Sprint 16 (HU-70/78/79/80) siguen su orden propio; TE-23 conviene cerrarla antes de HU-70 porque ambas leen el mismo catálogo.
+
+**Qué no se hace acá**: nada de dinero (ADR 0023 es del servidor), ninguna pantalla nueva del panel, ningún cambio a `openapi.yaml` (se regenera del lado `agrocom-api`).
