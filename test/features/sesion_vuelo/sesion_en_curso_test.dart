@@ -197,7 +197,75 @@ void main() {
     );
   });
 
+  Future<void> sembrarAsignado({String? motivoRetiro}) async {
+    await db
+        .into(db.trabajoCatalogo)
+        .insert(
+          TrabajoCatalogoCompanion.insert(
+            id: const Value(42),
+            uuidCliente: 'uuid-panel-42',
+            ordenId: 1,
+            loteId: 3,
+            hectareasDeclaradas: Decimal.parse('300.00'),
+            equipoTrabajoId: 7,
+            updatedAt: DateTime.utc(2026, 9, 22),
+            motivoRetiro: Value(motivoRetiro),
+          ),
+        );
+    await trabajoRepositorio.abrirTrabajoAsignado(
+      uuidCliente: 'uuid-panel-42',
+      ordenId: 1,
+      loteId: 3,
+      nroAplicacion: 1,
+      inicio: DateTime.utc(2026, 10, 1, 9),
+    );
+  }
+
   group('restricción de apertura', () {
+    test('trabajo dado_de_baja: bloquea una sesión nueva; la que ya estaba '
+        'abierta se retoma y se cierra', () async {
+      await sembrarAsignado();
+      final sesionUuid = await abrirSesion('uuid-panel-42');
+      await (db.update(
+        db.trabajoCatalogo,
+      )..where((t) => t.id.equals(42))).write(
+        const TrabajoCatalogoCompanion(motivoRetiro: Value('dado_de_baja')),
+      );
+      final bloc = nuevoBloc('uuid-panel-42')
+        ..add(const SesionCargaSolicitada());
+      addTearDown(bloc.close);
+      await procesar(bloc);
+      expect((bloc.state as SesionActiva).sesion.uuidCliente, sesionUuid);
+      bloc.add(
+        SesionCerrarSolicitada(
+          motivoCierre: 'otro',
+          hectareasDeclaradas: Decimal.parse('1'),
+        ),
+      );
+      await procesar(bloc);
+      expect(bloc.state, isA<SesionCerrada>());
+
+      final restriccion = await sesionRepositorio.restriccionAperturaDeTrabajo(
+        'uuid-panel-42',
+      );
+
+      expect(restriccion.bloqueo, contains('dado de baja'));
+      expect(restriccion.aviso, 'El trabajo fue dado de baja desde el panel.');
+    });
+
+    test(
+      'trabajo reasignado: no bloquea la sesión nueva, solo avisa',
+      () async {
+        await sembrarAsignado(motivoRetiro: 'reasignado');
+
+        final restriccion = await sesionRepositorio
+            .restriccionAperturaDeTrabajo('uuid-panel-42');
+
+        expect(restriccion.bloqueada, isFalse);
+        expect(restriccion.aviso, 'El trabajo fue reasignado a otro equipo.');
+      },
+    );
+
     test('orden pausada: bloquea una sesión nueva con el motivo; vigente '
         'otra vez, se puede', () async {
       final trabajo = await abrirTrabajo();

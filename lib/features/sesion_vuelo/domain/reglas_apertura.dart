@@ -8,7 +8,7 @@ import '../../../nucleo/catalogo/motivo_retiro.dart';
 /// y el trabajo se cierra igual. Esto solo decide si el formulario de
 /// apertura deja confirmar.
 final class RestriccionApertura {
-  const RestriccionApertura({this.bloqueo});
+  const RestriccionApertura({this.bloqueo, this.aviso});
 
   static const ninguna = RestriccionApertura();
 
@@ -16,14 +16,21 @@ final class RestriccionApertura {
   /// `null` si se puede.
   final String? bloqueo;
 
+  /// Por qué el trabajo ya no está vigente en el catálogo, para mostrarlo en
+  /// la pantalla de sesión; `null` si sigue vigente o no tiene fila en el
+  /// catálogo. Solo informa: lo que bloquea va en [bloqueo].
+  final String? aviso;
+
   bool get bloqueada => bloqueo != null;
 
   @override
   bool operator ==(Object other) =>
-      other is RestriccionApertura && other.bloqueo == bloqueo;
+      other is RestriccionApertura &&
+      other.bloqueo == bloqueo &&
+      other.aviso == aviso;
 
   @override
-  int get hashCode => bloqueo.hashCode;
+  int get hashCode => Object.hash(bloqueo, aviso);
 }
 
 /// [haySesionAbierta]: si este dispositivo ya tiene una sesión abierta, en
@@ -34,23 +41,40 @@ final class RestriccionApertura {
 /// trabajo. Con `pausada` no se abre una sesión nueva — el servidor la
 /// aceptaría, pero el dueño decidió que no se vuele sobre una orden
 /// pausada.
+///
+/// [motivoRetiroTrabajo]: `TrabajoCatalogo.motivoRetiro`. Espejo de
+/// `EscrituraSincronizacionEloquent::abrirSesion()` de `agrocom-api`, que
+/// busca el trabajo sin los dados de baja y no mira ni su estado ni su
+/// equipo:
+/// - `dado_de_baja`: el servidor rechaza la sesión con
+///   `trabajo_no_existe_aun`. Cargada sin señal, se perdería al
+///   sincronizar, así que no se abre.
+/// - `reasignado`, `cerrado`, `orden_cerrada` y el local
+///   `fuera_de_alcance`: el servidor la acepta, así que no se bloquea; solo
+///   se avisa.
 RestriccionApertura restriccionApertura({
   required bool haySesionAbierta,
   String? motivoRetiroOrden,
+  String? motivoRetiroTrabajo,
 }) {
+  final aviso = motivoRetiroTrabajo == null
+      ? null
+      : MotivoRetiro.describirTrabajo(motivoRetiroTrabajo);
+  final String? bloqueo;
   if (haySesionAbierta) {
-    return const RestriccionApertura(
-      bloqueo:
-          'Ya hay una sesión abierta en este dispositivo: volvé a ella desde '
-          '«Inicio» y cerrala antes de abrir otra.',
-    );
+    bloqueo =
+        'Ya hay una sesión abierta en este dispositivo: volvé a ella desde '
+        '«Inicio» y cerrala antes de abrir otra.';
+  } else if (motivoRetiroTrabajo == MotivoRetiro.dadoDeBaja) {
+    bloqueo =
+        'El trabajo fue dado de baja desde el panel: el servidor rechazaría '
+        'una sesión nueva. Podés cerrar el trabajo.';
+  } else if (motivoRetiroOrden == MotivoRetiro.ordenPausada) {
+    bloqueo =
+        'La orden de este trabajo está pausada: no se vuela hasta que '
+        'vuelva a estar vigente.';
+  } else {
+    bloqueo = null;
   }
-  if (motivoRetiroOrden == MotivoRetiro.ordenPausada) {
-    return const RestriccionApertura(
-      bloqueo:
-          'La orden de este trabajo está pausada: no se vuela hasta que '
-          'vuelva a estar vigente.',
-    );
-  }
-  return RestriccionApertura.ninguna;
+  return RestriccionApertura(bloqueo: bloqueo, aviso: aviso);
 }

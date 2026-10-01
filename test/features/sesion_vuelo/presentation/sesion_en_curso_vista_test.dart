@@ -266,4 +266,98 @@ void main() {
     expect(find.byKey(const Key('apertura_bloqueada')), findsNothing);
     expect(onPressedPrimario(tester, 'boton_confirmar_apertura'), isNotNull);
   });
+
+  testWidgets('trabajo dado_de_baja: aviso en la pantalla, apertura '
+      'bloqueada con el motivo y el trabajo se puede cerrar', (tester) async {
+    when(
+      () => sesionRepositorio.restriccionAperturaDeTrabajo(_trabajoUuid),
+    ).thenAnswer(
+      (_) async => restriccionApertura(
+        haySesionAbierta: false,
+        motivoRetiroTrabajo: 'dado_de_baja',
+      ),
+    );
+
+    await bombear(tester);
+
+    expect(
+      tester
+          .widget<NotaInlineCampo>(find.byKey(const Key('sesion_aviso_retiro')))
+          .texto,
+      'El trabajo fue dado de baja desde el panel.',
+    );
+    expect(
+      tester
+          .widget<BotonSecundarioCampo>(
+            find.byKey(const Key('boton_cerrar_trabajo')),
+          )
+          .onPressed,
+      isNotNull,
+    );
+
+    await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
+    await tester.pumpAndSettle();
+    expect(
+      tester
+          .widget<BannerAlertaCampo>(
+            find.byKey(const Key('apertura_bloqueada')),
+          )
+          .texto,
+      contains('dado de baja'),
+    );
+    expect(onPressedPrimario(tester, 'boton_confirmar_apertura'), isNull);
+  });
+
+  testWidgets('trabajo dado_de_baja con la sesión YA abierta: se sigue '
+      'pudiendo cerrar', (tester) async {
+    when(
+      () => sesionRepositorio.sesionAbiertaDeTrabajo(_trabajoUuid),
+    ).thenAnswer((_) async => _sesion());
+    when(
+      () => sesionRepositorio.restriccionAperturaDeTrabajo(_trabajoUuid),
+    ).thenAnswer(
+      (_) async => restriccionApertura(
+        haySesionAbierta: true,
+        motivoRetiroTrabajo: 'dado_de_baja',
+      ),
+    );
+
+    await bombear(tester);
+
+    expect(find.byKey(const Key('sesion_aviso_retiro')), findsOneWidget);
+    expect(onPressedPrimario(tester, 'boton_cerrar_sesion'), isNotNull);
+  });
+
+  for (final motivo in const [
+    'reasignado',
+    'cerrado',
+    'orden_cerrada',
+    'fuera_de_alcance',
+  ]) {
+    testWidgets('trabajo $motivo: aviso en la pantalla, pero la apertura '
+        'no se bloquea', (tester) async {
+      when(
+        () => sesionRepositorio.restriccionAperturaDeTrabajo(_trabajoUuid),
+      ).thenAnswer(
+        (_) async => restriccionApertura(
+          haySesionAbierta: false,
+          motivoRetiroTrabajo: motivo,
+        ),
+      );
+
+      await bombear(tester);
+
+      expect(find.byKey(const Key('sesion_aviso_retiro')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('apertura_bloqueada')), findsNothing);
+      expect(onPressedPrimario(tester, 'boton_confirmar_apertura'), isNotNull);
+    });
+  }
+
+  testWidgets('trabajo vigente: sin aviso de retiro', (tester) async {
+    await bombear(tester);
+
+    expect(find.byKey(const Key('sesion_aviso_retiro')), findsNothing);
+  });
 }

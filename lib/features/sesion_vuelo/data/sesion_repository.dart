@@ -358,6 +358,7 @@ class SesionRepository {
     return restriccionApertura(
       haySesionAbierta: abierta != null,
       motivoRetiroOrden: orden?.motivoRetiro,
+      motivoRetiroTrabajo: trabajoCatalogo?.motivoRetiro,
     );
   }
 

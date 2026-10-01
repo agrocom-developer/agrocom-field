@@ -13,6 +13,7 @@ import 'package:agrocom_field/features/inicio/presentation/inicio_cubit.dart';
 import 'package:agrocom_field/features/inicio/presentation/inicio_pantalla.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
+import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_apertura.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/sesion.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_bloc.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_vuelo_pantalla.dart';
@@ -80,6 +81,9 @@ void main() {
     when(
       () => sesionRepositorio.sesionAbiertaDeTrabajo(any()),
     ).thenAnswer((_) async => null);
+    when(
+      () => sesionRepositorio.restriccionAperturaDeTrabajo(any()),
+    ).thenAnswer((_) async => RestriccionApertura.ninguna);
   });
 
   Future<void> bombear(

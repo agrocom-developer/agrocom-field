@@ -76,6 +76,11 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
   /// muestra el motivo y no deja confirmar.
   RestriccionApertura _restriccion = RestriccionApertura.ninguna;
 
+  /// La misma restricción, leída al entrar a la pantalla (tarea 27) para
+  /// mostrar arriba el motivo de retiro del trabajo como aviso; se
+  /// actualiza cada vez que se abre el formulario. `null` mientras carga.
+  RestriccionApertura? _restriccionPantalla;
+
   /// HU-07: se dispara una sola vez por apertura de diálogo, no en cada
   /// `build` del `StatefulBuilder` — evita repetir la consulta a `drift` en
   /// cada rebuild mientras el piloto completa el resto del formulario.
@@ -108,6 +113,21 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     _hectareaInicialController = TextEditingController();
     _acumuladoFinalController = TextEditingController();
     _litrosSobranteController = TextEditingController();
+    _cargarRestriccionPantalla();
+  }
+
+  /// Solo informa: si la lectura falla, la pantalla sigue sin el aviso. Lo
+  /// que bloquea no depende de esto — el formulario vuelve a leer la
+  /// restricción antes de dejar confirmar.
+  Future<void> _cargarRestriccionPantalla() async {
+    final RestriccionApertura restriccion;
+    try {
+      restriccion = await context.read<SesionBloc>().restriccionApertura();
+    } catch (_) {
+      return;
+    }
+    if (!mounted) return;
+    setState(() => _restriccionPantalla = restriccion);
   }
 
   @override
@@ -167,6 +187,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     if (!context.mounted) return;
     _limites = limites;
     _restriccion = restriccion;
+    setState(() => _restriccionPantalla = restriccion);
 
     _vientoController.clear();
     _temperaturaController.clear();
@@ -683,6 +704,16 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                   padding: EdgeInsets.fromLTRB(18, 8, 18, 0),
                   child: EncabezadoCampo(titulo: 'Sesión de vuelo'),
                 ),
+                // Trabajo retirado del catálogo (tarea 27): se avisa en toda
+                // la pantalla; lo abierto se sigue y se cierra igual.
+                if (_restriccionPantalla?.aviso case final aviso?)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 12, 18, 0),
+                    child: NotaInlineCampo(
+                      key: const Key('sesion_aviso_retiro'),
+                      texto: aviso,
+                    ),
+                  ),
                 Expanded(
                   child: BlocConsumer<SesionBloc, SesionEstado>(
                     listener: (context, estado) {
