@@ -14,6 +14,7 @@ export 'boton_primario_campo.dart';
 export 'boton_secundario_campo.dart';
 export 'campo_texto_campo.dart';
 export 'encabezado_campo.dart';
+export 'fila_dato_campo.dart';
 export 'fondo_foto_campo.dart';
 export 'grid_evidencias_campo.dart';
 export 'item_lista_campo.dart';

@@ -18,6 +18,8 @@ import 'package:agrocom_field/features/sesion_vuelo/presentation/trabajo_cubit.d
 import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
 import 'package:agrocom_field/nucleo/evidencias/evidencia_repository.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
+import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
+import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,6 +123,34 @@ void main() {
     expect(find.byKey(const Key('orden_2')), findsOneWidget);
   });
 
+  testWidgets('modo campo: cada orden es una fila del catalogo con lote, '
+      'aplicacion, dosis y fecha (ADR 0008)', (tester) async {
+    when(() => repositorio.ordenesVigentes()).thenAnswer(
+      (_) => Stream.value([_orden(id: 1), _orden(id: 2, loteCodigo: null)]),
+    );
+    final cubit = OrdenesCubit(repositorio);
+    addTearDown(cubit.close);
+
+    await bombear(tester, cubit);
+    await tester.pumpAndSettle();
+
+    final contexto = tester.element(find.byKey(const Key('ordenes_lista')));
+    expect(Theme.of(contexto).extension<TemaCampo>(), isNotNull);
+    expect(find.byType(AppBar), findsNothing);
+    expect(find.byType(ListTile), findsNothing);
+    expect(find.text('Órdenes vigentes'), findsOneWidget);
+
+    final fila = tester.widget<ItemListaCampo>(
+      find.byKey(const Key('orden_1')),
+    );
+    expect(fila.titulo, 'L-01');
+    expect(fila.subtitulo, 'Aplicación N.º 2 · 12.5 L/ha · 2026-08-26');
+    expect(
+      tester.widget<ItemListaCampo>(find.byKey(const Key('orden_2'))).titulo,
+      'Lote sin datos',
+    );
+  });
+
   testWidgets('estado vacio: sin ordenes vigentes muestra el mensaje', (
     tester,
   ) async {
@@ -134,6 +164,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('ordenes_vacia')), findsOneWidget);
+    expect(find.text('No hay órdenes vigentes.'), findsOneWidget);
     expect(find.byKey(const Key('ordenes_lista')), findsNothing);
   });
 

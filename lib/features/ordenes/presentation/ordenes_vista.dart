@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/flavor.dart';
+import '../../../nucleo/ui/colores_campo.dart';
+import '../../../nucleo/ui/componentes/componentes_campo.dart';
+import '../../../nucleo/ui/tema_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../incidencias/presentation/incidencia_cubit.dart';
 import '../../sesion_vuelo/presentation/trabajo_cubit.dart';
 import '../../sesion_vuelo/presentation/sesion_bloc.dart';
@@ -18,6 +22,11 @@ import 'ordenes_estado.dart';
 /// Propaga las factories de [TrabajoCubit] y [SesionBloc] a
 /// [OrdenDetallePantalla] (HU-05, etapa 4), y la de [IncidenciaCubit]
 /// (HU-08).
+///
+/// En modo campo (ADR 0008, decisión del 1/10/2026): sin `AppBar` de
+/// Material, título de pantalla y cada orden como una fila tocable del
+/// catálogo. El fondo inferior deja aire para el botón de emergencia del
+/// flavor auxiliar (HU-68), que flota encima de toda la app.
 class OrdenesVista extends StatelessWidget {
   const OrdenesVista({
     required this.flavor,
@@ -34,28 +43,54 @@ class OrdenesVista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Órdenes vigentes')),
-      body: BlocBuilder<OrdenesCubit, OrdenesEstado>(
-        builder: (context, estado) => switch (estado) {
-          OrdenesCargando() => const Center(child: CircularProgressIndicator()),
-          OrdenesVacia() => const Center(
-            key: Key('ordenes_vacia'),
-            child: Text('No hay órdenes vigentes.'),
+    return Theme(
+      data: AgrocomThemeCampo.construir(),
+      child: Scaffold(
+        backgroundColor: ColoresCampo.fondoProfundo,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(18, 20, 18, 12),
+                child: Text(
+                  'Órdenes vigentes',
+                  style: TipografiaCampo.tituloPantalla,
+                ),
+              ),
+              Expanded(
+                child: BlocBuilder<OrdenesCubit, OrdenesEstado>(
+                  builder: (context, estado) => switch (estado) {
+                    OrdenesCargando() => const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    OrdenesVacia() => Center(
+                      key: const Key('ordenes_vacia'),
+                      child: Text(
+                        'No hay órdenes vigentes.',
+                        style: TipografiaCampo.cuerpoSecundario,
+                      ),
+                    ),
+                    OrdenesLista(:final ordenes) => ListView.separated(
+                      key: const Key('ordenes_lista'),
+                      // Abajo, lugar para el botón de emergencia (HU-68).
+                      padding: const EdgeInsets.fromLTRB(18, 4, 18, 96),
+                      itemCount: ordenes.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 10),
+                      itemBuilder: (context, indice) => _OrdenTile(
+                        orden: ordenes[indice],
+                        flavor: flavor,
+                        crearTrabajoCubit: crearTrabajoCubit,
+                        crearSesionBloc: crearSesionBloc,
+                        crearIncidenciaCubit: crearIncidenciaCubit,
+                      ),
+                    ),
+                  },
+                ),
+              ),
+            ],
           ),
-          OrdenesLista(:final ordenes) => ListView.builder(
-            key: const Key('ordenes_lista'),
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            itemCount: ordenes.length,
-            itemBuilder: (context, indice) => _OrdenTile(
-              orden: ordenes[indice],
-              flavor: flavor,
-              crearTrabajoCubit: crearTrabajoCubit,
-              crearSesionBloc: crearSesionBloc,
-              crearIncidenciaCubit: crearIncidenciaCubit,
-            ),
-          ),
-        },
+        ),
       ),
     );
   }
@@ -78,26 +113,21 @@ class _OrdenTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-      child: ListTile(
-        key: Key('orden_${orden.id}'),
-        leading: const Icon(Icons.grass_outlined),
-        title: Text(orden.loteCodigo ?? 'Lote sin datos'),
-        subtitle: Text(
+    return ItemListaCampo(
+      key: Key('orden_${orden.id}'),
+      icono: Icons.grass_outlined,
+      titulo: orden.loteCodigo ?? 'Lote sin datos',
+      subtitulo:
           'Aplicación N.º ${orden.nroAplicacion} · ${_dosis(orden)} · '
           '${orden.fechaEmision}',
-        ),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => OrdenDetallePantalla(
-              orden: orden,
-              flavor: flavor,
-              crearTrabajoCubit: crearTrabajoCubit,
-              crearSesionBloc: crearSesionBloc,
-              crearIncidenciaCubit: crearIncidenciaCubit,
-            ),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => OrdenDetallePantalla(
+            orden: orden,
+            flavor: flavor,
+            crearTrabajoCubit: crearTrabajoCubit,
+            crearSesionBloc: crearSesionBloc,
+            crearIncidenciaCubit: crearIncidenciaCubit,
           ),
         ),
       ),
