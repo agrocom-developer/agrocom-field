@@ -149,11 +149,6 @@ class OrdenDetallePantalla extends StatelessWidget {
                       _Seccion(
                         titulo: 'Parámetros de vuelo',
                         children: [
-                          _fila(
-                            'Velocidad máxima',
-                            orden.velocidadMaxKmh,
-                            'km/h',
-                          ),
                           _fila('Altura de vuelo', orden.alturaVueloM, 'm'),
                           _fila(
                             'Velocidad de vuelo',

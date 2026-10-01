@@ -37,12 +37,14 @@ class TrabajoCatalogo extends Table {
 
   // Límites climáticos y parámetros de vuelo (v12, tarea 23): el servidor
   // los movió de `ordenes[]` a `trabajos[]`. En `agrocom-api` son de la
-  // tanda (`OrdenTrabajo`) que contiene este trabajo, y
-  // `TrabajoAsignadoCatalogo` los declara `?string`: `null` cuando el jefe
-  // de campo no los completó al asignar. Nullable también por la migración
-  // v11→v12 (`ALTER TABLE`, conserva las filas): una fila anterior queda en
-  // `null` hasta que el próximo pull, con el cursor reseteado, la vuelva a
-  // traer. Nunca `double` (invariante 9 de CLAUDE.md).
+  // tanda (`OrdenTrabajo`) que contiene este trabajo y, desde #309, viajan
+  // EFECTIVOS: viento, temperatura y humedad máxima siempre con valor (el
+  // propio o el default del sistema); humedad mínima, altura, velocidad y
+  // ancho de pasada en `null` si la Orden de Trabajo no los fija. Nullable
+  // los siete igual: por la migración v11→v12 (`ALTER TABLE`, conserva las
+  // filas) y porque una fila bajada antes de #309 puede tenerlos en `null`
+  // hasta el pull completo que fuerza el reset de cursor de v13. Nunca
+  // `double` (invariante 9 de CLAUDE.md).
 
   TextColumn get humedadMinPct => text().nullable().map(
     NullAwareTypeConverter.wrap(const DecimalDriftConverter()),

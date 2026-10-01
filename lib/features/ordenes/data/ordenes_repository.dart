@@ -109,7 +109,6 @@ class OrdenesRepository {
       vientoMaxKmh: trabajo?.vientoMaxKmh,
       temperaturaMaxC: trabajo?.temperaturaMaxC,
       humedadMaxPct: trabajo?.humedadMaxPct,
-      velocidadMaxKmh: orden.velocidadMaxKmh,
       alturaVueloM: trabajo?.alturaVueloM,
       velocidadVueloKmh: trabajo?.velocidadVueloKmh,
       anchoPasadaM: trabajo?.anchoPasadaM,

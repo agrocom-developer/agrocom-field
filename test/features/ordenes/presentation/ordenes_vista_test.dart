@@ -54,7 +54,6 @@ OrdenVigente _orden({
   vientoMaxKmh: Decimal.parse('15'),
   temperaturaMaxC: Decimal.parse('32'),
   humedadMaxPct: Decimal.parse('90'),
-  velocidadMaxKmh: Decimal.parse('25'),
   alturaVueloM: Decimal.parse('3'),
   velocidadVueloKmh: Decimal.parse('18'),
   anchoPasadaM: Decimal.parse('7'),

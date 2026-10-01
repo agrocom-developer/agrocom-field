@@ -168,7 +168,6 @@ void main() {
             contratoId: 1,
             loteId: 3,
             nroAplicacion: 4,
-            vientoMaxKmh: Value(Decimal.parse('99.00')),
             fechaEmision: '2026-09-20',
             estado: 'vigente',
             updatedAt: DateTime.utc(2026, 9, 20),
@@ -200,7 +199,7 @@ void main() {
   });
 
   test('tarea 23: trabajo sin límites completados (o bajado antes de v12): '
-      'null, aunque la orden traiga valores viejos', () async {
+      'null', () async {
     await db
         .into(db.ordenCatalogo)
         .insert(
@@ -209,7 +208,6 @@ void main() {
             contratoId: 1,
             loteId: 3,
             nroAplicacion: 4,
-            vientoMaxKmh: Value(Decimal.parse('99.00')),
             fechaEmision: '2026-09-20',
             estado: 'vigente',
             updatedAt: DateTime.utc(2026, 9, 20),

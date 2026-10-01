@@ -118,7 +118,6 @@ void main() {
 
         final orden = (await db.select(db.ordenCatalogo).get()).single;
         expect(orden.litrosHa, Decimal.parse('15.5'));
-        expect(orden.humedadMinPct, isNull);
 
         final lote = (await db.select(db.loteCatalogo).get()).single;
         expect(lote.hectareas, Decimal.parse('120.75'));

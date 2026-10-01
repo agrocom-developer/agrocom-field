@@ -208,32 +208,20 @@ void main() {
       expect(orden.anchoPasadaM, valor);
     }
 
-    test('con trabajo asignado, la orden expone los límites del trabajo y '
-        'no los de orden_catalogo', () async {
-      await db
-          .into(db.ordenCatalogo)
-          .insert(
-            _ordenCompanion().copyWith(
-              vientoMaxKmh: Value(Decimal.parse('99.00')),
-            ),
-          );
-      await db.into(db.trabajoCatalogo).insert(_trabajoCompanion(id: 42));
+    test(
+      'con trabajo asignado, la orden expone los límites del trabajo',
+      () async {
+        await db.into(db.ordenCatalogo).insert(_ordenCompanion());
+        await db.into(db.trabajoCatalogo).insert(_trabajoCompanion(id: 42));
 
-      final orden = (await repositorio.ordenesVigentes().first).single;
+        final orden = (await repositorio.ordenesVigentes().first).single;
 
-      esperarLimites(orden, Decimal.parse('15.00'));
-    });
+        esperarLimites(orden, Decimal.parse('15.00'));
+      },
+    );
 
-    test('sin trabajo asignado, los límites quedan en null aunque '
-        'orden_catalogo traiga valores viejos', () async {
-      await db
-          .into(db.ordenCatalogo)
-          .insert(
-            _ordenCompanion().copyWith(
-              vientoMaxKmh: Value(Decimal.parse('99.00')),
-              anchoPasadaM: Value(Decimal.parse('7.00')),
-            ),
-          );
+    test('sin trabajo asignado, los límites quedan en null', () async {
+      await db.into(db.ordenCatalogo).insert(_ordenCompanion());
 
       final orden = (await repositorio.ordenesVigentes().first).single;
 

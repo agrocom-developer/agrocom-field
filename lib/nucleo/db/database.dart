@@ -49,7 +49,9 @@ part 'database.g.dart';
 /// trabajo asignado desde el panel, espejo de solo lectura separado de
 /// [TrabajoLocal] (invariante 4 de CLAUDE.md). La tarea 23 (v12) agrega a
 /// [TrabajoCatalogo] los siete límites climáticos y parámetros de vuelo que
-/// el servidor movió de `ordenes[]` a `trabajos[]`, con `ALTER TABLE`.
+/// el servidor movió de `ordenes[]` a `trabajos[]`, con `ALTER TABLE`. La
+/// tarea 25 (v13) quita de [OrdenCatalogo] las ocho columnas de clima/vuelo
+/// que el servidor ya no manda, conservando las órdenes.
 /// Las tablas espejo del resto de las features de escritura (recargas...)
 /// se agregan en tareas técnicas posteriores, cada una subiendo
 /// [schemaVersion] con su propia migración — nunca reescribiendo la
@@ -74,7 +76,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 12;
+  int get schemaVersion => 13;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -212,6 +214,24 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(trabajoCatalogo, trabajoCatalogo.anchoPasadaM);
       }
       if (from < 12) {
+        await (delete(cursorCatalogo)).go();
+      }
+      // v13 (tarea 25): `orden_catalogo` pierde las ocho columnas de
+      // clima/vuelo que el servidor ya no manda en `ordenes[]` y que nada
+      // lee desde la tarea 24. SQLite no borra columnas con un `ALTER TABLE`
+      // simple, así que `alterTable` + `TableMigration` recrea la tabla
+      // COPIANDO las filas: las órdenes ya bajadas se conservan.
+      // `from >= 8` porque antes de v8 el bloque `from < 8` ya la recreó con
+      // la clase Dart actual, sin esas columnas.
+      //
+      // El cursor se resetea además por los trabajos: `agrocom-api` #309
+      // empezó a mandar sus límites efectivos sin cambiar `updated_at`, así
+      // que los trabajos bajados antes quedan con los límites en `null` o
+      // viejos hasta un pull completo.
+      if (from >= 8 && from < 13) {
+        await m.alterTable(TableMigration(ordenCatalogo));
+      }
+      if (from < 13) {
         await (delete(cursorCatalogo)).go();
       }
     },
