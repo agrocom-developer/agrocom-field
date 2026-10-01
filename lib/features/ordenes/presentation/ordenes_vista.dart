@@ -116,7 +116,7 @@ class _OrdenTile extends StatelessWidget {
     return ItemListaCampo(
       key: Key('orden_${orden.id}'),
       icono: Icons.grass_outlined,
-      titulo: orden.loteCodigo ?? 'Lote sin datos',
+      titulo: _tituloLote(orden),
       subtitulo:
           'Aplicación N.º ${orden.nroAplicacion} · ${_dosis(orden)} · '
           '${orden.fechaEmision}',
@@ -146,4 +146,14 @@ String _dosis(OrdenVigente orden) {
   final kilosPorVuelo = orden.kilosPorVuelo;
   if (kilosPorVuelo != null) return '$kilosPorVuelo kg/vuelo';
   return 'sin dosis';
+}
+
+/// Código del lote de la orden y, si cubre más (ADR 0022 de `agrocom-api`),
+/// cuántos más — la lista muestra un solo lote, pero no lo presenta como si
+/// fuera la orden entera (TE-23).
+String _tituloLote(OrdenVigente orden) {
+  final codigo = orden.loteCodigo ?? 'Lote sin datos';
+  final otros = orden.otrosLotes;
+  if (otros == 0) return codigo;
+  return '$codigo +$otros ${otros == 1 ? 'lote' : 'lotes'}';
 }

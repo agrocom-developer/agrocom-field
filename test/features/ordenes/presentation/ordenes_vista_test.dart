@@ -42,6 +42,7 @@ OrdenVigente _orden({
   int id = 1,
   String? loteCodigo = 'L-01',
   Decimal? loteHectareas,
+  int? cantidadLotes,
   String? observaciones,
 }) => OrdenVigente(
   id: id,
@@ -62,6 +63,7 @@ OrdenVigente _orden({
   fechaEmision: '2026-08-26',
   estado: 'vigente',
   updatedAt: DateTime.utc(2026, 8, 26, 12),
+  cantidadLotes: cantidadLotes,
   loteCodigo: loteCodigo,
   loteHectareas: loteHectareas,
 );
@@ -176,6 +178,28 @@ void main() {
     expect(find.byKey(const Key('ordenes_vacia')), findsOneWidget);
     expect(find.text('No hay órdenes vigentes.'), findsOneWidget);
     expect(find.byKey(const Key('ordenes_lista')), findsNothing);
+  });
+
+  testWidgets('TE-23: la fila de una orden de varios lotes dice cuántos '
+      'lotes más cubre', (tester) async {
+    when(() => repositorio.ordenesVigentes()).thenAnswer(
+      (_) => Stream.value([
+        _orden(id: 1, cantidadLotes: 3),
+        _orden(id: 2, cantidadLotes: 2),
+        _orden(id: 3, cantidadLotes: 1),
+      ]),
+    );
+    final cubit = OrdenesCubit(repositorio);
+    addTearDown(cubit.close);
+
+    await bombear(tester, cubit);
+    await tester.pumpAndSettle();
+
+    String titulo(int id) =>
+        tester.widget<ItemListaCampo>(find.byKey(Key('orden_$id'))).titulo;
+    expect(titulo(1), 'L-01 +2 lotes');
+    expect(titulo(2), 'L-01 +1 lote');
+    expect(titulo(3), 'L-01');
   });
 
   testWidgets('tocar una orden navega al detalle con todos los campos', (

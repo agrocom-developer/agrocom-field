@@ -96,6 +96,26 @@ void main() {
     },
   );
 
+  test('TE-23: expone cantidad de lotes y hectáreas solicitadas de la orden '
+      'junto a las del lote', () async {
+    await db.into(db.loteCatalogo).insert(_loteCompanion());
+    await db
+        .into(db.ordenCatalogo)
+        .insert(
+          _ordenCompanion().copyWith(
+            cantidadLotes: const Value(2),
+            hectareasSolicitadas: Value(Decimal.parse('170.50')),
+          ),
+        );
+
+    final orden = (await repositorio.ordenesVigentes().first).single;
+
+    expect(orden.cantidadLotes, 2);
+    expect(orden.hectareasSolicitadas, Decimal.parse('170.50'));
+    expect(orden.loteHectareas, Decimal.parse('120.50'));
+    expect(orden.hectareasOrden, Decimal.parse('170.50'));
+  });
+
   test('filtra las ordenes que no estan vigentes', () async {
     await db
         .into(db.ordenCatalogo)
