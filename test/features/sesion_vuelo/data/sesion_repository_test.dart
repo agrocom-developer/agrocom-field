@@ -708,4 +708,103 @@ void main() {
       expect(await db.select(db.sesionLocal).get(), hasLength(1));
     });
   });
+
+  group('tarea 26: trabajo retirado', () {
+    Decimal d(String v) => Decimal.parse(v);
+
+    /// Trabajo asignado con límites propios más estrictos que los defaults,
+    /// su `trabajo_local` abierto, y la marca de retiro [motivo].
+    Future<String> trabajoRetirado(String? motivo) async {
+      const uuid = 'uuid-panel-42';
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(
+            TrabajoCatalogoCompanion.insert(
+              id: const Value(42),
+              uuidCliente: uuid,
+              ordenId: 1,
+              loteId: 3,
+              hectareasDeclaradas: d('300.00'),
+              equipoTrabajoId: 7,
+              vientoMaxKmh: Value(d('12.00')),
+              temperaturaMaxC: Value(d('28.00')),
+              humedadMaxPct: Value(d('85.00')),
+              humedadMinPct: Value(d('40.00')),
+              motivoRetiro: Value(motivo),
+              updatedAt: DateTime.utc(2026, 9, 22, 12),
+            ),
+          );
+      await trabajoRepositorio.abrirTrabajoAsignado(
+        uuidCliente: uuid,
+        ordenId: 1,
+        loteId: 3,
+        nroAplicacion: 1,
+        inicio: DateTime.utc(2026, 9, 23, 8),
+      );
+      return uuid;
+    }
+
+    final propios = LimitesCondiciones.resolver(
+      vientoMaxKmh: Decimal.parse('12.00'),
+      temperaturaMaxC: Decimal.parse('28.00'),
+      humedadMaxPct: Decimal.parse('85.00'),
+      humedadMinPct: Decimal.parse('40.00'),
+    );
+
+    test('dado_de_baja: los defaults del sistema, como el servidor que ya '
+        'no encuentra el trabajo', () async {
+      final uuid = await trabajoRetirado('dado_de_baja');
+
+      expect(
+        await sesionRepositorio.limitesCondiciones(uuid),
+        LimitesCondiciones.porDefecto(),
+      );
+    });
+
+    for (final motivo in [
+      'reasignado',
+      'cerrado',
+      'orden_cerrada',
+      'fuera_de_alcance',
+    ]) {
+      test(
+        '$motivo: los límites de su orden de trabajo (los de la fila)',
+        () async {
+          final uuid = await trabajoRetirado(motivo);
+
+          expect(await sesionRepositorio.limitesCondiciones(uuid), propios);
+        },
+      );
+    }
+
+    test('una sesión abierta antes del retiro se cierra igual', () async {
+      final uuid = await trabajoRetirado(null);
+      final sesion = await sesionRepositorio.abrirSesion(
+        trabajoUuidCliente: uuid,
+        pilotoId: 7,
+        inicio: DateTime.utc(2026, 9, 23, 9),
+        vientoKmh: d('10'),
+        temperaturaC: d('20'),
+        humedadPct: d('50'),
+      );
+      await (db.update(
+        db.trabajoCatalogo,
+      )..where((t) => t.id.equals(42))).write(
+        const TrabajoCatalogoCompanion(motivoRetiro: Value('reasignado')),
+      );
+
+      final cerrada = await sesionRepositorio.cerrarSesion(
+        sesionUuidCliente: sesion.uuidCliente,
+        fin: DateTime.utc(2026, 9, 23, 10),
+        motivoCierre: 'completado',
+        hectareasDeclaradas: d('20'),
+      );
+
+      expect(cerrada.uuidCliente, sesion.uuidCliente);
+      expect(
+        (await db.select(db.sesionLocal).getSingle()).estado,
+        EstadoSesionLocal.cerrada,
+      );
+    });
+  });
 }

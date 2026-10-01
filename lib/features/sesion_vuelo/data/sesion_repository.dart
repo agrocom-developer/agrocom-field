@@ -4,6 +4,7 @@ import 'package:decimal/decimal.dart';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../nucleo/catalogo/motivo_retiro.dart';
 import '../../../nucleo/db/database.dart';
 import '../../../nucleo/db/tablas/sesion_local.dart' show EstadoSesionLocal;
 import '../domain/auxiliar.dart';
@@ -284,6 +285,19 @@ class SesionRepository {
               ..where((t) => t.uuidCliente.equals(trabajoUuidCliente)))
             .getSingleOrNull();
     if (trabajo == null) return LimitesCondiciones.porDefecto();
+    // Trabajo retirado (tarea 26), lo que documenta `agrocom-api` #313 para
+    // `registrarCondiciones`:
+    // - `dado_de_baja`: la sesión ya no encuentra su trabajo y el servidor
+    //   usa los defaults del sistema.
+    // - `reasignado`, `cerrado`, `orden_cerrada`: sigue usando los límites
+    //   de su Orden de Trabajo, que son los de esta fila (la última versión
+    //   que llegó). En blanco, hereda el default, igual que el servidor.
+    // - `fuera_de_alcance` (motivo local del barrido): la app no sabe por
+    //   qué se fue, así que usa lo último que conoce, como en los tres de
+    //   arriba.
+    if (trabajo.motivoRetiro == MotivoRetiro.dadoDeBaja) {
+      return LimitesCondiciones.porDefecto();
+    }
     return LimitesCondiciones.resolver(
       vientoMaxKmh: trabajo.vientoMaxKmh,
       temperaturaMaxC: trabajo.temperaturaMaxC,

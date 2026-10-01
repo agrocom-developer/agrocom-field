@@ -40,9 +40,14 @@ class InicioRepository {
               ),
             ),
           ])
+          // Sin los retirados (tarea 26): `trabajos_retirados` de
+          // `agrocom-api` #313 o el barrido completo.
           ..where(
-            _db.trabajoLocal.estado.isNull() |
-                _db.trabajoLocal.estado.equalsValue(EstadoTrabajoLocal.abierto),
+            _db.trabajoCatalogo.motivoRetiro.isNull() &
+                (_db.trabajoLocal.estado.isNull() |
+                    _db.trabajoLocal.estado.equalsValue(
+                      EstadoTrabajoLocal.abierto,
+                    )),
           )
           ..orderBy([
             OrderingTerm.desc(_db.trabajoCatalogo.updatedAt),

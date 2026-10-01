@@ -1,6 +1,6 @@
 # Petición a `agrocom-api` — trabajo asignado (`trabajos[]`) en `GET /api/sync/catalogo`
 
-**Fecha:** 1/10/2026 · **Pide:** `agrocom-field` (lado app), tras integrar HU-70 (tarea 19, PR #59) · **Decide y aprueba:** el dueño · **Ejecuta:** una sesión sobre `agrocom-api` (rama `feature/*`, PR contra `develop`, GitFlow del ADR 0006) · **Estado:** respondida el 1/10/2026 por `agrocom-api` #309-#312 (develop `a47e5280cc4159038b1f5597aaec37a29ce7ce73`), salvo la pregunta 3, que queda pendiente de la decisión A/B del dueño.
+**Fecha:** 1/10/2026 · **Pide:** `agrocom-field` (lado app), tras integrar HU-70 (tarea 19, PR #59) · **Decide y aprueba:** el dueño · **Ejecuta:** una sesión sobre `agrocom-api` (rama `feature/*`, PR contra `develop`, GitFlow del ADR 0006) · **Estado:** respondida. Las preguntas 1, 2 y 4 por `agrocom-api` #309-#312 (develop `a47e5280cc4159038b1f5597aaec37a29ce7ce73`); la 3 por #313 (develop `5df5e8f53f98720aec4f523f6a52a3bda33ca0be`, opción B), aplicada en la tarea 26 de `agrocom-field`.
 
 ## Quién y por qué se requirió
 
@@ -46,9 +46,30 @@ La app no necesita cambios.
 
 Límite conocido, declarado en `openapi.yaml`: si la persona entra a un equipo nuevo, los trabajos de ese equipo que no cambiaron desde el último pull no llegan en el incremental. Los trae recién un pull completo (`desde` vacío).
 
-### 3. Trabajo reasignado, cancelado o cerrado por el panel — **pendiente**
+### 3. Trabajo reasignado, cancelado o cerrado por el panel — **resuelta** (#313, opción B)
 
-Sigue sin mecanismo. La consulta excluye los trabajos dados de baja (soft delete), así que nunca vuelven a llegar, y `trabajos[]` no trae `estado`. Queda atada a la decisión A/B del dueño sobre la petición del 29/9/2026 (TE-22).
+**La respuesta del servidor.** Suma `trabajos_retirados: [{id, uuid_cliente, motivo, updated_at}]`, siempre presente y sin `null`.
+
+- `motivo`, si aplican varios gana el primero:
+  - `dado_de_baja`: baja lógica.
+  - `reasignado`: el trabajo pasó a un equipo donde la persona no está vigente hoy, o quedó sin equipo.
+  - `cerrado`.
+  - `orden_cerrada`: su orden pasó a `consumida`, `cancelada` o `vencida`.
+- `trabajos[]` ahora solo trae trabajos abiertos de órdenes no cerradas: un trabajo nunca viaja a la vez como asignado y como retirado.
+- Una orden `pausada` **no** retira sus trabajos.
+- Con cursor vacío no llegan retirados.
+
+**Límites con que el sync valida `condiciones` de una sesión cuyo trabajo quedó retirado:**
+
+- `dado_de_baja`: la sesión ya no encuentra su trabajo y se usan los defaults (17/30/90, sin humedad mínima). Una sesión nueva se rechaza con `trabajo_no_existe_aun`.
+- `reasignado`, `cerrado` y `orden_cerrada`: los límites de su Orden de Trabajo. Se usan los defaults si están en blanco o si la Orden de Trabajo se dio de baja. Las sesiones nuevas se aceptan, porque `abrirSesion` no mira el estado ni el equipo del trabajo.
+
+**La app (tarea 26, esquema v14):**
+
+- Marca `trabajo_catalogo.motivo_retiro` y nunca borra. Si el trabajo vuelve en `trabajos[]`, se desmarca.
+- «Inicio» y los límites del detalle de orden los excluyen.
+- `SesionRepository.limitesCondiciones` espeja #313: `dado_de_baja` usa los defaults; los otros tres, y el motivo local `fuera_de_alcance`, usan los límites de la fila.
+- Una sesión ya abierta se cierra igual que antes.
 
 #311 resolvió otra parte del problema: un trabajo vuelve a bajar cuando cambia su Orden de Trabajo, también si se da de baja. Lo hace porque el cursor de `trabajos` usa la modificación más reciente entre el trabajo y su tanda, y ese es el `updated_at` que viaja.
 
@@ -76,5 +97,8 @@ Los campos de clima y vuelo que pasaron de la orden a `trabajos[]` (7 de 8 segú
 ## Pendiente
 
 - [x] Respuesta de `agrocom-api` a las preguntas 1, 2 y 4: #309-#312, develop `a47e5280`.
-- [ ] El dueño decide la 3 junto con la opción A/B de la petición del 29/9/2026.
-- [ ] Del lado app, sin tarea encolada todavía: los dispositivos que bajaron trabajos antes de #312 conservan en `trabajo_catalogo` filas de **otros equipos**, porque el pull no retira filas, y «Inicio» todavía puede elegir una. Se resuelve con el mismo mecanismo de retiro de la pregunta 3, o con una limpieza local que decida el dueño. Borrarlas sin señal le quitaría al piloto el trabajo y sus límites hasta volver a sincronizar.
+- [x] El dueño decide la 3 junto con la opción A/B de la petición del 29/9/2026: **B**, #313 (`5df5e8f5`), aplicada en la tarea 26.
+- [x] Filas de **otros equipos** bajadas antes de #312: las limpia el barrido completo de la tarea 26 (v14 resetea el cursor). Lo que no llega en un pull completo desde cursor vacío, terminado sin error, queda `fuera_de_alcance`; nunca un trabajo con `trabajo_local` abierto. Sin señal no se toca nada.
+- [ ] **Volver a una sesión abierta**: hoy el piloto no puede, con o sin retirados. El estado «sesión activa» vive solo en la memoria de `SesionBloc` y ninguna pantalla lee `sesion_local` abierta. Con la tarea 26, además, «Inicio» deja de mostrar un trabajo retirado aunque tenga `trabajo_local` abierto. El flujo lo decide el dueño.
+- [ ] **Trabajo de una orden pausada**: «Inicio» lo sigue mostrando y permite «Crear aplicación», porque #313 no retira los trabajos de una orden pausada y el sync acepta esas sesiones. Decide el dueño si la app debe ocultarlo o bloquearlo.
+- [ ] **Sesión nueva sobre un trabajo `dado_de_baja`**: el servidor la rechaza con `trabajo_no_existe_aun`. «Inicio» ya no muestra ese trabajo, pero si el piloto sigue en la pantalla de sesión de vuelo, la app le deja abrir otra sesión sobre él y el rechazo llega recién al sincronizar. Sin decidir.

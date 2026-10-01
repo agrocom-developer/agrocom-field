@@ -16,6 +16,13 @@ class CursorCatalogo extends Table {
 
   TextColumn get cursor => text().nullable()();
 
+  /// Barrido completo en curso (v14, tarea 26): se enciende cuando un pull
+  /// arranca con cursor vacío y se apaga cuando una página llega con todas
+  /// las secciones vacías, aplicando la limpieza local. Persiste entre
+  /// reinicios: un barrido cortado a mitad sigue en el próximo pull, y si
+  /// nunca termina, nunca limpia nada. Nullable por la migración.
+  BoolColumn get barridoEnCurso => boolean().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
