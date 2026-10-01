@@ -13,6 +13,8 @@ import 'package:agrocom_field/nucleo/auth/persona_operativa_store.dart';
 import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
 import 'package:agrocom_field/nucleo/evidencias/evidencia_repository.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
+import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
+import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -62,12 +64,19 @@ OrdenVigente _orden({
   int id = 1,
   String? loteCodigo = 'L-01',
   Decimal? loteHectareas,
+  Decimal? litrosHa,
+  Decimal? kilosPorVuelo,
+  bool sinDosis = false,
+  String? observaciones = 'Test',
 }) => OrdenVigente(
   id: id,
   contratoId: 1,
   loteId: 1,
   nroAplicacion: 2,
-  litrosHa: Decimal.parse('12.5'),
+  litrosHa: sinDosis || kilosPorVuelo != null
+      ? litrosHa
+      : (litrosHa ?? Decimal.parse('12.5')),
+  kilosPorVuelo: kilosPorVuelo,
   humedadMinPct: Decimal.parse('60'),
   vientoMaxKmh: Decimal.parse('15'),
   temperaturaMaxC: Decimal.parse('32'),
@@ -76,7 +85,7 @@ OrdenVigente _orden({
   alturaVueloM: Decimal.parse('3'),
   velocidadVueloKmh: Decimal.parse('18'),
   anchoPasadaM: Decimal.parse('7'),
-  observaciones: 'Test',
+  observaciones: observaciones,
   emitidaPorContactoId: 2,
   fechaEmision: '2026-08-26',
   estado: 'vigente',
@@ -296,18 +305,119 @@ void main() {
     await tester.pumpAndSettle();
 
     final boton = _botonAbrirTrabajo();
+    // `BotonPrimarioCampo` (modo campo, ADR 0008) envuelve el botón de
+    // Material que se habilita o no: el criterio se verifica sobre ese.
+    final botonMaterial = find.descendant(
+      of: boton,
+      matching: find.byType(FilledButton),
+    );
     await tester.ensureVisible(boton);
     await tester.pumpAndSettle();
-    expect((tester.widget(boton) as FilledButton).onPressed, isNotNull);
+    expect(tester.widget<FilledButton>(botonMaterial).onPressed, isNotNull);
 
     await tester.tap(boton);
     await tester.pump();
 
     // Mientras carga, el botón está deshabilitado (onPressed == null)
-    expect((tester.widget(boton) as FilledButton).onPressed, isNull);
+    expect(tester.widget<FilledButton>(botonMaterial).onPressed, isNull);
 
     // Drena el Future retrasado de 1s pendiente: dejarlo sin resolver deja
     // un Timer vivo que `flutter_test` rechaza al finalizar el test.
     await tester.pumpAndSettle(const Duration(seconds: 2));
+  });
+
+  Future<void> bombearAuxiliar(WidgetTester tester, OrdenVigente orden) =>
+      tester.pumpWidget(
+        MaterialApp(
+          home: OrdenDetallePantalla(
+            orden: orden,
+            flavor: Flavor.auxiliar,
+            crearTrabajoCubit: () =>
+                throw UnimplementedError('no se invoca en este test'),
+            crearSesionBloc: (_) =>
+                throw UnimplementedError('no se invoca en este test'),
+            crearIncidenciaCubit: (_) =>
+                throw UnimplementedError('no se invoca en este test'),
+          ),
+        ),
+      );
+
+  StatChipCampo chip(WidgetTester tester, String key) =>
+      tester.widget<StatChipCampo>(find.byKey(Key(key), skipOffstage: false));
+
+  testWidgets('modo campo con datos: se construye bajo el tema campo, sin '
+      'widgets de Material de ADR 0003, y muestra la orden', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(800, 1600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await bombearAuxiliar(tester, _orden(loteHectareas: Decimal.parse('42.5')));
+    await tester.pumpAndSettle();
+
+    final contexto = tester.element(find.byKey(const Key('orden_lote_codigo')));
+    expect(Theme.of(contexto).extension<TemaCampo>(), isNotNull);
+    expect(find.byType(AppBar), findsNothing);
+    expect(find.byType(Card), findsNothing);
+    expect(find.byType(ListTile), findsNothing);
+
+    expect(
+      tester.widget<BadgeEstadoCampo>(find.byKey(const Key('orden_estado'))),
+      isA<BadgeEstadoCampo>()
+          .having((b) => b.texto, 'texto', 'vigente')
+          .having((b) => b.estado, 'estado', EstadoBadgeCampo.ok),
+    );
+    expect(chip(tester, 'orden_hectareas').valor, '42.5');
+    expect(chip(tester, 'orden_viento_max').valor, '15');
+    expect(chip(tester, 'orden_temperatura_max').valor, '32');
+    expect(chip(tester, 'orden_humedad_max').valor, '90');
+    expect(find.text('Test'), findsOneWidget);
+  });
+
+  testWidgets('dosis: con litros_ha muestra solo L/ha, nunca kg/vuelo', (
+    tester,
+  ) async {
+    await bombearAuxiliar(tester, _orden(litrosHa: Decimal.parse('12.5')));
+    await tester.pumpAndSettle();
+
+    final dosis = chip(tester, 'orden_dosis');
+    expect((dosis.valor, dosis.unidad), ('12.5', 'L/ha'));
+    expect(find.textContaining('kg/vuelo', skipOffstage: false), findsNothing);
+  });
+
+  testWidgets('dosis: con kilos_por_vuelo muestra solo kg/vuelo, nunca L/ha', (
+    tester,
+  ) async {
+    await bombearAuxiliar(tester, _orden(kilosPorVuelo: Decimal.parse('8')));
+    await tester.pumpAndSettle();
+
+    final dosis = chip(tester, 'orden_dosis');
+    expect((dosis.valor, dosis.unidad), ('8', 'kg/vuelo'));
+    expect(find.textContaining('L/ha', skipOffstage: false), findsNothing);
+  });
+
+  testWidgets('nulos: lote, hectáreas, dosis y observaciones se leen '
+      '"sin datos", sin unidad ni dato inventado', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(800, 1600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await bombearAuxiliar(
+      tester,
+      _orden(loteCodigo: null, sinDosis: true, observaciones: null),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.widget<Text>(find.byKey(const Key('orden_lote_codigo'))).data,
+      'sin datos',
+    );
+    for (final key in ['orden_hectareas', 'orden_dosis']) {
+      final c = chip(tester, key);
+      expect((c.valor, c.unidad), ('sin datos', null), reason: key);
+    }
+    expect(
+      tester.widget<Text>(find.byKey(const Key('orden_observaciones'))).data,
+      'sin datos',
+    );
+    expect(find.textContaining('L/ha'), findsNothing);
+    expect(find.textContaining('kg/vuelo'), findsNothing);
   });
 }

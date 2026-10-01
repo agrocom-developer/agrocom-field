@@ -18,6 +18,8 @@ import 'package:agrocom_field/features/sesion_vuelo/presentation/trabajo_cubit.d
 import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
 import 'package:agrocom_field/nucleo/evidencias/evidencia_repository.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
+import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
+import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,6 +65,16 @@ OrdenVigente _orden({
   loteCodigo: loteCodigo,
   loteHectareas: loteHectareas,
 );
+
+/// Texto del `Text` con esa `Key` en el detalle (modo campo, ADR 0008).
+String? _texto(WidgetTester tester, String key) =>
+    tester.widget<Text>(find.byKey(Key(key))).data;
+
+/// Valor y unidad del `StatChipCampo` con esa `Key` en el detalle.
+(String, String?) _chip(WidgetTester tester, String key) {
+  final chip = tester.widget<StatChipCampo>(find.byKey(Key(key)));
+  return (chip.valor, chip.unidad);
+}
 
 void main() {
   late _OrdenesRepositoryFalso repositorio;
@@ -121,6 +133,34 @@ void main() {
     expect(find.byKey(const Key('orden_2')), findsOneWidget);
   });
 
+  testWidgets('modo campo: cada orden es una fila del catalogo con lote, '
+      'aplicacion, dosis y fecha (ADR 0008)', (tester) async {
+    when(() => repositorio.ordenesVigentes()).thenAnswer(
+      (_) => Stream.value([_orden(id: 1), _orden(id: 2, loteCodigo: null)]),
+    );
+    final cubit = OrdenesCubit(repositorio);
+    addTearDown(cubit.close);
+
+    await bombear(tester, cubit);
+    await tester.pumpAndSettle();
+
+    final contexto = tester.element(find.byKey(const Key('ordenes_lista')));
+    expect(Theme.of(contexto).extension<TemaCampo>(), isNotNull);
+    expect(find.byType(AppBar), findsNothing);
+    expect(find.byType(ListTile), findsNothing);
+    expect(find.text('Órdenes vigentes'), findsOneWidget);
+
+    final fila = tester.widget<ItemListaCampo>(
+      find.byKey(const Key('orden_1')),
+    );
+    expect(fila.titulo, 'L-01');
+    expect(fila.subtitulo, 'Aplicación N.º 2 · 12.5 L/ha · 2026-08-26');
+    expect(
+      tester.widget<ItemListaCampo>(find.byKey(const Key('orden_2'))).titulo,
+      'Lote sin datos',
+    );
+  });
+
   testWidgets('estado vacio: sin ordenes vigentes muestra el mensaje', (
     tester,
   ) async {
@@ -134,6 +174,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const Key('ordenes_vacia')), findsOneWidget);
+    expect(find.text('No hay órdenes vigentes.'), findsOneWidget);
     expect(find.byKey(const Key('ordenes_lista')), findsNothing);
   });
 
@@ -165,11 +206,20 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Orden N.º 1'), findsOneWidget);
-    expect(find.text('Código: L-01'), findsOneWidget);
-    expect(find.text('Hectáreas: 120.5'), findsOneWidget);
-    expect(find.text('Litros por hectárea: 12.5'), findsOneWidget);
-    expect(find.text('Humedad mínima (%): 60'), findsOneWidget);
-    expect(find.text('Altura de vuelo (m): 3'), findsOneWidget);
+    expect(_texto(tester, 'orden_lote_codigo'), 'L-01');
+    expect(_chip(tester, 'orden_hectareas'), ('120.5', 'ha'));
+    expect(_chip(tester, 'orden_dosis'), ('12.5', 'L/ha'));
+    expect(_chip(tester, 'orden_humedad_min'), ('60', '%'));
+    expect(
+      find.byWidgetPredicate(
+        (w) =>
+            w is FilaDatoCampo &&
+            w.etiqueta == 'Altura de vuelo' &&
+            w.valor == '3' &&
+            w.unidad == 'm',
+      ),
+      findsOneWidget,
+    );
     expect(find.text('Aplicar antes del mediodía'), findsOneWidget);
   });
 
@@ -190,8 +240,8 @@ void main() {
       await tester.tap(find.byKey(const Key('orden_1')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Código: sin datos'), findsOneWidget);
-      expect(find.text('Hectáreas: sin datos'), findsOneWidget);
+      expect(_texto(tester, 'orden_lote_codigo'), 'sin datos');
+      expect(_chip(tester, 'orden_hectareas'), ('sin datos', null));
     },
   );
 
