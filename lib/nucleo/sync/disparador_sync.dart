@@ -114,7 +114,7 @@ class DisparadorSync {
   /// nuevo porque el próximo disparo (conectividad, login, apertura de app)
   /// vuelve a intentar el catálogo desde el mismo cursor. Sin este `catch`,
   /// un error de servidor (401 del primer intento sin sesión, 500, una
-  /// respuesta mal formada) cortaba acá TODO el ciclo — el outbox y las
+  /// respuesta mal formada) cortaba acá el ciclo entero — el outbox y las
   /// evidencias, que no dependen del catálogo, se quedaban sin sincronizar
   /// también (hallazgo de la revisión línea por línea del dueño, 14/9/2026).
   Future<void> _agotarCatalogo() async {
