@@ -4,6 +4,10 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../nucleo/ui/colores_campo.dart';
+import '../../../nucleo/ui/componentes/componentes_campo.dart';
+import '../../../nucleo/ui/tema_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../incidencias/presentation/incidencia_cubit.dart';
 import '../../incidencias/presentation/incidencia_pantalla.dart';
 import '../domain/auxiliar.dart';
@@ -25,6 +29,14 @@ import 'trabajo_estado.dart';
 /// sesión activa, nunca antes (mismo motivo que en `OrdenDetallePantalla`
 /// con `crearTrabajoCubit`: construirlo eager en un flavor que no lo
 /// soporta rompería ese flavor incluso con el botón oculto).
+///
+/// En modo campo (ADR 0008, decisión del 1/10/2026): sin barra de título de
+/// Material, con `EncabezadoCampo`, y los formularios de apertura y cierre
+/// con `CampoTextoCampo`/`SelectorDesplegableCampo` — los validadores y las
+/// `Key`s de siempre. Las condiciones fuera de rango se avisan con un
+/// `BannerAlertaCampo` (ámbar) y la foto obligatoria del cierre de trabajo,
+/// con el hueco en ámbar mientras falte. Solo cambia el aspecto: eventos,
+/// estados y reglas (`reglas_condiciones.dart`) son los mismos.
 class SesionVueloVista extends StatefulWidget {
   const SesionVueloVista({required this.crearIncidenciaCubit, super.key});
 
@@ -139,8 +151,9 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
         // El `context` de este builder es descendiente del propio diálogo
         // (otra rama del Overlay, no del árbol de `SesionVueloVista`) — se
         // ignora a propósito y se usa el `context` del método de arriba
-        // (capturado por closure) para `Theme.of`/`context.read<SesionBloc>`,
-        // que sí es descendiente del `BlocProvider<SesionBloc>`.
+        // (capturado por closure) para `context.read<SesionBloc>`, que sí es
+        // descendiente del `BlocProvider<SesionBloc>`. El tema campo llega
+        // igual: `showDialog` captura los temas del `context` que lo abre.
         builder: (_, setStateDialog) {
           void alCambiarMedicion(String _) {
             final fueraDeRango = _calcularFueraDeRango();
@@ -149,238 +162,197 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
             }
           }
 
-          return AlertDialog(
-            title: const Text('Condiciones al abrir sesión'),
-            content: SingleChildScrollView(
-              child: Form(
-                key: _formAperturaKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      key: const Key('apertura_viento'),
-                      controller: _vientoController,
-                      decoration: const InputDecoration(
-                        labelText: 'Viento (km/h) *',
-                      ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      onChanged: alCambiarMedicion,
-                      validator: (valor) {
-                        if (valor == null || valor.isEmpty) {
-                          return 'El viento es obligatorio';
-                        }
-                        final decimal = Decimal.tryParse(valor);
-                        if (decimal == null) return 'Ingresá un número válido';
-                        if (decimal < Decimal.zero) {
-                          return 'El viento no puede ser negativo';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      key: const Key('apertura_temperatura'),
-                      controller: _temperaturaController,
-                      decoration: const InputDecoration(
-                        labelText: 'Temperatura (°C) *',
-                      ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                        signed: true,
-                      ),
-                      onChanged: alCambiarMedicion,
-                      validator: (valor) {
-                        if (valor == null || valor.isEmpty) {
-                          return 'La temperatura es obligatoria';
-                        }
-                        if (Decimal.tryParse(valor) == null) {
-                          return 'Ingresá un número válido';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      key: const Key('apertura_humedad'),
-                      controller: _humedadController,
-                      decoration: const InputDecoration(
-                        labelText: 'Humedad (%) *',
-                      ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      onChanged: alCambiarMedicion,
-                      validator: (valor) {
-                        if (valor == null || valor.isEmpty) {
-                          return 'La humedad es obligatoria';
-                        }
-                        final decimal = Decimal.tryParse(valor);
-                        if (decimal == null) return 'Ingresá un número válido';
-                        if (decimal < Decimal.zero) {
-                          return 'La humedad no puede ser negativa';
-                        }
-                        return null;
-                      },
-                    ),
-                    if (_condicionesFueraDeRango) ...[
-                      const SizedBox(height: 16),
-                      Text(
-                        'Condiciones fuera de rango: se necesita la '
-                        'observación y firma del agrónomo.',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        key: const Key('apertura_observacion'),
-                        controller: _observacionController,
-                        decoration: const InputDecoration(
-                          labelText: 'Observación del agrónomo *',
-                        ),
-                        maxLines: 3,
-                        validator: (valor) {
-                          if (!_condicionesFueraDeRango) return null;
-                          if (valor == null || valor.trim().isEmpty) {
-                            return 'La observación es obligatoria';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        key: const Key('apertura_firma'),
-                        controller: _firmaController,
-                        decoration: const InputDecoration(
-                          labelText: 'Firma del agrónomo *',
-                        ),
-                        validator: (valor) {
-                          if (!_condicionesFueraDeRango) return null;
-                          if (valor == null || valor.trim().isEmpty) {
-                            return 'La firma es obligatoria';
-                          }
-                          return null;
-                        },
-                      ),
-                    ],
-                    const SizedBox(height: 24),
-                    const Divider(),
-                    const SizedBox(height: 8),
-                    Text(
-                      // Sin "(opcional)" acá: cada campo del grupo ya lo dice
-                      // en su propia etiqueta — repetirlo arriba solo
-                      // apilaba el mismo texto dos veces, pegado.
-                      'Relevo de piloto',
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    const SizedBox(height: 8),
-                    FutureBuilder<List<Auxiliar>>(
-                      future: _auxiliaresFuture,
-                      builder: (context, snapshot) {
-                        final auxiliares = snapshot.data ?? const <Auxiliar>[];
-                        return DropdownButtonFormField<int?>(
-                          key: const Key('apertura_auxiliar'),
-                          initialValue: _auxiliarSeleccionadoId,
-                          decoration: const InputDecoration(
-                            labelText: 'Auxiliar (opcional)',
-                          ),
-                          items: [
-                            const DropdownMenuItem<int?>(
-                              child: Text('Sin auxiliar'),
-                            ),
-                            ...auxiliares.map(
-                              (auxiliar) => DropdownMenuItem<int?>(
-                                value: auxiliar.id,
-                                child: Text(auxiliar.nombre),
-                              ),
-                            ),
-                          ],
-                          onChanged: (valor) => setStateDialog(
-                            () => _auxiliarSeleccionadoId = valor,
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      key: const Key('apertura_dron_id'),
-                      controller: _dronIdController,
-                      decoration: const InputDecoration(
-                        labelText: 'Id de dron (opcional)',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (valor) {
-                        if (valor == null || valor.isEmpty) return null;
-                        if (int.tryParse(valor) == null) {
-                          return 'Ingresá un número entero válido';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextFormField(
-                      key: const Key('apertura_hectarea_inicial_acumulada'),
-                      controller: _hectareaInicialController,
-                      decoration: const InputDecoration(
-                        labelText:
-                            'Hectárea inicial acumulada (opcional, si es '
-                            'relevo)',
-                      ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      validator: (valor) {
-                        if (valor == null || valor.isEmpty) return null;
-                        final decimal = Decimal.tryParse(valor);
-                        if (decimal == null) return 'Ingresá un número válido';
-                        if (decimal < Decimal.zero) {
-                          return 'No puede ser negativa';
-                        }
-                        return null;
-                      },
-                    ),
-                  ],
-                ),
-              ),
+          return _DialogoCampo(
+            titulo: 'Condiciones al abrir sesión',
+            formKey: _formAperturaKey,
+            onCancelar: () => Navigator.pop(dialogContext),
+            botonConfirmar: BotonPrimarioCampo(
+              key: const Key('boton_confirmar_apertura'),
+              texto: 'Abrir sesión',
+              onPressed: () {
+                if (!_formAperturaKey.currentState!.validate()) return;
+
+                context.read<SesionBloc>().add(
+                  SesionAbrirSolicitada(
+                    vientoKmh: Decimal.parse(_vientoController.text),
+                    temperaturaC: Decimal.parse(_temperaturaController.text),
+                    humedadPct: Decimal.parse(_humedadController.text),
+                    observacionAgronomo: _condicionesFueraDeRango
+                        ? _observacionController.text.trim()
+                        : null,
+                    firmaObservacion: _condicionesFueraDeRango
+                        ? _firmaController.text.trim()
+                        : null,
+                    auxiliarId: _auxiliarSeleccionadoId,
+                    dronId: _dronIdController.text.isEmpty
+                        ? null
+                        : int.parse(_dronIdController.text),
+                    hectareaInicialAcumulada:
+                        _hectareaInicialController.text.isEmpty
+                        ? null
+                        : Decimal.parse(_hectareaInicialController.text),
+                  ),
+                );
+
+                Navigator.pop(dialogContext);
+              },
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: const Text('Cancelar'),
-              ),
-              FilledButton(
-                key: const Key('boton_confirmar_apertura'),
-                onPressed: () {
-                  if (!_formAperturaKey.currentState!.validate()) return;
-
-                  context.read<SesionBloc>().add(
-                    SesionAbrirSolicitada(
-                      vientoKmh: Decimal.parse(_vientoController.text),
-                      temperaturaC: Decimal.parse(_temperaturaController.text),
-                      humedadPct: Decimal.parse(_humedadController.text),
-                      observacionAgronomo: _condicionesFueraDeRango
-                          ? _observacionController.text.trim()
-                          : null,
-                      firmaObservacion: _condicionesFueraDeRango
-                          ? _firmaController.text.trim()
-                          : null,
-                      auxiliarId: _auxiliarSeleccionadoId,
-                      dronId: _dronIdController.text.isEmpty
-                          ? null
-                          : int.parse(_dronIdController.text),
-                      hectareaInicialAcumulada:
-                          _hectareaInicialController.text.isEmpty
-                          ? null
-                          : Decimal.parse(_hectareaInicialController.text),
-                    ),
-                  );
-
-                  Navigator.pop(dialogContext);
+            children: [
+              CampoTextoCampo(
+                key: const Key('apertura_viento'),
+                etiqueta: 'Viento (km/h) *',
+                controller: _vientoController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                onChanged: alCambiarMedicion,
+                validator: (valor) {
+                  if (valor == null || valor.isEmpty) {
+                    return 'El viento es obligatorio';
+                  }
+                  final decimal = Decimal.tryParse(valor);
+                  if (decimal == null) return 'Ingresá un número válido';
+                  if (decimal < Decimal.zero) {
+                    return 'El viento no puede ser negativo';
+                  }
+                  return null;
                 },
-                child: const Text('Abrir sesión'),
+              ),
+              const SizedBox(height: 12),
+              CampoTextoCampo(
+                key: const Key('apertura_temperatura'),
+                etiqueta: 'Temperatura (°C) *',
+                controller: _temperaturaController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                  signed: true,
+                ),
+                onChanged: alCambiarMedicion,
+                validator: (valor) {
+                  if (valor == null || valor.isEmpty) {
+                    return 'La temperatura es obligatoria';
+                  }
+                  if (Decimal.tryParse(valor) == null) {
+                    return 'Ingresá un número válido';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+              CampoTextoCampo(
+                key: const Key('apertura_humedad'),
+                etiqueta: 'Humedad (%) *',
+                controller: _humedadController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                onChanged: alCambiarMedicion,
+                validator: (valor) {
+                  if (valor == null || valor.isEmpty) {
+                    return 'La humedad es obligatoria';
+                  }
+                  final decimal = Decimal.tryParse(valor);
+                  if (decimal == null) return 'Ingresá un número válido';
+                  if (decimal < Decimal.zero) {
+                    return 'La humedad no puede ser negativa';
+                  }
+                  return null;
+                },
+              ),
+              if (_condicionesFueraDeRango) ...[
+                const SizedBox(height: 12),
+                const BannerAlertaCampo(
+                  key: Key('apertura_fuera_de_rango'),
+                  texto:
+                      'Condiciones fuera de rango: se necesita la '
+                      'observación y firma del agrónomo.',
+                ),
+                const SizedBox(height: 12),
+                CampoTextoCampo(
+                  key: const Key('apertura_observacion'),
+                  etiqueta: 'Observación del agrónomo *',
+                  controller: _observacionController,
+                  maxLines: 3,
+                  validator: (valor) {
+                    if (!_condicionesFueraDeRango) return null;
+                    if (valor == null || valor.trim().isEmpty) {
+                      return 'La observación es obligatoria';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 12),
+                CampoTextoCampo(
+                  key: const Key('apertura_firma'),
+                  etiqueta: 'Firma del agrónomo *',
+                  controller: _firmaController,
+                  validator: (valor) {
+                    if (!_condicionesFueraDeRango) return null;
+                    if (valor == null || valor.trim().isEmpty) {
+                      return 'La firma es obligatoria';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+              const SizedBox(height: 24),
+              // Sin "(opcional)" acá: cada campo del grupo ya lo dice en su
+              // propia etiqueta — repetirlo arriba solo apilaba el mismo
+              // texto dos veces, pegado.
+              const Text(
+                'Relevo de piloto',
+                style: TipografiaCampo.tituloTarjeta,
+              ),
+              const SizedBox(height: 12),
+              FutureBuilder<List<Auxiliar>>(
+                future: _auxiliaresFuture,
+                builder: (context, snapshot) {
+                  final auxiliares = snapshot.data ?? const <Auxiliar>[];
+                  return SelectorDesplegableCampo<int?>(
+                    key: const Key('apertura_auxiliar'),
+                    etiqueta: 'Auxiliar (opcional)',
+                    valor: _auxiliarSeleccionadoId,
+                    opciones: [
+                      (null, 'Sin auxiliar'),
+                      for (final auxiliar in auxiliares)
+                        (auxiliar.id, auxiliar.nombre),
+                    ],
+                    onChanged: (valor) =>
+                        setStateDialog(() => _auxiliarSeleccionadoId = valor),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
+              CampoTextoCampo(
+                key: const Key('apertura_dron_id'),
+                etiqueta: 'Id de dron (opcional)',
+                controller: _dronIdController,
+                keyboardType: TextInputType.number,
+                validator: (valor) {
+                  if (valor == null || valor.isEmpty) return null;
+                  if (int.tryParse(valor) == null) {
+                    return 'Ingresá un número entero válido';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+              CampoTextoCampo(
+                key: const Key('apertura_hectarea_inicial_acumulada'),
+                etiqueta: 'Hectárea inicial acumulada (opcional, si es relevo)',
+                controller: _hectareaInicialController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                validator: (valor) {
+                  if (valor == null || valor.isEmpty) return null;
+                  final decimal = Decimal.tryParse(valor);
+                  if (decimal == null) return 'Ingresá un número válido';
+                  if (decimal < Decimal.zero) {
+                    return 'No puede ser negativa';
+                  }
+                  return null;
+                },
               ),
             ],
           );
@@ -397,145 +369,119 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     _acumuladoFinalController.clear();
     showDialog(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('Cerrar sesión'),
-        content: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (hectareaInicialAcumulada == null)
-                  TextFormField(
-                    key: const Key('cierre_hectareas'),
-                    controller: _hectareasController,
-                    decoration: const InputDecoration(
-                      labelText: 'Hectáreas declaradas *',
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    validator: (valor) {
-                      if (valor == null || valor.isEmpty) {
-                        return 'Las hectáreas son obligatorias';
-                      }
-                      try {
-                        final decimal = Decimal.parse(valor);
-                        if (decimal < Decimal.zero) {
-                          return 'Las hectáreas no pueden ser negativas';
-                        }
-                      } catch (e) {
-                        return 'Ingresá un número válido';
-                      }
-                      return null;
-                    },
-                  )
-                else
-                  TextFormField(
-                    key: const Key('cierre_acumulado_final'),
-                    controller: _acumuladoFinalController,
-                    decoration: InputDecoration(
-                      labelText: 'Acumulado final del RC *',
-                      helperText:
-                          'Acumulado inicial registrado: '
-                          '$hectareaInicialAcumulada',
-                    ),
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    validator: (valor) {
-                      if (valor == null || valor.isEmpty) {
-                        return 'El acumulado final es obligatorio';
-                      }
-                      final decimal = Decimal.tryParse(valor);
-                      if (decimal == null) return 'Ingresá un número válido';
-                      if (decimal < hectareaInicialAcumulada) {
-                        return 'No puede ser menor al acumulado inicial '
-                            '($hectareaInicialAcumulada)';
-                      }
-                      return null;
-                    },
-                  ),
-                const SizedBox(height: 16),
-                DropdownButtonFormField<String>(
-                  key: const Key('cierre_motivo'),
-                  initialValue: _motivoSeleccionado,
-                  decoration: const InputDecoration(
-                    labelText: 'Motivo de cierre *',
-                  ),
-                  items: _motivosCierre
-                      .map(
-                        (tuple) => DropdownMenuItem(
-                          value: tuple.$1,
-                          child: Text(tuple.$2),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (valor) {
-                    setState(() => _motivoSeleccionado = valor);
-                  },
-                  validator: (valor) => (valor == null || valor.isEmpty)
-                      ? 'Seleccioná un motivo de cierre'
-                      : null,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  key: const Key('cierre_litros'),
-                  controller: _litrosController,
-                  decoration: const InputDecoration(
-                    labelText: 'Litros consumidos (opcional)',
-                  ),
-                  keyboardType: const TextInputType.numberWithOptions(
-                    decimal: true,
-                  ),
-                  validator: (valor) {
-                    if (valor == null || valor.isEmpty) return null;
-                    try {
-                      final decimal = Decimal.parse(valor);
-                      if (decimal < Decimal.zero) {
-                        return 'Los litros no pueden ser negativos';
-                      }
-                    } catch (e) {
-                      return 'Ingresá un número válido';
-                    }
-                    return null;
-                  },
-                ),
-              ],
-            ),
-          ),
+      builder: (dialogContext) => _DialogoCampo(
+        titulo: 'Cerrar sesión',
+        formKey: _formKey,
+        onCancelar: () => Navigator.pop(dialogContext),
+        botonConfirmar: BotonPrimarioCampo(
+          key: const Key('boton_confirmar_cierre'),
+          texto: 'Cerrar sesión',
+          onPressed: () {
+            if (!_formKey.currentState!.validate()) return;
+
+            final litros = _litrosController.text.isEmpty
+                ? null
+                : Decimal.parse(_litrosController.text);
+
+            context.read<SesionBloc>().add(
+              SesionCerrarSolicitada(
+                motivoCierre: _motivoSeleccionado!,
+                hectareasDeclaradas: hectareaInicialAcumulada == null
+                    ? Decimal.parse(_hectareasController.text)
+                    : null,
+                hectareaFinalAcumulada: hectareaInicialAcumulada == null
+                    ? null
+                    : Decimal.parse(_acumuladoFinalController.text),
+                litrosConsumidos: litros,
+              ),
+            );
+
+            Navigator.pop(dialogContext);
+          },
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('Cancelar'),
-          ),
-          FilledButton(
-            key: const Key('boton_confirmar_cierre'),
-            onPressed: () {
-              if (!_formKey.currentState!.validate()) return;
-
-              final litros = _litrosController.text.isEmpty
-                  ? null
-                  : Decimal.parse(_litrosController.text);
-
-              context.read<SesionBloc>().add(
-                SesionCerrarSolicitada(
-                  motivoCierre: _motivoSeleccionado!,
-                  hectareasDeclaradas: hectareaInicialAcumulada == null
-                      ? Decimal.parse(_hectareasController.text)
-                      : null,
-                  hectareaFinalAcumulada: hectareaInicialAcumulada == null
-                      ? null
-                      : Decimal.parse(_acumuladoFinalController.text),
-                  litrosConsumidos: litros,
-                ),
-              );
-
-              Navigator.pop(dialogContext);
+        children: [
+          if (hectareaInicialAcumulada == null)
+            CampoTextoCampo(
+              key: const Key('cierre_hectareas'),
+              etiqueta: 'Hectáreas declaradas *',
+              controller: _hectareasController,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              validator: (valor) {
+                if (valor == null || valor.isEmpty) {
+                  return 'Las hectáreas son obligatorias';
+                }
+                try {
+                  final decimal = Decimal.parse(valor);
+                  if (decimal < Decimal.zero) {
+                    return 'Las hectáreas no pueden ser negativas';
+                  }
+                } catch (e) {
+                  return 'Ingresá un número válido';
+                }
+                return null;
+              },
+            )
+          else ...[
+            FilaDatoCampo(
+              key: const Key('cierre_acumulado_inicial'),
+              etiqueta: 'Acumulado inicial registrado',
+              valor: '$hectareaInicialAcumulada',
+            ),
+            const SizedBox(height: 8),
+            CampoTextoCampo(
+              key: const Key('cierre_acumulado_final'),
+              etiqueta: 'Acumulado final del RC *',
+              controller: _acumuladoFinalController,
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              validator: (valor) {
+                if (valor == null || valor.isEmpty) {
+                  return 'El acumulado final es obligatorio';
+                }
+                final decimal = Decimal.tryParse(valor);
+                if (decimal == null) return 'Ingresá un número válido';
+                if (decimal < hectareaInicialAcumulada) {
+                  return 'No puede ser menor al acumulado inicial '
+                      '($hectareaInicialAcumulada)';
+                }
+                return null;
+              },
+            ),
+          ],
+          const SizedBox(height: 12),
+          SelectorDesplegableCampo<String>(
+            key: const Key('cierre_motivo'),
+            etiqueta: 'Motivo de cierre *',
+            valor: _motivoSeleccionado,
+            opciones: _motivosCierre,
+            onChanged: (valor) {
+              setState(() => _motivoSeleccionado = valor);
             },
-            child: const Text('Cerrar sesión'),
+            validator: (valor) => (valor == null || valor.isEmpty)
+                ? 'Seleccioná un motivo de cierre'
+                : null,
+          ),
+          const SizedBox(height: 12),
+          CampoTextoCampo(
+            key: const Key('cierre_litros'),
+            etiqueta: 'Litros consumidos (opcional)',
+            controller: _litrosController,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            validator: (valor) {
+              if (valor == null || valor.isEmpty) return null;
+              try {
+                final decimal = Decimal.parse(valor);
+                if (decimal < Decimal.zero) {
+                  return 'Los litros no pueden ser negativos';
+                }
+              } catch (e) {
+                return 'Ingresá un número válido';
+              }
+              return null;
+            },
           ),
         ],
       ),
@@ -550,7 +496,8 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
   /// no encontraría el `BlocProvider<TrabajoCubit>` real.
   ///
   /// La foto de campo es SIEMPRE obligatoria ("sin captura no cierra") — el
-  /// botón de confirmar queda deshabilitado hasta que haya una.
+  /// botón de confirmar queda deshabilitado hasta que haya una, y mientras
+  /// falte el hueco de la foto se ve en ámbar.
   void _mostrarFormularioCierreTrabajo(
     BuildContext context,
     String trabajoUuidCliente,
@@ -561,105 +508,94 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     showDialog(
       context: context,
       builder: (dialogContext) => StatefulBuilder(
-        builder: (_, setStateDialog) {
+        builder: (dialogBuilderContext, setStateDialog) {
           Future<void> tomarFoto() async {
             final bytes = await context.read<TrabajoCubit>().tomarFotoCampo();
             if (bytes == null) return;
             setStateDialog(() => bytesFoto = bytes);
           }
 
-          return AlertDialog(
-            title: const Text('Cerrar trabajo'),
-            content: SingleChildScrollView(
-              child: Form(
-                key: _formCierreTrabajoKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    TextFormField(
-                      key: const Key('cierre_trabajo_litros_sobrante'),
-                      controller: _litrosSobranteController,
-                      decoration: const InputDecoration(
-                        labelText: 'Litros sobrantes (opcional)',
-                      ),
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      validator: (valor) {
-                        if (valor == null || valor.isEmpty) return null;
-                        try {
-                          final decimal = Decimal.parse(valor);
-                          if (decimal < Decimal.zero) {
-                            return 'Los litros no pueden ser negativos';
-                          }
-                        } catch (e) {
-                          return 'Ingresá un número válido';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    OutlinedButton(
-                      key: const Key('boton_tomar_foto_campo'),
-                      onPressed: tomarFoto,
-                      child: Text(
-                        bytesFoto == null
-                            ? 'Tomar foto del campo'
-                            : 'Volver a tomar foto',
-                      ),
-                    ),
-                    if (bytesFoto != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16),
-                        child: Image.memory(
-                          bytesFoto!,
-                          key: const Key('preview_foto_campo'),
-                          height: 200,
-                        ),
-                      )
-                    else
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: Text(
-                          'La foto del campo es obligatoria — sin captura no '
-                          'se puede cerrar el trabajo.',
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(dialogContext),
-                child: const Text('Cancelar'),
-              ),
-              FilledButton(
-                key: const Key('boton_confirmar_cierre_trabajo'),
-                onPressed: bytesFoto == null
-                    ? null
-                    : () {
-                        if (!_formCierreTrabajoKey.currentState!.validate()) {
-                          return;
-                        }
+          final radio =
+              Theme.of(
+                dialogBuilderContext,
+              ).extension<TemaCampo>()?.radioTarjetaChica ??
+              18;
 
-                        final litrosTexto = _litrosSobranteController.text
-                            .trim();
-                        context.read<TrabajoCubit>().cerrar(
-                          trabajoUuidCliente: trabajoUuidCliente,
-                          litrosSobrante: litrosTexto.isEmpty
-                              ? null
-                              : Decimal.parse(litrosTexto),
-                          bytesFoto: bytesFoto!,
-                        );
-                        Navigator.pop(dialogContext);
-                      },
-                child: const Text('Cerrar trabajo'),
+          return _DialogoCampo(
+            titulo: 'Cerrar trabajo',
+            formKey: _formCierreTrabajoKey,
+            onCancelar: () => Navigator.pop(dialogContext),
+            botonConfirmar: BotonPrimarioCampo(
+              key: const Key('boton_confirmar_cierre_trabajo'),
+              texto: 'Cerrar trabajo',
+              onPressed: bytesFoto == null
+                  ? null
+                  : () {
+                      if (!_formCierreTrabajoKey.currentState!.validate()) {
+                        return;
+                      }
+
+                      final litrosTexto = _litrosSobranteController.text.trim();
+                      context.read<TrabajoCubit>().cerrar(
+                        trabajoUuidCliente: trabajoUuidCliente,
+                        litrosSobrante: litrosTexto.isEmpty
+                            ? null
+                            : Decimal.parse(litrosTexto),
+                        bytesFoto: bytesFoto!,
+                      );
+                      Navigator.pop(dialogContext);
+                    },
+            ),
+            children: [
+              CampoTextoCampo(
+                key: const Key('cierre_trabajo_litros_sobrante'),
+                etiqueta: 'Litros sobrantes (opcional)',
+                controller: _litrosSobranteController,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                validator: (valor) {
+                  if (valor == null || valor.isEmpty) return null;
+                  try {
+                    final decimal = Decimal.parse(valor);
+                    if (decimal < Decimal.zero) {
+                      return 'Los litros no pueden ser negativos';
+                    }
+                  } catch (e) {
+                    return 'Ingresá un número válido';
+                  }
+                  return null;
+                },
               ),
+              const SizedBox(height: 12),
+              if (bytesFoto != null) ...[
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(radio),
+                  child: Image.memory(
+                    bytesFoto!,
+                    key: const Key('preview_foto_campo'),
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
+              BotonAgregarPunteadoCampo(
+                key: const Key('boton_tomar_foto_campo'),
+                texto: bytesFoto == null
+                    ? 'Tomar foto del campo'
+                    : 'Volver a tomar foto',
+                alerta: bytesFoto == null,
+                onPressed: tomarFoto,
+              ),
+              if (bytesFoto == null) ...[
+                const SizedBox(height: 10),
+                const NotaInlineCampo(
+                  texto:
+                      'La foto del campo es obligatoria — sin captura no '
+                      'se puede cerrar el trabajo.',
+                ),
+              ],
             ],
           );
         },
@@ -669,193 +605,243 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<TrabajoCubit, TrabajoEstado>(
-      listener: (context, estado) {
-        if (estado is TrabajoCerrado) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Trabajo cerrado')));
-        }
-        if (estado is TrabajoError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(estado.mensaje),
-              backgroundColor: Theme.of(context).colorScheme.error,
-            ),
-          );
-        }
-      },
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Sesión de vuelo')),
-        body: BlocConsumer<SesionBloc, SesionEstado>(
-          listener: (context, estado) {
-            if (estado is SesionError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(estado.mensaje),
-                  backgroundColor: Theme.of(context).colorScheme.error,
-                ),
-              );
-            }
-          },
-          builder: (context, estado) => switch (estado) {
-            SesionInicial() => Center(
-              child: FilledButton(
-                key: const Key('boton_abrir_sesion'),
-                onPressed: () => _mostrarFormularioApertura(context),
-                child: const Text('Abrir sesión'),
+    return Theme(
+      data: AgrocomThemeCampo.construir(),
+      child: BlocListener<TrabajoCubit, TrabajoEstado>(
+        listener: (context, estado) {
+          if (estado is TrabajoCerrado) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Trabajo cerrado')));
+          }
+          if (estado is TrabajoError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(estado.mensaje),
+                backgroundColor: Theme.of(context).colorScheme.error,
               ),
-            ),
-            SesionAbriendo() => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            SesionActiva(:final sesion) => Padding(
-              padding: const EdgeInsets.all(16),
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        'Sesión activa',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                      const SizedBox(height: 24),
-                      _InfoRow(
-                        label: 'Secuencia',
-                        value: '${sesion.secuencia}',
-                      ),
-                      _InfoRow(
-                        label: 'Inicio',
-                        value: _formatearHora(sesion.inicio),
-                      ),
-                      _InfoRow(
-                        label: 'Hectáreas declaradas',
-                        value: sesion.hectareasDeclaradas.toString(),
-                      ),
-                      const SizedBox(height: 24),
-                      OutlinedButton(
-                        key: const Key('boton_reportar_incidencia'),
-                        onPressed: () =>
-                            _reportarIncidencia(context, sesion.uuidCliente),
-                        child: const Text('Reportar incidencia'),
-                      ),
-                      const SizedBox(height: 12),
-                      FilledButton(
-                        key: const Key('boton_cerrar_sesion'),
-                        onPressed: () =>
-                            _mostrarFormularioCierre(context, sesion),
-                        child: const Text('Cerrar sesión'),
-                      ),
-                    ],
-                  ),
+            );
+          }
+        },
+        child: Scaffold(
+          backgroundColor: ColoresCampo.fondoProfundo,
+          body: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.fromLTRB(18, 8, 18, 0),
+                  child: EncabezadoCampo(titulo: 'Sesión de vuelo'),
                 ),
-              ),
-            ),
-            SesionCerrando() => const Center(
-              child: CircularProgressIndicator(),
-            ),
-            SesionCerrada(:final sesion) => Padding(
-              padding: const EdgeInsets.all(16),
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        'Sesión cerrada',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                      const SizedBox(height: 24),
-                      _InfoRow(
-                        label: 'Motivo',
-                        value: _etiquetaMotivo(sesion.motivoCierre ?? ''),
-                      ),
-                      _InfoRow(
-                        label: 'Hectáreas declaradas (cierre)',
-                        value:
-                            sesion.hectareasDeclaradasCierre?.toString() ?? '—',
-                      ),
-                      if (sesion.litrosConsumidos != null)
-                        _InfoRow(
-                          label: 'Litros consumidos',
-                          value: sesion.litrosConsumidos!.toString(),
+                Expanded(
+                  child: BlocConsumer<SesionBloc, SesionEstado>(
+                    listener: (context, estado) {
+                      if (estado is SesionError) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(estado.mensaje),
+                            backgroundColor: Theme.of(
+                              context,
+                            ).colorScheme.error,
+                          ),
+                        );
+                      }
+                    },
+                    builder: (context, estado) => switch (estado) {
+                      SesionInicial() => Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 18),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: BotonPrimarioCampo(
+                              key: const Key('boton_abrir_sesion'),
+                              texto: 'Abrir sesión',
+                              onPressed: () =>
+                                  _mostrarFormularioApertura(context),
+                            ),
+                          ),
                         ),
-                      _InfoRow(
-                        label: 'Fin',
-                        value: _formatearHora(sesion.fin ?? DateTime.now()),
                       ),
-                      const SizedBox(height: 24),
-                      const Divider(),
-                      const SizedBox(height: 8),
-                      BlocBuilder<TrabajoCubit, TrabajoEstado>(
-                        builder: (context, estadoTrabajo) {
-                          if (estadoTrabajo is TrabajoCerrado) {
-                            return Text(
-                              'Trabajo cerrado',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            );
-                          }
-                          final cerrandoTrabajo =
-                              estadoTrabajo is TrabajoCerrando;
-                          return FilledButton(
-                            key: const Key('boton_cerrar_trabajo'),
-                            onPressed: cerrandoTrabajo
-                                ? null
-                                : () => _mostrarFormularioCierreTrabajo(
-                                    context,
-                                    sesion.trabajoUuidCliente,
-                                  ),
-                            child: cerrandoTrabajo
-                                ? const SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : const Text('Cerrar trabajo'),
-                          );
-                        },
+                      SesionAbriendo() => const Center(
+                        child: CircularProgressIndicator(),
                       ),
-                    ],
+                      SesionActiva(:final sesion) => _sesionActiva(
+                        context,
+                        sesion,
+                      ),
+                      SesionCerrando() => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      SesionCerrada(:final sesion) => _sesionCerrada(
+                        context,
+                        sesion,
+                      ),
+                      SesionError(:final mensaje) => Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(18),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Text(
+                                mensaje,
+                                style: TipografiaCampo.cuerpo.copyWith(
+                                  color: ColoresCampo.acentoRojo,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 24),
+                              BotonSecundarioCampo(
+                                key: const Key('boton_reintentar'),
+                                texto: 'Reintentar',
+                                onPressed: () =>
+                                    _mostrarFormularioApertura(context),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    },
                   ),
                 ),
-              ),
+              ],
             ),
-            SesionError(:final mensaje) => Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      mensaje,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    OutlinedButton(
-                      key: const Key('boton_reintentar'),
-                      onPressed: () => _mostrarFormularioApertura(context),
-                      child: const Text('Reintentar'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          },
+          ),
         ),
       ),
+    );
+  }
+
+  /// Sesión abierta: los tres datos clave como `StatChipCampo`, y debajo las
+  /// dos acciones — reportar una incidencia (secundaria) o cerrar la sesión.
+  Widget _sesionActiva(BuildContext context, Sesion sesion) {
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 20),
+      children: [
+        TarjetaCampo(
+          tamano: TamanoTarjetaCampo.grande,
+          acento: ColoresCampo.acentoLima,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Sesión activa',
+                style: TipografiaCampo.valorDestacado.copyWith(
+                  color: ColoresCampo.acentoLima,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: StatChipCampo(
+                      key: const Key('sesion_secuencia'),
+                      etiqueta: 'Secuencia',
+                      valor: '${sesion.secuencia}',
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: StatChipCampo(
+                      key: const Key('sesion_inicio'),
+                      etiqueta: 'Inicio',
+                      valor: _formatearHora(sesion.inicio),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: StatChipCampo(
+                      key: const Key('sesion_hectareas'),
+                      etiqueta: 'Hectáreas',
+                      valor: sesion.hectareasDeclaradas.toString(),
+                      unidad: 'ha',
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        BotonSecundarioCampo(
+          key: const Key('boton_reportar_incidencia'),
+          texto: 'Reportar incidencia',
+          onPressed: () => _reportarIncidencia(context, sesion.uuidCliente),
+        ),
+        const SizedBox(height: 12),
+        BotonPrimarioCampo(
+          key: const Key('boton_cerrar_sesion'),
+          texto: 'Cerrar sesión',
+          onPressed: () => _mostrarFormularioCierre(context, sesion),
+        ),
+      ],
+    );
+  }
+
+  /// Sesión cerrada: el resumen del cierre como filas «etiqueta … valor» y,
+  /// debajo, el cierre del TRABAJO (HU-09) o su confirmación.
+  Widget _sesionCerrada(BuildContext context, Sesion sesion) {
+    return ListView(
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 20),
+      children: [
+        TarjetaCampo(
+          tamano: TamanoTarjetaCampo.grande,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Sesión cerrada',
+                style: TipografiaCampo.valorDestacado,
+              ),
+              const SizedBox(height: 14),
+              FilaDatoCampo(
+                key: const Key('sesion_motivo'),
+                etiqueta: 'Motivo',
+                valor: _etiquetaMotivo(sesion.motivoCierre ?? ''),
+              ),
+              FilaDatoCampo(
+                key: const Key('sesion_hectareas_cierre'),
+                etiqueta: 'Hectáreas declaradas (cierre)',
+                valor: sesion.hectareasDeclaradasCierre?.toString() ?? '—',
+              ),
+              if (sesion.litrosConsumidos != null)
+                FilaDatoCampo(
+                  key: const Key('sesion_litros_consumidos'),
+                  etiqueta: 'Litros consumidos',
+                  valor: sesion.litrosConsumidos!.toString(),
+                ),
+              FilaDatoCampo(
+                key: const Key('sesion_fin'),
+                etiqueta: 'Fin',
+                valor: _formatearHora(sesion.fin ?? DateTime.now()),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        BlocBuilder<TrabajoCubit, TrabajoEstado>(
+          builder: (context, estadoTrabajo) {
+            if (estadoTrabajo is TrabajoCerrado) {
+              return const NotaInlineCampo(
+                key: Key('trabajo_cerrado'),
+                texto: 'Trabajo cerrado',
+                color: ColoresCampo.acentoLima,
+                centrada: true,
+              );
+            }
+            return BotonPrimarioCampo(
+              key: const Key('boton_cerrar_trabajo'),
+              texto: 'Cerrar trabajo',
+              cargando: estadoTrabajo is TrabajoCerrando,
+              onPressed: () => _mostrarFormularioCierreTrabajo(
+                context,
+                sesion.trabajoUuidCliente,
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 
@@ -881,29 +867,63 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
   }
 }
 
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.label, required this.value});
+/// Diálogo de formulario del modo campo: título, campos y las dos acciones
+/// (cancelar como secundaria, confirmar como primaria) una al lado de la
+/// otra. Solo arma el aspecto — cada formulario trae sus campos,
+/// su `Form` y su botón de confirmar con la `Key` de siempre.
+class _DialogoCampo extends StatelessWidget {
+  const _DialogoCampo({
+    required this.titulo,
+    required this.formKey,
+    required this.onCancelar,
+    required this.botonConfirmar,
+    required this.children,
+  });
 
-  final String label;
-  final String value;
+  final String titulo;
+  final GlobalKey<FormState> formKey;
+  final VoidCallback onCancelar;
+  final Widget botonConfirmar;
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Text.rich(
-        TextSpan(
-          text: '$label: ',
-          style: Theme.of(context).textTheme.bodyMedium,
-          children: [
-            TextSpan(
-              text: value,
-              style: Theme.of(
-                context,
-              ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
+    // Las acciones van dentro del contenido, fuera del scroll: las
+    // `actions` de `AlertDialog` no dejan repartir el ancho entre dos
+    // botones del catálogo.
+    return AlertDialog(
+      backgroundColor: ColoresCampo.superficie,
+      title: Text(titulo, style: TipografiaCampo.tituloSeccion),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: children,
+                ),
+              ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              Expanded(
+                child: BotonSecundarioCampo(
+                  texto: 'Cancelar',
+                  onPressed: onCancelar,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(child: botonConfirmar),
+            ],
+          ),
+        ],
       ),
     );
   }

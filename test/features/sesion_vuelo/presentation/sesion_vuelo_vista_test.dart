@@ -20,6 +20,8 @@ import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart'
 import 'package:agrocom_field/nucleo/auth/persona_operativa_store.dart';
 import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
 import 'package:agrocom_field/nucleo/evidencias/evidencia_repository.dart';
+import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
+import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -90,6 +92,25 @@ Sesion _sesionCerrada({
   litrosConsumidos: litrosConsumidos,
   uuidClienteCierre: 'uuid-cierre-1',
 );
+
+/// Valor de la `FilaDatoCampo` con esa `Key` (resumen de sesión cerrada,
+/// modo campo — ADR 0008).
+String _fila(WidgetTester tester, String key) =>
+    tester.widget<FilaDatoCampo>(find.byKey(Key(key))).valor;
+
+/// Valor del `StatChipCampo` con esa `Key` (sesión activa, modo campo).
+String _chip(WidgetTester tester, String key) =>
+    tester.widget<StatChipCampo>(find.byKey(Key(key))).valor;
+
+/// El botón de Material que `BotonPrimarioCampo` envuelve — el que se
+/// habilita o no: el criterio de "deshabilitado" se verifica sobre ese.
+FilledButton _botonMaterial(WidgetTester tester, String key) =>
+    tester.widget<FilledButton>(
+      find.descendant(
+        of: find.byKey(Key(key)),
+        matching: find.byType(FilledButton),
+      ),
+    );
 
 void main() {
   late _SesionRepositoryFalso sesionRepositorio;
@@ -297,7 +318,7 @@ void main() {
     await completarFormularioApertura(tester);
 
     expect(find.text('Sesión activa'), findsOneWidget);
-    expect(find.text('Secuencia: 1'), findsOneWidget);
+    expect(_chip(tester, 'sesion_secuencia'), '1');
     expect(find.byKey(const Key('boton_cerrar_sesion')), findsOneWidget);
   });
 
@@ -418,9 +439,9 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Sesión cerrada'), findsOneWidget);
-    expect(find.text('Motivo: Completado'), findsOneWidget);
-    expect(find.text('Hectáreas declaradas (cierre): 99.75'), findsOneWidget);
-    expect(find.text('Litros consumidos: 150.5'), findsOneWidget);
+    expect(_fila(tester, 'sesion_motivo'), 'Completado');
+    expect(_fila(tester, 'sesion_hectareas_cierre'), '99.75');
+    expect(_fila(tester, 'sesion_litros_consumidos'), '150.5');
   });
 
   group('cerrar trabajo (HU-09)', () {
@@ -498,10 +519,10 @@ void main() {
           ),
           findsOneWidget,
         );
-        final botonConfirmar = tester.widget<FilledButton>(
-          find.byKey(const Key('boton_confirmar_cierre_trabajo')),
+        expect(
+          _botonMaterial(tester, 'boton_confirmar_cierre_trabajo').onPressed,
+          isNull,
         );
-        expect(botonConfirmar.onPressed, isNull);
       },
     );
 
@@ -1192,7 +1213,182 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Sesión cerrada'), findsOneWidget);
-      expect(find.text('Hectáreas declaradas (cierre): 20.25'), findsOneWidget);
+      expect(_fila(tester, 'sesion_hectareas_cierre'), '20.25');
+    });
+  });
+
+  group('modo campo (ADR 0008)', () {
+    testWidgets('apertura: se construye bajo el tema campo, sin AppBar, y '
+        'observación y firma aparecen solo con una condición fuera de rango, '
+        'avisadas con el banner ámbar', (tester) async {
+      when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+      final bloc = SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaStore,
+        trabajoUuidCliente: 'uuid-trabajo-1',
+      );
+      addTearDown(bloc.close);
+
+      await bombear(tester, bloc);
+      await tester.pumpAndSettle();
+
+      final contexto = tester.element(
+        find.byKey(const Key('boton_abrir_sesion')),
+      );
+      expect(Theme.of(contexto).extension<TemaCampo>(), isNotNull);
+      expect(find.byType(AppBar), findsNothing);
+      expect(find.byType(EncabezadoCampo), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
+      await tester.pumpAndSettle();
+
+      // El diálogo hereda el tema campo de la pantalla que lo abre.
+      final contextoDialogo = tester.element(
+        find.byKey(const Key('apertura_viento')),
+      );
+      expect(Theme.of(contextoDialogo).extension<TemaCampo>(), isNotNull);
+      expect(
+        tester.widget(find.byKey(const Key('apertura_viento'))),
+        isA<CampoTextoCampo>(),
+      );
+
+      Future<void> medir(
+        String viento,
+        String temperatura,
+        String humedad,
+      ) async {
+        await tester.enterText(
+          find.byKey(const Key('apertura_viento')),
+          viento,
+        );
+        await tester.enterText(
+          find.byKey(const Key('apertura_temperatura')),
+          temperatura,
+        );
+        await tester.enterText(
+          find.byKey(const Key('apertura_humedad')),
+          humedad,
+        );
+        await tester.pumpAndSettle();
+      }
+
+      void esperarExigencia({required bool visible}) {
+        final matcher = visible ? findsOneWidget : findsNothing;
+        expect(find.byKey(const Key('apertura_fuera_de_rango')), matcher);
+        expect(find.byKey(const Key('apertura_observacion')), matcher);
+        expect(find.byKey(const Key('apertura_firma')), matcher);
+      }
+
+      await medir('10', '20', '50');
+      esperarExigencia(visible: false);
+
+      // Cada condición por separado, por encima de su umbral.
+      for (final (viento, temperatura, humedad) in const [
+        ('20', '20', '50'),
+        ('10', '35', '50'),
+        ('10', '20', '95'),
+      ]) {
+        await medir(viento, temperatura, humedad);
+        esperarExigencia(visible: true);
+      }
+
+      await medir('10', '20', '50');
+      esperarExigencia(visible: false);
+    });
+
+    testWidgets('cerrar trabajo: sin foto el hueco queda en ámbar y no se '
+        'confirma; con foto se ve la vista previa y se habilita', (
+      tester,
+    ) async {
+      when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+      when(
+        () => sesionRepositorio.abrirSesion(
+          trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+          pilotoId: any(named: 'pilotoId'),
+          auxiliarId: any(named: 'auxiliarId'),
+          dronId: any(named: 'dronId'),
+          hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
+          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+          inicio: any(named: 'inicio'),
+          vientoKmh: any(named: 'vientoKmh'),
+          temperaturaC: any(named: 'temperaturaC'),
+          humedadPct: any(named: 'humedadPct'),
+          observacionAgronomo: any(named: 'observacionAgronomo'),
+          firmaObservacion: any(named: 'firmaObservacion'),
+        ),
+      ).thenAnswer((_) async => _sesionAbierta());
+      when(
+        () => sesionRepositorio.cerrarSesion(
+          sesionUuidCliente: any(named: 'sesionUuidCliente'),
+          hectareaFinalAcumulada: any(named: 'hectareaFinalAcumulada'),
+          fin: any(named: 'fin'),
+          motivoCierre: any(named: 'motivoCierre'),
+          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+          litrosConsumidos: any(named: 'litrosConsumidos'),
+        ),
+      ).thenAnswer((_) async => _sesionCerrada());
+      when(
+        () => selectorFotoTrabajo.tomarFoto(),
+      ).thenAnswer((_) async => _bytesFotoValidos);
+
+      final bloc = SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaStore,
+        trabajoUuidCliente: 'uuid-trabajo-1',
+      );
+      addTearDown(bloc.close);
+
+      await bombear(tester, bloc);
+      await completarFormularioApertura(tester);
+      await tester.tap(find.byKey(const Key('boton_cerrar_sesion')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('cierre_hectareas')), '10');
+      await tester.tap(find.byKey(const Key('cierre_motivo')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Completado'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('boton_confirmar_cierre')));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('boton_cerrar_trabajo')));
+      await tester.pumpAndSettle();
+
+      BotonAgregarPunteadoCampo slotFoto() =>
+          tester.widget(find.byKey(const Key('boton_tomar_foto_campo')));
+      expect(slotFoto().alerta, isTrue);
+      expect(find.byKey(const Key('preview_foto_campo')), findsNothing);
+      expect(
+        _botonMaterial(tester, 'boton_confirmar_cierre_trabajo').onPressed,
+        isNull,
+      );
+
+      // Tocar el botón deshabilitado no cierra nada: el diálogo sigue.
+      await tester.tap(
+        find.byKey(const Key('boton_confirmar_cierre_trabajo')),
+        warnIfMissed: false,
+      );
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('boton_tomar_foto_campo')), findsOneWidget);
+      verifyNever(
+        () => trabajoRepositorio.cerrarTrabajo(
+          trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+          fin: any(named: 'fin'),
+          litrosSobrante: any(named: 'litrosSobrante'),
+          evidenciaImagenCampoUuidCliente: any(
+            named: 'evidenciaImagenCampoUuidCliente',
+          ),
+        ),
+      );
+
+      await tester.tap(find.byKey(const Key('boton_tomar_foto_campo')));
+      await tester.pumpAndSettle();
+
+      expect(slotFoto().alerta, isFalse);
+      expect(find.byKey(const Key('preview_foto_campo')), findsOneWidget);
+      expect(
+        _botonMaterial(tester, 'boton_confirmar_cierre_trabajo').onPressed,
+        isNotNull,
+      );
     });
   });
 }
