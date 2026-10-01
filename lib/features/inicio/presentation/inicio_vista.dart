@@ -402,6 +402,14 @@ class _TarjetaTrabajo extends StatelessWidget {
               color: ColoresCampo.acentoLima,
             ),
           ),
+          if (trabajo.ordenPausada) ...[
+            const SizedBox(height: 10),
+            const BadgeEstadoCampo(
+              key: Key('inicio_orden_pausada'),
+              texto: 'Orden pausada',
+              estado: EstadoBadgeCampo.pendiente,
+            ),
+          ],
           const SizedBox(height: 12),
           Text(
             trabajo.loteCodigo ?? 'Lote sin datos',

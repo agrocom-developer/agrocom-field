@@ -1,5 +1,7 @@
 import 'package:decimal/decimal.dart';
 
+import '../../../nucleo/catalogo/motivo_retiro.dart';
+
 /// Dosis de la orden del trabajo asignado: `litrosHa` o `kilosPorVuelo`,
 /// mutuamente excluyentes según la categoría de insumo (HU-79 de
 /// `agrocom-api`). La pantalla muestra una sola, nunca las dos.
@@ -33,6 +35,7 @@ class TrabajoAsignado {
     this.litrosHa,
     this.kilosPorVuelo,
     this.cantidadLotesOrden,
+    this.ordenMotivoRetiro,
     this.humedadMinPct,
     this.vientoMaxKmh,
     this.temperaturaMaxC,
@@ -65,6 +68,16 @@ class TrabajoAsignado {
 
   /// `OrdenCatalogo.cantidadLotes`: cuántos lotes cubre la orden entera.
   final int? cantidadLotesOrden;
+
+  /// `OrdenCatalogo.motivoRetiro` (tarea 27): `null` si la orden sigue
+  /// vigente o no llegó todavía. Hoy solo importa `pausada`: el servidor no
+  /// retira los trabajos de una orden pausada, así que el trabajo sigue
+  /// apareciendo como asignado.
+  final String? ordenMotivoRetiro;
+
+  /// La orden de este trabajo está pausada: el dueño decidió que no se
+  /// vuela sobre ella, aunque el servidor acepte la sesión.
+  bool get ordenPausada => ordenMotivoRetiro == MotivoRetiro.ordenPausada;
 
   // Límites climáticos y parámetros de vuelo de ESTE trabajo (tarea 23):
   // vienen en la propia fila de `TrabajoCatalogo`, no por join. `null`
@@ -109,6 +122,7 @@ class TrabajoAsignado {
           other.litrosHa == litrosHa &&
           other.kilosPorVuelo == kilosPorVuelo &&
           other.cantidadLotesOrden == cantidadLotesOrden &&
+          other.ordenMotivoRetiro == ordenMotivoRetiro &&
           other.humedadMinPct == humedadMinPct &&
           other.vientoMaxKmh == vientoMaxKmh &&
           other.temperaturaMaxC == temperaturaMaxC &&
@@ -131,6 +145,7 @@ class TrabajoAsignado {
     litrosHa,
     kilosPorVuelo,
     cantidadLotesOrden,
+    ordenMotivoRetiro,
     humedadMinPct,
     vientoMaxKmh,
     temperaturaMaxC,

@@ -7,6 +7,10 @@ import 'trabajo_en_curso.dart';
 /// No cubre la orden que todavía no llegó (`TrabajoAsignado.puedeCrearAplicacion`):
 /// ese caso ya tiene su propio aviso en la pantalla.
 ///
+/// Con la orden pausada, no: el servidor aceptaría la sesión, pero el
+/// dueño decidió que no se vuele sobre una orden pausada. Se habilita sola
+/// cuando la orden vuelve a vigente (el pull la desmarca).
+///
 /// Con algo en curso en OTRO trabajo, no: el piloto vuelve a eso desde la
 /// tarjeta de arriba y lo cierra primero — nunca dos sesiones abiertas a la
 /// vez. Sobre el MISMO trabajo sí, porque lleva a la misma pantalla de
@@ -15,6 +19,10 @@ String? motivoCrearAplicacionBloqueado({
   required TrabajoAsignado trabajo,
   required TrabajoEnCurso? enCurso,
 }) {
+  if (trabajo.ordenPausada) {
+    return 'La orden de este trabajo está pausada: no se vuela hasta que '
+        'vuelva a estar vigente.';
+  }
   if (enCurso != null && enCurso.trabajoUuidCliente != trabajo.uuidCliente) {
     return enCurso.conSesion
         ? 'Tenés una sesión en curso en otro trabajo: volvé a ella desde '

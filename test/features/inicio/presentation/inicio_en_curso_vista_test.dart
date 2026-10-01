@@ -43,7 +43,7 @@ class _SelectorFotoFalso extends Mock implements SelectorFoto {}
 const _uuidAsignado = 'uuid-panel-42';
 const _uuidOtro = 'uuid-trabajo-de-la-app';
 
-TrabajoAsignado _asignado() => TrabajoAsignado(
+TrabajoAsignado _asignado({String? ordenMotivoRetiro}) => TrabajoAsignado(
   id: 42,
   uuidCliente: _uuidAsignado,
   ordenId: 1,
@@ -53,6 +53,7 @@ TrabajoAsignado _asignado() => TrabajoAsignado(
   updatedAt: DateTime.utc(2026, 9, 22),
   loteCodigo: 'L-14',
   nroAplicacion: 2,
+  ordenMotivoRetiro: ordenMotivoRetiro,
 );
 
 TrabajoEnCurso _enCurso({
@@ -250,5 +251,46 @@ void main() {
     expect(find.byKey(const Key('inicio_en_curso')), findsOneWidget);
     expect(crearAplicacion(tester), isNotNull);
     expect(find.byKey(const Key('inicio_crear_bloqueado')), findsNothing);
+  });
+
+  testWidgets('orden pausada → reanudada: badge «Orden pausada» y «Crear '
+      'aplicación» deshabilitado con el motivo, y se habilita solo', (
+    tester,
+  ) async {
+    final asignado = StreamController<TrabajoAsignado?>();
+    addTearDown(asignado.close);
+    // Primer valor antes de bombear: el controller lo guarda hasta que el
+    // cubit se suscribe (sin él, «cargando» no deja asentar la pantalla).
+    asignado.add(_asignado(ordenMotivoRetiro: 'pausada'));
+    await bombear(
+      tester,
+      asignado: asignado.stream,
+      enCurso: Stream.value(null),
+    );
+
+    expect(
+      tester
+          .widget<BadgeEstadoCampo>(
+            find.byKey(const Key('inicio_orden_pausada')),
+          )
+          .texto,
+      'Orden pausada',
+    );
+    expect(crearAplicacion(tester), isNull);
+    expect(
+      tester
+          .widget<NotaInlineCampo>(
+            find.byKey(const Key('inicio_crear_bloqueado')),
+          )
+          .texto,
+      contains('orden de este trabajo está pausada'),
+    );
+
+    asignado.add(_asignado());
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('inicio_orden_pausada')), findsNothing);
+    expect(find.byKey(const Key('inicio_crear_bloqueado')), findsNothing);
+    expect(crearAplicacion(tester), isNotNull);
   });
 }

@@ -18,6 +18,7 @@ import 'package:agrocom_field/nucleo/db/database.dart';
 import 'package:agrocom_field/nucleo/db/tablas/sesion_local.dart';
 import 'package:agrocom_field/nucleo/db/tablas/trabajo_local.dart';
 import 'package:decimal/decimal.dart';
+import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -155,7 +156,67 @@ void main() {
     expect(bloc.state, const SesionInicial());
   });
 
+  Future<void> sembrarOrden({String? motivoRetiro}) => db
+      .into(db.ordenCatalogo)
+      .insert(
+        OrdenCatalogoCompanion.insert(
+          id: const Value(1),
+          contratoId: 1,
+          loteId: 3,
+          nroAplicacion: 1,
+          fechaEmision: '2026-09-20',
+          estado: 'vigente',
+          updatedAt: DateTime.utc(2026, 9, 20),
+          motivoRetiro: Value(motivoRetiro),
+        ),
+      );
+
+  test('orden pausada con una sesión YA abierta: se retoma y se cierra '
+      'igual', () async {
+    final trabajo = await abrirTrabajo();
+    final sesionUuid = await abrirSesion(trabajo);
+    await sembrarOrden(motivoRetiro: 'pausada');
+
+    final bloc = nuevoBloc(trabajo)..add(const SesionCargaSolicitada());
+    addTearDown(bloc.close);
+    await procesar(bloc);
+    expect((bloc.state as SesionActiva).sesion.uuidCliente, sesionUuid);
+
+    bloc.add(
+      SesionCerrarSolicitada(
+        motivoCierre: 'clima',
+        hectareasDeclaradas: Decimal.parse('3'),
+      ),
+    );
+    await procesar(bloc);
+
+    expect(bloc.state, isA<SesionCerrada>());
+    expect(
+      (await db.select(db.sesionLocal).getSingle()).estado,
+      EstadoSesionLocal.cerrada,
+    );
+  });
+
   group('restricción de apertura', () {
+    test('orden pausada: bloquea una sesión nueva con el motivo; vigente '
+        'otra vez, se puede', () async {
+      final trabajo = await abrirTrabajo();
+      await sembrarOrden(motivoRetiro: 'pausada');
+
+      final pausada = await sesionRepositorio.restriccionAperturaDeTrabajo(
+        trabajo,
+      );
+      expect(pausada.bloqueo, contains('orden de este trabajo está pausada'));
+
+      await (db.update(db.ordenCatalogo)..where((t) => t.id.equals(1))).write(
+        const OrdenCatalogoCompanion(motivoRetiro: Value(null)),
+      );
+      expect(
+        await sesionRepositorio.restriccionAperturaDeTrabajo(trabajo),
+        RestriccionApertura.ninguna,
+      );
+    });
+
     test('sin sesión abierta en el dispositivo, nada la impide', () async {
       final trabajo = await abrirTrabajo();
 

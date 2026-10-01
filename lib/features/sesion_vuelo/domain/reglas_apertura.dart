@@ -1,3 +1,5 @@
+import '../../../nucleo/catalogo/motivo_retiro.dart';
+
 /// Si se puede abrir una sesión NUEVA sobre un trabajo, y por qué no
 /// (tarea 27). Dart puro: el repositorio lee de `drift` lo que hace falta y
 /// [restriccionApertura] decide — mismo reparto que `reglas_condiciones.dart`.
@@ -27,12 +29,27 @@ final class RestriccionApertura {
 /// [haySesionAbierta]: si este dispositivo ya tiene una sesión abierta, en
 /// cualquier trabajo. Nunca dos a la vez: la segunda se abre recién después
 /// de cerrar la primera.
-RestriccionApertura restriccionApertura({required bool haySesionAbierta}) {
+///
+/// [motivoRetiroOrden]: `OrdenCatalogo.motivoRetiro` de la orden del
+/// trabajo. Con `pausada` no se abre una sesión nueva — el servidor la
+/// aceptaría, pero el dueño decidió que no se vuele sobre una orden
+/// pausada.
+RestriccionApertura restriccionApertura({
+  required bool haySesionAbierta,
+  String? motivoRetiroOrden,
+}) {
   if (haySesionAbierta) {
     return const RestriccionApertura(
       bloqueo:
           'Ya hay una sesión abierta en este dispositivo: volvé a ella desde '
           '«Inicio» y cerrala antes de abrir otra.',
+    );
+  }
+  if (motivoRetiroOrden == MotivoRetiro.ordenPausada) {
+    return const RestriccionApertura(
+      bloqueo:
+          'La orden de este trabajo está pausada: no se vuela hasta que '
+          'vuelva a estar vigente.',
     );
   }
   return RestriccionApertura.ninguna;

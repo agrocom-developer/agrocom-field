@@ -147,6 +147,7 @@ class InicioRepository {
       litrosHa: orden?.litrosHa,
       kilosPorVuelo: orden?.kilosPorVuelo,
       cantidadLotesOrden: orden?.cantidadLotes,
+      ordenMotivoRetiro: orden?.motivoRetiro,
       humedadMinPct: trabajo.humedadMinPct,
       vientoMaxKmh: trabajo.vientoMaxKmh,
       temperaturaMaxC: trabajo.temperaturaMaxC,

@@ -339,7 +339,26 @@ class SesionRepository {
               ..where((t) => t.estado.equalsValue(EstadoSesionLocal.abierta))
               ..limit(1))
             .getSingleOrNull();
-    return restriccionApertura(haySesionAbierta: abierta != null);
+    // La orden sale de `TrabajoLocal` (siempre está: sin él no se abre
+    // sesión) o, si faltara, de la fila del catálogo.
+    final trabajoLocal =
+        await (_db.select(_db.trabajoLocal)
+              ..where((t) => t.uuidCliente.equals(trabajoUuidCliente)))
+            .getSingleOrNull();
+    final trabajoCatalogo =
+        await (_db.select(_db.trabajoCatalogo)
+              ..where((t) => t.uuidCliente.equals(trabajoUuidCliente)))
+            .getSingleOrNull();
+    final ordenId = trabajoLocal?.ordenId ?? trabajoCatalogo?.ordenId;
+    final orden = ordenId == null
+        ? null
+        : await (_db.select(
+            _db.ordenCatalogo,
+          )..where((t) => t.id.equals(ordenId))).getSingleOrNull();
+    return restriccionApertura(
+      haySesionAbierta: abierta != null,
+      motivoRetiroOrden: orden?.motivoRetiro,
+    );
   }
 
   /// Auxiliares activos disponibles para el dropdown del formulario de
