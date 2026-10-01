@@ -41,7 +41,10 @@ part 'database.g.dart';
 /// [LoteCatalogo]: `campoId` → `propiedadId` (ADR 0020 de `agrocom-api`, el
 /// servidor elimina la entidad `Campo` — `Lote` cuelga directo de
 /// `Propiedad`). Mismo criterio que v8: espejo de solo lectura, se recrea
-/// entera sin perder nada, el próximo pull la repuebla.
+/// entera sin perder nada, el próximo pull la repuebla. TE-23 (v10) agrega
+/// a [OrdenCatalogo] `cantidadLotes` y `hectareasSolicitadas`, derivadas de
+/// `lotes[]` (ADR 0022 de `agrocom-api`), con `ALTER TABLE` y conservando
+/// las órdenes ya bajadas.
 /// Las tablas espejo del resto de las features de escritura (recargas...)
 /// se agregan en tareas técnicas posteriores, cada una subiendo
 /// [schemaVersion] con su propia migración — nunca reescribiendo la
@@ -65,7 +68,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -153,6 +156,23 @@ class AppDatabase extends _$AppDatabase {
       if (from < 9) {
         await m.deleteTable(loteCatalogo.actualTableName);
         await m.createTable(loteCatalogo);
+        await (delete(cursorCatalogo)).go();
+      }
+      // v10 (TE-23): `orden_catalogo` gana `cantidad_lotes` y
+      // `hectareas_solicitadas`, derivadas de `lotes[]` (ADR 0022 de
+      // `agrocom-api`). A diferencia de v8/v9, `ALTER TABLE` en vez de
+      // recrear: las dos columnas son nullable, así que se pueden agregar
+      // sin perder las órdenes ya bajadas. `from >= 8` por el mismo motivo
+      // que v7: si el dispositivo viene de antes de v8, el bloque `from < 8`
+      // ya recreó la tabla con la clase Dart actual, que incluye estas
+      // columnas. El cursor se resetea igual, para que el próximo pull
+      // vuelva a traer todas las órdenes y complete las columnas nuevas de
+      // las filas conservadas.
+      if (from >= 8 && from < 10) {
+        await m.addColumn(ordenCatalogo, ordenCatalogo.cantidadLotes);
+        await m.addColumn(ordenCatalogo, ordenCatalogo.hectareasSolicitadas);
+      }
+      if (from < 10) {
         await (delete(cursorCatalogo)).go();
       }
     },
