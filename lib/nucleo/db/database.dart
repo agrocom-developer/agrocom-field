@@ -12,6 +12,7 @@ import 'tablas/lote_catalogo.dart';
 import 'tablas/orden_catalogo.dart';
 import 'tablas/persona_catalogo.dart';
 import 'tablas/sesion_local.dart';
+import 'tablas/trabajo_catalogo.dart';
 import 'tablas/trabajo_local.dart';
 
 part 'database.g.dart';
@@ -44,7 +45,9 @@ part 'database.g.dart';
 /// entera sin perder nada, el próximo pull la repuebla. TE-23 (v10) agrega
 /// a [OrdenCatalogo] `cantidadLotes` y `hectareasSolicitadas`, derivadas de
 /// `lotes[]` (ADR 0022 de `agrocom-api`), con `ALTER TABLE` y conservando
-/// las órdenes ya bajadas.
+/// las órdenes ya bajadas. HU-70 (v11) agrega [TrabajoCatalogo], el
+/// trabajo asignado desde el panel, espejo de solo lectura separado de
+/// [TrabajoLocal] (invariante 4 de CLAUDE.md).
 /// Las tablas espejo del resto de las features de escritura (recargas...)
 /// se agregan en tareas técnicas posteriores, cada una subiendo
 /// [schemaVersion] con su propia migración — nunca reescribiendo la
@@ -56,6 +59,7 @@ part 'database.g.dart';
     LoteCatalogo,
     PersonaCatalogo,
     CursorCatalogo,
+    TrabajoCatalogo,
     TrabajoLocal,
     SesionLocal,
     CondicionLocal,
@@ -68,7 +72,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -173,6 +177,16 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(ordenCatalogo, ordenCatalogo.hectareasSolicitadas);
       }
       if (from < 10) {
+        await (delete(cursorCatalogo)).go();
+      }
+      // v11 (HU-70): agrega `trabajo_catalogo`, el espejo de solo lectura de
+      // `trabajos[]` del pull, sin tocar ninguna tabla anterior. El cursor
+      // se resetea porque es un único valor opaco para las cuatro secciones:
+      // los trabajos asignados antes de esta versión ya quedaron atrás del
+      // cursor guardado (el pull los ignoraba) y sin reset no volverían a
+      // bajar nunca.
+      if (from < 11) {
+        await m.createTable(trabajoCatalogo);
         await (delete(cursorCatalogo)).go();
       }
     },
