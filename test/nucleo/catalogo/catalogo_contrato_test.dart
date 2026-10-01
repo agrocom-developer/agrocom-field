@@ -17,6 +17,12 @@
 // regenerado del código en #309): `ordenes[]` ya no trae campos de
 // clima/vuelo, y en `trabajos[]` `viento_max_kmh`, `temperatura_max_c` y
 // `humedad_max_pct` siempre traen valor (límites efectivos).
+//
+// Tarea 26 (`agrocom-api` #313, develop @ 5df5e8f5): la respuesta suma
+// `ordenes_retiradas` y `trabajos_retirados`, siempre presentes. Sus filas
+// nunca son a la vez filas de `ordenes[]`/`trabajos[]` de la misma
+// respuesta, y con cursor vacío vienen vacías: el fixture las trae con ids
+// propios y el test de retirados de abajo parte de un cursor previo.
 
 import 'dart:convert';
 import 'dart:io';
@@ -26,7 +32,7 @@ import 'package:agrocom_field/nucleo/catalogo/catalogo_repository.dart';
 import 'package:agrocom_field/nucleo/db/database.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dio/dio.dart';
-import 'package:drift/drift.dart' show OrderingTerm;
+import 'package:drift/drift.dart' show OrderingTerm, Value;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -62,7 +68,15 @@ void main() {
   test('el fixture tiene todas las claves required de la respuesta', () {
     expect(
       _fixture().keys,
-      containsAll(['ordenes', 'lotes', 'personas', 'trabajos', 'cursor']),
+      containsAll([
+        'ordenes',
+        'lotes',
+        'personas',
+        'trabajos',
+        'ordenes_retiradas',
+        'trabajos_retirados',
+        'cursor',
+      ]),
     );
   });
 
@@ -138,4 +152,78 @@ void main() {
     )..where((t) => t.id.equals(0))).getSingle();
     expect(cursor.cursor, _fixture()['cursor']);
   });
+
+  test(
+    'tarea 26: ordenes_retiradas y trabajos_retirados del contrato marcan '
+    'las filas que el dispositivo tenía, sin borrarlas ni tocar el resto',
+    () async {
+      // Un dispositivo con cursor previo que ya tenía la orden 7 y el trabajo
+      // 50: con cursor vacío el servidor no manda retirados.
+      await db
+          .into(db.cursorCatalogo)
+          .insert(
+            CursorCatalogoCompanion.insert(
+              id: const Value(0),
+              cursor: const Value('c-previo'),
+            ),
+          );
+      await db
+          .into(db.ordenCatalogo)
+          .insert(
+            OrdenCatalogoCompanion.insert(
+              id: const Value(7),
+              contratoId: 1,
+              loteId: 3,
+              nroAplicacion: 1,
+              fechaEmision: '2026-09-01',
+              estado: 'vigente',
+              updatedAt: DateTime.utc(2026, 9, 1),
+            ),
+          );
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(
+            TrabajoCatalogoCompanion.insert(
+              id: const Value(50),
+              uuidCliente: '5c2e8d1a-7b3f-4e9a-9d2c-1f0a6b8e4c7d',
+              ordenId: 7,
+              loteId: 3,
+              hectareasDeclaradas: Decimal.parse('10.00'),
+              equipoTrabajoId: 7,
+              updatedAt: DateTime.utc(2026, 9, 1),
+            ),
+          );
+
+      expect(await repositorio.pull(), isTrue);
+
+      final retirada = await (db.select(
+        db.ordenCatalogo,
+      )..where((t) => t.id.equals(7))).getSingle();
+      expect(retirada.motivoRetiro, 'pausada');
+      expect(
+        retirada.retiroActualizadoEn!.isAtSameMomentAs(
+          DateTime.utc(2026, 10, 1, 11),
+        ),
+        isTrue,
+      );
+      final retirado = await (db.select(
+        db.trabajoCatalogo,
+      )..where((t) => t.id.equals(50))).getSingle();
+      expect(retirado.motivoRetiro, 'reasignado');
+
+      // Lo que llegó como vigente queda sin marca.
+      final ordenes = await db.select(db.ordenCatalogo).get();
+      expect(ordenes, hasLength(3));
+      expect(
+        ordenes.where((o) => o.id != 7).map((o) => o.motivoRetiro),
+        everyElement(isNull),
+      );
+      expect(
+        (await (db.select(
+          db.trabajoCatalogo,
+        )..where((t) => t.id.equals(42))).getSingle()).motivoRetiro,
+        isNull,
+      );
+    },
+  );
 }

@@ -41,13 +41,32 @@ Map<String, dynamic> _cuerpo({
   List<Map<String, dynamic>> lotes = const [],
   List<Map<String, dynamic>> personas = const [],
   List<Map<String, dynamic>>? trabajos,
+  List<Map<String, dynamic>>? ordenesRetiradas,
+  List<Map<String, dynamic>>? trabajosRetirados,
   required String cursor,
 }) => {
   'ordenes': ordenes,
   'lotes': lotes,
   'personas': personas,
   'trabajos': ?trabajos,
+  'ordenes_retiradas': ?ordenesRetiradas,
+  'trabajos_retirados': ?trabajosRetirados,
   'cursor': cursor,
+};
+
+/// `OrdenRetiradaCatalogo` / `TrabajoRetiradoCatalogo` de `agrocom-api`
+/// #313 (tarea 26).
+Map<String, dynamic> _ordenRetirada(int id, String estado) => {
+  'id': id,
+  'estado': estado,
+  'updated_at': '2026-09-25T12:00:00+00:00',
+};
+
+Map<String, dynamic> _trabajoRetirado(int id, String motivo) => {
+  'id': id,
+  'uuid_cliente': 'uuid-panel-$id',
+  'motivo': motivo,
+  'updated_at': '2026-09-25T12:00:00+00:00',
 };
 
 /// `TrabajoCatalogo` del `openapi.yaml` (HU-70).
@@ -328,6 +347,148 @@ void main() {
       expect(ordenes[1].estado, 'vigente');
 
       expect(await _cursorGuardado(db), 'c2');
+    });
+
+    test('tarea 26: la misma página con retirados aplicada diez veces deja '
+        'la base idéntica, sin borrar ni duplicar filas', () async {
+      final db = AppDatabase(NativeDatabase.memory());
+      addTearDown(db.close);
+
+      final retiros = _cuerpo(
+        ordenes: [
+          _ordenJson(
+            id: 1,
+            estado: 'vigente',
+            updatedAt: '2026-09-20T12:00:00+00:00',
+          ),
+        ],
+        trabajos: [_trabajoJson(id: 42, uuidCliente: 'uuid-panel-42')],
+        ordenesRetiradas: [_ordenRetirada(2, 'cancelada')],
+        trabajosRetirados: [_trabajoRetirado(43, 'dado_de_baja')],
+        cursor: 'c1',
+      );
+      final servidor = _ServidorCatalogoFalso({
+        null: _cuerpo(
+          ordenes: [
+            _ordenJson(
+              id: 1,
+              estado: 'vigente',
+              updatedAt: '2026-09-20T12:00:00+00:00',
+            ),
+            _ordenJson(
+              id: 2,
+              estado: 'vigente',
+              updatedAt: '2026-09-20T12:00:00+00:00',
+            ),
+          ],
+          trabajos: [
+            _trabajoJson(id: 42, uuidCliente: 'uuid-panel-42'),
+            _trabajoJson(id: 43, uuidCliente: 'uuid-panel-43'),
+          ],
+          cursor: 'c1',
+        ),
+        'c1': retiros,
+      });
+      final repositorio = CatalogoRepository(
+        db: db,
+        apiClient: _clienteContra(servidor),
+      );
+
+      await repositorio.pull();
+      await repositorio.pull();
+      final despuesDeUno = await _volcado(db);
+      for (var i = 0; i < 9; i++) {
+        await repositorio.pull();
+      }
+
+      expect(await _volcado(db), despuesDeUno);
+      final ordenes = await (db.select(
+        db.ordenCatalogo,
+      )..orderBy([(t) => OrderingTerm.asc(t.id)])).get();
+      expect(ordenes.map((o) => o.motivoRetiro), [null, 'cancelada']);
+      final trabajos = await (db.select(
+        db.trabajoCatalogo,
+      )..orderBy([(t) => OrderingTerm.asc(t.id)])).get();
+      expect(trabajos.map((t) => t.motivoRetiro), [null, 'dado_de_baja']);
+    });
+
+    // Mismo criterio que el test de reintentos de HU-70 de arriba: el único
+    // desorden posible es repetir una página ya aplicada. Acá con una orden
+    // que se pausa y se reanuda, y el barrido completo que se cierra.
+    test('tarea 26: páginas con retirados repetidas por reintento convergen '
+        'al mismo estado, barrido incluido', () async {
+      final vigente1 = _ordenJson(
+        id: 1,
+        estado: 'vigente',
+        updatedAt: '2026-09-20T12:00:00+00:00',
+      );
+      final vigente2 = _ordenJson(
+        id: 2,
+        estado: 'vigente',
+        updatedAt: '2026-09-20T12:00:00+00:00',
+      );
+      final reanudada2 = _ordenJson(
+        id: 2,
+        estado: 'vigente',
+        updatedAt: '2026-09-26T12:00:00+00:00',
+      );
+
+      Future<List<Object>> aplicar(List<String?> desdes) async {
+        final db = AppDatabase(NativeDatabase.memory());
+        addTearDown(db.close);
+        final servidor = _ServidorCatalogoFalso({
+          null: _cuerpo(
+            ordenes: [vigente1, vigente2],
+            trabajos: [_trabajoJson(id: 42, uuidCliente: 'uuid-panel-42')],
+            cursor: 'c1',
+          ),
+          'c1': _cuerpo(
+            ordenesRetiradas: [_ordenRetirada(2, 'pausada')],
+            trabajosRetirados: [_trabajoRetirado(42, 'cerrado')],
+            cursor: 'c2',
+          ),
+          'c2': _cuerpo(ordenes: [reanudada2], cursor: 'c3'),
+          'c3': _cuerpo(cursor: 'c3'),
+        });
+        final cliente = _clienteContra(servidor);
+        for (final desde in desdes) {
+          await (db.update(
+            db.cursorCatalogo,
+          )).write(CursorCatalogoCompanion(cursor: Value(desde)));
+          if (desde != null &&
+              await db.select(db.cursorCatalogo).getSingleOrNull() == null) {
+            await db
+                .into(db.cursorCatalogo)
+                .insert(
+                  CursorCatalogoCompanion.insert(
+                    id: const Value(0),
+                    cursor: Value(desde),
+                  ),
+                );
+          }
+          await CatalogoRepository(db: db, apiClient: cliente).pull();
+        }
+        return _volcado(db);
+      }
+
+      final enOrden = await aplicar([null, 'c1', 'c2', 'c3']);
+      final repetido = await aplicar([
+        null,
+        'c1',
+        'c1',
+        'c2',
+        'c2',
+        'c3',
+        'c3',
+      ]);
+
+      expect(repetido, enOrden);
+      final ordenes = enOrden.whereType<OrdenCatalogoData>().toList();
+      expect(ordenes.map((o) => o.motivoRetiro), [null, null]);
+      final trabajos = enOrden.whereType<TrabajoCatalogoData>().toList();
+      expect(trabajos.single.motivoRetiro, 'cerrado');
+      final cursor = enOrden.whereType<CursorCatalogoData>().single;
+      expect(cursor.barridoEnCurso, isFalse);
     });
   });
 }

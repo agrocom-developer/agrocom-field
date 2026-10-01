@@ -92,5 +92,20 @@
       "updated_at": "2026-09-22T12:00:00+00:00"
     }
   ],
+  "ordenes_retiradas": [
+    {
+      "id": 7,
+      "estado": "pausada",
+      "updated_at": "2026-10-01T11:00:00+00:00"
+    }
+  ],
+  "trabajos_retirados": [
+    {
+      "id": 50,
+      "uuid_cliente": "5c2e8d1a-7b3f-4e9a-9d2c-1f0a6b8e4c7d",
+      "motivo": "reasignado",
+      "updated_at": "2026-10-01T11:00:00+00:00"
+    }
+  ],
   "cursor": "eyJ1cGRhdGVkX2F0IjoiMjAyNi0wOS0yMlQxMjowMDowMCswMDowMCIsImlkIjo0Mn0="
 }
