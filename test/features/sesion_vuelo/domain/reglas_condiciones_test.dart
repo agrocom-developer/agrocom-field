@@ -146,4 +146,89 @@ void main() {
       );
     });
   });
+
+  group('tarea 24: límites efectivos del trabajo (LimitesEfectivos)', () {
+    Decimal d(String v) => Decimal.parse(v);
+
+    bool fuera(
+      String viento,
+      String temperatura,
+      String humedad, {
+      LimitesCondiciones? limites,
+    }) => condicionesFueraDeRango(
+      vientoKmh: d(viento),
+      temperaturaC: d(temperatura),
+      humedadPct: d(humedad),
+      limites: limites,
+    );
+
+    test('sin límites propios usa los defaults del servidor: 17/30/90 y sin '
+        'humedad mínima', () {
+      final limites = LimitesCondiciones.porDefecto();
+      expect(limites.vientoMaxKmh, d('17'));
+      expect(limites.temperaturaMaxC, d('30'));
+      expect(limites.humedadMaxPct, d('90'));
+      expect(limites.humedadMinPct, isNull);
+      expect(LimitesCondiciones.resolver(), limites);
+    });
+
+    test('los topes son inclusivos: igual al límite está dentro de rango', () {
+      final limites = LimitesCondiciones.resolver(
+        vientoMaxKmh: d('12.50'),
+        temperaturaMaxC: d('28.00'),
+        humedadMaxPct: d('80.00'),
+      );
+      expect(fuera('12.5', '28', '80', limites: limites), isFalse);
+      expect(fuera('12.51', '28', '80', limites: limites), isTrue);
+      expect(fuera('12.5', '28.01', '80', limites: limites), isTrue);
+      expect(fuera('12.5', '28', '80.01', limites: limites), isTrue);
+      // Con los defaults, igual al límite también está dentro.
+      expect(fuera('17', '30', '90'), isFalse);
+    });
+
+    test('límite propio más estricto que la constante: exige observación por '
+        'debajo de 17 km/h', () {
+      final limites = LimitesCondiciones.resolver(vientoMaxKmh: d('12.00'));
+      expect(fuera('15', '20', '50', limites: limites), isTrue);
+      expect(fuera('15', '20', '50'), isFalse);
+    });
+
+    test('límite propio más permisivo que la constante: no exige observación '
+        'por encima de 17 km/h', () {
+      final limites = LimitesCondiciones.resolver(
+        vientoMaxKmh: d('22.00'),
+        temperaturaMaxC: d('35.00'),
+        humedadMaxPct: d('95.00'),
+      );
+      expect(fuera('20', '33', '93', limites: limites), isFalse);
+      expect(fuera('20', '33', '93'), isTrue);
+    });
+
+    test('un límite propio en blanco hereda el default y los demás se '
+        'respetan', () {
+      final limites = LimitesCondiciones.resolver(temperaturaMaxC: d('25.00'));
+      expect(limites.vientoMaxKmh, d('17'));
+      expect(limites.humedadMaxPct, d('90'));
+      expect(fuera('17', '25', '90', limites: limites), isFalse);
+      expect(fuera('17', '26', '90', limites: limites), isTrue);
+      expect(fuera('18', '25', '90', limites: limites), isTrue);
+    });
+
+    test('humedad mínima fijada: por debajo exige observación, igual al '
+        'mínimo está dentro', () {
+      final limites = LimitesCondiciones.resolver(humedadMinPct: d('40.00'));
+      expect(fuera('10', '20', '39.99', limites: limites), isTrue);
+      expect(fuera('10', '20', '40', limites: limites), isFalse);
+      expect(fuera('10', '20', '60', limites: limites), isFalse);
+    });
+
+    test('humedad mínima sin fijar: cualquier humedad bajo el máximo está '
+        'dentro, incluso 0', () {
+      expect(fuera('10', '20', '0'), isFalse);
+      expect(
+        fuera('10', '20', '0', limites: LimitesCondiciones.resolver()),
+        isFalse,
+      );
+    });
+  });
 }
