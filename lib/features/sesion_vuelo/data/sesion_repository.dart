@@ -61,10 +61,13 @@ class SesionRepository {
       trabajoUuidCliente: trabajoUuidCliente,
     );
 
+    // Los límites efectivos del trabajo, los mismos con los que el servidor
+    // va a validar el registro `condiciones` (tarea 24).
     final fueraDeRango = condicionesFueraDeRango(
       vientoKmh: vientoKmh,
       temperaturaC: temperaturaC,
       humedadPct: humedadPct,
+      limites: await limitesCondiciones(trabajoUuidCliente),
     );
     verificarObservacionSiFueraDeRango(
       fueraDeRango: fueraDeRango,
@@ -257,6 +260,36 @@ class SesionRepository {
       )..where((t) => t.uuidCliente.equals(sesionUuidCliente))).getSingle();
       return _sesionDesdeFila(fila);
     });
+  }
+
+  /// Límites efectivos del trabajo [trabajoUuidCliente] para decidir las
+  /// condiciones de apertura (tarea 24), leídos de `drift` (invariante 1 de
+  /// CLAUDE.md). Mismo criterio que `Trabajo::limitesEfectivos()` de
+  /// `agrocom-api`:
+  ///
+  /// - Trabajo asignado desde el panel: la fila de `trabajo_catalogo` con
+  ///   ese `uuid_cliente`, que el servidor ya manda resuelta (#309). Un
+  ///   límite en `null` hereda el default igual.
+  /// - Trabajo abierto por la app (`abrirTrabajo`): no tiene fila en
+  ///   `trabajo_catalogo` ni Orden de Trabajo en el servidor, así que usa
+  ///   los defaults del sistema, igual que el servidor.
+  ///
+  /// Sin `Stream`, mismo criterio que [auxiliaresDisponibles]: el formulario
+  /// la pide una sola vez al abrirse.
+  Future<LimitesCondiciones> limitesCondiciones(
+    String trabajoUuidCliente,
+  ) async {
+    final trabajo =
+        await (_db.select(_db.trabajoCatalogo)
+              ..where((t) => t.uuidCliente.equals(trabajoUuidCliente)))
+            .getSingleOrNull();
+    if (trabajo == null) return LimitesCondiciones.porDefecto();
+    return LimitesCondiciones.resolver(
+      vientoMaxKmh: trabajo.vientoMaxKmh,
+      temperaturaMaxC: trabajo.temperaturaMaxC,
+      humedadMaxPct: trabajo.humedadMaxPct,
+      humedadMinPct: trabajo.humedadMinPct,
+    );
   }
 
   /// Auxiliares activos disponibles para el dropdown del formulario de
