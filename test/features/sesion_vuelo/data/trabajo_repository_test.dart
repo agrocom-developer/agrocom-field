@@ -8,6 +8,7 @@
 
 import 'dart:convert';
 
+import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_trabajo.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/trabajo.dart';
@@ -238,6 +239,87 @@ void main() {
       )..where((t) => t.tipoEntidad.equals('cierre_trabajo'))).getSingle();
       final payload = jsonDecode(filaOutbox.payload) as Map<String, dynamic>;
       expect(payload['litros_sobrante'], isNull);
+    });
+  });
+
+  group('abrirTrabajoAsignado (HU-70: trabajo asignado desde el panel)', () {
+    const uuidPanel = '9a1b7e3e-2f7a-4b3d-8c1e-6f2a1d9c4b0a';
+
+    test('crea la fila TrabajoLocal con el uuid_cliente del panel tal cual y '
+        'NO encola nada en ColaSync', () async {
+      final trabajo = await repositorio.abrirTrabajoAsignado(
+        uuidCliente: uuidPanel,
+        ordenId: 1,
+        loteId: 3,
+        nroAplicacion: 2,
+        inicio: DateTime.utc(2026, 9, 23, 8),
+      );
+
+      expect(trabajo.uuidCliente, uuidPanel);
+      expect(trabajo.ordenId, 1);
+      expect(trabajo.loteId, 3);
+      expect(trabajo.nroAplicacion, 2);
+      expect(trabajo.estado, EstadoTrabajo.abierto);
+
+      final fila = (await db.select(db.trabajoLocal).get()).single;
+      expect(fila.uuidCliente, uuidPanel);
+      expect(fila.estado, EstadoTrabajoLocal.abierto);
+      expect(await db.select(db.colaSync).get(), isEmpty);
+    });
+
+    test('es idempotente: un segundo toque devuelve la misma fila sin '
+        'tocarla ni encolar', () async {
+      await repositorio.abrirTrabajoAsignado(
+        uuidCliente: uuidPanel,
+        ordenId: 1,
+        loteId: 3,
+        nroAplicacion: 2,
+        inicio: DateTime.utc(2026, 9, 23, 8),
+      );
+      final segundo = await repositorio.abrirTrabajoAsignado(
+        uuidCliente: uuidPanel,
+        ordenId: 1,
+        loteId: 3,
+        nroAplicacion: 2,
+        inicio: DateTime.utc(2026, 9, 23, 9),
+      );
+
+      expect(await db.select(db.trabajoLocal).get(), hasLength(1));
+      expect(
+        segundo.inicio.isAtSameMomentAs(DateTime.utc(2026, 9, 23, 8)),
+        isTrue,
+        reason: 'la fila existente no se reescribe',
+      );
+      expect(await db.select(db.colaSync).get(), isEmpty);
+    });
+
+    test('la sesión se abre sobre ESE trabajo: el registro sesion encolado '
+        'referencia el uuid_cliente del panel', () async {
+      final trabajo = await repositorio.abrirTrabajoAsignado(
+        uuidCliente: uuidPanel,
+        ordenId: 1,
+        loteId: 3,
+        nroAplicacion: 2,
+        inicio: DateTime.utc(2026, 9, 23, 8),
+      );
+
+      final sesion = await SesionRepository(db).abrirSesion(
+        trabajoUuidCliente: trabajo.uuidCliente,
+        pilotoId: 5,
+        inicio: DateTime.utc(2026, 9, 23, 8, 5),
+        vientoKmh: Decimal.parse('9'),
+        temperaturaC: Decimal.parse('24'),
+        humedadPct: Decimal.parse('61'),
+      );
+
+      expect(sesion.trabajoUuidCliente, uuidPanel);
+      final encolados = await db.select(db.colaSync).get();
+      expect(encolados.map((f) => f.tipoEntidad), isNot(contains('trabajo')));
+      final filaSesion = encolados.singleWhere(
+        (f) => f.tipoEntidad == 'sesion',
+      );
+      final payload = jsonDecode(filaSesion.payload) as Map<String, dynamic>;
+      expect(payload['trabajo_uuid_cliente'], uuidPanel);
     });
   });
 }

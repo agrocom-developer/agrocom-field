@@ -322,4 +322,69 @@ void main() {
       expect(resultado, isNull);
     },
   );
+
+  group('abrirAsignado (HU-70)', () {
+    late _TrabajoRepositorioFalso repositorio;
+
+    setUp(() => repositorio = _TrabajoRepositorioFalso());
+
+    TrabajoCubit construir() => TrabajoCubit(
+      repositorio,
+      evidenciaRepositorio: _EvidenciaRepositoryFalso(),
+      selectorFoto: _SelectorFotoFalso(),
+    );
+
+    blocTest<TrabajoCubit, TrabajoEstado>(
+      'cargando → exitoso con el trabajo del uuid_cliente del panel',
+      setUp: () => when(
+        () => repositorio.abrirTrabajoAsignado(
+          uuidCliente: 'uuid-panel',
+          ordenId: 1,
+          loteId: 3,
+          nroAplicacion: 2,
+          inicio: any(named: 'inicio'),
+        ),
+      ).thenAnswer((_) async => _trabajo(uuidCliente: 'uuid-panel')),
+      build: construir,
+      act: (cubit) => cubit.abrirAsignado(
+        uuidCliente: 'uuid-panel',
+        ordenId: 1,
+        loteId: 3,
+        nroAplicacion: 2,
+      ),
+      expect: () => [
+        const TrabajoCargando(),
+        TrabajoExitoso(_trabajo(uuidCliente: 'uuid-panel')),
+      ],
+      verify: (_) => verifyNever(
+        () => repositorio.abrirTrabajo(
+          ordenId: any(named: 'ordenId'),
+          loteId: any(named: 'loteId'),
+          nroAplicacion: any(named: 'nroAplicacion'),
+          inicio: any(named: 'inicio'),
+        ),
+      ),
+    );
+
+    blocTest<TrabajoCubit, TrabajoEstado>(
+      'cargando → error si el repositorio falla',
+      setUp: () => when(
+        () => repositorio.abrirTrabajoAsignado(
+          uuidCliente: any(named: 'uuidCliente'),
+          ordenId: any(named: 'ordenId'),
+          loteId: any(named: 'loteId'),
+          nroAplicacion: any(named: 'nroAplicacion'),
+          inicio: any(named: 'inicio'),
+        ),
+      ).thenThrow(StateError('base cerrada')),
+      build: construir,
+      act: (cubit) => cubit.abrirAsignado(
+        uuidCliente: 'uuid-panel',
+        ordenId: 1,
+        loteId: 3,
+        nroAplicacion: 2,
+      ),
+      expect: () => [const TrabajoCargando(), isA<TrabajoError>()],
+    );
+  });
 }
