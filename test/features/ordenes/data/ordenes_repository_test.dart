@@ -351,4 +351,95 @@ void main() {
       await suscripcion.cancel();
     });
   });
+
+  group('tarea 26: retirados', () {
+    test('una orden retirada no aparece en órdenes vigentes', () async {
+      await db.into(db.ordenCatalogo).insert(_ordenCompanion(id: 1));
+      await db
+          .into(db.ordenCatalogo)
+          .insert(
+            _ordenCompanion(
+              id: 2,
+            ).copyWith(motivoRetiro: const Value('pausada')),
+          );
+      await db
+          .into(db.ordenCatalogo)
+          .insert(
+            _ordenCompanion(
+              id: 3,
+            ).copyWith(motivoRetiro: const Value('fuera_de_alcance')),
+          );
+
+      final ordenes = await repositorio.ordenesVigentes().first;
+
+      expect(ordenes.map((o) => o.id), [1]);
+    });
+
+    test(
+      'la orden que se reanuda (se desmarca) vuelve por el stream',
+      () async {
+        await db
+            .into(db.ordenCatalogo)
+            .insert(
+              _ordenCompanion(
+                id: 2,
+              ).copyWith(motivoRetiro: const Value('pausada')),
+            );
+        final emitidas = <List<OrdenVigente>>[];
+        final suscripcion = repositorio.ordenesVigentes().listen(emitidas.add);
+        addTearDown(suscripcion.cancel);
+        await _esperarHasta(() => emitidas.isNotEmpty);
+        expect(emitidas.last, isEmpty);
+
+        await (db.update(db.ordenCatalogo)..where((t) => t.id.equals(2))).write(
+          const OrdenCatalogoCompanion(motivoRetiro: Value(null)),
+        );
+
+        await _esperarHasta(
+          () => emitidas.last.isNotEmpty,
+          mensajeTimeout: 'la orden reanudada no volvió por el stream',
+        );
+        expect(emitidas.last.single.id, 2);
+      },
+    );
+
+    test('los límites del detalle salen del trabajo asignado no retirado; si '
+        'solo queda uno retirado, null', () async {
+      await db.into(db.ordenCatalogo).insert(_ordenCompanion());
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(
+            _trabajoCompanion(
+              id: 41,
+              valor: '10.00',
+              updatedAt: DateTime.utc(2026, 9, 21, 12),
+            ),
+          );
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(
+            _trabajoCompanion(
+              id: 42,
+              valor: '20.00',
+              updatedAt: DateTime.utc(2026, 9, 23, 12),
+            ).copyWith(motivoRetiro: const Value('reasignado')),
+          );
+
+      expect(
+        (await repositorio.ordenesVigentes().first).single.vientoMaxKmh,
+        Decimal.parse('10.00'),
+      );
+
+      await (db.update(
+        db.trabajoCatalogo,
+      )..where((t) => t.id.equals(41))).write(
+        const TrabajoCatalogoCompanion(motivoRetiro: Value('cerrado')),
+      );
+
+      expect(
+        (await repositorio.ordenesVigentes().first).single.vientoMaxKmh,
+        isNull,
+      );
+    });
+  });
 }

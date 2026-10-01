@@ -225,4 +225,88 @@ void main() {
     expect(trabajo.velocidadVueloKmh, isNull);
     expect(trabajo.anchoPasadaM, isNull);
   });
+
+  group('tarea 26: trabajos retirados', () {
+    test(
+      'un trabajo retirado no es el asignado; se elige el siguiente',
+      () async {
+        await db
+            .into(db.trabajoCatalogo)
+            .insert(_trabajo(id: 41, updatedAt: DateTime.utc(2026, 9, 21, 12)));
+        await db
+            .into(db.trabajoCatalogo)
+            .insert(
+              _trabajo(
+                id: 42,
+                updatedAt: DateTime.utc(2026, 9, 23, 12),
+              ).copyWith(motivoRetiro: const Value('reasignado')),
+            );
+
+        expect((await repositorio.trabajoAsignado().first)!.id, 41);
+      },
+    );
+
+    test('con todos retirados, estado vacío', () async {
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(
+            _trabajo(id: 42).copyWith(motivoRetiro: const Value('cerrado')),
+          );
+
+      expect(await repositorio.trabajoAsignado().first, isNull);
+    });
+
+    test(
+      'el retiro llega por el stream y, si vuelve a asignarse, reaparece',
+      () async {
+        await db.into(db.trabajoCatalogo).insert(_trabajo(id: 42));
+        final emisiones = <TrabajoAsignado?>[];
+        final suscripcion = repositorio.trabajoAsignado().listen(emisiones.add);
+        addTearDown(suscripcion.cancel);
+        await pumpEventQueue();
+
+        await (db.update(
+          db.trabajoCatalogo,
+        )..where((t) => t.id.equals(42))).write(
+          const TrabajoCatalogoCompanion(motivoRetiro: Value('reasignado')),
+        );
+        await pumpEventQueue();
+        expect(emisiones.last, isNull);
+
+        await (db.update(db.trabajoCatalogo)..where((t) => t.id.equals(42)))
+            .write(const TrabajoCatalogoCompanion(motivoRetiro: Value(null)));
+        await pumpEventQueue();
+        expect(emisiones.last?.id, 42);
+      },
+    );
+
+    // Paso 5 de la tarea 26: el retiro no cambia la sesión abierta, pero
+    // «Inicio» deja de mostrar el trabajo aunque tenga trabajo_local
+    // abierto. Volver a esa sesión queda como pendiente del dueño.
+    test(
+      'un trabajo retirado con trabajo_local abierto tampoco se muestra',
+      () async {
+        await db
+            .into(db.trabajoCatalogo)
+            .insert(
+              _trabajo(
+                id: 42,
+              ).copyWith(motivoRetiro: const Value('reasignado')),
+            );
+        await db
+            .into(db.trabajoLocal)
+            .insert(
+              TrabajoLocalCompanion.insert(
+                uuidCliente: 'uuid-panel-42',
+                ordenId: 1,
+                loteId: 3,
+                nroAplicacion: 1,
+                inicio: DateTime.utc(2026, 9, 23, 8),
+              ),
+            );
+
+        expect(await repositorio.trabajoAsignado().first, isNull);
+      },
+    );
+  });
 }

@@ -50,7 +50,13 @@ class OrdenesRepository {
               ),
             ),
           ])
-          ..where(_db.ordenCatalogo.estado.equals('vigente'))
+          // Retirada (tarea 26): `ordenes_retiradas` de `agrocom-api` #313 o
+          // el barrido completo. Se oculta, nunca se borra: si vuelve a
+          // `vigente`, el pull la desmarca y reaparece.
+          ..where(
+            _db.ordenCatalogo.estado.equals('vigente') &
+                _db.ordenCatalogo.motivoRetiro.isNull(),
+          )
           ..orderBy([OrderingTerm.desc(_db.ordenCatalogo.fechaEmision)]);
 
     return consulta.watch().map(_ordenesDesdeFilas);
@@ -79,7 +85,9 @@ class OrdenesRepository {
     TrabajoCatalogoData? elegido;
     for (final fila in filasOrden) {
       final trabajo = fila.readTableOrNull(_db.trabajoCatalogo);
-      if (trabajo == null) continue;
+      // Un trabajo retirado (tarea 26) ya no es el asignado: mismo filtro
+      // que «Inicio».
+      if (trabajo == null || trabajo.motivoRetiro != null) continue;
       final local = fila.readTableOrNull(_db.trabajoLocal);
       if (local != null && local.estado != EstadoTrabajoLocal.abierto) {
         continue;
