@@ -1,0 +1,109 @@
+import 'package:decimal/decimal.dart';
+
+/// Dosis de la orden del trabajo asignado: `litrosHa` o `kilosPorVuelo`,
+/// mutuamente excluyentes según la categoría de insumo (HU-79 de
+/// `agrocom-api`). La pantalla muestra una sola, nunca las dos.
+class DosisTrabajo {
+  const DosisTrabajo(this.valor, this.unidad, this.etiqueta);
+
+  final Decimal valor;
+  final String unidad;
+  final String etiqueta;
+}
+
+/// El trabajo que el jefe de campo asignó desde el panel (HU-70), tal como
+/// lo necesita la pantalla «Inicio» del piloto: la fila de
+/// `TrabajoCatalogo` más lo que se resuelve por join local con la orden y
+/// el lote. Todo lo que viene del join puede faltar — el pull es
+/// incremental y la orden o el lote pueden no haber llegado todavía — y en
+/// ese caso la pantalla dice «sin datos», nunca inventa.
+///
+/// Entidad Dart pura, testeable sin emulador (ADR 0005).
+class TrabajoAsignado {
+  const TrabajoAsignado({
+    required this.id,
+    required this.uuidCliente,
+    required this.ordenId,
+    required this.loteId,
+    required this.hectareasDeclaradas,
+    required this.equipoTrabajoId,
+    required this.updatedAt,
+    this.loteCodigo,
+    this.nroAplicacion,
+    this.litrosHa,
+    this.kilosPorVuelo,
+    this.cantidadLotesOrden,
+  });
+
+  final int id;
+
+  /// El `uuid_cliente` que generó el panel, tal cual: es el que se usa para
+  /// abrir sesiones sobre este trabajo.
+  final String uuidCliente;
+  final int ordenId;
+  final int loteId;
+
+  /// Hectáreas asignadas a ESTE equipo — no las del lote ni las de la orden.
+  final Decimal hectareasDeclaradas;
+  final int equipoTrabajoId;
+  final DateTime updatedAt;
+
+  /// `LoteCatalogo.codigo`; `null` si el lote no llegó todavía.
+  final String? loteCodigo;
+
+  /// `OrdenCatalogo.nroAplicacion`; `null` si la orden no llegó todavía.
+  final int? nroAplicacion;
+  final Decimal? litrosHa;
+  final Decimal? kilosPorVuelo;
+
+  /// `OrdenCatalogo.cantidadLotes`: cuántos lotes cubre la orden entera.
+  final int? cantidadLotesOrden;
+
+  /// `litrosHa` si viene; si no, `kilosPorVuelo`; si ninguno, `null` —
+  /// nunca las dos a la vez.
+  DosisTrabajo? get dosis {
+    final litros = litrosHa;
+    if (litros != null) return DosisTrabajo(litros, 'L/ha', 'L / ha');
+    final kilos = kilosPorVuelo;
+    if (kilos != null) return DosisTrabajo(kilos, 'kg/vuelo', 'kg / vuelo');
+    return null;
+  }
+
+  /// «Crear aplicación» necesita la orden ya en el catálogo local:
+  /// `TrabajoLocal` copia su `nroAplicacion`, y sin ella habría que
+  /// inventarlo.
+  bool get puedeCrearAplicacion => nroAplicacion != null;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TrabajoAsignado &&
+          other.id == id &&
+          other.uuidCliente == uuidCliente &&
+          other.ordenId == ordenId &&
+          other.loteId == loteId &&
+          other.hectareasDeclaradas == hectareasDeclaradas &&
+          other.equipoTrabajoId == equipoTrabajoId &&
+          other.updatedAt == updatedAt &&
+          other.loteCodigo == loteCodigo &&
+          other.nroAplicacion == nroAplicacion &&
+          other.litrosHa == litrosHa &&
+          other.kilosPorVuelo == kilosPorVuelo &&
+          other.cantidadLotesOrden == cantidadLotesOrden);
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    uuidCliente,
+    ordenId,
+    loteId,
+    hectareasDeclaradas,
+    equipoTrabajoId,
+    updatedAt,
+    loteCodigo,
+    nroAplicacion,
+    litrosHa,
+    kilosPorVuelo,
+    cantidadLotesOrden,
+  );
+}
