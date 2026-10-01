@@ -88,6 +88,27 @@ class OrdenCatalogo extends Table {
   /// y sí participa de comparaciones.
   DateTimeColumn get updatedAt => dateTime()();
 
+  // Retiro (v14, tarea 26, `agrocom-api` #313): la fila se MARCA, nunca se
+  // borra — es espejo del servidor y puede volver (una orden `pausada` que
+  // pasa a `vigente` llega otra vez en `ordenes[]` y se desmarca).
+  // `motivoRetiro` en `null` = no retirada. Nullable las tres por la
+  // migración (`ALTER TABLE`, conserva las filas).
+
+  /// Para una orden: el `estado` de `ordenes_retiradas` (`pausada`,
+  /// `consumida`, `cancelada`, `vencida`), o el motivo local `fuera_de_alcance` cuando el barrido completo
+  /// (pull desde cursor vacío) terminó sin traerla — ver
+  /// `CatalogoRepository`.
+  TextColumn get motivoRetiro => text().nullable()();
+
+  /// `updated_at` del servidor en la sección de retirados. `null` en el
+  /// retiro local por barrido: ese no tiene momento del servidor.
+  DateTimeColumn get retiroActualizadoEn => dateTime().nullable()();
+
+  /// Si llegó en el barrido completo en curso. Solo tiene sentido mientras
+  /// `CursorCatalogo.barridoEnCurso` es verdadero: al empezar el barrido se
+  /// pone en `false` en todas las filas y cada upsert lo deja en `true`.
+  BoolColumn get vistoEnBarrido => boolean().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }

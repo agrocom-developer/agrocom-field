@@ -51,7 +51,10 @@ part 'database.g.dart';
 /// [TrabajoCatalogo] los siete límites climáticos y parámetros de vuelo que
 /// el servidor movió de `ordenes[]` a `trabajos[]`, con `ALTER TABLE`. La
 /// tarea 25 (v13) quita de [OrdenCatalogo] las ocho columnas de clima/vuelo
-/// que el servidor ya no manda, conservando las órdenes.
+/// que el servidor ya no manda, conservando las órdenes. La tarea 26 (v14)
+/// agrega a [OrdenCatalogo] y [TrabajoCatalogo] la marca de retiro
+/// (`agrocom-api` #313) y a [CursorCatalogo] el barrido completo en curso.
+
 /// Las tablas espejo del resto de las features de escritura (recargas...)
 /// se agregan en tareas técnicas posteriores, cada una subiendo
 /// [schemaVersion] con su propia migración — nunca reescribiendo la
@@ -76,7 +79,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 13;
+  int get schemaVersion => 14;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -228,10 +231,56 @@ class AppDatabase extends _$AppDatabase {
       // empezó a mandar sus límites efectivos sin cambiar `updated_at`, así
       // que los trabajos bajados antes quedan con los límites en `null` o
       // viejos hasta un pull completo.
+      //
+      // `newColumns` (agregado en v14): `TableMigration` recrea la tabla con
+      // la clase Dart ACTUAL, que desde v14 tiene las columnas de retiro. La
+      // tabla de v8-v12 no las tiene, así que se declaran nuevas (quedan en
+      // `null`) en vez de copiarlas. Sin esto, un dispositivo en v8-v12 que
+      // salta directo a v14 falla la migración.
       if (from >= 8 && from < 13) {
-        await m.alterTable(TableMigration(ordenCatalogo));
+        await m.alterTable(
+          TableMigration(
+            ordenCatalogo,
+            newColumns: [
+              ordenCatalogo.motivoRetiro,
+              ordenCatalogo.retiroActualizadoEn,
+              ordenCatalogo.vistoEnBarrido,
+            ],
+          ),
+        );
       }
       if (from < 13) {
+        await (delete(cursorCatalogo)).go();
+      }
+      // v14 (tarea 26): marca de retiro en `orden_catalogo` y
+      // `trabajo_catalogo` (`ordenes_retiradas`/`trabajos_retirados` de
+      // `agrocom-api` #313) y barrido completo en curso en `cursor_catalogo`.
+      // `ALTER TABLE` con columnas nullable: ninguna fila se pierde.
+      // Cada guarda arranca donde la tabla ya se crea o recrea con la clase
+      // actual:
+      // - `orden_catalogo`: v8-v12 la recrea el bloque v13 (con
+      //   `newColumns`), y antes de v8 la crea el bloque `from < 8`.
+      // - `trabajo_catalogo`: antes de v11 la crea el bloque `from < 11`.
+      // - `cursor_catalogo`: antes de v2 la crea el bloque `from < 2`.
+      if (from >= 13 && from < 14) {
+        await m.addColumn(ordenCatalogo, ordenCatalogo.motivoRetiro);
+        await m.addColumn(ordenCatalogo, ordenCatalogo.retiroActualizadoEn);
+        await m.addColumn(ordenCatalogo, ordenCatalogo.vistoEnBarrido);
+      }
+      if (from >= 11 && from < 14) {
+        await m.addColumn(trabajoCatalogo, trabajoCatalogo.motivoRetiro);
+        await m.addColumn(trabajoCatalogo, trabajoCatalogo.retiroActualizadoEn);
+        await m.addColumn(trabajoCatalogo, trabajoCatalogo.vistoEnBarrido);
+      }
+      if (from >= 2 && from < 14) {
+        await m.addColumn(cursorCatalogo, cursorCatalogo.barridoEnCurso);
+      }
+      // El cursor se resetea para forzar UN barrido completo: las filas de
+      // otros equipos bajadas antes de #312 y las órdenes/trabajos
+      // retirados antes de #313 no van a llegar nunca como retirados (con
+      // cursor vacío el servidor no manda retirados), así que solo el
+      // barrido los limpia.
+      if (from < 14) {
         await (delete(cursorCatalogo)).go();
       }
     },
