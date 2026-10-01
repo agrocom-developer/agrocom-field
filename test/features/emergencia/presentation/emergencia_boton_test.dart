@@ -6,6 +6,8 @@
 import 'package:agrocom_field/features/emergencia/presentation/emergencia_boton.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
 import 'package:agrocom_field/nucleo/linterna/linterna_controlador.dart';
+import 'package:agrocom_field/nucleo/ui/colores_campo.dart';
+import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -114,10 +116,60 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('No disponible en este dispositivo'), findsOneWidget);
-      final switchTile = tester.widget<SwitchListTile>(
+      final interruptor = tester.widget<InterruptorCampo>(
         find.byKey(const Key('linterna_switch')),
       );
-      expect(switchTile.onChanged, isNull);
+      expect(interruptor.onChanged, isNull);
     },
   );
+
+  testWidgets('modo campo: botón en acentoRojo y panel sin widgets de '
+      'Material de ADR 0003 (ADR 0008)', (tester) async {
+    await tester.pumpWidget(
+      _envolver(
+        EmergenciaBoton(
+          flavor: Flavor.auxiliar,
+          linternaControlador: linterna,
+          child: const SizedBox.shrink(),
+        ),
+      ),
+    );
+
+    final boton = tester.widget<FloatingActionButton>(
+      find.byKey(const Key('emergencia_boton')),
+    );
+    expect(boton.backgroundColor, ColoresCampo.acentoRojo);
+
+    await tester.tap(find.byKey(const Key('emergencia_boton')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SwitchListTile), findsNothing);
+    expect(find.byType(InterruptorCampo), findsOneWidget);
+    final hoja = tester.widget<BottomSheet>(find.byType(BottomSheet));
+    expect(hoja.backgroundColor, ColoresCampo.superficie);
+  });
+
+  testWidgets('si la linterna falla, muestra el error del panel', (
+    tester,
+  ) async {
+    when(() => linterna.encender()).thenThrow(Exception('sin flash'));
+
+    await tester.pumpWidget(
+      _envolver(
+        EmergenciaBoton(
+          flavor: Flavor.auxiliar,
+          linternaControlador: linterna,
+          child: const SizedBox.shrink(),
+        ),
+      ),
+    );
+    await tester.tap(find.byKey(const Key('emergencia_boton')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('linterna_switch')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('linterna_error')), findsOneWidget);
+    expect(find.text('No se pudo controlar la linterna'), findsOneWidget);
+    expect(find.text('Apagada'), findsOneWidget);
+  });
 }
