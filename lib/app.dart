@@ -12,7 +12,9 @@ import 'nucleo/auth/token_store.dart';
 import 'nucleo/entorno/info_entorno.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
-import 'nucleo/ui/tema.dart';
+import 'nucleo/ui/colores_campo.dart';
+import 'nucleo/ui/componentes/componentes_campo.dart';
+import 'nucleo/ui/tema_campo.dart';
 import 'nucleo/version/estado_version.dart';
 import 'nucleo/version/version_bloqueo_overlay.dart';
 
@@ -20,6 +22,11 @@ import 'nucleo/version/version_bloqueo_overlay.dart';
 /// lleva el wordmark); `agrocom-field` es solo el nombre del repo/paquete.
 ///
 /// Se instancia desde main_piloto.dart o main_auxiliar.dart según el flavor.
+///
+/// Tema único: el modo campo (ADR 0008, decisión del 1/10/2026), oscuro
+/// siempre — no sigue `ThemeMode.system`, así ninguna pantalla, diálogo ni
+/// panel sale con el Material claro de ADR 0003 según cómo tenga el sistema
+/// el piloto o el auxiliar.
 class AgrocomApp extends StatelessWidget {
   final Flavor flavor;
   final InfoEntorno infoEntorno;
@@ -58,9 +65,7 @@ class AgrocomApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Agrocom',
-      theme: AgrocomTheme.light(),
-      darkTheme: AgrocomTheme.dark(),
-      themeMode: ThemeMode.system,
+      theme: AgrocomThemeCampo.construir(),
       home: VersionBloqueoOverlay(
         estadoVersion: estadoVersion,
         child: EmergenciaBoton(
@@ -129,9 +134,7 @@ class _RaizAppState extends State<_RaizApp> {
       future: _tokenInicial,
       builder: (context, snapshot) {
         if (snapshot.connectionState != ConnectionState.done) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
+          return const _PantallaCarga();
         }
 
         if (snapshot.data == null && !_ingresoExitoso) {
@@ -153,6 +156,31 @@ class _RaizAppState extends State<_RaizApp> {
           crearIncidenciaCubit: widget.crearIncidenciaCubit,
         );
       },
+    );
+  }
+}
+
+/// Lo que se ve mientras se lee el token guardado: logo sobre
+/// `fondoProfundo` y el indicador en el acento del tema — el mismo fondo que
+/// el login que viene después, sin un destello claro en el medio.
+class _PantallaCarga extends StatelessWidget {
+  const _PantallaCarga();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      key: Key('pantalla_carga'),
+      backgroundColor: ColoresCampo.fondoProfundo,
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            LogoAgrocomCampo(sombra: false),
+            SizedBox(height: 32),
+            CircularProgressIndicator(color: ColoresCampo.acentoLima),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -19,10 +19,12 @@ import 'package:agrocom_field/nucleo/db/database.dart';
 import 'package:agrocom_field/nucleo/entorno/info_entorno.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
 import 'package:agrocom_field/nucleo/linterna/linterna_controlador.dart';
+import 'package:agrocom_field/nucleo/ui/colores_campo.dart';
+import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:agrocom_field/nucleo/version/estado_version.dart';
 import 'package:agrocom_field/nucleo/version/version_apk.dart';
 import 'package:decimal/decimal.dart';
-import 'package:drift/drift.dart' hide isNull;
+import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -68,6 +70,52 @@ void main() {
     when(() => linterna.disponible()).thenAnswer((_) async => true);
     when(() => linterna.encender()).thenAnswer((_) async {});
     when(() => linterna.apagar()).thenAnswer((_) async {});
+  });
+
+  testWidgets('mientras lee el token, muestra la pantalla de carga sobre '
+      'fondoProfundo, con el tema campo como tema único (ADR 0008)', (
+    tester,
+  ) async {
+    // El token nunca termina de leerse: la app queda en la pantalla de carga.
+    final lectura = Completer<String?>();
+    when(() => tokenStore.leerToken()).thenAnswer((_) => lectura.future);
+    final db = AppDatabase(NativeDatabase.memory());
+    addTearDown(db.close);
+
+    await tester.pumpWidget(
+      AgrocomApp(
+        flavor: Flavor.piloto,
+        infoEntorno: const InfoEntorno(
+          flavor: Flavor.piloto,
+          hostApi: 'localhost',
+          version: '0.1.0+1',
+        ),
+        tokenStore: tokenStore,
+        linternaControlador: linterna,
+        estadoVersion: const Stream<EstadoVersion>.empty(),
+        crearLoginCubit: () => LoginCubit(_LoginServiceFalso(), Flavor.piloto),
+        crearOrdenesCubit: _crearOrdenesCubit(db, (_) {}),
+        crearTrabajoCubit: () => throw UnimplementedError('stub no invocado'),
+        crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
+        crearIncidenciaCubit: (_) =>
+            throw UnimplementedError('stub no invocado'),
+        alIngresarConExito: () {},
+      ),
+    );
+    await tester.pump();
+
+    final carga = find.byKey(const Key('pantalla_carga'));
+    expect(carga, findsOneWidget);
+    expect(
+      tester.widget<Scaffold>(carga).backgroundColor,
+      ColoresCampo.fondoProfundo,
+    );
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.theme?.extension<TemaCampo>(), isNotNull);
+    expect(app.darkTheme, isNull);
+    expect(app.theme?.brightness, Brightness.dark);
   });
 
   testWidgets('sin token guardado, arranca en la pantalla de login', (
