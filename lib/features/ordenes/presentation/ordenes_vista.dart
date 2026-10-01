@@ -23,7 +23,7 @@ import 'ordenes_estado.dart';
 /// [OrdenDetallePantalla] (HU-05, etapa 4), y la de [IncidenciaCubit]
 /// (HU-08).
 ///
-/// En modo campo (ADR 0008, decisión del 1/10/2026): sin `AppBar` de
+/// En modo campo (ADR 0008, decisión del 1/10/2026): sin barra de título de
 /// Material, título de pantalla y cada orden como una fila tocable del
 /// catálogo. El fondo inferior deja aire para el botón de emergencia del
 /// flavor auxiliar (HU-68), que flota encima de toda la app.

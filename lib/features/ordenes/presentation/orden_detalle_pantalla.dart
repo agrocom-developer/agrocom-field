@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../nucleo/flavor.dart';
+import '../../../nucleo/ui/colores_campo.dart';
+import '../../../nucleo/ui/componentes/componentes_campo.dart';
+import '../../../nucleo/ui/imagenes_campo.dart';
+import '../../../nucleo/ui/tema_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../incidencias/presentation/incidencia_cubit.dart';
 import '../../sesion_vuelo/presentation/trabajo_cubit.dart';
 import '../../sesion_vuelo/presentation/trabajo_estado.dart';
@@ -18,6 +23,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 /// alcance). Agrega el botón "Abrir trabajo" (HU-05) — exclusivo del flavor
 /// `piloto` — que navega a [SesionVueloPantalla] con el trabajo recién
 /// abierto, propagándole también [crearIncidenciaCubit] (HU-08).
+///
+/// En modo campo (ADR 0008, decisión del 1/10/2026), con el lenguaje de la
+/// pantalla 08 de la vista previa (`orden_detalle_campo_vitrina.dart`):
+/// foto superior, badge de estado, tarjetas por sección y el CTA lima.
+/// Muestra solo lo que expone [OrdenVigente] — un lote (no `lotes[]`), sin
+/// los ítems de trabajo/sesión ni el contrato de la 08 —, y un valor nulo se
+/// lee «sin datos», nunca se oculta ni se inventa.
 class OrdenDetallePantalla extends StatelessWidget {
   const OrdenDetallePantalla({
     required this.orden,
@@ -83,145 +95,251 @@ class OrdenDetallePantalla extends StatelessWidget {
     BuildContext context, {
     required bool cargandoTrabajo,
   }) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Orden N.º ${orden.id}')),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Chip(
-              label: Text(orden.estado),
-              avatar: const Icon(Icons.check_circle_outline, size: 18),
+    return Theme(
+      data: AgrocomThemeCampo.construir(),
+      child: Scaffold(
+        backgroundColor: ColoresCampo.fondoProfundo,
+        body: FondoFotoCampo(
+          imagen: ImagenesCampo.dronPulverizandoVertical,
+          cobertura: CoberturaFondoFoto.superior,
+          altoSuperior: 320,
+          alineacion: const Alignment(0, -0.3),
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 8, 18, 0),
+                  child: Row(
+                    children: [
+                      BotonCircularCampo(
+                        icono: Icons.arrow_back,
+                        tooltip: 'Volver',
+                        onPressed: () => Navigator.of(context).maybePop(),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Text(
+                          'Orden N.º ${orden.id}',
+                          style: TipografiaCampo.tituloSeccion,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      BadgeEstadoCampo(
+                        key: const Key('orden_estado'),
+                        texto: orden.estado,
+                        estado: orden.estado == 'vigente'
+                            ? EstadoBadgeCampo.ok
+                            : EstadoBadgeCampo.generico,
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ListView(
+                    padding: const EdgeInsets.fromLTRB(18, 120, 18, 12),
+                    children: [
+                      _tarjetaLote(),
+                      const SizedBox(height: 12),
+                      _tarjetaLimitesClimaticos(),
+                      const SizedBox(height: 12),
+                      _Seccion(
+                        titulo: 'Parámetros de vuelo',
+                        children: [
+                          _fila(
+                            'Velocidad máxima',
+                            orden.velocidadMaxKmh,
+                            'km/h',
+                          ),
+                          _fila('Altura de vuelo', orden.alturaVueloM, 'm'),
+                          _fila(
+                            'Velocidad de vuelo',
+                            orden.velocidadVueloKmh,
+                            'km/h',
+                          ),
+                          _fila('Ancho de pasada', orden.anchoPasadaM, 'm'),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      _Seccion(
+                        titulo: 'Observaciones',
+                        children: [
+                          Text(
+                            orden.observaciones ?? _sinDatos,
+                            key: const Key('orden_observaciones'),
+                            style: TipografiaCampo.cuerpo,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                if (flavor == Flavor.piloto)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 0, 18, 20),
+                    child: BotonPrimarioCampo(
+                      key: const Key('boton_abrir_trabajo'),
+                      texto: 'Abrir trabajo',
+                      cargando: cargandoTrabajo,
+                      onPressed: () =>
+                          context.read<TrabajoCubit>().abrir(orden: orden),
+                    ),
+                  ),
+              ],
             ),
           ),
-          const SizedBox(height: 16),
-          _Seccion(
-            titulo: 'Lote',
-            campos: [
-              _Campo('Código', orden.loteCodigo ?? _sinDatos),
-              _Campo('Hectáreas', orden.loteHectareas?.toString() ?? _sinDatos),
-            ],
-          ),
-          _Seccion(
-            titulo: 'Aplicación',
-            campos: [
-              _Campo('N.º de aplicación', '${orden.nroAplicacion}'),
-              // Mutuamente excluyentes según la categoría de insumo (HU-79
-              // de `agrocom-api`) — nunca los dos con datos reales.
-              _Campo(
-                'Litros por hectárea',
-                orden.litrosHa?.toString() ?? _sinDatos,
-              ),
-              _Campo(
-                'Kilos por vuelo',
-                orden.kilosPorVuelo?.toString() ?? _sinDatos,
-              ),
-              _Campo('Fecha de emisión', orden.fechaEmision),
-            ],
-          ),
-          _Seccion(
-            titulo: 'Límites climáticos',
-            campos: [
-              _Campo(
-                'Humedad mínima (%)',
-                orden.humedadMinPct?.toString() ?? _sinDatos,
-              ),
-              _Campo(
-                'Humedad máxima (%)',
-                orden.humedadMaxPct?.toString() ?? _sinDatos,
-              ),
-              _Campo(
-                'Viento máximo (km/h)',
-                orden.vientoMaxKmh?.toString() ?? _sinDatos,
-              ),
-              _Campo(
-                'Temperatura máxima (°C)',
-                orden.temperaturaMaxC?.toString() ?? _sinDatos,
-              ),
-            ],
-          ),
-          _Seccion(
-            titulo: 'Parámetros de vuelo',
-            campos: [
-              _Campo(
-                'Velocidad máxima (km/h)',
-                orden.velocidadMaxKmh?.toString() ?? _sinDatos,
-              ),
-              _Campo(
-                'Altura de vuelo (m)',
-                orden.alturaVueloM?.toString() ?? _sinDatos,
-              ),
-              _Campo(
-                'Velocidad de vuelo (km/h)',
-                orden.velocidadVueloKmh?.toString() ?? _sinDatos,
-              ),
-              _Campo(
-                'Ancho de pasada (m)',
-                orden.anchoPasadaM?.toString() ?? _sinDatos,
-              ),
-            ],
-          ),
-          _Seccion(
-            titulo: 'Observaciones',
-            campos: [_Campo(null, orden.observaciones ?? _sinDatos)],
-          ),
-          if (flavor == Flavor.piloto) ...[
-            const SizedBox(height: 24),
-            FilledButton(
-              key: const Key('boton_abrir_trabajo'),
-              onPressed: cargandoTrabajo
-                  ? null
-                  : () => context.read<TrabajoCubit>().abrir(orden: orden),
-              child: cargandoTrabajo
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Abrir trabajo'),
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }
-}
 
-class _Campo {
-  const _Campo(this.etiqueta, this.valor);
-
-  final String? etiqueta;
-  final String valor;
-}
-
-class _Seccion extends StatelessWidget {
-  const _Seccion({required this.titulo, required this.campos});
-
-  final String titulo;
-  final List<_Campo> campos;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
+  /// Lote, aplicación y dosis — lo que el piloto confirma de un vistazo.
+  Widget _tarjetaLote() {
+    return TarjetaCampo(
+      tamano: TamanoTarjetaCampo.grande,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            titulo,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
+            'LOTE',
+            style: TipografiaCampo.etiquetaMono.copyWith(fontSize: 11),
           ),
-          const Divider(height: 16),
-          for (final campo in campos)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 2),
-              child: campo.etiqueta == null
-                  ? Text(campo.valor)
-                  : Text('${campo.etiqueta}: ${campo.valor}'),
+          const SizedBox(height: 10),
+          Text(
+            orden.loteCodigo ?? _sinDatos,
+            key: const Key('orden_lote_codigo'),
+            style: TipografiaCampo.valorDestacado,
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Aplicación N.º ${orden.nroAplicacion} · '
+            'emitida ${orden.fechaEmision}',
+            style: TipografiaCampo.cuerpoSecundario,
+          ),
+          const SizedBox(height: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: _chip(
+                  'Hectáreas',
+                  orden.loteHectareas,
+                  'ha',
+                  key: const Key('orden_hectareas'),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(child: _chipDosis()),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// `litrosHa`/`kilosPorVuelo` son mutuamente excluyentes según la
+  /// categoría de insumo (HU-79 de `agrocom-api`): se muestra el que venga,
+  /// nunca los dos.
+  Widget _chipDosis() {
+    const key = Key('orden_dosis');
+    final litrosHa = orden.litrosHa;
+    if (litrosHa != null) return _chip('Dosis', litrosHa, 'L/ha', key: key);
+    final kilosPorVuelo = orden.kilosPorVuelo;
+    if (kilosPorVuelo != null) {
+      return _chip('Dosis', kilosPorVuelo, 'kg/vuelo', key: key);
+    }
+    return _chip('Dosis', null, null, key: key);
+  }
+
+  Widget _tarjetaLimitesClimaticos() {
+    return _Seccion(
+      titulo: 'Límites climáticos',
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: _chip(
+                'Viento máx',
+                orden.vientoMaxKmh,
+                'km/h',
+                key: const Key('orden_viento_max'),
+              ),
             ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _chip(
+                'Temp. máx',
+                orden.temperaturaMaxC,
+                '°C',
+                key: const Key('orden_temperatura_max'),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: _chip(
+                'Humedad mín',
+                orden.humedadMinPct,
+                '%',
+                key: const Key('orden_humedad_min'),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: _chip(
+                'Humedad máx',
+                orden.humedadMaxPct,
+                '%',
+                key: const Key('orden_humedad_max'),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// La unidad solo acompaña a un valor real: «sin datos» va solo.
+  static StatChipCampo _chip(
+    String etiqueta,
+    Object? valor,
+    String? unidad, {
+    Key? key,
+  }) => StatChipCampo(
+    key: key,
+    etiqueta: etiqueta,
+    valor: valor?.toString() ?? _sinDatos,
+    unidad: valor == null ? null : unidad,
+  );
+
+  static FilaDatoCampo _fila(String etiqueta, Object? valor, String unidad) =>
+      FilaDatoCampo(
+        etiqueta: etiqueta,
+        valor: valor?.toString() ?? _sinDatos,
+        unidad: valor == null ? null : unidad,
+      );
+}
+
+class _Seccion extends StatelessWidget {
+  const _Seccion({required this.titulo, required this.children});
+
+  final String titulo;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return TarjetaCampo(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(titulo, style: TipografiaCampo.tituloTarjeta),
+          const SizedBox(height: 12),
+          ...children,
         ],
       ),
     );
