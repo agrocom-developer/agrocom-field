@@ -48,13 +48,43 @@ Map<String, dynamic> _cuerpo({
   List<Map<String, dynamic>> ordenes = const [],
   List<Map<String, dynamic>> lotes = const [],
   List<Map<String, dynamic>> personas = const [],
+  List<Map<String, dynamic>>? trabajos,
   required String cursor,
 }) => {
   'ordenes': ordenes,
   'lotes': lotes,
   'personas': personas,
+  'trabajos': ?trabajos,
   'cursor': cursor,
 };
+
+/// `TrabajoCatalogo` del `openapi.yaml` (HU-70).
+Map<String, dynamic> _trabajoJson({
+  required int id,
+  required String uuidCliente,
+  String hectareas = '300.00',
+  String updatedAt = '2026-09-22T12:00:00+00:00',
+}) => {
+  'id': id,
+  'uuid_cliente': uuidCliente,
+  'orden_id': 1,
+  'lote_id': 3,
+  'hectareas_declaradas': hectareas,
+  'equipo_trabajo_id': 7,
+  'updated_at': updatedAt,
+};
+
+/// Volcado completo y ordenado de las tablas de catálogo — "la base
+/// idéntica" de la invariante 10 se compara con esto.
+Future<List<Object>> _volcado(AppDatabase db) async => [
+  ...await (db.select(
+    db.ordenCatalogo,
+  )..orderBy([(t) => OrderingTerm.asc(t.id)])).get(),
+  ...await (db.select(
+    db.trabajoCatalogo,
+  )..orderBy([(t) => OrderingTerm.asc(t.id)])).get(),
+  ...await db.select(db.cursorCatalogo).get(),
+];
 
 /// Servidor fake indexado por el `desde` recibido (`null` = primera
 /// sincronización, ausente en la query) — como el real, cada página depende
@@ -141,6 +171,116 @@ void main() {
         expect(ordenes.single.estado, 'vigente');
 
         expect(await _cursorGuardado(db), 'c1');
+      },
+    );
+
+    test(
+      'HU-70: la misma página con trabajos aplicada diez veces deja la '
+      'base idéntica, sin duplicar trabajos ni cambiar su uuid_cliente',
+      () async {
+        final db = AppDatabase(NativeDatabase.memory());
+        addTearDown(db.close);
+
+        final pagina = _cuerpo(
+          ordenes: [
+            _ordenJson(
+              id: 1,
+              estado: 'vigente',
+              updatedAt: '2026-09-20T12:00:00+00:00',
+            ),
+          ],
+          trabajos: [
+            _trabajoJson(id: 42, uuidCliente: 'uuid-panel-42'),
+            _trabajoJson(
+              id: 43,
+              uuidCliente: 'uuid-panel-43',
+              hectareas: '0.10',
+            ),
+          ],
+          cursor: 'c1',
+        );
+        final servidor = _ServidorCatalogoFalso({null: pagina, 'c1': pagina});
+        final repositorio = CatalogoRepository(
+          db: db,
+          apiClient: _clienteContra(servidor),
+        );
+
+        await repositorio.pull();
+        final despuesDeUno = await _volcado(db);
+        for (var i = 0; i < 9; i++) {
+          await repositorio.pull();
+        }
+
+        expect(await _volcado(db), despuesDeUno);
+        final trabajos = await (db.select(
+          db.trabajoCatalogo,
+        )..orderBy([(t) => OrderingTerm.asc(t.id)])).get();
+        expect(trabajos.map((t) => t.uuidCliente), [
+          'uuid-panel-42',
+          'uuid-panel-43',
+        ]);
+      },
+    );
+
+    // El cursor solo avanza, así que el único "desorden" posible en el pull
+    // es repetir una página ya aplicada (reintento tras una respuesta
+    // perdida). Reaplicar una página ANTERIOR sí volvería atrás un trabajo
+    // actualizado — mismo comportamiento que órdenes/lotes/personas
+    // (last-write-wins por upsert), que el cursor monótono impide.
+    test(
+      'HU-70: páginas con trabajos repetidas por reintento convergen al '
+      'mismo estado que sin reintentos, con la actualización aplicada',
+      () async {
+        final viejo = _trabajoJson(id: 42, uuidCliente: 'uuid-panel-42');
+        final nuevo = _trabajoJson(
+          id: 42,
+          uuidCliente: 'uuid-panel-42',
+          hectareas: '250.00',
+          updatedAt: '2026-09-23T12:00:00+00:00',
+        );
+        final otro = _trabajoJson(id: 44, uuidCliente: 'uuid-panel-44');
+
+        Future<List<Object>> aplicar(List<String?> desdes) async {
+          final db = AppDatabase(NativeDatabase.memory());
+          addTearDown(db.close);
+          final servidor = _ServidorCatalogoFalso({
+            null: _cuerpo(trabajos: [viejo], cursor: 'c1'),
+            'c1': _cuerpo(trabajos: [nuevo, otro], cursor: 'c2'),
+            'c2': _cuerpo(trabajos: const [], cursor: 'c2'),
+          });
+          final cliente = _clienteContra(servidor);
+          for (final desde in desdes) {
+            // Fija el cursor guardado antes de cada pull para reproducir el
+            // orden de páginas pedido, como lo haría un reintento.
+            await (db.delete(db.cursorCatalogo)).go();
+            if (desde != null) {
+              await db
+                  .into(db.cursorCatalogo)
+                  .insert(
+                    CursorCatalogoCompanion.insert(
+                      id: const Value(0),
+                      cursor: Value(desde),
+                    ),
+                  );
+            }
+            await CatalogoRepository(db: db, apiClient: cliente).pull();
+          }
+          return [
+            ...await (db.select(
+              db.trabajoCatalogo,
+            )..orderBy([(t) => OrderingTerm.asc(t.id)])).get(),
+          ];
+        }
+
+        final enOrden = await aplicar([null, 'c1', 'c2']);
+        final repetidoEnOrden = await aplicar([null, 'c1', 'c1', 'c2', 'c2']);
+
+        expect(repetidoEnOrden, enOrden);
+        expect(enOrden, hasLength(2));
+        expect(
+          (enOrden.first as TrabajoCatalogoData).hectareasDeclaradas.toString(),
+          '250',
+        );
       },
     );
 

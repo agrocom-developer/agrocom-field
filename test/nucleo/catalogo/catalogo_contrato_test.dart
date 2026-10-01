@@ -110,6 +110,14 @@ void main() {
     expect(personas.map((p) => p.rol), ['piloto', 'auxiliar']);
     expect(personas[1].baseId, isNull);
 
+    final trabajo = (await db.select(db.trabajoCatalogo).get()).single;
+    expect(trabajo.id, 42);
+    expect(trabajo.uuidCliente, '9a1b7e3e-2f7a-4b3d-8c1e-6f2a1d9c4b0a');
+    expect(trabajo.ordenId, 1);
+    expect(trabajo.loteId, 3);
+    expect(trabajo.hectareasDeclaradas, Decimal.parse('300.00'));
+    expect(trabajo.equipoTrabajoId, 7);
+
     final cursor = await (db.select(
       db.cursorCatalogo,
     )..where((t) => t.id.equals(0))).getSingle();
