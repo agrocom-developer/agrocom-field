@@ -11,6 +11,7 @@ import 'package:agrocom_field/features/incidencias/presentation/incidencia_cubit
 import 'package:agrocom_field/features/incidencias/presentation/incidencia_vista.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/auxiliar.dart';
+import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_condiciones.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/sesion.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/trabajo.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_bloc.dart';
@@ -136,6 +137,12 @@ void main() {
     when(
       () => sesionRepositorio.auxiliaresDisponibles(),
     ).thenAnswer((_) async => const <Auxiliar>[]);
+    // Tarea 24: por defecto, los límites del servidor para un trabajo sin
+    // orden de trabajo (17/30/90) — los que ya suponían los tests de HU-06.
+    // Los tests de la tarea 24 los re-stubean.
+    when(
+      () => sesionRepositorio.limitesCondiciones(any()),
+    ).thenAnswer((_) async => LimitesCondiciones.porDefecto());
   });
 
   Future<void> bombear(
@@ -1389,6 +1396,143 @@ void main() {
         _botonMaterial(tester, 'boton_confirmar_cierre_trabajo').onPressed,
         isNotNull,
       );
+    });
+  });
+
+  group('tarea 24: observación y firma según los límites del trabajo', () {
+    Decimal d(String v) => Decimal.parse(v);
+
+    /// Abre el formulario con [limites] como límites del trabajo
+    /// `uuid-trabajo-1` y carga las mediciones, sin confirmar.
+    Future<void> abrirConLimites(
+      WidgetTester tester,
+      LimitesCondiciones limites, {
+      required String viento,
+      String temperatura = '20',
+      String humedad = '50',
+    }) async {
+      when(
+        () => sesionRepositorio.limitesCondiciones('uuid-trabajo-1'),
+      ).thenAnswer((_) async => limites);
+      final bloc = SesionBloc(
+        sesionRepositorio: sesionRepositorio,
+        personaOperativaStore: personaStore,
+        trabajoUuidCliente: 'uuid-trabajo-1',
+      );
+      addTearDown(bloc.close);
+
+      await bombear(tester, bloc);
+      await tester.tap(find.byKey(const Key('boton_abrir_sesion')));
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byKey(const Key('apertura_viento')), viento);
+      await tester.enterText(
+        find.byKey(const Key('apertura_temperatura')),
+        temperatura,
+      );
+      await tester.enterText(
+        find.byKey(const Key('apertura_humedad')),
+        humedad,
+      );
+      await tester.pumpAndSettle();
+    }
+
+    Finder observacion() => find.byKey(const Key('apertura_observacion'));
+    Finder firma() => find.byKey(const Key('apertura_firma'));
+
+    testWidgets('límite propio más estricto: 15 km/h pide observación y '
+        'firma aunque esté bajo la constante', (tester) async {
+      await abrirConLimites(
+        tester,
+        LimitesCondiciones.resolver(vientoMaxKmh: d('12.00')),
+        viento: '15',
+      );
+
+      expect(observacion(), findsOneWidget);
+      expect(firma(), findsOneWidget);
+      expect(
+        tester
+            .widget<NotaInlineCampo>(find.byKey(const Key('apertura_limites')))
+            .texto,
+        contains('viento ≤ 12 km/h'),
+      );
+    });
+
+    testWidgets('límite propio más permisivo: 20 km/h abre sin observación '
+        'aunque supere la constante', (tester) async {
+      when(() => personaStore.leerPersonaId()).thenAnswer((_) async => 1);
+      when(
+        () => sesionRepositorio.abrirSesion(
+          trabajoUuidCliente: any(named: 'trabajoUuidCliente'),
+          pilotoId: any(named: 'pilotoId'),
+          auxiliarId: any(named: 'auxiliarId'),
+          dronId: any(named: 'dronId'),
+          hectareaInicialAcumulada: any(named: 'hectareaInicialAcumulada'),
+          hectareasDeclaradas: any(named: 'hectareasDeclaradas'),
+          inicio: any(named: 'inicio'),
+          vientoKmh: d('20'),
+          temperaturaC: d('20'),
+          humedadPct: d('50'),
+          observacionAgronomo: null,
+          firmaObservacion: null,
+        ),
+      ).thenAnswer((_) async => _sesionAbierta());
+
+      await abrirConLimites(
+        tester,
+        LimitesCondiciones.resolver(vientoMaxKmh: d('22.00')),
+        viento: '20',
+      );
+      expect(observacion(), findsNothing);
+      expect(firma(), findsNothing);
+
+      await tester.tap(find.byKey(const Key('boton_confirmar_apertura')));
+      await tester.pumpAndSettle();
+      expect(find.text('Sesión activa'), findsOneWidget);
+    });
+
+    testWidgets('sin orden de trabajo (defaults): igual a 17 km/h no pide '
+        'observación, por encima sí', (tester) async {
+      await abrirConLimites(
+        tester,
+        LimitesCondiciones.porDefecto(),
+        viento: '17',
+      );
+      expect(observacion(), findsNothing);
+
+      await tester.enterText(find.byKey(const Key('apertura_viento')), '17.01');
+      await tester.pumpAndSettle();
+      expect(observacion(), findsOneWidget);
+      expect(firma(), findsOneWidget);
+    });
+
+    testWidgets('humedad mínima fijada: por debajo pide observación y firma', (
+      tester,
+    ) async {
+      final limites = LimitesCondiciones.resolver(humedadMinPct: d('40.00'));
+      await abrirConLimites(tester, limites, viento: '10', humedad: '30');
+
+      expect(observacion(), findsOneWidget);
+      expect(firma(), findsOneWidget);
+      expect(
+        tester
+            .widget<NotaInlineCampo>(find.byKey(const Key('apertura_limites')))
+            .texto,
+        contains('humedad entre 40 y 90 %'),
+      );
+    });
+
+    testWidgets('humedad mínima sin fijar: 30 % no pide observación', (
+      tester,
+    ) async {
+      await abrirConLimites(
+        tester,
+        LimitesCondiciones.porDefecto(),
+        viento: '10',
+        humedad: '30',
+      );
+
+      expect(observacion(), findsNothing);
+      expect(firma(), findsNothing);
     });
   });
 }

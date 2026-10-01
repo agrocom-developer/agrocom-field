@@ -150,4 +150,11 @@ class SesionBloc extends Bloc<SesionEvento, SesionEstado> {
   /// que el resto de este Bloc, que tampoco relee `drift` reactivamente).
   Future<List<Auxiliar>> auxiliaresDisponibles() =>
       _sesionRepositorio.auxiliaresDisponibles();
+
+  /// Límites efectivos del trabajo de este Bloc (tarea 24), para que el
+  /// formulario de apertura pida observación y firma exactamente cuando el
+  /// servidor las exigiría. Delega en el repositorio, mismo criterio que
+  /// [auxiliaresDisponibles].
+  Future<LimitesCondiciones> limitesCondiciones() =>
+      _sesionRepositorio.limitesCondiciones(_trabajoUuidCliente);
 }

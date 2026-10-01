@@ -574,4 +574,138 @@ void main() {
       ]);
     });
   });
+
+  group('tarea 24: límites efectivos del trabajo', () {
+    Decimal d(String v) => Decimal.parse(v);
+
+    /// Trabajo asignado desde el panel: fila en `trabajo_catalogo` con los
+    /// límites que manda el servidor y su `trabajo_local` con el mismo
+    /// `uuid_cliente`, como lo deja «Crear aplicación».
+    Future<String> abrirTrabajoAsignado({
+      String? vientoMaxKmh,
+      String? temperaturaMaxC,
+      String? humedadMaxPct,
+      String? humedadMinPct,
+    }) async {
+      const uuid = 'uuid-panel-42';
+      Value<Decimal?> limite(String? v) => Value(v == null ? null : d(v));
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(
+            TrabajoCatalogoCompanion.insert(
+              id: const Value(42),
+              uuidCliente: uuid,
+              ordenId: 1,
+              loteId: 3,
+              hectareasDeclaradas: d('300.00'),
+              equipoTrabajoId: 7,
+              vientoMaxKmh: limite(vientoMaxKmh),
+              temperaturaMaxC: limite(temperaturaMaxC),
+              humedadMaxPct: limite(humedadMaxPct),
+              humedadMinPct: limite(humedadMinPct),
+              updatedAt: DateTime.utc(2026, 9, 22, 12),
+            ),
+          );
+      await trabajoRepositorio.abrirTrabajoAsignado(
+        uuidCliente: uuid,
+        ordenId: 1,
+        loteId: 3,
+        nroAplicacion: 1,
+        inicio: DateTime.utc(2026, 9, 23, 8),
+      );
+      return uuid;
+    }
+
+    Future<Sesion> abrir(
+      String trabajoUuidCliente, {
+      required String viento,
+      String temperatura = '20',
+      String humedad = '50',
+    }) => sesionRepositorio.abrirSesion(
+      trabajoUuidCliente: trabajoUuidCliente,
+      pilotoId: 7,
+      inicio: DateTime.utc(2026, 9, 23, 9),
+      vientoKmh: d(viento),
+      temperaturaC: d(temperatura),
+      humedadPct: d(humedad),
+    );
+
+    test('trabajo asignado: lee los límites de trabajo_catalogo por '
+        'uuid_cliente', () async {
+      final uuid = await abrirTrabajoAsignado(
+        vientoMaxKmh: '12.00',
+        temperaturaMaxC: '28.00',
+        humedadMaxPct: '85.00',
+        humedadMinPct: '40.00',
+      );
+
+      expect(
+        await sesionRepositorio.limitesCondiciones(uuid),
+        LimitesCondiciones.resolver(
+          vientoMaxKmh: d('12.00'),
+          temperaturaMaxC: d('28.00'),
+          humedadMaxPct: d('85.00'),
+          humedadMinPct: d('40.00'),
+        ),
+      );
+    });
+
+    test('trabajo abierto por la app (sin fila en trabajo_catalogo): los '
+        'defaults del servidor', () async {
+      final uuid = await abrirTrabajoDePrueba();
+
+      expect(
+        await sesionRepositorio.limitesCondiciones(uuid),
+        LimitesCondiciones.porDefecto(),
+      );
+    });
+
+    test('límite propio más estricto: sin observación lanza y no escribe '
+        'nada, aunque 15 km/h esté bajo la constante', () async {
+      final uuid = await abrirTrabajoAsignado(vientoMaxKmh: '12.00');
+
+      await expectLater(
+        abrir(uuid, viento: '15'),
+        throwsA(isA<ObservacionAgronomoRequeridaExcepcion>()),
+      );
+      expect(await db.select(db.sesionLocal).get(), isEmpty);
+      expect(await db.select(db.condicionLocal).get(), isEmpty);
+    });
+
+    test('límite propio más permisivo: abre sin observación aunque 20 km/h '
+        'supere la constante', () async {
+      final uuid = await abrirTrabajoAsignado(vientoMaxKmh: '22.00');
+
+      await abrir(uuid, viento: '20');
+
+      final condicion = (await db.select(db.condicionLocal).get()).single;
+      expect(condicion.vientoKmh, d('20'));
+      expect(condicion.observacionAgronomo, isNull);
+    });
+
+    test('trabajo sin orden de trabajo: 20 km/h exige observación por el '
+        'default de 17', () async {
+      final uuid = await abrirTrabajoDePrueba();
+
+      await expectLater(
+        abrir(uuid, viento: '20'),
+        throwsA(isA<ObservacionAgronomoRequeridaExcepcion>()),
+      );
+      await abrir(uuid, viento: '17');
+      expect(await db.select(db.sesionLocal).get(), hasLength(1));
+    });
+
+    test('humedad mínima fijada: por debajo exige observación; sin fijar, '
+        'no', () async {
+      final conMinimo = await abrirTrabajoAsignado(humedadMinPct: '40.00');
+      await expectLater(
+        abrir(conMinimo, viento: '10', humedad: '30'),
+        throwsA(isA<ObservacionAgronomoRequeridaExcepcion>()),
+      );
+
+      final sinMinimo = await abrirTrabajoDePrueba();
+      await abrir(sinMinimo, viento: '10', humedad: '30');
+      expect(await db.select(db.sesionLocal).get(), hasLength(1));
+    });
+  });
 }

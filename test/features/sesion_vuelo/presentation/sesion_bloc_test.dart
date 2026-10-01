@@ -677,4 +677,23 @@ void main() {
 
     expect(resultado, auxiliares);
   });
+
+  test('tarea 24: limitesCondiciones delega en el repositorio con el '
+      'uuid_cliente del trabajo de este Bloc', () async {
+    final limites = LimitesCondiciones.resolver(
+      vientoMaxKmh: Decimal.parse('12.00'),
+    );
+    when(
+      () => sesionRepositorio.limitesCondiciones('trabajo-1'),
+    ).thenAnswer((_) async => limites);
+
+    final bloc = SesionBloc(
+      sesionRepositorio: sesionRepositorio,
+      personaOperativaStore: personaOperativaStore,
+      trabajoUuidCliente: 'trabajo-1',
+    );
+    addTearDown(bloc.close);
+
+    expect(await bloc.limitesCondiciones(), limites);
+  });
 }
