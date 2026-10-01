@@ -53,8 +53,8 @@ class TemaCampo extends ThemeExtension<TemaCampo> {
   }
 }
 
-/// Construye el `ThemeData` completo del modo "campo" — una pantalla lo
-/// adopta envolviéndose en `Theme(data: AgrocomTheme.campo(), child: ...)`.
+/// Construye el `ThemeData` completo del modo "campo" — el tema único de la
+/// app (`MaterialApp` de `app.dart`, ADR 0008, decisión del 1/10/2026).
 abstract final class AgrocomThemeCampo {
   static ThemeData construir() {
     const temaCampo = TemaCampo();
