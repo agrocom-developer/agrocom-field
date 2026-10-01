@@ -3,6 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../nucleo/ui/colores_campo.dart';
+import '../../../nucleo/ui/componentes/componentes_campo.dart';
+import '../../../nucleo/ui/tema_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../domain/tipo_incidencia.dart';
 import 'incidencia_cubit.dart';
 import 'incidencia_estado.dart';
@@ -27,6 +31,12 @@ const _tiposIncidencia = [
 /// La foto es SIEMPRE obligatoria (mismo espíritu que "sin captura no
 /// cierra" de HU-09): el botón de envío queda deshabilitado hasta que haya
 /// una, y no hay forma de enviar sin ella.
+///
+/// En modo campo (ADR 0008, decisión del 1/10/2026): `EncabezadoCampo` en
+/// vez de la barra de Material, el tipo con un `SelectorSegmentadoCampo`
+/// desplazable, la descripción con `CampoTextoCampo` y la foto con el hueco
+/// en ámbar mientras falte — el mismo patrón que el cierre de trabajo de
+/// `SesionVueloVista`. Solo cambia el aspecto.
 class IncidenciaVista extends StatefulWidget {
   const IncidenciaVista({super.key});
 
@@ -73,100 +83,122 @@ class _IncidenciaVistaState extends State<IncidenciaVista> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Reportar incidencia')),
-      body: BlocConsumer<IncidenciaCubit, IncidenciaEstado>(
-        listener: (context, estado) {
-          if (estado is IncidenciaExitosa) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Incidencia registrada')),
-            );
-            Navigator.of(context).pop();
-          }
-          if (estado is IncidenciaError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(estado.mensaje),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-            );
-          }
-        },
-        builder: (context, estado) {
-          final enviando = estado is IncidenciaEnviando;
-          final puedeGuardar =
-              !enviando && _tipoSeleccionado != null && _bytesFoto != null;
-
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: [
-              DropdownButtonFormField<TipoIncidencia>(
-                key: const Key('selector_tipo_incidencia'),
-                initialValue: _tipoSeleccionado,
-                decoration: const InputDecoration(
-                  labelText: 'Tipo de incidencia',
-                ),
-                items: [
-                  for (final tuple in _tiposIncidencia)
-                    DropdownMenuItem(value: tuple.$1, child: Text(tuple.$2)),
-                ],
-                onChanged: enviando
-                    ? null
-                    : (valor) => setState(() => _tipoSeleccionado = valor),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                key: const Key('campo_descripcion'),
-                controller: _descripcionController,
-                enabled: !enviando,
-                maxLines: 3,
-                decoration: const InputDecoration(
-                  labelText: 'Descripción (opcional)',
-                ),
-              ),
-              const SizedBox(height: 16),
-              OutlinedButton(
-                key: const Key('boton_tomar_foto'),
-                onPressed: enviando ? null : () => _tomarFoto(context),
-                child: Text(
-                  _bytesFoto == null ? 'Tomar foto' : 'Volver a tomar foto',
-                ),
-              ),
-              if (_bytesFoto != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 16),
-                  child: Image.memory(
-                    _bytesFoto!,
-                    key: const Key('preview_foto'),
-                    height: 200,
+    return Theme(
+      data: AgrocomThemeCampo.construir(),
+      child: Scaffold(
+        backgroundColor: ColoresCampo.fondoProfundo,
+        body: SafeArea(
+          child: BlocConsumer<IncidenciaCubit, IncidenciaEstado>(
+            listener: (context, estado) {
+              if (estado is IncidenciaExitosa) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Incidencia registrada')),
+                );
+                Navigator.of(context).pop();
+              }
+              if (estado is IncidenciaError) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(estado.mensaje),
+                    backgroundColor: Theme.of(context).colorScheme.error,
                   ),
-                )
-              else
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: Text(
-                    'La foto es obligatoria — sin foto no se puede '
-                    'registrar la incidencia.',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
+                );
+              }
+            },
+            builder: (context, estado) {
+              final enviando = estado is IncidenciaEnviando;
+              final puedeGuardar =
+                  !enviando && _tipoSeleccionado != null && _bytesFoto != null;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(18, 8, 18, 0),
+                    child: EncabezadoCampo(titulo: 'Reportar incidencia'),
+                  ),
+                  Expanded(
+                    child: ListView(
+                      padding: const EdgeInsets.fromLTRB(18, 16, 18, 12),
+                      children: [
+                        Text(
+                          'Tipo de incidencia'.toUpperCase(),
+                          style: TipografiaCampo.etiquetaMono,
+                        ),
+                        const SizedBox(height: 8),
+                        // Seis tipos no entran a lo ancho en un celular: la
+                        // variante desplazable los deja a su ancho natural.
+                        SelectorSegmentadoCampo<TipoIncidencia?>(
+                          key: const Key('selector_tipo_incidencia'),
+                          desplazable: true,
+                          opciones: _tiposIncidencia,
+                          seleccionado: _tipoSeleccionado,
+                          onSeleccionar: (valor) {
+                            if (enviando) return;
+                            setState(() => _tipoSeleccionado = valor);
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        CampoTextoCampo(
+                          key: const Key('campo_descripcion'),
+                          etiqueta: 'Descripción (opcional)',
+                          controller: _descripcionController,
+                          enabled: !enviando,
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 16),
+                        if (_bytesFoto != null) ...[
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                              Theme.of(
+                                    context,
+                                  ).extension<TemaCampo>()?.radioTarjetaChica ??
+                                  18,
+                            ),
+                            child: Image.memory(
+                              _bytesFoto!,
+                              key: const Key('preview_foto'),
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                        BotonAgregarPunteadoCampo(
+                          key: const Key('boton_tomar_foto'),
+                          texto: _bytesFoto == null
+                              ? 'Tomar foto'
+                              : 'Volver a tomar foto',
+                          alerta: _bytesFoto == null,
+                          onPressed: enviando
+                              ? null
+                              : () => _tomarFoto(context),
+                        ),
+                        if (_bytesFoto == null) ...[
+                          const SizedBox(height: 10),
+                          const NotaInlineCampo(
+                            texto:
+                                'La foto es obligatoria — sin foto no se '
+                                'puede registrar la incidencia.',
+                          ),
+                        ],
+                      ],
                     ),
                   ),
-                ),
-              const SizedBox(height: 24),
-              FilledButton(
-                key: const Key('boton_guardar_incidencia'),
-                onPressed: puedeGuardar ? () => _guardar(context) : null,
-                child: enviando
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Guardar incidencia'),
-              ),
-            ],
-          );
-        },
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 0, 18, 20),
+                    child: BotonPrimarioCampo(
+                      key: const Key('boton_guardar_incidencia'),
+                      texto: 'Guardar incidencia',
+                      cargando: enviando,
+                      onPressed: puedeGuardar ? () => _guardar(context) : null,
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
       ),
     );
   }

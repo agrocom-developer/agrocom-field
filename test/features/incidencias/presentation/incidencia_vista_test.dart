@@ -14,6 +14,8 @@ import 'package:agrocom_field/features/incidencias/domain/tipo_incidencia.dart';
 import 'package:agrocom_field/features/incidencias/presentation/incidencia_cubit.dart';
 import 'package:agrocom_field/features/incidencias/presentation/incidencia_vista.dart';
 import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
+import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
+import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -69,10 +71,26 @@ void main() {
 
   Finder botonGuardar() => find.byKey(const Key('boton_guardar_incidencia'));
 
+  // El selector de tipo es una fila desplazable (modo campo, ADR 0008): la
+  // opción puede quedar fuera de pantalla hasta desplazarla.
+  Future<void> elegirTipo(WidgetTester tester, String etiqueta) async {
+    await tester.ensureVisible(find.text(etiqueta));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(etiqueta));
+  }
+
+  // `BotonPrimarioCampo` (modo campo, ADR 0008) envuelve el botón de
+  // Material que se habilita o no: el criterio se verifica sobre ese.
+  FilledButton botonGuardarMaterial(WidgetTester tester) =>
+      tester.widget<FilledButton>(
+        find.descendant(
+          of: botonGuardar(),
+          matching: find.byType(FilledButton),
+        ),
+      );
+
   testWidgets('muestra las 6 opciones del selector de tipo', (tester) async {
     await bombear(tester);
-
-    await tester.tap(find.byKey(const Key('selector_tipo_incidencia')));
     await tester.pumpAndSettle();
 
     expect(find.text('Caldo / mezcla'), findsOneWidget);
@@ -88,12 +106,10 @@ void main() {
     (tester) async {
       await bombear(tester);
 
-      await tester.tap(find.byKey(const Key('selector_tipo_incidencia')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Mecánica').last);
+      await elegirTipo(tester, 'Mecánica');
       await tester.pumpAndSettle();
 
-      final boton = tester.widget<FilledButton>(botonGuardar());
+      final boton = botonGuardarMaterial(tester);
       expect(boton.onPressed, isNull);
       verifyNever(
         () => repositorio.registrarIncidencia(
@@ -118,7 +134,7 @@ void main() {
     await tester.tap(find.byKey(const Key('boton_tomar_foto')));
     await tester.pumpAndSettle();
 
-    final boton = tester.widget<FilledButton>(botonGuardar());
+    final boton = botonGuardarMaterial(tester);
     expect(boton.onPressed, isNull);
   });
 
@@ -155,9 +171,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.byKey(const Key('selector_tipo_incidencia')));
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('Batería').last);
+      await elegirTipo(tester, 'Batería');
       await tester.pumpAndSettle();
 
       await tester.tap(find.byKey(const Key('boton_tomar_foto')));
@@ -165,7 +179,7 @@ void main() {
 
       expect(find.byKey(const Key('preview_foto')), findsOneWidget);
 
-      final boton = tester.widget<FilledButton>(botonGuardar());
+      final boton = botonGuardarMaterial(tester);
       expect(boton.onPressed, isNotNull);
 
       await tester.tap(botonGuardar());
@@ -203,9 +217,7 @@ void main() {
 
     await bombear(tester);
 
-    await tester.tap(find.byKey(const Key('selector_tipo_incidencia')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Otro').last);
+    await elegirTipo(tester, 'Otro');
     await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('boton_tomar_foto')));
@@ -237,9 +249,7 @@ void main() {
 
     await bombear(tester);
 
-    await tester.tap(find.byKey(const Key('selector_tipo_incidencia')));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Caldo / mezcla').last);
+    await elegirTipo(tester, 'Caldo / mezcla');
     await tester.pumpAndSettle();
 
     await tester.enterText(
@@ -261,5 +271,49 @@ void main() {
         bytesFoto: any(named: 'bytesFoto'),
       ),
     ).called(1);
+  });
+
+  testWidgets('modo campo: tema campo, sin AppBar, tipo con selector '
+      'segmentado y la foto en ámbar hasta tomarla', (tester) async {
+    when(
+      () => selectorFoto.tomarFoto(),
+    ).thenAnswer((_) async => _bytesFotoValidos);
+    await bombear(tester);
+    await tester.pumpAndSettle();
+
+    final contexto = tester.element(botonGuardar());
+    expect(Theme.of(contexto).extension<TemaCampo>(), isNotNull);
+    expect(find.byType(AppBar), findsNothing);
+    expect(find.byType(EncabezadoCampo), findsOneWidget);
+
+    final selector = tester.widget<SelectorSegmentadoCampo<TipoIncidencia?>>(
+      find.byKey(const Key('selector_tipo_incidencia')),
+    );
+    expect(selector.seleccionado, isNull);
+    expect(selector.desplazable, isTrue);
+
+    await elegirTipo(tester, 'Clima');
+    await tester.pump();
+    expect(
+      tester
+          .widget<SelectorSegmentadoCampo<TipoIncidencia?>>(
+            find.byKey(const Key('selector_tipo_incidencia')),
+          )
+          .seleccionado,
+      TipoIncidencia.clima,
+    );
+
+    BotonAgregarPunteadoCampo slotFoto() => tester.widget(
+      find.byKey(const Key('boton_tomar_foto'), skipOffstage: false),
+    );
+    expect(slotFoto().alerta, isTrue);
+    expect(botonGuardarMaterial(tester).onPressed, isNull);
+
+    await tester.tap(find.byKey(const Key('boton_tomar_foto')));
+    await tester.pumpAndSettle();
+
+    expect(slotFoto().alerta, isFalse);
+    expect(find.byKey(const Key('preview_foto')), findsOneWidget);
+    expect(botonGuardarMaterial(tester).onPressed, isNotNull);
   });
 }

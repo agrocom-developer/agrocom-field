@@ -22,6 +22,7 @@ export 'logo_agrocom_campo.dart';
 export 'nota_inline_campo.dart';
 export 'nota_tecnica_campo.dart';
 export 'pie_entorno_campo.dart';
+export 'selector_desplegable_campo.dart';
 export 'selector_segmentado_campo.dart';
 export 'stat_chip_campo.dart';
 export 'tarjeta_campo.dart';
