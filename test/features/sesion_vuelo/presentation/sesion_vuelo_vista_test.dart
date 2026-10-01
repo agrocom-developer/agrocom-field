@@ -11,6 +11,7 @@ import 'package:agrocom_field/features/incidencias/presentation/incidencia_cubit
 import 'package:agrocom_field/features/incidencias/presentation/incidencia_vista.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/auxiliar.dart';
+import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_apertura.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/reglas_condiciones.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/sesion.dart';
 import 'package:agrocom_field/features/sesion_vuelo/domain/trabajo.dart';
@@ -143,6 +144,11 @@ void main() {
     when(
       () => sesionRepositorio.limitesCondiciones(any()),
     ).thenAnswer((_) async => LimitesCondiciones.porDefecto());
+    // Tarea 27: por defecto nada impide abrir una sesión nueva — lo que ya
+    // suponían todos los tests de apertura. Los de la tarea 27 lo re-stubean.
+    when(
+      () => sesionRepositorio.restriccionAperturaDeTrabajo(any()),
+    ).thenAnswer((_) async => RestriccionApertura.ninguna);
   });
 
   Future<void> bombear(

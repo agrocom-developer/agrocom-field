@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import '../../../nucleo/auth/persona_operativa_store.dart';
 import '../data/sesion_repository.dart';
 import '../domain/auxiliar.dart';
+import '../domain/reglas_apertura.dart';
 import '../domain/reglas_condiciones.dart';
 import '../domain/reglas_sesion.dart';
 import 'sesion_estado.dart';
@@ -17,7 +18,8 @@ import 'sesion_evento.dart';
 /// Vive en el contexto de UN trabajo abierto — su `uuid_cliente` se pasa al
 /// construirlo. El estado "activa" persiste en memoria del Bloc, no se relee
 /// reactivamente de `drift` (SesionRepository no expone Stream — por diseño,
-/// ver HU-05).
+/// ver HU-05). Lo que sí se lee de `drift` es el punto de partida
+/// ([SesionCargaSolicitada], tarea 27): una sesión que quedó abierta.
 class SesionBloc extends Bloc<SesionEvento, SesionEstado> {
   SesionBloc({
     required SesionRepository sesionRepositorio,
@@ -51,7 +53,26 @@ class SesionBloc extends Bloc<SesionEvento, SesionEstado> {
   ) => switch (evento) {
     SesionAbrirSolicitada() => _alAbrirSolicitada(evento, emit),
     SesionCerrarSolicitada() => _alCerrarSolicitada(evento, emit),
+    SesionCargaSolicitada() => _alCargaSolicitada(emit),
   };
+
+  /// `uuid_cliente` del trabajo de este Bloc: la pantalla lo necesita para
+  /// cerrar el trabajo desde [SesionInicial] (tarea 27), sin sesión abierta.
+  String get trabajoUuidCliente => _trabajoUuidCliente;
+
+  /// Arranca en la sesión que quedó abierta en `drift` para este trabajo, si
+  /// la hay; si no, se queda en [SesionInicial]. Solo lee: no abre, no
+  /// cierra, no encola nada.
+  Future<void> _alCargaSolicitada(Emitter<SesionEstado> emit) async {
+    try {
+      final sesion = await _sesionRepositorio.sesionAbiertaDeTrabajo(
+        _trabajoUuidCliente,
+      );
+      if (sesion != null) emit(SesionActiva(sesion));
+    } catch (e) {
+      emit(SesionError('Error al leer la sesión en curso: ${e.toString()}'));
+    }
+  }
 
   /// Abre una sesión de vuelo (HU-05, Etapa 3) — valida que el piloto
   /// (persona operativa) esté asignado al usuario ANTES de escribir nada en
@@ -157,4 +178,10 @@ class SesionBloc extends Bloc<SesionEvento, SesionEstado> {
   /// [auxiliaresDisponibles].
   Future<LimitesCondiciones> limitesCondiciones() =>
       _sesionRepositorio.limitesCondiciones(_trabajoUuidCliente);
+
+  /// Si el formulario de apertura deja abrir una sesión nueva sobre este
+  /// trabajo, y por qué no (tarea 27). Delega en el repositorio, mismo
+  /// criterio que [limitesCondiciones].
+  Future<RestriccionApertura> restriccionApertura() =>
+      _sesionRepositorio.restriccionAperturaDeTrabajo(_trabajoUuidCliente);
 }

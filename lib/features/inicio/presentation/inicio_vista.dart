@@ -10,7 +10,10 @@ import '../../sesion_vuelo/presentation/sesion_bloc.dart';
 import '../../sesion_vuelo/presentation/sesion_vuelo_pantalla.dart';
 import '../../sesion_vuelo/presentation/trabajo_cubit.dart';
 import '../../sesion_vuelo/presentation/trabajo_estado.dart';
+import '../../../nucleo/catalogo/motivo_retiro.dart';
+import '../domain/reglas_inicio.dart';
 import '../domain/trabajo_asignado.dart';
+import '../domain/trabajo_en_curso.dart';
 import 'inicio_cubit.dart';
 import 'inicio_estado.dart';
 
@@ -26,7 +29,9 @@ import 'inicio_estado.dart';
 /// destinos con pantalla real: Inicio y Órdenes. Un dato ausente se lee
 /// «sin datos», nunca se inventa; sin trabajo asignado, un estado vacío
 /// explícito. Debajo del trabajo, sus límites climáticos y parámetros de
-/// vuelo (tarea 23), los del propio trabajo asignado.
+/// vuelo (tarea 23), los del propio trabajo asignado. Arriba de todo, lo
+/// que el dispositivo tiene en curso (tarea 27), para volver a esa sesión o
+/// a ese trabajo.
 class InicioVista extends StatelessWidget {
   const InicioVista({
     required this.crearTrabajoCubit,
@@ -47,6 +52,20 @@ class InicioVista extends StatelessWidget {
     Navigator.of(context).push(MaterialPageRoute(builder: construirOrdenes));
   }
 
+  /// Pantalla de sesión de vuelo del trabajo [trabajoUuidCliente]: arranca
+  /// en la sesión que haya quedado abierta (`SesionCargaSolicitada`).
+  void _abrirSesionVuelo(BuildContext context, String trabajoUuidCliente) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SesionVueloPantalla(
+          crearBloc: () => crearSesionBloc(trabajoUuidCliente),
+          crearTrabajoCubit: crearTrabajoCubit,
+          crearIncidenciaCubit: crearIncidenciaCubit,
+        ),
+      ),
+    );
+  }
+
   void _crearAplicacion(BuildContext context, TrabajoAsignado trabajo) {
     final nroAplicacion = trabajo.nroAplicacion;
     if (nroAplicacion == null) return;
@@ -63,15 +82,7 @@ class InicioVista extends StatelessWidget {
     return BlocListener<TrabajoCubit, TrabajoEstado>(
       listener: (context, estado) {
         if (estado is TrabajoExitoso) {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => SesionVueloPantalla(
-                crearBloc: () => crearSesionBloc(estado.trabajo.uuidCliente),
-                crearTrabajoCubit: crearTrabajoCubit,
-                crearIncidenciaCubit: crearIncidenciaCubit,
-              ),
-            ),
-          );
+          _abrirSesionVuelo(context, estado.trabajo.uuidCliente);
         }
         if (estado is TrabajoError) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -85,6 +96,17 @@ class InicioVista extends StatelessWidget {
       child: BlocBuilder<InicioCubit, InicioEstado>(
         builder: (context, estado) {
           final trabajo = estado is InicioConTrabajo ? estado.trabajo : null;
+          final enCurso = switch (estado) {
+            InicioConTrabajo(:final enCurso) => enCurso,
+            InicioSinTrabajo(:final enCurso) => enCurso,
+            InicioCargando() => null,
+          };
+          final motivoBloqueo = trabajo == null
+              ? null
+              : motivoCrearAplicacionBloqueado(
+                  trabajo: trabajo,
+                  enCurso: enCurso,
+                );
           return Scaffold(
             backgroundColor: ColoresCampo.fondoProfundo,
             body: FondoFotoCampo(
@@ -101,6 +123,16 @@ class InicioVista extends StatelessWidget {
                         children: [
                           const _Saludo(),
                           const SizedBox(height: 18),
+                          if (enCurso != null) ...[
+                            _TarjetaEnCurso(
+                              enCurso: enCurso,
+                              onVolver: () => _abrirSesionVuelo(
+                                context,
+                                enCurso.trabajoUuidCliente,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                          ],
                           switch (estado) {
                             InicioCargando() => const Padding(
                               padding: EdgeInsets.only(top: 48),
@@ -119,6 +151,7 @@ class InicioVista extends StatelessWidget {
                               children: [
                                 _TarjetaTrabajo(
                                   trabajo: trabajo,
+                                  motivoBloqueo: motivoBloqueo,
                                   onCrearAplicacion: () =>
                                       _crearAplicacion(context, trabajo),
                                 ),
@@ -146,11 +179,19 @@ class InicioVista extends StatelessWidget {
                         if (indice == 1) _abrirOrdenes(context);
                       },
                       // El «+» crea una aplicación: sobre el trabajo asignado
-                      // si lo hay y ya se puede; si no, lleva a las órdenes
+                      // si lo hay y ya se puede; con algo en curso que lo
+                      // impide, vuelve a eso; si no, lleva a las órdenes
                       // vigentes, donde el piloto abre un trabajo propio.
                       onAccionCentral: () {
-                        if (trabajo != null && trabajo.puedeCrearAplicacion) {
+                        if (trabajo != null &&
+                            trabajo.puedeCrearAplicacion &&
+                            motivoBloqueo == null) {
                           _crearAplicacion(context, trabajo);
+                        } else if (enCurso != null) {
+                          _abrirSesionVuelo(
+                            context,
+                            enCurso.trabajoUuidCliente,
+                          );
                         } else {
                           _abrirOrdenes(context);
                         }
@@ -253,13 +294,88 @@ class _SinTrabajo extends StatelessWidget {
   }
 }
 
+/// Sesión o trabajo en curso en este dispositivo (tarea 27): lote, inicio
+/// y, si el trabajo quedó retirado del catálogo, el motivo — se muestra
+/// igual, porque lo abierto se sigue y se cierra.
+class _TarjetaEnCurso extends StatelessWidget {
+  const _TarjetaEnCurso({required this.enCurso, required this.onVolver});
+
+  final TrabajoEnCurso enCurso;
+  final VoidCallback onVolver;
+
+  /// Fecha y hora locales: una sesión puede haber quedado abierta de otro
+  /// día.
+  static String _momento(DateTime momento) {
+    final local = momento.toLocal();
+    String dos(int n) => n.toString().padLeft(2, '0');
+    return '${dos(local.day)}/${dos(local.month)} '
+        '${dos(local.hour)}:${dos(local.minute)}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final motivoRetiro = enCurso.motivoRetiro;
+    return TarjetaCampo(
+      key: const Key('inicio_en_curso'),
+      tamano: TamanoTarjetaCampo.grande,
+      acento: ColoresCampo.acentoLima,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            enCurso.conSesion ? 'SESIÓN EN CURSO' : 'TRABAJO EN CURSO',
+            key: const Key('inicio_en_curso_titulo'),
+            style: TipografiaCampo.etiquetaMono.copyWith(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: ColoresCampo.acentoLima,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            enCurso.loteCodigo ?? 'Lote sin datos',
+            key: const Key('inicio_en_curso_lote'),
+            style: TipografiaCampo.valorDestacado,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Inicio ${_momento(enCurso.inicio)}',
+            key: const Key('inicio_en_curso_inicio'),
+            style: TipografiaCampo.cuerpoSecundario,
+          ),
+          if (motivoRetiro != null) ...[
+            const SizedBox(height: 10),
+            NotaInlineCampo(
+              key: const Key('inicio_en_curso_retiro'),
+              texto: MotivoRetiro.describirTrabajo(motivoRetiro),
+            ),
+          ],
+          const SizedBox(height: 16),
+          BotonPrimarioCampo(
+            key: const Key('boton_volver_en_curso'),
+            texto: enCurso.conSesion
+                ? 'Volver a la sesión'
+                : 'Volver al trabajo',
+            onPressed: onVolver,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _TarjetaTrabajo extends StatelessWidget {
   const _TarjetaTrabajo({
     required this.trabajo,
+    required this.motivoBloqueo,
     required this.onCrearAplicacion,
   });
 
   final TrabajoAsignado trabajo;
+
+  /// Por qué «Crear aplicación» está deshabilitado (tarea 27); `null` si no
+  /// lo está.
+  final String? motivoBloqueo;
   final VoidCallback onCrearAplicacion;
 
   /// `Decimal.toString()` tal cual, nunca pasando por `double`
@@ -286,6 +402,14 @@ class _TarjetaTrabajo extends StatelessWidget {
               color: ColoresCampo.acentoLima,
             ),
           ),
+          if (trabajo.ordenPausada) ...[
+            const SizedBox(height: 10),
+            const BadgeEstadoCampo(
+              key: Key('inicio_orden_pausada'),
+              texto: 'Orden pausada',
+              estado: EstadoBadgeCampo.pendiente,
+            ),
+          ],
           const SizedBox(height: 12),
           Text(
             trabajo.loteCodigo ?? 'Lote sin datos',
@@ -339,8 +463,17 @@ class _TarjetaTrabajo extends StatelessWidget {
             cargando: context.select<TrabajoCubit, bool>(
               (cubit) => cubit.state is TrabajoCargando,
             ),
-            onPressed: trabajo.puedeCrearAplicacion ? onCrearAplicacion : null,
+            onPressed: trabajo.puedeCrearAplicacion && motivoBloqueo == null
+                ? onCrearAplicacion
+                : null,
           ),
+          if (motivoBloqueo case final motivo?) ...[
+            const SizedBox(height: 10),
+            NotaInlineCampo(
+              key: const Key('inicio_crear_bloqueado'),
+              texto: motivo,
+            ),
+          ],
           if (!trabajo.puedeCrearAplicacion) ...[
             const SizedBox(height: 10),
             const NotaInlineCampo(

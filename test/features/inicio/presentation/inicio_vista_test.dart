@@ -86,6 +86,10 @@ void main() {
     when(
       () => inicioRepositorio.trabajoAsignado(),
     ).thenAnswer((_) => Stream.value(trabajo));
+    // Tarea 27: por defecto nada en curso en el dispositivo.
+    when(
+      () => inicioRepositorio.enCurso(),
+    ).thenAnswer((_) => Stream.value(null));
     await tester.pumpWidget(
       MaterialApp(
         theme: AgrocomThemeCampo.construir(),
@@ -98,8 +102,14 @@ void main() {
           ),
           crearSesionBloc: (trabajoUuidCliente) {
             sesionesPedidas.add(trabajoUuidCliente);
+            // Tarea 27: la pantalla de sesión arranca leyendo la sesión
+            // abierta del trabajo; acá no hay ninguna.
+            final sesionRepositorio = _SesionRepositoryFalso();
+            when(
+              () => sesionRepositorio.sesionAbiertaDeTrabajo(any()),
+            ).thenAnswer((_) async => null);
             return SesionBloc(
-              sesionRepositorio: _SesionRepositoryFalso(),
+              sesionRepositorio: sesionRepositorio,
               personaOperativaStore: _PersonaOperativaStoreFalso(),
               trabajoUuidCliente: trabajoUuidCliente,
             );

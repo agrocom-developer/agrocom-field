@@ -8,6 +8,7 @@ import '../../../nucleo/catalogo/motivo_retiro.dart';
 import '../../../nucleo/db/database.dart';
 import '../../../nucleo/db/tablas/sesion_local.dart' show EstadoSesionLocal;
 import '../domain/auxiliar.dart';
+import '../domain/reglas_apertura.dart';
 import '../domain/reglas_condiciones.dart';
 import '../domain/reglas_sesion.dart';
 import '../domain/sesion.dart';
@@ -303,6 +304,61 @@ class SesionRepository {
       temperaturaMaxC: trabajo.temperaturaMaxC,
       humedadMaxPct: trabajo.humedadMaxPct,
       humedadMinPct: trabajo.humedadMinPct,
+    );
+  }
+
+  /// La sesión abierta de [trabajoUuidCliente] en este dispositivo, o `null`
+  /// (tarea 27): es con la que arranca `SesionBloc` al volver a la
+  /// pantalla, con su `uuid_cliente` de siempre — nunca uno nuevo
+  /// (invariante 2 de CLAUDE.md). Si hubiera más de una abierta, la de
+  /// `secuencia` mayor dentro del trabajo (invariante 5: el orden lo da la
+  /// secuencia local, nunca el reloj).
+  Future<Sesion?> sesionAbiertaDeTrabajo(String trabajoUuidCliente) async {
+    final fila =
+        await (_db.select(_db.sesionLocal)
+              ..where(
+                (t) =>
+                    t.trabajoUuidCliente.equals(trabajoUuidCliente) &
+                    t.estado.equalsValue(EstadoSesionLocal.abierta),
+              )
+              ..orderBy([(t) => OrderingTerm.desc(t.secuencia)])
+              ..limit(1))
+            .getSingleOrNull();
+    return fila == null ? null : _sesionDesdeFila(fila);
+  }
+
+  /// Si se puede abrir una sesión nueva sobre [trabajoUuidCliente] (tarea
+  /// 27), leído de `drift` y decidido por `restriccionApertura`. Sin
+  /// `Stream`, mismo criterio que [limitesCondiciones]: el formulario la
+  /// pide al abrirse.
+  Future<RestriccionApertura> restriccionAperturaDeTrabajo(
+    String trabajoUuidCliente,
+  ) async {
+    final abierta =
+        await (_db.select(_db.sesionLocal)
+              ..where((t) => t.estado.equalsValue(EstadoSesionLocal.abierta))
+              ..limit(1))
+            .getSingleOrNull();
+    // La orden sale de `TrabajoLocal` (siempre está: sin él no se abre
+    // sesión) o, si faltara, de la fila del catálogo.
+    final trabajoLocal =
+        await (_db.select(_db.trabajoLocal)
+              ..where((t) => t.uuidCliente.equals(trabajoUuidCliente)))
+            .getSingleOrNull();
+    final trabajoCatalogo =
+        await (_db.select(_db.trabajoCatalogo)
+              ..where((t) => t.uuidCliente.equals(trabajoUuidCliente)))
+            .getSingleOrNull();
+    final ordenId = trabajoLocal?.ordenId ?? trabajoCatalogo?.ordenId;
+    final orden = ordenId == null
+        ? null
+        : await (_db.select(
+            _db.ordenCatalogo,
+          )..where((t) => t.id.equals(ordenId))).getSingleOrNull();
+    return restriccionApertura(
+      haySesionAbierta: abierta != null,
+      motivoRetiroOrden: orden?.motivoRetiro,
+      motivoRetiroTrabajo: trabajoCatalogo?.motivoRetiro,
     );
   }
 

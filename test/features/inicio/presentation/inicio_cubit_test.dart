@@ -25,7 +25,12 @@ final _trabajo = TrabajoAsignado(
 void main() {
   late _InicioRepositoryFalso repositorio;
 
-  setUp(() => repositorio = _InicioRepositoryFalso());
+  setUp(() {
+    repositorio = _InicioRepositoryFalso();
+    // Tarea 27: por defecto nada en curso (no emite) — estos tests miran
+    // solo el trabajo asignado.
+    when(() => repositorio.enCurso()).thenAnswer((_) => const Stream.empty());
+  });
 
   blocTest<InicioCubit, InicioEstado>(
     'estado inicial es InicioCargando',

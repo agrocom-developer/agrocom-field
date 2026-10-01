@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../incidencias/presentation/incidencia_cubit.dart';
 import 'sesion_bloc.dart';
+import 'sesion_evento.dart';
 import 'sesion_vuelo_vista.dart';
 import 'trabajo_cubit.dart';
 
@@ -38,7 +39,11 @@ class SesionVueloPantalla extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<SesionBloc>(create: (_) => crearBloc()),
+        // Arranca en lo que haya en `drift` (tarea 27): volver a esta
+        // pantalla retoma la sesión que quedó abierta.
+        BlocProvider<SesionBloc>(
+          create: (_) => crearBloc()..add(const SesionCargaSolicitada()),
+        ),
         BlocProvider<TrabajoCubit>(create: (_) => crearTrabajoCubit()),
       ],
       child: SesionVueloVista(crearIncidenciaCubit: crearIncidenciaCubit),

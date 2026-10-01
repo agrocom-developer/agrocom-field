@@ -11,6 +11,7 @@ import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../incidencias/presentation/incidencia_cubit.dart';
 import '../../incidencias/presentation/incidencia_pantalla.dart';
 import '../domain/auxiliar.dart';
+import '../domain/reglas_apertura.dart';
 import '../domain/reglas_condiciones.dart';
 import '../domain/sesion.dart';
 import 'sesion_bloc.dart';
@@ -70,6 +71,16 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
   /// registro `condiciones`.
   LimitesCondiciones _limites = LimitesCondiciones.porDefecto();
 
+  /// Si se puede abrir una sesión nueva (tarea 27), cargada junto con
+  /// [_limites] al abrir el formulario: con un bloqueo, el formulario
+  /// muestra el motivo y no deja confirmar.
+  RestriccionApertura _restriccion = RestriccionApertura.ninguna;
+
+  /// La misma restricción, leída al entrar a la pantalla (tarea 27) para
+  /// mostrar arriba el motivo de retiro del trabajo como aviso; se
+  /// actualiza cada vez que se abre el formulario. `null` mientras carga.
+  RestriccionApertura? _restriccionPantalla;
+
   /// HU-07: se dispara una sola vez por apertura de diálogo, no en cada
   /// `build` del `StatefulBuilder` — evita repetir la consulta a `drift` en
   /// cada rebuild mientras el piloto completa el resto del formulario.
@@ -102,6 +113,21 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     _hectareaInicialController = TextEditingController();
     _acumuladoFinalController = TextEditingController();
     _litrosSobranteController = TextEditingController();
+    _cargarRestriccionPantalla();
+  }
+
+  /// Solo informa: si la lectura falla, la pantalla sigue sin el aviso. Lo
+  /// que bloquea no depende de esto — el formulario vuelve a leer la
+  /// restricción antes de dejar confirmar.
+  Future<void> _cargarRestriccionPantalla() async {
+    final RestriccionApertura restriccion;
+    try {
+      restriccion = await context.read<SesionBloc>().restriccionApertura();
+    } catch (_) {
+      return;
+    }
+    if (!mounted) return;
+    setState(() => _restriccionPantalla = restriccion);
   }
 
   @override
@@ -155,9 +181,13 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
   /// fuera de rango con un default mientras llegan podría dejar pasar una
   /// apertura que el servidor rechaza.
   Future<void> _mostrarFormularioApertura(BuildContext context) async {
-    final limites = await context.read<SesionBloc>().limitesCondiciones();
+    final bloc = context.read<SesionBloc>();
+    final limites = await bloc.limitesCondiciones();
+    final restriccion = await bloc.restriccionApertura();
     if (!context.mounted) return;
     _limites = limites;
+    _restriccion = restriccion;
+    setState(() => _restriccionPantalla = restriccion);
 
     _vientoController.clear();
     _temperaturaController.clear();
@@ -194,35 +224,46 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
             botonConfirmar: BotonPrimarioCampo(
               key: const Key('boton_confirmar_apertura'),
               texto: 'Abrir sesión',
-              onPressed: () {
-                if (!_formAperturaKey.currentState!.validate()) return;
+              onPressed: _restriccion.bloqueada
+                  ? null
+                  : () {
+                      if (!_formAperturaKey.currentState!.validate()) return;
 
-                context.read<SesionBloc>().add(
-                  SesionAbrirSolicitada(
-                    vientoKmh: Decimal.parse(_vientoController.text),
-                    temperaturaC: Decimal.parse(_temperaturaController.text),
-                    humedadPct: Decimal.parse(_humedadController.text),
-                    observacionAgronomo: _condicionesFueraDeRango
-                        ? _observacionController.text.trim()
-                        : null,
-                    firmaObservacion: _condicionesFueraDeRango
-                        ? _firmaController.text.trim()
-                        : null,
-                    auxiliarId: _auxiliarSeleccionadoId,
-                    dronId: _dronIdController.text.isEmpty
-                        ? null
-                        : int.parse(_dronIdController.text),
-                    hectareaInicialAcumulada:
-                        _hectareaInicialController.text.isEmpty
-                        ? null
-                        : Decimal.parse(_hectareaInicialController.text),
-                  ),
-                );
+                      context.read<SesionBloc>().add(
+                        SesionAbrirSolicitada(
+                          vientoKmh: Decimal.parse(_vientoController.text),
+                          temperaturaC: Decimal.parse(
+                            _temperaturaController.text,
+                          ),
+                          humedadPct: Decimal.parse(_humedadController.text),
+                          observacionAgronomo: _condicionesFueraDeRango
+                              ? _observacionController.text.trim()
+                              : null,
+                          firmaObservacion: _condicionesFueraDeRango
+                              ? _firmaController.text.trim()
+                              : null,
+                          auxiliarId: _auxiliarSeleccionadoId,
+                          dronId: _dronIdController.text.isEmpty
+                              ? null
+                              : int.parse(_dronIdController.text),
+                          hectareaInicialAcumulada:
+                              _hectareaInicialController.text.isEmpty
+                              ? null
+                              : Decimal.parse(_hectareaInicialController.text),
+                        ),
+                      );
 
-                Navigator.pop(dialogContext);
-              },
+                      Navigator.pop(dialogContext);
+                    },
             ),
             children: [
+              if (_restriccion.bloqueo case final bloqueo?) ...[
+                BannerAlertaCampo(
+                  key: const Key('apertura_bloqueada'),
+                  texto: bloqueo,
+                ),
+                const SizedBox(height: 12),
+              ],
               NotaInlineCampo(
                 key: const Key('apertura_limites'),
                 texto: _textoLimites(_limites),
@@ -663,6 +704,16 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                   padding: EdgeInsets.fromLTRB(18, 8, 18, 0),
                   child: EncabezadoCampo(titulo: 'Sesión de vuelo'),
                 ),
+                // Trabajo retirado del catálogo (tarea 27): se avisa en toda
+                // la pantalla; lo abierto se sigue y se cierra igual.
+                if (_restriccionPantalla?.aviso case final aviso?)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(18, 12, 18, 0),
+                    child: NotaInlineCampo(
+                      key: const Key('sesion_aviso_retiro'),
+                      texto: aviso,
+                    ),
+                  ),
                 Expanded(
                   child: BlocConsumer<SesionBloc, SesionEstado>(
                     listener: (context, estado) {
@@ -678,20 +729,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                       }
                     },
                     builder: (context, estado) => switch (estado) {
-                      SesionInicial() => Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 18),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: BotonPrimarioCampo(
-                              key: const Key('boton_abrir_sesion'),
-                              texto: 'Abrir sesión',
-                              onPressed: () =>
-                                  _mostrarFormularioApertura(context),
-                            ),
-                          ),
-                        ),
-                      ),
+                      SesionInicial() => _sesionInicial(context),
                       SesionAbriendo() => const Center(
                         child: CircularProgressIndicator(),
                       ),
@@ -739,6 +777,71 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
           ),
         ),
       ),
+    );
+  }
+
+  /// Sin sesión abierta: abrir una nueva o, si el piloto volvió a un trabajo
+  /// en curso (tarea 27), cerrar el trabajo sin pasar por una sesión. Con
+  /// el trabajo ya cerrado no se abre otra sesión sobre él.
+  Widget _sesionInicial(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 18),
+        child: BlocBuilder<TrabajoCubit, TrabajoEstado>(
+          builder: (context, estadoTrabajo) => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              BotonPrimarioCampo(
+                key: const Key('boton_abrir_sesion'),
+                texto: 'Abrir sesión',
+                onPressed: estadoTrabajo is TrabajoCerrado
+                    ? null
+                    : () => _mostrarFormularioApertura(context),
+              ),
+              const SizedBox(height: 12),
+              _cierreTrabajo(
+                context,
+                estadoTrabajo,
+                context.read<SesionBloc>().trabajoUuidCliente,
+                primario: false,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// «Cerrar trabajo» (HU-09) o su confirmación, según el `TrabajoCubit`.
+  Widget _cierreTrabajo(
+    BuildContext context,
+    TrabajoEstado estadoTrabajo,
+    String trabajoUuidCliente, {
+    required bool primario,
+  }) {
+    if (estadoTrabajo is TrabajoCerrado) {
+      return const NotaInlineCampo(
+        key: Key('trabajo_cerrado'),
+        texto: 'Trabajo cerrado',
+        color: ColoresCampo.acentoLima,
+        centrada: true,
+      );
+    }
+    void alCerrar() =>
+        _mostrarFormularioCierreTrabajo(context, trabajoUuidCliente);
+    if (!primario) {
+      return BotonSecundarioCampo(
+        key: const Key('boton_cerrar_trabajo'),
+        texto: 'Cerrar trabajo',
+        onPressed: estadoTrabajo is TrabajoCerrando ? null : alCerrar,
+      );
+    }
+    return BotonPrimarioCampo(
+      key: const Key('boton_cerrar_trabajo'),
+      texto: 'Cerrar trabajo',
+      cargando: estadoTrabajo is TrabajoCerrando,
+      onPressed: alCerrar,
     );
   }
 
@@ -851,25 +954,12 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
         ),
         const SizedBox(height: 20),
         BlocBuilder<TrabajoCubit, TrabajoEstado>(
-          builder: (context, estadoTrabajo) {
-            if (estadoTrabajo is TrabajoCerrado) {
-              return const NotaInlineCampo(
-                key: Key('trabajo_cerrado'),
-                texto: 'Trabajo cerrado',
-                color: ColoresCampo.acentoLima,
-                centrada: true,
-              );
-            }
-            return BotonPrimarioCampo(
-              key: const Key('boton_cerrar_trabajo'),
-              texto: 'Cerrar trabajo',
-              cargando: estadoTrabajo is TrabajoCerrando,
-              onPressed: () => _mostrarFormularioCierreTrabajo(
-                context,
-                sesion.trabajoUuidCliente,
-              ),
-            );
-          },
+          builder: (context, estadoTrabajo) => _cierreTrabajo(
+            context,
+            estadoTrabajo,
+            sesion.trabajoUuidCliente,
+            primario: true,
+          ),
         ),
       ],
     );
