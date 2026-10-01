@@ -6,6 +6,12 @@
 // Etapa 2 de HU-20 agrega el último grupo: `VersionBloqueoOverlay` tapando
 // login cuando `estadoVersion` emite `VersionBloqueada`.
 
+import 'package:agrocom_field/features/inicio/data/inicio_repository.dart';
+import 'package:agrocom_field/features/inicio/presentation/inicio_cubit.dart';
+import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
+import 'package:agrocom_field/features/sesion_vuelo/presentation/trabajo_cubit.dart';
+import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
+import 'package:agrocom_field/nucleo/evidencias/evidencia_repository.dart';
 import 'dart:async';
 
 import 'package:agrocom_field/app.dart';
@@ -31,6 +37,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 class _TokenStoreFalso extends Mock implements TokenStore {}
+
+class _InicioRepositoryFalso extends Mock implements InicioRepository {}
+
+class _TrabajoRepositoryFalso extends Mock implements TrabajoRepository {}
+
+class _EvidenciaRepositoryFalso extends Mock implements EvidenciaRepository {}
+
+class _SelectorFotoFalso extends Mock implements SelectorFoto {}
 
 class _LoginServiceFalso extends Mock implements LoginService {}
 
@@ -415,4 +429,45 @@ void main() {
       expect(find.text(minima.urlDescarga), findsOneWidget);
     },
   );
+
+  testWidgets('HU-70: piloto con token y fábrica de InicioCubit arranca en '
+      '«Inicio» (estado vacío sin trabajo asignado), no en la lista de '
+      'órdenes', (tester) async {
+    when(() => tokenStore.leerToken()).thenAnswer((_) async => 'token');
+    final inicioRepositorio = _InicioRepositoryFalso();
+    when(
+      () => inicioRepositorio.trabajoAsignado(),
+    ).thenAnswer((_) => Stream.value(null));
+
+    await tester.pumpWidget(
+      AgrocomApp(
+        flavor: Flavor.piloto,
+        infoEntorno: const InfoEntorno(
+          flavor: Flavor.piloto,
+          hostApi: 'localhost',
+          version: '0.1.0+1',
+        ),
+        tokenStore: tokenStore,
+        linternaControlador: linterna,
+        estadoVersion: const Stream<EstadoVersion>.empty(),
+        crearLoginCubit: () => LoginCubit(_LoginServiceFalso(), Flavor.piloto),
+        crearOrdenesCubit: () =>
+            throw UnimplementedError('órdenes no se monta al arrancar'),
+        crearTrabajoCubit: () => TrabajoCubit(
+          _TrabajoRepositoryFalso(),
+          evidenciaRepositorio: _EvidenciaRepositoryFalso(),
+          selectorFoto: _SelectorFotoFalso(),
+        ),
+        crearSesionBloc: (_) => throw UnimplementedError('stub no invocado'),
+        crearIncidenciaCubit: (_) =>
+            throw UnimplementedError('stub no invocado'),
+        alIngresarConExito: () {},
+        crearInicioCubit: () => InicioCubit(inicioRepositorio),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('inicio_sin_trabajo')), findsOneWidget);
+    expect(find.byKey(const Key('login_usuario')), findsNothing);
+  });
 }
