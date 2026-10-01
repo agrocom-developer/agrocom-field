@@ -121,3 +121,20 @@ Implementación: fuentes variables (un archivo por familia, eje `wght`) descarga
 
 `TipografiaCampo` pasa a fijar `fontFamily: 'Manrope'` en sus siete estilos de texto humano (antes sin `fontFamily`, heredaban la de plataforma) y `fontFamily: 'JetBrains Mono'` en los cuatro de dato técnico (antes `'monospace'`) — mismo mecanismo de siempre (`copyWith` para un ajuste puntual, nunca reescribir la familia desde una pantalla). `TemaCampo.familiaMonoespaciada` (una `ThemeExtension` sin consumidores reales todavía, ver el propio archivo) actualiza su default al mismo valor, para no quedar documentando una fuente que ya no es la que usa el catálogo.
 
+
+### Decisión (1/10/2026): todas las pantallas reales migran al modo campo
+
+El login migró el 14/9/2026 para evaluar el modo campo con una pantalla real antes de decidir el resto (sección «el login real adopta el modo campo»). **El dueño lo evaluó en el dispositivo y cierra esa evaluación**: después del login, «Órdenes vigentes» y «Orden N.º» se ven con el Material estándar de ADR 0003, sin foto, sin tokens ni tipografía del catálogo, y el salto visual entre login y órdenes es justamente lo que no quiere. Todas las pantallas reales de los dos flavors adoptan el modo campo (`AgrocomThemeCampo.construir()` + átomos de `lib/nucleo/ui/componentes/`), en tareas propias de la cola:
+
+| Pantalla real | Referencia en la vista previa | Tarea |
+|---|---|---|
+| Órdenes vigentes (lista) y detalle de orden (HU-04) | 08 · `orden_detalle_campo_vitrina.dart`; la lista sigue el patrón «fila que navega» de `ItemListaCampo`/`TarjetaCampo` | 20 |
+| Sesión de vuelo: abrir sesión con condiciones, cerrar sesión, cerrar trabajo (HU-05/06/07/09) e incidencia (HU-08) | 04 · `crear_aplicacion_campo_vitrina.dart`, 06 · `condiciones_campo_vitrina.dart` | 21 |
+| Inicio del piloto (HU-70, pantalla nueva) | 03 · `inicio_piloto_campo_vitrina.dart` (con barra de navegación) — la 03b «una sola decisión» queda como alternativa en la vista previa | 19 |
+| Tema global (`MaterialApp` de `app.dart`), pantalla de carga, bloqueo de versión (HU-20) y emergencia/linterna (HU-68) | Tokens y átomos del catálogo; sin pantalla equivalente en la vista previa | 22 |
+
+Regla que sigue valiendo, sin excepción: **el mockup manda en lo visual, el contrato manda en los campos**. Lo que la vista previa muestra con datos mock (clima en la tarjeta de inicio, «Sync 4», «Equipos», «Rubén») solo se muestra en la pantalla real si existe su fuente en `drift`; un destino de navegación sin pantalla real no aparece en la barra. Las `Key`s, los blocs/cubits y los tests de comportamiento de cada pantalla no cambian de criterio: una migración visual que obliga a reescribir un test de comportamiento cambió algo más que el aspecto.
+
+El login y el selector de rol del flavor `auxiliar` (HU-69) ya están migrados desde el 14/9/2026. Los avisos locales (HU-62) son notificaciones del sistema operativo, no pantallas de la app.
+
+Fuera de esta decisión: el onboarding (01) y «Vincular dispositivo» (02) de la vista previa no tienen HU — el flujo real entra por usuario y contraseña (HU-03) y el token persiste, ver la sección del login —, así que no se construyen como pantallas reales. `AgrocomTheme.light()`/`.dark()` (ADR 0003) se retira cuando ninguna pantalla lo use, en un cambio aparte.

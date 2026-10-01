@@ -9,7 +9,7 @@ import '../../tipos/decimal_drift_converter.dart';
 class LoteCatalogo extends Table {
   IntColumn get id => integer()();
 
-  IntColumn get campoId => integer()();
+  IntColumn get propiedadId => integer()();
 
   TextColumn get codigo => text()();
 

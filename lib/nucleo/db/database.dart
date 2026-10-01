@@ -37,7 +37,11 @@ part 'database.g.dart';
 /// vez de `ALTER TABLE`, porque es un espejo de solo lectura (nunca pierde
 /// datos capturados sin conectividad, invariante que protege a
 /// `TrabajoLocal`/`SesionLocal`, no a este catálogo) y SQLite no permite
-/// aflojar una columna `NOT NULL` con `ALTER TABLE`.
+/// aflojar una columna `NOT NULL` con `ALTER TABLE`. (v9) recrea
+/// [LoteCatalogo]: `campoId` → `propiedadId` (ADR 0020 de `agrocom-api`, el
+/// servidor elimina la entidad `Campo` — `Lote` cuelga directo de
+/// `Propiedad`). Mismo criterio que v8: espejo de solo lectura, se recrea
+/// entera sin perder nada, el próximo pull la repuebla.
 /// Las tablas espejo del resto de las features de escritura (recargas...)
 /// se agregan en tareas técnicas posteriores, cada una subiendo
 /// [schemaVersion] con su propia migración — nunca reescribiendo la
@@ -61,7 +65,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -140,6 +144,15 @@ class AppDatabase extends _$AppDatabase {
       if (from < 8) {
         await m.deleteTable(ordenCatalogo.actualTableName);
         await m.createTable(ordenCatalogo);
+        await (delete(cursorCatalogo)).go();
+      }
+      // v9: `lote_catalogo.campoId` → `propiedadId` (ADR 0020 de
+      // `agrocom-api`). Mismo criterio que v8: espejo de solo lectura, se
+      // recrea entera y se resetea el cursor — el próximo pull la repuebla
+      // completa (las cuatro secciones, el cursor es un único valor opaco).
+      if (from < 9) {
+        await m.deleteTable(loteCatalogo.actualTableName);
+        await m.createTable(loteCatalogo);
         await (delete(cursorCatalogo)).go();
       }
     },
