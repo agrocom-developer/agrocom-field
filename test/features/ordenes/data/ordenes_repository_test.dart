@@ -6,6 +6,7 @@
 import 'package:agrocom_field/features/ordenes/data/ordenes_repository.dart';
 import 'package:agrocom_field/features/ordenes/domain/orden_vigente.dart';
 import 'package:agrocom_field/nucleo/db/database.dart';
+import 'package:agrocom_field/nucleo/db/tablas/trabajo_local.dart';
 import 'package:decimal/decimal.dart';
 import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
@@ -38,6 +39,33 @@ LoteCatalogoCompanion _loteCompanion({
   hectareas: Decimal.parse(hectareas),
   updatedAt: DateTime.utc(2026, 8, 26, 12),
 );
+
+/// Trabajo asignado desde el panel con los siete límites climáticos y de
+/// vuelo en el mismo [valor] (tarea 23), o todos en `null`.
+TrabajoCatalogoCompanion _trabajoCompanion({
+  required int id,
+  int ordenId = 1,
+  String? valor = '15.00',
+  DateTime? updatedAt,
+}) {
+  final limite = Value(valor == null ? null : Decimal.parse(valor));
+  return TrabajoCatalogoCompanion.insert(
+    id: Value(id),
+    uuidCliente: 'uuid-panel-$id',
+    ordenId: ordenId,
+    loteId: 3,
+    hectareasDeclaradas: Decimal.parse('300.00'),
+    equipoTrabajoId: 7,
+    humedadMinPct: limite,
+    vientoMaxKmh: limite,
+    temperaturaMaxC: limite,
+    humedadMaxPct: limite,
+    alturaVueloM: limite,
+    velocidadVueloKmh: limite,
+    anchoPasadaM: limite,
+    updatedAt: updatedAt ?? DateTime.utc(2026, 9, 22, 12),
+  );
+}
 
 /// Espera activa acotada — evita el flaqueo de un delay fijo sin acoplarse
 /// al mecanismo interno de `drift` para reencolar una query tras un write.
@@ -168,4 +196,171 @@ void main() {
       await suscripcion.cancel();
     },
   );
+
+  group('tarea 23: límites climáticos y de vuelo del trabajo asignado', () {
+    void esperarLimites(OrdenVigente orden, Decimal? valor) {
+      expect(orden.humedadMinPct, valor);
+      expect(orden.vientoMaxKmh, valor);
+      expect(orden.temperaturaMaxC, valor);
+      expect(orden.humedadMaxPct, valor);
+      expect(orden.alturaVueloM, valor);
+      expect(orden.velocidadVueloKmh, valor);
+      expect(orden.anchoPasadaM, valor);
+    }
+
+    test('con trabajo asignado, la orden expone los límites del trabajo y '
+        'no los de orden_catalogo', () async {
+      await db
+          .into(db.ordenCatalogo)
+          .insert(
+            _ordenCompanion().copyWith(
+              vientoMaxKmh: Value(Decimal.parse('99.00')),
+            ),
+          );
+      await db.into(db.trabajoCatalogo).insert(_trabajoCompanion(id: 42));
+
+      final orden = (await repositorio.ordenesVigentes().first).single;
+
+      esperarLimites(orden, Decimal.parse('15.00'));
+    });
+
+    test('sin trabajo asignado, los límites quedan en null aunque '
+        'orden_catalogo traiga valores viejos', () async {
+      await db
+          .into(db.ordenCatalogo)
+          .insert(
+            _ordenCompanion().copyWith(
+              vientoMaxKmh: Value(Decimal.parse('99.00')),
+              anchoPasadaM: Value(Decimal.parse('7.00')),
+            ),
+          );
+
+      final orden = (await repositorio.ordenesVigentes().first).single;
+
+      esperarLimites(orden, null);
+    });
+
+    test('nunca toma los límites del trabajo de otra orden', () async {
+      await db.into(db.ordenCatalogo).insert(_ordenCompanion(id: 1));
+      await db.into(db.ordenCatalogo).insert(_ordenCompanion(id: 2));
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(_trabajoCompanion(id: 42, ordenId: 2));
+
+      final ordenes = await repositorio.ordenesVigentes().first;
+
+      expect(ordenes, hasLength(2));
+      esperarLimites(ordenes.singleWhere((o) => o.id == 1), null);
+      esperarLimites(
+        ordenes.singleWhere((o) => o.id == 2),
+        Decimal.parse('15.00'),
+      );
+    });
+
+    test('trabajo asignado con los límites sin completar: null, sin '
+        'inventar', () async {
+      await db.into(db.ordenCatalogo).insert(_ordenCompanion());
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(_trabajoCompanion(id: 42, valor: null));
+
+      final orden = (await repositorio.ordenesVigentes().first).single;
+
+      esperarLimites(orden, null);
+    });
+
+    test('con varios trabajos, usa el más reciente por updated_at y una sola '
+        'fila por orden', () async {
+      await db.into(db.ordenCatalogo).insert(_ordenCompanion());
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(
+            _trabajoCompanion(
+              id: 43,
+              valor: '10.00',
+              updatedAt: DateTime.utc(2026, 9, 21, 12),
+            ),
+          );
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(
+            _trabajoCompanion(
+              id: 42,
+              valor: '20.00',
+              updatedAt: DateTime.utc(2026, 9, 23, 12),
+            ),
+          );
+
+      final ordenes = await repositorio.ordenesVigentes().first;
+
+      expect(ordenes, hasLength(1));
+      esperarLimites(ordenes.single, Decimal.parse('20.00'));
+    });
+
+    test('ignora el trabajo que este dispositivo ya cerró, como «Inicio»; si '
+        'no queda otro, null', () async {
+      await db.into(db.ordenCatalogo).insert(_ordenCompanion());
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(
+            _trabajoCompanion(
+              id: 42,
+              valor: '20.00',
+              updatedAt: DateTime.utc(2026, 9, 23, 12),
+            ),
+          );
+      await db
+          .into(db.trabajoLocal)
+          .insert(
+            TrabajoLocalCompanion.insert(
+              uuidCliente: 'uuid-panel-42',
+              ordenId: 1,
+              loteId: 3,
+              nroAplicacion: 1,
+              inicio: DateTime.utc(2026, 9, 23, 8),
+              estado: const Value(EstadoTrabajoLocal.cerrado),
+            ),
+          );
+
+      esperarLimites((await repositorio.ordenesVigentes().first).single, null);
+
+      await db
+          .into(db.trabajoCatalogo)
+          .insert(
+            _trabajoCompanion(
+              id: 41,
+              valor: '10.00',
+              updatedAt: DateTime.utc(2026, 9, 21, 12),
+            ),
+          );
+
+      esperarLimites(
+        (await repositorio.ordenesVigentes().first).single,
+        Decimal.parse('10.00'),
+      );
+    });
+
+    test('reactividad: un trabajo que llega después de suscribirse completa '
+        'los límites por el stream', () async {
+      await db.into(db.ordenCatalogo).insert(_ordenCompanion());
+      final emitidas = <List<OrdenVigente>>[];
+      final suscripcion = repositorio.ordenesVigentes().listen(emitidas.add);
+
+      await _esperarHasta(
+        () => emitidas.isNotEmpty,
+        mensajeTimeout: 'nunca llegó la primera emisión',
+      );
+      esperarLimites(emitidas.single.single, null);
+
+      await db.into(db.trabajoCatalogo).insert(_trabajoCompanion(id: 42));
+
+      await _esperarHasta(
+        () => emitidas.length >= 2,
+        mensajeTimeout: 'el stream no reaccionó al trabajo nuevo',
+      );
+      esperarLimites(emitidas.last.single, Decimal.parse('15.00'));
+
+      await suscripcion.cancel();
+    });
+  });
 }

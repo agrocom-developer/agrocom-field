@@ -157,4 +157,74 @@ void main() {
     expect(emisiones.first, isNull);
     expect(emisiones.last?.id, 42);
   });
+
+  test('tarea 23: los límites salen de la fila del propio trabajo, no de la '
+      'orden', () async {
+    await db
+        .into(db.ordenCatalogo)
+        .insert(
+          OrdenCatalogoCompanion.insert(
+            id: const Value(1),
+            contratoId: 1,
+            loteId: 3,
+            nroAplicacion: 4,
+            vientoMaxKmh: Value(Decimal.parse('99.00')),
+            fechaEmision: '2026-09-20',
+            estado: 'vigente',
+            updatedAt: DateTime.utc(2026, 9, 20),
+          ),
+        );
+    await db
+        .into(db.trabajoCatalogo)
+        .insert(
+          _trabajo(id: 42).copyWith(
+            humedadMinPct: Value(Decimal.parse('60.00')),
+            vientoMaxKmh: Value(Decimal.parse('15.00')),
+            temperaturaMaxC: Value(Decimal.parse('32.00')),
+            humedadMaxPct: Value(Decimal.parse('90.00')),
+            alturaVueloM: Value(Decimal.parse('3.00')),
+            velocidadVueloKmh: Value(Decimal.parse('18.00')),
+            anchoPasadaM: Value(Decimal.parse('7.00')),
+          ),
+        );
+
+    final trabajo = (await repositorio.trabajoAsignado().first)!;
+
+    expect(trabajo.humedadMinPct, Decimal.parse('60.00'));
+    expect(trabajo.vientoMaxKmh, Decimal.parse('15.00'));
+    expect(trabajo.temperaturaMaxC, Decimal.parse('32.00'));
+    expect(trabajo.humedadMaxPct, Decimal.parse('90.00'));
+    expect(trabajo.alturaVueloM, Decimal.parse('3.00'));
+    expect(trabajo.velocidadVueloKmh, Decimal.parse('18.00'));
+    expect(trabajo.anchoPasadaM, Decimal.parse('7.00'));
+  });
+
+  test('tarea 23: trabajo sin límites completados (o bajado antes de v12): '
+      'null, aunque la orden traiga valores viejos', () async {
+    await db
+        .into(db.ordenCatalogo)
+        .insert(
+          OrdenCatalogoCompanion.insert(
+            id: const Value(1),
+            contratoId: 1,
+            loteId: 3,
+            nroAplicacion: 4,
+            vientoMaxKmh: Value(Decimal.parse('99.00')),
+            fechaEmision: '2026-09-20',
+            estado: 'vigente',
+            updatedAt: DateTime.utc(2026, 9, 20),
+          ),
+        );
+    await db.into(db.trabajoCatalogo).insert(_trabajo(id: 42));
+
+    final trabajo = (await repositorio.trabajoAsignado().first)!;
+
+    expect(trabajo.humedadMinPct, isNull);
+    expect(trabajo.vientoMaxKmh, isNull);
+    expect(trabajo.temperaturaMaxC, isNull);
+    expect(trabajo.humedadMaxPct, isNull);
+    expect(trabajo.alturaVueloM, isNull);
+    expect(trabajo.velocidadVueloKmh, isNull);
+    expect(trabajo.anchoPasadaM, isNull);
+  });
 }

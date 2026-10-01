@@ -72,6 +72,13 @@ class InicioRepository {
       litrosHa: orden?.litrosHa,
       kilosPorVuelo: orden?.kilosPorVuelo,
       cantidadLotesOrden: orden?.cantidadLotes,
+      humedadMinPct: trabajo.humedadMinPct,
+      vientoMaxKmh: trabajo.vientoMaxKmh,
+      temperaturaMaxC: trabajo.temperaturaMaxC,
+      humedadMaxPct: trabajo.humedadMaxPct,
+      alturaVueloM: trabajo.alturaVueloM,
+      velocidadVueloKmh: trabajo.velocidadVueloKmh,
+      anchoPasadaM: trabajo.anchoPasadaM,
     );
   }
 }

@@ -45,14 +45,23 @@ class OrdenVigente {
   /// [kilosPorVuelo], nunca ambos ni ninguno con datos reales).
   final Decimal? litrosHa;
   final Decimal? kilosPorVuelo;
+
+  // Límites climáticos y parámetros de vuelo (tarea 23): los del trabajo
+  // asignado de esta orden, no de la orden — el servidor los movió de
+  // `ordenes[]` a `trabajos[]`. `null` si la orden no tiene trabajo asignado
+  // o si el jefe de campo no los completó; la pantalla dice «sin datos».
   final Decimal? humedadMinPct;
   final Decimal? vientoMaxKmh;
   final Decimal? temperaturaMaxC;
   final Decimal? humedadMaxPct;
-  final Decimal? velocidadMaxKmh;
   final Decimal? alturaVueloM;
   final Decimal? velocidadVueloKmh;
   final Decimal? anchoPasadaM;
+
+  /// Sigue saliendo de `orden_catalogo`: el servidor ya no lo manda en
+  /// ningún lado (no es uno de los siete que pasaron a `trabajos[]`), así
+  /// que hoy queda en `null` salvo en filas bajadas de un servidor anterior.
+  final Decimal? velocidadMaxKmh;
   final String? observaciones;
   final int? emitidaPorContactoId;
   final String fechaEmision;

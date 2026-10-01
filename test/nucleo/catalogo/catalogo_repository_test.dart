@@ -324,6 +324,83 @@ void main() {
     expect(await cursorGuardado(), 'c-trabajos');
   });
 
+  test('tarea 23: guarda los límites climáticos y de vuelo de trabajos[] en '
+      'decimal exacto, y en null cuando el panel no los completó', () async {
+    Map<String, dynamic> trabajoJson({
+      required int id,
+      required String? valor,
+      String updatedAt = '2026-09-22T12:00:00+00:00',
+    }) => {
+      'id': id,
+      'uuid_cliente': 'uuid-panel-$id',
+      'orden_id': 1,
+      'lote_id': 3,
+      'hectareas_declaradas': '300.00',
+      'equipo_trabajo_id': 7,
+      'humedad_min_pct': valor,
+      'viento_max_kmh': valor,
+      'temperatura_max_c': valor,
+      'humedad_max_pct': valor,
+      'altura_vuelo_m': valor,
+      'velocidad_vuelo_kmh': valor,
+      'ancho_pasada_m': valor,
+      'updated_at': updatedAt,
+    };
+
+    when(() => apiClient.get(any(), query: any(named: 'query'))).thenAnswer(
+      (_) async => _respuestaCatalogo(
+        trabajos: [
+          trabajoJson(id: 42, valor: '17.25'),
+          trabajoJson(id: 43, valor: null),
+        ],
+        cursor: 'c1',
+      ),
+    );
+    await repositorio.pull();
+
+    final trabajos = await (db.select(
+      db.trabajoCatalogo,
+    )..orderBy([(t) => OrderingTerm.asc(t.id)])).get();
+    final conLimites = trabajos[0];
+    expect(conLimites.humedadMinPct, Decimal.parse('17.25'));
+    expect(conLimites.vientoMaxKmh, Decimal.parse('17.25'));
+    expect(conLimites.temperaturaMaxC, Decimal.parse('17.25'));
+    expect(conLimites.humedadMaxPct, Decimal.parse('17.25'));
+    expect(conLimites.alturaVueloM, Decimal.parse('17.25'));
+    expect(conLimites.velocidadVueloKmh, Decimal.parse('17.25'));
+    expect(conLimites.anchoPasadaM, Decimal.parse('17.25'));
+    final sinLimites = trabajos[1];
+    expect(sinLimites.humedadMinPct, isNull);
+    expect(sinLimites.vientoMaxKmh, isNull);
+    expect(sinLimites.temperaturaMaxC, isNull);
+    expect(sinLimites.humedadMaxPct, isNull);
+    expect(sinLimites.alturaVueloM, isNull);
+    expect(sinLimites.velocidadVueloKmh, isNull);
+    expect(sinLimites.anchoPasadaM, isNull);
+
+    // Un pull posterior que trae el trabajo sin límites ya completados los
+    // actualiza sobre la misma fila.
+    when(() => apiClient.get(any(), query: any(named: 'query'))).thenAnswer(
+      (_) async => _respuestaCatalogo(
+        trabajos: [
+          trabajoJson(
+            id: 43,
+            valor: '8.00',
+            updatedAt: '2026-09-23T12:00:00+00:00',
+          ),
+        ],
+        cursor: 'c2',
+      ),
+    );
+    await repositorio.pull();
+
+    final actualizado = await (db.select(
+      db.trabajoCatalogo,
+    )..where((t) => t.id.equals(43))).getSingle();
+    expect(actualizado.vientoMaxKmh, Decimal.parse('8.00'));
+    expect(actualizado.anchoPasadaM, Decimal.parse('8.00'));
+  });
+
   test('HU-70: pull() devuelve true cuando solo trabajos trajo filas (cuenta '
       'para el "hay más" del loop de catálogo)', () async {
     when(() => apiClient.get(any(), query: any(named: 'query'))).thenAnswer(

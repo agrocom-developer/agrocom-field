@@ -25,7 +25,8 @@ import 'inicio_estado.dart';
 /// outbox ni estado de conectividad para la UI), y la barra lleva solo los
 /// destinos con pantalla real: Inicio y Órdenes. Un dato ausente se lee
 /// «sin datos», nunca se inventa; sin trabajo asignado, un estado vacío
-/// explícito.
+/// explícito. Debajo del trabajo, sus límites climáticos y parámetros de
+/// vuelo (tarea 23), los del propio trabajo asignado.
 class InicioVista extends StatelessWidget {
   const InicioVista({
     required this.crearTrabajoCubit,
@@ -113,10 +114,17 @@ class InicioVista extends StatelessWidget {
                             InicioSinTrabajo() => _SinTrabajo(
                               onVerOrdenes: () => _abrirOrdenes(context),
                             ),
-                            InicioConTrabajo(:final trabajo) => _TarjetaTrabajo(
-                              trabajo: trabajo,
-                              onCrearAplicacion: () =>
-                                  _crearAplicacion(context, trabajo),
+                            InicioConTrabajo(:final trabajo) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                _TarjetaTrabajo(
+                                  trabajo: trabajo,
+                                  onCrearAplicacion: () =>
+                                      _crearAplicacion(context, trabajo),
+                                ),
+                                const SizedBox(height: 12),
+                                _TarjetaLimites(trabajo: trabajo),
+                              ],
                             ),
                           },
                         ],
@@ -342,6 +350,111 @@ class _TarjetaTrabajo extends StatelessWidget {
                   'sincronizá para poder crear la aplicación.',
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Límites climáticos y parámetros de vuelo del trabajo asignado (tarea 23):
+/// los que el jefe de campo cargó al asignar, nunca los de otro trabajo ni
+/// de la orden. Un límite sin completar se lee «sin datos», sin unidad.
+class _TarjetaLimites extends StatelessWidget {
+  const _TarjetaLimites({required this.trabajo});
+
+  final TrabajoAsignado trabajo;
+
+  /// La unidad solo acompaña a un valor real; `Decimal.toString()` tal
+  /// cual, nunca pasando por `double` (invariante 9 de CLAUDE.md).
+  static Widget _chip(
+    String key,
+    String etiqueta,
+    Object? valor,
+    String unidad,
+  ) => Expanded(
+    child: StatChipCampo(
+      key: Key(key),
+      etiqueta: etiqueta,
+      valor: valor?.toString() ?? InicioVista._sinDatos,
+      unidad: valor == null ? null : unidad,
+    ),
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    return TarjetaCampo(
+      key: const Key('inicio_limites'),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Límites climáticos',
+            style: TipografiaCampo.tituloTarjeta,
+          ),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _chip(
+                'inicio_viento_max',
+                'Viento máx',
+                trabajo.vientoMaxKmh,
+                'km/h',
+              ),
+              const SizedBox(width: 10),
+              _chip(
+                'inicio_temperatura_max',
+                'Temp. máx',
+                trabajo.temperaturaMaxC,
+                '°C',
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _chip(
+                'inicio_humedad_min',
+                'Humedad mín',
+                trabajo.humedadMinPct,
+                '%',
+              ),
+              const SizedBox(width: 10),
+              _chip(
+                'inicio_humedad_max',
+                'Humedad máx',
+                trabajo.humedadMaxPct,
+                '%',
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Parámetros de vuelo',
+            style: TipografiaCampo.tituloTarjeta,
+          ),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _chip('inicio_altura_vuelo', 'Altura', trabajo.alturaVueloM, 'm'),
+              const SizedBox(width: 10),
+              _chip(
+                'inicio_velocidad_vuelo',
+                'Velocidad',
+                trabajo.velocidadVueloKmh,
+                'km/h',
+              ),
+              const SizedBox(width: 10),
+              _chip(
+                'inicio_ancho_pasada',
+                'Ancho pasada',
+                trabajo.anchoPasadaM,
+                'm',
+              ),
+            ],
+          ),
         ],
       ),
     );

@@ -44,6 +44,7 @@ TrabajoAsignado _trabajo({
   Decimal? litrosHa,
   Decimal? kilosPorVuelo,
   int? cantidadLotesOrden = 2,
+  String? limite,
 }) => TrabajoAsignado(
   id: 42,
   uuidCliente: _uuidPanel,
@@ -57,6 +58,13 @@ TrabajoAsignado _trabajo({
   litrosHa: litrosHa,
   kilosPorVuelo: kilosPorVuelo,
   cantidadLotesOrden: cantidadLotesOrden,
+  humedadMinPct: limite == null ? null : Decimal.parse(limite),
+  vientoMaxKmh: limite == null ? null : Decimal.parse(limite),
+  temperaturaMaxC: limite == null ? null : Decimal.parse(limite),
+  humedadMaxPct: limite == null ? null : Decimal.parse(limite),
+  alturaVueloM: limite == null ? null : Decimal.parse(limite),
+  velocidadVueloKmh: limite == null ? null : Decimal.parse(limite),
+  anchoPasadaM: limite == null ? null : Decimal.parse(limite),
 );
 
 void main() {
@@ -218,5 +226,48 @@ void main() {
     await tester.tap(find.text('Órdenes'));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('pantalla_ordenes_falsa')), findsOneWidget);
+  });
+
+  group('tarea 23: límites del trabajo asignado', () {
+    const unidades = {
+      'inicio_viento_max': 'km/h',
+      'inicio_temperatura_max': '°C',
+      'inicio_humedad_min': '%',
+      'inicio_humedad_max': '%',
+      'inicio_altura_vuelo': 'm',
+      'inicio_velocidad_vuelo': 'km/h',
+      'inicio_ancho_pasada': 'm',
+    };
+
+    testWidgets('con límites cargados: los muestra con su unidad', (
+      tester,
+    ) async {
+      await bombear(tester, _trabajo(limite: '17.5'));
+
+      expect(find.byKey(const Key('inicio_limites')), findsOneWidget);
+      for (final MapEntry(:key, value: unidad) in unidades.entries) {
+        final limite = chip(tester, key);
+        expect((limite.valor, limite.unidad), ('17.5', unidad), reason: key);
+      }
+    });
+
+    testWidgets('sin límites cargados: «sin datos», sin unidad ni valor '
+        'inventado', (tester) async {
+      await bombear(tester, _trabajo());
+
+      for (final key in unidades.keys) {
+        final limite = chip(tester, key);
+        expect((limite.valor, limite.unidad), ('sin datos', null), reason: key);
+      }
+    });
+
+    testWidgets('sin trabajo asignado no hay tarjeta de límites', (
+      tester,
+    ) async {
+      await bombear(tester, null);
+
+      expect(find.byKey(const Key('inicio_sin_trabajo')), findsOneWidget);
+      expect(find.byKey(const Key('inicio_limites')), findsNothing);
+    });
   });
 }

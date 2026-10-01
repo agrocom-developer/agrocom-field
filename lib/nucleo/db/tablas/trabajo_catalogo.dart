@@ -35,6 +35,43 @@ class TrabajoCatalogo extends Table {
 
   IntColumn get equipoTrabajoId => integer()();
 
+  // Límites climáticos y parámetros de vuelo (v12, tarea 23): el servidor
+  // los movió de `ordenes[]` a `trabajos[]`. En `agrocom-api` son de la
+  // tanda (`OrdenTrabajo`) que contiene este trabajo, y
+  // `TrabajoAsignadoCatalogo` los declara `?string`: `null` cuando el jefe
+  // de campo no los completó al asignar. Nullable también por la migración
+  // v11→v12 (`ALTER TABLE`, conserva las filas): una fila anterior queda en
+  // `null` hasta que el próximo pull, con el cursor reseteado, la vuelva a
+  // traer. Nunca `double` (invariante 9 de CLAUDE.md).
+
+  TextColumn get humedadMinPct => text().nullable().map(
+    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
+  )();
+
+  TextColumn get vientoMaxKmh => text().nullable().map(
+    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
+  )();
+
+  TextColumn get temperaturaMaxC => text().nullable().map(
+    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
+  )();
+
+  TextColumn get humedadMaxPct => text().nullable().map(
+    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
+  )();
+
+  TextColumn get alturaVueloM => text().nullable().map(
+    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
+  )();
+
+  TextColumn get velocidadVueloKmh => text().nullable().map(
+    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
+  )();
+
+  TextColumn get anchoPasadaM => text().nullable().map(
+    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
+  )();
+
   DateTimeColumn get updatedAt => dateTime()();
 
   @override

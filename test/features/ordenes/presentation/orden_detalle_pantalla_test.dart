@@ -69,6 +69,7 @@ OrdenVigente _orden({
   Decimal? litrosHa,
   Decimal? kilosPorVuelo,
   bool sinDosis = false,
+  bool sinTrabajoAsignado = false,
   String? observaciones = 'Test',
 }) => OrdenVigente(
   id: id,
@@ -79,14 +80,17 @@ OrdenVigente _orden({
       ? litrosHa
       : (litrosHa ?? Decimal.parse('12.5')),
   kilosPorVuelo: kilosPorVuelo,
-  humedadMinPct: Decimal.parse('60'),
-  vientoMaxKmh: Decimal.parse('15'),
-  temperaturaMaxC: Decimal.parse('32'),
-  humedadMaxPct: Decimal.parse('90'),
+  // Tarea 23: los siete límites son los del trabajo asignado de la orden;
+  // `sinTrabajoAsignado` reproduce lo que arma `OrdenesRepository` cuando
+  // la orden no tiene ninguno.
+  humedadMinPct: sinTrabajoAsignado ? null : Decimal.parse('60'),
+  vientoMaxKmh: sinTrabajoAsignado ? null : Decimal.parse('15'),
+  temperaturaMaxC: sinTrabajoAsignado ? null : Decimal.parse('32'),
+  humedadMaxPct: sinTrabajoAsignado ? null : Decimal.parse('90'),
   velocidadMaxKmh: Decimal.parse('25'),
-  alturaVueloM: Decimal.parse('3'),
-  velocidadVueloKmh: Decimal.parse('18'),
-  anchoPasadaM: Decimal.parse('7'),
+  alturaVueloM: sinTrabajoAsignado ? null : Decimal.parse('3'),
+  velocidadVueloKmh: sinTrabajoAsignado ? null : Decimal.parse('18'),
+  anchoPasadaM: sinTrabajoAsignado ? null : Decimal.parse('7'),
   observaciones: observaciones,
   emitidaPorContactoId: 2,
   fechaEmision: '2026-08-26',
@@ -469,5 +473,70 @@ void main() {
     );
     expect(find.textContaining('L/ha'), findsNothing);
     expect(find.textContaining('kg/vuelo'), findsNothing);
+  });
+
+  group('tarea 23: límites del trabajo asignado', () {
+    FilaDatoCampo fila(WidgetTester tester, String etiqueta) =>
+        tester.widget<FilaDatoCampo>(
+          find.byWidgetPredicate(
+            (w) => w is FilaDatoCampo && w.etiqueta == etiqueta,
+            skipOffstage: false,
+          ),
+        );
+
+    testWidgets('con trabajo asignado: límites climáticos y parámetros de '
+        'vuelo con su unidad', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await bombearAuxiliar(tester, _orden());
+      await tester.pumpAndSettle();
+
+      final viento = chip(tester, 'orden_viento_max');
+      expect((viento.valor, viento.unidad), ('15', 'km/h'));
+      final temperatura = chip(tester, 'orden_temperatura_max');
+      expect((temperatura.valor, temperatura.unidad), ('32', '°C'));
+      final humedadMin = chip(tester, 'orden_humedad_min');
+      expect((humedadMin.valor, humedadMin.unidad), ('60', '%'));
+      final humedadMax = chip(tester, 'orden_humedad_max');
+      expect((humedadMax.valor, humedadMax.unidad), ('90', '%'));
+      final altura = fila(tester, 'Altura de vuelo');
+      expect((altura.valor, altura.unidad), ('3', 'm'));
+      final velocidad = fila(tester, 'Velocidad de vuelo');
+      expect((velocidad.valor, velocidad.unidad), ('18', 'km/h'));
+      final ancho = fila(tester, 'Ancho de pasada');
+      expect((ancho.valor, ancho.unidad), ('7', 'm'));
+    });
+
+    testWidgets('sin trabajo asignado: cada límite se lee «sin datos», sin '
+        'unidad ni valor inventado', (tester) async {
+      await tester.binding.setSurfaceSize(const Size(800, 1600));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+
+      await bombearAuxiliar(tester, _orden(sinTrabajoAsignado: true));
+      await tester.pumpAndSettle();
+
+      for (final key in [
+        'orden_viento_max',
+        'orden_temperatura_max',
+        'orden_humedad_min',
+        'orden_humedad_max',
+      ]) {
+        final limite = chip(tester, key);
+        expect((limite.valor, limite.unidad), ('sin datos', null), reason: key);
+      }
+      for (final etiqueta in [
+        'Altura de vuelo',
+        'Velocidad de vuelo',
+        'Ancho de pasada',
+      ]) {
+        final limite = fila(tester, etiqueta);
+        expect(
+          (limite.valor, limite.unidad),
+          ('sin datos', null),
+          reason: etiqueta,
+        );
+      }
+    });
   });
 }

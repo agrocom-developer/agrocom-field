@@ -30,7 +30,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 /// Muestra solo lo que expone [OrdenVigente] — un lote (no `lotes[]`, solo
 /// cuántos más cubre la orden y las hectáreas de todos, TE-23), sin
 /// los ítems de trabajo/sesión ni el contrato de la 08 —, y un valor nulo se
-/// lee «sin datos», nunca se oculta ni se inventa.
+/// lee «sin datos», nunca se oculta ni se inventa. Los límites climáticos y
+/// los parámetros de vuelo son los del trabajo asignado de la orden (tarea
+/// 23, ver `OrdenesRepository`): sin trabajo asignado, «sin datos».
 class OrdenDetallePantalla extends StatelessWidget {
   const OrdenDetallePantalla({
     required this.orden,

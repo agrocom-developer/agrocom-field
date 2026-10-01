@@ -33,6 +33,13 @@ class TrabajoAsignado {
     this.litrosHa,
     this.kilosPorVuelo,
     this.cantidadLotesOrden,
+    this.humedadMinPct,
+    this.vientoMaxKmh,
+    this.temperaturaMaxC,
+    this.humedadMaxPct,
+    this.alturaVueloM,
+    this.velocidadVueloKmh,
+    this.anchoPasadaM,
   });
 
   final int id;
@@ -58,6 +65,18 @@ class TrabajoAsignado {
 
   /// `OrdenCatalogo.cantidadLotes`: cuántos lotes cubre la orden entera.
   final int? cantidadLotesOrden;
+
+  // Límites climáticos y parámetros de vuelo de ESTE trabajo (tarea 23):
+  // vienen en la propia fila de `TrabajoCatalogo`, no por join. `null`
+  // cuando el jefe de campo no los completó al asignar, o en una fila
+  // bajada antes de v12 hasta el próximo pull.
+  final Decimal? humedadMinPct;
+  final Decimal? vientoMaxKmh;
+  final Decimal? temperaturaMaxC;
+  final Decimal? humedadMaxPct;
+  final Decimal? alturaVueloM;
+  final Decimal? velocidadVueloKmh;
+  final Decimal? anchoPasadaM;
 
   /// `litrosHa` si viene; si no, `kilosPorVuelo`; si ninguno, `null` —
   /// nunca las dos a la vez.
@@ -89,7 +108,14 @@ class TrabajoAsignado {
           other.nroAplicacion == nroAplicacion &&
           other.litrosHa == litrosHa &&
           other.kilosPorVuelo == kilosPorVuelo &&
-          other.cantidadLotesOrden == cantidadLotesOrden);
+          other.cantidadLotesOrden == cantidadLotesOrden &&
+          other.humedadMinPct == humedadMinPct &&
+          other.vientoMaxKmh == vientoMaxKmh &&
+          other.temperaturaMaxC == temperaturaMaxC &&
+          other.humedadMaxPct == humedadMaxPct &&
+          other.alturaVueloM == alturaVueloM &&
+          other.velocidadVueloKmh == velocidadVueloKmh &&
+          other.anchoPasadaM == anchoPasadaM);
 
   @override
   int get hashCode => Object.hash(
@@ -105,5 +131,12 @@ class TrabajoAsignado {
     litrosHa,
     kilosPorVuelo,
     cantidadLotesOrden,
+    humedadMinPct,
+    vientoMaxKmh,
+    temperaturaMaxC,
+    humedadMaxPct,
+    alturaVueloM,
+    velocidadVueloKmh,
+    anchoPasadaM,
   );
 }
