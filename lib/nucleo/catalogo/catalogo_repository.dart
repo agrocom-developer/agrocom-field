@@ -198,6 +198,11 @@ class CatalogoRepository {
   /// Trabajo asignado desde el panel (HU-70). `uuid_cliente` se guarda TAL
   /// CUAL lo generó el panel — la app nunca genera uno propio para este
   /// trabajo (invariante 2 aplicada a un registro de origen servidor).
+  ///
+  /// Los siete límites climáticos y parámetros de vuelo (tarea 23) son
+  /// `?string` en `TrabajoAsignadoCatalogo` de `agrocom-api`: `null` cuando
+  /// el jefe de campo no los completó al asignar. Se leen con la misma
+  /// nulabilidad, como `Decimal` (invariante 9 de CLAUDE.md).
   TrabajoCatalogoCompanion _trabajoDesdeJson(Map<String, dynamic> json) {
     return TrabajoCatalogoCompanion.insert(
       id: Value(json['id'] as int),
@@ -208,6 +213,13 @@ class CatalogoRepository {
         json['hectareas_declaradas'] as String,
       ),
       equipoTrabajoId: json['equipo_trabajo_id'] as int,
+      humedadMinPct: Value(_decimalNullable(json['humedad_min_pct'])),
+      vientoMaxKmh: Value(_decimalNullable(json['viento_max_kmh'])),
+      temperaturaMaxC: Value(_decimalNullable(json['temperatura_max_c'])),
+      humedadMaxPct: Value(_decimalNullable(json['humedad_max_pct'])),
+      alturaVueloM: Value(_decimalNullable(json['altura_vuelo_m'])),
+      velocidadVueloKmh: Value(_decimalNullable(json['velocidad_vuelo_kmh'])),
+      anchoPasadaM: Value(_decimalNullable(json['ancho_pasada_m'])),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
   }

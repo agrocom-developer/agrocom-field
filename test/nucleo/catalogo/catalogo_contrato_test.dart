@@ -7,6 +7,14 @@
 // sin geometría, y un `trabajos[]` con un elemento. Si el contrato cambia,
 // se actualiza el fixture contra el `openapi.yaml` nuevo — nunca a la medida
 // del parser.
+//
+// Tarea 23 (contra el código de `agrocom-api` develop @ 44570a17, que manda
+// sobre el `openapi.yaml`): el elemento de `trabajos[]` trae los siete
+// límites climáticos y de vuelo de `TrabajoAsignadoCatalogo::toArray()`; el
+// caso `null` de esos campos lo cubre `catalogo_repository_test.dart`. Las
+// órdenes del fixture todavía traen los campos de clima/vuelo que el
+// servidor ya no emite: se quitan junto con las columnas de
+// `orden_catalogo`, en la tarea que las borre.
 
 import 'dart:convert';
 import 'dart:io';
@@ -117,6 +125,15 @@ void main() {
     expect(trabajo.loteId, 3);
     expect(trabajo.hectareasDeclaradas, Decimal.parse('300.00'));
     expect(trabajo.equipoTrabajoId, 7);
+    // Tarea 23: los siete límites climáticos y de vuelo viajan en
+    // `trabajos[]` (`TrabajoAsignadoCatalogo::toArray()` de `agrocom-api`).
+    expect(trabajo.humedadMinPct, Decimal.parse('60.00'));
+    expect(trabajo.vientoMaxKmh, Decimal.parse('15.00'));
+    expect(trabajo.temperaturaMaxC, Decimal.parse('32.00'));
+    expect(trabajo.humedadMaxPct, Decimal.parse('90.00'));
+    expect(trabajo.alturaVueloM, Decimal.parse('3.00'));
+    expect(trabajo.velocidadVueloKmh, Decimal.parse('18.00'));
+    expect(trabajo.anchoPasadaM, Decimal.parse('7.00'));
 
     final cursor = await (db.select(
       db.cursorCatalogo,

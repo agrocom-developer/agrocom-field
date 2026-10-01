@@ -98,6 +98,13 @@
       "lote_id": 3,
       "hectareas_declaradas": "300.00",
       "equipo_trabajo_id": 7,
+      "humedad_min_pct": "60.00",
+      "viento_max_kmh": "15.00",
+      "temperatura_max_c": "32.00",
+      "humedad_max_pct": "90.00",
+      "altura_vuelo_m": "3.00",
+      "velocidad_vuelo_kmh": "18.00",
+      "ancho_pasada_m": "7.00",
       "updated_at": "2026-09-22T12:00:00+00:00"
     }
   ],
