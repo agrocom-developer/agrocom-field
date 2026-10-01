@@ -1,0 +1,105 @@
+{
+  "ordenes": [
+    {
+      "id": 1,
+      "contrato_id": 1,
+      "lotes": [
+        {"lote_id": 3, "hectareas_solicitadas": "120.50"},
+        {"lote_id": 4, "hectareas_solicitadas": "80.25"},
+        {"lote_id": 5, "hectareas_solicitadas": "99.25"}
+      ],
+      "nro_aplicacion": 1,
+      "litros_ha": "10.00",
+      "kilos_por_vuelo": null,
+      "humedad_min_pct": "60.00",
+      "viento_max_kmh": "15.00",
+      "temperatura_max_c": "32.00",
+      "humedad_max_pct": "90.00",
+      "velocidad_max_kmh": "25.00",
+      "altura_vuelo_m": "3.00",
+      "velocidad_vuelo_kmh": "18.00",
+      "ancho_pasada_m": "7.00",
+      "observaciones": "Aplicar en horas de la mañana.",
+      "emitida_por_contacto_id": 2,
+      "fecha_emision": "2026-09-20",
+      "estado": "vigente",
+      "updated_at": "2026-09-20T12:00:00+00:00"
+    },
+    {
+      "id": 2,
+      "contrato_id": 1,
+      "lotes": [
+        {"lote_id": 6, "hectareas_solicitadas": "45.00"}
+      ],
+      "nro_aplicacion": 2,
+      "litros_ha": null,
+      "kilos_por_vuelo": "8.50",
+      "humedad_min_pct": null,
+      "viento_max_kmh": null,
+      "temperatura_max_c": null,
+      "humedad_max_pct": null,
+      "velocidad_max_kmh": null,
+      "altura_vuelo_m": null,
+      "velocidad_vuelo_kmh": null,
+      "ancho_pasada_m": null,
+      "observaciones": null,
+      "emitida_por_contacto_id": null,
+      "fecha_emision": "2026-09-21",
+      "estado": "vigente",
+      "updated_at": "2026-09-21T09:30:00+00:00"
+    }
+  ],
+  "lotes": [
+    {
+      "id": 3,
+      "propiedad_id": 1,
+      "codigo": "L-01",
+      "hectareas": "120.50",
+      "geometria": {
+        "type": "Polygon",
+        "coordinates": [[[-63.18, -17.78], [-63.17, -17.78], [-63.17, -17.77], [-63.18, -17.78]]]
+      },
+      "restricciones": "No aplicar cerca del arroyo.",
+      "updated_at": "2026-09-19T12:00:00+00:00"
+    },
+    {
+      "id": 6,
+      "propiedad_id": 2,
+      "codigo": "L-06",
+      "hectareas": "45.00",
+      "geometria": null,
+      "restricciones": null,
+      "updated_at": "2026-09-19T12:00:00+00:00"
+    }
+  ],
+  "personas": [
+    {
+      "id": 5,
+      "nombre": "Piloto Uno",
+      "rol": "piloto",
+      "base_id": 1,
+      "activo": true,
+      "updated_at": "2026-08-26T12:00:00+00:00"
+    },
+    {
+      "id": 6,
+      "nombre": "Auxiliar Uno",
+      "rol": "auxiliar",
+      "base_id": null,
+      "activo": true,
+      "updated_at": "2026-08-26T12:00:00+00:00"
+    }
+  ],
+  "trabajos": [
+    {
+      "id": 42,
+      "uuid_cliente": "9a1b7e3e-2f7a-4b3d-8c1e-6f2a1d9c4b0a",
+      "orden_id": 1,
+      "lote_id": 3,
+      "hectareas_declaradas": "300.00",
+      "equipo_trabajo_id": 7,
+      "updated_at": "2026-09-22T12:00:00+00:00"
+    }
+  ],
+  "cursor": "eyJ1cGRhdGVkX2F0IjoiMjAyNi0wOS0yMlQxMjowMDowMCswMDowMCIsImlkIjo0Mn0="
+}

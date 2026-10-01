@@ -64,6 +64,8 @@ OrdenVigente _orden({
   int id = 1,
   String? loteCodigo = 'L-01',
   Decimal? loteHectareas,
+  int? cantidadLotes,
+  Decimal? hectareasSolicitadas,
   Decimal? litrosHa,
   Decimal? kilosPorVuelo,
   bool sinDosis = false,
@@ -90,6 +92,8 @@ OrdenVigente _orden({
   fechaEmision: '2026-08-26',
   estado: 'vigente',
   updatedAt: DateTime.utc(2026, 8, 26, 12),
+  cantidadLotes: cantidadLotes,
+  hectareasSolicitadas: hectareasSolicitadas,
   loteCodigo: loteCodigo,
   loteHectareas: loteHectareas,
 );
@@ -344,6 +348,52 @@ void main() {
 
   StatChipCampo chip(WidgetTester tester, String key) =>
       tester.widget<StatChipCampo>(find.byKey(Key(key), skipOffstage: false));
+
+  testWidgets('TE-23: orden de varios lotes muestra las hectáreas de la '
+      'orden entera y avisa cuántos lotes más cubre, no las del primer lote '
+      'como si fueran las de la orden', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(800, 1600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await bombearAuxiliar(
+      tester,
+      _orden(
+        loteHectareas: Decimal.parse('120.5'),
+        cantidadLotes: 3,
+        hectareasSolicitadas: Decimal.parse('300.5'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(
+      tester.widget<Text>(find.byKey(const Key('orden_lote_codigo'))).data,
+      'L-01',
+    );
+    expect(
+      tester.widget<Text>(find.byKey(const Key('orden_otros_lotes'))).data,
+      'y 2 lotes más de la orden',
+    );
+    expect(chip(tester, 'orden_hectareas').valor, '300.5');
+  });
+
+  testWidgets('TE-23: orden de un solo lote no agrega el aviso de otros '
+      'lotes', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(800, 1600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await bombearAuxiliar(
+      tester,
+      _orden(
+        loteHectareas: Decimal.parse('120.5'),
+        cantidadLotes: 1,
+        hectareasSolicitadas: Decimal.parse('120.5'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('orden_otros_lotes')), findsNothing);
+    expect(chip(tester, 'orden_hectareas').valor, '120.5');
+  });
 
   testWidgets('modo campo con datos: se construye bajo el tema campo, sin '
       'widgets de Material de ADR 0003, y muestra la orden', (tester) async {

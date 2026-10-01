@@ -27,7 +27,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 /// En modo campo (ADR 0008, decisión del 1/10/2026), con el lenguaje de la
 /// pantalla 08 de la vista previa (`orden_detalle_campo_vitrina.dart`):
 /// foto superior, badge de estado, tarjetas por sección y el CTA lima.
-/// Muestra solo lo que expone [OrdenVigente] — un lote (no `lotes[]`), sin
+/// Muestra solo lo que expone [OrdenVigente] — un lote (no `lotes[]`, solo
+/// cuántos más cubre la orden y las hectáreas de todos, TE-23), sin
 /// los ítems de trabajo/sesión ni el contrato de la 08 —, y un valor nulo se
 /// lee «sin datos», nunca se oculta ni se inventa.
 class OrdenDetallePantalla extends StatelessWidget {
@@ -210,6 +211,20 @@ class OrdenDetallePantalla extends StatelessWidget {
             key: const Key('orden_lote_codigo'),
             style: TipografiaCampo.valorDestacado,
           ),
+          // Con ADR 0022 una orden cubre todos los lotes del contrato, pero
+          // esta pantalla todavía muestra uno solo (multi-lote es HU-92,
+          // aparte): se avisa que hay más en vez de presentar el primero
+          // como si fuera la orden entera.
+          if (orden.otrosLotes > 0) ...[
+            const SizedBox(height: 4),
+            Text(
+              orden.otrosLotes == 1
+                  ? 'y 1 lote más de la orden'
+                  : 'y ${orden.otrosLotes} lotes más de la orden',
+              key: const Key('orden_otros_lotes'),
+              style: TipografiaCampo.cuerpoSecundario,
+            ),
+          ],
           const SizedBox(height: 6),
           Text(
             'Aplicación N.º ${orden.nroAplicacion} · '
@@ -223,7 +238,7 @@ class OrdenDetallePantalla extends StatelessWidget {
               Expanded(
                 child: _chip(
                   'Hectáreas',
-                  orden.loteHectareas,
+                  orden.hectareasOrden,
                   'ha',
                   key: const Key('orden_hectareas'),
                 ),

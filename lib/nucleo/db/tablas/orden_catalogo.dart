@@ -20,10 +20,31 @@ class OrdenCatalogo extends Table {
   /// Primer lote de `OrdenCatalogo.lotes` del contrato real (HU-92, tarea 107
   /// de `agrocom-api`: una orden puede cubrir varios lotes de la propiedad,
   /// confirmado en vivo contra `GET /api/sync/catalogo` el 14/9/2026).
-  /// Simplificación deliberada: hoy ningún dato real trae más de un lote por
-  /// orden, y la UI de lista/detalle sigue asumiendo un solo lote — soporte
-  /// real multi-lote queda para HU-92 (lado app), planificada aparte.
+  /// Simplificación deliberada: la UI de lista/detalle sigue mostrando un
+  /// solo lote — soporte real multi-lote queda para HU-92 (lado app),
+  /// planificada aparte. Se conserva porque `TrabajoLocal.loteId` lo copia al
+  /// abrir trabajo; [cantidadLotes] y [hectareasSolicitadas] dicen cuánto de
+  /// la orden queda fuera de este lote.
   IntColumn get loteId => integer()();
+
+  /// `lotes.length` del contrato (TE-23, v10): con ADR 0022 de `agrocom-api`
+  /// `lotes` es la copia de TODOS los lotes del contrato, así que una orden
+  /// puede cubrir más de uno aunque [loteId] guarde solo el primero. Sirve
+  /// para no presentar el lote de [loteId] como si fuera la orden entera.
+  ///
+  /// Nullable solo por la migración v9→v10 (`ALTER TABLE`, conserva las
+  /// filas): una fila anterior queda en `null` hasta que el próximo pull
+  /// —con el cursor reseteado por esa misma migración— la vuelva a traer.
+  /// El pull siempre la completa.
+  IntColumn get cantidadLotes => integer().nullable()();
+
+  /// Suma de `lotes[].hectareas_solicitadas` (TE-23, v10): las hectáreas de
+  /// la orden completa — con ADR 0022, las de cada lote completo del
+  /// contrato. Nunca `double` (invariante 9 de CLAUDE.md). Nullable por el
+  /// mismo motivo que [cantidadLotes].
+  TextColumn get hectareasSolicitadas => text().nullable().map(
+    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
+  )();
 
   IntColumn get nroAplicacion => integer()();
 

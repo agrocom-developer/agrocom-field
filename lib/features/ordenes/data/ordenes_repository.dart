@@ -62,6 +62,8 @@ class OrdenesRepository {
       fechaEmision: orden.fechaEmision,
       estado: orden.estado,
       updatedAt: orden.updatedAt,
+      cantidadLotes: orden.cantidadLotes,
+      hectareasSolicitadas: orden.hectareasSolicitadas,
       loteCodigo: lote?.codigo,
       loteHectareas: lote?.hectareas,
     );

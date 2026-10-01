@@ -7,6 +7,7 @@ import 'package:agrocom_field/nucleo/catalogo/catalogo_repository.dart';
 import 'package:agrocom_field/nucleo/db/database.dart';
 import 'package:decimal/decimal.dart';
 import 'package:dio/dio.dart';
+import 'package:drift/drift.dart' show OrderingTerm;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -165,6 +166,38 @@ void main() {
     expect(orden.loteId, 3, reason: 'toma el primer lote del arreglo');
     expect(orden.litrosHa, isNull);
     expect(orden.kilosPorVuelo, Decimal.parse('8.50'));
+  });
+
+  test('TE-23: guarda cuántos lotes cubre la orden y la suma exacta de '
+      '`lotes[].hectareas_solicitadas` (ADR 0022 de agrocom-api)', () async {
+    when(() => apiClient.get(any(), query: any(named: 'query'))).thenAnswer(
+      (_) async => _respuestaCatalogo(
+        ordenes: [
+          {
+            ..._ordenJson(id: 9, loteId: 3),
+            'lotes': [
+              {'lote_id': 3, 'hectareas_solicitadas': '50.10'},
+              {'lote_id': 4, 'hectareas_solicitadas': '20.20'},
+              {'lote_id': 5, 'hectareas_solicitadas': '0.70'},
+            ],
+          },
+          _ordenJson(id: 10, loteId: 6),
+        ],
+        cursor: 'cursor-lotes',
+      ),
+    );
+
+    await repositorio.pull();
+
+    final ordenes = await (db.select(
+      db.ordenCatalogo,
+    )..orderBy([(t) => OrderingTerm.asc(t.id)])).get();
+    expect(ordenes[0].loteId, 3);
+    expect(ordenes[0].cantidadLotes, 3);
+    // 50.10 + 20.20 + 0.70 en decimal exacto (en double daría 71.00000…01).
+    expect(ordenes[0].hectareasSolicitadas, Decimal.parse('71.00'));
+    expect(ordenes[1].cantidadLotes, 1);
+    expect(ordenes[1].hectareasSolicitadas, Decimal.parse('50.00'));
   });
 
   test(

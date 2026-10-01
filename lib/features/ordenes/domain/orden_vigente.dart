@@ -29,6 +29,8 @@ class OrdenVigente {
     this.anchoPasadaM,
     this.observaciones,
     this.emitidaPorContactoId,
+    this.cantidadLotes,
+    this.hectareasSolicitadas,
     this.loteCodigo,
     this.loteHectareas,
   });
@@ -56,6 +58,31 @@ class OrdenVigente {
   final String fechaEmision;
   final String estado;
   final DateTime updatedAt;
+
+  /// Cuántos lotes cubre la orden (`lotes.length` del contrato, TE-23). Con
+  /// ADR 0022 de `agrocom-api` puede ser más de uno aunque [loteId] sea solo
+  /// el primero. `null` en una orden bajada antes de la migración v10 que el
+  /// pull todavía no volvió a traer.
+  final int? cantidadLotes;
+
+  /// Suma de `lotes[].hectareas_solicitadas`: las hectáreas de la orden
+  /// entera, no las de [loteId]. `null` por el mismo motivo que
+  /// [cantidadLotes].
+  final Decimal? hectareasSolicitadas;
+
+  /// Lotes de la orden que no son [loteId] — `0` si cubre uno solo o si
+  /// [cantidadLotes] todavía no llegó.
+  int get otrosLotes {
+    final cantidad = cantidadLotes;
+    return cantidad == null || cantidad <= 1 ? 0 : cantidad - 1;
+  }
+
+  /// Hectáreas que la pantalla presenta como «de la orden»: la suma de
+  /// `lotes[]` cuando ya llegó; si no (fila de antes de v10, hasta el
+  /// próximo pull), la superficie del único lote conocido — lo mismo que se
+  /// mostraba antes de TE-23, nunca la de un lote como si fuera la de varios
+  /// cuando la suma ya está disponible.
+  Decimal? get hectareasOrden => hectareasSolicitadas ?? loteHectareas;
 
   /// `null` cuando el lote todavía no llegó por el pull incremental — la
   /// pantalla de detalle lo muestra como "sin datos", nunca lo oculta.
@@ -85,6 +112,8 @@ class OrdenVigente {
           other.fechaEmision == fechaEmision &&
           other.estado == estado &&
           other.updatedAt == updatedAt &&
+          other.cantidadLotes == cantidadLotes &&
+          other.hectareasSolicitadas == hectareasSolicitadas &&
           other.loteCodigo == loteCodigo &&
           other.loteHectareas == loteHectareas);
 
@@ -109,6 +138,8 @@ class OrdenVigente {
     fechaEmision,
     estado,
     updatedAt,
+    cantidadLotes,
+    hectareasSolicitadas,
     loteCodigo,
     loteHectareas,
   ]);
