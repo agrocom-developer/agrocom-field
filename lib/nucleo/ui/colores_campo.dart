@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 /// Paleta de alto contraste del modo "campo" (ADR 0008) — pensada para uso a
-/// sol fuerte y con guantes, más extrema que `ColoresAgrocom`/`AgrocomTheme`
-/// (ADR 0003). No reemplaza esos colores: conviven, y una pantalla adopta
-/// este modo a propósito envolviéndose en `AgrocomTheme.campo()`.
+/// sol fuerte y con guantes. Es la única paleta de la app desde que todas
+/// las pantallas reales migraron al modo campo (decisión del 1/10/2026); la
+/// de ADR 0003 se retiró. El tema que la aplica es
+/// `AgrocomThemeCampo.construir()`.
 ///
 /// [textoPrincipal] nunca cambia de tono para expresar jerarquía — eso lo
-/// resuelve la opacidad (ver [Opacidades]), igual que el mockup de origen.
+/// resuelve la opacidad (ver [OpacidadesCampo]), igual que el mockup de origen.
 abstract final class ColoresCampo {
   static const Color fondoProfundo = Color(0xFF07110A);
   static const Color superficie = Color(0xFF0A1A0E);
