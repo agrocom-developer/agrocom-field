@@ -65,6 +65,11 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
   bool _condicionesFueraDeRango = false;
   int? _auxiliarSeleccionadoId;
 
+  /// Límites efectivos del trabajo (tarea 24), cargados una vez al abrir el
+  /// formulario: los mismos con los que el servidor va a validar el
+  /// registro `condiciones`.
+  LimitesCondiciones _limites = LimitesCondiciones.porDefecto();
+
   /// HU-07: se dispara una sola vez por apertura de diálogo, no en cada
   /// `build` del `StatefulBuilder` — evita repetir la consulta a `drift` en
   /// cada rebuild mientras el piloto completa el resto del formulario.
@@ -130,10 +135,30 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
       vientoKmh: viento,
       temperaturaC: temperatura,
       humedadPct: humedad,
+      limites: _limites,
     );
   }
 
-  void _mostrarFormularioApertura(BuildContext context) {
+  /// Texto de los límites que aplican, para que el piloto sepa antes de
+  /// medir cuándo va a necesitar la firma del agrónomo. `Decimal.toString()`
+  /// tal cual, nunca `double` (invariante 9 de CLAUDE.md).
+  static String _textoLimites(LimitesCondiciones limites) {
+    final minimo = limites.humedadMinPct;
+    final humedad = minimo == null
+        ? 'humedad ≤ ${limites.humedadMaxPct} %'
+        : 'humedad entre $minimo y ${limites.humedadMaxPct} %';
+    return 'Límites del trabajo: viento ≤ ${limites.vientoMaxKmh} km/h · '
+        'temperatura ≤ ${limites.temperaturaMaxC} °C · $humedad';
+  }
+
+  /// Carga los límites del trabajo ANTES de mostrar el diálogo: decidir
+  /// fuera de rango con un default mientras llegan podría dejar pasar una
+  /// apertura que el servidor rechaza.
+  Future<void> _mostrarFormularioApertura(BuildContext context) async {
+    final limites = await context.read<SesionBloc>().limitesCondiciones();
+    if (!context.mounted) return;
+    _limites = limites;
+
     _vientoController.clear();
     _temperaturaController.clear();
     _humedadController.clear();
@@ -198,6 +223,11 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
               },
             ),
             children: [
+              NotaInlineCampo(
+                key: const Key('apertura_limites'),
+                texto: _textoLimites(_limites),
+              ),
+              const SizedBox(height: 12),
               CampoTextoCampo(
                 key: const Key('apertura_viento'),
                 etiqueta: 'Viento (km/h) *',
