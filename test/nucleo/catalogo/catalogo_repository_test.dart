@@ -73,6 +73,7 @@ Response<dynamic> _respuestaCatalogo({
   List<Map<String, dynamic>> ordenes = const [],
   List<Map<String, dynamic>> lotes = const [],
   List<Map<String, dynamic>> personas = const [],
+  List<Map<String, dynamic>>? trabajos,
   required String cursor,
 }) {
   return Response<dynamic>(
@@ -82,6 +83,7 @@ Response<dynamic> _respuestaCatalogo({
       'ordenes': ordenes,
       'lotes': lotes,
       'personas': personas,
+      'trabajos': ?trabajos,
       'cursor': cursor,
     },
   );
@@ -287,6 +289,68 @@ void main() {
     when(
       () => apiClient.get(any(), query: any(named: 'query')),
     ).thenAnswer((_) async => _respuestaCatalogo(cursor: 'c1'));
+
+    expect(await repositorio.pull(), isFalse);
+  });
+
+  test('HU-70: upsertea trabajos[] con el uuid_cliente del panel tal cual y '
+      'hectáreas en decimal exacto', () async {
+    when(() => apiClient.get(any(), query: any(named: 'query'))).thenAnswer(
+      (_) async => _respuestaCatalogo(
+        trabajos: [
+          {
+            'id': 42,
+            'uuid_cliente': '9a1b7e3e-2f7a-4b3d-8c1e-6f2a1d9c4b0a',
+            'orden_id': 1,
+            'lote_id': 3,
+            'hectareas_declaradas': '300.10',
+            'equipo_trabajo_id': 7,
+            'updated_at': '2026-09-22T12:00:00+00:00',
+          },
+        ],
+        cursor: 'c-trabajos',
+      ),
+    );
+
+    await repositorio.pull();
+
+    final trabajo = (await db.select(db.trabajoCatalogo).get()).single;
+    expect(trabajo.id, 42);
+    expect(trabajo.uuidCliente, '9a1b7e3e-2f7a-4b3d-8c1e-6f2a1d9c4b0a');
+    expect(trabajo.ordenId, 1);
+    expect(trabajo.loteId, 3);
+    expect(trabajo.hectareasDeclaradas, Decimal.parse('300.10'));
+    expect(trabajo.equipoTrabajoId, 7);
+    expect(await cursorGuardado(), 'c-trabajos');
+  });
+
+  test('HU-70: pull() devuelve true cuando solo trabajos trajo filas (cuenta '
+      'para el "hay más" del loop de catálogo)', () async {
+    when(() => apiClient.get(any(), query: any(named: 'query'))).thenAnswer(
+      (_) async => _respuestaCatalogo(
+        trabajos: [
+          {
+            'id': 42,
+            'uuid_cliente': 'uuid-panel-42',
+            'orden_id': 1,
+            'lote_id': 3,
+            'hectareas_declaradas': '300.00',
+            'equipo_trabajo_id': 7,
+            'updated_at': '2026-09-22T12:00:00+00:00',
+          },
+        ],
+        cursor: 'c1',
+      ),
+    );
+
+    expect(await repositorio.pull(), isTrue);
+  });
+
+  test('HU-70: pull() devuelve false con las cuatro secciones vacías, '
+      'trabajos incluido', () async {
+    when(() => apiClient.get(any(), query: any(named: 'query'))).thenAnswer(
+      (_) async => _respuestaCatalogo(trabajos: const [], cursor: 'c1'),
+    );
 
     expect(await repositorio.pull(), isFalse);
   });

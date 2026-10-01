@@ -80,6 +80,48 @@ class TrabajoRepository {
     });
   }
 
+  /// Prepara un trabajo asignado desde el panel (HU-70, `TrabajoCatalogo`)
+  /// para abrir sesiones sobre él: asegura su fila en [TrabajoLocal] con el
+  /// MISMO `uuid_cliente` que generó el panel — nunca uno nuevo (invariante
+  /// 2 aplicada a un registro de origen servidor) — y **no encola nada**:
+  /// el trabajo ya existe en el servidor, así que un registro `trabajo` en
+  /// `ColaSync` sería una segunda apertura del mismo trabajo.
+  ///
+  /// No es un merge (invariante 4): la apertura la escribió el panel y acá
+  /// solo se copia lo necesario para que `SesionRepository.abrirSesion`
+  /// encuentre el trabajo localmente; el dispositivo nunca reescribe esos
+  /// campos ni los manda. Idempotente: si la fila ya existe (segundo toque
+  /// de «Crear aplicación», o volver a entrar), la devuelve tal cual, sin
+  /// tocarla. `hectareasDeclaradas` queda en el default `0` de la tabla,
+  /// mismo criterio que [abrirTrabajo]: es lo que el piloto cubrió, no lo
+  /// que el jefe de campo le asignó.
+  Future<Trabajo> abrirTrabajoAsignado({
+    required String uuidCliente,
+    required int ordenId,
+    required int loteId,
+    required int nroAplicacion,
+    required DateTime inicio,
+  }) {
+    return _db.transaction(() async {
+      await _db
+          .into(_db.trabajoLocal)
+          .insert(
+            TrabajoLocalCompanion.insert(
+              uuidCliente: uuidCliente,
+              ordenId: ordenId,
+              loteId: loteId,
+              nroAplicacion: nroAplicacion,
+              inicio: inicio,
+            ),
+            mode: InsertMode.insertOrIgnore,
+          );
+      final fila = await (_db.select(
+        _db.trabajoLocal,
+      )..where((t) => t.uuidCliente.equals(uuidCliente))).getSingle();
+      return _trabajoDesdeFila(fila);
+    });
+  }
+
   /// Actualiza la MISMA fila de [TrabajoLocal] con los campos de cierre, sin
   /// tocar `ordenId`/`loteId`/`nroAplicacion`/`hectareasDeclaradas`/`inicio`
   /// de apertura (invariante 6 de CLAUDE.md), y encola `cierre_trabajo` — un

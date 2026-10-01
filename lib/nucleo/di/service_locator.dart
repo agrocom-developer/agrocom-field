@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 
 import '../../features/avisos_locales/data/ids_vistos_store.dart';
 import '../../features/incidencias/data/incidencia_repository.dart';
+import '../../features/inicio/data/inicio_repository.dart';
 import '../../features/ordenes/data/ordenes_repository.dart';
 import '../../features/sesion_vuelo/data/trabajo_repository.dart';
 import '../../features/sesion_vuelo/data/sesion_repository.dart';
@@ -89,6 +90,9 @@ Future<void> configurarDependencias({required Flavor flavor}) async {
   );
   getIt.registerLazySingleton<OrdenesRepository>(
     () => OrdenesRepository(getIt<AppDatabase>()),
+  );
+  getIt.registerLazySingleton<InicioRepository>(
+    () => InicioRepository(getIt<AppDatabase>()),
   );
   getIt.registerLazySingleton<TrabajoRepository>(
     () => TrabajoRepository(getIt<AppDatabase>()),

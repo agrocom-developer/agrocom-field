@@ -4,6 +4,8 @@ import 'features/auth/login_cubit.dart';
 import 'features/auth/login_pantalla.dart';
 import 'features/emergencia/presentation/emergencia_boton.dart';
 import 'features/incidencias/presentation/incidencia_cubit.dart';
+import 'features/inicio/presentation/inicio_cubit.dart';
+import 'features/inicio/presentation/inicio_pantalla.dart';
 import 'features/ordenes/presentation/ordenes_cubit.dart';
 import 'features/ordenes/presentation/ordenes_pantalla.dart';
 import 'features/sesion_vuelo/presentation/trabajo_cubit.dart';
@@ -46,6 +48,12 @@ class AgrocomApp extends StatelessWidget {
   /// catálogo hasta el próximo reinicio.
   final VoidCallback alIngresarConExito;
 
+  /// Solo el flavor piloto la pasa (HU-70): con ella, la pantalla inicial
+  /// tras el login es «Inicio» con el trabajo asignado, y las órdenes
+  /// vigentes quedan como destino de su barra. Sin ella (auxiliar), la
+  /// pantalla inicial sigue siendo la lista de órdenes.
+  final InicioCubit Function()? crearInicioCubit;
+
   const AgrocomApp({
     required this.flavor,
     required this.infoEntorno,
@@ -58,6 +66,7 @@ class AgrocomApp extends StatelessWidget {
     required this.crearSesionBloc,
     required this.crearIncidenciaCubit,
     required this.alIngresarConExito,
+    this.crearInicioCubit,
     super.key,
   });
 
@@ -81,6 +90,7 @@ class AgrocomApp extends StatelessWidget {
             crearSesionBloc: crearSesionBloc,
             crearIncidenciaCubit: crearIncidenciaCubit,
             alIngresarConExito: alIngresarConExito,
+            crearInicioCubit: crearInicioCubit,
           ),
         ),
       ),
@@ -89,8 +99,8 @@ class AgrocomApp extends StatelessWidget {
 }
 
 /// Decide, al arrancar, si hay que pedir login (`TokenStore.leerToken()` ==
-/// null) o ir directo a la lista de órdenes vigentes (HU-04) — HU-03 solo
-/// cubre esa bifurcación, nunca decidió qué pantalla "home" mostrar.
+/// null) o ir a la pantalla inicial: «Inicio» con el trabajo asignado en el
+/// flavor piloto (HU-70), la lista de órdenes vigentes (HU-04) en el resto.
 class _RaizApp extends StatefulWidget {
   const _RaizApp({
     required this.flavor,
@@ -102,6 +112,7 @@ class _RaizApp extends StatefulWidget {
     required this.crearSesionBloc,
     required this.crearIncidenciaCubit,
     required this.alIngresarConExito,
+    required this.crearInicioCubit,
   });
 
   final Flavor flavor;
@@ -113,6 +124,7 @@ class _RaizApp extends StatefulWidget {
   final SesionBloc Function(String) crearSesionBloc;
   final IncidenciaCubit Function(String sesionUuidCliente) crearIncidenciaCubit;
   final VoidCallback alIngresarConExito;
+  final InicioCubit Function()? crearInicioCubit;
 
   @override
   State<_RaizApp> createState() => _RaizAppState();
@@ -148,13 +160,25 @@ class _RaizAppState extends State<_RaizApp> {
           );
         }
 
-        return OrdenesPantalla(
+        Widget ordenes(BuildContext _) => OrdenesPantalla(
           crearCubit: widget.crearOrdenesCubit,
           flavor: widget.flavor,
           crearTrabajoCubit: widget.crearTrabajoCubit,
           crearSesionBloc: widget.crearSesionBloc,
           crearIncidenciaCubit: widget.crearIncidenciaCubit,
         );
+
+        final crearInicioCubit = widget.crearInicioCubit;
+        if (widget.flavor == Flavor.piloto && crearInicioCubit != null) {
+          return InicioPantalla(
+            crearCubit: crearInicioCubit,
+            crearTrabajoCubit: widget.crearTrabajoCubit,
+            crearSesionBloc: widget.crearSesionBloc,
+            crearIncidenciaCubit: widget.crearIncidenciaCubit,
+            construirOrdenes: ordenes,
+          );
+        }
+        return ordenes(context);
       },
     );
   }

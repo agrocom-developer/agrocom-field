@@ -33,11 +33,11 @@ class CatalogoRepository {
   /// le importa que haya terminado, no una confirmación por fila (a
   /// diferencia del outbox, acá no hay nada que "reintentar" fila por fila).
   ///
-  /// Devuelve `true` cuando ordenes/lotes/personas trajeron alguna fila —
-  /// señal de que esta página pudo haber tocado el límite del servidor (200
+  /// Devuelve `true` cuando ordenes/lotes/personas/trabajos trajeron alguna
+  /// fila — señal de que esta página pudo haber tocado el límite del servidor (200
   /// filas por sección, ver `ObtenerCatalogoDesdeCursor` del lado servidor)
   /// y quede más por traer con el cursor ya avanzado — y `false` cuando el
-  /// catálogo quedó al día (las tres vinieron vacías) o cuando no hubo señal
+  /// catálogo quedó al día (las cuatro vinieron vacías) o cuando no hubo señal
   /// de red. Quien invoque `pull()` para agotar el catálogo repite mientras
   /// devuelva `true`.
   Future<bool> pull() async {
@@ -63,6 +63,12 @@ class CatalogoRepository {
     final ordenes = (cuerpo['ordenes'] as List).cast<Map<String, dynamic>>();
     final lotes = (cuerpo['lotes'] as List).cast<Map<String, dynamic>>();
     final personas = (cuerpo['personas'] as List).cast<Map<String, dynamic>>();
+    // `trabajos` es `required` en el contrato (HU-70), pero se tolera su
+    // ausencia como lista vacía: un servidor anterior a la tarea 85 de
+    // `agrocom-api` no la manda, y eso no es motivo para descartar las
+    // otras tres secciones de la página.
+    final trabajos = ((cuerpo['trabajos'] as List?) ?? const [])
+        .cast<Map<String, dynamic>>();
     final cursorNuevo = cuerpo['cursor'] as String;
 
     await _db.transaction(() async {
@@ -79,9 +85,13 @@ class CatalogoRepository {
           _db.personaCatalogo,
           personas.map(_personaDesdeJson).toList(),
         );
+        batch.insertAllOnConflictUpdate(
+          _db.trabajoCatalogo,
+          trabajos.map(_trabajoDesdeJson).toList(),
+        );
       });
 
-      // Recién acá, con el upsert de las tres tablas ya aplicado dentro de
+      // Recién acá, con el upsert de las cuatro tablas ya aplicado dentro de
       // la misma transacción: si algo de arriba lanza, todo hace rollback
       // (cursor viejo incluido) y el próximo pull retoma desde donde estaba
       // — nunca se avanza el cursor sin el upsert completo.
@@ -95,7 +105,10 @@ class CatalogoRepository {
           );
     });
 
-    return ordenes.isNotEmpty || lotes.isNotEmpty || personas.isNotEmpty;
+    return ordenes.isNotEmpty ||
+        lotes.isNotEmpty ||
+        personas.isNotEmpty ||
+        trabajos.isNotEmpty;
   }
 
   Future<Response<dynamic>?> _pedirCatalogo(String? cursor) async {
@@ -178,6 +191,23 @@ class CatalogoRepository {
       rol: json['rol'] as String,
       baseId: Value(json['base_id'] as int?),
       activo: json['activo'] as bool,
+      updatedAt: DateTime.parse(json['updated_at'] as String),
+    );
+  }
+
+  /// Trabajo asignado desde el panel (HU-70). `uuid_cliente` se guarda TAL
+  /// CUAL lo generó el panel — la app nunca genera uno propio para este
+  /// trabajo (invariante 2 aplicada a un registro de origen servidor).
+  TrabajoCatalogoCompanion _trabajoDesdeJson(Map<String, dynamic> json) {
+    return TrabajoCatalogoCompanion.insert(
+      id: Value(json['id'] as int),
+      uuidCliente: json['uuid_cliente'] as String,
+      ordenId: json['orden_id'] as int,
+      loteId: json['lote_id'] as int,
+      hectareasDeclaradas: Decimal.parse(
+        json['hectareas_declaradas'] as String,
+      ),
+      equipoTrabajoId: json['equipo_trabajo_id'] as int,
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
   }

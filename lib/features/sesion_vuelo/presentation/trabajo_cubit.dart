@@ -50,6 +50,32 @@ class TrabajoCubit extends Cubit<TrabajoEstado> {
     }
   }
 
+  /// «Crear aplicación» sobre el trabajo asignado desde el panel (HU-70):
+  /// mismo ciclo de estados que [abrir], pero con el `uuid_cliente` del
+  /// panel tal cual y sin encolar una apertura nueva (ver
+  /// `TrabajoRepository.abrirTrabajoAsignado`). Parámetros primitivos a
+  /// propósito, para que esta feature no dependa de `features/inicio`.
+  Future<void> abrirAsignado({
+    required String uuidCliente,
+    required int ordenId,
+    required int loteId,
+    required int nroAplicacion,
+  }) async {
+    emit(const TrabajoCargando());
+    try {
+      final trabajo = await _repositorio.abrirTrabajoAsignado(
+        uuidCliente: uuidCliente,
+        ordenId: ordenId,
+        loteId: loteId,
+        nroAplicacion: nroAplicacion,
+        inicio: DateTime.now(),
+      );
+      emit(TrabajoExitoso(trabajo));
+    } catch (e) {
+      emit(TrabajoError('Error al crear la aplicación: ${e.toString()}'));
+    }
+  }
+
   /// Passthrough a [SelectorFoto] — mismo criterio que
   /// `IncidenciaCubit.tomarFoto`: NO cambia el estado del Cubit, la foto es
   /// un dato de FORMULARIO hasta que el piloto confirma el cierre con

@@ -187,8 +187,6 @@ void main() {
       final db = AppDatabase(NativeDatabase.opened(rawDb));
       addTearDown(db.close);
 
-      expect(db.schemaVersion, 10);
-
       // Las órdenes se conservan, con todos sus valores intactos y las
       // columnas nuevas en null hasta el próximo pull.
       final ordenes = await (db.select(

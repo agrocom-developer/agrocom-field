@@ -7,6 +7,8 @@ import 'app.dart';
 import 'features/auth/login_cubit.dart';
 import 'features/incidencias/data/incidencia_repository.dart';
 import 'features/incidencias/presentation/incidencia_cubit.dart';
+import 'features/inicio/data/inicio_repository.dart';
+import 'features/inicio/presentation/inicio_cubit.dart';
 import 'features/ordenes/data/ordenes_repository.dart';
 import 'features/ordenes/presentation/ordenes_cubit.dart';
 import 'features/sesion_vuelo/data/trabajo_repository.dart';
@@ -58,6 +60,9 @@ Future<void> main() async {
       estadoVersion: getIt<VersionWatcher>().estado,
       crearLoginCubit: () => LoginCubit(getIt<LoginService>(), Flavor.piloto),
       crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
+      // HU-70: «Inicio» con el trabajo asignado es la pantalla inicial del
+      // piloto tras el login.
+      crearInicioCubit: () => InicioCubit(getIt<InicioRepository>()),
       crearTrabajoCubit: () => TrabajoCubit(
         getIt<TrabajoRepository>(),
         evidenciaRepositorio: getIt<EvidenciaRepository>(),
