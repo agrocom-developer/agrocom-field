@@ -533,4 +533,57 @@ void main() {
     await tester.pump();
     expect(seleccionado, 8);
   });
+
+  testWidgets('SelectorDesplegableCampo elige una opción y valida por Form', (
+    tester,
+  ) async {
+    final formKey = GlobalKey<FormState>();
+    String? elegido;
+    await tester.pumpWidget(
+      _envolver(
+        Form(
+          key: formKey,
+          child: SelectorDesplegableCampo<String>(
+            key: const Key('selector'),
+            etiqueta: 'Motivo',
+            opciones: const [('a', 'Opción A'), ('b', 'Opción B')],
+            valor: null,
+            onChanged: (valor) => elegido = valor,
+            validator: (valor) => valor == null ? 'Elegí una' : null,
+          ),
+        ),
+      ),
+    );
+
+    expect(find.text('MOTIVO'), findsOneWidget);
+    expect(formKey.currentState!.validate(), isFalse);
+    await tester.pump();
+    expect(find.text('Elegí una'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('selector')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Opción B').last);
+    await tester.pumpAndSettle();
+    expect(elegido, 'b');
+    expect(formKey.currentState!.validate(), isTrue);
+  });
+
+  testWidgets('CampoTextoCampo avisa cada cambio con onChanged', (
+    tester,
+  ) async {
+    final cambios = <String>[];
+    await tester.pumpWidget(
+      _envolver(
+        CampoTextoCampo(
+          key: const Key('campo'),
+          etiqueta: 'Viento',
+          maxLines: 3,
+          onChanged: cambios.add,
+        ),
+      ),
+    );
+
+    await tester.enterText(find.byKey(const Key('campo')), '12');
+    expect(cambios, ['12']);
+  });
 }

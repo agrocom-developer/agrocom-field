@@ -13,6 +13,10 @@ import '../tipografia_campo.dart';
 /// [accionTexto]/[onAccion] es una acción corta a la derecha del valor
 /// ("VER"/"OCULTAR" en una contraseña), en mono lima; sin ella, el campo
 /// ocupa todo el ancho.
+///
+/// [onChanged] y [maxLines] pasan tal cual al `TextFormField` — un
+/// formulario que reacciona mientras se escribe (condiciones fuera de rango)
+/// o un texto libre de varias líneas (observación, descripción).
 class CampoTextoCampo extends StatefulWidget {
   const CampoTextoCampo({
     required this.etiqueta,
@@ -24,6 +28,8 @@ class CampoTextoCampo extends StatefulWidget {
     this.autocorrect = true,
     this.validator,
     this.onFieldSubmitted,
+    this.onChanged,
+    this.maxLines = 1,
     this.accionTexto,
     this.onAccion,
     super.key,
@@ -38,6 +44,8 @@ class CampoTextoCampo extends StatefulWidget {
   final bool autocorrect;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onFieldSubmitted;
+  final ValueChanged<String>? onChanged;
+  final int? maxLines;
   final String? accionTexto;
   final VoidCallback? onAccion;
 
@@ -106,6 +114,7 @@ class _CampoTextoCampoState extends State<CampoTextoCampo> {
                   autocorrect: widget.autocorrect && !widget.obscureText,
                   textInputAction: widget.textInputAction,
                   keyboardType: widget.keyboardType,
+                  maxLines: widget.obscureText ? 1 : widget.maxLines,
                   cursorColor: ColoresCampo.acentoLima,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
@@ -134,6 +143,7 @@ class _CampoTextoCampoState extends State<CampoTextoCampo> {
                   ),
                   validator: widget.validator,
                   onFieldSubmitted: widget.onFieldSubmitted,
+                  onChanged: widget.onChanged,
                 ),
               ],
             ),
