@@ -46,6 +46,7 @@ conserva el texto).
 | 20 | ADR 0008 (decisión 1/10/2026) | Órdenes vigentes (lista) y detalle de orden al modo campo, siguiendo la pantalla 08 de la vista previa. El dueño vio en el dispositivo que después del login (ya en modo campo) las órdenes siguen con Material estándar y decidió migrar todas las pantallas reales. Solo aspecto: mismas `Key`s, cubit y dominio. No crítica. | prompt escrito |
 | 21 | ADR 0008 (decisión 1/10/2026) | Sesión de vuelo (apertura con condiciones, cierre de sesión, cierre de trabajo) e incidencia al modo campo, siguiendo las pantallas 04 y 06 de la vista previa. Mismo motivo que 20; solo aspecto, sin tocar blocs ni `drift`. No crítica. | prompt escrito |
 | 22 | ADR 0008 (decisión 1/10/2026) | Modo campo como tema global de la app (`MaterialApp` de `app.dart`) + pantalla de carga, bloqueo de versión (HU-20) y panel de emergencia/linterna (HU-68): lo que ve cualquier usuario de los dos flavors y que 20/21 no cubren. Solo aspecto. No crítica. | prompt escrito |
+| 23 | TE-23 (seguimiento) | Límites climáticos y de vuelo del trabajo asignado: el servidor los movió de `ordenes[]` a `trabajos[]` (7 campos) y la app los sigue leyendo de `orden_catalogo`, donde llegan en `null` — «Límites climáticos» del detalle muestra «sin datos». Columnas nuevas en `trabajo_catalogo` (v12), parseo en el pull y pantallas de detalle e «Inicio». Es la tarea de seguimiento que dejó la 18. Crítica (esquema). | prompt escrito |
 
 ## Fuera del ciclo automático
 
