@@ -23,7 +23,6 @@ class OrdenVigente {
     this.vientoMaxKmh,
     this.temperaturaMaxC,
     this.humedadMaxPct,
-    this.velocidadMaxKmh,
     this.alturaVueloM,
     this.velocidadVueloKmh,
     this.anchoPasadaM,
@@ -57,11 +56,6 @@ class OrdenVigente {
   final Decimal? alturaVueloM;
   final Decimal? velocidadVueloKmh;
   final Decimal? anchoPasadaM;
-
-  /// Sigue saliendo de `orden_catalogo`: el servidor ya no lo manda en
-  /// ningún lado (no es uno de los siete que pasaron a `trabajos[]`), así
-  /// que hoy queda en `null` salvo en filas bajadas de un servidor anterior.
-  final Decimal? velocidadMaxKmh;
   final String? observaciones;
   final int? emitidaPorContactoId;
   final String fechaEmision;
@@ -112,7 +106,6 @@ class OrdenVigente {
           other.vientoMaxKmh == vientoMaxKmh &&
           other.temperaturaMaxC == temperaturaMaxC &&
           other.humedadMaxPct == humedadMaxPct &&
-          other.velocidadMaxKmh == velocidadMaxKmh &&
           other.alturaVueloM == alturaVueloM &&
           other.velocidadVueloKmh == velocidadVueloKmh &&
           other.anchoPasadaM == anchoPasadaM &&
@@ -138,7 +131,6 @@ class OrdenVigente {
     vientoMaxKmh,
     temperaturaMaxC,
     humedadMaxPct,
-    velocidadMaxKmh,
     alturaVueloM,
     velocidadVueloKmh,
     anchoPasadaM,

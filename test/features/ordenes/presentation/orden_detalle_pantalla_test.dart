@@ -87,7 +87,6 @@ OrdenVigente _orden({
   vientoMaxKmh: sinTrabajoAsignado ? null : Decimal.parse('15'),
   temperaturaMaxC: sinTrabajoAsignado ? null : Decimal.parse('32'),
   humedadMaxPct: sinTrabajoAsignado ? null : Decimal.parse('90'),
-  velocidadMaxKmh: Decimal.parse('25'),
   alturaVueloM: sinTrabajoAsignado ? null : Decimal.parse('3'),
   velocidadVueloKmh: sinTrabajoAsignado ? null : Decimal.parse('18'),
   anchoPasadaM: sinTrabajoAsignado ? null : Decimal.parse('7'),
@@ -538,5 +537,17 @@ void main() {
         );
       }
     });
+  });
+
+  testWidgets('tarea 25: el detalle ya no muestra «Velocidad máxima», que '
+      'no existe en la orden de trabajo', (tester) async {
+    await tester.binding.setSurfaceSize(const Size(800, 1600));
+    addTearDown(() => tester.binding.setSurfaceSize(null));
+
+    await bombearAuxiliar(tester, _orden());
+    await tester.pumpAndSettle();
+
+    expect(find.text('Velocidad máxima', skipOffstage: false), findsNothing);
+    expect(find.text('Altura de vuelo', skipOffstage: false), findsOneWidget);
   });
 }
