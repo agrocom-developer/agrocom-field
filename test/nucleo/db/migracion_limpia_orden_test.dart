@@ -1,12 +1,16 @@
-// Prueba de la migración de esquema v11 -> v12 (tarea 23): agrega a
-// `trabajo_catalogo` los siete límites climáticos y parámetros de vuelo que
-// el servidor movió de `ordenes[]` a `trabajos[]`, con `ALTER TABLE`, sin
-// perder ninguna fila, y resetea el cursor para que el próximo pull vuelva a
-// traer los trabajos y complete las columnas nuevas.
+// Prueba de la migración de esquema v12 -> v13 (tarea 25): quita de
+// `orden_catalogo` las ocho columnas de clima/vuelo que el servidor ya no
+// manda en `ordenes[]`, CONSERVANDO las órdenes (`alterTable` +
+// `TableMigration` copia las filas), y resetea el cursor para que los
+// trabajos ya bajados reciban sus límites efectivos (`agrocom-api` #309 los
+// cambió sin tocar `updated_at`).
 //
-// Mismo patrón que `migracion_trabajo_catalogo_test.dart` (v10 -> v11):
-// esquema v11 completo escrito a mano con SQL crudo, `PRAGMA user_version =
-// 11`, y recién ahí [AppDatabase] con el `schemaVersion` real.
+// Mismo patrón que `migracion_limites_trabajo_test.dart` (v11 -> v12):
+// esquema v12 completo escrito a mano con SQL crudo, `PRAGMA user_version =
+// 12`, y recién ahí [AppDatabase] con el `schemaVersion` real. Las
+// columnas nuevas de v12 se agregaron con `ALTER TABLE`, así que en un
+// dispositivo real quedan al final de `trabajo_catalogo`: el SQL las pone
+// en ese mismo orden.
 
 import 'package:agrocom_field/nucleo/db/database.dart';
 import 'package:decimal/decimal.dart';
@@ -15,10 +19,9 @@ import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlite3/sqlite3.dart' as sqlite3;
 
-/// SQL equivalente al esquema v11 real: el v10 más `trabajo_catalogo` sin
-/// los límites climáticos ni los parámetros de vuelo. `orden_catalogo`
-/// conserva sus columnas de clima/vuelo (v12 no las borra).
-const _createEsquemaV11 = '''
+/// SQL equivalente al esquema v12 real: `orden_catalogo` todavía con sus
+/// ocho columnas de clima/vuelo y `trabajo_catalogo` con los siete límites.
+const _createEsquemaV12 = '''
 CREATE TABLE cola_sync (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   uuid_cliente TEXT NOT NULL UNIQUE,
@@ -149,15 +152,33 @@ CREATE TABLE trabajo_catalogo (
   lote_id INTEGER NOT NULL,
   hectareas_declaradas TEXT NOT NULL,
   equipo_trabajo_id INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL
+  updated_at INTEGER NOT NULL,
+  humedad_min_pct TEXT NULL,
+  viento_max_kmh TEXT NULL,
+  temperatura_max_c TEXT NULL,
+  humedad_max_pct TEXT NULL,
+  altura_vuelo_m TEXT NULL,
+  velocidad_vuelo_kmh TEXT NULL,
+  ancho_pasada_m TEXT NULL
 );''';
 
+const _columnasQuitadas = [
+  'humedad_min_pct',
+  'viento_max_kmh',
+  'temperatura_max_c',
+  'humedad_max_pct',
+  'velocidad_max_kmh',
+  'altura_vuelo_m',
+  'velocidad_vuelo_kmh',
+  'ancho_pasada_m',
+];
+
 void main() {
-  test('base v11 preexistente migra a v12: agrega los límites a '
-      'trabajo_catalogo en null, resetea el cursor y conserva todas las '
-      'filas', () async {
+  test('base v12 preexistente migra a v13: orden_catalogo pierde las ocho '
+      'columnas de clima/vuelo sin perder órdenes, el cursor se resetea y '
+      'el resto de las tablas queda intacto', () async {
     final rawDb = sqlite3.sqlite3.openInMemory();
-    rawDb.execute(_createEsquemaV11);
+    rawDb.execute(_createEsquemaV12);
     rawDb.execute('''
         INSERT INTO cola_sync
           (uuid_cliente, tipo_entidad, payload, secuencia, estado, creado_en)
@@ -167,10 +188,18 @@ void main() {
     rawDb.execute('''
         INSERT INTO orden_catalogo
           (id, contrato_id, lote_id, cantidad_lotes, hectareas_solicitadas,
-           nro_aplicacion, litros_ha, viento_max_kmh, fecha_emision, estado,
-           updated_at)
+           nro_aplicacion, litros_ha, kilos_por_vuelo, humedad_min_pct,
+           viento_max_kmh, temperatura_max_c, humedad_max_pct,
+           velocidad_max_kmh, altura_vuelo_m, velocidad_vuelo_kmh,
+           ancho_pasada_m, observaciones, emitida_por_contacto_id,
+           fecha_emision, estado, updated_at)
         VALUES
-          (1, 4, 3, 2, '170.50', 2, '10.00', '15.00', '2026-09-20', 'vigente', 1758369600);
+          (1, 4, 3, 2, '170.50', 2, '10.00', NULL, '60.00', '15.00',
+           '32.00', '90.00', '25.00', '3.00', '18.00', '7.00',
+           'De mañana', 2, '2026-09-20', 'vigente', 1758369600),
+          (2, 4, 6, 1, '45.00', 3, NULL, '8.50', NULL, NULL, NULL, NULL,
+           NULL, NULL, NULL, NULL, NULL, NULL, '2026-09-21', 'vigente',
+           1758447000);
       ''');
     rawDb.execute('''
         INSERT INTO lote_catalogo (id, propiedad_id, codigo, hectareas, updated_at)
@@ -181,14 +210,17 @@ void main() {
         VALUES (5, 'Piloto Uno', 'piloto', 1, 1, 1758369600);
       ''');
     rawDb.execute('''
-        INSERT INTO cursor_catalogo (id, cursor) VALUES (0, 'cursor-v11');
+        INSERT INTO cursor_catalogo (id, cursor) VALUES (0, 'cursor-v12');
       ''');
     rawDb.execute('''
         INSERT INTO trabajo_catalogo
           (id, uuid_cliente, orden_id, lote_id, hectareas_declaradas,
-           equipo_trabajo_id, updated_at)
+           equipo_trabajo_id, updated_at, humedad_min_pct, viento_max_kmh,
+           temperatura_max_c, humedad_max_pct, altura_vuelo_m,
+           velocidad_vuelo_kmh, ancho_pasada_m)
         VALUES
-          (42, 'uuid-panel-42', 1, 3, '300.00', 7, 1758542400);
+          (42, 'uuid-panel-42', 1, 3, '300.00', 7, 1758542400, '40.00',
+           '12.00', '28.00', '85.00', '3.00', '18.00', '7.00');
       ''');
     rawDb.execute('''
         INSERT INTO trabajo_local
@@ -207,7 +239,7 @@ void main() {
           (uuid_cliente, sesion_uuid_cliente, momento, viento_kmh,
            temperatura_c, humedad_pct)
         VALUES
-          ('condicion-preexistente', 'sesion-preexistente', 'inicio', '12.0', '28.5', '65');
+          ('condicion-preexistente', 'sesion-preexistente', 'inicio_sesion', '12.0', '28.5', '65');
       ''');
     rawDb.execute('''
         INSERT INTO evidencia_local
@@ -221,31 +253,70 @@ void main() {
         VALUES
           ('incidencia-preexistente', 'sesion-preexistente', 'otro', 1700000200, 'evidencia-preexistente');
       ''');
-    rawDb.execute('PRAGMA user_version = 11;');
+    rawDb.execute('PRAGMA user_version = 12;');
 
     final db = AppDatabase(NativeDatabase.opened(rawDb));
     addTearDown(db.close);
 
-    // El trabajo bajado antes de v12 se conserva, con las columnas nuevas
-    // en null hasta el próximo pull.
-    final trabajo = (await db.select(db.trabajoCatalogo).get()).single;
-    expect(trabajo.id, 42);
-    expect(trabajo.uuidCliente, 'uuid-panel-42');
-    expect(trabajo.hectareasDeclaradas, Decimal.parse('300.00'));
-    expect(trabajo.equipoTrabajoId, 7);
-    expect(trabajo.humedadMinPct, isNull);
-    expect(trabajo.vientoMaxKmh, isNull);
-    expect(trabajo.temperaturaMaxC, isNull);
-    expect(trabajo.humedadMaxPct, isNull);
-    expect(trabajo.alturaVueloM, isNull);
-    expect(trabajo.velocidadVueloKmh, isNull);
-    expect(trabajo.anchoPasadaM, isNull);
+    // `orden_catalogo` ya no tiene las ocho columnas de clima/vuelo.
+    final columnas =
+        (await db.customSelect('PRAGMA table_info(orden_catalogo)').get())
+            .map((fila) => fila.read<String>('name'))
+            .toSet();
+    for (final columna in _columnasQuitadas) {
+      expect(columnas, isNot(contains(columna)), reason: columna);
+    }
 
-    // Nada de lo anterior se perdió. Las columnas de clima/vuelo de
-    // `orden_catalogo` las quita v13 (tarea 25) al seguir la cadena hasta el
-    // esquema actual: ver `migracion_limpia_orden_test.dart`.
-    final orden = (await db.select(db.ordenCatalogo).get()).single;
-    expect(orden.cantidadLotes, 2);
+    // Las dos órdenes se conservan con todos los valores que siguen
+    // existiendo.
+    final ordenes = await (db.select(
+      db.ordenCatalogo,
+    )..orderBy([(t) => OrderingTerm.asc(t.id)])).get();
+    expect(ordenes.map((o) => o.id), [1, 2]);
+    final liquida = ordenes[0];
+    expect(liquida.contratoId, 4);
+    expect(liquida.loteId, 3);
+    expect(liquida.cantidadLotes, 2);
+    expect(liquida.hectareasSolicitadas, Decimal.parse('170.50'));
+    expect(liquida.nroAplicacion, 2);
+    expect(liquida.litrosHa, Decimal.parse('10.00'));
+    expect(liquida.kilosPorVuelo, isNull);
+    expect(liquida.observaciones, 'De mañana');
+    expect(liquida.emitidaPorContactoId, 2);
+    expect(liquida.fechaEmision, '2026-09-20');
+    expect(liquida.estado, 'vigente');
+    expect(
+      liquida.updatedAt.isAtSameMomentAs(
+        DateTime.fromMillisecondsSinceEpoch(1758369600 * 1000),
+      ),
+      isTrue,
+    );
+    final solida = ordenes[1];
+    expect(solida.litrosHa, isNull);
+    expect(solida.kilosPorVuelo, Decimal.parse('8.50'));
+    expect(solida.observaciones, isNull);
+
+    // El cursor se resetea: el próximo pull trae de nuevo los trabajos con
+    // sus límites efectivos.
+    expect(
+      await (db.select(
+        db.cursorCatalogo,
+      )..where((t) => t.id.equals(0))).getSingleOrNull(),
+      isNull,
+    );
+
+    // `trabajo_catalogo` no se toca: conserva sus límites.
+    final trabajo = (await db.select(db.trabajoCatalogo).get()).single;
+    expect(trabajo.uuidCliente, 'uuid-panel-42');
+    expect(trabajo.humedadMinPct, Decimal.parse('40.00'));
+    expect(trabajo.vientoMaxKmh, Decimal.parse('12.00'));
+    expect(trabajo.temperaturaMaxC, Decimal.parse('28.00'));
+    expect(trabajo.humedadMaxPct, Decimal.parse('85.00'));
+    expect(trabajo.alturaVueloM, Decimal.parse('3.00'));
+    expect(trabajo.velocidadVueloKmh, Decimal.parse('18.00'));
+    expect(trabajo.anchoPasadaM, Decimal.parse('7.00'));
+
+    // Nada del resto se perdió.
     expect((await db.select(db.loteCatalogo).get()).single.codigo, 'L-01');
     expect((await db.select(db.personaCatalogo).get()).single.id, 5);
     expect(
@@ -273,43 +344,27 @@ void main() {
       'incidencia-preexistente',
     );
 
-    // El cursor se resetea para que el próximo pull complete los límites.
-    expect(
-      await (db.select(
-        db.cursorCatalogo,
-      )..where((t) => t.id.equals(0))).getSingleOrNull(),
-      isNull,
-    );
-
-    // Las columnas nuevas son usables: el upsert del pull las completa sobre
-    // la fila conservada.
+    // La tabla recreada sigue usable: el upsert del pull escribe sobre ella.
     await db
-        .into(db.trabajoCatalogo)
+        .into(db.ordenCatalogo)
         .insertOnConflictUpdate(
-          TrabajoCatalogoCompanion.insert(
-            id: const Value(42),
-            uuidCliente: 'uuid-panel-42',
-            ordenId: 1,
+          OrdenCatalogoCompanion.insert(
+            id: const Value(1),
+            contratoId: 4,
             loteId: 3,
-            hectareasDeclaradas: Decimal.parse('300.00'),
-            equipoTrabajoId: 7,
-            humedadMinPct: Value(Decimal.parse('60.00')),
-            vientoMaxKmh: Value(Decimal.parse('15.00')),
-            temperaturaMaxC: Value(Decimal.parse('32.00')),
-            humedadMaxPct: Value(Decimal.parse('90.00')),
-            alturaVueloM: Value(Decimal.parse('3.00')),
-            velocidadVueloKmh: Value(Decimal.parse('18.00')),
-            anchoPasadaM: Value(Decimal.parse('7.00')),
-            updatedAt: DateTime.utc(2026, 9, 22, 12),
+            nroAplicacion: 2,
+            observaciones: const Value('Actualizada'),
+            fechaEmision: '2026-09-20',
+            estado: 'vigente',
+            updatedAt: DateTime.utc(2026, 9, 23),
           ),
         );
-    final completo = (await db.select(db.trabajoCatalogo).get()).single;
-    expect(completo.humedadMinPct, Decimal.parse('60.00'));
-    expect(completo.vientoMaxKmh, Decimal.parse('15.00'));
-    expect(completo.temperaturaMaxC, Decimal.parse('32.00'));
-    expect(completo.humedadMaxPct, Decimal.parse('90.00'));
-    expect(completo.alturaVueloM, Decimal.parse('3.00'));
-    expect(completo.velocidadVueloKmh, Decimal.parse('18.00'));
-    expect(completo.anchoPasadaM, Decimal.parse('7.00'));
+    expect(
+      (await (db.select(
+        db.ordenCatalogo,
+      )..where((t) => t.id.equals(1))).getSingle()).observaciones,
+      'Actualizada',
+    );
+    expect(await db.select(db.ordenCatalogo).get(), hasLength(2));
   });
 }

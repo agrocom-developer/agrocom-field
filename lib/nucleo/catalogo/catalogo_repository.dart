@@ -152,14 +152,6 @@ class CatalogoRepository {
       nroAplicacion: json['nro_aplicacion'] as int,
       litrosHa: Value(_decimalNullable(json['litros_ha'])),
       kilosPorVuelo: Value(_decimalNullable(json['kilos_por_vuelo'])),
-      humedadMinPct: Value(_decimalNullable(json['humedad_min_pct'])),
-      vientoMaxKmh: Value(_decimalNullable(json['viento_max_kmh'])),
-      temperaturaMaxC: Value(_decimalNullable(json['temperatura_max_c'])),
-      humedadMaxPct: Value(_decimalNullable(json['humedad_max_pct'])),
-      velocidadMaxKmh: Value(_decimalNullable(json['velocidad_max_kmh'])),
-      alturaVueloM: Value(_decimalNullable(json['altura_vuelo_m'])),
-      velocidadVueloKmh: Value(_decimalNullable(json['velocidad_vuelo_kmh'])),
-      anchoPasadaM: Value(_decimalNullable(json['ancho_pasada_m'])),
       observaciones: Value(json['observaciones'] as String?),
       emitidaPorContactoId: Value(json['emitida_por_contacto_id'] as int?),
       fechaEmision: json['fecha_emision'] as String,
@@ -199,10 +191,14 @@ class CatalogoRepository {
   /// CUAL lo generó el panel — la app nunca genera uno propio para este
   /// trabajo (invariante 2 aplicada a un registro de origen servidor).
   ///
-  /// Los siete límites climáticos y parámetros de vuelo (tarea 23) son
-  /// `?string` en `TrabajoAsignadoCatalogo` de `agrocom-api`: `null` cuando
-  /// el jefe de campo no los completó al asignar. Se leen con la misma
-  /// nulabilidad, como `Decimal` (invariante 9 de CLAUDE.md).
+  /// Los siete límites climáticos y parámetros de vuelo (tarea 23) viajan
+  /// EFECTIVOS desde `agrocom-api` #309 (`LimitesEfectivos`):
+  /// `viento_max_kmh`, `temperatura_max_c` y `humedad_max_pct` siempre traen
+  /// valor (el de la Orden de Trabajo o el default del sistema); los otros
+  /// cuatro llegan `null` si la Orden de Trabajo no los fija. El parseo
+  /// tolera `null` en los siete igual: las columnas son nullable y un
+  /// servidor anterior a #309 los mandaba así. Siempre `Decimal`
+  /// (invariante 9 de CLAUDE.md).
   TrabajoCatalogoCompanion _trabajoDesdeJson(Map<String, dynamic> json) {
     return TrabajoCatalogoCompanion.insert(
       id: Value(json['id'] as int),

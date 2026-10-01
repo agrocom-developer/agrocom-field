@@ -198,8 +198,8 @@ void main() {
       expect(ordenes[0].nroAplicacion, 2);
       expect(ordenes[0].litrosHa, Decimal.parse('10.00'));
       expect(ordenes[0].kilosPorVuelo, isNull);
-      expect(ordenes[0].vientoMaxKmh, Decimal.parse('15.00'));
-      expect(ordenes[0].velocidadMaxKmh, Decimal.parse('25.00'));
+      // Las columnas de clima/vuelo ya no existen desde v13 (tarea 25):
+      // la cadena de migraciones las quita al llegar al esquema actual.
       expect(ordenes[0].observaciones, 'De mañana');
       expect(ordenes[0].fechaEmision, '2026-09-20');
       expect(ordenes[1].litrosHa, isNull);

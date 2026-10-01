@@ -65,37 +65,9 @@ class OrdenCatalogo extends Table {
     NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
   )();
 
-  TextColumn get humedadMinPct => text().nullable().map(
-    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
-  )();
-
-  TextColumn get vientoMaxKmh => text().nullable().map(
-    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
-  )();
-
-  TextColumn get temperaturaMaxC => text().nullable().map(
-    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
-  )();
-
-  TextColumn get humedadMaxPct => text().nullable().map(
-    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
-  )();
-
-  TextColumn get velocidadMaxKmh => text().nullable().map(
-    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
-  )();
-
-  TextColumn get alturaVueloM => text().nullable().map(
-    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
-  )();
-
-  TextColumn get velocidadVueloKmh => text().nullable().map(
-    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
-  )();
-
-  TextColumn get anchoPasadaM => text().nullable().map(
-    NullAwareTypeConverter.wrap(const DecimalDriftConverter()),
-  )();
+  // Sin límites climáticos ni parámetros de vuelo (v13, tarea 25): el
+  // servidor los movió a `trabajos[]` y viven en `TrabajoCatalogo`. La
+  // migración v13 quitó las ocho columnas que quedaban acá.
 
   TextColumn get observaciones => text().nullable()();
 

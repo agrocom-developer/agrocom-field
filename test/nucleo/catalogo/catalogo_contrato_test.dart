@@ -11,10 +11,12 @@
 // Tarea 23 (contra el código de `agrocom-api` develop @ 44570a17, que manda
 // sobre el `openapi.yaml`): el elemento de `trabajos[]` trae los siete
 // límites climáticos y de vuelo de `TrabajoAsignadoCatalogo::toArray()`; el
-// caso `null` de esos campos lo cubre `catalogo_repository_test.dart`. Las
-// órdenes del fixture todavía traen los campos de clima/vuelo que el
-// servidor ya no emite: se quitan junto con las columnas de
-// `orden_catalogo`, en la tarea que las borre.
+// caso `null` de esos campos lo cubre `catalogo_repository_test.dart`.
+//
+// Tarea 25 (contra `openapi.yaml` de `agrocom-api` develop @ a47e5280,
+// regenerado del código en #309): `ordenes[]` ya no trae campos de
+// clima/vuelo, y en `trabajos[]` `viento_max_kmh`, `temperatura_max_c` y
+// `humedad_max_pct` siempre traen valor (límites efectivos).
 
 import 'dart:convert';
 import 'dart:io';
@@ -80,8 +82,6 @@ void main() {
     expect(liquida.hectareasSolicitadas, Decimal.parse('300.00'));
     expect(liquida.litrosHa, Decimal.parse('10.00'));
     expect(liquida.kilosPorVuelo, isNull);
-    expect(liquida.velocidadMaxKmh, Decimal.parse('25.00'));
-    expect(liquida.anchoPasadaM, Decimal.parse('7.00'));
     expect(liquida.observaciones, 'Aplicar en horas de la mañana.');
     expect(liquida.emitidaPorContactoId, 2);
     expect(liquida.fechaEmision, '2026-09-20');
@@ -98,8 +98,6 @@ void main() {
     expect(solida.hectareasSolicitadas, Decimal.parse('45.00'));
     expect(solida.litrosHa, isNull);
     expect(solida.kilosPorVuelo, Decimal.parse('8.50'));
-    expect(solida.vientoMaxKmh, isNull);
-    expect(solida.velocidadMaxKmh, isNull);
     expect(solida.emitidaPorContactoId, isNull);
 
     final lotes = await (db.select(
