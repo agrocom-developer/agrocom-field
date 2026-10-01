@@ -59,3 +59,12 @@ final class SesionCerrarSolicitada extends SesionEvento {
   final Decimal? hectareaFinalAcumulada;
   final Decimal? litrosConsumidos;
 }
+
+/// Carga inicial (tarea 27): pone el Bloc en el estado que corresponde a lo
+/// que hay en `drift` para su trabajo — `SesionActiva` con la sesión que
+/// sigue abierta (su `uuid_cliente` de siempre), o `SesionInicial` si no
+/// hay ninguna. La despacha `SesionVueloPantalla` al construir el Bloc, para
+/// que volver a la pantalla no pierda una sesión abierta.
+final class SesionCargaSolicitada extends SesionEvento {
+  const SesionCargaSolicitada();
+}

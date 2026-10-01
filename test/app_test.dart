@@ -438,6 +438,10 @@ void main() {
     when(
       () => inicioRepositorio.trabajoAsignado(),
     ).thenAnswer((_) => Stream.value(null));
+    // Tarea 27: nada en curso en el dispositivo.
+    when(
+      () => inicioRepositorio.enCurso(),
+    ).thenAnswer((_) => Stream.value(null));
 
     await tester.pumpWidget(
       AgrocomApp(

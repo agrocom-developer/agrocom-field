@@ -16,4 +16,33 @@ abstract final class MotivoRetiro {
   /// trabajo de una sesión y valida sus condiciones con los defaults del
   /// sistema.
   static const dadoDeBaja = 'dado_de_baja';
+
+  /// `MotivoRetiroTrabajo::Reasignado`: el trabajo pasó a un equipo donde
+  /// la persona no está vigente, o quedó sin equipo.
+  static const reasignado = 'reasignado';
+
+  /// `MotivoRetiroTrabajo::Cerrado`.
+  static const cerrado = 'cerrado';
+
+  /// `MotivoRetiroTrabajo::OrdenCerrada`: su orden pasó a `consumida`,
+  /// `cancelada` o `vencida`.
+  static const ordenCerrada = 'orden_cerrada';
+
+  /// Estado `pausada` de `ordenes_retiradas` (tarea 27). El servidor no
+  /// retira los trabajos de una orden pausada y acepta sesiones sobre
+  /// ellos, pero el dueño decidió que la app no abra sesiones nuevas
+  /// mientras la orden esté pausada.
+  static const ordenPausada = 'pausada';
+
+  /// Lo que ve el piloto para el motivo de retiro de un TRABAJO. Un motivo
+  /// que la app no conoce se muestra tal cual, nunca se oculta.
+  static String describirTrabajo(String motivo) => switch (motivo) {
+    dadoDeBaja => 'El trabajo fue dado de baja desde el panel.',
+    reasignado => 'El trabajo fue reasignado a otro equipo.',
+    cerrado => 'El trabajo fue cerrado desde el panel.',
+    ordenCerrada =>
+      'La orden del trabajo se cerró (consumida, cancelada o vencida).',
+    fueraDeAlcance => 'El trabajo ya no llega al catálogo de este dispositivo.',
+    _ => 'El trabajo fue retirado del catálogo ($motivo).',
+  };
 }
