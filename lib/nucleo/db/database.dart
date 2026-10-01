@@ -47,7 +47,9 @@ part 'database.g.dart';
 /// `lotes[]` (ADR 0022 de `agrocom-api`), con `ALTER TABLE` y conservando
 /// las órdenes ya bajadas. HU-70 (v11) agrega [TrabajoCatalogo], el
 /// trabajo asignado desde el panel, espejo de solo lectura separado de
-/// [TrabajoLocal] (invariante 4 de CLAUDE.md).
+/// [TrabajoLocal] (invariante 4 de CLAUDE.md). La tarea 23 (v12) agrega a
+/// [TrabajoCatalogo] los siete límites climáticos y parámetros de vuelo que
+/// el servidor movió de `ordenes[]` a `trabajos[]`, con `ALTER TABLE`.
 /// Las tablas espejo del resto de las features de escritura (recargas...)
 /// se agregan en tareas técnicas posteriores, cada una subiendo
 /// [schemaVersion] con su propia migración — nunca reescribiendo la
@@ -72,7 +74,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 11;
+  int get schemaVersion => 12;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -187,6 +189,29 @@ class AppDatabase extends _$AppDatabase {
       // bajar nunca.
       if (from < 11) {
         await m.createTable(trabajoCatalogo);
+        await (delete(cursorCatalogo)).go();
+      }
+      // v12 (tarea 23): `trabajo_catalogo` gana los siete límites
+      // climáticos y parámetros de vuelo que el servidor movió de
+      // `ordenes[]` a `trabajos[]`. `ALTER TABLE` y no recrear: son
+      // nullable, así que se agregan sin perder los trabajos ya bajados
+      // (mismo criterio que v10). `from >= 11` porque si el dispositivo
+      // viene de antes de v11, el bloque `from < 11` ya creó la tabla con
+      // la clase Dart actual, que incluye estas columnas. Las de
+      // `orden_catalogo` NO se borran acá: quedan para otra migración,
+      // cuando nada las lea. El cursor se resetea para que el próximo pull
+      // vuelva a traer los trabajos y complete las columnas nuevas de las
+      // filas conservadas.
+      if (from >= 11 && from < 12) {
+        await m.addColumn(trabajoCatalogo, trabajoCatalogo.humedadMinPct);
+        await m.addColumn(trabajoCatalogo, trabajoCatalogo.vientoMaxKmh);
+        await m.addColumn(trabajoCatalogo, trabajoCatalogo.temperaturaMaxC);
+        await m.addColumn(trabajoCatalogo, trabajoCatalogo.humedadMaxPct);
+        await m.addColumn(trabajoCatalogo, trabajoCatalogo.alturaVueloM);
+        await m.addColumn(trabajoCatalogo, trabajoCatalogo.velocidadVueloKmh);
+        await m.addColumn(trabajoCatalogo, trabajoCatalogo.anchoPasadaM);
+      }
+      if (from < 12) {
         await (delete(cursorCatalogo)).go();
       }
     },
