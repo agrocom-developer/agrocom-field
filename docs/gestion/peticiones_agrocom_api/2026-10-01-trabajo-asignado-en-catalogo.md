@@ -1,6 +1,6 @@
 # Petición a `agrocom-api` — trabajo asignado (`trabajos[]`) en `GET /api/sync/catalogo`
 
-**Fecha:** 1/10/2026 · **Pide:** `agrocom-field` (lado app), tras integrar HU-70 (tarea 19, PR #59) · **Decide y aprueba:** el dueño · **Ejecuta:** una sesión sobre `agrocom-api` (rama `feature/*`, PR contra `develop`, GitFlow del ADR 0006) · **Estado:** pendiente de respuesta.
+**Fecha:** 1/10/2026 · **Pide:** `agrocom-field` (lado app), tras integrar HU-70 (tarea 19, PR #59) · **Decide y aprueba:** el dueño · **Ejecuta:** una sesión sobre `agrocom-api` (rama `feature/*`, PR contra `develop`, GitFlow del ADR 0006) · **Estado:** respondida el 1/10/2026 por `agrocom-api` #309-#312 (develop `a47e5280cc4159038b1f5597aaec37a29ce7ce73`), salvo la pregunta 3, que queda pendiente de la decisión A/B del dueño.
 
 ## Quién y por qué se requirió
 
@@ -24,12 +24,57 @@ Es el mismo problema que la petición del 29/9/2026 sobre el estado de la orden 
 
 La app parsea `equipo_trabajo_id`, `hectareas_declaradas`, `lote_id` y `orden_id` como obligatorios. Si alguno llegara `null`, o `hectareas_declaradas` llegara como número en vez de texto decimal, toda la página del pull hace rollback y el cursor no avanza. El catálogo entero, órdenes incluidas, queda trabado en silencio en ese dispositivo. **Se pide:** que `openapi.yaml`, regenerado del código (ADR 0014), declare la nulabilidad real de cada campo de `TrabajoCatalogo`. La app ajusta su parseo a eso; no adivina.
 
+## Respuestas
+
+Leídas en el código de `agrocom-api` develop `a47e5280cc4159038b1f5597aaec37a29ce7ce73`, que incluye los PR #309, #310, #311 y #312.
+
+### 1. Cierre de un trabajo creado por el panel — **resuelta**
+
+El servidor lo acepta. `EscrituraSincronizacionEloquent::cerrarTrabajo()` busca el trabajo por `uuid_cliente` sin mirar quién lo abrió. #309-#312 no cambiaron esa función. Los rechazos posibles son:
+
+- `trabajo_no_existe`;
+- `trabajo_ya_cerrado`, si ya tiene otro `uuid_cliente` de cierre;
+- `operario_no_participo`, si el trabajo tiene sesiones y ninguna es de ese piloto;
+- `falta_imagen_campo`;
+- `imagen_campo_reutilizada`.
+
+La app no necesita cambios.
+
+### 2. Filtro por equipo — **resuelta** (#312)
+
+`trabajos[]` llega filtrado por el operario del token: solo los trabajos de los equipos donde su persona es integrante vigente hoy (todos, si está en varios). Una cuenta sin persona operativa recibe `trabajos` vacío.
+
+Límite conocido, declarado en `openapi.yaml`: si la persona entra a un equipo nuevo, los trabajos de ese equipo que no cambiaron desde el último pull no llegan en el incremental. Los trae recién un pull completo (`desde` vacío).
+
+### 3. Trabajo reasignado, cancelado o cerrado por el panel — **pendiente**
+
+Sigue sin mecanismo. La consulta excluye los trabajos dados de baja (soft delete), así que nunca vuelven a llegar, y `trabajos[]` no trae `estado`. Queda atada a la decisión A/B del dueño sobre la petición del 29/9/2026 (TE-22).
+
+#311 resolvió otra parte del problema: un trabajo vuelve a bajar cuando cambia su Orden de Trabajo, también si se da de baja. Lo hace porque el cursor de `trabajos` usa la modificación más reciente entre el trabajo y su tanda, y ese es el `updated_at` que viaja.
+
+### 4. Nulabilidad — **resuelta** (#309)
+
+`openapi.yaml` se regeneró del código:
+
+- `id`, `uuid_cliente`, `orden_id`, `lote_id`, `hectareas_declaradas` (DECIMAL como string), `equipo_trabajo_id` y `updated_at` nunca vienen nulos.
+- Los siete límites viajan **efectivos** (`LimitesEfectivos`): `viento_max_kmh`, `temperatura_max_c` y `humedad_max_pct` siempre traen valor, el de la Orden de Trabajo o el default 17.00 / 30.00 / 90.00.
+- `humedad_min_pct`, `altura_vuelo_m`, `velocidad_vuelo_kmh` y `ancho_pasada_m` llegan `null` si la Orden de Trabajo no los fija.
+
+El parseo de la app ya coincidía y sigue tolerando `null` en los siete.
+
+### Relacionado: validación de condiciones (#310)
+
+Desde #310, el registro `condiciones` se valida contra esos mismos límites efectivos, ya no contra constantes. Los topes son inclusivos y la humedad mínima solo se exige si está fijada. La app lo replica desde la tarea 24 (PR #64).
+
 ## Fuera de esta petición
 
-Los campos de clima y vuelo que pasaron de la orden a `trabajos[]` (7 de 8 según la alineación del 1/10/2026) no son una pregunta: son trabajo del lado app, una tarea nueva de la cola (mover las columnas de `orden_catalogo` a `trabajo_catalogo` con su migración v12). Hasta entonces, «Límites climáticos» del detalle de orden muestra «sin datos».
+Los campos de clima y vuelo que pasaron de la orden a `trabajos[]` (7 de 8 según la alineación del 1/10/2026) no son una pregunta: son trabajo del lado app. Se hicieron así:
+
+- **Tarea 23** (PR #63, esquema v12): columnas en `trabajo_catalogo` y pantallas.
+- **Tarea 25** (esquema v13): quita las 8 columnas de `orden_catalogo` y resetea el cursor para que los trabajos ya bajados reciban los límites efectivos.
 
 ## Pendiente
 
-- [ ] Respuesta de `agrocom-api` a las preguntas 1, 2 y 4: lectura del código y, si hace falta, cambio en `openapi.yaml`.
+- [x] Respuesta de `agrocom-api` a las preguntas 1, 2 y 4: #309-#312, develop `a47e5280`.
 - [ ] El dueño decide la 3 junto con la opción A/B de la petición del 29/9/2026.
-- [ ] Con las respuestas, se encola en `agrocom-field` la tarea que ajuste el filtro por equipo, el retiro de trabajos y el parseo, y se actualiza este documento con el PR y el SHA.
+- [ ] Del lado app, sin tarea encolada todavía: los dispositivos que bajaron trabajos antes de #312 conservan en `trabajo_catalogo` filas de **otros equipos**, porque el pull no retira filas, y «Inicio» todavía puede elegir una. Se resuelve con el mismo mecanismo de retiro de la pregunta 3, o con una limpieza local que decida el dueño. Borrarlas sin señal le quitaría al piloto el trabajo y sus límites hasta volver a sincronizar.
