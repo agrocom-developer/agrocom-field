@@ -17,6 +17,7 @@ export 'encabezado_campo.dart';
 export 'fila_dato_campo.dart';
 export 'fondo_foto_campo.dart';
 export 'grid_evidencias_campo.dart';
+export 'interruptor_campo.dart';
 export 'item_lista_campo.dart';
 export 'logo_agrocom_campo.dart';
 export 'nota_inline_campo.dart';
