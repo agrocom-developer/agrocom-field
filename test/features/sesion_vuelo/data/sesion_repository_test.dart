@@ -758,17 +758,12 @@ void main() {
       humedadMinPct: Decimal.parse('40.00'),
     );
 
-    test('dado_de_baja: los defaults del sistema, como el servidor que ya '
-        'no encuentra el trabajo', () async {
-      final uuid = await trabajoRetirado('dado_de_baja');
-
-      expect(
-        await sesionRepositorio.limitesCondiciones(uuid),
-        LimitesCondiciones.porDefecto(),
-      );
-    });
-
+    // `dado_de_baja` usa los límites de la fila desde `agrocom-api` #314
+    // (`add36c2b`), que carga el trabajo con `withTrashed()` al validar las
+    // condiciones; antes de #314 esperaba los defaults del sistema. Cambio
+    // de criterio que viene del servidor, no un test aflojado.
     for (final motivo in [
+      'dado_de_baja',
       'reasignado',
       'cerrado',
       'orden_cerrada',

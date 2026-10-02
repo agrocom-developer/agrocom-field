@@ -4,7 +4,6 @@ import 'package:decimal/decimal.dart';
 import 'package:drift/drift.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../nucleo/catalogo/motivo_retiro.dart';
 import '../../../nucleo/db/database.dart';
 import '../../../nucleo/db/tablas/sesion_local.dart' show EstadoSesionLocal;
 import '../domain/auxiliar.dart';
@@ -286,19 +285,19 @@ class SesionRepository {
               ..where((t) => t.uuidCliente.equals(trabajoUuidCliente)))
             .getSingleOrNull();
     if (trabajo == null) return LimitesCondiciones.porDefecto();
-    // Trabajo retirado (tarea 26), lo que documenta `agrocom-api` #313 para
-    // `registrarCondiciones`:
-    // - `dado_de_baja`: la sesión ya no encuentra su trabajo y el servidor
-    //   usa los defaults del sistema.
-    // - `reasignado`, `cerrado`, `orden_cerrada`: sigue usando los límites
-    //   de su Orden de Trabajo, que son los de esta fila (la última versión
-    //   que llegó). En blanco, hereda el default, igual que el servidor.
-    // - `fuera_de_alcance` (motivo local del barrido): la app no sabe por
-    //   qué se fue, así que usa lo último que conoce, como en los tres de
-    //   arriba.
-    if (trabajo.motivoRetiro == MotivoRetiro.dadoDeBaja) {
-      return LimitesCondiciones.porDefecto();
-    }
+    // Trabajo retirado (tareas 26 y 28): desde `agrocom-api` #314 (develop
+    // `add36c2b`), `registrarCondiciones` carga el trabajo con
+    // `withTrashed()` y usa los límites de su Orden de Trabajo con cualquier
+    // motivo de retiro — `dado_de_baja` incluido, que antes caía a los
+    // defaults. Son los de esta fila (la última versión que llegó); en
+    // blanco, heredan el default, igual que el servidor. `fuera_de_alcance`
+    // (motivo local del barrido) usa lo último que conoce, por el mismo
+    // criterio.
+    //
+    // Divergencia conocida: si la Orden de Trabajo misma se da de baja
+    // después de retirado el trabajo, el servidor vuelve a los defaults y
+    // la app no se entera, porque el catálogo ya no reenvía un trabajo
+    // retirado. Caso raro, anotado en la petición del 1/10/2026.
     return LimitesCondiciones.resolver(
       vientoMaxKmh: trabajo.vientoMaxKmh,
       temperaturaMaxC: trabajo.temperaturaMaxC,
