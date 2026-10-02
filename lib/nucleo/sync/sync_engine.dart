@@ -40,7 +40,9 @@ class SyncEngine {
   Future<void> sincronizar() async {
     _controladorEstado.add(EstadoMotorSync.sincronizando);
 
-    final pendientes = await _outbox.leerPendientes();
+    // Sin los registros cuya evidencia todavía no se subió: el servidor los
+    // rechazaría para siempre (ver [OutboxRepository.leerListasParaEnviar]).
+    final pendientes = await _outbox.leerListasParaEnviar();
     final registros = pendientes.map(_registroDesdeFila).toList();
 
     final Response<dynamic> respuesta;

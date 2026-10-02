@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 
 import '../db/database.dart';
 import '../db/tablas/cola_sync.dart';
+import '../db/tablas/evidencia_local.dart' show EstadoEvidenciaLocal;
 
 /// Única pieza de `nucleo/sync` que toca `drift` directamente (invariante 3
 /// de CLAUDE.md: escribir es insertar local + encolar en outbox, en una sola
@@ -19,6 +22,61 @@ class OutboxRepository {
           ..where((t) => t.estado.equalsValue(EstadoSync.pendiente))
           ..orderBy([(t) => OrderingTerm.asc(t.secuencia)]))
         .get();
+  }
+
+  /// Filas `pendiente` listas para enviar: [leerPendientes] menos las que
+  /// referencian una evidencia que todavía no se subió.
+  ///
+  /// El servidor rechaza un registro cuya evidencia todavía no recibió
+  /// (`falta_imagen_campo` en `cierre_trabajo`, y lo mismo con la foto de una
+  /// incidencia), y un rechazo es definitivo en el outbox: la fila no se
+  /// vuelve a mandar. Como el ciclo empuja el outbox antes de subir las
+  /// evidencias (`DisparadorSync`), un cierre cargado sin señal viajaba
+  /// antes que su foto y se perdía. Retenida acá, la fila sigue `pendiente`
+  /// y sale en el primer ciclo después de que su evidencia quede `subido`.
+  ///
+  /// Una evidencia `rechazado` o que no está en `evidencia_local` no retiene
+  /// nada: esperar no la va a subir, así que el registro sale y el servidor
+  /// decide. Retener solo esas filas, y no todo lo que viene detrás, no rompe
+  /// el orden causal (invariante 5): ningún registro de hoy referencia a un
+  /// `cierre_trabajo` ni a una incidencia.
+  Future<List<ColaSyncData>> leerListasParaEnviar() async {
+    final pendientes = await leerPendientes();
+    final evidenciasSinSubir =
+        (await (_db.selectOnly(_db.evidenciaLocal)
+                  ..addColumns([_db.evidenciaLocal.uuidCliente])
+                  ..where(
+                    _db.evidenciaLocal.estado.equalsValue(
+                      EstadoEvidenciaLocal.pendiente,
+                    ),
+                  ))
+                .get())
+            .map((fila) => fila.read(_db.evidenciaLocal.uuidCliente)!)
+            .toSet();
+    if (evidenciasSinSubir.isEmpty) return pendientes;
+    return pendientes
+        .where(
+          (fila) =>
+              !_evidenciasReferenciadas(fila).any(evidenciasSinSubir.contains),
+        )
+        .toList();
+  }
+
+  /// `uuid_cliente` de evidencias que referencia el payload de [fila]: todo
+  /// campo `evidencia_*_uuid_cliente` del registro (hoy,
+  /// `evidencia_imagen_campo_uuid_cliente` del cierre de trabajo y
+  /// `evidencia_foto_uuid_cliente` de la incidencia).
+  static Iterable<String> _evidenciasReferenciadas(ColaSyncData fila) {
+    final payload = jsonDecode(fila.payload);
+    if (payload is! Map<String, dynamic>) return const [];
+    return payload.entries
+        .where(
+          (campo) =>
+              campo.key.startsWith('evidencia_') &&
+              campo.key.endsWith('_uuid_cliente') &&
+              campo.value is String,
+        )
+        .map((campo) => campo.value as String);
   }
 
   /// Marca la fila de [uuidCliente] como `confirmado` (respuesta `aplicado`
