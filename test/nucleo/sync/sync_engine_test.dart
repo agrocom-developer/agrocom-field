@@ -4,7 +4,6 @@ import 'package:agrocom_field/nucleo/api/api_client.dart';
 import 'package:agrocom_field/nucleo/api/api_excepcion.dart';
 import 'package:agrocom_field/nucleo/db/database.dart';
 import 'package:agrocom_field/nucleo/db/tablas/cola_sync.dart';
-import 'package:agrocom_field/nucleo/db/tablas/evidencia_local.dart';
 import 'package:agrocom_field/nucleo/sync/estado_sync.dart';
 import 'package:agrocom_field/nucleo/sync/outbox_repository.dart';
 import 'package:agrocom_field/nucleo/sync/sync_engine.dart';
