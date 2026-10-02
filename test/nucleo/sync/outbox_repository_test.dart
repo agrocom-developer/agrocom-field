@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:agrocom_field/nucleo/db/database.dart';
 import 'package:agrocom_field/nucleo/db/tablas/cola_sync.dart';
+import 'package:agrocom_field/nucleo/db/tablas/evidencia_local.dart';
 import 'package:agrocom_field/nucleo/sync/outbox_repository.dart';
 import 'package:drift/drift.dart' hide isNull;
 import 'package:drift/native.dart';
@@ -134,6 +137,93 @@ void main() {
       )..where((t) => t.uuidCliente.equals('w'))).getSingle();
       expect(fila.estado, EstadoSync.confirmado);
       expect(fila.motivoRechazo, isNull);
+    });
+  });
+
+  group('leerListasParaEnviar', () {
+    Future<void> encolarConPayload(
+      String uuidCliente,
+      int secuencia,
+      Map<String, dynamic> payload,
+    ) {
+      return db
+          .into(db.colaSync)
+          .insert(
+            ColaSyncCompanion.insert(
+              uuidCliente: uuidCliente,
+              tipoEntidad: 'cierre_trabajo',
+              payload: jsonEncode(payload),
+              secuencia: secuencia,
+            ),
+          );
+    }
+
+    Future<void> evidencia(String uuidCliente, EstadoEvidenciaLocal estado) {
+      return db
+          .into(db.evidenciaLocal)
+          .insert(
+            EvidenciaLocalCompanion.insert(
+              uuidCliente: uuidCliente,
+              tipo: 'imagen_campo',
+              rutaArchivoLocal: '/tmp/$uuidCliente.jpg',
+              hashSha256: 'hash-$uuidCliente',
+              fecha: DateTime.utc(2026, 10, 2),
+              estado: Value(estado),
+            ),
+          );
+    }
+
+    test('retiene la fila cuya evidencia sigue pendiente y deja pasar el '
+        'resto, en orden de secuencia', () async {
+      await encolar(uuidCliente: 'sesion', secuencia: 1);
+      await encolarConPayload('cierre', 2, {
+        'evidencia_imagen_campo_uuid_cliente': 'foto-campo',
+      });
+      await encolarConPayload('incidencia', 3, {
+        'evidencia_foto_uuid_cliente': 'foto-incidencia',
+      });
+      await evidencia('foto-campo', EstadoEvidenciaLocal.pendiente);
+      await evidencia('foto-incidencia', EstadoEvidenciaLocal.subido);
+
+      final listas = await repositorio.leerListasParaEnviar();
+
+      expect(listas.map((f) => f.uuidCliente).toList(), [
+        'sesion',
+        'incidencia',
+      ]);
+      // Sigue pendiente: sale en el ciclo siguiente a la subida de su foto.
+      expect(
+        (await repositorio.leerPendientes()).map((f) => f.uuidCliente),
+        contains('cierre'),
+      );
+    });
+
+    test('una vez subida la evidencia, la fila sale', () async {
+      await encolarConPayload('cierre', 1, {
+        'evidencia_imagen_campo_uuid_cliente': 'foto-campo',
+      });
+      await evidencia('foto-campo', EstadoEvidenciaLocal.subido);
+
+      expect(
+        (await repositorio.leerListasParaEnviar()).map((f) => f.uuidCliente),
+        ['cierre'],
+      );
+    });
+
+    test('una evidencia rechazada o ausente no retiene la fila: esperar no '
+        'la va a subir, decide el servidor', () async {
+      await encolarConPayload('con-rechazada', 1, {
+        'evidencia_imagen_campo_uuid_cliente': 'foto-rechazada',
+      });
+      await encolarConPayload('con-ausente', 2, {
+        'evidencia_foto_uuid_cliente': 'foto-que-no-existe',
+      });
+      await evidencia('foto-rechazada', EstadoEvidenciaLocal.rechazado);
+
+      expect(
+        (await repositorio.leerListasParaEnviar()).map((f) => f.uuidCliente),
+        ['con-rechazada', 'con-ausente'],
+      );
     });
   });
 }

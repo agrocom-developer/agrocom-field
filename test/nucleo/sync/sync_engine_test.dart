@@ -4,6 +4,7 @@ import 'package:agrocom_field/nucleo/api/api_client.dart';
 import 'package:agrocom_field/nucleo/api/api_excepcion.dart';
 import 'package:agrocom_field/nucleo/db/database.dart';
 import 'package:agrocom_field/nucleo/db/tablas/cola_sync.dart';
+import 'package:agrocom_field/nucleo/db/tablas/evidencia_local.dart';
 import 'package:agrocom_field/nucleo/sync/estado_sync.dart';
 import 'package:agrocom_field/nucleo/sync/outbox_repository.dart';
 import 'package:agrocom_field/nucleo/sync/sync_engine.dart';
@@ -182,4 +183,46 @@ void main() {
       });
     },
   );
+
+  test('un cierre de trabajo cuya foto todavía no se subió no viaja: queda '
+      'pendiente en vez de que el servidor lo rechace para siempre', () async {
+    await db
+        .into(db.evidenciaLocal)
+        .insert(
+          EvidenciaLocalCompanion.insert(
+            uuidCliente: 'foto-campo',
+            tipo: 'imagen_campo',
+            rutaArchivoLocal: '/tmp/foto-campo.jpg',
+            hashSha256: 'hash',
+            fecha: DateTime.utc(2026, 10, 2),
+          ),
+        );
+    await encolar(uuidCliente: 'sesion-1', tipoEntidad: 'sesion', secuencia: 1);
+    await encolar(
+      uuidCliente: 'cierre-1',
+      tipoEntidad: 'cierre_trabajo',
+      secuencia: 2,
+      payload: {'evidencia_imagen_campo_uuid_cliente': 'foto-campo'},
+    );
+    when(() => apiClient.post(any(), data: any(named: 'data'))).thenAnswer(
+      (_) async => respuestaCon([
+        {'uuid_cliente': 'sesion-1', 'estado': 'aplicado'},
+      ]),
+    );
+
+    await motor.sincronizar();
+
+    final enviado =
+        verify(
+              () =>
+                  apiClient.post('/api/sync', data: captureAny(named: 'data')),
+            ).captured.single
+            as Map<String, dynamic>;
+    expect(
+      (enviado['registros'] as List).map((r) => (r as Map)['uuid_cliente']),
+      ['sesion-1'],
+    );
+    expect(await estadoDe('sesion-1'), EstadoSync.confirmado);
+    expect(await estadoDe('cierre-1'), EstadoSync.pendiente);
+  });
 }
