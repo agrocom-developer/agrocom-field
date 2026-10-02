@@ -48,6 +48,43 @@ void main() {
     humedadPct: Decimal.parse('50'),
   )).uuidCliente;
 
+  /// Un trabajo abierto con la app de ANTES de la tarea 28, que no impedía
+  /// abrir otro: hoy `abrirTrabajo` se niega, así que se siembra como lo
+  /// dejaba aquella versión (fila en `trabajo_local` + apertura encolada
+  /// con la secuencia global siguiente).
+  Future<String> sembrarTrabajoHeredado({required DateTime inicio}) async {
+    final uuid = 'uuid-heredado-${inicio.toIso8601String()}';
+    final maximo = db.colaSync.secuencia.max();
+    final secuencia =
+        ((await (db.selectOnly(
+              db.colaSync,
+            )..addColumns([maximo])).getSingle()).read(maximo) ??
+            0) +
+        1;
+    await db
+        .into(db.trabajoLocal)
+        .insert(
+          TrabajoLocalCompanion.insert(
+            uuidCliente: uuid,
+            ordenId: 1,
+            loteId: 3,
+            nroAplicacion: 1,
+            inicio: inicio,
+          ),
+        );
+    await db
+        .into(db.colaSync)
+        .insert(
+          ColaSyncCompanion.insert(
+            uuidCliente: uuid,
+            tipoEntidad: 'trabajo',
+            payload: '{}',
+            secuencia: secuencia,
+          ),
+        );
+    return uuid;
+  }
+
   Future<void> sembrarLote() => db
       .into(db.loteCatalogo)
       .insert(
@@ -126,7 +163,9 @@ void main() {
       final primero = await abrirTrabajoDeLaApp(
         inicio: DateTime.utc(2026, 10, 1, 12),
       );
-      final segundo = await abrirTrabajoDeLaApp(
+      // Desde la tarea 28 la app no abre un segundo trabajo: este caso es
+      // el de un dispositivo que ya los tenía abiertos.
+      final segundo = await sembrarTrabajoHeredado(
         inicio: DateTime.utc(2026, 10, 1, 8),
       );
       expect((await repositorio.enCurso().first)!.trabajoUuidCliente, segundo);

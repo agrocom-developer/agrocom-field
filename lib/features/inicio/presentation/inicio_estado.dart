@@ -1,5 +1,5 @@
 import '../domain/trabajo_asignado.dart';
-import '../domain/trabajo_en_curso.dart';
+import '../../sesion_vuelo/domain/trabajo_en_curso.dart';
 
 /// Estado de `InicioCubit`: arranca `InicioCargando` y de ahí alterna entre
 /// `InicioConTrabajo` y `InicioSinTrabajo` según cada emisión del stream —

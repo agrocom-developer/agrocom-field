@@ -8,7 +8,7 @@ import 'dart:async';
 
 import 'package:agrocom_field/features/inicio/data/inicio_repository.dart';
 import 'package:agrocom_field/features/inicio/domain/trabajo_asignado.dart';
-import 'package:agrocom_field/features/inicio/domain/trabajo_en_curso.dart';
+import 'package:agrocom_field/features/sesion_vuelo/domain/trabajo_en_curso.dart';
 import 'package:agrocom_field/features/inicio/presentation/inicio_cubit.dart';
 import 'package:agrocom_field/features/inicio/presentation/inicio_pantalla.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/sesion_repository.dart';

@@ -8,6 +8,8 @@ import '../../../nucleo/db/database.dart';
 import '../../../nucleo/db/tablas/trabajo_local.dart' show EstadoTrabajoLocal;
 import '../domain/reglas_trabajo.dart';
 import '../domain/trabajo.dart';
+import '../domain/trabajo_en_curso.dart';
+import 'lectura_en_curso.dart';
 
 /// Escribe la apertura de un trabajo (`AperturaTrabajo`) y su cierre
 /// (`CierreTrabajo`, HU-09) — ver esos contratos en `agrocom-api`: inserta o
@@ -15,14 +17,27 @@ import '../domain/trabajo.dart';
 /// (invariante 3 de CLAUDE.md) — ningún caso de uso espera la red para
 /// confirmar en pantalla.
 class TrabajoRepository {
-  TrabajoRepository(this._db, {Uuid? uuid}) : _uuid = uuid ?? const Uuid();
+  TrabajoRepository(this._db, {Uuid? uuid})
+    : _uuid = uuid ?? const Uuid(),
+      _enCurso = LecturaEnCurso(_db);
 
   final AppDatabase _db;
   final Uuid _uuid;
+  final LecturaEnCurso _enCurso;
+
+  /// Lo que este dispositivo tiene en curso (tarea 28), para que el detalle
+  /// de orden deshabilite «Abrir trabajo» con el motivo — la misma consulta
+  /// con la que [abrirTrabajo] y [abrirTrabajoAsignado] se niegan.
+  Stream<TrabajoEnCurso?> enCurso() => _enCurso.observar();
 
   /// [inicio] es un parámetro obligatorio, no `DateTime.now()` interno: eso
   /// mantiene el repositorio testeable con un reloj fijo. Quien lo invoque
   /// (la capa de presentación, otra etapa) le pasa `DateTime.now()`.
+  ///
+  /// Lanza [TrabajoEnCursoExcepcion] sin escribir ni encolar nada si el
+  /// dispositivo ya tiene una sesión abierta o un trabajo sin cerrar (tarea
+  /// 28): un solo trabajo en curso a la vez. Se decide dentro de la misma
+  /// transacción que escribe, para que dos toques seguidos no abran dos.
   Future<Trabajo> abrirTrabajo({
     required int ordenId,
     required int loteId,
@@ -34,6 +49,8 @@ class TrabajoRepository {
     final hectareas = hectareasDeclaradas ?? Decimal.parse('0');
 
     return _db.transaction(() async {
+      verificarSinOtroTrabajoEnCurso(enCurso: await _enCurso.leer());
+
       await _db
           .into(_db.trabajoLocal)
           .insert(
@@ -95,6 +112,11 @@ class TrabajoRepository {
   /// tocarla. `hectareasDeclaradas` queda en el default `0` de la tabla,
   /// mismo criterio que [abrirTrabajo]: es lo que el piloto cubrió, no lo
   /// que el jefe de campo le asignó.
+  ///
+  /// Volver a ESTE trabajo no es abrir otro: si la fila ya existe, se
+  /// devuelve tal cual aunque esté en curso. Si no existe y el dispositivo
+  /// tiene algo en curso, lanza [TrabajoEnCursoExcepcion] sin escribir nada
+  /// (tarea 28), igual que [abrirTrabajo].
   Future<Trabajo> abrirTrabajoAsignado({
     required String uuidCliente,
     required int ordenId,
@@ -103,6 +125,16 @@ class TrabajoRepository {
     required DateTime inicio,
   }) {
     return _db.transaction(() async {
+      final existente = await (_db.select(
+        _db.trabajoLocal,
+      )..where((t) => t.uuidCliente.equals(uuidCliente))).getSingleOrNull();
+      if (existente != null) return _trabajoDesdeFila(existente);
+
+      verificarSinOtroTrabajoEnCurso(
+        enCurso: await _enCurso.leer(),
+        trabajoUuidCliente: uuidCliente,
+      );
+
       await _db
           .into(_db.trabajoLocal)
           .insert(
@@ -113,7 +145,6 @@ class TrabajoRepository {
               nroAplicacion: nroAplicacion,
               inicio: inicio,
             ),
-            mode: InsertMode.insertOrIgnore,
           );
       final fila = await (_db.select(
         _db.trabajoLocal,

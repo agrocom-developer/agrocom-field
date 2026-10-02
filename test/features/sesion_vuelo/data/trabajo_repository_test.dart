@@ -102,11 +102,19 @@ void main() {
 
   test('abrir dos trabajos en sucesión deja la secuencia global estrictamente '
       'creciente', () async {
-    await repositorio.abrirTrabajo(
+    final primero = await repositorio.abrirTrabajo(
       ordenId: 1,
       loteId: 1,
       nroAplicacion: 1,
       inicio: DateTime.utc(2026, 9, 11, 10),
+    );
+    // Tarea 28: un solo trabajo en curso — el segundo se abre recién
+    // después de cerrar el primero, y ese cierre también ocupa una
+    // secuencia.
+    await repositorio.cerrarTrabajo(
+      trabajoUuidCliente: primero.uuidCliente,
+      fin: DateTime.utc(2026, 9, 11, 10, 2),
+      evidenciaImagenCampoUuidCliente: 'evidencia-campo-1',
     );
     await repositorio.abrirTrabajo(
       ordenId: 2,
@@ -118,7 +126,7 @@ void main() {
     final filas = await (db.select(
       db.colaSync,
     )..orderBy([(t) => OrderingTerm.asc(t.secuencia)])).get();
-    expect(filas.map((f) => f.secuencia).toList(), [1, 2]);
+    expect(filas.map((f) => f.secuencia).toList(), [1, 2, 3]);
   });
 
   group('cerrarTrabajo', () {
