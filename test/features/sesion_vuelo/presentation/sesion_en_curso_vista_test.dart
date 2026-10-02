@@ -284,7 +284,10 @@ void main() {
       tester
           .widget<NotaInlineCampo>(find.byKey(const Key('sesion_aviso_retiro')))
           .texto,
-      'El trabajo fue dado de baja desde el panel.',
+      // Tarea 28: el aviso dice que lo en curso se registra igual (#314).
+      'El trabajo fue dado de baja desde el panel: no se puede abrir una '
+      'sesión nueva. La sesión abierta y el trabajo se cierran y se '
+      'registran igual.',
     );
     expect(
       tester
@@ -359,5 +362,32 @@ void main() {
     await bombear(tester);
 
     expect(find.byKey(const Key('sesion_aviso_retiro')), findsNothing);
+  });
+
+  testWidgets('tarea 28: trabajo dado_de_baja con la sesión abierta — el '
+      'aviso dice que no se abre otra y que lo abierto se registra igual', (
+    tester,
+  ) async {
+    when(
+      () => sesionRepositorio.sesionAbiertaDeTrabajo(_trabajoUuid),
+    ).thenAnswer((_) async => _sesion());
+    when(
+      () => sesionRepositorio.restriccionAperturaDeTrabajo(_trabajoUuid),
+    ).thenAnswer(
+      (_) async => restriccionApertura(
+        haySesionAbierta: true,
+        motivoRetiroTrabajo: 'dado_de_baja',
+      ),
+    );
+
+    await bombear(tester);
+
+    final aviso = tester
+        .widget<NotaInlineCampo>(find.byKey(const Key('sesion_aviso_retiro')))
+        .texto;
+    expect(aviso, contains('no se puede abrir una sesión nueva'));
+    expect(aviso, contains('se cierran y se registran igual'));
+    expect(aviso, isNot(contains('rechaz')));
+    expect(onPressedPrimario(tester, 'boton_cerrar_sesion'), isNotNull);
   });
 }

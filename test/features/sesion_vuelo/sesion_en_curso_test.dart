@@ -287,7 +287,13 @@ void main() {
       );
 
       expect(restriccion.bloqueo, contains('dado de baja'));
-      expect(restriccion.aviso, 'El trabajo fue dado de baja desde el panel.');
+      // Tarea 28: el aviso dice que lo en curso se registra igual (#314).
+      expect(
+        restriccion.aviso,
+        'El trabajo fue dado de baja desde el panel: no se puede abrir una '
+        'sesión nueva. La sesión abierta y el trabajo se cierran y se '
+        'registran igual.',
+      );
     });
 
     test(
