@@ -221,6 +221,43 @@ void main() {
     );
   }
 
+  /// Un trabajo abierto con la app de ANTES de la tarea 28, que no impedía
+  /// abrir otro: hoy `abrirTrabajo` se niega, así que se siembra como lo
+  /// dejaba aquella versión (fila en `trabajo_local` + apertura encolada
+  /// con la secuencia global siguiente).
+  Future<String> sembrarTrabajoHeredado({required DateTime inicio}) async {
+    final uuid = 'uuid-heredado-${inicio.toIso8601String()}';
+    final maximo = db.colaSync.secuencia.max();
+    final secuencia =
+        ((await (db.selectOnly(
+              db.colaSync,
+            )..addColumns([maximo])).getSingle()).read(maximo) ??
+            0) +
+        1;
+    await db
+        .into(db.trabajoLocal)
+        .insert(
+          TrabajoLocalCompanion.insert(
+            uuidCliente: uuid,
+            ordenId: 1,
+            loteId: 3,
+            nroAplicacion: 1,
+            inicio: inicio,
+          ),
+        );
+    await db
+        .into(db.colaSync)
+        .insert(
+          ColaSyncCompanion.insert(
+            uuidCliente: uuid,
+            tipoEntidad: 'trabajo',
+            payload: '{}',
+            secuencia: secuencia,
+          ),
+        );
+    return uuid;
+  }
+
   group('restricción de apertura', () {
     test('trabajo dado_de_baja: bloquea una sesión nueva; la que ya estaba '
         'abierta se retoma y se cierra', () async {
@@ -250,7 +287,13 @@ void main() {
       );
 
       expect(restriccion.bloqueo, contains('dado de baja'));
-      expect(restriccion.aviso, 'El trabajo fue dado de baja desde el panel.');
+      // Tarea 28: el aviso dice que lo en curso se registra igual (#314).
+      expect(
+        restriccion.aviso,
+        'El trabajo fue dado de baja desde el panel: no se puede abrir una '
+        'sesión nueva. La sesión abierta y el trabajo se cierran y se '
+        'registran igual.',
+      );
     });
 
     test(
@@ -298,7 +341,11 @@ void main() {
         'nunca dos sesiones abiertas a la vez', () async {
       final primero = await abrirTrabajo();
       await abrirSesion(primero);
-      final segundo = await abrirTrabajo();
+      // Desde la tarea 28 la app no abre un segundo trabajo: este caso es el
+      // de un dispositivo que ya lo tenía abierto.
+      final segundo = await sembrarTrabajoHeredado(
+        inicio: DateTime.utc(2026, 10, 1, 10),
+      );
 
       final restriccion = await sesionRepositorio.restriccionAperturaDeTrabajo(
         segundo,

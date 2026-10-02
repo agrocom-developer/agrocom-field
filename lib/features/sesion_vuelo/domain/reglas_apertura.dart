@@ -48,7 +48,10 @@ final class RestriccionApertura {
 /// equipo:
 /// - `dado_de_baja`: el servidor rechaza la sesión con
 ///   `trabajo_no_existe_aun`. Cargada sin señal, se perdería al
-///   sincronizar, así que no se abre.
+///   sincronizar, así que no se abre. Lo que ya estaba en curso sí se
+///   registra: desde `agrocom-api` #314 (`add36c2b`) el servidor acepta el
+///   cierre de la sesión, sus condiciones y el cierre del trabajo, y el
+///   aviso lo dice.
 /// - `reasignado`, `cerrado`, `orden_cerrada` y el local
 ///   `fuera_de_alcance`: el servidor la acepta, así que no se bloquea; solo
 ///   se avisa.
@@ -57,9 +60,14 @@ RestriccionApertura restriccionApertura({
   String? motivoRetiroOrden,
   String? motivoRetiroTrabajo,
 }) {
-  final aviso = motivoRetiroTrabajo == null
-      ? null
-      : MotivoRetiro.describirTrabajo(motivoRetiroTrabajo);
+  final aviso = switch (motivoRetiroTrabajo) {
+    null => null,
+    MotivoRetiro.dadoDeBaja =>
+      'El trabajo fue dado de baja desde el panel: no se puede abrir una '
+          'sesión nueva. La sesión abierta y el trabajo se cierran y se '
+          'registran igual.',
+    final motivo => MotivoRetiro.describirTrabajo(motivo),
+  };
   final String? bloqueo;
   if (haySesionAbierta) {
     bloqueo =
@@ -67,8 +75,8 @@ RestriccionApertura restriccionApertura({
         '«Inicio» y cerrala antes de abrir otra.';
   } else if (motivoRetiroTrabajo == MotivoRetiro.dadoDeBaja) {
     bloqueo =
-        'El trabajo fue dado de baja desde el panel: el servidor rechazaría '
-        'una sesión nueva. Podés cerrar el trabajo.';
+        'El trabajo fue dado de baja desde el panel: no se puede abrir una '
+        'sesión nueva. Podés cerrar el trabajo; se registra igual.';
   } else if (motivoRetiroOrden == MotivoRetiro.ordenPausada) {
     bloqueo =
         'La orden de este trabajo está pausada: no se vuela hasta que '

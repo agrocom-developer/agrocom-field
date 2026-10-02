@@ -11,6 +11,8 @@ import '../../sesion_vuelo/presentation/trabajo_cubit.dart';
 import '../../sesion_vuelo/presentation/trabajo_estado.dart';
 import '../../sesion_vuelo/presentation/sesion_vuelo_pantalla.dart';
 import '../../sesion_vuelo/presentation/sesion_bloc.dart';
+import '../../sesion_vuelo/domain/reglas_en_curso.dart';
+import '../../sesion_vuelo/domain/trabajo_en_curso.dart';
 import '../domain/orden_vigente.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -51,6 +53,20 @@ class OrdenDetallePantalla extends StatelessWidget {
 
   static const _sinDatos = 'sin datos';
 
+  /// Pantalla de sesión de vuelo del trabajo [trabajoUuidCliente]: el
+  /// recién abierto, o el que ya estaba en curso (tarea 28).
+  void _abrirSesionVuelo(BuildContext context, String trabajoUuidCliente) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SesionVueloPantalla(
+          crearBloc: () => crearSesionBloc(trabajoUuidCliente),
+          crearTrabajoCubit: crearTrabajoCubit,
+          crearIncidenciaCubit: crearIncidenciaCubit,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // El BlocProvider<TrabajoCubit> se arma solo para flavor piloto: el
@@ -67,15 +83,7 @@ class OrdenDetallePantalla extends StatelessWidget {
       child: BlocConsumer<TrabajoCubit, TrabajoEstado>(
         listener: (context, estado) {
           if (estado is TrabajoExitoso) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (_) => SesionVueloPantalla(
-                  crearBloc: () => crearSesionBloc(estado.trabajo.uuidCliente),
-                  crearTrabajoCubit: crearTrabajoCubit,
-                  crearIncidenciaCubit: crearIncidenciaCubit,
-                ),
-              ),
-            );
+            _abrirSesionVuelo(context, estado.trabajo.uuidCliente);
           }
           if (estado is TrabajoError) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -175,12 +183,12 @@ class OrdenDetallePantalla extends StatelessWidget {
                 if (flavor == Flavor.piloto)
                   Padding(
                     padding: const EdgeInsets.fromLTRB(18, 0, 18, 20),
-                    child: BotonPrimarioCampo(
-                      key: const Key('boton_abrir_trabajo'),
-                      texto: 'Abrir trabajo',
+                    child: _AbrirTrabajo(
                       cargando: cargandoTrabajo,
-                      onPressed: () =>
+                      onAbrir: () =>
                           context.read<TrabajoCubit>().abrir(orden: orden),
+                      onVolver: (trabajoUuidCliente) =>
+                          _abrirSesionVuelo(context, trabajoUuidCliente),
                     ),
                   ),
               ],
@@ -335,6 +343,79 @@ class OrdenDetallePantalla extends StatelessWidget {
         valor: valor?.toString() ?? _sinDatos,
         unidad: valor == null ? null : unidad,
       );
+}
+
+/// «Abrir trabajo» (HU-05) con la regla de un solo trabajo en curso (tarea
+/// 28): con una sesión abierta o un trabajo sin cerrar en el dispositivo,
+/// queda deshabilitado con el motivo y un acceso a lo que está en curso. Es
+/// la misma regla que «Crear aplicación» en «Inicio»
+/// (`motivoBloqueoPorEnCurso`); `TrabajoRepository` la vuelve a aplicar
+/// antes de escribir.
+///
+/// Mientras llega la primera lectura de `drift`, el botón queda habilitado:
+/// si había algo en curso, el repositorio rechaza igual y la pantalla
+/// muestra el motivo.
+class _AbrirTrabajo extends StatefulWidget {
+  const _AbrirTrabajo({
+    required this.cargando,
+    required this.onAbrir,
+    required this.onVolver,
+  });
+
+  final bool cargando;
+  final VoidCallback onAbrir;
+  final void Function(String trabajoUuidCliente) onVolver;
+
+  @override
+  State<_AbrirTrabajo> createState() => _AbrirTrabajoState();
+}
+
+class _AbrirTrabajoState extends State<_AbrirTrabajo> {
+  // Una sola suscripción por pantalla, no una por `build`.
+  late final Stream<TrabajoEnCurso?> _enCurso = context
+      .read<TrabajoCubit>()
+      .enCurso();
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<TrabajoEnCurso?>(
+      stream: _enCurso,
+      builder: (context, snapshot) {
+        final enCurso = snapshot.data;
+        final motivo = motivoBloqueoPorEnCurso(
+          enCurso: enCurso,
+          accion: 'abrir otro trabajo',
+        );
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (motivo != null && enCurso != null) ...[
+              NotaInlineCampo(
+                key: const Key('orden_abrir_bloqueado'),
+                texto: motivo,
+              ),
+              const SizedBox(height: 10),
+              BotonSecundarioCampo(
+                key: const Key('boton_volver_en_curso'),
+                texto: enCurso.conSesion
+                    ? 'Volver a la sesión'
+                    : 'Volver al trabajo',
+                onPressed: () => widget.onVolver(enCurso.trabajoUuidCliente),
+              ),
+              const SizedBox(height: 10),
+            ],
+            BotonPrimarioCampo(
+              key: const Key('boton_abrir_trabajo'),
+              texto: 'Abrir trabajo',
+              cargando: widget.cargando,
+              onPressed: motivo == null ? widget.onAbrir : null,
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class _Seccion extends StatelessWidget {

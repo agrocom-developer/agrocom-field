@@ -9,6 +9,7 @@ import 'package:agrocom_field/features/sesion_vuelo/domain/trabajo.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/sesion_bloc.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/trabajo_cubit.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
+import 'package:agrocom_field/features/sesion_vuelo/domain/trabajo_en_curso.dart';
 import 'package:agrocom_field/nucleo/auth/persona_operativa_store.dart';
 import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
 import 'package:agrocom_field/nucleo/evidencias/evidencia_repository.dart';
@@ -121,6 +122,11 @@ void main() {
 
   setUp(() {
     trabajoRepositorio = _TrabajoRepositoryFalso();
+    // Tarea 28: por defecto nada en curso — lo que ya suponían todos los
+    // tests de «Abrir trabajo». Los de la tarea 28 lo re-stubean.
+    when(
+      () => trabajoRepositorio.enCurso(),
+    ).thenAnswer((_) => Stream<TrabajoEnCurso?>.value(null));
   });
 
   testWidgets('flavor piloto: botón "Abrir trabajo" visible', (tester) async {

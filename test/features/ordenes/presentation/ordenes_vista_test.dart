@@ -14,6 +14,7 @@ import 'package:agrocom_field/features/ordenes/domain/orden_vigente.dart';
 import 'package:agrocom_field/features/ordenes/presentation/ordenes_cubit.dart';
 import 'package:agrocom_field/features/ordenes/presentation/ordenes_vista.dart';
 import 'package:agrocom_field/features/sesion_vuelo/data/trabajo_repository.dart';
+import 'package:agrocom_field/features/sesion_vuelo/domain/trabajo_en_curso.dart';
 import 'package:agrocom_field/features/sesion_vuelo/presentation/trabajo_cubit.dart';
 import 'package:agrocom_field/nucleo/camara/selector_foto.dart';
 import 'package:agrocom_field/nucleo/evidencias/evidencia_repository.dart';
@@ -28,7 +29,11 @@ import 'package:mocktail/mocktail.dart';
 
 class _OrdenesRepositoryFalso extends Mock implements OrdenesRepository {}
 
-class _TrabajoRepositoryFalso extends Mock implements TrabajoRepository {}
+class _TrabajoRepositoryFalso extends Mock implements TrabajoRepository {
+  void stubNadaEnCurso() => when(
+    () => enCurso(),
+  ).thenAnswer((_) => Stream<TrabajoEnCurso?>.value(null));
+}
 
 class _EvidenciaRepositoryFalso extends Mock implements EvidenciaRepository {}
 
@@ -102,7 +107,8 @@ void main() {
           // mantiene real acá para no depender de esa garantía en los tests
           // de flavor piloto.
           crearTrabajoCubit: () => TrabajoCubit(
-            _TrabajoRepositoryFalso(),
+            // Tarea 28: el detalle lee lo que hay en curso; acá, nada.
+            _TrabajoRepositoryFalso()..stubNadaEnCurso(),
             evidenciaRepositorio: _EvidenciaRepositoryFalso(),
             selectorFoto: _SelectorFotoFalso(),
           ),

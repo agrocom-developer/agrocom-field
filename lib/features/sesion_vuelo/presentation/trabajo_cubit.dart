@@ -6,6 +6,8 @@ import 'package:decimal/decimal.dart';
 import '../../../nucleo/camara/selector_foto.dart';
 import '../../../nucleo/evidencias/evidencia_repository.dart';
 import '../data/trabajo_repository.dart';
+import '../domain/reglas_trabajo.dart';
+import '../domain/trabajo_en_curso.dart';
 import '../../../features/ordenes/domain/orden_vigente.dart';
 import 'trabajo_estado.dart';
 
@@ -45,6 +47,8 @@ class TrabajoCubit extends Cubit<TrabajoEstado> {
         inicio: DateTime.now(),
       );
       emit(TrabajoExitoso(trabajo));
+    } on TrabajoEnCursoExcepcion catch (e) {
+      emit(TrabajoError(e.motivo));
     } catch (e) {
       emit(TrabajoError('Error al abrir trabajo: ${e.toString()}'));
     }
@@ -71,10 +75,17 @@ class TrabajoCubit extends Cubit<TrabajoEstado> {
         inicio: DateTime.now(),
       );
       emit(TrabajoExitoso(trabajo));
+    } on TrabajoEnCursoExcepcion catch (e) {
+      emit(TrabajoError(e.motivo));
     } catch (e) {
       emit(TrabajoError('Error al crear la aplicación: ${e.toString()}'));
     }
   }
+
+  /// Lo que el dispositivo tiene en curso (tarea 28), leído de `drift` —
+  /// el detalle de orden lo usa para deshabilitar «Abrir trabajo». Delega en
+  /// el repositorio sin agregar estado propio.
+  Stream<TrabajoEnCurso?> enCurso() => _repositorio.enCurso();
 
   /// Passthrough a [SelectorFoto] — mismo criterio que
   /// `IncidenciaCubit.tomarFoto`: NO cambia el estado del Cubit, la foto es

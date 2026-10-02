@@ -22,7 +22,13 @@ void main() {
 
     expect(r.bloqueada, isTrue);
     expect(r.bloqueo, contains('dado de baja'));
-    expect(r.aviso, 'El trabajo fue dado de baja desde el panel.');
+    // Tarea 28: el aviso dice que lo en curso se registra igual (#314).
+    expect(
+      r.aviso,
+      'El trabajo fue dado de baja desde el panel: no se puede abrir una '
+      'sesión nueva. La sesión abierta y el trabajo se cierran y se '
+      'registran igual.',
+    );
   });
 
   for (final (motivo, aviso) in const [

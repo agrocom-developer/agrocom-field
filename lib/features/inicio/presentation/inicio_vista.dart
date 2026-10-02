@@ -13,7 +13,7 @@ import '../../sesion_vuelo/presentation/trabajo_estado.dart';
 import '../../../nucleo/catalogo/motivo_retiro.dart';
 import '../domain/reglas_inicio.dart';
 import '../domain/trabajo_asignado.dart';
-import '../domain/trabajo_en_curso.dart';
+import '../../sesion_vuelo/domain/trabajo_en_curso.dart';
 import 'inicio_cubit.dart';
 import 'inicio_estado.dart';
 

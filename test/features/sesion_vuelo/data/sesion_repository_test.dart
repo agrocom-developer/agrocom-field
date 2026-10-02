@@ -703,6 +703,13 @@ void main() {
         throwsA(isA<ObservacionAgronomoRequeridaExcepcion>()),
       );
 
+      // Tarea 28: un solo trabajo en curso — se cierra el primero antes de
+      // abrir el segundo.
+      await trabajoRepositorio.cerrarTrabajo(
+        trabajoUuidCliente: conMinimo,
+        fin: DateTime.utc(2026, 9, 23, 9),
+        evidenciaImagenCampoUuidCliente: 'evidencia-campo-1',
+      );
       final sinMinimo = await abrirTrabajoDePrueba();
       await abrir(sinMinimo, viento: '10', humedad: '30');
       expect(await db.select(db.sesionLocal).get(), hasLength(1));

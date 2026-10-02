@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 
 import '../data/inicio_repository.dart';
 import '../domain/trabajo_asignado.dart';
-import '../domain/trabajo_en_curso.dart';
+import '../../sesion_vuelo/domain/trabajo_en_curso.dart';
 import 'inicio_estado.dart';
 
 /// Adaptador delgado entre `InicioRepository` y la pantalla «Inicio» —
