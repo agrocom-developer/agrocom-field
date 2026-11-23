@@ -1,14 +1,12 @@
 # Automatización del desarrollo
 
-**Estado: implementada (TE-18).** Este documento describe el mecanismo de ciclo automatizado de `agrocom-field` — espejo del que ya funciona en `agrocom-api` (`docs/gestion/automatizacion_desarrollo.md` de ese repo, léelo primero: acá solo se documentan las diferencias y lo específico de este repo), corriendo como proceso aparte, sobre este working tree, sin tocar `agrocom-api`.
-
-**Por qué otro proceso y no extender el existente**: la propia plantilla de planificación de `agrocom-api` (`prompts/plantillas/planificar.md`) excluye explícitamente a `agrocom-field` ("otro repo, este ciclo no lo toca") — es una decisión ya tomada, no un olvido. Dos repos con GitFlow independiente, CI independiente y ritmo de cambio independiente no comparten bien una sola cola ni un solo working tree.
+El ciclo automatizado de `agrocom-field` implementa la cola de tareas de [cola_tareas.md](cola_tareas.md) con agentes en segundo plano, sobre este working tree, sin tocar `agrocom-api`. Es un proceso aparte del de `agrocom-api` porque los dos repos tienen GitFlow, CI y ritmo de cambio independientes, y no comparten bien una cola ni un working tree.
 
 ## La regla que ordena el resto (igual que en `agrocom-api`)
 
-**Una tarea puede avanzar sin supervisión solo si su criterio de aceptación es un comando que devuelve 0 o 1.** Si no se puede expresar así, la revisa una persona. Es la misma sección "qué no delegar sin revisión línea por línea" de `CLAUDE.md` de este repo (motor de sync, esquema `drift`) la que marca qué **no** califica.
+**Una tarea puede avanzar sin supervisión solo si su criterio de aceptación es un comando que devuelve 0 o 1.** Si no se puede expresar así, la revisa una persona. La sección «Qué no delegar sin revisión línea por línea» de `CLAUDE.md` marca qué se integra pero queda anotado para revisión humana posterior.
 
-## Piezas a construir (TE-18)
+## Piezas
 
 ### 1. La compuerta: `bin/verify`
 
@@ -29,7 +27,7 @@ Detenerse en la primera falla, exit code honesto — misma cascada que corre `fl
 
 ### 2. El merge: `auto-merge.yml`
 
-**Ya existe, sin cambios.** Confirmado en el bootstrap de este repo: mergea con squash en cuanto `flutter-tests` queda verde, mismo mecanismo que `agrocom-api` (espera de check-runs por SHA, sin depender del auto-merge nativo de GitHub). TE-18 no toca este archivo — solo lo reutiliza.
+`auto-merge.yml` mergea con squash en cuanto `flutter-tests` queda verde, mismo mecanismo que `agrocom-api` (espera de check-runs por SHA, sin depender del auto-merge nativo de GitHub).
 
 **La misma trampa del squash aplica acá**: una rama que sigue viva después de que su PR se mergeó ya no es ancestro de `develop`, y un PR nuevo desde esa rama nace en conflicto sin disparar ningún check — "sin checks" hay que tratarlo como señal de fallo, no como pendiente. `bin/ciclo` de este repo necesita la misma doble compuerta que ya tiene el de `agrocom-api` (rebase antes de abrir PR; corte a los 3 min si no hay checks).
 
@@ -51,11 +49,11 @@ Mismas 5 fases, mismo criterio "una tarea = una HU o TE completa = un PR", misma
 | verificar | Solo si `critica=si` — sesión independiente, no puede tocar código, solo escribe veredicto |
 | PR | Abre con título/cuerpo que dejó la planificación |
 | esperar CI | Sondea `auto-merge`; corta rápido si hay conflicto o si no aparecen checks a los 3 min |
-| planificar | Lee `plan_sprints.md` de `agrocom-api` (Sprint 15 en adelante es lo que le toca a este repo) + `docs/gestion/cola_tareas.md` propio de este repo + git real; escribe el prompt de la siguiente tarea, sin commitear nada |
+| planificar | Lee `plan_sprints.md` y `docs/gestion/cola_tareas.md` de este repo + git real; escribe el prompt de la siguiente tarea, sin commitear nada |
 
-**Fuente del backlog**: `docs/gestion/plan_sprints.md` **de este repo** — ya no es un documento compartido. Nació como "Sprint 15" dentro del `plan_sprints.md` de `agrocom-api` (10/9/2026), pero se movió acá para no tener que abrir rama/PR en `agrocom-api` cada vez que se ajusta la planificación de la app (los IDs HU-69/TE-15 a TE-18 se conservaron tal cual para no romper referencias ya hechas en commits/PRs). `agrocom-api` sigue siendo la fuente de la especificación funcional/técnica y de las decisiones de negocio — no del backlog de tareas de este repo. La planificación de este ciclo lee su propio `plan_sprints.md` entero, sin cruzar al de `agrocom-api`. La cola de ejecución (`docs/gestion/cola_tareas.md`, con criterio ejecutable por fila) es propia de este repo — mismo formato que la de `agrocom-api`, pero no se mezclan: cada una consume su propio `plan_sprints.md` y escribe en su propio `prompts/`/`runs/`.
+**Fuente del backlog**: `docs/gestion/plan_sprints.md` de este repo, con su cola ejecutable en `docs/gestion/cola_tareas.md`. `agrocom-api` es la fuente del contrato (`docs/api/openapi.yaml`), no del backlog de esta app.
 
-**Críticas de este repo**: motor de sync (`nucleo/sync`) y esquema `drift` (`nucleo/db`) — mismo tratamiento que `agrocom-api` con lo del motor de sync backend: se integran igual que cualquier tarea, quedan anotadas en `runs/revision-pendiente.txt` para revisión humana posterior sobre `develop`, **nunca en borrador** (la lección ya está documentada del lado `agrocom-api`: retener un PR crítico bloqueó doce HU seguidas hasta que el ciclo se quedó sin trabajo).
+**Críticas de este repo**: motor de sync (`nucleo/sync`), esquema `drift` (`nucleo/db`) y la aceptación de ofertas con red. Se integran igual que cualquier tarea y quedan anotadas en `runs/revision-pendiente.txt` para revisión humana posterior sobre `develop`; no se retienen en borrador, porque una rama que no entra bloquea todo lo que viene detrás.
 
 **Modelo por fase**: igual criterio — `sonnet` para lo que decide (implementar, verificar, planificar), `haiku` para lo repetitivo (leer CI rojo, reproducir con `bin/verify`, corregir).
 
@@ -63,12 +61,9 @@ Mismas 5 fases, mismo criterio "una tarea = una HU o TE completa = un PR", misma
 
 Mismo mecanismo (LaunchAgent de macOS), **proceso separado** del de `agrocom-api` (`com.agrocom.ciclo-field`, no comparte PID ni `runs/` con el otro) — cada uno sobre su propio working tree, para que un `git checkout` de uno no pise al otro. No arranca un segundo ciclo sobre el mismo árbol (`runs/ciclo.pid`); respeta `runs/DETENER`.
 
-## Lo que falta para un turno desatendido en este repo
+## Límites del turno desatendido
 
-1. **Prueba de replay del motor de sync (invariante 10 de `CLAUDE.md`)**: hoy no existe — es el gate más importante que falta, y sin él un verde de `bin/verify` no significa lo mismo que en `agrocom-api`. Se escribe en la misma tarea que implemente la lógica real de `SyncEngine` (TE-05 lado app), no antes.
-2. **Golden tests / regresión visual de Flutter**: no hay ninguno todavía. Mientras no exista, ningún cambio de UI puede cerrarse sin que una persona mire la pantalla (misma limitación que Playwright del lado panel).
-3. **Paralelismo con dos flavors a la vez**: hoy el ciclo corre una tarea por vez sobre un solo working tree — un cambio que solo afecta a un flavor igual espera su turno. Recién vale la pena si el backlog crece mucho.
-
-## Nota de proceso
-
-Este documento describía, antes del 11/9/2026, un mecanismo todavía no construido — la especificación que TE-18 implementó, no una descripción de algo ya funcionando. Con TE-18 integrada, las cinco piezas de arriba (`bin/verify`, `auto-merge.yml`, los guardarraíles, `bin/ciclo`, `bin/ciclo-servicio`) existen en el árbol; lo que sigue pendiente es lo que ya listaba "Lo que falta para un turno desatendido en este repo" — la prueba de replay del motor de sync sigue siendo el gate más importante, y se escribe junto con TE-05, no antes.
+1. **Prueba de replay del motor de sync**: corre en CI y es la compuerta de cualquier cambio en `nucleo/sync` o `nucleo/db`.
+2. **Golden tests**: detectan regresiones visuales, no deciden estética. Cada tarea de UI adjunta capturas del emulador y la revisión visual final es del dueño.
+3. **Un working tree, una tarea a la vez**: un cambio que afecta a un solo flavor igual espera su turno.
+4. **Contrato ausente**: una tarea que depende de un endpoint no publicado queda `BLOQUEADA` con un PR en borrador, y la cola sigue.

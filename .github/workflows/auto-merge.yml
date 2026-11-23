@@ -1,9 +1,8 @@
 name: Auto-merge
 
-# No usa el "Enable auto-merge" nativo de GitHub: esa característica requiere
-# repositorio público en el plan Free (github.com/es/pull-requests/how-tos/
-# merge-and-close-pull-requests/automatically-merging-a-pull-request), y este
-# repo es privado. En su lugar, este workflow espera a que los checks
+# No usa el "Enable auto-merge" nativo de GitHub: esa característica depende
+# de reglas de protección de rama que exijan checks, y la rama no las tiene
+# activas (ver docs/seguridad/rulesets.md). En su lugar, este workflow espera a que los checks
 # requeridos terminen y mergea directamente por `gh pr merge` — mismo
 # resultado, sin depender del plan de la organización.
 #
@@ -41,7 +40,7 @@ jobs:
     # ready_for_review y el auto-merge corre normalmente.
     if: github.event.pull_request.draft == false
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Esperar checks requeridos y mergear si todos pasan
         env:

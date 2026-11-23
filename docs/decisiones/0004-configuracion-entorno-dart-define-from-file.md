@@ -4,7 +4,7 @@
 
 ## Contexto
 
-`docs/api/openapi.yaml` de `agrocom-api` declara `servers.url: /` — una URL relativa; la URL base real la define el entorno que consume el contrato, no el spec. Esta app se instala como dos APK distintos (piloto, auxiliar) y corre contra al menos tres entornos (local de desarrollo, staging, producción), sin conectividad garantizada en el lote (invariante 1 de `CLAUDE.md`). Hace falta decidir, antes del primer `ApiClient` (ADR 0001 de este repo), cómo se inyecta esa URL base sin hardcodearla en el código ni acoplarla a un flavor.
+`docs/api/openapi.yaml` de `agrocom-api` declara `servers.url: /` — una URL relativa; la URL base real la define el entorno que consume el contrato, no el spec. Esta app se instala como tres APK distintos (cliente, piloto, auxiliar) y corre contra al menos tres entornos (local de desarrollo, staging, producción), sin conectividad garantizada en el lote para piloto y auxiliar (`CLAUDE.md`). Hace falta decidir, antes del primer `ApiClient` (ADR 0001 de este repo), cómo se inyecta esa URL base sin hardcodearla en el código ni acoplarla a un flavor.
 
 ## Decisión
 

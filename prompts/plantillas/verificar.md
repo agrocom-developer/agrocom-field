@@ -32,17 +32,19 @@ Cargá el skill `verificacion` siempre, y `protocolo-sync` si la tarea tocó
 3. **Cobertura real**: por cada criterio de aceptación de la tarea, el test que
    lo cubre, con `archivo:línea`. Un test que pasaría igual con el código roto
    no cuenta como cobertura — decilo si lo ves.
-4. **Invariantes de `CLAUDE.md`**: las diez, pero mirá con lupa las que toca el
-   cambio. Las que más caro salen: 1 (offline-first: la UI lee de `drift`, nunca
-   de la red), 2 (`uuid_cliente` generado en el dispositivo, nunca en el
-   servidor ni reutilizado entre reintentos), 3 (insertar + encolar en outbox
-   en una sola transacción), 4 (un solo rol escritor por tipo de registro), 5
-   (orden causal por `secuencia` local, nunca por reloj de dispositivo), 6
-   (ningún registro ya confirmado se reescribe localmente), 7 (`piloto/` y
-   `auxiliar/` no se importan entre sí, solo de `nucleo/`), 9 (dinero y
-   hectáreas nunca en `double`/`float`), 10 (prueba de replay obligatoria antes
-   de la primera pantalla del esqueleto vertical, si el cambio toca el motor de
-   sync).
+4. **Reglas de `CLAUDE.md`**: las invariantes físicas del lote (flavors
+   `piloto` y `auxiliar`) y las políticas de UI, seguridad y marketplace. Mirá
+   con lupa las que toca el cambio. Las que más caro salen: la UI del lote lee
+   de `drift`, nunca de la red; `uuid_cliente` generado en el dispositivo y
+   nunca reutilizado entre reintentos; insertar y encolar en una sola
+   transacción; un solo rol escritor por tipo de registro; orden por
+   `secuencia` local; nada confirmado se reescribe; evidencias de menos de
+   300 KB; hectáreas y dinero nunca en `double`; prueba de replay intacta. En
+   marketplace: aceptar o rechazar una oferta pasa por la red y no por el
+   outbox; `cliente/`, `piloto/` y `auxiliar/` no se importan entre sí; el
+   flavor `cliente` no importa `nucleo/sync` ni `nucleo/db`. En seguridad:
+   ningún secreto, token ni ubicación en logs o en el repo. En UI: tokens de
+   `nucleo/ui`, todos los estados, golden tests actualizados.
 5. **ADRs de `docs/decisiones/`** que el cambio toque.
 6. **Los commits**: ¿están agrupados por función — una pieza coherente por
    commit — con mensajes en español, imperativo, que expliquen el porqué? Un
