@@ -42,18 +42,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		024FBC1AD90512596BDD6EFD /* Profile-cliente.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Profile-cliente.xcconfig"; sourceTree = "<group>"; };
-		1061DF2AB26E706E2D9ABAAE /* Debug-auxiliar.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Debug-auxiliar.xcconfig"; sourceTree = "<group>"; };
+		024FBC1AD90512596BDD6EFD /* Profile-cliente.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Flutter/Profile-cliente.xcconfig"; sourceTree = "<group>"; };
+		1061DF2AB26E706E2D9ABAAE /* Debug-auxiliar.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Flutter/Debug-auxiliar.xcconfig"; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
-		44872F004CA2F9E5EFDF2B1C /* Debug-piloto.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Debug-piloto.xcconfig"; sourceTree = "<group>"; };
-		456F637CD8BB2389ECBF10D1 /* Release-auxiliar.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Release-auxiliar.xcconfig"; sourceTree = "<group>"; };
-		50FEA3A430A8FFC10AC1471B /* Release-cliente.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Release-cliente.xcconfig"; sourceTree = "<group>"; };
-		5FF314A08232571C35B3B51D /* Profile-auxiliar.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Profile-auxiliar.xcconfig"; sourceTree = "<group>"; };
-		6DB4BA1546518BF6F59AFA86 /* Release-piloto.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Release-piloto.xcconfig"; sourceTree = "<group>"; };
+		44872F004CA2F9E5EFDF2B1C /* Debug-piloto.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Flutter/Debug-piloto.xcconfig"; sourceTree = "<group>"; };
+		456F637CD8BB2389ECBF10D1 /* Release-auxiliar.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Flutter/Release-auxiliar.xcconfig"; sourceTree = "<group>"; };
+		50FEA3A430A8FFC10AC1471B /* Release-cliente.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Flutter/Release-cliente.xcconfig"; sourceTree = "<group>"; };
+		5FF314A08232571C35B3B51D /* Profile-auxiliar.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Flutter/Profile-auxiliar.xcconfig"; sourceTree = "<group>"; };
+		6DB4BA1546518BF6F59AFA86 /* Release-piloto.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Flutter/Release-piloto.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -66,8 +66,8 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		98CB13C0AB4B30CEC4028CCE /* Debug-cliente.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Debug-cliente.xcconfig"; sourceTree = "<group>"; };
-		9D6270CADC61566027C60023 /* Profile-piloto.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Profile-piloto.xcconfig"; sourceTree = "<group>"; };
+		98CB13C0AB4B30CEC4028CCE /* Debug-cliente.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Flutter/Debug-cliente.xcconfig"; sourceTree = "<group>"; };
+		9D6270CADC61566027C60023 /* Profile-piloto.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Flutter/Profile-piloto.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
