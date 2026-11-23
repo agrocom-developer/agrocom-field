@@ -361,7 +361,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flavor: [piloto, auxiliar]
+        flavor: [piloto, auxiliar, cliente]
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
@@ -391,6 +391,44 @@ jobs:
 
       - name: Compilar APK debug
         run: flutter build apk --debug --flavor ${{ matrix.flavor }} -t lib/main_${{ matrix.flavor }}.dart
+
+  # Compila cada flavor para el simulador de iOS (sin firma) para detectar
+  # roturas de esquemas Xcode, Podfile o dependencias nativas. Informa, no
+  # bloquea: no es un check requerido del auto-merge. Corre en las mismas
+  # condiciones que el build de Android (modo completo o diff nativo).
+  build-ios:
+    name: build-ios (${{ matrix.flavor }})
+    needs: detectar
+    if: needs.detectar.outputs.modo == 'completo' || needs.detectar.outputs.android == 'true'
+    runs-on: macos-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor: [piloto, auxiliar, cliente]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Instalar dependencias
+        run: flutter pub get
+
+      - name: Generar código (build_runner, si el proyecto lo usa)
+        run: |
+          if grep -q build_runner pubspec.yaml; then
+            dart run build_runner build --delete-conflicting-outputs
+          fi
+
+      - name: Compilar para el simulador de iOS
+        run: flutter build ios --simulator --debug --flavor ${{ matrix.flavor }} -t lib/main_${{ matrix.flavor }}.dart
 
   # Vulnerabilidades conocidas en las dependencias (pubspec.lock) según OSV.
   # Informativo: no es un check requerido del auto-merge. Solo corre si

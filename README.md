@@ -30,6 +30,18 @@ flutter run --flavor auxiliar -t lib/main_auxiliar.dart --dart-define-from-file=
 flutter run --flavor cliente  -t lib/main_cliente.dart  --dart-define-from-file=config/env.local.json
 ```
 
+### Perfil demo (sin servidor)
+
+Con `config/env.demo.json` cada flavor corre completo con datos ficticios de la zona agrícola de Santa Cruz, sin red y sin base local (ADR 0010). Sirve para ver y probar la interfaz en un emulador, un simulador de iOS o un iPad:
+
+```
+flutter run --flavor cliente  -t lib/main_cliente.dart  --dart-define-from-file=config/env.demo.json
+flutter run --flavor piloto   -t lib/main_piloto.dart   --dart-define-from-file=config/env.demo.json
+flutter run --flavor auxiliar -t lib/main_auxiliar.dart --dart-define-from-file=config/env.demo.json
+```
+
+En iOS, el esquema de Xcode lleva el nombre del flavor (`piloto`, `auxiliar`, `cliente`): `flutter run --flavor cliente -d <simulador>`.
+
 ## Comandos de desarrollo
 
 ```

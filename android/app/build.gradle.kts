@@ -43,6 +43,11 @@ android {
             applicationIdSuffix = ".auxiliar"
             resValue(type = "string", name = "app_name", value = "Agrocom Auxiliar")
         }
+        create("cliente") {
+            dimension = "rol"
+            applicationIdSuffix = ".cliente"
+            resValue(type = "string", name = "app_name", value = "Agrocom")
+        }
     }
 
     // Firma de release: todo viene de variables de entorno o propiedades de

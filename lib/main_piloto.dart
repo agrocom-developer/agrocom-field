@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import 'piloto/app_piloto_demo.dart';
+import 'piloto/di/dependencias_piloto.dart';
 import 'app.dart';
 import 'features/auth/login_cubit.dart';
 import 'features/incidencias/data/incidencia_repository.dart';
@@ -21,6 +23,7 @@ import 'nucleo/auth/token_store.dart';
 import 'nucleo/camara/selector_foto.dart';
 import 'nucleo/di/service_locator.dart';
 import 'nucleo/entorno/info_entorno.dart';
+import 'nucleo/entorno/modo_demo.dart';
 import 'nucleo/evidencias/evidencia_repository.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
@@ -29,6 +32,14 @@ import 'nucleo/version/version_watcher.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Perfil demo (ADR 0010): repositorios en memoria con datos ficticios.
+  // No abre `drift`, no registra el motor de sync ni toca la red.
+  if (modoDemo) {
+    runApp(AppPilotoDemo(dependencias: DependenciasPiloto.demo()));
+    return;
+  }
+
   await configurarDependencias(flavor: Flavor.piloto);
 
   // Lo que el pie del login muestra para reconocer el entorno (ADR 0004) y
