@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../nucleo/marketplace/proveedor/dron/presentation/drones_pantalla.dart';
+import '../nucleo/marketplace/proveedor/ofertas/presentation/ofertas_pantalla.dart';
+import '../nucleo/marketplace/proveedor/perfil/presentation/perfil_pantalla.dart';
 import '../nucleo/ui/componentes/componentes_campo.dart';
 import '../nucleo/ui/tema_campo.dart';
 import 'di/dependencias_auxiliar.dart';
@@ -37,6 +40,8 @@ class ShellAuxiliar extends StatefulWidget {
 class _ShellAuxiliarState extends State<ShellAuxiliar> {
   int _indice = 0;
 
+  // El trabajo del lote va primero; la bandeja y el perfil del proveedor
+  // (ADR 0011) después.
   static const _destinos = [
     DestinoCampo(
       icono: Icons.inventory_2_outlined,
@@ -48,7 +53,28 @@ class _ShellAuxiliarState extends State<ShellAuxiliar> {
       iconoActivo: Icons.science_rounded,
       etiqueta: 'Mezcla',
     ),
+    DestinoCampo(
+      icono: Icons.notifications_none_rounded,
+      iconoActivo: Icons.notifications_rounded,
+      etiqueta: 'Ofertas',
+    ),
+    DestinoCampo(
+      icono: Icons.person_outline_rounded,
+      iconoActivo: Icons.person_rounded,
+      etiqueta: 'Perfil',
+    ),
   ];
+
+  void _verDrones() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => Scaffold(
+          appBar: AppBar(),
+          body: const SafeArea(child: DronesPantalla()),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +82,12 @@ class _ShellAuxiliarState extends State<ShellAuxiliar> {
       destinos: _destinos,
       indice: _indice,
       onSeleccionar: (i) => setState(() => _indice = i),
-      cuerpo: _indice == 0
-          ? const ServicioAuxiliarPantalla()
-          : const MezclaPantalla(),
+      cuerpo: switch (_indice) {
+        0 => const ServicioAuxiliarPantalla(),
+        1 => const MezclaPantalla(),
+        2 => const OfertasPantalla(),
+        _ => PerfilPantalla(onVerDrones: _verDrones),
+      },
     );
   }
 }
