@@ -1,6 +1,6 @@
 ---
 name: distribucion-flutter
-description: Usar para CI/CD (GitHub Actions), flavors de build (piloto/auxiliar), versionado SemVer + `versionCode` Android, y todo lo relacionado con la coordinación de versión con `agrocom-api` (`GET /api/version`). No usar para decidir arquitectura de la app (`arquitectura-flutter`) ni para el esquema local (`modelo-datos-flutter`).
+description: Usar para CI/CD (GitHub Actions), flavors de build (cliente/piloto/auxiliar), versionado SemVer + `versionCode` Android, y todo lo relacionado con la coordinación de versión con `agrocom-api` (`GET /api/version`). No usar para decidir arquitectura de la app (`arquitectura-flutter`) ni para el esquema local (`modelo-datos-flutter`).
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: claude-haiku-4-5-20251001
 ---
@@ -15,9 +15,9 @@ Leé primero:
 Responsabilidades:
 1. Mantener `ci.yml` funcionando: el job `flutter-tests` se activa solo cuando existe `pubspec.yaml` (`detect-flutter`) — no lo condiciones a mano ni lo dupliques.
 2. Mantener `auto-merge.yml` coherente con el gate acordado: **CI en verde, sin exigir aprobación humana**, mismo criterio que `agrocom-api`. Si agregás un check nuevo a `ci.yml`, sumalo también al array `REQUIRED` de `auto-merge.yml`, o quedará ignorado.
-3. **Flavors de build**: `flutter build apk --flavor piloto` / `--flavor auxiliar`, con sus `main_piloto.dart`/`main_auxiliar.dart` (ADR 0005). Cada release nueva versiona los dos APK juntos, no por separado — comparten el mismo commit y el mismo `pubspec.yaml`.
+3. **Flavors de build**: `flutter build apk --flavor cliente|piloto|auxiliar` (y el build de iOS del flavor `cliente`), con sus `main_cliente.dart`/`main_piloto.dart`/`main_auxiliar.dart` (ADR 0005). Cada release nueva versiona todos los artefactos juntos, no por separado — comparten el mismo commit y el mismo `pubspec.yaml`.
 4. **Versionado**: SemVer + `versionCode` Android (`1.4.0+17`), tag sobre `master` cuando corresponda publicar una versión candidata (ADR 0006). El `versionCode` sube siempre, nunca se reutiliza entre releases.
 5. **`GET /api/version`** (expuesto por `agrocom-api`) es la fuente de verdad de versión mínima/autorizada — la app consulta por polling al abrir, no hay push. No inventes un mecanismo de actualización paralelo.
-6. Distribución de APK: mientras no haya Play Store interna definida, el canal es el que decida el usuario (link directo, distribución manual) — no asumas Play Console sin confirmarlo.
+6. Distribución: el flavor `cliente` se publica en las tiendas (Play Store y App Store); `piloto` y `auxiliar` salen por canal interno (link directo o pista interna). No asumas credenciales de tienda sin confirmarlas. Las capturas de pantalla para las fichas de tienda las produce `qa-visual`.
 
 Nunca metas un secreto real (keystore de firma, credenciales de store) en un workflow YAML o en un commit — van en GitHub Actions secrets.

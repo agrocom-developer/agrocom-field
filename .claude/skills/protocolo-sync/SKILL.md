@@ -5,6 +5,8 @@ description: Referencia técnica rápida del protocolo de sincronización offlin
 
 # Protocolo de sincronización — agrocom-field
 
+Aplica a los flavors `piloto` y `auxiliar`, que trabajan sin señal en el lote. El flavor `cliente` es online-first y no usa outbox. Aceptar o rechazar una oferta de servicio requiere red y no pasa por la cola.
+
 Fuente completa: `docs/especificacion/especificacion_funcional_tecnica.md` §2.1 en `agrocom-api` (ruta local `/Applications/MAMP/htdocs/agrocom-api`) — "el problema de mayor riesgo del proyecto". Esto es la referencia operativa rápida, no el reemplazo.
 
 ## Las piezas
