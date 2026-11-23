@@ -1,0 +1,8 @@
+# Rutas sensibles: toda modificación pide revisión del dueño.
+/.github/                 @agrocom-developer
+/.claude/                 @agrocom-developer
+/android/                 @agrocom-developer
+/lib/nucleo/db/           @agrocom-developer
+/lib/nucleo/sync/         @agrocom-developer
+/SECURITY.md              @agrocom-developer
+/docs/seguridad/          @agrocom-developer
