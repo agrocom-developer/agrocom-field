@@ -53,6 +53,12 @@ void main() {
 
     await _ir(tester, 'Inicio B');
     expect(find.text('Iniciar aplicación'), findsOneWidget);
+
+    await _ir(tester, 'Sistema');
+    expect(find.text('Sistema visual'), findsOneWidget);
+    await tester.tap(find.text('Campo'));
+    await tester.pump();
+    expect(find.text('Sistema visual'), findsOneWidget);
   });
 
   testWidgets(

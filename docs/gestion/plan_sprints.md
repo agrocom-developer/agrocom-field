@@ -1,126 +1,75 @@
-# Plan de sprints propio de `agrocom-field`
+# Plan de sprints de `agrocom-field`
 
-**Documento oficial vigente de este repo.** Antes vivía como "Sprint 15" dentro de `docs/gestion/plan_sprints.md` de `agrocom-api` — se movió acá para no tener que abrir rama/PR en `agrocom-api` cada vez que se ajusta la planificación de la app. `agrocom-api` conserva una referencia corta apuntando a este archivo (mismo patrón que ya usa para TE-04/TE-05-lado-app/TE-06/HU-03-consumo, que vivían dispersas en sus sprints 1-2 antes de que este documento existiera).
+Plan de la app móvil del marketplace de fumigación con drones: tres flavors (`cliente`, `piloto`, `auxiliar`) sobre un solo código. Describe qué se construye, en qué orden y con qué criterio de aceptación. La cola ejecutable, con un prompt y un comando de aceptación por tarea, está en [cola_tareas.md](cola_tareas.md); el panorama del producto, en [../vision.md](../vision.md); las reglas, en `CLAUDE.md`.
 
-**Convención**: idéntica a la de `agrocom-api` (**HU** = historia de usuario, **TE** = tarea técnica habilitante). Los IDs de HU/TE de este documento **son una serie propia de `agrocom-field`**, independiente de la numeración de `agrocom-api` — igual que ya hacemos con los ADR de `docs/decisiones/` de este repo. Historial: HU-69 y TE-15 a TE-18 nacieron primero como "Sprint 15" de `agrocom-api` (10/9/2026) antes de este movimiento; se conservan esos IDs acá para no romper referencias ya hechas en commits/PRs.
+**Convención.** **HU** es una historia de usuario; **TE** es una tarea técnica habilitante; **UI** es una tarea de calidad visual de una pantalla. Cada fila lleva el número de tarea de la cola (`T30` a `T47`). El contrato de API lo publica `agrocom-api`; una tarea que depende de un endpoint no publicado queda bloqueada hasta que exista.
 
-**Alcance**: lo que le toca a este repo del plan de sprints original de `agrocom-api` (TE-01, TE-04, TE-06, HU-03-consumo, HU-04, HU-05, y lo que se agregue después) más las funciones nuevas pedidas el 10/9/2026. `agrocom-api` sigue siendo la fuente de la especificación funcional/técnica y de las decisiones de negocio (`docs/especificacion/`, `docs/negocio/`) — este documento no la reemplaza, solo organiza el trabajo de este repo.
+## Infraestructura ya disponible
 
----
+| Pieza | Descripción |
+|---|---|
+| Esqueleto Flutter | Flavors `piloto` y `auxiliar`, tema Material 3 desde el logo, cliente `dio`, inyección y entorno por `--dart-define-from-file` |
+| Motor de sync | Outbox, `POST /api/sync` idempotente por `uuid_cliente`, pull con cursor, cola de evidencias, disparador único y prueba de replay |
+| Sesión de vuelo | Condiciones, hectárea acumulada, incidencias con foto y cierre con imagen del campo |
+| Seguridad y versión | Token en almacenamiento seguro, selector de rol del flavor `auxiliar`, bloqueo por versión mínima, versionado SemVer automatizado |
+| Modo campo | Tokens, tipografía y catálogo de componentes de alto contraste (ADR 0008) |
 
-## Heredado del plan original (vive en `agrocom-api`, referenciado acá)
+## Sprint 1 — Cimientos de las tres superficies
 
-| ID | Qué | Estado (10/9/2026) |
+Objetivo: que existan los tres flavors, que el esquema local hable el idioma del marketplace y que haya un sistema visual compartido.
+
+| Id | Tipo | Qué | Criterio de aceptación | Tarea |
+|---|---|---|---|---|
+| TE-M01 | TE | Flavor `cliente`: bloque Gradle, `main_cliente.dart`, `applicationId`, label «Agrocom», CI de los tres APK | Compila el APK del flavor; el test de importaciones prohíbe que el cliente use `nucleo/sync` y `nucleo/db` | T30 |
+| TE-M02 | TE | Esquema `drift` del servicio asignado, dron y personas, en una migración sin pérdida de datos (crítica) | Un test de migración con filas en todas las tablas de escritura y en `cola_sync` conserva `uuid_cliente` y orden; el replay sigue verde | T31 |
+| TE-M03 | TE | Sistema de diseño: tokens, tema claro del cliente, componentes y goldens | Los goldens de cada componente existen; un test falla si una pantalla declara colores sueltos | T32 |
+
+## Sprint 2 — Cuenta y catálogo del proveedor
+
+Objetivo: que las dos poblaciones entren a la app y que el proveedor tenga su servicio asignado, su dron y su perfil.
+
+| Id | Tipo | Qué | Criterio de aceptación | Tarea |
+|---|---|---|---|---|
+| HU-M01 | HU | Registro e inicio de sesión de cliente y de proveedor; cuenta en revisión hasta la aprobación del admin; el piloto registra a su auxiliar | Tests: registro, `422` por campo, `409` con selector de rol, cuenta pendiente, cierre de sesión que borra el token | T33 |
+| HU-M02 | HU | Catálogo de servicios asignados con lista y detalle sin red (crítica) | Pull idempotente con fixture real; sin rastros del catálogo anterior en `lib/` ni `test/` | T34 |
+| HU-M03 | HU | Dron como vehículo: alta, edición, baja lógica, ciclos de batería, elección para un servicio | Tests de dron; `dron_id` viaja en la sesión por el outbox | T35 |
+| HU-M04 | HU | Perfil del proveedor y documentos (compresión a menos de 300 KB, estado por documento) | Tests de subida, rechazo con motivo y limpieza al cerrar sesión | T36 |
+
+## Sprint 3 — El ciclo del servicio
+
+Objetivo: que un cliente solicite, un proveedor acepte, el servicio se ejecute y el cliente lo siga y lo califique.
+
+| Id | Tipo | Qué | Criterio de aceptación | Tarea |
+|---|---|---|---|---|
+| HU-M05 | HU | Bandeja de ofertas: aceptar y rechazar con red, sin outbox (crítica) | Tests de aceptada, ya tomada, vencida, sin red e idempotencia; sin `cola_sync` en `lib/piloto/ofertas` | T37 |
+| HU-M06 | HU | Solicitar servicio: lote en el mapa, hectáreas decimales, producto y fecha, con clave de idempotencia | Tests de polígono a hectáreas, doble envío y sin red; reglas de importación | T38 |
+| HU-M07 | HU | Seguimiento en vivo: línea de estados, posición del dron y hectáreas completadas | Tests de estados, privacidad de posición y sin red | T39 |
+| HU-M08 | HU | Calificar: el cliente califica al proveedor; el proveedor ve la calificación y califica al cliente por outbox | Tests de calificación única, moderación y replay | T40 |
+
+## Sprint 4 — Calidad visual por pantalla
+
+Objetivo: llevar cada superficie a una calidad visual premium, sin sobrecarga, con buena combinación de color y todos los estados.
+
+| Id | Tipo | Qué | Criterio de aceptación | Tarea |
+|---|---|---|---|---|
+| UI-M01 | UI | Acceso del cliente: bienvenida, registro y login | Goldens claro y oscuro, dos anchos, dos escalas de texto | T41 |
+| UI-M02 | UI | Solicitar servicio: mapa, producto, fecha, resumen y confirmación | Goldens de cada paso y estado | T42 |
+| UI-M03 | UI | Seguimiento en vivo y calificación | Goldens de cada estado de la línea | T43 |
+| UI-M04 | UI | Bandeja de ofertas y detalle de oferta (modo campo) | Goldens con oferta vigente, tomada y vencida | T44 |
+| UI-M05 | UI | Perfil, documentos y drones (modo campo) | Goldens de cada estado de documento | T45 |
+| UI-M06 | UI | Servicio asignado y sesión de vuelo de piloto y auxiliar (modo campo) | Goldens de cada pantalla del lote | T46 |
+| UI-M07 | UI | Pase transversal: consistencia, accesibilidad y pantallas de sistema | Goldens con escala de texto 2.0; sin valores sueltos | T47 |
+
+## Pendientes con dueño humano
+
+| Tema | Qué falta | Quién |
 |---|---|---|
-| TE-01 | Esqueleto Flutter, flavors, tema Material 3 | **hecho** — PR #1 |
-| TE-04 | Base local `drift` + outbox (tabla `ColaSync`) | **hecho** (esquema mínimo) — PR #2. Faltan las tablas espejo de negocio |
-| — | Cliente API (`dio`), `TokenStore`, DI, tipo `Decimal`, esqueleto de `nucleo/sync` | **hecho** (infraestructura, sin lógica real) — PR #3 |
-| TE-02 | Spike RC Agras: instalar APK propio, confirmar Android/minSdk del hardware | **pendiente**, sin dependencias técnicas — necesita el RC en mano |
-| TE-05 (lado app) | Lógica real de `SyncEngine` (push/pull contra `POST /api/sync`) + **prueba de replay obligatoria** (invariante 10 de `CLAUDE.md`) antes de la primera pantalla | **hecho** — PR #10 (+ fix #11) |
-| TE-06 | Completar pull de catálogo con cursor (recetas/productos quedan obsoletos por CR-01, no se hacen) | **hecho** — PR #13 |
-| HU-03 (consumo) | Guardar/usar el token de dispositivo del lado app | **hecho** — PR #14 (pantalla de login real) |
-| HU-04 | Ver órdenes vigentes offline | **pendiente** — en curso vía ciclo automatizado |
-| HU-05 | Esqueleto vertical (abrir trabajo/sesión, cerrar con hectáreas) | **pendiente** — encolada tras HU-04 |
+| Notificaciones push | Cuenta de mensajería del proyecto y decisión de canal | Dueño |
+| Tiendas de aplicaciones | Firmas, fichas y política de privacidad | Dueño |
+| Cobro en la app | Decisión de negocio sobre comisión y medios de pago | Dueño |
+| Proveedor de teselas del mapa | Evaluar límites de uso para producción | Dueño |
+| Prueba en el control remoto del dron | Hardware en la mano | Dueño |
 
-### Continuación heredada (11/9/2026) — lo que le sigue a HU-05 en Sprint 3/4 de `agrocom-api`
+## Decisiones revisables
 
-HU-05 corta expresamente el esqueleto vertical en "sesión cerrada" — deja afuera condiciones, hectárea acumulada, incidencias, cierre de trabajo (con captura), caldo y recargas (ver `runs/05.md` cuando esa tarea cierre). Esas piezas ya tenían HU/TE propios en el plan original de `agrocom-api` (Sprint 3 "App del piloto completa" y Sprint 4 "App del auxiliar"); esta tabla los trae a la cola de este repo, en el orden real de dependencia técnica, para que `bin/ciclo` no se quede sin trabajo después de la tarea 06.
-
-| ID | Qué | Estado |
-|---|---|---|
-| HU-06 | Registrar condiciones al abrir trabajo (viento/temp./humedad) y bloquear o autorizar con observación firmada del agrónomo fuera de rango (`autorizado_con_observacion`) | **pendiente** — depende de HU-05 |
-| HU-07 (resto) | Hectárea inicial acumulada + dron/auxiliar en la sesión, para que el piloto que entra en un relevo cobre solo lo suyo — HU-05 ya cubre "cerrar sesión con motivo y hectáreas"; esto es lo que esa tarea deja afuera a propósito | **pendiente** — depende de HU-05 |
-| TE-07 | Cola de evidencias: compresión <300 KB, hash SHA-256, subida en segundo plano con reintentos (invariante 8 de `CLAUDE.md`) — nada en `lib/` la toca hoy | **pendiente** — HU-08 y HU-09 la necesitan para poder cerrarse |
-| HU-08 | Registrar incidencia con foto (caldo/ESC/batería/mecánica/clima) ligada a la sesión | **pendiente** — depende de TE-07 |
-| HU-09 | Cerrar el trabajo con captura del RC + imagen del campo — sin captura no cierra | **pendiente** — depende de TE-07; HU-05 deja "cerrar trabajo" explícitamente afuera por esto mismo |
-| HU-10 | Auxiliar registra el caldo recibido (litros, hora, quién entrega) y el sobrante al cerrar — nunca fórmula ni dosis (CR-01, §7 de la especificación) | **pendiente** |
-| HU-13 | Auxiliar registra cada recarga (batería, temperatura, litros) y el retraso o rechazo por calidad del caldo | **pendiente** |
-| HU-20 (lado app) | La app bloquea por debajo de la versión mínima autorizada (`GET /api/version`, polling, sin FCM) — la autorización en sí es del panel, fuera de este repo | **pendiente** |
-
-> **HU-17 (acta) queda fuera de `agrocom-field` — decisión del dueño, 11/9/2026.** La generación del acta y la captura de la firma del agrónomo se manejan desde el panel web (`agrocom-api`), nunca desde esta app. `docs/vision.md` señalaba que faltaba confirmar en qué dispositivo ocurría esto antes de construir la pantalla — queda resuelto así; no se encola acá.
-
----
-
-## Sprint 15 — App de campo: ciclo automatizado, UI simple y funciones de seguridad
-
-*Objetivo: que `agrocom-field` tenga el mismo desarrollo automatizado que ya demostró funcionar del lado panel, y que la app deje de ser solo el esqueleto — UI con animaciones y flujos de un toque, clima/mapas/notificaciones/emergencia, y lo esencial de offline que faltaba (pausas, quejas, devengos, repuestos). Nace del pedido del dueño del 10/9/2026.*
-
-**El ciclo automatizado de `agrocom-api` (`bin/ciclo`) explícitamente no toca `agrocom-field`** — su propia plantilla de planificación lo excluye ("otro repo, este ciclo no lo toca"). TE-18 construye el equivalente para este repo: propia cola de tareas, propio `bin/verify`, propias plantillas y guardarraíles — **mismo mecanismo, otro repo, otro proceso corriendo aparte** (otro `LaunchAgent`, otro PID, otro working tree — nunca el mismo proceso que `agrocom-api`).
-
-**Todas las historias de este sprint son del flavor `auxiliar` (celular)** — foco acordado con el dueño el 10/9/2026. El flavor `piloto` (RC) no recibe trabajo nuevo hasta resolver TE-02 (spike de hardware) y el mecanismo de nube del RC (ver nota al final).
-
-| ID | Historia / tarea | CA esenciales | Est. |
-|---|---|---|---|
-| TE-18 | Ciclo automatizado para `agrocom-field`: `bin/verify` (`dart format --set-exit-if-changed` + `flutter analyze` + `flutter test`, mismo criterio que `ci.yml`), `bin/ciclo` (mismas 5 fases que `agrocom-api`: implementar → verificar si crítica → PR → esperar CI → planificar), cola de tareas y prompts propios de este repo, plantillas `planificar.md`/`verificar.md` adaptadas a Flutter/Dart, guardarraíles (hooks `PreToolUse`) equivalentes a los de `agrocom-api` (bloquean push a `master`/`develop`, `--force`, `reset --hard`; congelan `docs/decisiones/`, `test/`, `.claude/`, `.github/` salvo excepción explícita por tarea) | El ciclo toma una tarea de la cola de este repo, la implementa, abre PR y lo integra solo con CI en verde, sin tocar `agrocom-api`; los guardarraíles tienen su propio test (mismo criterio que `agrocom-api`: un guardarraíl que falla en silencio ya causó un incidente ahí, no repetirlo acá) | 3,0 d — **crítica** (automatización que actúa sin supervisión constante en cada tarea) |
-| TE-15 | Sistema de diseño Flutter: catálogo de widgets reutilizables sobre el tema ya definido (ADR 0003 de este repo) con transiciones/animaciones estándar (`Hero`, `PageRouteBuilder`, estados de carga) y el criterio "máximo de toques por acción" documentado — antes que cualquier pantalla nueva del resto de este sprint | Catálogo documentado en `docs/decisiones/` de este repo; toda pantalla nueva de este bloque lo usa, cero widget "suelto" por pantalla | 2,0 d — **primera mitad hecha (14/9/2026)**: el ADR que bloqueaba esta tarea (`cola_tareas.md`: "requiere fijar una decisión de arquitectura nueva sin revisión previa del dueño") quedó resuelto en sesión directa con el dueño — **ADR 0008** documenta el modo alto contraste "campo" (tokens de color/tipografía verificados contra WCAG, radios/spacing nombrados) a partir de un mockup de referencia (`/Users/miguel/Downloads/Agrocom Field.dc.html`, demo visual — sus campos de negocio, p. ej. pH de la calda, no reflejan el contrato real y no se toman como especificación). Catálogo inicial en `lib/nucleo/ui/componentes/` (14 widgets + barrel file), con `flutter test` cubriendo cada uno. Ninguna pantalla existente migró todavía a este modo. **Segunda tanda (14/9/2026, ronda 2 del mockup, sesión directa con el dueño)**: tokens `TipografiaCampo`/`ImagenesCampo`, átomos de foto de fondo, logo, botón circular, campo de texto, nota inline y pie de entorno, `TarjetaCampo`/`ItemListaCampo` tocables, vista previa en `nucleo/ui/vitrina_campo/` (solo `kDebugMode`, cinco pantallas del mockup), fondos reemplazados por cinco fotos propias de drones Agras, y **primera pantalla real migrada al modo campo: el login** (variante "foto plena", flavor/host de la API/versión al pie vía `InfoEntorno`). **Falta**: transiciones/animaciones estándar (`Hero`/`PageRouteBuilder`/estados de carga) y el criterio de "máximo de toques por acción" — quedan para cuando migre la siguiente pantalla real (inicio/órdenes), que es la que las necesita (ver ADR 0008, consecuencias) |
-| TE-16 | `nucleo/preferencias`: `shared_preferences` para tema elegido, idioma elegido, último flavor usado — separado del outbox/`drift`, nunca compite con datos de sync | Persiste entre reinicios; ninguna preferencia de UI pasa por `drift` ni por `POST /api/sync` | 0,5 d |
-| TE-17 | i18n real, **español + portugués** (confirmado por el dueño el 10/9/2026): `flutter_localizations` + `intl`, extracción de todos los strings hardcodeados, selector de idioma persistido en TE-16, **archivos de traducción separados por feature/módulo** (mismo criterio que `lang/{locale}/{modulo}.php` de `agrocom-api` — coherente con la organización feature-first de ADR 0005 de `agrocom-api`, nunca un único archivo de strings monolítico). **Excepción explícita a "dominio en español" de `CLAUDE.md`** — ADR propio de este repo que fija el alcance exacto (la UI se traduce a español/portugués; el vocabulario de dominio interno — nombres de tabla, campos, `uuid_cliente`, estados — sigue en español fijo, igual que hoy) y decide el mecanismo concreto de separación por módulo dentro de las limitaciones de `flutter gen-l10n` (que agrupa todos los `.arb` de un locale en una sola clase `AppLocalizations` — evaluar convención de prefijo de claves por feature, o generación manual con `intl_translation` si hace falta más separación real) | Ningún string de UI hardcodeado en un widget; build pasa con los 2 locales (`es`, `pt`) configurados; las claves de traducción reflejan de qué feature/módulo son, sin mezclarse todas en un solo archivo; el ADR deja explícito qué NO se traduce | 2,0 d — **crítica** (toca una convención transversal de ambos repos) |
-| HU-59 | Como piloto o auxiliar, quiero elegir el tema claro/oscuro/sistema y el idioma de la app, para usarla como prefiero | Selector accesible desde una pantalla de ajustes; persiste vía TE-16; no requiere reiniciar la app | 1,0 d |
-| HU-69 | Como piloto o auxiliar con más de un rol asignado, quiero elegir mi rol activo desde el celular (flavor `auxiliar`) sin reinstalar otra app, para operar como piloto o como auxiliar según el momento | El RC del dron (flavor `piloto`) no cambia — sigue fijo, hardware de un solo uso. En el celular, si el login devuelve más de un rol vivo (`POST /api/auth/token` de `agrocom-api` ya responde `409` + lista de roles), la app muestra el selector; "cambiar de rol en caliente sin volver a loguearse" queda **bloqueado** hasta que `agrocom-api` defina cómo cambiar el rol activo de un token de dispositivo Sanctum ya vivo (nota abierta de su ADR 0004, punto 6 de la extensión) — mientras tanto, cambiar de rol implica reautenticar. Detalle completo en ADR 0005 de este repo | 1,5 d — depende de que `agrocom-api` resuelva el mecanismo de cambio de rol para un token ya vivo |
-| HU-60 | Como piloto, quiero ver el pronóstico del clima del lote al abrir condiciones, además de poder ingresarlo a mano si no hay señal, para decidir con mejor información | API de clima consultada solo con conectividad; sin señal, el flujo manual de HU-06 (de `agrocom-api`) sigue igual — el clima por API nunca bloquea el flujo offline | 1,5 d |
-| HU-61 | Como piloto o auxiliar, quiero ver el lote en un mapa con mi ubicación, para orientarme en el campo | Mapa con el polígono del lote (mismo GeoJSON de HU-24/HU-56 de `agrocom-api`) cacheado localmente tras el último pull de catálogo; funciona sin señal con el último dato bajado | 2,0 d |
-| HU-62 | Como piloto o auxiliar, quiero recibir avisos locales del propio dispositivo (batería caliente, sesión abierta hace muchas horas, orden nueva recién sincronizada), sin depender de señal para dispararse | Notificaciones locales generadas por reglas que corren en el dispositivo — sin servidor push, sin FCM (coherente con la decisión de HU-20 de `agrocom-api`) | 1,0 d |
-| HU-63 | Como piloto o auxiliar, quiero ver en la app las alertas que me involucran (p. ej. mi sesión fue rechazada, ver HU-14 de `agrocom-api`), para enterarme sin esperar al panel | Vista de solo lectura sobre lo que ya bajó el pull de catálogo/sync — no es una fuente de datos nueva, consume lo que HU-19 (de `agrocom-api`) ya genera del lado servidor | 1,0 d |
-| HU-64 | Como piloto o auxiliar, quiero registrar una pausa con su causa (clima, mecánica, espera de caldo, etc.) desde la app, sin señal, para que quede constancia del tiempo perdido en el momento en que ocurre | Pausa con `uuid_cliente` vía outbox (mismo patrón que incidencias); llega al panel para HU-44 (de `agrocom-api`) sin que el jefe de campo tenga que cargarla después | 1,5 d |
-| HU-65 | Como piloto o auxiliar, quiero registrar un reclamo/queja durante el trabajo, para dejar constancia | **Bloqueada — alcance sin definir**: ¿queja sobre el servicio/producto que entrega el cliente (caldo, acceso al lote), sobre condiciones de trabajo del propio operario, o ambas? Sin esa definición no hay criterio de aceptación que escribir. Se resuelve con el dueño antes de entrar a la cola del ciclo (TE-18 no la toma bloqueada) | — |
-| HU-66 | Como piloto o auxiliar, quiero ver mis devengos del período y el detalle de lo que apliqué (hectáreas, sesiones) desde la app, para saber qué voy a cobrar sin esperar señal | Datos del último pull sincronizado (mismo backend de HU-16/HU-28 de `agrocom-api`); vista de solo lectura — nunca calcula devengo en el dispositivo, la autoridad sigue siendo el servidor | 1,5 d |
-| HU-67 | Como piloto o auxiliar, quiero consultar qué repuestos y suministros tiene mi base/equipo disponibles, para saber si puedo resolver algo en el momento | Vista de solo lectura sobre el catálogo de HU-27/HU-36 (de `agrocom-api`, drones/stock), bajado en el pull de catálogo | 1,0 d |
-| HU-68 | Como piloto o auxiliar, quiero activar un modo emergencia (p. ej. picadura de víbora) con acciones rápidas — incluida la linterna del dispositivo — sin salir de la app, para no perder tiempo en una emergencia real | Acceso en 1 toque desde cualquier pantalla; linterna vía plugin nativo; no requiere señal ni login adicional | 1,5 d |
-| TE-19 | Disparador único de sincronización: conectar `SyncEngine.sincronizar()` (push del outbox), `EvidenciaSyncEngine.sincronizar()` (subida de evidencias) y `CatalogoRepository.pull()` en loop hasta agotar el catálogo (deuda ya señalada de TE-06) ante recuperación de conectividad (`connectivity_plus`, declarado en `pubspec.yaml` sin usar con ese fin todavía) y al abrir la app. Nace de un hallazgo de revisión línea por línea (11/9/2026, `cola_tareas.md` § Deuda técnica): hoy ninguno de los tres se invoca en producción — confirmado por grep, cero resultados fuera de un comentario —, así que la app captura y encola perfecto pero nunca sube ni baja nada aunque haya señal | Con conectividad disponible, abrir la app o recuperar señal dispara los tres mecanismos sin intervención manual; `CatalogoRepository.pull()` se llama en loop hasta que una página vuelve vacía (no solo la primera página de 200 filas); una orden ya cargada del lado servidor aparece en "Órdenes vigentes" tras sincronizar, sin reinstalar ni loguear de nuevo | 1,0 d — **crítica** (sin esto ningún dato sincroniza en ningún sentido, aunque cinco HU offline ya estén integradas) |
-
-**Total: 20,5 d (sin contar HU-65, bloqueada) · Entrega: `agrocom-field` con desarrollo automatizado propio y las funciones esenciales de campo más allá del esqueleto de sincronización**
-
-**Evidencias — dos cosas distintas, no una.** Lo que la propia app genera (fotos de incidencias, checklist) sigue por el pipeline ya planificado (TE-07 de `agrocom-api`: cola de evidencias comprimidas <300 KB, hash SHA-256, subida en segundo plano con reintentos) — Google Drive personal del piloto queda descartado como canal para esto, no es un backend auditable para datos de negocio. **Aparte, y sin resolver todavía**: el RC del dron parece subir sus propios datos a una nube externa hoy (el dueño no tiene confirmado a qué servicio — Google Drive/Photos, nube propia de DJI, u otro), y Agrocom necesitaría recuperar esos datos para respaldo. Queda **diferido** hasta que se confirme el servicio y el mecanismo; cuando se resuelva, el flujo acordado es que la app dispare la sincronización (como ya hace con `POST /api/sync`) y sea el backend quien efectivamente descargue de la nube externa — no la app. No se planifica como HU/TE todavía por esa razón.
-
-**Orden real de ejecución**: TE-18 primero (el ciclo necesita existir antes de que le sigan encolando tareas), después TE-15/TE-16 (infraestructura que el resto consume), TE-17/HU-59 juntas (tema e idioma), HU-69 puede ir en paralelo a cualquiera de esas (depende del ADR 0005 de este repo, no de TE-15/16/17), y el resto en cualquier orden — son independientes entre sí. HU-65 queda fuera de la cola hasta que se defina su alcance.
-
----
-
-## Sprint 16 — App de campo: catálogo real y las funciones de `agrocom-api` Sprint 16 (HU-70/78/79/80)
-
-*Objetivo: cerrar la brecha que dejó abierta `docs/gestion/pendiente_agrocom_field_2026-09-13.md` de `agrocom-api` — cuatro funcionalidades del lado servidor ya integradas (PR #189/#198/#190 de `agrocom-api`) sin ninguna contraparte todavía en esta app —, más un bug de contrato crítico entre ambos repos encontrado en vivo el 14/9/2026 (dispositivo real, ver `cola_tareas.md` § Deuda técnica) que hasta ahora impedía que CUALQUIER catálogo llegara a sincronizar. Nace de una sesión directa con el dueño el 14/9/2026, a partir de una captura real del dispositivo ("Órdenes vigentes" vacío) contrastada contra `docs/api/openapi.yaml` real y una llamada autenticada real a `GET /api/sync/catalogo`.*
-
-**IDs compartidos con `agrocom-api` a propósito** (HU-70/78/79/80 son los mismos números que usa `agrocom-api` para la mitad server-side ya integrada) — mismo criterio que ya usan HU-03 (consumo)/TE-05 (lado app) en la tabla "Heredado" de arriba, para no inventar una numeración paralela de algo que ya tiene nombre del otro lado.
-
-| ID | Historia / tarea | CA esenciales | Est. |
-|---|---|---|---|
-| TE-20 | Actualizar `OrdenCatalogo` al contrato real de `GET /api/sync/catalogo`: `lotes[]` (HU-92 de `agrocom-api`, tarea 107) reemplazó el `lote_id` único, y `litros_ha`/`kilos_por_vuelo` (HU-79 de `agrocom-api`, tarea 110) son mutuamente excluyentes y nullable. Confirmado en vivo el 14/9/2026 con una llamada autenticada real: TODA orden de hoy trae `lotes: [...]` y varias traen `litros_ha: null` — el parser de `CatalogoRepository._ordenDesdeJson` (`json['lote_id'] as int`, `Decimal.parse(json['litros_ha'] as String)`) tira excepción en cualquiera de las dos, así que el pull nunca llega a escribir nada — más fundamental que TE-19/PR #45: incluso con el ciclo ya resiliente, el catálogo sigue sin poblarse, solo que ahora en silencio. Simplificación deliberada: toma `lotes.first` como el `loteId` que ya usa la UI de lista/detalle (single-lote) — soporte multi-lote real queda fuera, es HU-92 (lado app) si hiciera falta más adelante | Con datos reales de `/api/sync/catalogo` (con `litros_ha` o `kilos_por_vuelo` según categoría), el pull no tira excepción y "Órdenes vigentes" muestra las órdenes reales; migración de esquema v7→v8 con su prueba (mismo patrón que `test/nucleo/db/migracion_*`) | 0,5 d — **crítica, en curso (esta sesión)** — bloquea a las cuatro de abajo: ninguna es verificable sin catálogo real |
-| HU-70 (lado app) | Mostrar el trabajo ya asignado por el jefe de campo al iniciar sesión, para no tener que mandarlo por WhatsApp (pedido directo del jefe de campo, transmitido por el dueño — punto 2 de `pendiente_agrocom_field_2026-09-13.md`). `GET /api/sync/catalogo` ya trae `trabajos` (`TrabajoCatalogo`: `uuid_cliente`/`orden_id`/`lote_id`/`hectareas_declaradas`/`equipo_trabajo_id`/`updated_at`, confirmado real — hoy vacío en los datos de demo porque nadie asignó nada desde el panel todavía) pero `CatalogoRepository.pull()` nunca lo lee. **Decisión de alcance (14/9/2026, esta sesión)**: HU nueva propia de este repo, no una ampliación de HU-04 — HU-04 es la lista/detalle de órdenes vigentes; esto es la pantalla "Inicio" del piloto con el trabajo YA asignado, un concepto distinto (mockup Ronda 1, sección "03 · Inicio del piloto") | Nueva tabla `drift` de solo lectura para `TrabajoCatalogo`; `CatalogoRepository.pull()` upsertea `trabajos`; pantalla "Inicio" (flavor piloto) con el trabajo asignado (lote, hectáreas, l/ha o kg/vuelo, clima) y botón "Crear aplicación" que abre HU-79 sobre ESE trabajo; sin trabajo asignado, estado vacío explícito, nunca placeholder inventado | 2,0 d — depende de TE-20 |
-| HU-78 (lado app) | Registrar mezcla del caldo: productos (nombre libre, sin catálogo previo) + cantidad (DECIMAL positivo) + unidad (`l`/`ml`/`kg`/`g`) cargados al crear una aplicación (`RegistroSync.tipo=mezcla`, espec §7, ya integrado en `agrocom-api` PR #198) — revierte CR-01; nunca dosis por hectárea, orden de incorporación ni compatibilidad entre productos | Nueva tabla `drift` de escritura para la mezcla (cabecera `trabajo_uuid_cliente`/`hora` + productos, mismo patrón de tabla hija que ya resuelva el repo para listas de este tipo); pantalla que agrega N productos con validación (cantidad > 0, unidad del enum, lista no vacía) antes de encolar en el outbox | 1,5 d — depende de HU-70 (cuelga del trabajo asignado) |
-| HU-79 (lado app) | Formulario de "Crear aplicación" según la categoría de insumo de la orden: **kilos por vuelo** si es sólida, **litros por hectárea** si es líquida (mutuamente excluyentes, ya resuelto en el catálogo por TE-20) — más "Ráfagas (km/h)" en Clima, junto al viento sostenido que ya captura HU-06. Incluye el pedido directo del dueño (punto 1 de `pendiente_agrocom_field_2026-09-13.md`): **ocultar "Sesiones" y "Pausas"** de esta pantalla, con la reserva de negocio ya señalada ahí — confirmar contra `agrocom-api` que el flujo de validación/devengo (`ope_sesiones`) siga teniendo una superficie alcanzable sin ese ítem antes de sacarlo (la validación la hace el jefe de campo desde el panel, no desde el celular del piloto, pero se confirma, no se asume) | La pantalla muestra el campo correcto según la orden (nunca ambos, nunca ninguno); "Ráfagas" capturado junto al viento sostenido; "Sesiones"/"Pausas" no aparecen ahí una vez confirmada la reserva de negocio de arriba | 1,0 d — depende de HU-70; la confirmación de la reserva es una lectura contra `agrocom-api`, no una decisión nueva |
-| HU-80 (lado app) | Reporte de equipos: horas de vuelo del dron (declaradas, no calculadas) + 3 fotos obligatorias (control, ciclo de batería y balanceo, dron limpio) vía `TE-07`/`EvidenciaSyncEngine` con tres tipos de evidencia nuevos (`foto_control`/`foto_ciclo_bateria_balanceo`/`foto_dron_limpio`), más el dato de ciclos de batería que ya vive en `man_baterias` del panel — la app solo lo muestra o deja que el auxiliar lo confirme (`RegistroSync.tipo=evidencia_equipo`, ya integrado en `agrocom-api` PR #190) | Pantalla con las 3 fotos (cámara vía `SelectorFoto` ya existente) + horas de vuelo; sin las 3 fotos no se puede confirmar (mismo criterio "sin captura no cierra" de HU-09); el outbox rechaza registros incompletos y la UI lo refleja antes de encolar | 1,5 d — independiente de HU-78/79, depende de TE-20 |
-
-**Total: 6,5 d**
-
-**Orden real de ejecución**: TE-20 primero (bloquea a las otras cuatro — sin catálogo real no hay trabajo/orden sobre el que probar nada), después HU-70 (puerta de entrada — "Crear aplicación" de HU-79/HU-78 cuelga de un trabajo ya asignado), HU-79 y HU-78 en paralelo entre sí (ambas cuelgan de "Crear aplicación" pero tocan pantallas/tablas distintas), HU-80 en paralelo a cualquiera de esas dos (independiente).
-
-## Sprint 17 — App de campo: alineación con los cambios de `agrocom-api` del 15 al 23/9/2026
-
-*Objetivo: incorporar a esta app lo que el dueño cambió de enfoque, negocio y estructura en `agrocom-api` entre el 15 y el 23/9/2026 (ADR 0020 a 0026, `openapi.yaml`, especificación y políticas por rol), y dejar un mecanismo para que la próxima divergencia se detecte sola. Planificado el 29/9/2026 leyendo `git log` y `docs/` de `agrocom-api` (HEAD `44570a17`) contra el estado real de `develop` de este repo.*
-
-### Resultado del análisis (qué cambió del otro lado y cuánto toca a la app)
-
-| Cambio en `agrocom-api` | Impacto en la app | Tarea |
-|---|---|---|
-| ADR 0020 — se elimina `Campo`, `Lote` cuelga de `Propiedad`; `campo_id` → `propiedad_id` en el catálogo y en `estadia_entrada` | Catálogo de lotes ya renombrado (PR #49, migración v9). Falta confirmar `estadia_entrada` y textos de UI que digan «campo» | TE-21 |
-| ADR 0022 — la orden es una aplicación completa (todos los lotes del contrato, correlativa, una abierta por contrato); estados nuevos `pausada` y `cancelada` | El catálogo solo entrega órdenes `vigente`: una orden ya bajada que se pausa o cancela **sigue vigente en el dispositivo** (pendiente conocido del ADR). La app nunca pausa ni cancela | TE-22 (bloqueada por contrato) |
-| Orden de Trabajo replanteada (equipos fijos por orden, hectáreas por equipo, sin velocidad máxima, calda en casillas) — #251, #269, #270 | `OrdenVigente.velocidadMaxKmh` puede haber quedado sin fuente; `TrabajoCatalogo.hectareas_declaradas` ahora es por equipo | TE-23 |
-| ADR 0023 — el pago es del trabajo, no de la persona | Sin impacto: la app no muestra ni calcula dinero (invariante 9). Se anota para no reabrirlo | — |
-| ADR 0025 — motor de notificaciones del panel | Sin impacto directo. `TrabajoCerrado` (que ya envía la app) dispara el aviso al jefe de campo del lado servidor. HU-62 de la app sigue siendo solo avisos locales | — |
-| ADR 0026 — ruta de archivos por objeto | Sin impacto: la ruta la decide el servidor al recibir `POST /api/evidencias` | — |
-| ADR 0021, 0024 y homogeneización del panel | Solo servidor | — |
-| Documentación (`docs/vision.md`, `CLAUDE.md`) cita conceptos y ADR anteriores | Desfase documental, incluida la referencia a «campo» | TE-24 |
-
-| ID | Historia / tarea | CA esenciales | Est. |
-|---|---|---|---|
-| TE-21 | Cerrar ADR 0020 en la app: integrar PR #49 (`propiedad_id` en `LoteCatalogo`, migración v9) y auditar el resto — `estadia_entrada` (¿la app la emite? si sí, `propiedad_id`), textos de UI y nombres de dominio que aún digan «campo» donde ahora es «propiedad». **Crítica** (esquema `drift`) | `grep -rniE "campo_?id" lib test` sin resultados fuera de la migración; prueba de migración v8→v9 en verde; `bin/verify` en verde | 0,5 d |
-| TE-22 | Órdenes que dejan de estar vigentes: hoy la app no se entera de una orden pausada, cancelada o cerrada. Definir con `agrocom-api` cómo se retira (¿el catálogo entrega también el estado? ¿tombstone?) y cómo reacciona la app sin reescribir un registro ya confirmado (invariante 6): ocultar de «vigentes», no borrar; una sesión abierta sobre una orden pausada se decide con el dueño. **Bloqueada**: exige cambio de contrato en `agrocom-api` primero — la petición, con quién la pide y por qué, está en `docs/gestion/peticiones_agrocom_api/2026-09-29-estado-de-orden-en-catalogo.md`; esta tarea empieza por un ADR local | ADR local aprobado y contrato confirmado en `openapi.yaml` antes de escribir código; después, prueba de replay con la orden que pasa de `vigente` a `pausada` entre dos pulls | 1,5 d |
-| TE-23 | Alinear `OrdenCatalogo`/`TrabajoCatalogo` con la Orden de Trabajo replanteada: contrastar campo por campo `openapi.yaml` actual contra las tablas `drift` (velocidad máxima, hectáreas por equipo, `lotes[]` como todos los del contrato) y quitar lo que ya no existe. **Crítica** (esquema `drift`). Depende de TE-21 (misma migración; una sola versión de esquema) | Test de contrato que parsea un ejemplo real de `GET /api/sync/catalogo` sin excepción; ningún campo de tabla sin fuente en el contrato | 1 d |
-| TE-24 | Sincronizar la documentación de este repo: `docs/vision.md`, `CLAUDE.md` (lista de ADR y secciones de la especificación citadas) y `docs/gestion/cola_tareas.md`; agregar `docs/gestion/alineacion_backend.md` con la fecha y el HEAD de `agrocom-api` contra el que se alineó por última vez | `vision.md` y `CLAUDE.md` no contradicen ADR 0020–0026; el documento de alineación tiene fecha y SHA | 0,5 d |
-| TE-25 | Detector de divergencia para el ciclo: paso de `bin/ciclo --planificar` que compara `git log <SHA de alineacion_backend.md>..HEAD -- docs/api docs/decisiones docs/especificacion docs/negocio/politicas` de `agrocom-api` y, si hay commits, escribe el prompt de una tarea de alineación en vez de seguir con la cola normal. Solo lectura sobre `agrocom-api` | Con el SHA actual el paso no genera nada; con un SHA viejo genera un prompt con la lista de commits; la ruta de `agrocom-api` sale de una variable, no fija | 1 d |
-
-**Total: 4,5 d**
-
-**Orden de ejecución**: PR #49 (TE-21, parte ya hecha) → TE-23 → TE-24 → TE-25. TE-22 se abre en paralelo solo como petición de contrato a `agrocom-api`, y no entra a la cola automática hasta que el contrato exista. Las tareas de Sprint 16 (HU-70/78/79/80) siguen su orden propio; TE-23 conviene cerrarla antes de HU-70 porque ambas leen el mismo catálogo.
-
-**Qué no se hace acá**: nada de dinero (ADR 0023 es del servidor), ninguna pantalla nueva del panel, ningún cambio a `openapi.yaml` (se regenera del lado `agrocom-api`).
+Las decisiones por defecto del marketplace (aceptación con red, calificación en registro propio, alta con aprobación de admin, sin cobro en la primera versión, sin contratos ni campañas) están en [../vision.md](../vision.md); las de arquitectura, en el [ADR 0009](../decisiones/0009-arquitectura-tres-superficies-moviles.md).
