@@ -93,6 +93,7 @@ Future<void> main(List<String> args) async {
         (cambiados ?? const <String>[]).any(
           (r) =>
               r.startsWith('android/') ||
+              r.startsWith('ios/') ||
               r.startsWith('assets/') ||
               r.startsWith('pubspec') ||
               r.startsWith('lib/main_') ||

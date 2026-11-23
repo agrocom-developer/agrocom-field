@@ -394,11 +394,12 @@ jobs:
 
   # Compila cada flavor para el simulador de iOS (sin firma) para detectar
   # roturas de esquemas Xcode, Podfile o dependencias nativas. Informa, no
-  # bloquea: no es un check requerido del auto-merge.
+  # bloquea: no es un check requerido del auto-merge. Corre en las mismas
+  # condiciones que el build de Android (modo completo o diff nativo).
   build-ios:
     name: build-ios (${{ matrix.flavor }})
-    needs: detect-flutter
-    if: needs.detect-flutter.outputs.exists == 'true'
+    needs: detectar
+    if: needs.detectar.outputs.modo == 'completo' || needs.detectar.outputs.android == 'true'
     runs-on: macos-latest
     timeout-minutes: 45
     strategy:
