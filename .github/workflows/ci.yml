@@ -1,10 +1,22 @@
 name: CI
 
+# Un solo disparador: pull_request. El push a develop/master no repite el CI:
+# los cambios llegan a esas ramas únicamente por PR, que ya pasó por este flujo.
 on:
   pull_request:
     branches: [develop, master]
-  push:
-    branches: [develop, master]
+
+# Mínimo privilegio por defecto; cada job que necesite más lo declara aparte.
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  # Versión de Flutter fijada: el mismo SDK en local, en CI y en los builds.
+  FLUTTER_VERSION: "3.47.4"
 
 jobs:
   detect-flutter:
@@ -13,7 +25,9 @@ jobs:
     outputs:
       exists: ${{ steps.check.outputs.exists }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
       - id: check
         run: |
           if [ -f pubspec.yaml ]; then
@@ -28,11 +42,14 @@ jobs:
     if: needs.detect-flutter.outputs.exists == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
         with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
 
@@ -53,3 +70,64 @@ jobs:
 
       - name: Tests
         run: flutter test
+
+  # Compila el APK debug de cada flavor para detectar roturas de Gradle,
+  # manifiestos o dependencias nativas antes de integrar. No es un check
+  # requerido del auto-merge: informa, no bloquea.
+  build-android:
+    name: build-android (${{ matrix.flavor }})
+    needs: detect-flutter
+    if: needs.detect-flutter.outputs.exists == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor: [piloto, auxiliar]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: Setup Java
+        uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Instalar dependencias
+        run: flutter pub get
+
+      - name: Generar código (build_runner, si el proyecto lo usa)
+        run: |
+          if grep -q build_runner pubspec.yaml; then
+            dart run build_runner build --delete-conflicting-outputs
+          fi
+
+      - name: Compilar APK debug
+        run: flutter build apk --debug --flavor ${{ matrix.flavor }} -t lib/main_${{ matrix.flavor }}.dart
+
+  # Vulnerabilidades conocidas en las dependencias (pubspec.lock) según OSV.
+  # Informativo: no es un check requerido del auto-merge.
+  analisis-dependencias:
+    name: analisis-dependencias
+    needs: detect-flutter
+    if: needs.detect-flutter.outputs.exists == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+
+      - name: OSV-Scanner sobre pubspec.lock
+        uses: google/osv-scanner-action/osv-scanner-action@32d3cd482bdadfb38b186c0ad1b031902d55d932 # v2.7.1
+        with:
+          scan-args: |-
+            --lockfile=pubspec.lock
