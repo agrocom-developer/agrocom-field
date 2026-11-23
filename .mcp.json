@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "agrocom-control": {
+      "command": "node",
+      "args": ["tools/mcp-control/src/servidor.mjs"],
+      "env": {
+        "AGROCOM_API_DIR": "/Applications/MAMP/htdocs/agrocom-api"
+      }
+    }
+  }
+}

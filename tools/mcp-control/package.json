@@ -1,0 +1,12 @@
+{
+  "name": "agrocom-mcp-control",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Servidor MCP local (stdio) que consulta y gobierna el avance entre agrocom-field y agrocom-api",
+  "type": "module",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/servidor.mjs",
+    "test": "node --test"
+  }
+}
