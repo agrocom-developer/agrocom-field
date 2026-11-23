@@ -2,37 +2,78 @@
 #
 # Cascada de verificación de agrocom-field — la "compuerta".
 #
-# Devuelve exit 0 solo si TODO pasa. Es el único criterio de aceptación que un
-# cambio necesita cumplir para poder commitearse sin revisión humana previa
-# (ver docs/gestion/automatizacion_desarrollo.md).
+# Devuelve exit 0 solo si TODO lo que corre pasa. Es el único criterio de
+# aceptación que un cambio necesita cumplir para poder commitearse sin
+# revisión humana previa (ver docs/gestion/automatizacion_desarrollo.md).
 #
-# Más simple que el de agrocom-api: sin Docker, sin base de datos de
-# servicio — todo corre directo sobre el SDK de Flutter instalado en la
-# máquina. El orden de las etapas espeja el job `flutter-tests` de
-# `.github/workflows/ci.yml` a propósito: si el orden difiriera, un verde
-# local podría no predecir el verde de CI (p. ej. analizar antes de generar
-# el código deja afuera errores que solo aparecen con el `.g.dart` al día).
+# Por defecto verifica solo lo afectado por el diff contra origin/develop
+# (formato y análisis de los .dart tocados, pruebas afectadas más el humo
+# mínimo). `--todo` corre todo: formato y análisis completos y la suite
+# entera. El selector falla hacia MÁS pruebas; ver docs/gestion/ci-por-impacto.md.
 #
-#   bin/verify
+#   bin/verify                  # afectado (meta: menos de 3 min)
+#   bin/verify --todo           # suite completa (lo que corre CI en release)
+#   bin/verify --base develop   # otra base para el diff
+#
+# El orden de las etapas espeja el job de CI a propósito: si difiriera, un
+# verde local podría no predecir el verde de CI.
 #
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 
+TODO=0
+BASE="origin/develop"
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --todo) TODO=1 ;;
+        --base) shift; BASE="${1:-}" ;;
+        -h|--help) sed -n '2,20p' "$0"; exit 0 ;;
+        *) echo "Argumento desconocido: $1" >&2; exit 64 ;;
+    esac
+    shift
+done
+
 FALLO=""
+INICIO=$SECONDS
 
 etapa() {
     local nombre="$1"; shift
+    local t0=$SECONDS
     printf '\n\033[1m▸ %s\033[0m\n' "$nombre"
     if "$@"; then
-        printf '\033[32m  ✓ %s\033[0m\n' "$nombre"
+        printf '\033[32m  ✓ %s (%ss)\033[0m\n' "$nombre" "$((SECONDS - t0))"
     else
-        printf '\033[31m  ✗ %s\033[0m\n' "$nombre"
+        printf '\033[31m  ✗ %s (%ss)\033[0m\n' "$nombre" "$((SECONDS - t0))"
         FALLO="$nombre"
         return 1
     fi
 }
 
 printf '\033[1mVerificación de agrocom-field\033[0m\n'
+
+# Selección: qué corre. Sin base resoluble (clon sin origin/develop) o ante
+# cualquier error del selector, se corre todo.
+PRUEBAS=()
+DART_CAMBIADOS=()
+if [ "$TODO" -eq 0 ]; then
+    if SEL=$(dart tool/tests_afectados.dart --base "$BASE" 2>/dev/null); then
+        if [ "$SEL" = "TODO" ] || [ -z "$SEL" ]; then
+            TODO=1
+            echo "Modo: todo (el diff toca una zona que exige la suite completa)"
+        else
+            while IFS= read -r l; do PRUEBAS+=("$l"); done <<< "$SEL"
+            while IFS= read -r l; do
+                [ -n "$l" ] && DART_CAMBIADOS+=("$l")
+            done < <(dart tool/tests_afectados.dart --base "$BASE" --solo-dart 2>/dev/null)
+            echo "Modo: afectado (${#PRUEBAS[@]} archivo(s) de prueba, ${#DART_CAMBIADOS[@]} .dart cambiado(s) contra $BASE)"
+        fi
+    else
+        TODO=1
+        echo "Modo: todo (el selector no pudo calcular el diff contra $BASE)"
+    fi
+else
+    echo "Modo: todo (--todo)"
+fi
 
 etapa "Dependencias (flutter pub get)" flutter pub get || true
 
@@ -41,23 +82,38 @@ if [ -z "$FALLO" ] && grep -q 'build_runner' pubspec.yaml 2>/dev/null; then
 fi
 
 if [ -z "$FALLO" ]; then
-    etapa "Estilo de código (dart format)" dart format --output=none --set-exit-if-changed . || true
+    if [ "$TODO" -eq 1 ]; then
+        etapa "Estilo de código (dart format)" dart format --output=none --set-exit-if-changed . || true
+    elif [ ${#DART_CAMBIADOS[@]} -gt 0 ]; then
+        etapa "Estilo de código (dart format, solo lo tocado)" dart format --output=none --set-exit-if-changed "${DART_CAMBIADOS[@]}" || true
+    fi
 fi
 
 if [ -z "$FALLO" ]; then
-    etapa "Análisis estático (flutter analyze)" flutter analyze || true
+    if [ "$TODO" -eq 1 ]; then
+        etapa "Análisis estático (flutter analyze)" flutter analyze || true
+    elif [ ${#DART_CAMBIADOS[@]} -gt 0 ]; then
+        etapa "Análisis estático (flutter analyze, solo lo tocado)" flutter analyze "${DART_CAMBIADOS[@]}" || true
+    fi
 fi
 
 if [ -z "$FALLO" ]; then
-    etapa "Tests (flutter test)" flutter test || true
+    if [ "$TODO" -eq 1 ]; then
+        etapa "Tests (flutter test, suite completa)" flutter test || true
+    else
+        etapa "Tests (flutter test, ${#PRUEBAS[@]} afectados + humo)" flutter test "${PRUEBAS[@]}" || true
+    fi
 fi
 
 echo
 if [ -n "$FALLO" ]; then
-    printf '\033[31m✗ La cascada falló en: %s\033[0m\n' "$FALLO"
+    printf '\033[31m✗ La cascada falló en: %s (%ss)\033[0m\n' "$FALLO" "$((SECONDS - INICIO))"
     printf '  El cambio NO está listo para commitear.\n'
     exit 1
 fi
 
-printf '\033[32m✓ Cascada completa en verde.\033[0m\n'
+printf '\033[32m✓ Cascada completa en verde (%ss).\033[0m\n' "$((SECONDS - INICIO))"
+if [ "$TODO" -eq 0 ]; then
+    printf '  Verificado solo lo afectado; antes de un release corre bin/verify --todo.\n'
+fi
 exit 0
