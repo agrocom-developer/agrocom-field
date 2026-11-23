@@ -66,6 +66,13 @@ La interfaz es parte del producto, no un acabado. Una pantalla no está terminad
 - **Ciclos.** Una tarea es un PR. El ciclo implementa, verifica (independiente, en las críticas), abre el PR, espera el CI y planifica la siguiente. Una tarea trabada se marca y la cola sigue; varias seguidas sin integrar detienen el ciclo.
 - **Documentación en presente.** Los documentos describen el sistema vigente. Lo que deja de ser verdad se elimina o se reescribe; el historial vive en git. Una decisión revisable se documenta como tal, con su motivo.
 
+## Verificación y CI por impacto
+
+- **`bin/verify` corre solo lo afectado** por el diff contra `origin/develop` (formato y análisis de los `.dart` tocados, pruebas afectadas y humo mínimo). `bin/verify --todo` corre todo. Nadie, ni persona ni agente, corre la suite entera por defecto.
+- El selector (`bin/tests-afectados`, código en `tool/selector/`) falla hacia más pruebas: si el diff toca lockfiles, `config/`, `lib/nucleo/db`, `lib/nucleo/sync`, `.github/`, `bin/`, `tool/`, fixtures o helpers de prueba, o algo que no sabe clasificar, corre todo.
+- En CI, un PR a `develop` corre lo afectado; la suite completa en shards corre en el PR a `master` (release), con la etiqueta `full-ci`, por `workflow_dispatch` y de noche sobre `develop`. El check requerido sigue siendo `flutter-tests`.
+- El humo mínimo (replay del sync, contrato de API, reglas de importación, el selector) corre siempre. Detalle en `docs/gestion/ci-por-impacto.md` y en el skill `verificacion`.
+
 ## Qué no delegar sin revisión línea por línea
 
 - El **motor de sync** (outbox, replay, idempotencia por `uuid_cliente`), el **esquema de `drift` y sus migraciones**, y todo lo que toque el **almacenamiento de tokens, permisos de ubicación y datos del cliente**. Una migración mal escrita pierde datos de campo capturados sin señal, sin forma de recuperarlos.
