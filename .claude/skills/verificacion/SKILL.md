@@ -10,12 +10,10 @@ Un cambio está terminado cuando las tres etapas de `.github/workflows/ci.yml` p
 ## Cómo correrlo localmente
 
 ```
-dart format --output=none --set-exit-if-changed .
-flutter analyze
-flutter test
+./bin/verify
 ```
 
-Las tres, en ese orden, son exactamente lo que corre el job `flutter-tests` de CI. No hay un `bin/verify` propio de este repo todavía — si se arma uno (script que encadene las tres etapas, análogo al de `agrocom-api`), es tarea de `distribucion-flutter`, no una convención implícita.
+`bin/verify` encadena las etapas de `flutter-tests` de CI (dependencias, codegen, formato, análisis y tests) y se detiene en la primera falla, así que un verde local predice el verde de CI. Las etapas de formato, análisis y tests también se corren sueltas: `dart format --output=none --set-exit-if-changed .`, `flutter analyze`, `flutter test`.
 
 ## Las etapas, qué miden, cómo se corrigen
 
@@ -41,5 +39,6 @@ Antes de la primera pantalla del esqueleto vertical, tiene que existir el test q
 
 ## Qué NO cubre todavía esta cascada
 
+- Las pantallas nuevas llevan goldens y revisión de `qa-visual`; la cascada por sí sola no juzga el diseño.
 - No hay tests de integración contra un backend real — `flutter test` corre con mocks/fakes del repositorio, no contra `agrocom-api` levantado.
 - No hay verificación automática de que el esquema `drift` local siga espejando el modelo del servidor cuando ese modelo cambie — es responsabilidad de quien toca `modelo-datos-flutter` notar el drift, no algo que la cascada detecte sola.

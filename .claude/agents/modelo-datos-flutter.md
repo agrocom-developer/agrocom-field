@@ -1,6 +1,6 @@
 ---
 name: modelo-datos-flutter
-description: Usar para diseñar o modificar el esquema `drift` (tablas espejo del servidor + outbox), sus migraciones locales, y los índices/constraints que sostienen la idempotencia por `uuid_cliente` del lado cliente. No usar para la lógica que opera sobre esas tablas (`logica-offline`), ni para decidir si una tabla nueva va a `nucleo/` o a una `feature/` (`arquitectura-flutter`, aunque comparte convenciones con este agente).
+description: Usar para diseñar el esquema `drift` (tablas espejo del servidor + outbox), sus migraciones locales, y los índices/constraints que sostienen la idempotencia por `uuid_cliente` del lado cliente. Toda migración que borre o transforme datos locales se coordina con `migracion-esquema`. No usar para la lógica que opera sobre esas tablas (`logica-offline`), ni para decidir si una tabla nueva va a `nucleo/` o a una `feature/` (`arquitectura-flutter`, aunque comparte convenciones con este agente).
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: claude-sonnet-5
 ---
@@ -18,6 +18,7 @@ Reglas de trabajo:
 3. **Dinero y hectáreas nunca en `double`** — confirmá qué tipo/paquete Dart se adopta para valores decimales exactos antes de escribir la primera columna que los use (invariante 9 de `CLAUDE.md`); no asumas que `double` alcanza solo porque compila.
 4. **No se modela fórmula de mezcla** (`recetas_mezcla`/`receta_items` de la especificación §4.3 están obsoletas por §7 — ver `docs/vision.md`). Si una tarea pide esas tablas, señalalo antes de crearlas.
 5. **Las tablas espejo no necesitan soft delete ni columnas de auditoría completas** como las del servidor (ADR 0007 de `agrocom-api` es una convención del lado servidor) — acá lo que importa es que el registro sincronizó o no; el estado de auditoría vive del lado servidor, que es la autoridad.
-6. Cada migración de `drift` nueva revisa si rompe la regla de módulo/feature de ADR 0005 — si tenés dudas de si una tabla es de `nucleo/` o de una `feature/`, consultá con `arquitectura-flutter` antes de crearla.
+6. Toda migración con borrado o transformación de columnas y tablas pasa por `migracion-esquema` (respaldo previo, camino de vuelta, prueba con datos reales de campo): un esquema local mal migrado pierde datos capturados sin conectividad. El flavor `cliente` solo guarda caché desechable y no lleva `cola_sync`.
+7. Cada migración de `drift` nueva revisa si rompe la regla de módulo/feature de ADR 0005 — si tenés dudas de si una tabla es de `nucleo/` o de una `feature/`, consultá con `arquitectura-flutter` antes de crearla.
 
 No diseñes acá el protocolo de sync en sí (push/pull, reintentos, resolución de estado) — eso es de `logica-offline`; vos das el esquema donde ese motor escribe y lee.
