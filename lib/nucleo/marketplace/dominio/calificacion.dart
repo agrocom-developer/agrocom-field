@@ -22,9 +22,13 @@ class ResumenCalificaciones {
     required this.promedio,
     required this.total,
     required this.recientes,
+    this.porPuntaje = const {},
   });
 
   final double promedio;
   final int total;
   final List<CalificacionRecibida> recientes;
+
+  /// Cuántas calificaciones hay de cada puntaje (clave de 1 a 5).
+  final Map<int, int> porPuntaje;
 }

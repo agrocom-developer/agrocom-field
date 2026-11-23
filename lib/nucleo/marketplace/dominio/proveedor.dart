@@ -27,6 +27,21 @@ enum EstadoDron {
   final String etiqueta;
 }
 
+/// Estado de aprobación de un proveedor, un piloto, un auxiliar o un dron.
+/// Solo un administrador lo cambia desde el panel web.
+enum EstadoAprobacion {
+  pendiente('En revisión'),
+  aprobado('Aprobado'),
+  suspendido('Suspendido'),
+  rechazado('Rechazado');
+
+  const EstadoAprobacion(this.etiqueta);
+  final String etiqueta;
+
+  /// Solo un sujeto aprobado opera en el marketplace.
+  bool get habilitado => this == aprobado;
+}
+
 /// El dron es el «vehículo» del marketplace.
 class Dron {
   const Dron({
@@ -38,6 +53,7 @@ class Dron {
     required this.propiedad,
     required this.ciclosBateria,
     required this.cicloMaximoBateria,
+    this.aprobacion = EstadoAprobacion.aprobado,
   });
 
   final String id;
@@ -51,19 +67,36 @@ class Dron {
   final int ciclosBateria;
   final int cicloMaximoBateria;
 
+  /// Ningún dron vuela sin aprobación de un administrador.
+  final EstadoAprobacion aprobacion;
+
   /// Fracción de vida útil de la batería ya consumida, de 0 a 1.
-  double get desgasteBateria =>
-      cicloMaximoBateria == 0 ? 0 : ciclosBateria / cicloMaximoBateria;
+  double get desgasteBateria => cicloMaximoBateria == 0
+      ? 0
+      : (ciclosBateria / cicloMaximoBateria).clamp(0, 1).toDouble();
+
+  /// Ciclos que le quedan a la batería antes del recambio.
+  int get ciclosRestantes => ciclosBateria >= cicloMaximoBateria
+      ? 0
+      : cicloMaximoBateria - ciclosBateria;
+
+  /// A partir de tres cuartos de vida útil conviene planificar el recambio.
+  bool get bateriaPorAgotarse => desgasteBateria >= 0.75;
 }
 
 enum EstadoDocumento {
   vigente('Vigente'),
   porVencer('Por vencer'),
   enRevision('En revisión'),
-  rechazado('Rechazado');
+  rechazado('Rechazado'),
+  vencido('Vencido');
 
   const EstadoDocumento(this.etiqueta);
   final String etiqueta;
+
+  /// El documento exige que el proveedor haga algo (renovar o volver a subir).
+  bool get requiereAccion =>
+      this == porVencer || this == rechazado || this == vencido;
 }
 
 /// Licencia de piloto, matrícula del dron, seguro: los revisa el admin.
@@ -72,11 +105,45 @@ class DocumentoProveedor {
     required this.nombre,
     required this.estado,
     this.vence,
+    this.motivoRechazo,
   });
 
   final String nombre;
   final EstadoDocumento estado;
   final DateTime? vence;
+
+  /// Lo que escribió el administrador al rechazarlo.
+  final String? motivoRechazo;
+}
+
+/// Auxiliar que el piloto o el proveedor registró en su equipo. Lo aprueba
+/// un administrador.
+class AuxiliarAsociado {
+  const AuxiliarAsociado({
+    required this.nombre,
+    this.aprobacion = EstadoAprobacion.aprobado,
+    this.serviciosJuntos = 0,
+  });
+
+  final String nombre;
+  final EstadoAprobacion aprobacion;
+  final int serviciosJuntos;
+}
+
+/// Métricas operativas del proveedor. Los porcentajes son enteros de 0 a 100
+/// calculados por el servidor; las hectáreas, decimal exacto.
+class MetricasProveedor {
+  const MetricasProveedor({
+    required this.serviciosCompletados,
+    required this.hectareasAtendidas,
+    required this.tasaAceptacion,
+    required this.tasaCancelacion,
+  });
+
+  final int serviciosCompletados;
+  final Decimal hectareasAtendidas;
+  final int tasaAceptacion;
+  final int tasaCancelacion;
 }
 
 /// Reseña de un cliente sobre un proveedor.
@@ -108,6 +175,8 @@ class Proveedor {
     this.documentos = const [],
     this.resenas = const [],
     this.auxiliares = const [],
+    this.aprobacion = EstadoAprobacion.aprobado,
+    this.motivoAprobacion,
   });
 
   final String id;
@@ -121,7 +190,19 @@ class Proveedor {
   final List<Dron> drones;
   final List<DocumentoProveedor> documentos;
   final List<Resena> resenas;
-  final List<String> auxiliares;
+  final List<AuxiliarAsociado> auxiliares;
+
+  /// Ningún proveedor opera sin aprobación de un administrador.
+  final EstadoAprobacion aprobacion;
+
+  /// Motivo que dio el administrador al suspender o rechazar.
+  final String? motivoAprobacion;
+
+  /// Documentos que el proveedor tiene que renovar o volver a subir.
+  List<DocumentoProveedor> get documentosConAccion => [
+    for (final d in documentos)
+      if (d.estado.requiereAccion) d,
+  ];
 
   String get iniciales {
     final partes = nombre.split(' ').where((p) => p.isNotEmpty).toList();
