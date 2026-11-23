@@ -37,11 +37,19 @@ Datos de pub.dev al 23/11/2026 (versión, publicación, puntos pub, licencia); c
 
 ### Política
 
-Una librería entra cuando existe la pantalla que la usa, con su versión fijada por `pubspec.lock`, y no antes. Las aprobadas (`lottie`, `fl_chart`, `flutter_map`) no se agregan en esta decisión: este cambio no modifica `pubspec.yaml`.
+Una librería entra cuando existe la pantalla que la usa, con su versión fijada por `pubspec.lock`. Las tres aprobadas están en `pubspec.yaml`:
+
+| Librería | Dónde se usa |
+|---|---|
+| `flutter_map` (con `latlong2`) | `MapaLote` (`lib/nucleo/marketplace/ui/`): contorno del lote, estela y posición del dron |
+| `fl_chart` | Hectáreas por mes en el perfil del proveedor |
+| `lottie` | Reservada para animaciones de estado vacío o éxito; se usa cuando exista el primer asset exportado |
+
+`flutter_animate` queda descartada.
 
 ## Consecuencias
 
 - Peso: cero dependencias nuevas en esta entrega.
 - Los golden tests se generan y comparan en macOS y se omiten en Linux (el render de texto difiere); la compuerta de CI sigue cubriendo los tests de comportamiento y de contraste.
 - Los widgets del catálogo `*Campo` anteriores leen `ColoresCampo` (modo campo); los componentes nuevos leen `PaletaCampo` y funcionan en los tres modos. La migración del resto del catálogo a `PaletaCampo` es incremental, pantalla por pantalla.
-- No hay proyecto `ios/` en el repositorio: las capturas de `docs/diseno/capturas/` se generan con el motor de Flutter a tamaño de iPhone 17 Pro y de iPad Pro 11 (`test/nucleo/ui/vitrina_campo/capturas_sistema_visual_test.dart`), no desde el simulador. Agregar la plataforma iOS (`flutter create --platforms=ios`) es una tarea aparte.
+- El proyecto `ios/` define un esquema Xcode por flavor (`piloto`, `auxiliar`, `cliente`), con `applicationId` `com.agrocom.agrocomField.<flavor>` y soporte de iPad. Las capturas de `docs/diseno/capturas/` se generan con el motor de Flutter a tamaño de iPhone 17 Pro y de iPad Pro 11 (`test/nucleo/ui/vitrina_campo/capturas_sistema_visual_test.dart`), no desde el simulador.
