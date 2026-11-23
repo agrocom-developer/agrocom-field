@@ -23,6 +23,8 @@
 # Configuración de entorno real — el .example se versiona
 config/*.json
 !config/*.json.example
+# El perfil demo no lleva secretos: datos ficticios y sin servidor.
+!config/env.demo.json
 
 
 
