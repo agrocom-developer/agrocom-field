@@ -7,8 +7,8 @@ import '../tokens_campo.dart';
 /// de layout al llegar los datos. Brilla con un barrido suave; con
 /// "reducir movimiento" queda estático.
 ///
-/// Se usa en pantallas del flavor cliente (online-first), donde sí hay
-/// espera de red. En el lote (offline) los datos salen de `drift` y no hay
+/// Se usa donde sí hay espera de red: el flavor cliente (online-first) y la
+/// superficie del proveedor (ofertas, perfil, drones). En el lote (offline) los datos salen de `drift` y no hay
 /// esqueleto: la pantalla ya tiene contenido.
 class EsqueletoCampo extends StatefulWidget {
   const EsqueletoCampo({this.ancho, this.alto = 16, this.radio = 8, super.key});
