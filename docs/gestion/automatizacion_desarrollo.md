@@ -23,7 +23,7 @@ Más simple que el de `agrocom-api`: sin Docker, sin base de datos de servicio �
 | Codegen limpio | `dart run build_runner build --delete-conflicting-outputs` (si `pubspec.yaml` usa `build_runner`, mismo criterio que ya tiene `ci.yml`) |
 | Tests | `flutter test` |
 
-Detenerse en la primera falla, exit code honesto — misma cascada que corre `flutter-tests` en `.github/workflows/ci.yml`, así que un verde local predice el verde de CI. A diferencia de `agrocom-api`, no hay etapa de build de assets ni de regresión visual todavía (ver "Lo que falta" más abajo).
+Por defecto `bin/verify` verifica solo lo afectado por el diff contra `origin/develop`; `bin/verify --todo` corre las etapas de arriba sobre todo el repo (ver `docs/gestion/ci-por-impacto.md`). Detenerse en la primera falla, exit code honesto — misma cascada que corre `flutter-tests` en `.github/workflows/ci.yml`, así que un verde local predice el verde de CI. A diferencia de `agrocom-api`, no hay etapa de build de assets ni de regresión visual todavía (ver "Lo que falta" más abajo).
 
 ### 2. El merge: `auto-merge.yml`
 

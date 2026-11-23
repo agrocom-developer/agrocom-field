@@ -35,9 +35,8 @@ flutter run --flavor cliente  -t lib/main_cliente.dart  --dart-define-from-file=
 ```
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
-dart format --output=none --set-exit-if-changed .
-flutter analyze
-flutter test
+bin/verify          # solo lo afectado por el diff contra origin/develop
+bin/verify --todo   # formato, análisis y suite completa
 ```
 
 Ver el skill `verificacion` de este repo para el detalle de qué corre `ci.yml`.

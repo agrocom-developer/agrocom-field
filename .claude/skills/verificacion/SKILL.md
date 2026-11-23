@@ -1,19 +1,24 @@
 ---
 name: verificacion
-description: La compuerta de calidad de agrocom-field — qué corre en CI (dart format, flutter analyze, flutter test), qué significa que cada etapa falle, y qué NO se toca para hacerla pasar. Usar antes de dar por cerrado cualquier cambio de código, y siempre antes de commitear.
+description: La compuerta de calidad de agrocom-field — bin/verify (solo lo afectado por defecto, --todo para todo), qué corre en CI (dart format, flutter analyze, flutter test por impacto), qué significa que cada etapa falle, y qué NO se toca para hacerla pasar. Usar antes de dar por cerrado cualquier cambio de código, y siempre antes de commitear.
 ---
 
 # Verificación — la compuerta de agrocom-field
 
-Un cambio está terminado cuando las tres etapas de `.github/workflows/ci.yml` pasan. No cuando "se ve bien", no cuando el test que escribiste pasa: cuando la cascada completa pasa.
+Un cambio está terminado cuando las etapas de `bin/verify` pasan (formato, análisis y pruebas afectadas) y el check `flutter-tests` de `.github/workflows/ci.yml` queda en verde. No cuando "se ve bien", no cuando el test que escribiste pasa: cuando la cascada pasa.
 
 ## Cómo correrlo localmente
 
 ```
-./bin/verify
+bin/verify          # por defecto: solo lo afectado por el diff contra origin/develop
+bin/verify --todo   # suite completa (formato, análisis y tests de todo el repo)
 ```
 
-`bin/verify` encadena las etapas de `flutter-tests` de CI (dependencias, codegen, formato, análisis y tests) y se detiene en la primera falla, así que un verde local predice el verde de CI. Las etapas de formato, análisis y tests también se corren sueltas: `dart format --output=none --set-exit-if-changed .`, `flutter analyze`, `flutter test`.
+Nadie corre la suite entera por defecto, ni una persona ni un agente: `bin/verify` calcula con el selector (`bin/tests-afectados`) qué pruebas alcanza el cambio, formatea y analiza solo los `.dart` tocados y suma el humo mínimo (replay del motor de sync, contrato de API, reglas de importación y el propio selector). Si el diff toca una zona crítica (lockfiles, `config/`, `lib/nucleo/db`, `lib/nucleo/sync`, `.github/`, `bin/`, `tool/`, fixtures o helpers de prueba), el selector pide la suite completa y `bin/verify` la corre. El selector falla hacia más pruebas, nunca hacia menos.
+
+Usar `bin/verify --todo` solo antes de un release o al tocar algo transversal que el selector no puede razonar. No correr `flutter test` a secas como verificación de rutina. Detalle en `docs/gestion/ci-por-impacto.md`.
+
+En CI el mismo criterio decide el modo: PR a `develop` corre lo afectado; PR a `master`, `workflow_dispatch`, etiqueta `full-ci` y el nocturno corren la suite completa en shards. El check requerido sigue siendo `flutter-tests`, que agrega el resultado de todos los jobs.
 
 ## Las etapas, qué miden, cómo se corrigen
 
@@ -23,9 +28,9 @@ Un cambio está terminado cuando las tres etapas de `.github/workflows/ci.yml` p
 | Análisis estático | `flutter analyze` | Tipos, imports muertos, lints del `analysis_options.yaml` | Se corrige tipando y limpiando de verdad — no silenciando el lint sin razón |
 | Tests | `flutter test` | Unit tests de `domain/` (Dart puro, sin emulador) + widget tests donde apliquen | Ver abajo |
 
-## El job de CI se saltea mientras no exista `pubspec.yaml`
+## El job de CI sin `pubspec.yaml`
 
-`detect-flutter` en `ci.yml` chequea si el proyecto Flutter ya se inicializó (`flutter create` + dependencias). Hasta entonces, `flutter-tests` aparece como `skipped` — y el auto-merge trata eso como un check aprobado (mismo patrón que `detect-laravel` en `agrocom-api`). Esto es intencional: permite que el workstation (`CLAUDE.md`, docs, agentes, skills) se integre por PR antes de que exista una sola línea de Dart.
+`detectar` en `ci.yml` chequea si el proyecto Flutter está inicializado. Sin `pubspec.yaml`, el modo es `ninguno` y el agregador `flutter-tests` termina en verde sin correr nada.
 
 ## El test de replay no es opcional
 

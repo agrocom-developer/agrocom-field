@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#
+# Imprime las pruebas afectadas por el diff contra origin/develop (una ruta
+# por línea), o la palabra TODO si el cambio obliga a correr la suite
+# completa. Ante cualquier duda, TODO: el selector falla hacia más pruebas.
+#
+#   bin/tests-afectados                    # contra origin/develop
+#   bin/tests-afectados --base develop     # otra base
+#   bin/tests-afectados --solo-dart        # los .dart cambiados (format/analyze)
+#
+# La lógica vive en tool/selector/ y se prueba en test/tool/selector_test.dart.
+# Ver docs/gestion/ci-por-impacto.md.
+#
+set -euo pipefail
+cd "$(dirname "$0")/.."
+exec dart tool/tests_afectados.dart "$@"
