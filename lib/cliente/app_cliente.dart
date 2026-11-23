@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../nucleo/ui/paleta_campo.dart';
 import '../nucleo/ui/componentes/componentes_campo.dart';
 import '../nucleo/ui/tema_campo.dart';
+import 'acceso/presentation/arranque_cubit.dart';
+import 'acceso/presentation/puerta_acceso_cliente.dart';
 import 'di/dependencias_cliente.dart';
+import 'inicio/domain/inicio_cliente_repositorio.dart';
+import 'inicio/presentation/inicio_cliente_cubit.dart';
+import 'inicio/presentation/inicio_cliente_pantalla.dart';
 import 'solicitar/presentation/solicitar_pantalla.dart';
 import 'cuenta/presentation/cuenta_pantalla.dart';
 import 'servicios/presentation/historial_pantalla.dart';
-import 'servicios/presentation/inicio_cliente_pantalla.dart';
 import 'servicios/presentation/servicio_detalle_pantalla.dart';
 
 /// App del flavor cliente. Tema claro por defecto y oscuro según el sistema
@@ -27,7 +32,13 @@ class AppCliente extends StatelessWidget {
       // Los repositorios van por encima del `Navigator`: las rutas que se
       // apilan (detalle, seguimiento) los heredan.
       builder: (context, child) => dependencias.proveer(child: child!),
-      home: const ShellCliente(),
+      // La puerta decide entre splash, presentación, acceso y navegación.
+      home: PuertaAccesoCliente(
+        notaAcceso: dependencias.notaAcceso,
+        dentro: (context) => ShellCliente(
+          alCerrarSesion: context.read<ArranqueCubit>().cerrarSesion,
+        ),
+      ),
     );
   }
 }
@@ -35,7 +46,11 @@ class AppCliente extends StatelessWidget {
 /// Navegación raíz del cliente: Inicio, Solicitar, Servicios y Cuenta. Barra
 /// inferior en teléfono y riel lateral en iPad (`NavegacionAdaptativaCampo`).
 class ShellCliente extends StatefulWidget {
-  const ShellCliente({super.key});
+  const ShellCliente({this.alCerrarSesion, super.key});
+
+  /// Cierra la sesión desde la pestaña Cuenta. Sin él, la cuenta no ofrece
+  /// la acción.
+  final VoidCallback? alCerrarSesion;
 
   @override
   State<ShellCliente> createState() => _ShellClienteState();
@@ -67,6 +82,18 @@ class _ShellClienteState extends State<ShellCliente> {
     ),
   ];
 
+  // El cubit del inicio vive con la navegación: volver a la pestaña Inicio
+  // no repite la carga.
+  late final InicioClienteCubit _inicio = InicioClienteCubit(
+    context.read<InicioClienteRepositorio>(),
+  )..cargar();
+
+  @override
+  void dispose() {
+    _inicio.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return NavegacionAdaptativaCampo(
@@ -74,8 +101,12 @@ class _ShellClienteState extends State<ShellCliente> {
       indice: _indice,
       onSeleccionar: (i) => setState(() => _indice = i),
       cuerpo: switch (_indice) {
-        0 => InicioClientePantalla(
-          alSolicitar: () => setState(() => _indice = 1),
+        0 => BlocProvider.value(
+          value: _inicio,
+          child: InicioClientePantalla(
+            alSolicitar: () => setState(() => _indice = 1),
+            alVerServicios: () => setState(() => _indice = 2),
+          ),
         ),
         1 => SolicitarPantalla(
           alSolicitado: (s) {
@@ -88,7 +119,7 @@ class _ShellClienteState extends State<ShellCliente> {
           },
         ),
         2 => const HistorialPantalla(),
-        _ => const CuentaPantalla(),
+        _ => CuentaPantalla(alCerrarSesion: widget.alCerrarSesion),
       },
     );
   }

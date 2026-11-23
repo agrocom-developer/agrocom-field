@@ -16,7 +16,7 @@ La interfaz es la parte del producto que más hay que ver y probar, y el backend
 
 ### Capa de datos
 
-- Cada feature declara una interfaz de repositorio en `domain/` (`ServiciosClienteRepositorio`, `SolicitudRepositorio`, `SeguimientoRepositorio`, `CalificacionRepositorio`, `CuentaRepositorio`, `OfertasRepositorio`, `PerfilRepositorio`, `DronesRepositorio`, `ServicioAsignadoRepositorio`, `MezclaRepositorio`, `ServicioAsignadoAuxiliarRepositorio`).
+- Cada feature declara una interfaz de repositorio en `domain/` (`ServiciosClienteRepositorio`, `SolicitudRepositorio`, `SeguimientoRepositorio`, `CalificacionRepositorio`, `CuentaRepositorio`, `AccesoRepositorio`, `InicioClienteRepositorio`, `OfertasRepositorio`, `PerfilRepositorio`, `DronesRepositorio`, `ServicioAsignadoRepositorio`, `MezclaRepositorio`, `ServicioAsignadoAuxiliarRepositorio`).
 - Las entidades compartidas (`Lote`, `Servicio`, `Proveedor`, `Dron`, `Oferta`, `SeguimientoVivo`, `Calificacion`) viven en `lib/nucleo/marketplace/dominio/`. Hectáreas, litros y dinero son `Decimal`; las coordenadas son `double`.
 - Cada flavor agrupa sus repositorios en una clase `Dependencias<Flavor>` que los expone con `RepositoryProvider` por encima del `Navigator`. Las pantallas leen la interfaz con `context.read<…>()` y nunca conocen la implementación.
 - Los repositorios demo (`*_demo.dart`) viven en `data/` de cada feature y comparten un almacén en memoria por flavor (`AlmacenDemo<Flavor>`). Los datos base (lotes con polígonos en Cuatro Cañadas, San Julián, Pailón y Colonia Okinawa, proveedores con calificaciones, ofertas, historial) están en `lib/nucleo/marketplace/demo/datos_demo.dart` y las fechas se calculan respecto del reloj para que la demo siempre se vea reciente.

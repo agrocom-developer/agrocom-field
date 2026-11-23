@@ -1,0 +1,246 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../nucleo/marketplace/ui/aviso_marketplace.dart';
+import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
+import '../../../nucleo/marketplace/ui/campo_formulario_marketplace.dart';
+import '../../../nucleo/ui/paleta_campo.dart';
+import '../../../nucleo/ui/tokens_campo.dart';
+import '../domain/acceso_repositorio.dart';
+import '../domain/reglas_acceso.dart';
+import 'formulario_acceso_estado.dart';
+import 'lienzo_acceso.dart';
+import 'registro_cliente_cubit.dart';
+
+/// Registro del cliente en dos bloques: quién eres y cómo entras. Los
+/// errores que devuelve el servidor se muestran junto a su campo; sin red,
+/// el formulario conserva lo escrito.
+class RegistroClientePantalla extends StatelessWidget {
+  const RegistroClientePantalla({
+    required this.alEntrar,
+    required this.alVolver,
+    super.key,
+  });
+
+  final ValueChanged<SesionCliente> alEntrar;
+  final VoidCallback alVolver;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          RegistroClienteCubit(context.read<AccesoRepositorio>()),
+      child: BlocListener<RegistroClienteCubit, FormularioAccesoEstado>(
+        listenWhen: (antes, ahora) => ahora.sesion != null,
+        listener: (context, estado) {
+          HapticaCampo.confirmacion();
+          alEntrar(estado.sesion!);
+        },
+        child: PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (salio, _) {
+            if (!salio) alVolver();
+          },
+          child: LienzoAcceso(child: _Formulario(alVolver: alVolver)),
+        ),
+      ),
+    );
+  }
+}
+
+class _Formulario extends StatefulWidget {
+  const _Formulario({required this.alVolver});
+
+  final VoidCallback alVolver;
+
+  @override
+  State<_Formulario> createState() => _FormularioState();
+}
+
+class _FormularioState extends State<_Formulario> {
+  final _formulario = GlobalKey<FormState>();
+  final _nombre = TextEditingController();
+  final _telefono = TextEditingController();
+  final _correo = TextEditingController();
+  final _contrasena = TextEditingController();
+  bool _intentado = false;
+
+  @override
+  void dispose() {
+    _nombre.dispose();
+    _telefono.dispose();
+    _correo.dispose();
+    _contrasena.dispose();
+    super.dispose();
+  }
+
+  void _enviar() {
+    setState(() => _intentado = true);
+    if (!(_formulario.currentState?.validate() ?? false)) return;
+    FocusScope.of(context).unfocus();
+    context.read<RegistroClienteCubit>().enviar(
+      DatosRegistroCliente(
+        nombre: _nombre.text.trim(),
+        telefono: _telefono.text.trim(),
+        correo: _correo.text.trim(),
+        contrasena: _contrasena.text,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final paleta = context.paleta;
+    final texto = Theme.of(context).textTheme;
+    final cubit = context.read<RegistroClienteCubit>();
+    return BlocBuilder<RegistroClienteCubit, FormularioAccesoEstado>(
+      builder: (context, estado) {
+        final mensaje = estado.mensajeFallo;
+        Widget bloque(String titulo) => Padding(
+          padding: const EdgeInsets.only(bottom: EspaciadoCampo.m),
+          child: Semantics(
+            header: true,
+            child: Text(
+              titulo.toUpperCase(),
+              style: texto.labelSmall?.copyWith(color: paleta.textoSecundario),
+            ),
+          ),
+        );
+        return Form(
+          key: _formulario,
+          autovalidateMode: _intentado
+              ? AutovalidateMode.onUserInteraction
+              : AutovalidateMode.disabled,
+          child: AutofillGroup(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // El botón sobresale del margen para que la flecha quede
+                // alineada con el texto y conserve su objetivo de 48 px.
+                Transform.translate(
+                  offset: const Offset(-EspaciadoCampo.m, 0),
+                  child: IconButton(
+                    key: const Key('registro-volver'),
+                    tooltip: 'Volver al ingreso',
+                    onPressed: estado.enviando ? null : widget.alVolver,
+                    icon: const Icon(Icons.arrow_back_rounded),
+                    color: paleta.texto,
+                  ),
+                ),
+                const SizedBox(height: EspaciadoCampo.s),
+                Text('Crea tu cuenta', style: texto.headlineMedium),
+                const SizedBox(height: EspaciadoCampo.s),
+                Text(
+                  'Toma menos de un minuto.',
+                  style: texto.bodyLarge?.copyWith(
+                    color: paleta.textoSecundario,
+                  ),
+                ),
+                const SizedBox(height: EspaciadoCampo.xl),
+                AnimatedSwitcher(
+                  duration: MovimientoCampo.duracion(
+                    context,
+                    MovimientoCampo.media,
+                  ),
+                  switchInCurve: MovimientoCampo.entrada,
+                  switchOutCurve: MovimientoCampo.salida,
+                  child: mensaje == null
+                      ? const SizedBox(width: double.infinity)
+                      : Padding(
+                          key: ValueKey(mensaje),
+                          padding: const EdgeInsets.only(
+                            bottom: EspaciadoCampo.l,
+                          ),
+                          child: Semantics(
+                            liveRegion: true,
+                            child: AvisoMarketplace(
+                              mensaje: mensaje,
+                              tono: estado.sinConexion
+                                  ? TonoAviso.alerta
+                                  : TonoAviso.error,
+                              icono: estado.sinConexion
+                                  ? Icons.wifi_off_rounded
+                                  : null,
+                            ),
+                          ),
+                        ),
+                ),
+                bloque('Tus datos'),
+                CampoFormularioMarketplace(
+                  key: const Key('registro-nombre'),
+                  etiqueta: 'Nombre completo',
+                  controller: _nombre,
+                  enabled: !estado.enviando,
+                  keyboardType: TextInputType.name,
+                  textCapitalization: TextCapitalization.words,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.name],
+                  validator: ReglasAcceso.nombre,
+                  errorServidor: estado.porCampo[CampoAcceso.nombre],
+                  onChanged: (_) => cubit.campoEditado(CampoAcceso.nombre),
+                ),
+                const SizedBox(height: EspaciadoCampo.l),
+                CampoFormularioMarketplace(
+                  key: const Key('registro-telefono'),
+                  etiqueta: 'Teléfono',
+                  controller: _telefono,
+                  enabled: !estado.enviando,
+                  keyboardType: TextInputType.phone,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.telephoneNumber],
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9+ ]')),
+                  ],
+                  validator: ReglasAcceso.telefono,
+                  errorServidor: estado.porCampo[CampoAcceso.telefono],
+                  onChanged: (_) => cubit.campoEditado(CampoAcceso.telefono),
+                ),
+                const SizedBox(height: EspaciadoCampo.xl),
+                bloque('Tu acceso'),
+                CampoFormularioMarketplace(
+                  key: const Key('registro-correo'),
+                  etiqueta: 'Correo',
+                  controller: _correo,
+                  enabled: !estado.enviando,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  autofillHints: const [AutofillHints.email],
+                  validator: ReglasAcceso.correo,
+                  errorServidor: estado.porCampo[CampoAcceso.correo],
+                  onChanged: (_) => cubit.campoEditado(CampoAcceso.correo),
+                ),
+                const SizedBox(height: EspaciadoCampo.l),
+                CampoFormularioMarketplace(
+                  key: const Key('registro-contrasena'),
+                  etiqueta: 'Contraseña',
+                  controller: _contrasena,
+                  enabled: !estado.enviando,
+                  obscureText: true,
+                  keyboardType: TextInputType.visiblePassword,
+                  textInputAction: TextInputAction.done,
+                  autofillHints: const [AutofillHints.newPassword],
+                  ayuda:
+                      'Mínimo ${ReglasAcceso.largoMinimoContrasena} '
+                      'caracteres.',
+                  validator: ReglasAcceso.contrasenaNueva,
+                  errorServidor: estado.porCampo[CampoAcceso.contrasena],
+                  onChanged: (_) => cubit.campoEditado(CampoAcceso.contrasena),
+                  onFieldSubmitted: (_) => _enviar(),
+                ),
+                const SizedBox(height: EspaciadoCampo.xl),
+                BotonPrincipalMarketplace(
+                  key: const Key('registro-crear'),
+                  texto: 'Crear cuenta',
+                  cargando: estado.enviando,
+                  onPressed: _enviar,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

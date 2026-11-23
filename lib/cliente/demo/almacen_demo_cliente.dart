@@ -2,6 +2,7 @@ import 'dart:async';
 
 import '../../nucleo/marketplace/demo/datos_demo.dart';
 import '../../nucleo/marketplace/dominio/dominio.dart';
+import '../acceso/domain/acceso_repositorio.dart';
 
 /// Estado en memoria del flavor cliente en modo demo: los repositorios fake
 /// de cada feature lo comparten para que una solicitud nueva aparezca en el
@@ -15,6 +16,9 @@ class AlmacenDemoCliente {
   late List<Servicio> _servicios;
   final _cambios = StreamController<List<Servicio>>.broadcast();
   final _porClave = <String, Servicio>{};
+
+  /// Sesión del cliente en la demo; `null` mientras nadie haya entrado.
+  SesionCliente? sesion;
 
   List<Servicio> get servicios => List.unmodifiable(_servicios);
 
