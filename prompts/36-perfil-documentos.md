@@ -23,7 +23,7 @@ Cargá `verificacion`, `flujo-git-pr`.
 ## Criterio de aceptación
 
 - `./bin/verify` devuelve 0.
-- `flutter test test/piloto/perfil` devuelve 0, con casos de subida exitosa, imagen mayor a 300 KB comprimida, documento rechazado con motivo y cierre de sesión que limpia los documentos locales.
+- `flutter test test/nucleo/marketplace/proveedor` devuelve 0, con casos de subida exitosa, imagen mayor a 300 KB comprimida, documento rechazado con motivo y cierre de sesión que limpia los documentos locales.
 
 ## Cierre de cada etapa
 

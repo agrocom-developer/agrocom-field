@@ -41,7 +41,7 @@ Objetivo: que un cliente solicite, un proveedor acepte, el servicio se ejecute y
 
 | Id | Tipo | Qué | Criterio de aceptación | Tarea |
 |---|---|---|---|---|
-| HU-M05 | HU | Bandeja de ofertas: aceptar y rechazar con red, sin outbox (crítica) | Tests de aceptada, ya tomada, vencida, sin red e idempotencia; sin `cola_sync` en `lib/piloto/ofertas` | T37 |
+| HU-M05 | HU | Bandeja de ofertas: aceptar y rechazar con red, sin outbox (crítica) | Tests de aceptada, ya tomada, vencida, sin red e idempotencia; sin `cola_sync` en `lib/nucleo/marketplace/proveedor/ofertas` | T37 |
 | HU-M06 | HU | Solicitar servicio: lote en el mapa, hectáreas decimales, producto y fecha, con clave de idempotencia | Tests de polígono a hectáreas, doble envío y sin red; reglas de importación | T38 |
 | HU-M07 | HU | Seguimiento en vivo: línea de estados, posición del dron y hectáreas completadas | Tests de estados, privacidad de posición y sin red | T39 |
 | HU-M08 | HU | Calificar: el cliente califica al proveedor; el proveedor ve la calificación y califica al cliente por outbox | Tests de calificación única, moderación y replay | T40 |
