@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:decimal/decimal.dart';
 
-import '../../nucleo/marketplace/demo/datos_demo.dart';
-import '../../nucleo/marketplace/dominio/dominio.dart';
+import '../../demo/datos_demo.dart';
+import '../../dominio/dominio.dart';
 
-/// Estado en memoria del flavor piloto en modo demo.
-class AlmacenDemoPiloto {
-  AlmacenDemoPiloto({DatosDemo? datos}) : datos = datos ?? DatosDemo() {
+/// Estado en memoria del proveedor en modo demo. Lo comparten los flavors
+/// `piloto` y `auxiliar`: la bandeja, el perfil y los drones son del
+/// proveedor, no de un rol.
+class AlmacenDemoProveedor {
+  AlmacenDemoProveedor({DatosDemo? datos}) : datos = datos ?? DatosDemo() {
     _ofertas = this.datos.ofertasIniciales();
     _asignados = [this.datos.servicios.first];
   }
@@ -17,12 +19,28 @@ class AlmacenDemoPiloto {
   late List<Servicio> _asignados;
   final _ofertasCambios = StreamController<List<Oferta>>.broadcast();
   final _asignadosCambios = StreamController<List<Servicio>>.broadcast();
+  final _redCambios = StreamController<bool>.broadcast();
   final _respuestas = <String, ResultadoRespuestaOferta>{};
+  bool _enLinea = true;
 
   Proveedor get piloto => datos.pilotoDemo;
 
   List<Oferta> get ofertas => List.unmodifiable(_ofertas);
   List<Servicio> get asignados => List.unmodifiable(_asignados);
+
+  /// Hay red en el dispositivo. La demo arranca en línea.
+  bool get enLinea => _enLinea;
+
+  set enLinea(bool valor) {
+    if (valor == _enLinea) return;
+    _enLinea = valor;
+    _redCambios.add(valor);
+  }
+
+  Stream<bool> observarRed() async* {
+    yield _enLinea;
+    yield* _redCambios.stream;
+  }
 
   Stream<List<Oferta>> observarOfertas() async* {
     yield ofertas;

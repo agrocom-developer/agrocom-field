@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../nucleo/ui/componentes/componentes_campo.dart';
 import '../nucleo/ui/tema_campo.dart';
 import 'di/dependencias_piloto.dart';
-import 'dron/presentation/drones_pantalla.dart';
-import 'ofertas/presentation/ofertas_pantalla.dart';
-import 'perfil/presentation/perfil_pantalla.dart';
+import '../nucleo/marketplace/proveedor/dron/presentation/drones_pantalla.dart';
+import '../nucleo/marketplace/proveedor/ofertas/presentation/ofertas_pantalla.dart';
+import '../nucleo/marketplace/proveedor/perfil/presentation/perfil_pantalla.dart';
 import 'servicio_asignado/presentation/servicio_asignado_pantalla.dart';
 
 /// Superficie del marketplace del flavor piloto con datos ficticios

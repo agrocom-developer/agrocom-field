@@ -1,4 +1,4 @@
-import '../../../nucleo/marketplace/dominio/dominio.dart';
+import '../../../dominio/dominio.dart';
 
 /// Bandeja de ofertas del proveedor. Lectura en línea; aceptar y rechazar
 /// van directo a la API, sin outbox, con clave de idempotencia generada en

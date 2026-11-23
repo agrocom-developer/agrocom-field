@@ -1,11 +1,11 @@
-import '../../../nucleo/marketplace/dominio/dominio.dart';
-import '../../demo/almacen_demo_piloto.dart';
+import '../../../dominio/dominio.dart';
+import '../../demo/almacen_demo_proveedor.dart';
 import '../domain/perfil_repositorio.dart';
 
 class PerfilDemo implements PerfilRepositorio {
   PerfilDemo(this._almacen);
 
-  final AlmacenDemoPiloto _almacen;
+  final AlmacenDemoProveedor _almacen;
 
   @override
   Future<Proveedor> perfil() async => _almacen.piloto;
@@ -21,4 +21,11 @@ class PerfilDemo implements PerfilRepositorio {
           s.proveedor?.id == _almacen.piloto.id)
         s,
   ];
+
+  @override
+  Future<MetricasProveedor> metricas() async => _almacen.datos.metricasPiloto;
+
+  @override
+  Future<ResumenCalificaciones> calificaciones() async =>
+      _almacen.datos.calificacionesDelPiloto;
 }
