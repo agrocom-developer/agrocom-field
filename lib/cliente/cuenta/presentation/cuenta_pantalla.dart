@@ -12,7 +12,10 @@ import '../domain/cuenta_repositorio.dart';
 /// Cuenta del cliente: datos de contacto y las calificaciones que le dieron
 /// los proveedores.
 class CuentaPantalla extends StatelessWidget {
-  const CuentaPantalla({super.key});
+  const CuentaPantalla({this.alCerrarSesion, super.key});
+
+  /// Acción de cerrar sesión; sin ella el botón no se muestra.
+  final VoidCallback? alCerrarSesion;
 
   static Future<(CuentaCliente, ResumenCalificaciones)> _cargar(
     CuentaRepositorio cuentas,
@@ -125,6 +128,15 @@ class CuentaPantalla extends StatelessWidget {
                   'Modo demo: los datos son ficticios y no hay conexión con '
                   'el servidor.',
             ),
+            if (alCerrarSesion != null) ...[
+              const SizedBox(height: EspaciadoCampo.xl),
+              OutlinedButton.icon(
+                key: const Key('cuenta-cerrar-sesion'),
+                onPressed: alCerrarSesion,
+                icon: const Icon(Icons.logout_rounded),
+                label: const Text('Cerrar sesión'),
+              ),
+            ],
           ],
         );
       },

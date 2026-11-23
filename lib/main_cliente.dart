@@ -20,7 +20,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (modoDemo) {
-    runApp(AppCliente(dependencias: DependenciasCliente.demo()));
+    // La demo arranca como recién instalada: presentación, acceso e inicio.
+    runApp(AppCliente(dependencias: DependenciasCliente.demo(primerUso: true)));
     return;
   }
 
