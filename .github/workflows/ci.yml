@@ -1,33 +1,64 @@
 name: CI
 
-# Un solo disparador: pull_request. El push a develop/master no repite el CI:
-# los cambios llegan a esas ramas únicamente por PR, que ya pasó por este flujo.
+# Disparadores:
+#   - pull_request a develop/master. El push a esas ramas no repite el CI:
+#     los cambios llegan únicamente por PR, que ya pasó por este flujo.
+#     `labeled` permite que la etiqueta `full-ci` dispare la suite completa.
+#   - schedule: red de seguridad nocturna (suite completa sobre develop).
+#   - workflow_dispatch: suite completa a demanda.
 on:
   pull_request:
     branches: [develop, master]
+    types: [opened, synchronize, reopened, labeled]
+  schedule:
+    - cron: "0 7 * * *"
+  workflow_dispatch:
 
 # Mínimo privilegio por defecto; cada job que necesite más lo declara aparte.
 permissions:
   contents: read
 
 concurrency:
-  group: ci-${{ github.event.pull_request.number }}
+  group: ci-${{ github.event.pull_request.number || github.run_id }}
   cancel-in-progress: true
 
 env:
   # Versión de Flutter fijada: el mismo SDK en local, en CI y en los builds.
   FLUTTER_VERSION: "3.47.4"
+  # Presupuestos de tiempo (segundos) que avisa el resumen del job. Se pueden
+  # cambiar con variables del repositorio del mismo nombre.
+  PRESUPUESTO_AFECTADOS_SEG: ${{ vars.PRESUPUESTO_AFECTADOS_SEG || '600' }}
+  PRESUPUESTO_COMPLETO_SEG: ${{ vars.PRESUPUESTO_COMPLETO_SEG || '900' }}
+  # Shards de la suite completa; la matriz de flutter-tests-completo tiene
+  # la misma cantidad de entradas.
+  SHARDS: "3"
 
+# Estrategia (docs/gestion/ci-por-impacto.md):
+#   - PR a develop: formato/análisis de lo tocado + pruebas afectadas + humo.
+#   - PR a master (release), workflow_dispatch, etiqueta full-ci y schedule:
+#     suite completa en shards, sin filtros.
+#   - `flutter-tests` es el check requerido por auto-merge.yml. Agrega el
+#     resultado de todo lo demás y nunca queda en `skipped` si algo debía
+#     correr.
 jobs:
-  detect-flutter:
-    name: detect-flutter
+  detectar:
+    name: detectar
     runs-on: ubuntu-latest
     outputs:
       exists: ${{ steps.check.outputs.exists }}
+      modo: ${{ steps.modo.outputs.modo }}
+      motivo: ${{ steps.modo.outputs.motivo }}
+      tests: ${{ steps.sel.outputs.tests }}
+      dart_cambiados: ${{ steps.sel.outputs.dart_cambiados }}
+      android: ${{ steps.sel.outputs.android }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
           persist-credentials: false
+          # Historia completa: el selector calcula el merge-base con la base.
+          fetch-depth: 0
+          ref: ${{ github.event_name == 'schedule' && 'develop' || '' }}
+
       - id: check
         run: |
           if [ -f pubspec.yaml ]; then
@@ -36,10 +67,127 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
-  flutter-tests:
-    name: flutter-tests
-    needs: detect-flutter
-    if: needs.detect-flutter.outputs.exists == 'true'
+      # El selector es un script de Dart: se usa el SDK que trae Flutter.
+      - name: Setup Flutter
+        if: steps.check.outputs.exists == 'true'
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Selector de pruebas por impacto
+        id: sel
+        if: steps.check.outputs.exists == 'true'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set +e
+          RAMA="${BASE_REF:-develop}"
+          git fetch --no-tags origin "$RAMA" 2>/dev/null
+          dart tool/tests_afectados.dart --base "origin/$RAMA" --formato github > sel.txt
+          if [ $? -ne 0 ] || ! grep -q '^modo=' sel.txt; then
+            # El selector falla hacia MÁS pruebas, nunca hacia menos.
+            printf 'modo=todo\ntests=\ndart_cambiados=\nandroid=true\nmotivo=el selector falló\n' > sel.txt
+          fi
+          cat sel.txt >> "$GITHUB_OUTPUT"
+
+      - name: Decidir modo
+        id: modo
+        env:
+          EVENTO: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+          ETIQUETAS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+          SEL_MODO: ${{ steps.sel.outputs.modo }}
+          SEL_MOTIVO: ${{ steps.sel.outputs.motivo }}
+          SEL_TESTS: ${{ steps.sel.outputs.tests }}
+          EXISTE: ${{ steps.check.outputs.exists }}
+        run: |
+          modo=afectados
+          motivo="$SEL_MOTIVO"
+          if [ "$EXISTE" != "true" ]; then
+            modo=ninguno; motivo="sin pubspec.yaml"
+          elif [ "$EVENTO" = "schedule" ] || [ "$EVENTO" = "workflow_dispatch" ]; then
+            modo=completo; motivo="evento $EVENTO"
+          elif [ "$BASE_REF" = "master" ]; then
+            modo=completo; motivo="PR a master (release)"
+          elif echo ",$ETIQUETAS," | grep -q ",full-ci,"; then
+            modo=completo; motivo="etiqueta full-ci"
+          elif [ "$SEL_MODO" != "afectado" ]; then
+            modo=completo; motivo="el selector pide la suite completa: $SEL_MOTIVO"
+          fi
+          echo "modo=$modo" >> "$GITHUB_OUTPUT"
+          echo "motivo=$motivo" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Modo de CI: $modo"
+            echo
+            echo "Motivo: $motivo"
+            echo
+            echo "Pruebas seleccionadas: $SEL_TESTS"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # Formato y análisis. En modo afectados, solo sobre los .dart tocados; en
+  # completo, sobre todo el repo.
+  flutter-estatico:
+    name: flutter-estatico
+    needs: detectar
+    if: needs.detectar.outputs.modo != 'ninguno'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          ref: ${{ github.event_name == 'schedule' && 'develop' || '' }}
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Instalar dependencias
+        run: flutter pub get
+
+      - name: Generar código (build_runner, si el proyecto lo usa)
+        run: |
+          if grep -q build_runner pubspec.yaml; then
+            dart run build_runner build --delete-conflicting-outputs
+          fi
+
+      - name: Estilo de código
+        env:
+          MODO: ${{ needs.detectar.outputs.modo }}
+          CAMBIADOS: ${{ needs.detectar.outputs.dart_cambiados }}
+        run: |
+          if [ "$MODO" = "completo" ]; then
+            dart format --output=none --set-exit-if-changed .
+          elif [ -n "$CAMBIADOS" ]; then
+            # shellcheck disable=SC2086
+            dart format --output=none --set-exit-if-changed $CAMBIADOS
+          else
+            echo "Sin .dart tocados: nada que formatear."
+          fi
+
+      - name: Análisis estático
+        env:
+          MODO: ${{ needs.detectar.outputs.modo }}
+          CAMBIADOS: ${{ needs.detectar.outputs.dart_cambiados }}
+        run: |
+          if [ "$MODO" = "completo" ]; then
+            flutter analyze
+          elif [ -n "$CAMBIADOS" ]; then
+            # shellcheck disable=SC2086
+            flutter analyze $CAMBIADOS
+          else
+            echo "Sin .dart tocados: nada que analizar."
+          fi
+
+  # PR a develop: solo las pruebas afectadas más el humo mínimo.
+  flutter-tests-afectados:
+    name: flutter-tests-afectados
+    needs: detectar
+    if: needs.detectar.outputs.modo == 'afectados'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -62,22 +210,152 @@ jobs:
             dart run build_runner build --delete-conflicting-outputs
           fi
 
-      - name: Estilo de código
-        run: dart format --output=none --set-exit-if-changed .
+      - name: Pruebas afectadas
+        env:
+          PRUEBAS: ${{ needs.detectar.outputs.tests }}
+        run: |
+          mkdir -p build
+          # shellcheck disable=SC2086
+          flutter test --file-reporter json:build/pruebas.json $PRUEBAS
 
-      - name: Análisis estático
-        run: flutter analyze
+      - name: Resumen de tiempos
+        if: always()
+        run: |
+          dart tool/resumen_pruebas.dart --entrada build/pruebas.json \
+            --titulo "Pruebas afectadas" \
+            --presupuesto "$PRESUPUESTO_AFECTADOS_SEG" \
+            --salida "$GITHUB_STEP_SUMMARY"
 
-      - name: Tests
-        run: flutter test
+  # PR a master, dispatch, etiqueta full-ci y schedule: suite completa, sin
+  # filtros, repartida en shards paralelos.
+  flutter-tests-completo:
+    name: flutter-tests-completo (${{ matrix.shard }}/3)
+    needs: detectar
+    if: needs.detectar.outputs.modo == 'completo'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          ref: ${{ github.event_name == 'schedule' && 'develop' || '' }}
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@1a449444c387b1966244ae4d4f8c696479add0b2 # v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Instalar dependencias
+        run: flutter pub get
+
+      - name: Generar código (build_runner, si el proyecto lo usa)
+        run: |
+          if grep -q build_runner pubspec.yaml; then
+            dart run build_runner build --delete-conflicting-outputs
+          fi
+
+      - name: Suite completa (un tercio por shard)
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          mkdir -p build
+          flutter test --total-shards "$SHARDS" --shard-index "$((SHARD - 1))" \
+            --file-reporter json:build/pruebas.json
+
+      - name: Resumen de tiempos
+        if: always()
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          dart tool/resumen_pruebas.dart --entrada build/pruebas.json \
+            --titulo "Suite completa, shard $SHARD/$SHARDS" \
+            --presupuesto "$PRESUPUESTO_COMPLETO_SEG" \
+            --salida "$GITHUB_STEP_SUMMARY"
+
+  # Check requerido por auto-merge.yml. Agrega el resultado de todo lo
+  # anterior: falla si cualquier parte falla o si una parte que debía correr
+  # no corrió (nunca queda en `skipped` cuando debió ejecutarse).
+  flutter-tests:
+    name: flutter-tests
+    needs: [detectar, flutter-estatico, flutter-tests-afectados, flutter-tests-completo]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Agregar resultados
+        env:
+          MODO: ${{ needs.detectar.outputs.modo }}
+          R_DETECTAR: ${{ needs.detectar.result }}
+          R_ESTATICO: ${{ needs.flutter-estatico.result }}
+          R_AFECTADOS: ${{ needs.flutter-tests-afectados.result }}
+          R_COMPLETO: ${{ needs.flutter-tests-completo.result }}
+        run: |
+          echo "modo=$MODO detectar=$R_DETECTAR estatico=$R_ESTATICO afectados=$R_AFECTADOS completo=$R_COMPLETO"
+          if [ "$R_DETECTAR" != "success" ]; then
+            echo "detectar no terminó en success ($R_DETECTAR)"
+            exit 1
+          fi
+          case "$MODO" in
+            ninguno)
+              echo "Sin proyecto Flutter: nada que verificar."
+              exit 0
+              ;;
+            afectados)
+              if [ "$R_ESTATICO" = "success" ] && [ "$R_AFECTADOS" = "success" ] && [ "$R_COMPLETO" = "skipped" ]; then
+                echo "Todo en verde."
+                exit 0
+              fi
+              ;;
+            completo)
+              if [ "$R_ESTATICO" = "success" ] && [ "$R_COMPLETO" = "success" ] && [ "$R_AFECTADOS" = "skipped" ]; then
+                echo "Todo en verde."
+                exit 0
+              fi
+              ;;
+          esac
+          echo "Falló o no corrió una parte requerida para el modo '$MODO'."
+          exit 1
+
+  # Si la corrida nocturna falla, abre (o comenta) un issue.
+  issue-nocturno:
+    name: issue-nocturno
+    needs: flutter-tests
+    if: always() && github.event_name == 'schedule' && needs.flutter-tests.result != 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Abrir o actualizar el issue de la corrida nocturna
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          gh label create ci-nocturno --repo "$REPO" --color B60205 \
+            --description "Falla de la suite completa nocturna" 2>/dev/null || true
+          existente=$(gh issue list --repo "$REPO" --label ci-nocturno --state open \
+            --json number --jq '.[0].number // empty')
+          cuerpo="La suite completa nocturna sobre develop falló: $RUN_URL"
+          if [ -n "$existente" ]; then
+            gh issue comment "$existente" --repo "$REPO" --body "$cuerpo"
+          else
+            gh issue create --repo "$REPO" --label ci-nocturno \
+              --title "CI nocturno falló sobre develop" --body "$cuerpo"
+          fi
 
   # Compila el APK debug de cada flavor para detectar roturas de Gradle,
   # manifiestos o dependencias nativas antes de integrar. No es un check
-  # requerido del auto-merge: informa, no bloquea.
+  # requerido del auto-merge: informa, no bloquea. Corre en modo completo o
+  # cuando el diff toca algo que puede romper el build nativo.
   build-android:
     name: build-android (${{ matrix.flavor }})
-    needs: detect-flutter
-    if: needs.detect-flutter.outputs.exists == 'true'
+    needs: detectar
+    if: needs.detectar.outputs.modo == 'completo' || needs.detectar.outputs.android == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -115,11 +393,12 @@ jobs:
         run: flutter build apk --debug --flavor ${{ matrix.flavor }} -t lib/main_${{ matrix.flavor }}.dart
 
   # Vulnerabilidades conocidas en las dependencias (pubspec.lock) según OSV.
-  # Informativo: no es un check requerido del auto-merge.
+  # Informativo: no es un check requerido del auto-merge. Solo corre si
+  # cambian las dependencias o en modo completo.
   analisis-dependencias:
     name: analisis-dependencias
-    needs: detect-flutter
-    if: needs.detect-flutter.outputs.exists == 'true'
+    needs: detectar
+    if: needs.detectar.outputs.modo == 'completo' || needs.detectar.outputs.android == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
