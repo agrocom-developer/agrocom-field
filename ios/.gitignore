@@ -32,3 +32,7 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
+# Artefactos de Swift Package Manager que Flutter regenera en cada build
+Runner.xcworkspace/xcshareddata/swiftpm/
+Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
