@@ -24,8 +24,8 @@ class InicioClientePantalla extends StatelessWidget {
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
-    return StreamBuilder<List<Servicio>>(
-      stream: context.read<ServiciosClienteRepositorio>().observar(),
+    return StreamEstable<List<Servicio>>(
+      crear: () => context.read<ServiciosClienteRepositorio>().observar(),
       builder: (context, snap) {
         final servicios = snap.data;
         if (servicios == null) return const _Cargando();

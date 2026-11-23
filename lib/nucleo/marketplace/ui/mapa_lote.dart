@@ -7,6 +7,12 @@ import '../dominio/dominio.dart';
 
 LatLng _ll(GeoPunto p) => LatLng(p.latitud, p.longitud);
 
+/// Interruptor global de las teselas de red. Los tests y las capturas lo
+/// apagan para no depender de la red.
+abstract final class ConfiguracionMapa {
+  static bool teselas = true;
+}
+
 /// Mapa con el contorno de uno o más lotes, la estela del dron y su posición.
 /// Teselas abiertas de OpenStreetMap (ADR 0009 de decisiones de UI: sin clave
 /// de proveedor). Con [conTeselas] en falso solo dibuja los polígonos sobre el
@@ -18,7 +24,7 @@ class MapaLote extends StatelessWidget {
     this.posicionDron,
     this.trazado = const [],
     this.interactivo = true,
-    this.conTeselas = true,
+    this.conTeselas,
     this.alSeleccionar,
     this.relleno = const EdgeInsets.all(40),
     super.key,
@@ -31,13 +37,16 @@ class MapaLote extends StatelessWidget {
   final GeoPunto? posicionDron;
   final List<GeoPunto> trazado;
   final bool interactivo;
-  final bool conTeselas;
+
+  /// Por defecto, [ConfiguracionMapa.teselas].
+  final bool? conTeselas;
   final ValueChanged<Lote>? alSeleccionar;
   final EdgeInsets relleno;
 
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
+    final teselas = conTeselas ?? ConfiguracionMapa.teselas;
     final puntos = [
       for (final l in (seleccionado != null ? [seleccionado!] : lotes))
         ...l.poligono,
@@ -75,7 +84,7 @@ class MapaLote extends StatelessWidget {
             },
           ),
           children: [
-            if (conTeselas)
+            if (teselas)
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.agrocom.agrocom_field',
@@ -141,7 +150,7 @@ class MapaLote extends StatelessWidget {
                   ),
                 ],
               ),
-            if (conTeselas)
+            if (teselas)
               const SimpleAttributionWidget(
                 source: Text('© OpenStreetMap'),
                 backgroundColor: Color(0xCCFFFFFF),

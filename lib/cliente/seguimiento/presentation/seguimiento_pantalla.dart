@@ -36,8 +36,9 @@ class SeguimientoPantalla extends StatelessWidget {
           ),
         ),
       ),
-      body: StreamBuilder<SeguimientoVivo>(
-        stream: context.read<SeguimientoRepositorio>().observar(servicio.id),
+      body: StreamEstable<SeguimientoVivo>(
+        crear: () =>
+            context.read<SeguimientoRepositorio>().observar(servicio.id),
         builder: (context, snap) {
           final f = snap.data;
           return Stack(

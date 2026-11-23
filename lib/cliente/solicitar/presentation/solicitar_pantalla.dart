@@ -142,8 +142,8 @@ class _SolicitarPantallaState extends State<SolicitarPantalla> {
           ),
         ),
         Expanded(
-          child: FutureBuilder<(List<Lote>, List<String>)>(
-            future: _datos,
+          child: FuturoEstable<(List<Lote>, List<String>)>(
+            crear: () => _datos,
             builder: (context, snap) {
               final d = snap.data;
               if (d == null) {

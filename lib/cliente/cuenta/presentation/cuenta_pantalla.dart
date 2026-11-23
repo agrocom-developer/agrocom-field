@@ -23,8 +23,8 @@ class CuentaPantalla extends StatelessWidget {
   Widget build(BuildContext context) {
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
-    return FutureBuilder<(CuentaCliente, ResumenCalificaciones)>(
-      future: _cargar(
+    return FuturoEstable<(CuentaCliente, ResumenCalificaciones)>(
+      crear: () => _cargar(
         context.read<CuentaRepositorio>(),
         context.read<CalificacionRepositorio>(),
       ),

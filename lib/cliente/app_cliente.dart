@@ -24,7 +24,10 @@ class AppCliente extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.claro),
       darkTheme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.oscuro),
-      home: dependencias.proveer(child: const ShellCliente()),
+      // Los repositorios van por encima del `Navigator`: las rutas que se
+      // apilan (detalle, seguimiento) los heredan.
+      builder: (context, child) => dependencias.proveer(child: child!),
+      home: const ShellCliente(),
     );
   }
 }

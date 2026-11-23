@@ -19,8 +19,8 @@ class ServicioDetallePantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Servicio>>(
-      stream: context.read<ServiciosClienteRepositorio>().observar(),
+    return StreamEstable<List<Servicio>>(
+      crear: () => context.read<ServiciosClienteRepositorio>().observar(),
       builder: (context, snap) {
         Servicio? s;
         for (final x in snap.data ?? const <Servicio>[]) {

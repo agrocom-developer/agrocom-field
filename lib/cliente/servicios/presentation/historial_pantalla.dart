@@ -30,8 +30,8 @@ class _HistorialPantallaState extends State<HistorialPantalla> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<List<Servicio>>(
-      stream: context.read<ServiciosClienteRepositorio>().observar(),
+    return StreamEstable<List<Servicio>>(
+      crear: () => context.read<ServiciosClienteRepositorio>().observar(),
       builder: (context, snap) {
         final todos = snap.data;
         final lista = todos?.where(_pasa).toList() ?? const <Servicio>[];
