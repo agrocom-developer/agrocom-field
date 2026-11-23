@@ -1,4 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Sincronización con la API (outbox, evidencias). El manifest de debug/profile
+         también la declara para las herramientas de desarrollo; sin esta línea
+         la build release no tendría red. El tráfico en claro está prohibido en
+         release por res/xml/network_security_config.xml. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- HU-62: avisos locales (flutter_local_notifications) — runtime en
          Android 13+, la propia API del plugin la pide en tiempo de
          ejecución (ver NotificadorLocalPlugin.pedirPermiso). -->
@@ -14,7 +19,12 @@
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:fullBackupContent="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:usesCleartextTraffic="false">
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,150 +1,106 @@
-# Visión del proyecto — `agrocom-field`
+# Visión del producto — `agrocom-field`
 
-Este documento orienta a quien empieza a trabajar en este repo sin tener que releer `agrocom-api` entero primero. No reemplaza la especificación ni los ADR — los resume y apunta al original. La fuente de verdad completa vive en `agrocom-api` (ruta local en esta máquina: `/Applications/MAMP/htdocs/agrocom-api`); si algo de acá y la fuente original no coinciden, gana la fuente original y este documento está desactualizado.
+Este documento orienta a quien empieza a trabajar en este repo. Describe el producto, las tres superficies móviles y lo que cada una hace. Las reglas de trabajo están en `CLAUDE.md`; las decisiones de arquitectura, en `docs/decisiones/`; el contrato de API, en `docs/api/openapi.yaml` de `agrocom-api` (ruta local: `/Applications/MAMP/htdocs/agrocom-api`). Si este documento y el contrato no coinciden, manda el contrato.
 
-## Qué problema resuelve
+## Qué es Agrocom
 
-Agrocom SRL aplica agroquímicos con drones (Agras) sobre lotes de sus clientes. El piloto y el auxiliar trabajan en el lote, sin conectividad — hay Starlink en la base, no en el campo. El sistema completo (backend + panel + esta app) automatiza doce funciones (operaciones, trazabilidad, acta de conformidad, reportes, gastos, ingresos, planilla, contabilidad básica, mantenimiento, inventario, portal del cliente, gestión de usuarios), pero **este repo solo cubre la primera pieza de esa cadena: capturar el dato en el lote con la misma fidelidad que si hubiera señal**, y no perder ni una hectárea a un reintento de red.
+Agrocom es un **marketplace de servicio de fumigación con drones**, al estilo de las plataformas de transporte bajo demanda. Un cliente solicita un servicio sobre su lote; un proveedor lo acepta y lo ejecuta. Los drones son los «vehículos» del sistema.
 
-## Las dos apps, un solo código
+- **Clientes**: dueños de campo o sus encargados. Solicitan, siguen y califican servicios.
+- **Proveedores**: pilotos propios de Agrocom, pilotos independientes y dueños de drones de terceros, cada uno con sus auxiliares.
+- **Agrocom**: capta clientes y es el nexo entre ambos lados; además es proveedor propio. La empresa también vende drones y entrega a cada comprador trabajo asegurado a través del marketplace.
 
-Cuatro superficies en todo el sistema; dos de ellas son este repo (especificación §2):
+### Asignación
 
-| Superficie | Quién | Qué hace | Dónde |
+Cuando un cliente solicita un servicio, el motor de `agrocom-api` lo ofrece primero a los pilotos y drones propios de Agrocom. Si ninguno acepta o está disponible, lo ofrece a proveedores externos, con ventana de tiempo, escalado por zona y calificación. Cada oferta se acepta o se rechaza; el primero que acepta a tiempo obtiene el servicio. El cliente y el proveedor se califican entre sí al terminar.
+
+## Las tres superficies móviles
+
+Un solo código Flutter, tres flavors (ADR 0009):
+
+| Flavor | Quién lo usa | Qué hace | Conectividad |
 |---|---|---|---|
-| App piloto | Piloto | Abrir trabajo, condiciones, cerrar lote (ha + captura RC), incidencias, presentar acta | `agrocom-field`, flavor `piloto` |
-| App auxiliar | Auxiliar | Caldo recibido, recargas, batería, combustible, incidencias | `agrocom-field`, flavor `auxiliar` |
-| Panel web | Jefe de campo, encargado, dueño | Todo lo demás (validación, contratos, planilla, mantenimiento...) | `agrocom-api` |
-| Portal cliente | Dueño del campo, agrónomo | Reportes de sus lotes, solo lectura | `agrocom-api` |
+| `cliente` | Dueño del campo o encargado | Registrarse, solicitar un servicio (lote en el mapa, hectáreas, producto, fecha), seguirlo en vivo, calificar al proveedor | Online-first, sin outbox |
+| `piloto` | Piloto (control remoto del dron o celular) | Recibir y aceptar ofertas, gestionar perfil, documentos y dron, ejecutar el servicio asignado: condiciones, sesiones de vuelo, hectáreas, incidencias, evidencias, cierre | Ofertas con red; ejecución offline en el lote |
+| `auxiliar` | Auxiliar del piloto | Registrar mezcla, recargas, baterías e incidencias del servicio en el lote | Offline en el lote |
 
-Piloto y auxiliar **se instalan por separado** (dos APK), pero para el desarrollo **son una sola base de código** con dos puntos de entrada (`main_piloto.dart` / `main_auxiliar.dart`) que comparten sincronización, autenticación, cola offline y evidencias. Un rol tiene, en la práctica, más permisos que su propio flavor: el jefe de campo puede abrir trabajo, registrar recarga, cerrar lote y validar trabajos de otros pilotos (especificación §3). ADR 0005 de este repo resuelve la parte de esa nota que le tocaba a este repo: para las acciones que ya tienen pantalla en alguno de los dos flavors (abrir trabajo, registrar recarga, cerrar lote), una persona con más de un rol asignado entra desde el celular (flavor `auxiliar`) y elige el rol que corresponde en el selector de login — no hace falta pantalla nueva ni operar desde el panel en el campo. Validar trabajos de otros pilotos sigue sin pantalla en ninguna de las dos apps — eso lo sigue haciendo el jefe de campo o el encargado desde el panel (ver más abajo, "El flujo de un lote, de punta a punta", punto 8).
+Las superficies web (panel admin y motor del marketplace) viven en `agrocom-api`: aprobación de proveedores y auxiliares, moderación de calificaciones, asignación, comisión y reportes.
 
-## El flujo de un lote, de punta a punta
+### Qué es online y qué es offline
 
-1. El agrónomo del cliente emite una **orden de aplicación** vigente sobre un lote (litros/ha, parámetros de vuelo acordados). Sin orden vigente, el sistema no deja abrir trabajo.
-2. El piloto **abre el trabajo**: valida que la orden exista y que las condiciones (viento, temperatura, humedad) estén dentro de rango, o las registra fuera de rango con observación firmada por el agrónomo (`autorizado_con_observación`).
-3. El piloto **abre una sesión** (piloto + dron + hectárea inicial acumulada del lote — esto es lo que evita el doble conteo si otro piloto ya venía volando ese lote).
-4. El auxiliar **recibe el caldo** del cliente (litros, calidad) y lo carga en **recargas** por sesión (litros, batería, temperatura de batería).
-5. Cualquiera de los dos registra **incidencias** con evidencia si algo sale mal (caldo, ESC, batería, mecánica, clima).
-6. El piloto **cierra la sesión**: hectáreas de esa sesión, captura del RC, motivo de cierre (completado / relevo de piloto / cambio de dron / falla / clima / fin de jornada / otro).
-7. Si el lote quedó a medias (relevo, falla, fin de jornada), el trabajo queda `parcial` y un piloto entrante **abre una sesión nueva** — cada sesión se valida y se paga por separado, aunque compartan lote.
-8. Del lado del panel web (fuera de este repo): el jefe de campo o el encargado **validan** cada sesión — nunca el propio piloto de esa sesión, a nivel de persona, no de rol — lo que dispara el devengo automático. Cuando todas las sesiones del trabajo están validadas, el agrónomo **firma el acta** y el lote queda conformado.
+- **El lote no tiene señal.** Lo que sucede entre aceptar el servicio y cerrarlo es offline-first: la UI lee de `drift`, toda escritura se inserta localmente y se encola en el outbox en una sola transacción, y cada registro nace con su `uuid_cliente`.
+- **Aceptar o rechazar una oferta requiere red.** Es una competencia por tiempo entre proveedores; la respuesta va directo a la API, sin outbox. Es una excepción documentada y revisable (ADR 0009).
+- **El cliente siempre opera con red.** La app abre con la última lista conocida y avisa claramente cuando no hay conexión.
 
-Detalle completo de la máquina de estados de sesión y trabajo: especificación §5.
+## El recorrido de un servicio
 
-## Lo que hoy contradice la especificación entre sí (y cuál versión seguir)
+1. **Solicitud.** El cliente dibuja o elige su lote en el mapa, declara hectáreas (decimal exacto), producto y fecha deseada. La solicitud viaja con una clave de idempotencia generada en el dispositivo.
+2. **Oferta.** El motor ofrece el servicio. El proveedor la ve en su bandeja, con tiempo restante, zona y hectáreas, y la acepta o rechaza.
+3. **Asignación.** Al aceptar, el servicio y los datos necesarios para ejecutarlo (lote, producto, límites de vuelo, datos de contacto) se bajan a `drift`. Desde aquí el flujo es offline.
+4. **Ejecución.** El piloto abre el servicio, registra condiciones, abre y cierra sesiones de vuelo con hectáreas, registra incidencias con foto y cierra con la imagen del campo. El auxiliar registra mezcla y recargas. Todo se sincroniza cuando vuelve la señal; las evidencias, comprimidas a menos de 300 KB, viajan en una cola aparte.
+5. **Seguimiento.** Mientras el servicio está activo, el cliente ve su avance en vivo: estado, posición del dron y hectáreas completadas.
+6. **Calificación.** El cliente califica al proveedor en un registro propio; el proveedor lo ve y un admin lo modera. El proveedor califica al cliente en otro registro.
 
-La especificación tiene una inconsistencia real que **todavía no se limpió** (`docs/gestion/estado_proyecto.md` de `agrocom-api` lo registra como pendiente de una reunión de cierre): §3 (tabla de roles) y §4.3 (modelo de datos, entidades `recetas_mezcla`/`receta_items`) todavía listan "preparar mezcla" y "definir receta" como algo que Agrocom hace. **Eso quedó obsoleto.** §7, fechada y cerrada el 1/9/2026 (decisión de negocio CR-01, confirmada en entrevistas de campo), es la versión vigente: **el cliente prepara su propio caldo con su propio agrónomo; Agrocom lo recibe ya hecho y lo rocía.**
+## Proveedores, auxiliares y drones
 
-Consecuencia concreta para este repo: la app del auxiliar **no modela fórmula, receta, dosis por hectárea, cálculo de producto por tanque, ni checklist de incorporación** — ni siquiera como campo opcional. Lo que sí registra, según §7.2:
+- El **proveedor independiente se registra solo**; un admin lo aprueba antes de que reciba ofertas.
+- El **piloto registra a su auxiliar**; el admin lo aprueba.
+- El **dron es el vehículo**: tiene matrícula, modelo, capacidad y estado, y pertenece a Agrocom o a un tercero. Conserva sus ciclos de batería. El resto del mantenimiento, inventario y contabilidad interna no vive en la app.
+- Los **documentos del proveedor** (licencia de piloto, matrícula del dron, seguros) se suben desde su perfil y los revisa el admin.
 
-- Litros de caldo recibidos, cuándo y quién lo entregó.
-- Litros consumidos por sesión.
-- Sobrante al cerrar (que se devuelve al cliente).
-- Retraso o rechazo por calidad del caldo (tarde, mal estado, mal filtrado, cantidad insuficiente) — es la prueba de que una demora no fue responsabilidad del servicio de aplicación.
+## Arquitectura
 
-Si en algún momento se retoma el modelo de `recetas_mezcla`/`receta_items` de §4.3 para algo, es una señal de que la especificación cambió de nuevo — no construir sobre esas tablas sin confirmar primero que §7 sigue vigente.
+- BLoC feature-first en tres capas (`presentation/`, `domain/`, `data/`) y un `nucleo/` compartido (ADR 0009).
+- `cliente/`, `piloto/` y `auxiliar/` no se importan entre sí; solo importan de `nucleo/`.
+- Cliente HTTP manual sobre `dio` (ADR 0001); decimal exacto para hectáreas y dinero (ADR 0002); configuración de entorno por `--dart-define-from-file` (ADR 0004); versionado SemVer automatizado (ADR 0007).
+- Tema claro derivado del logo para `cliente` (ADR 0003) y modo campo de alto contraste para `piloto` y `auxiliar` (ADR 0008).
+- Selector de rol del flavor `auxiliar` (ADR 0005).
 
-**Actualización (14/9/2026).** §7 se reescribió el 13/9/2026 con HU-78 de `agrocom-api` (PR #198, mergeado el 14/9): el piloto ahora **transcribe** qué productos y en qué cantidad se cargaron en el caldo (`RegistroSync.tipo = mezcla`: `trabajo_uuid_cliente`, `hora`, `productos[]` con `producto` de texto libre, `cantidad` decimal y `unidad` en `l`/`ml`/`kg`/`g`) — sin dosis por hectárea, orden de incorporación ni compatibilidad (§7.1 sigue vigente en eso). El deslinde de responsabilidad no cambió: Agrocom registra lo declarado, no lo valida. Del lado de esta app la pantalla y el tipo de registro **no están planificados todavía**, y el dueño pidió ese mismo día dejar la mezcla fuera de la vista previa del modo campo (ADR 0008) hasta que decida cómo entra. `recetas_mezcla`/`receta_items` siguen obsoletas: el módulo real es `ope_mezclas`/`ope_mezcla_items`.
+### Sincronización del lote
 
-## Arquitectura Flutter (ADR 0005 de `agrocom-api`, decisión completa ahí)
+1. Base local SQLite (`drift`); la UI del lote siempre lee de ahí.
+2. Outbox `cola_sync` con estados `pendiente → enviado → confirmado | rechazado`.
+3. `POST /api/sync` recibe un lote ordenado causalmente; el servidor procesa registro por registro y devuelve `aplicado`, `duplicado` o `rechazado` con motivo. Un rechazo no frena el resto.
+4. La idempotencia vive en la base (`UNIQUE (uuid_cliente)`); un `duplicado` se trata como éxito.
+5. Las referencias entre registros usan `uuid_cliente`, nunca ids del servidor, mientras están offline.
+6. El catálogo de servicios asignados se baja con cursor (`GET /api/sync/catalogo`).
+7. Las evidencias viajan en una cola separada; el servicio puede cerrarse con evidencia aún subiendo, pero su validación exige la evidencia ya subida.
+8. El orden es por `secuencia` local, nunca por reloj de dispositivo.
+9. Cada tipo de registro tiene un solo rol escritor, así que no hay lógica de merge.
 
-BLoC, feature-first, tres capas por feature — espejo de la arquitectura modular del backend:
+La prueba de replay (el mismo lote aplicado varias veces, en orden y en desorden parcial, deja la base idéntica) corre en CI.
 
-```
-lib/
-├── nucleo/          # ~70% del código, compartido entre flavors
-│   ├── db/           # drift: tablas espejo + outbox
-│   ├── sync/          # motor: cola, push/pull, estados — sin BLoC
-│   ├── auth/  evidencias/  catalogo/  ui/
-│   └── di/            # get_it
-├── features/
-│   ├── sesion_vuelo/    # flavor piloto
-│   ├── preparacion_mezcla/  # ver nota arriba: hoy es solo caldo, no fórmula
-│   └── recargas/ incidencias/ cierre_lote/ ...
-└── main_piloto.dart / main_auxiliar.dart
-```
+## Contrato de API
 
-Reglas de fondo (ver `CLAUDE.md` para la lista numerada completa): los blocs leen de `drift`, nunca de la API directo; escribir es insertar local + encolar en outbox en una transacción; Cubit para pantallas simples, Bloc para flujos con transiciones (sesión, checklist); `domain/` de cada feature es Dart puro, testeable sin emulador; `piloto/` y `auxiliar/` no se importan entre sí.
+El contrato completo está en `docs/api/openapi.yaml` de `agrocom-api`, generado code-first; nunca se edita desde este repo. Los grupos funcionales que la app consume:
 
-## El protocolo de sincronización — el riesgo mayor del proyecto
-
-Resumen de especificación §2.1 (leer el original antes de tocar el motor de sync):
-
-1. Base local SQLite (`drift`); la UI siempre lee de ahí.
-2. Patrón **outbox**: tabla `cola_sync` local, estados `pendiente → enviado → confirmado | rechazado`.
-3. `POST /api/sync` recibe un lote ordenado causalmente (trabajo antes que sesión, sesión antes que recarga); el servidor procesa **registro por registro** en transacciones individuales y devuelve `aplicado` / `duplicado` / `rechazado {motivo}` por cada uno — un rechazo no frena el resto del lote.
-4. Idempotencia en la base (`UNIQUE (uuid_cliente)`), no en el código: reintentar un lote ya aplicado da `duplicado`, que el cliente trata como éxito.
-5. Referencias entre registros por `uuid_cliente`, nunca por id de servidor, mientras están offline.
-6. Pull de catálogo con cursor: `GET /api/sync/catalogo?desde={cursor}` — órdenes vigentes, recetas, productos, lotes, personal.
-7. Evidencias en cola separada de los registros livianos.
-8. Orden por `secuencia` local, nunca por comparación de relojes entre dispositivos.
-
-**La simplificación que elimina conflictos de merge**: cada tipo de registro tiene exactamente un rol escritor. No hay dos dispositivos editando la misma fila, así que no hace falta lógica de merge — solo inserciones idempotentes y anulaciones.
-
-**Prueba obligatoria** antes de la primera pantalla: reproducir el mismo lote de sincronización 10 veces, en orden y en desorden parcial, y que el estado final de la base sea idéntico.
-
-## Qué datos crea y lee esta app
-
-Del modelo de datos completo (especificación §4.3), lo que toca este repo:
-
-- **Crea** (con `uuid_cliente`, vía `POST /api/sync`): `trabajos`, `sesiones`, `condiciones`, `recargas`, `incidencias`, `evidencias`, `estadias_hacienda` (entrada/salida del equipo en la hacienda). El caldo recibido y su sobrante van por los endpoints dedicados (`/api/trabajos/{id}/caldo`, `/caldo/sobrante`), no por el genérico de sync.
-- **No genera ni presenta el acta.** Decisión del dueño del 11/9/2026: el acta (`POST /api/trabajos/{id}/acta`) y su firma por el agrónomo (`POST /api/actas/{id}/firmar`, especificación §16) se manejan desde el panel web (`agrocom-api`), no desde esta app — queda fuera de alcance de `agrocom-field`.
-- **Lee** (pull de catálogo con cursor): órdenes de aplicación vigentes, lotes, personal. **No lee ni construye** recetas/productos con fines de fórmula (ver la nota de arriba sobre §7 vs. §4.3).
-
-## Roles que usan esta app
-
-Tabla completa en especificación §3. Lo que aplica directo a los dos flavors:
-
-| Acción | Piloto | Auxiliar |
+| Grupo | Quién lo usa | Conectividad |
 |---|---|---|
-| Abrir trabajo / condiciones | ✔ | — |
-| Registrar recarga y batería | — | ✔ |
-| Registrar incidencia | ✔ | ✔ |
-| Cerrar lote (ha + captura RC) | ✔ | — |
-| Generar y presentar acta | ✔ | — |
+| Autenticación (`POST /api/auth/token`, `GET /api/auth/sesion`) y registro de cliente y proveedor | Los tres flavors | Con red |
+| Solicitud, seguimiento y calificación de servicios | `cliente` | Con red |
+| Ofertas: lista, aceptar, rechazar | `piloto` | Con red, sin outbox |
+| Perfil, documentos y drones del proveedor | `piloto` | Con red |
+| Catálogo de servicios asignados (`GET /api/sync/catalogo`) | `piloto`, `auxiliar` | Pull con cursor |
+| Registros del lote (`POST /api/sync`) y evidencias (`POST /api/evidencias`) | `piloto`, `auxiliar` | Offline, outbox |
+| Versión mínima del APK (`GET /api/version`) | Todos | Polling, sin red tolerado |
 
-Identidad: token por dispositivo (Sanctum, revocable desde el panel sin bloquear al usuario), no login de usuario/contraseña en cada sesión de uso. Si la persona tiene más de un rol, quién resuelve la ambigüedad depende del flavor (ADR 0005 de este repo): en `piloto` (RC, hardware dedicado de un solo uso) el rol activo lo sigue determinando el flavor que abrió, sin selector; en `auxiliar` (celular), si `POST /api/auth/token` responde `409` (más de un rol vivo), la app muestra un selector con los roles vivos y reintenta el login con el `role_id` elegido — mismo criterio de ambigüedad que el panel web, pero solo al loguear: cambiar de rol sin volver a loguearse sigue sin estar resuelto del lado servidor (ADR 0005, punto 3).
+## Qué no hace la app
 
-## Máquinas de estado que la app dispara pero no decide
+- No procesa cobros: la primera versión no tiene pagos en la app; el modelo de comisión vive en `agrocom-api`.
+- No gestiona contratos ni campañas: todo es solicitud por solicitud.
+- No administra mantenimiento, inventario, planilla ni contabilidad.
+- No decide la asignación ni la moderación; las ejecuta el servidor y el panel admin.
+- No sincroniza nada del flavor `cliente` por outbox.
 
-La app **pide** una transición (por ejemplo, "cerrar sesión"); el servidor la aplica contra su tabla de transiciones permitidas y sus guardas (ADR 0003 de `agrocom-api`, invariante 7). El bloc modela el estado que el servidor confirma, nunca inventa una transición local.
+## Decisiones por defecto, revisables
 
-- **Sesión**: `abierta → en_ejecucion → cerrada → validada` (o `cerrada_por_relevo` / `cerrada_por_falla` → abre una sesión nueva).
-- **Trabajo**: `planificado → autorizado → en_ejecucion → parcial → completo → validado → conformado → facturado`, con `bloqueado` / `autorizado_con_observacion` como ramas.
-
-Detalle completo y condiciones de cada transición: especificación §5.
-
-## Endpoints que consume esta app
-
-Contrato completo (payloads, códigos de respuesta) en `agrocom-api/docs/api/openapi.yaml`, generado code-first (ADR 0014) — nunca se edita a mano desde acá. Subconjunto relevante de especificación §8:
-
-```
-POST   /api/sync                        Lote offline, idempotente por uuid_cliente
-GET    /api/ordenes?lote_id=&estado=    Órdenes vigentes para el piloto
-POST   /api/trabajos                    Abrir trabajo
-POST   /api/trabajos/{id}/sesiones      Abrir sesión
-POST   /api/sesiones/{id}/condiciones   Registrar condiciones
-POST   /api/trabajos/{id}/caldo         Caldo recibido del cliente
-POST   /api/trabajos/{id}/caldo/sobrante  Sobrante al cerrar
-POST   /api/sesiones/{id}/recargas      Recarga + batería + litros
-POST   /api/sesiones/{id}/incidencias   Incidencia con evidencia
-POST   /api/sesiones/{id}/cerrar        Hectáreas + captura RC + motivo
-POST   /api/trabajos/{id}/imagen        Imagen del campo (dron)
-POST   /api/trabajos/{id}/acta          Generar acta
-POST   /api/actas/{id}/firmar           Firma del agrónomo
-GET    /api/version                     Versión mínima/autorizada del APK (polling, sin FCM)
-```
-
-## Estado actual (10/9/2026)
-
-- Este repo se acaba de crear: sin `flutter create` corrido todavía, sin `pubspec.yaml`. El workstation (este documento, `CLAUDE.md`, CI/CD, agentes y skills) se arma antes que el código para que el primer commit de código ya tenga dónde encajar.
-- Del lado `agrocom-api`: TE-05 (`POST /api/sync` idempotente) es la tarea crítica en curso — el contrato que esta app va a consumir se está terminando de construir ahora mismo. TE-04 (base local `drift` + outbox) y TE-06 (pull de catálogo, lado app) son de este repo y siguen sin empezar.
-- GitFlow: `develop` recién creado acá, siguiendo el mismo patrón que `agrocom-api` (ADR 0006, "en ambos repositorios").
-
-## Qué NO hace esta app
-
-- No formula ni calcula composición de mezcla (ver la nota sobre §7 arriba) — el sistema registra volumen, nunca fórmula.
-- No decide una transición de estado por su cuenta ni corre lógica de devengo, validación o facturación — todo eso es autoridad del servidor.
-- No define su propio modelo de permisos — hereda `sec_*` del backend; acá solo hay token por dispositivo y el rol que trae ese token.
-- No es una app con red garantizada: cualquier pantalla que asuma "la API va a responder ahora" está mal planteada — ver invariantes 1 y 3 de `CLAUDE.md`.
+| Decisión | Motivo |
+|---|---|
+| El panel web admin vive dentro de `agrocom-api` | Un solo despliegue y un solo modelo de datos |
+| Aceptar o rechazar requiere red | La oferta es una competencia por tiempo; el lote sigue offline |
+| La calificación la escribe el cliente en un registro propio; el proveedor solo la ve; el admin modera | Un solo rol escritor por registro |
+| Sin cobro en la app en la primera versión | Reduce superficie y riesgo; la comisión se define en el negocio |
+| El proveedor independiente se registra solo y el admin lo aprueba | Control de calidad sin frenar el alta |
+| El piloto registra a su auxiliar y el admin lo aprueba | El piloto conoce a su equipo |
+| Sin contratos ni campañas | Cada servicio es una solicitud independiente |
+| El mapa del cliente usa `flutter_map` con teselas abiertas, sin clave de proveedor | Evita gestionar una clave de mapas en la primera versión |

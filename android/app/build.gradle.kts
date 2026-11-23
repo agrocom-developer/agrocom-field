@@ -45,12 +45,36 @@ android {
         }
     }
 
+    // Firma de release: todo viene de variables de entorno o propiedades de
+    // Gradle (-P / ~/.gradle/gradle.properties). Nunca hay un keystore ni
+    // contraseñas en el repo — ver docs/seguridad/firma-release.md. Sin esas
+    // variables el release queda sin firmar (no se firma con la clave debug).
+    fun secreto(nombre: String): String? =
+        System.getenv(nombre) ?: (project.findProperty(nombre) as String?)
+
+    val almacen = secreto("AGROCOM_KEYSTORE_FILE")
+    val firmaConfigurada =
+        almacen != null &&
+            secreto("AGROCOM_KEYSTORE_PASSWORD") != null &&
+            secreto("AGROCOM_KEY_ALIAS") != null &&
+            secreto("AGROCOM_KEY_PASSWORD") != null
+
+    if (firmaConfigurada) {
+        signingConfigs {
+            create("release") {
+                storeFile = file(almacen!!)
+                storePassword = secreto("AGROCOM_KEYSTORE_PASSWORD")
+                keyAlias = secreto("AGROCOM_KEY_ALIAS")
+                keyPassword = secreto("AGROCOM_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO(distribucion-flutter): firma real antes del primer release —
-            // nunca un keystore real en el repo (*.jks / key.properties ya están
-            // en .gitignore).
-            signingConfig = signingConfigs.getByName("debug")
+            if (firmaConfigurada) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 }

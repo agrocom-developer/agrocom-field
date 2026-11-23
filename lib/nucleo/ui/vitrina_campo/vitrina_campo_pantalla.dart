@@ -12,6 +12,7 @@ import 'login_dispositivo_campo_vitrina.dart';
 import 'onboarding_campo_vitrina.dart';
 import 'orden_detalle_campo_vitrina.dart';
 import 'reporte_equipos_campo_vitrina.dart';
+import 'sistema_visual_campo_vitrina.dart';
 
 /// Vista previa del modo "campo" (ADR 0008) — recrea las pantallas del
 /// mockup de referencia del dueño (las nueve de la ronda 1 menos la mezcla,
@@ -46,6 +47,7 @@ class _VitrinaCampoPantallaState extends State<VitrinaCampoPantalla> {
     (6, 'Equipos'),
     (7, 'Orden'),
     (8, 'Sync'),
+    (9, 'Sistema'),
   ];
 
   @override
@@ -92,6 +94,7 @@ class _VitrinaCampoPantallaState extends State<VitrinaCampoPantalla> {
                     ReporteEquiposCampoVitrina(),
                     OrdenDetalleCampoVitrina(),
                     ColaSyncCampoVitrina(),
+                    SistemaVisualCampoVitrina(),
                   ],
                 ),
               ),
