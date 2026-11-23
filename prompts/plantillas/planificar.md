@@ -109,7 +109,7 @@ línea, exactamente este formato:
 - **`rama=`** — la rama que va a crear el ciclo. **Siempre `feature/` (o
   `fix/` si es una corrección de bug) más 2–3 palabras de la función del
   proyecto** que la tarea construye: `feature/sync-idempotente`,
-  `feature/ordenes-offline`, `fix/replay-outbox`. Nunca el número de la tarea,
+  `feature/bandeja-ofertas`, `fix/replay-outbox`. Nunca el número de la tarea,
   nunca el nombre de la actividad. La rama la crea el ciclo con este valor, no
   la sesión.
 - **`etapas=`** — cuántas sesiones puede encadenar el ciclo sobre esa rama para
@@ -148,8 +148,8 @@ Secciones:
   qué skills cargar (`verificacion` siempre; `protocolo-sync` si la tarea toca
   `nucleo/sync`, `nucleo/db` o cualquier repositorio de outbox; `flujo-git-pr`
   antes de la rama/commit/PR). Nombrá los archivos que hay que tocar cuando ya
-  se sepan, y qué NO hay que tocar. Recordá la regla de `piloto/`/`auxiliar/`:
-  no se importan entre sí, solo de `nucleo/`. Cubrí la HU entera: **todos**
+  se sepan, y qué NO hay que tocar. Recordá la regla de `cliente/`, `piloto/` y
+  `auxiliar/`: no se importan entre sí, solo de `nucleo/`. Cubrí la HU entera: **todos**
   sus criterios de aceptación del plan de sprints, cada uno con su test.
 - **Cómo repartir las etapas**: si la HU claramente no entra en una sesión,
   sugerí el corte (p. ej. "etapa 1: esquema drift; etapa 2: motor de sync;
