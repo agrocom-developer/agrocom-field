@@ -27,7 +27,7 @@ class StatChipCampo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TarjetaCampo(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -35,7 +35,7 @@ class StatChipCampo extends StatelessWidget {
           Text(
             etiqueta.toUpperCase(),
             style: TextStyle(
-              fontFamily: 'monospace',
+              fontFamily: 'JetBrains Mono',
               fontSize: 10,
               letterSpacing: 1.2,
               color: ColoresCampo.textoPrincipal.withValues(alpha: 0.5),
@@ -69,7 +69,7 @@ class StatChipCampo extends StatelessWidget {
             Text(
               notaAlerta!,
               style: const TextStyle(
-                fontFamily: 'monospace',
+                fontFamily: 'JetBrains Mono',
                 fontSize: 11,
                 fontWeight: FontWeight.w500,
                 color: ColoresCampo.acentoAmbar,

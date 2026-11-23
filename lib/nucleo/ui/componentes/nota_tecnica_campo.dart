@@ -25,7 +25,7 @@ class NotaTecnicaCampo extends StatelessWidget {
       child: Text(
         texto,
         style: TextStyle(
-          fontFamily: 'monospace',
+          fontFamily: 'JetBrains Mono',
           fontSize: 12,
           height: 1.6,
           color: ColoresCampo.textoPrincipal.withValues(alpha: 0.55),
