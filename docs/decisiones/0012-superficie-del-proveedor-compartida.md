@@ -1,4 +1,4 @@
-# ADR 0011 — La superficie del proveedor es una sola para `piloto` y `auxiliar`
+# ADR 0012 — La superficie del proveedor es una sola para `piloto` y `auxiliar`
 
 **Estado:** Aceptada (decisión revisable) · **Serie:** ADR propios de `agrocom-field`.
 

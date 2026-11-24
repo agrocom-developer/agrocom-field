@@ -13,7 +13,7 @@ import '../perfil/domain/perfil_repositorio.dart';
 
 /// Repositorios de la superficie del proveedor (bandeja de ofertas, perfil y
 /// drones). La montan los flavors `piloto` y `auxiliar` con el mismo código:
-/// todo proveedor opera con los dos roles (ADR 0011).
+/// todo proveedor opera con los dos roles (ADR 0012).
 class DependenciasProveedor {
   const DependenciasProveedor({
     required this.ofertas,

@@ -16,11 +16,11 @@ La interfaz es la parte del producto que más hay que ver y probar, y el backend
 
 ### Capa de datos
 
-- Cada feature declara una interfaz de repositorio en `domain/` (`ServiciosClienteRepositorio`, `SolicitudRepositorio`, `SeguimientoRepositorio`, `CalificacionRepositorio`, `CuentaRepositorio`, `OfertasRepositorio`, `PerfilRepositorio`, `DronesRepositorio`, `ServicioAsignadoRepositorio`, `MezclaRepositorio`, `ServicioAsignadoAuxiliarRepositorio`). Las del proveedor (`OfertasRepositorio`, `EstadoRed`, `PerfilRepositorio`, `DronesRepositorio`) viven en `lib/nucleo/marketplace/proveedor/` y las agrupa `DependenciasProveedor`.
+- Cada feature declara una interfaz de repositorio en `domain/` (`ServiciosClienteRepositorio`, `SolicitudRepositorio`, `SeguimientoRepositorio`, `CalificacionRepositorio`, `CuentaRepositorio`, `AccesoRepositorio`, `InicioClienteRepositorio`, `OfertasRepositorio`, `PerfilRepositorio`, `DronesRepositorio`, `ServicioAsignadoRepositorio`, `MezclaRepositorio`, `ServicioAsignadoAuxiliarRepositorio`). Las del proveedor (`OfertasRepositorio`, `EstadoRed`, `PerfilRepositorio`, `DronesRepositorio`) viven en `lib/nucleo/marketplace/proveedor/` y las agrupa `DependenciasProveedor`.
 - Las entidades compartidas (`Lote`, `Servicio`, `Proveedor`, `Dron`, `Oferta`, `SeguimientoVivo`, `Calificacion`) viven en `lib/nucleo/marketplace/dominio/`. Hectáreas, litros y dinero son `Decimal`; las coordenadas son `double`.
 - Cada flavor agrupa sus repositorios en una clase `Dependencias<Flavor>` que los expone con `RepositoryProvider` por encima del `Navigator`. Las pantallas leen la interfaz con `context.read<…>()` y nunca conocen la implementación.
 - Los repositorios demo (`*_demo.dart`) viven en `data/` de cada feature y comparten un almacén en memoria por flavor (`AlmacenDemo<Flavor>`; `AlmacenDemoProveedor` para la superficie del proveedor). Los datos base (lotes con polígonos en Cuatro Cañadas, San Julián, Pailón y Colonia Okinawa, proveedores con calificaciones, ofertas, historial) están en `lib/nucleo/marketplace/demo/datos_demo.dart` y las fechas se calculan respecto del reloj para que la demo siempre se vea reciente.
-- Las pantallas del proveedor leen por un cubit propio (ADR 0011). Las demás leen por `StreamEstable` / `FuturoEstable`, que crean el `Stream` o el `Future` una sola vez: un `StreamBuilder` con el `stream` armado dentro de `build` se resuscribe en cada reconstrucción.
+- Las pantallas del proveedor leen por un cubit propio (ADR 0012). Las demás leen por `StreamEstable` / `FuturoEstable`, que crean el `Stream` o el `Future` una sola vez: un `StreamBuilder` con el `stream` armado dentro de `build` se resuscribe en cada reconstrucción.
 
 ### Modo demo
 

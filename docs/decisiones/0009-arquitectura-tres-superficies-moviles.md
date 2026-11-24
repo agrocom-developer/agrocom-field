@@ -37,7 +37,7 @@ lib/
   main_cliente.dart  main_piloto.dart  main_auxiliar.dart
   nucleo/        api, auth, db, sync, evidencias, preferencias, tipos, ui, di, entorno
   cliente/       solicitar, seguimiento, calificar, servicios, cuenta
-  nucleo/marketplace/proveedor/   ofertas, perfil, dron (superficie del proveedor, ADR 0011)
+  nucleo/marketplace/proveedor/   ofertas, perfil, dron (superficie del proveedor, ADR 0012)
   piloto/        servicio_asignado, sesion_vuelo
   auxiliar/      servicio_asignado, mezcla, recargas, incidencias
   features/      <feature>/{presentation,domain,data}  (hasta que cada una se ubique en su flavor)

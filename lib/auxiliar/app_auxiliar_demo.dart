@@ -41,7 +41,7 @@ class _ShellAuxiliarState extends State<ShellAuxiliar> {
   int _indice = 0;
 
   // El trabajo del lote va primero; la bandeja y el perfil del proveedor
-  // (ADR 0011) después.
+  // (ADR 0012) después.
   static const _destinos = [
     DestinoCampo(
       icono: Icons.inventory_2_outlined,
