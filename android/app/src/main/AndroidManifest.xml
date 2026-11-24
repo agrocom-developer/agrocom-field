@@ -8,6 +8,11 @@
          Android 13+, la propia API del plugin la pide en tiempo de
          ejecución (ver NotificadorLocalPlugin.pedirPermiso). -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <!-- Ubicación del piloto durante un servicio en ejecución: se pide solo
+         entonces, con el motivo explicado antes del permiso. Sin servicio en
+         segundo plano ni permiso de ubicación permanente. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <!-- HU-68: linterna de emergencia (torch_light). No se declara
          android.permission.CAMERA: el plugin controla el flash con
          CameraManager.setTorchMode, que Android no exige pedir en runtime

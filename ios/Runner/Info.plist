@@ -24,6 +24,8 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Agrocom comparte tu última ubicación con el cliente solo mientras tienes un servicio en ejecución.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Agrocom usa la cámara para fotografiar el lote, las incidencias y los documentos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
