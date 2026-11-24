@@ -45,7 +45,7 @@ class HojaCalificar extends StatelessWidget {
   final Servicio servicio;
 
   static const _palabras = [
-    'Tocá una estrella',
+    'Toca una estrella',
     'Mala',
     'Regular',
     'Buena',
@@ -155,8 +155,8 @@ class HojaCalificar extends StatelessWidget {
                       icono: estado.sinConexion ? Icons.wifi_off_rounded : null,
                       mensaje: estado.sinConexion
                           ? 'Sin conexión. Tu calificación no se envió; '
-                                'probá de nuevo cuando tengas señal.'
-                          : 'No pudimos enviar tu calificación. Probá de '
+                                'prueba de nuevo cuando tengas señal.'
+                          : 'No pudimos enviar tu calificación. Prueba de '
                                 'nuevo.',
                     ),
                   ),

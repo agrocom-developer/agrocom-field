@@ -100,7 +100,7 @@ class CuentaPantalla extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Text('Lo que dicen de vos', style: texto.titleLarge),
+            Text('Lo que dicen de ti', style: texto.titleLarge),
             const SizedBox(height: 12),
             for (final c in resumen.recientes) ...[
               SuperficieMarketplace(

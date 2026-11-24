@@ -96,10 +96,10 @@ class ActaCubit extends Cubit<ActaEstado> {
           sinConexion: e is SinConexion,
           mensajeError: switch (e) {
             SinConexion() =>
-              'Sin conexión. Tu conformidad no se envió; probá de nuevo '
+              'Sin conexión. Tu conformidad no se envió; prueba de nuevo '
                   'cuando tengas señal.',
             OperacionRechazada(:final mensaje) => mensaje,
-            _ => 'No pudimos registrar tu conformidad. Probá de nuevo.',
+            _ => 'No pudimos registrar tu conformidad. Prueba de nuevo.',
           },
         ),
       );

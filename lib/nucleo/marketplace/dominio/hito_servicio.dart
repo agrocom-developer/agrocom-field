@@ -128,13 +128,13 @@ List<HitoServicio> lineaDeTiempo(
         EstadoActa.firmada => 'Diste tu conformidad.',
         EstadoActa.observada => 'Reportaste un problema; soporte lo revisa.',
         EstadoActa.pendiente =>
-          'Revisá las evidencias y firmá el acta de conformidad.',
+          'Revisa las evidencias y firma el acta de conformidad.',
         null => switch (de(3)) {
           EstadoHito.hecho => 'El servicio quedó conforme.',
           EstadoHito.actual =>
-            'Revisá las evidencias y firmá el acta de conformidad.',
+            'Revisa las evidencias y firma el acta de conformidad.',
           EstadoHito.pendiente =>
-            'Al terminar revisás las evidencias y firmás el acta.',
+            'Al terminar revisas las evidencias y firmas el acta.',
         },
       },
       momento: acta?.firmadaEn,
