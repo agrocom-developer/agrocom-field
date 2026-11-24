@@ -12,7 +12,7 @@ La URL base de la API se configura por build con `--dart-define-from-file=config
 
 Se versionan tres archivos de ejemplo: `config/env.local.json.example`, `config/env.staging.json.example`, `config/env.produccion.json.example`, con la forma `{"API_BASE_URL": "..."}`. Los `.json` reales (sin el sufijo `.example`) no se commitean.
 
-`lib/nucleo/di/service_locator.dart` lee `String.fromEnvironment('API_BASE_URL', defaultValue: 'http://10.0.2.2:8000')` como fallback exclusivo para un `flutter run` sin flags (`10.0.2.2` es el loopback del host desde el emulador Android). Cualquier build real — piloto en campo, staging, producción — siempre pasa `--dart-define-from-file` explícito; el `defaultValue` nunca debería usarse fuera de desarrollo local en emulador.
+`lib/nucleo/entorno/api_base_url.dart` lee `String.fromEnvironment('API_BASE_URL', defaultValue: 'http://10.0.2.2:8000')` como fallback exclusivo para un `flutter run` sin flags (`10.0.2.2` es el loopback del host desde el emulador Android). Cualquier build real — piloto en campo, staging, producción — siempre pasa `--dart-define-from-file` explícito; el `defaultValue` nunca debería usarse fuera de desarrollo local en emulador.
 
 ## Alternativas descartadas
 

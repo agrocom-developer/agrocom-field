@@ -7,7 +7,7 @@ Este documento orienta a quien empieza a trabajar en este repo. Describe el prod
 Agrocom es un **marketplace de servicio de fumigación con drones** donde el precio se negocia entre quien pide el servicio y quien lo hace. Un cliente publica una solicitud sobre su propiedad con un precio por hectárea; los pilotos la ven en un mapa y aceptan ese precio o proponen el suyo; el cliente compara las ofertas y elige. Los drones son los «vehículos».
 
 - **Clientes**: dueños de campo o sus encargados. Publican, negocian, siguen y califican servicios.
-- **Proveedores**: pilotos propios de Agrocom, pilotos independientes y dueños de drones de terceros, cada uno con sus auxiliares. Compiten en igualdad.
+- **Proveedores**: pilotos de Agrocom, pilotos independientes y dueños de drones, cada uno con sus auxiliares. Compiten en igualdad.
 - **Agrocom**: capta clientes, es el nexo entre ambos lados y el registro del estado y del resultado; además es proveedor propio. Lo operativo en el lote (cómo se trabaja, cuándo se vuela) lo acuerdan en persona el cliente y el piloto. La app no cobra: el pago se hace fuera de ella.
 
 ### Negociación
