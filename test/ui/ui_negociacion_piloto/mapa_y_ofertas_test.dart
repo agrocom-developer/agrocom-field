@@ -180,6 +180,7 @@ void main() {
       await abrir(tester, id: 3);
       await irA(tester, find.text('Estado del terreno'));
       expect(find.text('Acceso difícil'), findsOneWidget);
+      await irA(tester, find.textContaining('no ves su nombre'));
       expect(find.textContaining('no ves su nombre'), findsOneWidget);
     });
 
