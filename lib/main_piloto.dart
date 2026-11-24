@@ -1,98 +1,35 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
+import 'nucleo/di/composicion_proveedor.dart';
+import 'nucleo/entorno/modo_demo.dart';
+import 'nucleo/flavor.dart';
+import 'nucleo/marketplace/proveedor/acceso/presentation/app_proveedor.dart';
 import 'piloto/app_piloto_demo.dart';
 import 'piloto/di/dependencias_piloto.dart';
-import 'app.dart';
-import 'features/auth/login_cubit.dart';
-import 'features/incidencias/data/incidencia_repository.dart';
-import 'features/incidencias/presentation/incidencia_cubit.dart';
-import 'features/inicio/data/inicio_repository.dart';
-import 'features/inicio/presentation/inicio_cubit.dart';
-import 'features/ordenes/data/ordenes_repository.dart';
-import 'features/ordenes/presentation/ordenes_cubit.dart';
-import 'features/sesion_vuelo/data/trabajo_repository.dart';
-import 'features/sesion_vuelo/data/sesion_repository.dart';
-import 'features/sesion_vuelo/presentation/trabajo_cubit.dart';
-import 'features/sesion_vuelo/presentation/sesion_bloc.dart';
-import 'nucleo/auth/login_service.dart';
-import 'nucleo/auth/persona_operativa_store.dart';
-import 'nucleo/auth/token_store.dart';
-import 'nucleo/camara/selector_foto.dart';
-import 'nucleo/di/service_locator.dart';
-import 'nucleo/entorno/info_entorno.dart';
-import 'nucleo/entorno/modo_demo.dart';
-import 'nucleo/evidencias/evidencia_repository.dart';
-import 'nucleo/flavor.dart';
-import 'nucleo/linterna/linterna_controlador.dart';
-import 'nucleo/sync/disparador_sync.dart';
-import 'nucleo/sync/sync_cubit.dart';
-import 'nucleo/version/version_watcher.dart';
 
+/// Entrypoint del flavor `piloto`.
+///
+/// Con `MODO_DEMO` corre contra repositorios en memoria con datos ficticios,
+/// sin red ni `drift` (`--dart-define-from-file=config/env.demo.json`,
+/// ADR 0010). Sin él, corre contra la API de `API_BASE_URL`
+/// (`config/env.local.json`, `env.staging.json`, `env.produccion.json`;
+/// ADR 0004): ingreso por usuario, mapa de solicitudes, ofertas y, para lo
+/// que ocurre en el lote, la base local `drift` (ADR 0016).
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Perfil demo (ADR 0010): repositorios en memoria con datos ficticios.
-  // No abre `drift`, no registra el motor de sync ni toca la red.
   if (modoDemo) {
     runApp(AppPilotoDemo(dependencias: DependenciasPiloto.demo()));
     return;
   }
 
-  await configurarDependencias(flavor: Flavor.piloto);
-
-  // Lo que el pie del login muestra para reconocer el entorno (ADR 0004) y
-  // la versión instalada (ADR 0007). `PackageInfo` lee del propio APK — no
-  // es red, así que sí se espera antes de `runApp`.
-  final paquete = await PackageInfo.fromPlatform();
-  final infoEntorno = InfoEntorno(
-    flavor: Flavor.piloto,
-    hostApi: InfoEntorno.hostDe(apiBaseUrl),
-    version: '${paquete.version}+${paquete.buildNumber}',
-  );
-
-  // HU-20: no se espera antes de `runApp` — el primer chequeo puede tardar
-  // (o directamente no tener red), y la app nunca depende de que la red
-  // responda para arrancar (invariante 1 de CLAUDE.md). Si la respuesta
-  // llega bloqueada, `VersionBloqueoOverlay` tapa la pantalla que sea.
-  unawaited(getIt<VersionWatcher>().iniciar());
-
-  // TE-19: mismo criterio — el primer ciclo de sync puede tardar o no
-  // tener red, y la app nunca espera la red para arrancar.
-  unawaited(getIt<DisparadorSync>().iniciar());
-
+  final c = await componerProveedor(Flavor.piloto);
   runApp(
-    AgrocomApp(
-      flavor: Flavor.piloto,
-      infoEntorno: infoEntorno,
-      tokenStore: getIt<TokenStore>(),
-      linternaControlador: getIt<LinternaControlador>(),
-      estadoVersion: getIt<VersionWatcher>().estado,
-      crearLoginCubit: () => LoginCubit(getIt<LoginService>(), Flavor.piloto),
-      crearOrdenesCubit: () => OrdenesCubit(getIt<OrdenesRepository>()),
-      // HU-70: «Inicio» con el trabajo asignado es la pantalla inicial del
-      // piloto tras el login.
-      crearInicioCubit: () => InicioCubit(getIt<InicioRepository>()),
-      crearTrabajoCubit: () => TrabajoCubit(
-        getIt<TrabajoRepository>(),
-        evidenciaRepositorio: getIt<EvidenciaRepository>(),
-        selectorFoto: getIt<SelectorFoto>(),
-      ),
-      crearSesionBloc: (trabajoUuidCliente) => SesionBloc(
-        sesionRepositorio: getIt<SesionRepository>(),
-        personaOperativaStore: getIt<PersonaOperativaStore>(),
-        trabajoUuidCliente: trabajoUuidCliente,
-      ),
-      crearIncidenciaCubit: (sesionUuidCliente) => IncidenciaCubit(
-        incidenciaRepositorio: getIt<IncidenciaRepository>(),
-        selectorFoto: getIt<SelectorFoto>(),
-        sesionUuidCliente: sesionUuidCliente,
-      ),
-      alIngresarConExito: () =>
-          unawaited(getIt<DisparadorSync>().sincronizarAhora()),
-      syncCubit: getIt<SyncCubit>(),
+    AppProveedor(
+      proveedor: c.proveedor,
+      acceso: c.acceso,
+      selectorImagen: c.selectorImagen,
+      construirShell: (context, alSalir) => ShellPiloto(alSalir: alSalir),
     ),
   );
 }

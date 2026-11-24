@@ -1,0 +1,184 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../ui/componentes/logo_agrocom_campo.dart';
+import '../../../../ui/paleta_campo.dart';
+import '../../../../ui/tokens_campo.dart';
+import '../../../ui/boton_principal_marketplace.dart';
+import '../../../ui/campo_formulario_marketplace.dart';
+import '../../../ui/marketplace_ui.dart';
+import '../domain/acceso_proveedor.dart';
+import 'acceso_cubit.dart';
+import 'registro_proveedor_pantalla.dart';
+
+/// La puerta de la app real del piloto o del auxiliar: mientras no hay
+/// sesión muestra el ingreso; con sesión, [construir] arma la superficie.
+class PuertaAcceso extends StatelessWidget {
+  const PuertaAcceso({
+    required this.construir,
+    this.permiteRegistro = true,
+    this.nota,
+    super.key,
+  });
+
+  final Widget Function(BuildContext, SesionProveedor) construir;
+
+  /// El auxiliar no se registra solo: lo registra su piloto y lo aprueba un
+  /// administrador.
+  final bool permiteRegistro;
+
+  /// Host y versión al pie: un build apuntado al entorno equivocado se nota
+  /// antes de operar (ADR 0004).
+  final String? nota;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AccesoCubit, AccesoEstado>(
+      builder: (context, estado) => switch (estado) {
+        AccesoVerificando() => const Scaffold(
+          body: Center(child: CircularProgressIndicator()),
+        ),
+        AccesoSinSesion() => IngresoProveedorPantalla(
+          estado: estado,
+          permiteRegistro: permiteRegistro,
+          nota: nota,
+        ),
+        AccesoDentro(:final sesion) => construir(context, sesion),
+      },
+    );
+  }
+}
+
+class IngresoProveedorPantalla extends StatefulWidget {
+  const IngresoProveedorPantalla({
+    required this.estado,
+    this.permiteRegistro = true,
+    this.nota,
+    super.key,
+  });
+
+  final AccesoSinSesion estado;
+  final bool permiteRegistro;
+  final String? nota;
+
+  @override
+  State<IngresoProveedorPantalla> createState() =>
+      _IngresoProveedorPantallaState();
+}
+
+class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
+  final _clave = GlobalKey<FormState>();
+  final _usuario = TextEditingController();
+  final _contrasena = TextEditingController();
+
+  @override
+  void dispose() {
+    _usuario.dispose();
+    _contrasena.dispose();
+    super.dispose();
+  }
+
+  void _entrar() {
+    if (!(_clave.currentState?.validate() ?? false)) return;
+    context.read<AccesoCubit>().ingresar(_usuario.text, _contrasena.text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final texto = Theme.of(context).textTheme;
+    final paleta = context.paleta;
+    final e = widget.estado;
+    return Scaffold(
+      body: SafeArea(
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 480),
+            child: ListView(
+              padding: const EdgeInsets.all(EspaciadoCampo.xl),
+              children: [
+                const Align(child: LogoAgrocomCampo(ancho: 150)),
+                const SizedBox(height: EspaciadoCampo.xl),
+                Text('Entra a tu cuenta', style: texto.headlineMedium),
+                const SizedBox(height: EspaciadoCampo.xs),
+                Text(
+                  'Con tu usuario y tu contraseña.',
+                  style: texto.bodyLarge?.copyWith(
+                    color: paleta.textoSecundario,
+                  ),
+                ),
+                const SizedBox(height: EspaciadoCampo.xl),
+                if (e.mensaje != null) ...[
+                  Semantics(
+                    liveRegion: true,
+                    child: AvisoMarketplace(
+                      mensaje: e.mensaje!,
+                      tono: TonoAviso.error,
+                    ),
+                  ),
+                  const SizedBox(height: EspaciadoCampo.l),
+                ],
+                Form(
+                  key: _clave,
+                  child: Column(
+                    children: [
+                      CampoFormularioMarketplace(
+                        etiqueta: 'Usuario',
+                        controller: _usuario,
+                        enabled: !e.enviando,
+                        autofillHints: const [AutofillHints.username],
+                        textInputAction: TextInputAction.next,
+                        validator: (v) => (v ?? '').trim().isEmpty
+                            ? 'Escribe tu usuario.'
+                            : null,
+                      ),
+                      const SizedBox(height: EspaciadoCampo.l),
+                      CampoFormularioMarketplace(
+                        etiqueta: 'Contraseña',
+                        controller: _contrasena,
+                        enabled: !e.enviando,
+                        obscureText: true,
+                        autofillHints: const [AutofillHints.password],
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_) => _entrar(),
+                        validator: (v) =>
+                            (v ?? '').isEmpty ? 'Escribe tu contraseña.' : null,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: EspaciadoCampo.xl),
+                BotonPrincipalMarketplace(
+                  texto: 'Entrar',
+                  cargando: e.enviando,
+                  onPressed: _entrar,
+                ),
+                if (widget.permiteRegistro) ...[
+                  const SizedBox(height: EspaciadoCampo.l),
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size.fromHeight(
+                        ObjetivoTactilCampo.guantes,
+                      ),
+                    ),
+                    onPressed: e.enviando ? null : () => abrirRegistro(context),
+                    child: const Text('Soy piloto y quiero registrarme'),
+                  ),
+                ],
+                if (widget.nota != null) ...[
+                  const SizedBox(height: EspaciadoCampo.xl),
+                  Text(
+                    widget.nota!,
+                    textAlign: TextAlign.center,
+                    style: texto.bodySmall?.copyWith(
+                      color: paleta.textoSecundario,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
