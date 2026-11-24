@@ -108,6 +108,7 @@ class Proveedor {
     this.documentos = const [],
     this.resenas = const [],
     this.auxiliares = const [],
+    this.fotoRef,
   });
 
   final String id;
@@ -122,6 +123,10 @@ class Proveedor {
   final List<DocumentoProveedor> documentos;
   final List<Resena> resenas;
   final List<String> auxiliares;
+
+  /// Referencia del retrato: recurso empaquetado (`assets/…`) o URL. Sin
+  /// ella se muestran las iniciales.
+  final String? fotoRef;
 
   String get iniciales {
     final partes = nombre.split(' ').where((p) => p.isNotEmpty).toList();
