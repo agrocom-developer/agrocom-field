@@ -24,11 +24,11 @@ Las pantallas del cliente leen del repositorio, y el repositorio resuelve contra
 
 ### Los flavors `piloto` y `auxiliar` conservan el modelo del lote
 
-Lectura desde `drift`, escritura local más outbox en una sola transacción, `uuid_cliente`, idempotencia, orden por `secuencia`, evidencias de menos de 300 KB en cola propia, decimal exacto. Son las invariantes físicas de `CLAUDE.md`. El servicio asignado se baja a `drift` al aceptarlo, de modo que el lote se ejecuta sin red.
+Lectura desde `drift`, escritura local más outbox en una sola transacción, `uuid_cliente`, idempotencia, orden por `secuencia`, evidencias de menos de 300 KB en cola propia, decimal exacto. Son las invariantes físicas de `CLAUDE.md`. El servicio adjudicado se baja a `drift` al adjudicarse, de modo que el lote se ejecuta sin red.
 
-### Aceptar o rechazar una oferta requiere red
+### Negociar requiere red
 
-La bandeja de ofertas del proveedor es una lectura en línea y la respuesta se envía directo a la API, sin outbox. Una oferta tiene ventana de tiempo y compite con otros proveedores; el servidor decide quién la obtiene y la respuesta incluye el resultado. Una respuesta perdida se reintenta con la misma clave de idempotencia y el servidor devuelve el mismo resultado. Es la única acción del proveedor que no pasa por el outbox.
+Publicar, ofertar, contraofertar, aceptar, rechazar y retirar una oferta son llamadas en línea a la API, sin outbox. La adjudicación es un acuerdo entre dos partes que el servidor resuelve de forma atómica y su respuesta incluye el resultado. Una respuesta perdida se reintenta con el mismo `uuid_cliente` y el servidor devuelve la misma oferta. Es la única acción de negocio del proveedor que no pasa por el outbox; el detalle está en el ADR 0016.
 
 ### Estructura de carpetas
 
@@ -37,9 +37,9 @@ lib/
   main_cliente.dart  main_piloto.dart  main_auxiliar.dart
   nucleo/        api, auth, db, sync, evidencias, preferencias, tipos, ui, di, entorno
   cliente/       solicitar, seguimiento, calificar, servicios, cuenta
-  nucleo/marketplace/proveedor/   ofertas, perfil, dron (superficie del proveedor, ADR 0012)
-  piloto/        servicio_asignado, sesion_vuelo
-  auxiliar/      servicio_asignado, mezcla, recargas, incidencias
+  nucleo/marketplace/proveedor/   mapa, ofertas, perfil, dron (superficie del proveedor, ADR 0012)
+  piloto/        servicio_adjudicado, avance
+  auxiliar/      servicio_adjudicado, fotos_avance
   features/      <feature>/{presentation,domain,data}  (hasta que cada una se ubique en su flavor)
 ```
 
@@ -56,11 +56,11 @@ Cada feature tiene tres capas: `presentation/` (pantallas y blocs), `domain/` (e
 
 ### Un rol escritor por registro
 
-La solicitud la escribe el cliente; la oferta y su respuesta, el servidor y el proveedor respectivamente; la sesión de vuelo, el piloto; la mezcla, el auxiliar; la calificación del servicio, el cliente; la calificación del cliente, el proveedor. Cada una es un registro propio.
+La solicitud la escribe el cliente; cada oferta, su autor (cliente o proveedor); el avance y el cierre, el piloto; cada mensaje, su autor; cada foto, quien la sube; la calificación del servicio, el cliente; la calificación del cliente, el proveedor. Cada una es un registro propio.
 
 ## Consecuencias
 
 - Un cambio de contrato de `agrocom-api` se absorbe en `nucleo/api` y en los repositorios del flavor afectado.
 - El flavor `cliente` se puede publicar y probar sin dispositivo de campo.
 - La separación obliga a promover a `nucleo/` lo compartido (tema, autenticación, mapa, tipos decimales) en vez de copiarlo.
-- La excepción de aceptación con red es una decisión revisable: si la operación de campo demostrara que hace falta aceptar sin señal, se rediseña con reserva temporal en el servidor y no con una cola local.
+- La excepción de negociación con red es una decisión revisable: si la operación de campo demostrara que hace falta ofertar sin señal, se rediseña con reserva temporal en el servidor y no con una cola local.
