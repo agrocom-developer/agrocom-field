@@ -4,6 +4,7 @@ import 'package:latlong2/latlong.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/mapa_lote.dart';
+import '../../../nucleo/ui/colores_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 
 LatLng _ll(GeoPunto p) => LatLng(p.latitud, p.longitud);
@@ -86,7 +87,10 @@ class MapaUbicacionPiloto extends StatelessWidget {
                         shape: BoxShape.circle,
                         border: Border.all(color: paleta.sobreAcento, width: 2),
                         boxShadow: const [
-                          BoxShadow(blurRadius: 8, color: Color(0x55000000)),
+                          BoxShadow(
+                            blurRadius: 8,
+                            color: ColoresCampo.sombraMapa,
+                          ),
                         ],
                       ),
                       child: Icon(
@@ -102,7 +106,7 @@ class MapaUbicacionPiloto extends StatelessWidget {
               MediaQuery.withNoTextScaling(
                 child: const SimpleAttributionWidget(
                   source: Text('OpenStreetMap'),
-                  backgroundColor: Color(0xCCFFFFFF),
+                  backgroundColor: ColoresCampo.atribucionMapa,
                 ),
               ),
           ],

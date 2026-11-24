@@ -4,7 +4,7 @@ import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 
 /// Acción secundaria en texto, junto a un `BotonPrincipal` o dentro de un
-/// aviso. Usa el acento legible sobre el fondo (en claro, el lima de marca
+/// aviso. Usa el acento legible sobre el fondo (en claro, el verde de marca
 /// no alcanza el contraste AA como color de texto).
 class BotonSecundario extends StatelessWidget {
   const BotonSecundario({

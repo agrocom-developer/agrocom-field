@@ -52,7 +52,7 @@ class OnboardingCampoVitrina extends StatelessWidget {
                     TextSpan(text: 'El lote no\ntiene señal.\n'),
                     TextSpan(
                       text: 'La app sí.',
-                      style: TextStyle(color: ColoresCampo.acentoLima),
+                      style: TextStyle(color: ColoresCampo.acentoHoja),
                     ),
                   ],
                 ),

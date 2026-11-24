@@ -7,7 +7,7 @@ import '../tipografia_campo.dart';
 /// local y queda pendiente de sync", "● Sin conexión") — el aviso de estado
 /// que va pegado a un botón primario, sin el peso de un `BannerAlertaCampo`
 /// ni el recuadro de una `NotaTecnicaCampo`. [color] es semántico: ámbar
-/// (pendiente/alerta) por defecto, rojo para un error, lima para un ok.
+/// (pendiente/alerta) por defecto, rojo para un error, verde para un ok.
 class NotaInlineCampo extends StatelessWidget {
   const NotaInlineCampo({
     required this.texto,

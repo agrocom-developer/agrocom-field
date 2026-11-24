@@ -85,9 +85,9 @@ class FondoFotoCampo extends StatelessWidget {
     end: Alignment.bottomCenter,
     stops: [0.0, 0.38, 0.72, 1.0],
     colors: [
-      Color(0x59_07110A), // fondoProfundo, alpha .35
-      Color(0xB3_07110A), // alpha .7
-      Color(0xF2_07110A), // alpha .95
+      Color(0x59_050A06), // fondoProfundo, alpha .35,
+      Color(0xB3_050A06), // alpha .7,
+      Color(0xF2_050A06), // alpha .95,
       ColoresCampo.fondoProfundo,
     ],
   );
@@ -97,8 +97,8 @@ class FondoFotoCampo extends StatelessWidget {
     end: Alignment.bottomCenter,
     stops: [0.0, 0.62, 1.0],
     colors: [
-      Color(0x59_07110A), // fondoProfundo, alpha .35
-      Color(0xD1_07110A), // alpha .82
+      Color(0x59_050A06), // fondoProfundo, alpha .35,
+      Color(0xD1_050A06), // alpha .82,
       ColoresCampo.fondoProfundo,
     ],
   );

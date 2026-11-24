@@ -49,7 +49,7 @@ Cada pantalla tiene su `Cubit` (`HistorialCubit`, `SolicitudDetalleCubit`, `Ofer
 - **Chat.** Burbujas de texto con la hora, campo que conserva lo escrito si el envío falla, y solo lectura cuando el plazo cierra.
 - **Precio final.** Cuando la solicitud finaliza se muestra el precio a pagar, hectáreas ejecutadas por precio acordado, con el texto de que el pago es directo al piloto y fuera de la app.
 - **Calificación.** Hoja inferior de dos toques (estrella y enviar); las etiquetas y el comentario aparecen después de elegir la estrella y son opcionales.
-- Los botones de texto usan `PaletaCampo.acentoTexto`: el lima de marca no alcanza el contraste AA como color de texto sobre fondo claro.
+- Los botones de texto usan `PaletaCampo.acentoTexto`: el verde de relleno de los modos oscuro y campo no alcanza el contraste AA como texto sobre fondo claro.
 - Con el texto ampliado por encima de 130 % las filas «etiqueta … valor», los segmentos de orden y el filtro de la lista pasan a una columna.
 
 ### Pruebas

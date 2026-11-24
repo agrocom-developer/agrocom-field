@@ -1,21 +1,48 @@
 import 'package:flutter/material.dart';
 
-/// Paleta de alto contraste del modo "campo" (ADR 0008) — pensada para uso a
-/// sol fuerte y con guantes. Es la única paleta de la app desde que todas
-/// las pantallas reales migraron al modo campo (decisión del 1/10/2026); la
-/// de ADR 0003 se retiró. El tema que la aplica es
+/// Colores base del sistema visual: verde hoja y verde pasto de marca, y la
+/// paleta de alto contraste del modo "campo" (ADR 0008), pensada para uso a
+/// sol fuerte y con guantes. El tema que la aplica es
 /// `AgrocomThemeCampo.construir()`.
 ///
 /// [textoPrincipal] nunca cambia de tono para expresar jerarquía — eso lo
 /// resuelve la opacidad (ver [OpacidadesCampo]), igual que el mockup de origen.
 abstract final class ColoresCampo {
-  static const Color fondoProfundo = Color(0xFF07110A);
-  static const Color superficie = Color(0xFF0A1A0E);
+  /// Verde hoja: primario de marca en modo claro.
+  static const Color verdeHoja = Color(0xFF1F5F2E);
 
-  static const Color textoPrincipal = Color(0xFFF0FDF4);
+  /// Verde pasto: apoyo de marca (relleno de íconos y gráficos, no texto).
+  static const Color verdePasto = Color(0xFF4C8C3A);
 
-  /// CTA, éxito, dato positivo, registro ya sincronizado.
-  static const Color acentoLima = Color(0xFFA3E635);
+  /// Verde hoja claro: primario del modo oscuro.
+  static const Color acentoHojaOscuro = Color(0xFF7DBE5A);
+
+  static const Color fondoProfundo = Color(0xFF050A06);
+  static const Color superficie = Color(0xFF0A130B);
+
+  /// Sombra de marcadores y botones sobre el mapa.
+  static const Color sombraMapa = Color(0x55000000);
+
+  /// Sombra proyectada del logo.
+  static const Color sombraLogo = Color(0x8C000000);
+
+  /// Sombra de una pastilla de precio sobre el mapa.
+  static const Color sombraPastilla = Color(0x44000000);
+
+  /// Fondo de la atribución legal del mapa.
+  static const Color atribucionMapa = Color(0xCCFFFFFF);
+
+  /// Fondo del visor de fotos a pantalla completa.
+  static const Color visorFoto = Color(0xFF000000);
+
+  /// Fondo del mapa sin teselas.
+  static const Color mapaVacioClaro = Color(0xFFE4EBD6);
+  static const Color mapaVacioOscuro = Color(0xFF16231A);
+
+  static const Color textoPrincipal = Color(0xFFF4FBF0);
+
+  /// CTA, éxito, dato positivo, registro ya sincronizado (modo campo).
+  static const Color acentoHoja = Color(0xFF9AE06E);
 
   /// Fondo/borde de alerta y estado pendiente — nunca como color de texto
   /// (para eso, [acentoAmbarTexto], con mejor contraste sobre

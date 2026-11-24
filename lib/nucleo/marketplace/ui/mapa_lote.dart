@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../ui/colores_campo.dart';
 import '../../ui/paleta_campo.dart';
 import '../dominio/dominio.dart';
 
@@ -17,8 +18,8 @@ abstract final class ConfiguracionMapa {
 
   /// Color del mapa sin teselas (sin red o mientras cargan).
   static Color fondo(PaletaCampo paleta) => paleta.brillo == Brightness.dark
-      ? const Color(0xFF1B2A20)
-      : const Color(0xFFE4EBDD);
+      ? ColoresCampo.mapaVacioOscuro
+      : ColoresCampo.mapaVacioClaro;
 }
 
 /// Mapa con el contorno de uno o más lotes, la estela del dron y su posición.
@@ -146,7 +147,10 @@ class MapaLote extends StatelessWidget {
                             width: 2,
                           ),
                           boxShadow: const [
-                            BoxShadow(blurRadius: 8, color: Color(0x55000000)),
+                            BoxShadow(
+                              blurRadius: 8,
+                              color: ColoresCampo.sombraMapa,
+                            ),
                           ],
                         ),
                         child: Icon(
@@ -165,7 +169,7 @@ class MapaLote extends StatelessWidget {
               MediaQuery.withNoTextScaling(
                 child: const SimpleAttributionWidget(
                   source: Text('OpenStreetMap'),
-                  backgroundColor: Color(0xCCFFFFFF),
+                  backgroundColor: ColoresCampo.atribucionMapa,
                 ),
               ),
           ],

@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../colores_campo.dart';
 import '../imagenes_campo.dart';
 
 /// El logo de Agrocom (isotipo + wordmark) tal como va sobre una foto o
@@ -50,7 +51,7 @@ class LogoAgrocomCampo extends StatelessWidget {
             imageFilter: ui.ImageFilter.blur(sigmaX: 12, sigmaY: 12),
             child: ColorFiltered(
               colorFilter: const ColorFilter.mode(
-                Color(0x8C000000), // negro, alpha .55
+                ColoresCampo.sombraLogo,
                 BlendMode.srcATop,
               ),
               child: Image.asset(

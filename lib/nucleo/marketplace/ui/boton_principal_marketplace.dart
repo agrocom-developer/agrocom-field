@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../ui/paleta_campo.dart';
 import '../../ui/tokens_campo.dart';
 
-/// Acción principal de una pantalla del marketplace: botón lima del tema a
+/// Acción principal de una pantalla del marketplace: botón verde del tema a
 /// ancho completo, con estado de envío. Mientras [cargando] no acepta toques
 /// y lo anuncia a los lectores de pantalla.
 ///
@@ -67,7 +67,7 @@ class _BotonPrincipalMarketplaceState extends State<BotonPrincipalMarketplace> {
                   64,
                   BotonPrincipalMarketplace.altoMinimo,
                 ),
-                // Enviando conserva el lima: un botón gris parecería
+                // Enviando conserva el verde: un botón gris parecería
                 // deshabilitado por un error.
                 disabledBackgroundColor: widget.cargando
                     ? paleta.acento

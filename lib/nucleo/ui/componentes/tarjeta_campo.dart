@@ -9,7 +9,7 @@ enum TamanoTarjetaCampo { grande, chica }
 /// Superficie translúcida + borde 1px sobre `fondoProfundo` — la unidad de
 /// agrupación visual del modo campo (reemplaza `Card` en las pantallas que
 /// lo adoptan). El acento es opcional: una tarjeta "resaltada" (p. ej. el
-/// trabajo asignado) usa `acento: ColoresCampo.acentoLima`.
+/// trabajo asignado) usa `acento: ColoresCampo.acentoHoja`.
 ///
 /// Con [onTap] la tarjeta entera es tocable, con el ripple de Material
 /// recortado a su radio — para una fila de lista que navega (orden, rol),

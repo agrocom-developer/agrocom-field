@@ -92,7 +92,7 @@ class _CeldaPendiente extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = celda.obligatoria
         ? ColoresCampo.acentoAmbar
-        : ColoresCampo.acentoLima;
+        : ColoresCampo.acentoHoja;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),

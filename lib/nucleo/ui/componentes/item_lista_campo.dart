@@ -15,7 +15,7 @@ class ItemListaCampo extends StatelessWidget {
     this.valor,
     this.icono,
     this.iniciales,
-    this.colorIcono = ColoresCampo.acentoLima,
+    this.colorIcono = ColoresCampo.acentoHoja,
     this.onTap,
     super.key,
   });

@@ -31,7 +31,7 @@ abstract final class ElevacionCampo {
   /// Niveles 0 (plano), 1 (tarjeta), 2 (oferta/menú), 3 (modal).
   static List<BoxShadow> sombras(PaletaCampo paleta, int nivel) {
     if (paleta.brillo == Brightness.dark || nivel <= 0) return const [];
-    const colorBase = Color(0xFF101A12);
+    const colorBase = Color(0xFF15210F);
     return switch (nivel) {
       1 => [
         BoxShadow(

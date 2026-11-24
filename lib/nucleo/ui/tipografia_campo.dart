@@ -105,13 +105,13 @@ abstract final class TipografiaCampo {
   );
 
   /// Dato mono que pide atención (enlace "3 productos →", acción "VER") —
-  /// mismo cuerpo que [datoMono] en semibold; el color lima es el default,
+  /// mismo cuerpo que [datoMono] en semibold; el color verde es el default,
   /// un uso de alerta lo cambia con `copyWith`.
   static const TextStyle datoMonoDestacado = TextStyle(
     fontFamily: _mono,
     fontSize: 12,
     fontWeight: FontWeight.w600,
-    color: ColoresCampo.acentoLima,
+    color: ColoresCampo.acentoHoja,
   );
 
   /// Nota de varias líneas en mono, atenuada (estado de sync, aclaración).

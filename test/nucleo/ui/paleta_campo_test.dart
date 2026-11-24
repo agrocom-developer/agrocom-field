@@ -71,6 +71,42 @@ void main() {
     });
   }
 
+  test('el modo campo cumple AAA en todo texto y acento', () {
+    final p = PaletaCampo.campo;
+    for (final base in [p.fondo, p.superficie, p.superficieElevada]) {
+      for (final color in [
+        p.texto,
+        p.textoSecundario,
+        p.acentoTexto,
+        p.exito,
+        p.alerta,
+        p.error,
+        p.info,
+      ]) {
+        expect(
+          ContrasteWcag.ratio(color, base),
+          greaterThanOrEqualTo(ContrasteWcag.aaaTexto),
+        );
+      }
+    }
+    expect(
+      ContrasteWcag.ratio(p.sobreAcento, p.acento),
+      greaterThanOrEqualTo(ContrasteWcag.aaaTexto),
+    );
+  });
+
+  test('el verde pasto de apoyo cumple 3:1 contra fondo y superficie', () {
+    for (final modo in ModoVisualCampo.values) {
+      final p = PaletaCampo.deModo(modo);
+      for (final base in [p.fondo, p.superficie]) {
+        expect(
+          ContrasteWcag.ratio(p.apoyo, base),
+          greaterThanOrEqualTo(ContrasteWcag.aaComponente),
+        );
+      }
+    }
+  });
+
   test('el modo campo supera el contraste del modo oscuro en texto', () {
     expect(
       ContrasteWcag.ratio(

@@ -22,7 +22,7 @@ class BadgeEstadoCampo extends StatelessWidget {
   Color get _color => switch (estado) {
     EstadoBadgeCampo.pendiente => ColoresCampo.acentoAmbar,
     EstadoBadgeCampo.reintento => ColoresCampo.acentoRojo,
-    EstadoBadgeCampo.ok => ColoresCampo.acentoLima,
+    EstadoBadgeCampo.ok => ColoresCampo.acentoHoja,
     EstadoBadgeCampo.generico => ColoresCampo.textoPrincipal,
   };
 

@@ -6,7 +6,7 @@ Este documento fija el lenguaje visual común. El código vive en `lib/nucleo/ui
 
 ## 1. Principios
 
-1. **Una acción principal por pantalla.** El botón lima ocupa el ancho completo y es el elemento de mayor peso. Todo lo demás es secundario.
+1. **Una acción principal por pantalla.** El botón verde ocupa el ancho completo y es el elemento de mayor peso. Todo lo demás es secundario.
 2. **Sin sobrecarga.** Un dato protagonista, un apoyo, una acción. Cada elemento adicional debe justificar el espacio que ocupa.
 3. **El contraste es una función, no un gusto.** Cada par de color tiene un ratio medido y un test que lo vigila.
 4. **El lote no tiene señal; la interfaz tampoco espera.** En piloto y auxiliar la pantalla cambia antes de que exista respuesta (datos desde `drift`, sin esqueletos). Solo el flavor cliente muestra esqueletos de carga.
@@ -21,44 +21,67 @@ Ratios medidos con la fórmula WCAG 2.x de luminancia relativa (`ContrasteWcag`,
 
 ### Modo claro
 
+Fondo crema, superficie casi blanca y un verde hoja profundo como primario.
+
 | Rol | Valor | Uso | Contraste |
 |---|---|---|---|
-| `fondo` | `#F5F7F2` | Fondo de pantalla | — |
-| `superficie` | `#FFFFFF` | Tarjetas, hojas | — |
-| `texto` | `#101A12` | Texto principal | 16,52:1 sobre fondo (AAA) |
-| `textoSecundario` | `#4A5A4D` | Apoyo | 6,81:1 sobre fondo, 7,34:1 sobre superficie (AA) |
-| `acento` | `#A3E635` | Relleno de la acción principal | — |
-| `sobreAcento` | `#101A12` | Texto sobre el acento | 11,82:1 (AAA) |
-| `acentoTexto` / `exito` | `#2B6A0A` | Acento y éxito como texto o ícono | 6,14:1 sobre fondo (AA) |
-| `alerta` | `#8A5300` | Pendiente, advertencia | 5,87:1 (AA) |
-| `error` | `#B42318` | Error | 6,09:1 (AA) |
-| `info` | `#0B5E8A` | Información | 6,53:1 (AA) |
-| `bordeFuerte` | `#7A8A7D` | Borde de campos y controles | 3,38:1 (componente, mínimo 3:1) |
-| `borde` | `#DDE4D8` | Divisor decorativo | no porta información |
+| `fondo` | `#F6F2E4` | Fondo de pantalla (crema) | — |
+| `superficie` | `#FFFDF7` | Tarjetas, hojas | — |
+| `texto` | `#15210F` | Texto principal | 14,92:1 sobre fondo, 16,43:1 sobre superficie (AAA) |
+| `textoSecundario` | `#4A5240` | Apoyo | 7,29:1 sobre fondo, 8,03:1 sobre superficie (AAA) |
+| `acento` (verde hoja) | `#1F5F2E` | Relleno de la acción principal | — |
+| `sobreAcento` | `#FFFFFF` | Texto sobre el acento | 7,68:1 (AAA) |
+| `acentoTexto` / `exito` | `#1F5F2E` | Acento y éxito como texto o ícono | 6,85:1 sobre fondo, 7,55:1 sobre superficie (AA) |
+| `apoyo` (verde pasto) | `#4C8C3A` | Íconos, marcadores y gráficos; nunca texto | 3,66:1 sobre fondo, 4,03:1 sobre superficie (componente, mínimo 3:1) |
+| `alerta` | `#8A5300` | Pendiente, advertencia | 5,65:1 (AA) |
+| `error` | `#B42318` | Error | 5,87:1 (AA) |
+| `info` | `#0B5E8A` | Información | 6,28:1 (AA) |
+| `bordeFuerte` | `#7A7F68` | Borde de campos y controles | 3,70:1 sobre fondo, 4,08:1 sobre superficie (componente, mínimo 3:1) |
+| `borde` | `#D9D3BC` | Divisor decorativo | no porta información |
 
 ### Modo oscuro
 
-| Rol | Valor | Contraste sobre `fondo` `#0E1511` |
+Verde casi negro; el primario es un verde hoja claro para que el relleno se lea.
+
+| Rol | Valor | Contraste sobre `fondo` `#0A110B` |
 |---|---|---|
-| `texto` | `#EEF5EF` | 16,70:1 (AAA) |
-| `textoSecundario` | `#A9B8AD` | 8,95:1 (AAA); 8,08:1 sobre superficie `#16201A` |
-| `acentoTexto` / `exito` | `#A3E635` | 12,28:1 (AAA) |
-| `sobreAcento` | `#0E1511` | 12,28:1 sobre el acento (AAA) |
-| `alerta` | `#FBBF24` | 11,09:1 (AAA) |
-| `error` | `#FF8A80` | 8,11:1 (AAA) |
-| `info` | `#7DD3FC` | 11,11:1 (AAA) |
-| `bordeFuerte` | `#7F9186` | 5,55:1 (componente) |
+| `superficie` / `superficieElevada` | `#111B13` / `#19261B` | — |
+| `texto` | `#EEF5EA` | 17,20:1 (AAA); 15,87:1 sobre superficie |
+| `textoSecundario` | `#A9B8A5` | 9,19:1 (AAA); 8,48:1 sobre superficie |
+| `acento` / `acentoTexto` / `exito` | `#7DBE5A` | 8,55:1 (AAA) |
+| `sobreAcento` | `#0A110B` | 8,55:1 sobre el acento (AAA) |
+| `apoyo` (verde pasto) | `#4C8C3A` | 4,66:1 sobre fondo, 4,30:1 sobre superficie (componente) |
+| `alerta` | `#FBBF24` | 11,46:1 (AAA) |
+| `error` | `#FF8A80` | 8,38:1 (AAA); 7,73:1 sobre superficie |
+| `info` | `#7DD3FC` | 11,47:1 (AAA) |
+| `bordeFuerte` | `#7F9186` | 5,74:1 (componente) |
 
-La elevación en oscuro se expresa subiendo la claridad de la superficie (`superficie` `#16201A` → `superficieElevada` `#1E2A22`), no con sombra.
+La elevación en oscuro se expresa subiendo la claridad de la superficie (`superficie` `#111B13` → `superficieElevada` `#19261B`), no con sombra.
 
-### Modo campo (alto contraste, flavor piloto bajo sol)
+### Modo campo (alto contraste AAA, flavors piloto y auxiliar bajo sol)
 
-Fondo `#07110A`, superficie `#0A1A0E`. Texto `#F0FDF4` (18,34:1, AAA), texto secundario `#C9D8CD` (12,97:1), lima `#A3E635` (12,74:1), alerta `#FDE68A` (15,42:1), error `#FF9A92` (9,41:1), info `#7DD3FC` (11,52:1). El texto secundario del modo campo es siempre más contrastado que el del modo oscuro (lo vigila un test). Las reglas de campo: objetivos táctiles de 56 px, sin texto por debajo de 12 px, sin información expresada solo por color y sin gris sobre gris.
+Fondo `#050A06`, superficie `#0A130B`, superficie elevada `#12220F`. Todo texto, acento y color semántico cumple AAA (7:1) sobre las tres superficies; lo vigila `test/nucleo/ui/paleta_campo_test.dart`.
+
+| Rol | Valor | Sobre fondo | Sobre superficie | Sobre elevada |
+|---|---|---|---|---|
+| `texto` | `#F4FBF0` | 18,91:1 | 17,92:1 | 15,78:1 |
+| `textoSecundario` | `#C9D8CD` | 13,48:1 | 12,77:1 | 11,25:1 |
+| `acento` / `acentoTexto` / `exito` (verde hoja claro) | `#9AE06E` | 12,60:1 | 11,94:1 | — |
+| `sobreAcento` | `#050A06` | 12,60:1 sobre el acento | | |
+| `alerta` | `#FDE68A` | 16,02:1 | 15,18:1 | 13,37:1 |
+| `error` | `#FF9A92` | 9,78:1 | 9,26:1 | 8,16:1 |
+| `info` | `#7DD3FC` | 11,97:1 | 11,34:1 | 9,98:1 |
+| `bordeFuerte` | `#8FA68F` | 7,62:1 | 7,22:1 | — |
+| `apoyo` (verde pasto) | `#4C8C3A` | 4,86:1 | 4,61:1 | — |
+
+El rojo de insignias (`acentoRojo` `#F87171`) mide 7,21:1 sobre el fondo. El texto secundario del modo campo es siempre más contrastado que el del modo oscuro (lo vigila un test). Las reglas de campo: objetivos táctiles de 56 px, sin texto por debajo de 12 px, sin información expresada solo por color y sin gris sobre gris.
+
+Los colores que no son de la paleta (sombra de marcadores, atribución y fondo del mapa sin teselas, visor de fotos) son tokens de `ColoresCampo`; una pantalla no declara colores propios.
 
 ### Reglas de color
 
-- El lima es el único acento de marca. Un color semántico (éxito, alerta, error, info) nunca es el único portador del estado: lleva ícono o texto.
-- Sobre fondo claro el lima solo se usa como relleno con texto oscuro; como texto se usa `acentoTexto`.
+- El verde hoja es el único acento de marca; el verde pasto (`apoyo`) acompaña en íconos, marcadores y gráficos, nunca como texto. Un color semántico (éxito, alerta, error, info) nunca es el único portador del estado: lleva ícono o texto.
+- En claro el relleno de la acción es el verde hoja con texto blanco; en oscuro y campo es un verde hoja claro con texto casi negro.
 - Un color nuevo no entra al sistema sin ratio medido y test.
 
 ## 3. Tipografía
@@ -137,7 +160,7 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 
 ## 9. Patrones por pantalla clave
 
-**Solicitar fumigación (cliente).** Cuatro pasos, uno por pantalla: lote, aplicación, cuándo y precio. Barra de progreso de cuatro segmentos arriba y un único botón lima abajo, anclado sobre el teclado. El paso nuevo entra desde el lado hacia el que se avanza (`media`, 240 ms).
+**Solicitar fumigación (cliente).** Cuatro pasos, uno por pantalla: lote, aplicación, cuándo y precio. Barra de progreso de cuatro segmentos arriba y un único botón verde abajo, anclado sobre el teclado. El paso nuevo entra desde el lado hacia el que se avanza (`media`, 240 ms).
 
 - *Lote.* El mapa ocupa la mitad superior y es el protagonista: un toque elige un lote guardado o marca una esquina del contorno; cada esquina se arrastra (objetivo de 56 px) y la superficie se lee en grande sobre el mapa. Sin doble toque para acercar: el toque responde al instante y el zoom es por pellizco. Debajo, un selector «Mis lotes / Dibujar» y la lista o la guía de dibujo.
 - *Aplicación.* Hectáreas editables (propuestas desde el lote o el contorno), cultivo, producto y dosis. Las opciones son pastillas con tilde y borde de acento cuando están elegidas.

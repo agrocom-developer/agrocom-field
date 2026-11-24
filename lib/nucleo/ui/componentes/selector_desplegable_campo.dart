@@ -52,7 +52,7 @@ class SelectorDesplegableCampo<T> extends StatelessWidget {
             isExpanded: true,
             dropdownColor: ColoresCampo.superficie,
             borderRadius: BorderRadius.circular(radio),
-            iconEnabledColor: ColoresCampo.acentoLima,
+            iconEnabledColor: ColoresCampo.acentoHoja,
             style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 17,

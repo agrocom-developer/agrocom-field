@@ -18,7 +18,7 @@ class ItemBarraNavegacionCampo {
 
 /// Bottom nav con un botón de acción central elevado (el "+" del mockup) —
 /// distinto de `NavigationBar` de Material, que no tiene ese slot central.
-/// El ítem activo se pinta en `acentoLima`; el resto, atenuado.
+/// El ítem activo se pinta en `acentoHoja`; el resto, atenuado.
 class BarraNavegacionCampo extends StatelessWidget {
   const BarraNavegacionCampo({
     required this.items,
@@ -74,7 +74,7 @@ class _Item extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = activo
-        ? ColoresCampo.acentoLima
+        ? ColoresCampo.acentoHoja
         : ColoresCampo.textoPrincipal.withValues(alpha: 0.5);
     final etiqueta = item.insignia == null
         ? item.etiqueta
@@ -119,7 +119,7 @@ class _BotonCentral extends StatelessWidget {
           height: 58,
           alignment: Alignment.center,
           decoration: const BoxDecoration(
-            color: ColoresCampo.acentoLima,
+            color: ColoresCampo.acentoHoja,
             shape: BoxShape.circle,
           ),
           child: const Icon(

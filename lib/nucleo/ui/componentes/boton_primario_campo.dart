@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../colores_campo.dart';
 import '../tema_campo.dart';
 
-/// CTA pill en lima — alto mínimo 56 (mismo criterio de touch target que
+/// CTA pill en verde — alto mínimo 56 (mismo criterio de touch target que
 /// ADR 0003: guantes, sol directo). Único botón "lleno" del catálogo de
 /// campo; para acciones secundarias, `BotonSecundarioCampo`.
 ///
@@ -34,8 +34,8 @@ class BotonPrimarioCampo extends StatelessWidget {
       child: FilledButton(
         onPressed: cargando ? null : onPressed,
         style: FilledButton.styleFrom(
-          backgroundColor: ColoresCampo.acentoLima,
-          disabledBackgroundColor: ColoresCampo.acentoLima.withValues(
+          backgroundColor: ColoresCampo.acentoHoja,
+          disabledBackgroundColor: ColoresCampo.acentoHoja.withValues(
             alpha: 0.4,
           ),
           foregroundColor: ColoresCampo.fondoProfundo,

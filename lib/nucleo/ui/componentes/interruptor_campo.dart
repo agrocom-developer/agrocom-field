@@ -34,7 +34,7 @@ class InterruptorCampo extends StatelessWidget {
     return Opacity(
       opacity: habilitado ? OpacidadesCampo.plena : OpacidadesCampo.media,
       child: TarjetaCampo(
-        acento: valor ? ColoresCampo.acentoLima : null,
+        acento: valor ? ColoresCampo.acentoHoja : null,
         onTap: habilitado ? () => onChanged!(!valor) : null,
         child: Row(
           children: [
@@ -63,7 +63,7 @@ class InterruptorCampo extends StatelessWidget {
               value: valor,
               onChanged: onChanged,
               activeThumbColor: ColoresCampo.fondoProfundo,
-              activeTrackColor: ColoresCampo.acentoLima,
+              activeTrackColor: ColoresCampo.acentoHoja,
               inactiveThumbColor: ColoresCampo.textoPrincipal.withValues(
                 alpha: OpacidadesCampo.media,
               ),

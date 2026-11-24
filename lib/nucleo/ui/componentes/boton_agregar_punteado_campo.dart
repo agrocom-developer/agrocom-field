@@ -4,7 +4,7 @@ import '../colores_campo.dart';
 
 /// Slot con borde punteado — "agregar producto", o el hueco de una
 /// evidencia obligatoria todavía sin capturar. [alerta] lo tiñe de ámbar en
-/// vez del lima por defecto, para el caso "obligatorio y falta".
+/// vez del verde por defecto, para el caso "obligatorio y falta".
 class BotonAgregarPunteadoCampo extends StatelessWidget {
   const BotonAgregarPunteadoCampo({
     required this.texto,
@@ -19,7 +19,7 @@ class BotonAgregarPunteadoCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = alerta ? ColoresCampo.acentoAmbar : ColoresCampo.acentoLima;
+    final color = alerta ? ColoresCampo.acentoAmbar : ColoresCampo.acentoHoja;
     return InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(20),
