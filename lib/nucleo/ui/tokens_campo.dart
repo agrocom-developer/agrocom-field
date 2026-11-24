@@ -18,6 +18,12 @@ abstract final class EspaciadoCampo {
   static double margenLateral(double ancho) => ancho >= 600 ? xl : l;
 }
 
+/// Radios de esquina compartidos por tarjetas, avisos y miniaturas.
+abstract final class RadioCampo {
+  /// Superficies medianas: avisos, banners, miniaturas y bloques de contenido.
+  static const double media = 14;
+}
+
 /// Tamaño mínimo de un objetivo táctil: 48 en la app general (Material),
 /// 56 con guantes (flavor piloto y auxiliar).
 abstract final class ObjetivoTactilCampo {

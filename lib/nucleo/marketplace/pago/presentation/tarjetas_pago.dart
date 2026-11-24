@@ -6,11 +6,14 @@ import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../ui/aviso_marketplace.dart';
 import '../../ui/boton_principal_marketplace.dart';
-import '../../ui/formato_marketplace.dart';
 import '../../ui/superficie_marketplace.dart';
 import '../pago_confirmado.dart';
 import '../pagos_repositorio.dart';
 import 'pago_cubit.dart';
+import 'sello_pago_confirmado.dart';
+
+export 'sello_pago_confirmado.dart';
+export 'tarjeta_pago_del_cliente.dart';
 
 /// «Ya recibí el pago»: lo que el proveedor titular ve en el servicio
 /// finalizado. La app no cobra; solo deja constancia de un pago hecho fuera,
@@ -162,152 +165,6 @@ class _VistaConfirmar extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-/// «Pago confirmado»: el sello que ven el proveedor y el cliente. El monto
-/// es el que fijó el servidor.
-class SelloPagoConfirmado extends StatelessWidget {
-  const SelloPagoConfirmado({
-    required this.pago,
-    this.paraProveedor = false,
-    super.key,
-  });
-
-  final PagoConfirmado pago;
-  final bool paraProveedor;
-
-  @override
-  Widget build(BuildContext context) {
-    final texto = Theme.of(context).textTheme;
-    final paleta = context.paleta;
-    final detalle = [
-      FormatoMarketplace.bs(pago.monto),
-      ?pago.metodo?.etiqueta,
-      FormatoMarketplace.fechaLarga(pago.confirmadoEn.toLocal()),
-    ].join(' · ');
-    return Semantics(
-      container: true,
-      label: 'Pago confirmado. $detalle',
-      excludeSemantics: true,
-      child: SuperficieMarketplace(
-        key: const Key('pago-confirmado'),
-        resaltada: true,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(Icons.check_circle_rounded, color: paleta.exito, size: 32),
-            const SizedBox(width: EspaciadoCampo.m),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Pago confirmado', style: texto.titleLarge),
-                  const SizedBox(height: EspaciadoCampo.xs),
-                  Text(detalle, style: texto.bodyLarge),
-                  const SizedBox(height: EspaciadoCampo.xs),
-                  Text(
-                    paraProveedor
-                        ? 'Ya quedó registrado y el cliente lo ve. No hay '
-                              'nada más que hacer.'
-                        : 'El piloto confirmó que recibió el pago. Gracias '
-                              'por usar Agrocom.',
-                    style: texto.bodyMedium?.copyWith(
-                      color: paleta.textoSecundario,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Lo que el cliente ve del pago en el seguimiento: «Pago confirmado» o que
-/// todavía falta. Es de solo lectura.
-class TarjetaPagoDelCliente extends StatelessWidget {
-  const TarjetaPagoDelCliente({required this.solicitudId, super.key});
-
-  final int solicitudId;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          PagoCubit(context.read<PagosRepositorio>(), solicitudId)..cargar(),
-      child: BlocBuilder<PagoCubit, PagoEstado>(
-        builder: (context, estado) {
-          final texto = Theme.of(context).textTheme;
-          final paleta = context.paleta;
-          return switch (estado.fase) {
-            FasePago.confirmado => SelloPagoConfirmado(pago: estado.pago!),
-            FasePago.cargando ||
-            FasePago.confirmando => const SuperficieMarketplace(
-              child: EsqueletoCampo(
-                key: Key('pago-carga'),
-                alto: 56,
-                radio: 12,
-              ),
-            ),
-            FasePago.error => Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                AvisoMarketplace(
-                  key: const Key('pago-cliente-error'),
-                  tono: estado.fallo == FalloPago.sinRed
-                      ? TonoAviso.alerta
-                      : TonoAviso.error,
-                  icono: estado.fallo == FalloPago.sinRed
-                      ? Icons.wifi_off_rounded
-                      : null,
-                  mensaje: estado.mensaje ?? 'No pudimos revisar el pago.',
-                ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: TextButton.icon(
-                    key: const Key('pago-cliente-reintentar'),
-                    onPressed: context.read<PagoCubit>().cargar,
-                    icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('Reintentar'),
-                  ),
-                ),
-              ],
-            ),
-            FasePago.pendiente => SuperficieMarketplace(
-              key: const Key('pago-pendiente'),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(
-                    Icons.hourglass_empty_rounded,
-                    color: paleta.textoSecundario,
-                  ),
-                  const SizedBox(width: EspaciadoCampo.m),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Pago pendiente', style: texto.titleMedium),
-                        Text(
-                          'Le pagas al piloto directamente. Cuando él '
-                          'confirme que lo recibió, lo verás aquí.',
-                          style: texto.bodyMedium?.copyWith(
-                            color: paleta.textoSecundario,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          };
-        },
-      ),
     );
   }
 }

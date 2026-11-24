@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../ui/paleta_campo.dart';
+import '../../ui/tokens_campo.dart';
 
 enum TonoAviso { info, alerta, error }
 
@@ -37,7 +38,7 @@ class AvisoMarketplace extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(RadioCampo.media),
         border: Border.all(color: color.withValues(alpha: 0.4)),
       ),
       child: Row(

@@ -28,6 +28,10 @@ El script corre `flutter drive` con el flavor correspondiente y, por cada pedido
 
 Para guardarlas en el repositorio se comprimen a JPEG (`sips -s format jpeg -s formatOptions 78 --resampleWidth 560`) en `docs/diseno/capturas/recorrido/`.
 
+### Capturas del iPad y del modo oscuro
+
+Las mismas dos pruebas se corren en un iPad (simulador `qa-ipad`) en claro y en oscuro (`xcrun simctl ui <id> appearance dark`). Los JPEG quedan en `docs/diseno/capturas/recorrido/ipad-claro/` y `docs/diseno/capturas/recorrido/ipad-oscuro/`, con la misma numeración que las de teléfono. El recorrido del cliente cubre el servicio en curso (16 y 17), el servicio finalizado y el precio final (21 y 22) y la calificación (23 a 25).
+
 ## Cuándo correrlo
 
 Antes de abrir el PR de un cambio que toque un flujo del cliente o del piloto, y después de cambiar el contrato con la API. Complementa a las pruebas golden: estas validan cada pantalla aislada; el recorrido valida que el flujo real funciona con datos reales.

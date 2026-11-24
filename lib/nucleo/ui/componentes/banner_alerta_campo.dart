@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../colores_campo.dart';
+import '../tokens_campo.dart';
 
 /// Franja de alerta (offline, ráfagas fuera de rango) — fila con [texto] a
 /// la izquierda y [valor] opcional a la derecha (p. ej. "SIN CONEXIÓN ·
@@ -20,7 +21,7 @@ class BannerAlertaCampo extends StatelessWidget {
         border: Border.all(
           color: ColoresCampo.acentoAmbar.withValues(alpha: 0.32),
         ),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(RadioCampo.media),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
