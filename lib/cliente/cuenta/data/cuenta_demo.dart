@@ -12,7 +12,7 @@ class CuentaDemo implements CuentaRepositorio {
     nombre: DatosDemo.clienteNombre,
     empresa: DatosDemo.clienteEmpresa,
     telefono: '+591 7712 3456',
-    correo: 'hugo.antelo@lostajibos.example',
+    usuario: 'hugo.antelo',
     serviciosTotales: _almacen.servicios.length,
   );
 }

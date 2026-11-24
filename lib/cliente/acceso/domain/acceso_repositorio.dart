@@ -3,13 +3,13 @@
 class SesionCliente {
   const SesionCliente({
     required this.nombre,
-    required this.correo,
+    required this.usuario,
     this.empresa,
     this.telefono,
   });
 
   final String nombre;
-  final String correo;
+  final String usuario;
   final String? empresa;
   final String? telefono;
 
@@ -20,12 +20,12 @@ class SesionCliente {
   bool operator ==(Object other) =>
       other is SesionCliente &&
       other.nombre == nombre &&
-      other.correo == correo &&
+      other.usuario == usuario &&
       other.empresa == empresa &&
       other.telefono == telefono;
 
   @override
-  int get hashCode => Object.hash(nombre, correo, empresa, telefono);
+  int get hashCode => Object.hash(nombre, usuario, empresa, telefono);
 }
 
 /// Datos del formulario de registro del cliente.
@@ -33,22 +33,22 @@ class DatosRegistroCliente {
   const DatosRegistroCliente({
     required this.nombre,
     required this.telefono,
-    required this.correo,
+    required this.usuario,
     required this.contrasena,
   });
 
   final String nombre;
   final String telefono;
-  final String correo;
+  final String usuario;
   final String contrasena;
 }
 
 /// Campos del acceso; sirven de clave para los errores que el servidor
 /// devuelve por campo (`422`).
-enum CampoAcceso { nombre, telefono, correo, contrasena }
+enum CampoAcceso { nombre, telefono, usuario, contrasena }
 
 enum MotivoFalloAcceso {
-  /// Correo o contraseña incorrectos.
+  /// Usuario o contraseña incorrectos.
   credencialesInvalidas,
 
   /// No hay red o el servidor no respondió. Lo escrito se conserva.
@@ -86,7 +86,7 @@ abstract interface class AccesoRepositorio {
 
   /// Lanza [AccesoExcepcion] si no se puede entrar.
   Future<SesionCliente> iniciarSesion({
-    required String correo,
+    required String usuario,
     required String contrasena,
   });
 

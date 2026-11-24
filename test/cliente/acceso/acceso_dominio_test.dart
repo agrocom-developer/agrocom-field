@@ -6,17 +6,30 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('ReglasAcceso', () {
-    test('correo', () {
-      expect(ReglasAcceso.correo(''), 'Escribe tu correo');
-      expect(ReglasAcceso.correo('hugo@'), isNotNull);
-      expect(ReglasAcceso.correo('hugo@finca'), isNotNull);
-      expect(ReglasAcceso.correo(' hugo@finca.bo '), isNull);
+    test('usuario', () {
+      expect(ReglasAcceso.usuario(''), 'Escribe tu usuario');
+      expect(
+        ReglasAcceso.usuario('hugo@finca.bo'),
+        contains('no es un correo'),
+      );
+      expect(ReglasAcceso.usuario('ab'), isNotNull);
+      expect(ReglasAcceso.usuario('hugo finca'), isNotNull);
+      expect(ReglasAcceso.usuario(' hugo.finca '), isNull);
+      expect(ReglasAcceso.usuario('agro-san_rafael'), isNull);
     });
 
     test('contraseña nueva exige el largo mínimo', () {
       expect(ReglasAcceso.contrasenaNueva(''), 'Crea una contraseña');
       expect(ReglasAcceso.contrasenaNueva('1234567'), contains('8'));
-      expect(ReglasAcceso.contrasenaNueva('12345678'), isNull);
+      expect(
+        ReglasAcceso.contrasenaNueva('12345678'),
+        'Combina letras y números',
+      );
+      expect(
+        ReglasAcceso.contrasenaNueva('abcdefgh'),
+        'Combina letras y números',
+      );
+      expect(ReglasAcceso.contrasenaNueva('abcd1234'), isNull);
     });
 
     test('al ingresar la contraseña solo no puede estar vacía', () {
@@ -49,10 +62,10 @@ void main() {
 
     test('iniciar sesión deja la sesión y cerrarla la borra', () async {
       final sesion = await acceso.iniciarSesion(
-        correo: ' Ana@Finca.bo ',
+        usuario: 'Ana.Finca',
         contrasena: 'segura123',
       );
-      expect(sesion.correo, 'ana@finca.bo');
+      expect(sesion.usuario, 'ana.finca');
       expect(await acceso.sesionActual(), sesion);
       await acceso.cerrarSesion();
       expect(await acceso.sesionActual(), isNull);
@@ -61,7 +74,7 @@ void main() {
     test('credenciales inválidas y sin conexión', () async {
       await expectLater(
         acceso.iniciarSesion(
-          correo: 'ana@finca.bo',
+          usuario: 'ana.finca',
           contrasena: AccesoDemo.contrasenaIncorrecta,
         ),
         throwsA(
@@ -74,7 +87,7 @@ void main() {
       );
       await expectLater(
         acceso.iniciarSesion(
-          correo: AccesoDemo.correoSinConexion,
+          usuario: AccesoDemo.usuarioSinConexion,
           contrasena: 'segura123',
         ),
         throwsA(
@@ -89,14 +102,14 @@ void main() {
     });
 
     test(
-      'registrar usa el nombre escrito y rechaza un correo ocupado',
+      'registrar usa el nombre escrito y rechaza un usuario ocupado',
       () async {
         await expectLater(
           acceso.registrar(
             const DatosRegistroCliente(
               nombre: 'Ana Roca',
               telefono: '77123456',
-              correo: AccesoDemo.correoOcupado,
+              usuario: AccesoDemo.usuarioOcupado,
               contrasena: 'segura123',
             ),
           ),
@@ -104,7 +117,7 @@ void main() {
             isA<AccesoExcepcion>().having(
               (e) => e.porCampo.keys,
               'campos',
-              contains(CampoAcceso.correo),
+              contains(CampoAcceso.usuario),
             ),
           ),
         );
@@ -112,7 +125,7 @@ void main() {
           const DatosRegistroCliente(
             nombre: ' Ana Roca ',
             telefono: '77123456',
-            correo: 'ana@finca.bo',
+            usuario: 'ana.finca',
             contrasena: 'segura123',
           ),
         );

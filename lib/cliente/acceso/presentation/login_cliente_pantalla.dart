@@ -13,7 +13,7 @@ import 'formulario_acceso_estado.dart';
 import 'lienzo_acceso.dart';
 import 'login_cliente_cubit.dart';
 
-/// Ingreso del cliente: correo, contraseña y una sola acción. Requiere red;
+/// Ingreso del cliente: usuario, contraseña y una sola acción. Requiere red;
 /// si falla, el aviso explica por qué y lo escrito se conserva.
 class LoginClientePantalla extends StatelessWidget {
   const LoginClientePantalla({
@@ -59,13 +59,13 @@ class _Formulario extends StatefulWidget {
 
 class _FormularioState extends State<_Formulario> {
   final _formulario = GlobalKey<FormState>();
-  final _correo = TextEditingController();
+  final _usuario = TextEditingController();
   final _contrasena = TextEditingController();
   bool _intentado = false;
 
   @override
   void dispose() {
-    _correo.dispose();
+    _usuario.dispose();
     _contrasena.dispose();
     super.dispose();
   }
@@ -75,7 +75,7 @@ class _FormularioState extends State<_Formulario> {
     if (!(_formulario.currentState?.validate() ?? false)) return;
     FocusScope.of(context).unfocus();
     context.read<LoginClienteCubit>().enviar(
-      correo: _correo.text,
+      usuario: _usuario.text,
       contrasena: _contrasena.text,
     );
   }
@@ -138,15 +138,15 @@ class _FormularioState extends State<_Formulario> {
                         ),
                 ),
                 CampoFormularioMarketplace(
-                  key: const Key('login-correo'),
-                  etiqueta: 'Correo',
-                  controller: _correo,
+                  key: const Key('login-usuario'),
+                  etiqueta: 'Usuario',
+                  controller: _usuario,
                   enabled: !estado.enviando,
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
-                  autofillHints: const [AutofillHints.email],
-                  validator: ReglasAcceso.correo,
-                  errorServidor: estado.porCampo[CampoAcceso.correo],
+                  autofillHints: const [AutofillHints.username],
+                  validator: ReglasAcceso.usuario,
+                  errorServidor: estado.porCampo[CampoAcceso.usuario],
                   onChanged: (_) => cubit.limpiarFallo(),
                 ),
                 const SizedBox(height: EspaciadoCampo.l),

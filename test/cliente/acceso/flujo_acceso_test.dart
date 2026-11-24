@@ -96,14 +96,17 @@ void main() {
 
     await tester.tap(find.byKey(const Key('login-ingresar')));
     await tester.pumpAndSettle();
-    expect(find.text('Escribe tu correo'), findsOneWidget);
+    expect(find.text('Escribe tu usuario'), findsOneWidget);
     expect(find.text('Escribe tu contraseña'), findsOneWidget);
 
-    await tester.enterText(find.bySemanticsLabel('Correo'), 'ana@finca');
+    await tester.enterText(find.bySemanticsLabel('Usuario'), 'ana finca');
     await tester.pumpAndSettle();
-    expect(find.text('Revisa el correo: falta algo'), findsOneWidget);
+    expect(
+      find.text('Usa de 3 a 40 letras, números, punto o guion'),
+      findsOneWidget,
+    );
 
-    await tester.enterText(find.bySemanticsLabel('Correo'), 'ana@finca.bo');
+    await tester.enterText(find.bySemanticsLabel('Usuario'), 'ana.finca');
     await tester.enterText(find.bySemanticsLabel('Contraseña'), 'segura123');
     await tester.tap(find.byKey(const Key('login-ingresar')));
     await tester.pumpAndSettle();
@@ -120,7 +123,7 @@ void main() {
     await _abrir(tester);
     await _saltarPresentacion(tester);
 
-    await tester.enterText(find.bySemanticsLabel('Correo'), 'ana@finca.bo');
+    await tester.enterText(find.bySemanticsLabel('Usuario'), 'ana.finca');
     await tester.enterText(
       find.bySemanticsLabel('Contraseña'),
       AccesoDemo.contrasenaIncorrecta,
@@ -128,12 +131,12 @@ void main() {
     await tester.tap(find.byKey(const Key('login-ingresar')));
     await tester.pumpAndSettle();
     expect(find.textContaining('no coinciden'), findsOneWidget);
-    expect(find.text('ana@finca.bo'), findsOneWidget);
+    expect(find.text('ana.finca'), findsOneWidget);
 
     // Al corregir, el aviso se retira.
     await tester.enterText(
-      find.bySemanticsLabel('Correo'),
-      AccesoDemo.correoSinConexion,
+      find.bySemanticsLabel('Usuario'),
+      AccesoDemo.usuarioSinConexion,
     );
     await tester.pumpAndSettle();
     expect(find.textContaining('no coinciden'), findsNothing);
@@ -142,7 +145,7 @@ void main() {
     await tester.tap(find.byKey(const Key('login-ingresar')));
     await tester.pumpAndSettle();
     expect(find.textContaining('Sin conexión'), findsOneWidget);
-    expect(find.text(AccesoDemo.correoSinConexion), findsOneWidget);
+    expect(find.text(AccesoDemo.usuarioSinConexion), findsOneWidget);
   });
 
   testWidgets('registrarse muestra el error del servidor junto al campo y '
@@ -168,8 +171,8 @@ void main() {
     );
     await tester.enterText(find.bySemanticsLabel('Teléfono'), '77123456');
     await tester.enterText(
-      find.bySemanticsLabel('Correo'),
-      AccesoDemo.correoOcupado,
+      find.bySemanticsLabel('Usuario'),
+      AccesoDemo.usuarioOcupado,
     );
     await tester.enterText(find.bySemanticsLabel('Contraseña'), 'corta');
     final crear = find.byKey(const Key('registro-crear'));
@@ -182,12 +185,12 @@ void main() {
     await tester.ensureVisible(crear);
     await tester.tap(crear);
     await tester.pumpAndSettle();
-    expect(find.text('Ya existe una cuenta con este correo'), findsOneWidget);
+    expect(find.text('Ese usuario ya existe. Elige otro'), findsOneWidget);
     expect(find.text('Ana Roca'), findsOneWidget);
 
-    await tester.enterText(find.bySemanticsLabel('Correo'), 'ana@finca.bo');
+    await tester.enterText(find.bySemanticsLabel('Usuario'), 'ana.finca');
     await tester.pumpAndSettle();
-    expect(find.text('Ya existe una cuenta con este correo'), findsNothing);
+    expect(find.text('Ese usuario ya existe. Elige otro'), findsNothing);
     await tester.ensureVisible(crear);
     await tester.tap(crear);
     await tester.pumpAndSettle();
@@ -255,7 +258,7 @@ void main() {
       );
     }
     expect(
-      tester.getSize(find.bySemanticsLabel('Correo')).height,
+      tester.getSize(find.bySemanticsLabel('Usuario')).height,
       greaterThanOrEqualTo(48),
     );
   });

@@ -64,14 +64,15 @@ class CuentaPantalla extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(cuenta.nombre, style: texto.titleMedium),
-                        Text(
-                          cuenta.empresa,
-                          style: texto.bodyMedium?.copyWith(
-                            color: paleta.textoSecundario,
+                        if (cuenta.empresa.isNotEmpty)
+                          Text(
+                            cuenta.empresa,
+                            style: texto.bodyMedium?.copyWith(
+                              color: paleta.textoSecundario,
+                            ),
                           ),
-                        ),
                         Text(
-                          cuenta.correo,
+                          cuenta.usuario,
                           style: texto.bodySmall?.copyWith(
                             color: paleta.textoSecundario,
                           ),

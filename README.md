@@ -22,6 +22,8 @@ La URL base de la API se pasa por build, nunca hardcodeada (ver `docs/decisiones
 cp config/env.local.json.example config/env.local.json
 ```
 
+En el simulador de iOS la API local se alcanza por `http://localhost:8000`; en el emulador de Android, por `http://10.0.2.2:8000`. Los builds Debug de iOS traen la excepción ATS para http a la red local (la agrega la fase «Excepción ATS local» del proyecto de Xcode); Profile y Release no.
+
 ## Correr cada flavor
 
 ```

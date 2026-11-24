@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import 'cliente/app_cliente.dart';
 import 'cliente/di/dependencias_cliente.dart';
-import 'cliente/inicio_minimo_cliente.dart';
+import 'nucleo/api/api_client.dart';
+import 'nucleo/auth/dispositivo_store.dart';
+import 'nucleo/auth/token_store.dart';
 import 'nucleo/di/service_locator_cliente.dart';
 import 'nucleo/entorno/api_base_url.dart';
 import 'nucleo/entorno/info_entorno.dart';
 import 'nucleo/entorno/modo_demo.dart';
 import 'nucleo/flavor.dart';
-import 'nucleo/ui/paleta_campo.dart';
-import 'nucleo/ui/tema_campo.dart';
 
 /// Entrypoint del flavor `cliente` (online-first, sin `drift` ni outbox).
 ///
 /// Con `MODO_DEMO` corre contra repositorios en memoria con datos ficticios,
-/// sin red (`--dart-define-from-file=config/env.demo.json`, ADR 0010).
+/// sin red (`--dart-define-from-file=config/env.demo.json`, ADR 0010). Sin
+/// él, corre contra la API de `API_BASE_URL` (`config/env.local.json`,
+/// `env.staging.json`, `env.produccion.json`; ADR 0004).
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -26,6 +29,7 @@ Future<void> main() async {
   }
 
   await configurarDependenciasCliente();
+  final getIt = GetIt.instance;
   final paquete = await PackageInfo.fromPlatform();
   final infoEntorno = InfoEntorno(
     flavor: Flavor.cliente,
@@ -33,12 +37,15 @@ Future<void> main() async {
     version: '${paquete.version}+${paquete.buildNumber}',
   );
   runApp(
-    MaterialApp(
-      title: 'Agrocom',
-      debugShowCheckedModeBanner: false,
-      theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.claro),
-      darkTheme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.oscuro),
-      home: InicioMinimoCliente(infoEntorno: infoEntorno),
+    AppCliente(
+      dependencias: DependenciasCliente.red(
+        api: getIt<ApiClient>(),
+        tokenStore: getIt<TokenStore>(),
+        dispositivoStore: DispositivoStoreSeguro(),
+        // El host y la versión al pie del ingreso: un build apuntado al
+        // entorno equivocado se nota antes de operar (ADR 0004).
+        notaAcceso: 'Servidor ${infoEntorno.hostApi} · v${infoEntorno.version}',
+      ),
     ),
   );
 }

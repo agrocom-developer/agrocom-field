@@ -37,6 +37,7 @@ class AppCliente extends StatelessWidget {
       // La puerta decide entre splash, presentación, acceso y navegación.
       home: PuertaAccesoCliente(
         notaAcceso: dependencias.notaAcceso,
+        sesionExpirada: dependencias.sesionExpirada,
         dentro: (context) => ShellCliente(
           alCerrarSesion: context.read<ArranqueCubit>().cerrarSesion,
         ),

@@ -62,7 +62,7 @@ class _FormularioState extends State<_Formulario> {
   final _formulario = GlobalKey<FormState>();
   final _nombre = TextEditingController();
   final _telefono = TextEditingController();
-  final _correo = TextEditingController();
+  final _usuario = TextEditingController();
   final _contrasena = TextEditingController();
   bool _intentado = false;
 
@@ -70,7 +70,7 @@ class _FormularioState extends State<_Formulario> {
   void dispose() {
     _nombre.dispose();
     _telefono.dispose();
-    _correo.dispose();
+    _usuario.dispose();
     _contrasena.dispose();
     super.dispose();
   }
@@ -83,7 +83,7 @@ class _FormularioState extends State<_Formulario> {
       DatosRegistroCliente(
         nombre: _nombre.text.trim(),
         telefono: _telefono.text.trim(),
-        correo: _correo.text.trim(),
+        usuario: _usuario.text.trim(),
         contrasena: _contrasena.text,
       ),
     );
@@ -200,16 +200,17 @@ class _FormularioState extends State<_Formulario> {
                 const SizedBox(height: EspaciadoCampo.xl),
                 bloque('Tu acceso'),
                 CampoFormularioMarketplace(
-                  key: const Key('registro-correo'),
-                  etiqueta: 'Correo',
-                  controller: _correo,
+                  key: const Key('registro-usuario'),
+                  etiqueta: 'Usuario',
+                  controller: _usuario,
                   enabled: !estado.enviando,
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
-                  autofillHints: const [AutofillHints.email],
-                  validator: ReglasAcceso.correo,
-                  errorServidor: estado.porCampo[CampoAcceso.correo],
-                  onChanged: (_) => cubit.campoEditado(CampoAcceso.correo),
+                  autofillHints: const [AutofillHints.newUsername],
+                  ayuda: 'Es con lo que vas a entrar. Sin espacios ni correo.',
+                  validator: ReglasAcceso.usuario,
+                  errorServidor: estado.porCampo[CampoAcceso.usuario],
+                  onChanged: (_) => cubit.campoEditado(CampoAcceso.usuario),
                 ),
                 const SizedBox(height: EspaciadoCampo.l),
                 CampoFormularioMarketplace(
@@ -223,7 +224,7 @@ class _FormularioState extends State<_Formulario> {
                   autofillHints: const [AutofillHints.newPassword],
                   ayuda:
                       'Mínimo ${ReglasAcceso.largoMinimoContrasena} '
-                      'caracteres.',
+                      'caracteres, con letras y números.',
                   validator: ReglasAcceso.contrasenaNueva,
                   errorServidor: estado.porCampo[CampoAcceso.contrasena],
                   onChanged: (_) => cubit.campoEditado(CampoAcceso.contrasena),

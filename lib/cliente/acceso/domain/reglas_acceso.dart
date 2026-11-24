@@ -4,7 +4,9 @@
 abstract final class ReglasAcceso {
   static const int largoMinimoContrasena = 8;
 
-  static final _correo = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]{2,}$');
+  /// Usuario de acceso: letras, números, punto, guion y guion bajo; nunca un
+  /// correo.
+  static final _usuario = RegExp(r'^[A-Za-z0-9._-]{3,40}$');
 
   static String? nombre(String? valor) {
     final v = (valor ?? '').trim();
@@ -20,10 +22,13 @@ abstract final class ReglasAcceso {
     return null;
   }
 
-  static String? correo(String? valor) {
+  static String? usuario(String? valor) {
     final v = (valor ?? '').trim();
-    if (v.isEmpty) return 'Escribe tu correo';
-    if (!_correo.hasMatch(v)) return 'Revisa el correo: falta algo';
+    if (v.isEmpty) return 'Escribe tu usuario';
+    if (v.contains('@')) return 'Tu usuario no es un correo. Ejemplo: ana.roca';
+    if (!_usuario.hasMatch(v)) {
+      return 'Usa de 3 a 40 letras, números, punto o guion';
+    }
     return null;
   }
 
@@ -39,6 +44,9 @@ abstract final class ReglasAcceso {
     if (v.isEmpty) return 'Crea una contraseña';
     if (v.length < largoMinimoContrasena) {
       return 'Usa al menos $largoMinimoContrasena caracteres';
+    }
+    if (!RegExp(r'[A-Za-z]').hasMatch(v) || !RegExp(r'\d').hasMatch(v)) {
+      return 'Combina letras y números';
     }
     return null;
   }
