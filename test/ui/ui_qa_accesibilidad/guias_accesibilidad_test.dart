@@ -84,6 +84,8 @@ void main() {
           AppPilotoDemo(dependencias: DependenciasPiloto.demo()),
         );
         await asentar(tester, veces: 12);
+        // Abre en el mapa: también se audita antes de cambiar de pestaña.
+        await _auditar(tester);
         for (final pestana in ['Ofertas', 'Servicio', 'Drones', 'Perfil']) {
           await tester.tap(find.text(pestana).last);
           await asentar(tester, veces: 12);
@@ -99,7 +101,8 @@ void main() {
           AppAuxiliarDemo(dependencias: DependenciasAuxiliar.demo()),
         );
         await asentar(tester, veces: 12);
-        for (final pestana in ['Servicio', 'Mezcla', 'Ofertas', 'Perfil']) {
+        await _auditar(tester);
+        for (final pestana in ['Servicio', 'Perfil']) {
           await tester.tap(find.text(pestana).last);
           await asentar(tester, veces: 12);
           await _auditar(tester);

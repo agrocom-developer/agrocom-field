@@ -167,6 +167,10 @@ class TarjetaDron extends StatelessWidget {
                 ),
             ],
           ),
+          if (dron.fotos.isNotEmpty) ...[
+            const SizedBox(height: EspaciadoCampo.m),
+            _ResumenFotos(fotos: dron.fotos),
+          ],
           const SizedBox(height: EspaciadoCampo.l),
           Semantics(
             container: true,
@@ -247,6 +251,49 @@ class TarjetaDron extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Cuántas fotos del dron hay en cada estado de revisión, y el motivo de las
+/// que un administrador rechazó (para volver a subirlas).
+class _ResumenFotos extends StatelessWidget {
+  const _ResumenFotos({required this.fotos});
+
+  final List<FotoDelDron> fotos;
+
+  @override
+  Widget build(BuildContext context) {
+    final texto = Theme.of(context).textTheme;
+    final partes = <String>[];
+    for (final e in EstadoFotoDron.values) {
+      final n = fotos.where((f) => f.estado == e).length;
+      if (n > 0) {
+        partes.add(
+          '$n ${e.etiqueta.toLowerCase()}'
+          '${e == EstadoFotoDron.aprobada && n > 1
+              ? 's'
+              : e == EstadoFotoDron.rechazada && n > 1
+              ? 's'
+              : ''}',
+        );
+      }
+    }
+    final rechazadas = [
+      for (final f in fotos)
+        if (f.estado == EstadoFotoDron.rechazada && f.motivo != null)
+          '${f.tipo.replaceAll('_', ' ')}: ${f.motivo}',
+    ];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Fotos: ${partes.join(' · ')}', style: texto.bodyMedium),
+        for (final r in rechazadas)
+          Padding(
+            padding: const EdgeInsets.only(top: EspaciadoCampo.xs),
+            child: Text(r, style: texto.bodyMedium),
+          ),
+      ],
     );
   }
 }

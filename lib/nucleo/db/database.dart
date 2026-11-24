@@ -7,10 +7,13 @@ import 'tablas/cola_sync.dart';
 import 'tablas/condicion_local.dart';
 import 'tablas/cursor_catalogo.dart';
 import 'tablas/evidencia_local.dart';
+import 'tablas/foto_ejecucion.dart';
 import 'tablas/incidencia_local.dart';
 import 'tablas/lote_catalogo.dart';
 import 'tablas/orden_catalogo.dart';
 import 'tablas/persona_catalogo.dart';
+import 'tablas/registro_ejecucion.dart';
+import 'tablas/servicio_adjudicado.dart';
 import 'tablas/sesion_local.dart';
 import 'tablas/trabajo_catalogo.dart';
 import 'tablas/trabajo_local.dart';
@@ -54,6 +57,10 @@ part 'database.g.dart';
 /// que el servidor ya no manda, conservando las órdenes. La tarea 26 (v14)
 /// agrega a [OrdenCatalogo] y [TrabajoCatalogo] la marca de retiro
 /// (`agrocom-api` #313) y a [CursorCatalogo] el barrido completo en curso.
+/// ADR 0016 (v15) agrega las tres tablas de la ejecución de un servicio
+/// adjudicado: [ServicioAdjudicado] (espejo del catálogo), [RegistroEjecucion]
+/// (inicio, avance y cierre sin señal) y [FotoEjecucion] (fotos de avance),
+/// solo con `CREATE TABLE`: ninguna tabla existente se toca.
 
 /// Las tablas espejo del resto de las features de escritura (recargas...)
 /// se agregan en tareas técnicas posteriores, cada una subiendo
@@ -72,6 +79,9 @@ part 'database.g.dart';
     CondicionLocal,
     EvidenciaLocal,
     IncidenciaLocal,
+    ServicioAdjudicado,
+    RegistroEjecucion,
+    FotoEjecucion,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -79,7 +89,7 @@ class AppDatabase extends _$AppDatabase {
     : super(implementation ?? driftDatabase(name: 'agrocom_field'));
 
   @override
-  int get schemaVersion => 14;
+  int get schemaVersion => 15;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -282,6 +292,15 @@ class AppDatabase extends _$AppDatabase {
       // barrido los limpia.
       if (from < 14) {
         await (delete(cursorCatalogo)).go();
+      }
+      // v15 (ADR 0016): tablas nuevas de la ejecución del servicio
+      // adjudicado. Solo `CREATE TABLE`: ninguna fila existente se mueve ni
+      // se borra, así que el trabajo capturado sin señal en versiones
+      // anteriores queda intacto.
+      if (from < 15) {
+        await m.createTable(servicioAdjudicado);
+        await m.createTable(registroEjecucion);
+        await m.createTable(fotoEjecucion);
       }
     },
   );

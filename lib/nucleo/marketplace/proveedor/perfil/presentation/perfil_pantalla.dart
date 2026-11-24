@@ -18,6 +18,7 @@ class PerfilPantalla extends StatelessWidget {
   const PerfilPantalla({
     this.reloj = DateTime.now,
     this.onVerDrones,
+    this.extras = const [],
     super.key,
   });
 
@@ -27,22 +28,36 @@ class PerfilPantalla extends StatelessWidget {
   /// tiene como destino de la navegación).
   final VoidCallback? onVerDrones;
 
+  /// Filas propias del flavor (avisos, cerrar sesión) que se muestran
+  /// después de las métricas.
+  final List<Widget> extras;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           PerfilCubit(context.read<PerfilRepositorio>())..cargar(),
-      child: PerfilVista(reloj: reloj, onVerDrones: onVerDrones),
+      child: PerfilVista(
+        reloj: reloj,
+        onVerDrones: onVerDrones,
+        extras: extras,
+      ),
     );
   }
 }
 
 /// El perfil sobre un [PerfilCubit] ya provisto.
 class PerfilVista extends StatelessWidget {
-  const PerfilVista({this.reloj = DateTime.now, this.onVerDrones, super.key});
+  const PerfilVista({
+    this.reloj = DateTime.now,
+    this.onVerDrones,
+    this.extras = const [],
+    super.key,
+  });
 
   final DateTime Function() reloj;
   final VoidCallback? onVerDrones;
+  final List<Widget> extras;
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +80,7 @@ class PerfilVista extends StatelessWidget {
               datos: estado,
               ahora: reloj(),
               onVerDrones: onVerDrones,
+              extras: extras,
             ),
           },
         );
@@ -105,12 +121,14 @@ class _Contenido extends StatelessWidget {
     required this.datos,
     required this.ahora,
     required this.onVerDrones,
+    required this.extras,
     super.key,
   });
 
   final PerfilListo datos;
   final DateTime ahora;
   final VoidCallback? onVerDrones;
+  final List<Widget> extras;
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +178,10 @@ class _Contenido extends StatelessWidget {
         ],
         const _Titulo('Métricas'),
         _Metricas(metricas: datos.metricas),
+        for (final e in extras) ...[
+          const SizedBox(height: EspaciadoCampo.m),
+          e,
+        ],
         if (onVerDrones != null) ...[
           const SizedBox(height: EspaciadoCampo.m),
           SuperficieMarketplace(
@@ -352,7 +374,6 @@ class _Metricas extends StatelessWidget {
           decimales: 0,
         ),
       ),
-      _Metrica(etiqueta: 'ACEPTACIÓN', valor: '${metricas.tasaAceptacion} %'),
       _Metrica(etiqueta: 'CANCELACIÓN', valor: '${metricas.tasaCancelacion} %'),
     ];
     return LayoutBuilder(

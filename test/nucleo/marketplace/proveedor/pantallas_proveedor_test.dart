@@ -19,10 +19,6 @@ import 'package:agrocom_field/nucleo/marketplace/proveedor/demo/almacen_demo_pro
 import 'package:agrocom_field/nucleo/marketplace/proveedor/di/dependencias_proveedor.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/dron/domain/drones_repositorio.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/dron/presentation/drones_pantalla.dart';
-import 'package:agrocom_field/nucleo/marketplace/proveedor/ofertas/data/estado_red_demo.dart';
-import 'package:agrocom_field/nucleo/marketplace/proveedor/ofertas/data/ofertas_demo.dart';
-import 'package:agrocom_field/nucleo/marketplace/proveedor/ofertas/domain/ofertas_repositorio.dart';
-import 'package:agrocom_field/nucleo/marketplace/proveedor/ofertas/presentation/ofertas_pantalla.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/perfil/data/perfil_demo.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/perfil/presentation/perfil_pantalla.dart';
 import 'package:agrocom_field/nucleo/marketplace/ui/mapa_lote.dart';
@@ -43,29 +39,6 @@ const _matriz = [
 
 String _sufijo(Size t, double escala) =>
     '${t.width.toInt()}x${t.height.toInt()}_x${escala.toInt()}';
-
-class _OfertasQueFallan implements OfertasRepositorio {
-  _OfertasQueFallan(this._base);
-
-  final OfertasRepositorio _base;
-  bool falla = true;
-
-  @override
-  Stream<List<Oferta>> observar() =>
-      falla ? Stream.error(StateError('sin bandeja')) : _base.observar();
-
-  @override
-  Future<ResultadoRespuestaOferta> aceptar(
-    String ofertaId, {
-    required String claveIdempotencia,
-  }) => _base.aceptar(ofertaId, claveIdempotencia: claveIdempotencia);
-
-  @override
-  Future<ResultadoRespuestaOferta> rechazar(
-    String ofertaId, {
-    required String claveIdempotencia,
-  }) => _base.rechazar(ofertaId, claveIdempotencia: claveIdempotencia);
-}
 
 class _PerfilEnRevision extends PerfilDemo {
   _PerfilEnRevision(super.almacen, this._base);
@@ -191,269 +164,6 @@ void main() {
     await tester.pump();
   }
 
-  group('Bandeja de ofertas', () {
-    testWidgets('muestra hectáreas, zona, pago, distancia y mapa por oferta', (
-      tester,
-    ) async {
-      await montar(tester, OfertasPantalla(reloj: () => ahora));
-      expect(find.text('3 ofertas vigentes'), findsOneWidget);
-      expect(find.text('210 ha · Trigo'), findsOneWidget);
-      expect(find.textContaining('Colonia Okinawa'), findsOneWidget);
-      expect(find.text('Bs 1.890'), findsOneWidget);
-      expect(find.text('14,2 km'), findsOneWidget);
-      expect(find.text('03:00'), findsOneWidget);
-      expect(find.byType(MapaLote), findsWidgets);
-      expect(find.textContaining('flota de Agrocom'), findsOneWidget);
-    });
-
-    testWidgets('la cuenta regresiva avanza cada segundo', (tester) async {
-      await montar(tester, OfertasPantalla(reloj: () => ahora));
-      ahora = ahora.add(const Duration(seconds: 1));
-      await tester.pump(const Duration(seconds: 1));
-      expect(find.text('02:59'), findsOneWidget);
-    });
-
-    testWidgets('aceptar y rechazar miden al menos 56 px (guantes)', (
-      tester,
-    ) async {
-      await montar(tester, OfertasPantalla(reloj: () => ahora));
-      for (final boton in [
-        find.widgetWithText(FilledButton, 'Aceptar servicio').first,
-        find.widgetWithText(OutlinedButton, 'Rechazar').first,
-      ]) {
-        expect(tester.getSize(boton).height, greaterThanOrEqualTo(56));
-      }
-    });
-
-    testWidgets('aceptar deja el botón en espera y avisa el resultado', (
-      tester,
-    ) async {
-      await montar(tester, OfertasPantalla(reloj: () => ahora));
-      await tester.tap(
-        find.widgetWithText(FilledButton, 'Aceptar servicio').first,
-      );
-      await tester.pump();
-      expect(find.text('Enviando…'), findsOneWidget);
-
-      await tester.pump(const Duration(milliseconds: 700));
-      await tester.pump();
-      expect(find.text('Enviando…'), findsNothing);
-      expect(find.textContaining('Servicio aceptado'), findsOneWidget);
-      expect(find.text('2 ofertas vigentes'), findsOneWidget);
-      expect(almacen.asignados, hasLength(2));
-    });
-
-    testWidgets('sin red los botones se apagan y la bandeja lo dice', (
-      tester,
-    ) async {
-      almacen.enLinea = false;
-      await montar(tester, OfertasPantalla(reloj: () => ahora));
-      expect(find.byKey(const Key('bandeja-sin-conexion')), findsOneWidget);
-      expect(find.byKey(const Key('oferta-sin-conexion')), findsWidgets);
-      final aceptar = tester.widget<FilledButton>(
-        find.widgetWithText(FilledButton, 'Aceptar servicio').first,
-      );
-      final rechazar = tester.widget<OutlinedButton>(
-        find.widgetWithText(OutlinedButton, 'Rechazar').first,
-      );
-      expect(aceptar.onPressed, isNull);
-      expect(rechazar.onPressed, isNull);
-      // Las ofertas se siguen viendo.
-      expect(find.text('3 ofertas vigentes'), findsOneWidget);
-
-      almacen.enLinea = true;
-      await tester.pump();
-      await tester.pump();
-      expect(find.byKey(const Key('bandeja-sin-conexion')), findsNothing);
-      expect(
-        tester
-            .widget<FilledButton>(
-              find.widgetWithText(FilledButton, 'Aceptar servicio').first,
-            )
-            .onPressed,
-        isNotNull,
-      );
-    });
-
-    testWidgets('una oferta que tomó otro proveedor queda como tomada', (
-      tester,
-    ) async {
-      await montar(tester, OfertasPantalla(reloj: () => ahora));
-      final tarjeta = find.byKey(const ValueKey('oferta-$ofertaPerdidaEnDemo'));
-      final aceptar = find.descendant(
-        of: tarjeta,
-        matching: find.widgetWithText(FilledButton, 'Aceptar servicio'),
-      );
-      await irA(tester, aceptar);
-      await tester.tap(aceptar);
-      await tester.pump(const Duration(milliseconds: 700));
-      await tester.pump();
-
-      final cerrada = find.byKey(
-        const ValueKey('cerrada-$ofertaPerdidaEnDemo'),
-      );
-      await irA(tester, cerrada);
-      expect(find.text('Ya la tomó otro proveedor'), findsOneWidget);
-      expect(tarjeta, findsNothing);
-
-      final quitar = find.byTooltip('Quitar');
-      await irA(tester, quitar);
-      await tester.tap(quitar);
-      await tester.pump();
-      expect(cerrada, findsNothing);
-    });
-
-    testWidgets('una oferta vencida se cuenta sin alarma', (tester) async {
-      await montar(tester, OfertasPantalla(reloj: () => ahora));
-      ahora = ahora.add(const Duration(minutes: 3));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump();
-      expect(find.text('2 ofertas vigentes'), findsOneWidget);
-      final cerrada = find.byKey(const ValueKey('cerrada-of-1'));
-      await irA(tester, cerrada);
-      expect(find.text('Oferta vencida'), findsOneWidget);
-    });
-
-    testWidgets('sin ofertas orienta sobre cómo llegan', (tester) async {
-      ahora = ahora.add(const Duration(hours: 1));
-      await montar(tester, OfertasPantalla(reloj: () => ahora));
-      expect(find.text('Sin ofertas por ahora'), findsOneWidget);
-      expect(find.textContaining('flota de Agrocom'), findsOneWidget);
-      await golden(tester, 'ofertas_vacia_360x640_x1');
-    });
-
-    testWidgets('un error de carga ofrece reintentar', (tester) async {
-      final ofertas = _OfertasQueFallan(deps.ofertas);
-      final conFalla = DependenciasProveedor(
-        ofertas: ofertas,
-        estadoRed: EstadoRedDemo(almacen),
-        drones: deps.drones,
-        perfil: deps.perfil,
-      );
-      await montar(
-        tester,
-        OfertasPantalla(reloj: () => ahora),
-        dependencias: conFalla,
-      );
-      expect(find.text('No pudimos cargar las ofertas'), findsOneWidget);
-
-      ofertas.falla = false;
-      await tester.tap(find.text('Reintentar'));
-      await tester.pump();
-      await tester.pump();
-      expect(find.text('3 ofertas vigentes'), findsOneWidget);
-    });
-
-    for (final (tamano, escala) in _matriz) {
-      final id = _sufijo(tamano, escala);
-      testWidgets('se lee completa en $id', (tester) async {
-        await montar(
-          tester,
-          OfertasPantalla(reloj: () => ahora),
-          tamano: tamano,
-          escala: escala,
-        );
-        await golden(tester, 'ofertas_$id');
-        // Recorre la lista entera: ningún tramo desborda.
-        await tester.drag(lista(), const Offset(0, -4000));
-        await tester.pump();
-      });
-    }
-
-    testWidgets('golden: sin conexión', (tester) async {
-      almacen.enLinea = false;
-      await montar(
-        tester,
-        OfertasPantalla(reloj: () => ahora),
-        tamano: _telefonoChico,
-      );
-      await tester.drag(lista(), const Offset(0, -330));
-      await tester.pump();
-      await golden(tester, 'ofertas_sin_conexion_360x640_x1');
-    });
-
-    testWidgets('golden: ofertas cerradas', (tester) async {
-      await montar(tester, OfertasPantalla(reloj: () => ahora));
-      ahora = ahora.add(const Duration(minutes: 9));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump();
-      await tester.drag(lista(), const Offset(0, -4000));
-      await tester.pump();
-      expect(find.text('Oferta vencida'), findsNWidgets(2));
-      await golden(tester, 'ofertas_cerradas_412x915_x1');
-    });
-  });
-
-  group('Detalle de la oferta', () {
-    Future<void> abrir(WidgetTester tester, {double escala = 1.0}) async {
-      await montar(tester, OfertasPantalla(reloj: () => ahora), escala: escala);
-      final detalle = find.widgetWithText(TextButton, 'Ver detalle y mapa');
-      await irA(tester, detalle.first);
-      await tester.tap(detalle.first);
-      await tester.pumpAndSettle();
-    }
-
-    testWidgets('muestra el lote, el pago, la fecha y el producto', (
-      tester,
-    ) async {
-      await abrir(tester);
-      expect(find.text('Detalle de la oferta'), findsOneWidget);
-      expect(find.text('Pago estimado'), findsOneWidget);
-      expect(find.text('Bs 1.890'), findsOneWidget);
-      expect(find.text('24 nov 2026'), findsOneWidget);
-      expect(find.text('Herbicida de preemergencia'), findsOneWidget);
-      expect(find.text('03:00'), findsOneWidget);
-      await golden(tester, 'oferta_detalle_412x915_x1');
-    });
-
-    testWidgets('aceptar desde el detalle vuelve a la bandeja', (tester) async {
-      await abrir(tester);
-      await tester.tap(find.widgetWithText(FilledButton, 'Aceptar servicio'));
-      await tester.pump(const Duration(milliseconds: 700));
-      await tester.pumpAndSettle();
-      expect(find.text('Detalle de la oferta'), findsNothing);
-      expect(almacen.asignados, hasLength(2));
-      expect(find.textContaining('Servicio aceptado'), findsOneWidget);
-    });
-
-    testWidgets('sin red el detalle apaga los botones y dice por qué', (
-      tester,
-    ) async {
-      await abrir(tester);
-      almacen.enLinea = false;
-      await tester.pump();
-      await tester.pump();
-      expect(find.byKey(const Key('detalle-sin-conexion')), findsOneWidget);
-      expect(
-        tester
-            .widget<FilledButton>(
-              find.widgetWithText(FilledButton, 'Aceptar servicio'),
-            )
-            .onPressed,
-        isNull,
-      );
-    });
-
-    testWidgets('si vence con el detalle abierto lo cuenta y deja volver', (
-      tester,
-    ) async {
-      await abrir(tester);
-      ahora = ahora.add(const Duration(minutes: 3));
-      await tester.pump(const Duration(seconds: 1));
-      await tester.pump();
-      expect(find.text('Oferta vencida'), findsOneWidget);
-      await tester.tap(find.text('Volver a la bandeja'));
-      await tester.pumpAndSettle();
-      expect(find.text('Detalle de la oferta'), findsNothing);
-    });
-
-    testWidgets('se lee con el texto al 200 %', (tester) async {
-      await abrir(tester, escala: 2.0);
-      await tester.drag(find.byType(Scrollable).last, const Offset(0, -2000));
-      await tester.pump();
-    });
-  });
-
   group('Perfil del proveedor', () {
     testWidgets('muestra aprobación, métricas, documentos y equipo', (
       tester,
@@ -466,7 +176,6 @@ void main() {
         findsOneWidget,
       );
       expect(find.byKey(const Key('perfil-documentos-accion')), findsOneWidget);
-      expect(find.text('92 %'), findsOneWidget);
       expect(find.text('11.847'), findsOneWidget);
 
       await irA(tester, find.text('Edwin Mamani Quispe'));
@@ -482,8 +191,8 @@ void main() {
       tester,
     ) async {
       final enRevision = DependenciasProveedor(
-        ofertas: deps.ofertas,
-        estadoRed: deps.estadoRed,
+        negociacion: deps.negociacion,
+        ejecucion: deps.ejecucion,
         drones: deps.drones,
         perfil: _PerfilEnRevision(almacen, almacen.piloto),
       );
@@ -571,8 +280,8 @@ void main() {
 
     testWidgets('sin drones explica qué hace falta', (tester) async {
       final sinDrones = DependenciasProveedor(
-        ofertas: deps.ofertas,
-        estadoRed: deps.estadoRed,
+        negociacion: deps.negociacion,
+        ejecucion: deps.ejecucion,
         drones: _SinDrones(),
         perfil: deps.perfil,
       );
