@@ -53,8 +53,11 @@ void main() {
       await captura(t, 'cliente_13_solicitar_cuando');
       await tocar(t, find.byKey(const ValueKey('solicitar-continuar')));
       await captura(t, 'cliente_14_solicitar_resumen', ms: 1500);
-      await tocar(t, find.byKey(const ValueKey('solicitar-continuar')),
-          ms: 1500);
+      await tocar(
+        t,
+        find.byKey(const ValueKey('solicitar-continuar')),
+        ms: 1500,
+      );
       await captura(t, 'cliente_15_buscando_proveedor', ms: 1500);
     });
     await paso('servicios', () async {
@@ -84,14 +87,20 @@ void main() {
       await captura(t, 'cliente_24_acta_abajo');
       await tocar(t, find.byKey(const ValueKey('dar-conformidad')));
       await captura(t, 'cliente_25_confirmar_conformidad');
-      await tocar(t, find.byKey(const ValueKey('confirmar-conformidad')),
-          ms: 1500);
+      await tocar(
+        t,
+        find.byKey(const ValueKey('confirmar-conformidad')),
+        ms: 1500,
+      );
       await tocar(t, find.text('Calificar al proveedor'));
       await captura(t, 'cliente_26_calificar');
       await tocar(t, find.bySemanticsLabel('4 estrellas'));
       await captura(t, 'cliente_27_calificar_estrellas');
-      await tocar(t, find.byKey(const ValueKey('enviar-calificacion')),
-          ms: 1500);
+      await tocar(
+        t,
+        find.byKey(const ValueKey('enviar-calificacion')),
+        ms: 1500,
+      );
       await captura(t, 'cliente_28_calificado');
       await atras(t);
     });

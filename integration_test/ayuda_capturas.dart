@@ -48,7 +48,11 @@ Future<void> paso(String nombre, Future<void> Function() accion) async {
 Future<void> tocar(WidgetTester t, Finder f, {int ms = 600}) async {
   if (f.evaluate().isEmpty) {
     // Listas perezosas: el elemento aún no se construyó; se baja hasta él.
-    await t.scrollUntilVisible(f, 200, scrollable: find.byType(Scrollable).first);
+    await t.scrollUntilVisible(
+      f,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
   }
   await t.ensureVisible(f.first);
   await t.pump(const Duration(milliseconds: 100));
