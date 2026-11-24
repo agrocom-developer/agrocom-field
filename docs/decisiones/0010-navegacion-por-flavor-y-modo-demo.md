@@ -39,6 +39,6 @@ flutter run --flavor auxiliar -t lib/main_auxiliar.dart --dart-define-from-file=
 ## Consecuencias
 
 - Una pantalla nueva nace contra una interfaz y su fake; cuando llega el repositorio real, solo cambia la clase `Dependencias<Flavor>`.
-- `lib/features/` (anterior al marketplace) convive con las carpetas `cliente/`, `piloto/` y `auxiliar/` hasta que cada feature se migre; `test/arquitectura/importaciones_test.dart` vigila las reglas de ADR 0009 para lo que ya vive en los flavors y que `cliente` no alcance `nucleo/sync` ni `nucleo/db`, ni siquiera de forma transitiva.
+- `test/arquitectura/importaciones_test.dart` vigila las reglas de ADR 0009 para lo que ya vive en los flavors y que `cliente` no alcance `nucleo/sync` ni `nucleo/db`, ni siquiera de forma transitiva.
 - Los mapas usan teselas abiertas de OpenStreetMap por red; sin red el mapa muestra los polígonos sobre el fondo. `ConfiguracionMapa.teselas` las apaga en los tests.
 - Los datos demo son ficticios. Ningún nombre ni documento corresponde a una persona real.

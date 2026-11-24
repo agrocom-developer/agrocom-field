@@ -10,7 +10,7 @@ Plan de la app móvil del marketplace de fumigación con drones: tres flavors (`
 |---|---|
 | Esqueleto Flutter | Flavors `piloto` y `auxiliar`, tema Material 3 desde el logo, cliente `dio`, inyección y entorno por `--dart-define-from-file` |
 | Motor de sync | Outbox, `POST /api/sync` idempotente por `uuid_cliente`, pull con cursor, cola de evidencias, disparador único y prueba de replay |
-| Sesión de vuelo | Condiciones, hectárea acumulada, incidencias con foto y cierre con imagen del campo |
+| Ejecución en el lote | Inicio, avance, cierre y fotos de avance sobre `drift`, con `uuid_cliente` y `secuencia` locales (ADR 0018) |
 | Seguridad y versión | Token en almacenamiento seguro, selector de rol del flavor `auxiliar`, bloqueo por versión mínima, versionado SemVer automatizado |
 | Modo campo | Tokens, tipografía y catálogo de componentes de alto contraste (ADR 0008) |
 
@@ -26,25 +26,25 @@ Objetivo: que existan los tres flavors, que el esquema local hable el idioma del
 
 ## Sprint 2 — Cuenta y catálogo del proveedor
 
-Objetivo: que las dos poblaciones entren a la app y que el proveedor tenga su servicio asignado, su dron y su perfil.
+Objetivo: que las dos poblaciones entren a la app y que el proveedor tenga sus servicios adjudicados, su dron y su perfil.
 
 | Id | Tipo | Qué | Criterio de aceptación | Tarea |
 |---|---|---|---|---|
 | HU-M01 | HU | Registro e inicio de sesión de cliente y de proveedor; cuenta en revisión hasta la aprobación del admin; el piloto registra a su auxiliar | Tests: registro, `422` por campo, `409` con selector de rol, cuenta pendiente, cierre de sesión que borra el token | T33 |
-| HU-M02 | HU | Catálogo de servicios asignados con lista y detalle sin red (crítica) | Pull idempotente con fixture real; sin rastros del catálogo anterior en `lib/` ni `test/` | T34 |
-| HU-M03 | HU | Dron como vehículo: alta, edición, baja lógica, ciclos de batería, elección para un servicio | Tests de dron; `dron_id` viaja en la sesión por el outbox | T35 |
+| HU-M02 | HU | Servicios adjudicados del piloto con lista y detalle sin red (crítica) | Pull idempotente con fixture real del catálogo; la migración conserva los datos | T34 |
+| HU-M03 | HU | Dron como vehículo: alta con fotos, edición, baja lógica, ciclos de batería, elección al ofertar | Tests de dron; la oferta lleva el dron elegido | T35 |
 | HU-M04 | HU | Perfil del proveedor y documentos (compresión a menos de 300 KB, estado por documento) | Tests de subida, rechazo con motivo y limpieza al cerrar sesión | T36 |
 
 ## Sprint 3 — El ciclo del servicio
 
-Objetivo: que un cliente solicite, un proveedor acepte, el servicio se ejecute y el cliente lo siga y lo califique.
+Objetivo: que un cliente publique su solicitud con un precio por hectárea, los pilotos ofrezcan o contraoferten, el cliente elija, el servicio se ejecute y el cliente lo siga y lo califique.
 
 | Id | Tipo | Qué | Criterio de aceptación | Tarea |
 |---|---|---|---|---|
-| HU-M05 | HU | Bandeja de ofertas: aceptar y rechazar con red, sin outbox (crítica) | Tests de aceptada, ya tomada, vencida, sin red e idempotencia; sin `cola_sync` en `lib/nucleo/marketplace/proveedor/ofertas` | T37 |
-| HU-M06 | HU | Solicitar servicio: lote en el mapa, hectáreas decimales, producto y fecha, con clave de idempotencia | Tests de polígono a hectáreas, doble envío y sin red; reglas de importación | T38 |
-| HU-M07 | HU | Seguimiento en vivo: línea de estados, posición del dron y hectáreas completadas | Tests de estados, privacidad de posición y sin red | T39 |
-| HU-M08 | HU | Calificar: el cliente califica al proveedor; el proveedor ve la calificación y califica al cliente por outbox | Tests de calificación única, moderación y replay | T40 |
+| HU-M05 | HU | Negociación del piloto: mapa de solicitudes, oferta, contraoferta, aceptación y chat con red, sin outbox (crítica) | Tests de oferta no vigente, solicitud ya adjudicada, sin red e idempotencia por `uuid_cliente`; sin `cola_sync` en `lib/nucleo/marketplace/proveedor/negociacion` | T37 |
+| HU-M06 | HU | Solicitar servicio: lote en el mapa, hectáreas decimales, producto, fecha y precio por hectárea, con clave de idempotencia | Tests de polígono a hectáreas, doble envío y sin red; reglas de importación | T38 |
+| HU-M07 | HU | Seguimiento del servicio: línea de estados, avance con fotos, mensajes y última ubicación del piloto | Tests de estados, privacidad de la ubicación y sin red | T39 |
+| HU-M08 | HU | Calificar: el cliente califica al proveedor; el proveedor ve la calificación y califica al cliente en un registro propio | Tests de calificación única, moderación y replay | T40 |
 
 ## Sprint 4 — Calidad visual por pantalla
 
@@ -53,11 +53,11 @@ Objetivo: llevar cada superficie a una calidad visual premium, sin sobrecarga, c
 | Id | Tipo | Qué | Criterio de aceptación | Tarea |
 |---|---|---|---|---|
 | UI-M01 | UI | Acceso del cliente: bienvenida, registro y login | Goldens claro y oscuro, dos anchos, dos escalas de texto | T41 |
-| UI-M02 | UI | Solicitar servicio: mapa, producto, fecha, resumen y confirmación | Goldens de cada paso y estado | T42 |
-| UI-M03 | UI | Seguimiento en vivo y calificación | Goldens de cada estado de la línea | T43 |
-| UI-M04 | UI | Bandeja de ofertas y detalle de oferta (modo campo) | Goldens con oferta vigente, tomada y vencida | T44 |
+| UI-M02 | UI | Solicitar servicio: mapa, producto, fecha, precio y confirmación | Goldens de cada paso y estado | T42 |
+| UI-M03 | UI | Ofertas, seguimiento del servicio y calificación | Goldens de cada estado de la línea | T43 |
+| UI-M04 | UI | Mapa de solicitudes, detalle y mis ofertas (modo campo) | Goldens con oferta vigente, no vigente y solicitud ya adjudicada | T44 |
 | UI-M05 | UI | Perfil, documentos y drones (modo campo) | Goldens de cada estado de documento | T45 |
-| UI-M06 | UI | Servicio asignado y sesión de vuelo de piloto y auxiliar (modo campo) | Goldens de cada pantalla del lote | T46 |
+| UI-M06 | UI | Servicio adjudicado y fotos de avance de piloto y auxiliar (modo campo) | Goldens de cada pantalla del lote | T46 |
 | UI-M07 | UI | Pase transversal: consistencia, accesibilidad y pantallas de sistema | Goldens con escala de texto 2.0; sin valores sueltos | T47 |
 
 ## Pendientes con dueño humano
@@ -72,4 +72,4 @@ Objetivo: llevar cada superficie a una calidad visual premium, sin sobrecarga, c
 
 ## Decisiones revisables
 
-Las decisiones por defecto del marketplace (aceptación con red, calificación en registro propio, alta con aprobación de admin, sin cobro en la primera versión, sin contratos ni campañas) están en [../vision.md](../vision.md); las de arquitectura, en el [ADR 0009](../decisiones/0009-arquitectura-tres-superficies-moviles.md).
+Las decisiones por defecto del marketplace (negociación por rondas con red, calificación en registro propio, alta con aprobación de admin, sin cobro en la primera versión, sin contratos ni campañas) están en [../vision.md](../vision.md); las de arquitectura, en el [ADR 0009](../decisiones/0009-arquitectura-tres-superficies-moviles.md).

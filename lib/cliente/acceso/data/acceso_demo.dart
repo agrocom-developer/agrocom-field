@@ -2,7 +2,7 @@ import '../../../nucleo/marketplace/demo/datos_demo.dart';
 import '../../demo/almacen_demo_cliente.dart';
 import '../domain/acceso_repositorio.dart';
 
-/// Acceso en memoria del modo demo (ADR 0010 y 0011). No hay cuentas reales:
+/// Acceso en memoria del modo demo (ADR 0010). No hay cuentas reales:
 /// cualquier usuario entra con una contraseña de 8 caracteres o
 /// más. Tres valores fijos permiten ver los estados de error:
 ///

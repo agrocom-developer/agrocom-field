@@ -1,6 +1,6 @@
 # Sistema visual de Agrocom
 
-Agrocom es un marketplace de fumigación con drones: el cliente solicita un servicio, los proveedores (pilotos propios, pilotos independientes y dueños de drones con sus auxiliares) lo ejecutan. La interfaz móvil es la fortaleza del producto y se publica en Android, iOS y iPad con tres flavors: `cliente` (online-first), `piloto` y `auxiliar` (offline en el lote).
+Agrocom es un marketplace de fumigación con drones: el cliente solicita un servicio, los proveedores (pilotos, dueños de drones y sus auxiliares) ofertan y lo ejecutan. La interfaz móvil es la fortaleza del producto y se publica en Android, iOS y iPad con tres flavors: `cliente` (online-first), `piloto` y `auxiliar` (offline en el lote).
 
 Este documento fija el lenguaje visual común. El código vive en `lib/nucleo/ui/`; la vitrina (`lib/nucleo/ui/vitrina_campo/`, pestaña **Sistema**) lo muestra corriendo; las capturas están en `docs/diseno/capturas/`. Las decisiones de librerías están en `docs/decisiones/0009-sistema-visual-y-librerias-ui.md`.
 
@@ -113,8 +113,8 @@ Reglas:
 2. Nada aparece desde escala 0: las entradas parten de 0,95 con opacidad.
 3. Solo se animan `transform` y `opacity`; no se animan dimensiones de layout en listas largas.
 4. **Reducción de movimiento.** Con "Reducir movimiento" (iOS) o "Quitar animaciones" (Android), `MovimientoCampo.duracion(context, d)` devuelve `Duration.zero`: los desplazamientos, escalas y el barrido del esqueleto se detienen. La opacidad y el color pueden seguir cambiando: reducir no es eliminar el feedback.
-5. Háptica (`HapticaCampo`): `seleccion` al cambiar una selección o tomar una foto, `confirmacion` al aceptar un servicio o confirmar una apertura, un cierre o una incidencia, `alerta` en una oferta por vencer, en un error y al abrir el modo emergencia. Nunca es el único canal de feedback.
-6. Ningún elemento anima en bucle salvo el esqueleto de carga, el indicador de sincronización activa y el radar de la búsqueda de proveedor (una espera activa del servidor). Con movimiento reducido los tres quedan quietos.
+5. Háptica (`HapticaCampo`): `seleccion` al cambiar una selección o tomar una foto, `confirmacion` al aceptar una oferta o confirmar un cierre o una incidencia, `alerta` en una oferta por vencer y en un error. Nunca es el único canal de feedback.
+6. Ningún elemento anima en bucle salvo el esqueleto de carga y el indicador de sincronización activa. Con movimiento reducido los dos quedan quietos.
 
 ## 8. Componentes
 
@@ -137,22 +137,22 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 
 ## 9. Patrones por pantalla clave
 
-**Solicitar fumigación (cliente).** Cuatro pasos, uno por pantalla: lote, aplicación, cuándo y resumen. Barra de progreso de cuatro segmentos arriba y un único botón lima abajo, anclado sobre el teclado. El paso nuevo entra desde el lado hacia el que se avanza (`media`, 240 ms).
+**Solicitar fumigación (cliente).** Cuatro pasos, uno por pantalla: lote, aplicación, cuándo y precio. Barra de progreso de cuatro segmentos arriba y un único botón lima abajo, anclado sobre el teclado. El paso nuevo entra desde el lado hacia el que se avanza (`media`, 240 ms).
 
 - *Lote.* El mapa ocupa la mitad superior y es el protagonista: un toque elige un lote guardado o marca una esquina del contorno; cada esquina se arrastra (objetivo de 56 px) y la superficie se lee en grande sobre el mapa. Sin doble toque para acercar: el toque responde al instante y el zoom es por pellizco. Debajo, un selector «Mis lotes / Dibujar» y la lista o la guía de dibujo.
 - *Aplicación.* Hectáreas editables (propuestas desde el lote o el contorno), cultivo, producto y dosis. Las opciones son pastillas con tilde y borde de acento cuando están elegidas.
-- *Cuándo.* Tira horizontal de fechas a partir de mañana y tres franjas horarias. El recargo por urgencia se avisa en el momento de elegir la fecha.
-- *Resumen.* La superficie total es el dato protagonista (`tituloHero`); debajo, el detalle y el precio estimado con la tarifa por hectárea y cada recargo. La app no cobra: el texto dice a quién se paga y que la comisión no se suma. Un solo botón confirma.
+- *Cuándo.* Tira horizontal de fechas a partir de mañana y tres franjas horarias. Una fecha cercana se marca como urgente para los pilotos; no lleva recargo.
+- *Precio.* El cliente propone el precio por hectárea; la superficie total es el dato protagonista (`tituloHero`) y debajo van el total estimado y el resumen de lo que se publica. El precio no es una tarifa: los pilotos lo aceptan o contraofertan. La app no cobra: el texto dice que el pago se hace fuera de ella. Un solo botón publica.
 - *Estados.* Esqueleto al cargar, vacío que lleva a dibujar, error con reintento, y sin conexión al enviar: el aviso aparece arriba del resumen, el formulario queda intacto y el botón pasa a «Reintentar envío».
 - *iPad horizontal.* Panel dividido: el mapa fijo a la izquierda en los cuatro pasos y el formulario en una columna de 420 px a la derecha (`NavegacionAdaptativaCampo.anchoCompleto`).
 
-**Buscando proveedor (cliente).** Pantalla completa que sigue a la confirmación. Un radar con ondas que salen del lote, el título del estado y las dos rondas de la asignación en orden: pilotos de Agrocom y, después, proveedores de la zona con el radio de búsqueda. Al aceptar un proveedor, el radar deja paso a un sello de confirmación y a su tarjeta (nombre, tipo y calificación). Una sola acción: «Ver el servicio». El cliente puede cerrar la pantalla; la búsqueda sigue en el servidor.
+**Ofertas recibidas (cliente).** Lista de las ofertas de una solicitud, cada una con el nombre del piloto, su calificación, el precio por hectárea, el dron, la distancia y el vencimiento. Aceptar es la acción principal de la oferta vigente; contraofertar y rechazar son secundarias. Solo se habilita lo que el servidor permite según el autor y el estado de la oferta. Sin ofertas, el estado vacío explica que los pilotos las verán en el mapa y que el cliente recibirá un aviso.
 
-**Mapa de seguimiento (cliente).** Mapa a pantalla completa con una hoja inferior arrastrable (peek 30 %, expandida 70 %): estado del servicio, proveedor, calificación, ETA. El marcador del dron se interpola entre posiciones; con movimiento reducido salta a la posición nueva. Ninguna decoración sobre el mapa salvo controles de zoom y recentrado a 48 px.
+**Mapa de seguimiento (cliente).** Mapa a pantalla completa con una hoja inferior arrastrable (peek 30 %, expandida 70 %): estado del servicio, piloto, calificación y avance. Un punto marca la última ubicación del piloto, sin estela; con movimiento reducido salta a la posición nueva. Ninguna decoración sobre el mapa salvo controles de zoom y recentrado a 48 px.
 
-**Oferta entrante (proveedor).** Cada oferta de la bandeja es un `OfertaServicioCampo`. Jerarquía: cuenta regresiva arriba; hectáreas y cultivo como título; lote, zona, producto y fecha debajo; mapa del lote; pago estimado y distancia; aceptar abajo (56 px, ancho completo), rechazar como botón secundario y el acceso al detalle al final. La oferta que tomó otro proveedor y la vencida quedan a la vista con un texto neutro, sin color de error. Háptica `alerta` a los 10 s. Aceptar y rechazar requieren red (excepción documentada): si no hay señal, el botón muestra el estado y no se queda a medias.
+**Oferta en el mapa (proveedor).** Cada solicitud abierta es un marcador con el precio por hectárea escrito; el detalle muestra hectáreas, cultivo, producto, fecha y distancia. Jerarquía: precio propuesto como título; aceptarlo o contraofertar abajo (56 px, ancho completo). En «Mis ofertas» se ordena por quién tiene el turno. La oferta que ya no está vigente y la solicitud ya adjudicada quedan a la vista con un texto neutro, sin color de error. Ofertar y responder requieren red: si no hay señal, el botón muestra el estado y no se queda a medias.
 
-**Línea de tiempo del servicio (cliente).** Cinco etapas en vertical: solicitud, asignación, fumigación, conformidad y completado. Solo la etapa en curso lleva su explicación; las demás quedan en una línea. El nodo hecho lleva una tilde, el actual un punto sobre el acento y el pendiente un anillo vacío: el estado no depende solo del color.
+**Línea de tiempo del servicio (cliente).** Seis puntos en vertical: publicada, ofertas, piloto elegido, fumigación, precio final y calificación. Solo el punto en curso lleva su explicación; los demás quedan en una línea. El nodo hecho lleva una tilde, el actual un punto sobre el acento y el pendiente un anillo vacío: el estado no depende solo del color.
 
 **Evidencias y acta (cliente).** Superficie confirmada como dato protagonista, estado del acta con ícono y texto, datos de la aplicación y grilla de evidencias con la leyenda debajo de cada foto. La acción principal es dar la conformidad, con una confirmación en hoja; reportar un problema es la acción secundaria en texto.
 
@@ -162,9 +162,8 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 
 **Mis drones (proveedor).** Una tarjeta por dron: modelo, matrícula, propiedad y tanque; estado con chip; ciclos de batería con barra y los ciclos que quedan. Desde tres cuartos de vida útil la barra pasa a ámbar y el texto pide planificar el recambio. Primero se listan los drones que piden atención.
 
-**Servicios asignados (piloto).** El servicio vigente arriba y grande: estado, lote, hectáreas cubiertas con su barra de avance y la acción principal. Debajo, próximos y terminados como filas tocables de al menos 56 px. El detalle muestra el lote en el mapa, tres datos (superficie, dosis, caldo) y la acción principal anclada abajo.
+**Servicio adjudicado (piloto).** El servicio vigente arriba y grande: estado, lote, hectáreas y precio acordado, con la acción principal anclada abajo. Debajo, los próximos y los terminados como filas tocables de al menos 56 px. Lo que se hace en el lote es subir fotos de avance, marcar el progreso y cerrar; todo se lee de `drift` y el registro queda en el dispositivo hasta que hay señal (ADR 0018).
 
-**Sesión de vuelo (piloto y auxiliar).** Modo campo. Encabezado con `EstadoSyncCampo` debajo; una tarjeta por estado (sin sesión, en vuelo, cerrada, error) con su dato protagonista en `valorDestacado`; acciones en `BarraAccionesCampo`, la principal de 56 px siempre visible. Los formularios de condiciones y de cierre son hojas a casi todo el ancho con las acciones fuera del scroll. Una pausa es el cierre de la sesión con su motivo; la pantalla de sesión cerrada ofrece abrir la siguiente. Todo viene de `drift`: sin esqueleto, sin espera. Cada pantalla que escribe dice en una `NotaTecnicaCampo` que el registro quedó en el dispositivo. Detalle en ADR 0011.
 
 **Incidencia con foto.** Tipo en un selector segmentado, descripción opcional y la foto obligatoria con el hueco en ámbar mientras falte. «Guardar incidencia» anclado abajo, habilitado recién con tipo y foto.
 

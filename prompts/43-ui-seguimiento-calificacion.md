@@ -1,14 +1,14 @@
 <!-- ciclo: critica=no turno-noche=1 rama=feature/ui-seguimiento-calificacion etapas=3 descongela=tests -->
 
-# Tarea 43 — UI premium de seguimiento en vivo y calificación
+# Tarea 43 — UI premium de seguimiento del servicio y calificación
 
 ## Qué hacer
 
 Cargá `verificacion`, `flujo-git-pr`; `impeccable`, `design-taste-frontend` y `emil-design-eng` como criterio.
 
-1. Llevá a calidad premium las pantallas de «Mis servicios», seguimiento en vivo y calificación (flavor `cliente`). Las funciones ya existen; esta tarea es de aspecto, jerarquía y detalle, sin cambiar blocs, repositorios ni `drift`.
+1. Llevá a calidad premium las pantallas de «Mis servicios», seguimiento del servicio y calificación (flavor `cliente`). Las funciones ya existen; esta tarea es de aspecto, jerarquía y detalle, sin cambiar blocs, repositorios ni `drift`.
 2. Primero mirá la pantalla corriendo en el emulador de Android o el simulador de iOS y anotá en `runs/43.md` qué sobra y qué falta. Después quitá antes que agregar: una acción principal, tres niveles de jerarquía, espacio generoso, un solo acento.
-3. La línea de estados cuenta qué pasa ahora y qué sigue; el dron en el mapa se mueve con suavidad. La calificación es una hoja inferior de dos toques.
+3. La línea de estados cuenta qué pasa ahora y qué sigue; la última ubicación del piloto se muestra en el mapa y se actualiza sin saltos. La calificación es una hoja inferior de dos toques.
 4. Todos los estados diseñados: carga con esqueleto, vacío que orienta, error con salida, sin red y éxito. Transiciones de 150 a 250 ms que expliquen un cambio, con «reducir movimiento» respetado.
 5. Contraste AA como mínimo (AAA en modo campo), texto escalable al 200 % sin romper el layout, semántica en cada control, objetivos táctiles de 48 dp (56 dp en modo campo).
 6. Golden tests de cada pantalla y estado en claro y oscuro (según el flavor), 360x640 y 412x915, escala de texto 1.0 y 2.0. Adjuntá en el PR capturas del emulador.
@@ -26,7 +26,7 @@ Cargá `verificacion`, `flujo-git-pr`; `impeccable`, `design-taste-frontend` y `
 ## Criterio de aceptación
 
 - `./bin/verify` devuelve 0.
-- `flutter test test/ui/ui_seguimiento_calificacion` devuelve 0 (goldens de la tarea).
+- `flutter test test/ui/ui_negociacion_cliente` devuelve 0 (goldens de la tarea).
 - `flutter test test/arquitectura/tokens_test.dart` devuelve 0.
 
 ## Cierre de cada etapa
