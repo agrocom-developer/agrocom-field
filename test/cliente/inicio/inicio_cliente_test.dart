@@ -175,7 +175,7 @@ void main() {
       expect(find.text('Historial reciente'), findsNothing);
       await tester.tap(find.byKey(const Key('inicio-solicitar')));
       await tester.pumpAndSettle();
-      expect(find.text('Paso 1 de 3 · Dónde'), findsOneWidget);
+      expect(find.text('Paso 1 de 4 · Lote'), findsOneWidget);
     });
 
     testWidgets('sin conexión explica y permite reintentar', (tester) async {

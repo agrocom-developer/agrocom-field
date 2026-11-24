@@ -101,6 +101,18 @@ class Servicio {
   );
 }
 
+/// Franja del día en la que el cliente prefiere la aplicación.
+enum VentanaHoraria {
+  amanecer('Amanecer', '05:30 a 09:00', 'Menos viento y menos deriva'),
+  tarde('Tarde', '16:00 a 18:30', 'Cuando baja la temperatura'),
+  indistinta('Sin preferencia', 'Cualquier horario', 'Lo define el proveedor');
+
+  const VentanaHoraria(this.etiqueta, this.horario, this.apoyo);
+  final String etiqueta;
+  final String horario;
+  final String apoyo;
+}
+
 /// Lo que el cliente declara al solicitar. `claveIdempotencia` nace en el
 /// dispositivo para que un reintento no cree dos servicios (ADR 0009).
 class SolicitudServicio {
@@ -110,24 +122,55 @@ class SolicitudServicio {
     required this.dosisLitrosPorHectarea,
     required this.fechaDeseada,
     required this.claveIdempotencia,
-  });
+    Decimal? hectareas,
+    String? cultivo,
+    this.ventana = VentanaHoraria.indistinta,
+  }) : _hectareas = hectareas,
+       _cultivo = cultivo;
 
   final Lote lote;
   final String producto;
   final Decimal dosisLitrosPorHectarea;
   final DateTime fechaDeseada;
   final String claveIdempotencia;
+  final VentanaHoraria ventana;
+  final Decimal? _hectareas;
+  final String? _cultivo;
+
+  /// Superficie a fumigar; por defecto, la del lote.
+  Decimal get hectareas => _hectareas ?? lote.hectareas;
+
+  /// Cultivo de esta aplicación; por defecto, el del lote.
+  String get cultivo => _cultivo ?? lote.cultivo;
 }
 
-/// Precio estimado antes de confirmar.
+/// Recargo explícito de la tarifa (urgencia, acceso difícil).
+class RecargoServicio {
+  const RecargoServicio({required this.concepto, required this.monto});
+
+  final String concepto;
+  final Decimal monto;
+}
+
+/// Precio estimado antes de confirmar: hectáreas por tarifa por hectárea,
+/// más recargos visibles. La comisión de Agrocom se liquida con el proveedor
+/// fuera de la app y no se suma al precio del cliente.
 class EstimacionServicio {
   const EstimacionServicio({
     required this.precio,
     required this.litros,
     required this.precioPorHectarea,
-  });
+    Decimal? subtotal,
+    this.recargos = const [],
+  }) : _subtotal = subtotal;
 
+  /// Total a pagar al proveedor.
   final Decimal precio;
   final Decimal litros;
   final Decimal precioPorHectarea;
+  final Decimal? _subtotal;
+  final List<RecargoServicio> recargos;
+
+  /// Hectáreas por tarifa, antes de recargos.
+  Decimal get subtotal => _subtotal ?? precio;
 }

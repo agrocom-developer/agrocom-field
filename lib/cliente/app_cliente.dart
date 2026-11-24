@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../nucleo/marketplace/dominio/dominio.dart';
 import '../nucleo/ui/paleta_campo.dart';
 import '../nucleo/ui/componentes/componentes_campo.dart';
 import '../nucleo/ui/tema_campo.dart';
@@ -10,6 +11,7 @@ import 'di/dependencias_cliente.dart';
 import 'inicio/domain/inicio_cliente_repositorio.dart';
 import 'inicio/presentation/inicio_cliente_cubit.dart';
 import 'inicio/presentation/inicio_cliente_pantalla.dart';
+import 'solicitar/presentation/buscando_proveedor_pantalla.dart';
 import 'solicitar/presentation/solicitar_pantalla.dart';
 import 'cuenta/presentation/cuenta_pantalla.dart';
 import 'servicios/presentation/historial_pantalla.dart';
@@ -94,12 +96,34 @@ class _ShellClienteState extends State<ShellCliente> {
     super.dispose();
   }
 
+  /// La solicitud ya está creada: se muestra la búsqueda de proveedor y,
+  /// desde ahí, el detalle del servicio. Debajo queda el inicio.
+  void _alSolicitado(Servicio servicio) {
+    setState(() => _indice = 0);
+    final navegador = Navigator.of(context);
+    navegador.push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        builder: (_) => BuscandoProveedorPantalla(
+          servicio: servicio,
+          alVerServicio: () => navegador.pushReplacement(
+            MaterialPageRoute<void>(
+              builder: (_) => ServicioDetallePantalla(servicioId: servicio.id),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return NavegacionAdaptativaCampo(
       destinos: _destinos,
       indice: _indice,
       onSeleccionar: (i) => setState(() => _indice = i),
+      // Solicitar divide la pantalla en mapa y formulario en iPad.
+      anchoCompleto: _indice == 1,
       cuerpo: switch (_indice) {
         0 => BlocProvider.value(
           value: _inicio,
@@ -108,16 +132,7 @@ class _ShellClienteState extends State<ShellCliente> {
             alVerServicios: () => setState(() => _indice = 2),
           ),
         ),
-        1 => SolicitarPantalla(
-          alSolicitado: (s) {
-            setState(() => _indice = 0);
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => ServicioDetallePantalla(servicioId: s.id),
-              ),
-            );
-          },
-        ),
+        1 => SolicitarPantalla(alSolicitado: _alSolicitado),
         2 => const HistorialPantalla(),
         _ => CuentaPantalla(alCerrarSesion: widget.alCerrarSesion),
       },
