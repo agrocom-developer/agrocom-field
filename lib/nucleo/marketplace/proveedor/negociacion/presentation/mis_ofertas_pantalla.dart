@@ -20,8 +20,10 @@ class MisOfertasPantalla extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          MisOfertasCubit(context.read<NegociacionRepositorio>())..cargar(),
+      create: (context) => MisOfertasCubit(
+        context.read<NegociacionRepositorio>(),
+        mercado: context.read<MercadoRepositorio>(),
+      )..cargar(),
       child: const MisOfertasVista(),
     );
   }
@@ -92,6 +94,7 @@ class MisOfertasVista extends StatelessWidget {
                     for (final o in estado.ordenadas) ...[
                       TarjetaMiOferta(
                         oferta: o,
+                        zona: estado.zonas[o.solicitudId],
                         ocupada: estado.enCurso == o.id,
                         bloqueada: estado.enCurso != null,
                       ),
@@ -113,12 +116,16 @@ class MisOfertasVista extends StatelessWidget {
 class TarjetaMiOferta extends StatelessWidget {
   const TarjetaMiOferta({
     required this.oferta,
+    this.zona,
     this.ocupada = false,
     this.bloqueada = false,
     super.key,
   });
 
   final OfertaNegociada oferta;
+
+  /// Zona de la solicitud; sin ella el título usa el número.
+  final String? zona;
   final bool ocupada;
   final bool bloqueada;
 
@@ -170,7 +177,10 @@ class TarjetaMiOferta extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Solicitud ${o.solicitudId}', style: texto.titleLarge),
+          Text(
+            zona == null ? 'Solicitud ${o.solicitudId}' : 'Solicitud en $zona',
+            style: texto.titleLarge,
+          ),
           const SizedBox(height: EspaciadoCampo.s),
           ChipEstadoMarketplace(etiqueta: etiqueta, tono: tono, icono: icono),
           const SizedBox(height: EspaciadoCampo.s),

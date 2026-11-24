@@ -12,6 +12,7 @@ class MisOfertasEstado {
   const MisOfertasEstado({
     this.estado = EstadoMisOfertas.cargando,
     this.ofertas = const [],
+    this.zonas = const {},
     this.enCurso,
     this.aviso,
     this.avisoEsError = false,
@@ -19,6 +20,10 @@ class MisOfertasEstado {
 
   final EstadoMisOfertas estado;
   final List<OfertaNegociada> ofertas;
+
+  /// Zona de cada solicitud, por id, para titular la tarjeta. Solo están las
+  /// solicitudes que el mercado todavía muestra; el resto cae al número.
+  final Map<int, String> zonas;
 
   /// La oferta sobre la que hay una acción en vuelo.
   final int? enCurso;
@@ -44,12 +49,14 @@ class MisOfertasEstado {
   MisOfertasEstado copiarCon({
     EstadoMisOfertas? estado,
     List<OfertaNegociada>? ofertas,
+    Map<int, String>? zonas,
     int? Function()? enCurso,
     String? Function()? aviso,
     bool? avisoEsError,
   }) => MisOfertasEstado(
     estado: estado ?? this.estado,
     ofertas: ofertas ?? this.ofertas,
+    zonas: zonas ?? this.zonas,
     enCurso: enCurso != null ? enCurso() : this.enCurso,
     aviso: aviso != null ? aviso() : this.aviso,
     avisoEsError: avisoEsError ?? this.avisoEsError,
@@ -60,11 +67,13 @@ class MisOfertasEstado {
 /// son llamadas directas, sin outbox (ADR 0016). El servidor decide quién
 /// tiene el turno; la app solo habilita lo que cada oferta permite.
 class MisOfertasCubit extends Cubit<MisOfertasEstado> {
-  MisOfertasCubit(this._repositorio, {Uuid? uuid})
-    : _uuid = uuid ?? const Uuid(),
+  MisOfertasCubit(this._repositorio, {MercadoRepositorio? mercado, Uuid? uuid})
+    : _mercado = mercado,
+      _uuid = uuid ?? const Uuid(),
       super(const MisOfertasEstado());
 
   final NegociacionRepositorio _repositorio;
+  final MercadoRepositorio? _mercado;
   final Uuid _uuid;
 
   /// Una clave por oferta respondida, conservada entre reintentos.
@@ -81,6 +90,7 @@ class MisOfertasCubit extends Cubit<MisOfertasEstado> {
           enCurso: () => null,
         ),
       );
+      await _cargarZonas();
     } on SinConexion {
       if (isClosed) return;
       // Con ofertas ya en pantalla se conservan y solo se avisa.
@@ -101,6 +111,28 @@ class MisOfertasCubit extends Cubit<MisOfertasEstado> {
           avisoEsError: true,
         ),
       );
+    }
+  }
+
+  /// Titula cada oferta con la zona de su solicitud. Es un adorno de la
+  /// tarjeta: si el mercado no responde, las ofertas siguen con su número.
+  Future<void> _cargarZonas() async {
+    final mercado = _mercado;
+    if (mercado == null) return;
+    try {
+      final pagina = await mercado.solicitudes(const FiltrosMapa());
+      if (isClosed) return;
+      emit(
+        state.copiarCon(
+          zonas: {
+            ...state.zonas,
+            for (final s in pagina.solicitudes)
+              if (s.zona != null) s.id: s.zona!,
+          },
+        ),
+      );
+    } on Object {
+      // Sin zona: la tarjeta usa el número de solicitud.
     }
   }
 

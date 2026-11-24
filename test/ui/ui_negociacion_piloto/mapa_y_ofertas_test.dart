@@ -266,6 +266,19 @@ void main() {
       });
     }
 
+    testWidgets('cada oferta se titula con la zona de su solicitud', (
+      tester,
+    ) async {
+      await montar(
+        tester,
+        const MisOfertasPantalla(),
+        dependencias: entorno.dependencias,
+      );
+      await esperar(tester);
+      expect(find.textContaining('Solicitud en '), findsWidgets);
+      expect(find.text('Solicitud 1'), findsNothing);
+    });
+
     testWidgets('la contraoferta del cliente se acepta y queda adjudicada', (
       tester,
     ) async {
