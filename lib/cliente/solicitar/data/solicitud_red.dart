@@ -1,48 +1,40 @@
 import 'dart:async';
 
-import 'package:decimal/decimal.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../red/cliente_http.dart';
-import '../../red/fuente_servicios.dart';
+import '../../red/fuente_solicitudes.dart';
 import '../../red/mapeo_solicitud.dart';
+import '../../solicitudes/domain/solicitud.dart';
 import '../domain/reglas_solicitud.dart';
 import '../domain/solicitud_repositorio.dart';
 
-/// Solicitud de servicios contra la API.
+/// Publicación de solicitudes contra la API.
 ///
-/// La tarifa solo se calcula sobre una solicitud ya creada
-/// (`GET /api/solicitudes/{id}/estimacion`), así que [estimar] crea un
-/// borrador y [solicitar] publica ese mismo borrador (`POST
-/// /api/solicitudes/{id}/publicar`). El `uuid_cliente` del borrador se
-/// deriva de la clave de idempotencia y de lo escrito: reintentar no crea
-/// otro, y cambiar un dato crea un borrador nuevo. Los borradores no se
-/// muestran en el historial.
+/// Crea un borrador (`POST /api/solicitudes`, con el precio por hectárea que
+/// propone el cliente) y lo abre a los pilotos (`POST
+/// /api/solicitudes/{id}/publicar`). El `uuid_cliente` del borrador se deriva
+/// de la clave de idempotencia y de lo escrito: reintentar no crea otro, y
+/// cambiar un dato crea un borrador nuevo. Los borradores no se muestran en
+/// el historial.
 class SolicitudRed implements SolicitudRepositorio {
   SolicitudRed(
     this._http,
     this._fuente, {
     Uuid? uuid,
     DateTime Function()? reloj,
-    this.pasoBusqueda = const Duration(seconds: 4),
   }) : _uuid = uuid ?? const Uuid(),
        _reloj = reloj ?? DateTime.now;
 
   final ClienteHttp _http;
-  final FuenteServicios _fuente;
+  final FuenteSolicitudes _fuente;
   final Uuid _uuid;
   final DateTime Function() _reloj;
-
-  /// Cada cuánto se vuelve a leer el avance de la asignación.
-  final Duration pasoBusqueda;
 
   /// Terrenos que esta sesión creó a partir de un contorno dibujado, por el
   /// id local del lote, para no crear dos veces el mismo.
   final _terrenosCreados = <String, int>{};
-
-  /// Último borrador creado y la huella de los datos con que se creó.
-  _Borrador? _borrador;
 
   static const _productos = [
     'Glifosato 480 SL + coadyuvante',
@@ -61,6 +53,9 @@ class SolicitudRed implements SolicitudRepositorio {
     'Arroz',
     'Caña de azúcar',
   ];
+
+  /// Cuántos días después de la fecha deseada se sigue aceptando el trabajo.
+  static const _diasDeVentana = 3;
 
   @override
   Future<List<Lote>> lotesDelCliente() async {
@@ -84,104 +79,35 @@ class SolicitudRed implements SolicitudRepositorio {
   Future<List<String>> cultivosSugeridos() async => _cultivos;
 
   @override
-  Future<EstimacionServicio> estimar({
-    required Lote lote,
-    required Decimal dosisLitrosPorHectarea,
-    Decimal? hectareas,
-    DateTime? fechaDeseada,
-    String? producto,
-    String? cultivo,
-    VentanaHoraria ventana = VentanaHoraria.indistinta,
-    String? claveIdempotencia,
-  }) async {
-    final solicitud = SolicitudServicio(
-      lote: lote,
-      producto: producto ?? 'Producto por definir',
-      dosisLitrosPorHectarea: dosisLitrosPorHectarea,
-      fechaDeseada:
-          fechaDeseada ??
-          _reloj().add(const Duration(days: ReglasSolicitud.diasUrgencia)),
-      claveIdempotencia: claveIdempotencia ?? _uuid.v4(),
-      hectareas: hectareas,
-      cultivo: cultivo,
-      ventana: ventana,
-    );
-    final borrador = await _asegurarBorrador(solicitud);
-    final r = await _http.obtener('/api/solicitudes/${borrador.id}/estimacion');
-    final e = r['estimacion'];
-    if (e is! Map) {
-      throw const OperacionRechazada('No pudimos calcular el precio.');
-    }
-    return MapeoSolicitud.estimacion(
-      Map<String, dynamic>.from(e),
-      dosis: dosisLitrosPorHectarea,
-      hectareas: solicitud.hectareas,
-    );
-  }
-
-  @override
-  Future<Servicio> solicitar(SolicitudServicio solicitud) async {
+  Future<Solicitud> publicar(NuevaSolicitud s) async {
     try {
-      final borrador = await _asegurarBorrador(solicitud);
+      final id = await _asegurarBorrador(s);
       Map<String, dynamic> crudo;
       try {
-        final r = await _http.enviar(
-          '/api/solicitudes/${borrador.id}/publicar',
-        );
+        final r = await _http.enviar('/api/solicitudes/$id/publicar');
         crudo = Map<String, dynamic>.from(r['solicitud'] as Map);
       } on OperacionRechazada {
         // Un reintento después de que la primera publicación sí llegó: el
         // servidor ya no la deja publicar, pero la solicitud existe.
-        crudo = await _fuente.crudo('${borrador.id}');
+        crudo = await _fuente.crudo('$id');
         if (crudo['estado'] == 'borrador') rethrow;
       }
-      final servicio = await _fuente.armar(crudo);
-      _borrador = null;
+      final solicitud = await _fuente.armar(crudo);
       unawaited(_fuente.invalidar());
-      return servicio;
+      return solicitud;
     } on SinConexion {
       throw const SolicitudSinConexion();
     }
   }
 
-  /// Avance de la asignación leyendo la solicitud cada [pasoBusqueda]. La
-  /// API no distingue la ronda de propios de la de terceros: mientras se
-  /// busca, se muestra la primera.
-  @override
-  Stream<BusquedaProveedor> observarBusqueda(String servicioId) async* {
-    while (true) {
-      final crudo = await _fuente.crudo(servicioId);
-      final servicio = await _fuente.armar(crudo);
-      final busqueda = switch (crudo['estado']) {
-        'sin_proveedor' ||
-        'cancelada' => const BusquedaProveedor(fase: FaseBusqueda.sinProveedor),
-        _ when servicio.estado != EstadoServicio.buscandoProveedor =>
-          BusquedaProveedor(
-            fase: FaseBusqueda.asignado,
-            proveedor: servicio.proveedor,
-          ),
-        _ => const BusquedaProveedor(fase: FaseBusqueda.propios),
-      };
-      yield busqueda;
-      if (busqueda.terminada) return;
-      await Future<void>.delayed(pasoBusqueda);
-    }
-  }
-
-  Future<_Borrador> _asegurarBorrador(SolicitudServicio s) async {
-    final fecha = s.fechaDeseada;
-    final dia =
-        '${fecha.year}-${fecha.month.toString().padLeft(2, '0')}-'
-        '${fecha.day.toString().padLeft(2, '0')}';
+  Future<int> _asegurarBorrador(NuevaSolicitud s) async {
+    final desde = s.fechaDeseada;
+    final hasta = DateTime(desde.year, desde.month, desde.day + _diasDeVentana);
     final huella =
-        '${s.claveIdempotencia}|${s.lote.id}|${s.hectareas}|'
-        '${s.dosisLitrosPorHectarea}|${s.producto}|${s.cultivo}|$dia|'
-        '${s.ventana.name}';
-    final previo = _borrador;
-    if (previo != null && previo.huella == huella) return previo;
-
-    final terrenoId = await _terrenoDe(s.lote);
-    final hasta = DateTime(fecha.year, fecha.month, fecha.day + 7);
+        '${s.claveIdempotencia}|${s.lote.id}|${s.hectareas}|${s.producto}|'
+        '${s.cultivo}|${MapeoSolicitud.diaApi(desde)}|${s.precioHa}|'
+        '${s.observaciones}';
+    final terrenoId = await _terrenoDe(s.lote, s.accesos);
     final r = await _http.enviar(
       '/api/solicitudes',
       datos: {
@@ -190,31 +116,25 @@ class SolicitudRed implements SolicitudRepositorio {
         'tipo_aplicacion': MapeoSolicitud.tipoAplicacion(s.producto),
         'hectareas_solicitadas': '${s.hectareas}',
         if (s.cultivo.isNotEmpty) 'cultivo': s.cultivo,
-        'producto_indicado': MapeoSolicitud.productoIndicado(
-          s.producto,
-          s.dosisLitrosPorHectarea,
-        ),
+        'producto_indicado': s.producto,
         'aporta_producto': 'cliente',
-        'ventana_desde': dia,
-        'ventana_hasta':
-            '${hasta.year}-${hasta.month.toString().padLeft(2, '0')}-'
-            '${hasta.day.toString().padLeft(2, '0')}',
-        'urgente': ReglasSolicitud.esUrgente(fecha, _reloj()),
-        if (s.ventana != VentanaHoraria.indistinta)
-          'observaciones':
-              'Horario preferido: ${s.ventana.etiqueta} (${s.ventana.horario}).',
+        'ventana_desde': MapeoSolicitud.diaApi(desde),
+        'ventana_hasta': MapeoSolicitud.diaApi(hasta),
+        'urgente': ReglasSolicitud.esUrgente(desde, _reloj()),
+        'observaciones': ?s.observaciones,
+        'precio_ha_propuesto': '${s.precioHa}',
       },
     );
     final creada = r['solicitud'];
     if (creada is! Map || creada['id'] is! int) {
       throw const OperacionRechazada('No pudimos preparar tu solicitud.');
     }
-    return _borrador = _Borrador(huella, creada['id'] as int);
+    return creada['id'] as int;
   }
 
   /// El terreno de la solicitud: el guardado, o uno nuevo que se crea con el
   /// contorno dibujado (`POST /api/terrenos`).
-  Future<int> _terrenoDe(Lote lote) async {
+  Future<int> _terrenoDe(Lote lote, String? accesos) async {
     final guardado = int.tryParse(lote.id);
     if (guardado != null) return guardado;
     final creado = _terrenosCreados[lote.id];
@@ -226,6 +146,7 @@ class SolicitudRed implements SolicitudRepositorio {
         'hectareas': '${lote.hectareas}',
         if (lote.cultivo.isNotEmpty) 'cultivo': lote.cultivo,
         'geometria': MapeoSolicitud.geoJson(lote.poligono),
+        'referencias_acceso': ?accesos,
       },
     );
     final t = r['terreno'];
@@ -234,11 +155,4 @@ class SolicitudRed implements SolicitudRepositorio {
     }
     return _terrenosCreados[lote.id] = t['id'] as int;
   }
-}
-
-class _Borrador {
-  const _Borrador(this.huella, this.id);
-
-  final String huella;
-  final int id;
 }

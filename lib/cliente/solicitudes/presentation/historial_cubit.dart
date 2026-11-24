@@ -4,7 +4,8 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
-import '../domain/servicios_cliente_repositorio.dart';
+import '../domain/solicitud.dart';
+import '../domain/solicitudes_repositorio.dart';
 
 enum FiltroHistorial { todos, activos, completados }
 
@@ -29,29 +30,37 @@ class HistorialEstado {
 
   final FaseHistorial fase;
 
-  /// Todos los servicios, del más reciente al más antiguo.
-  final List<Servicio> servicios;
+  /// Todas las solicitudes, de la más reciente a la más antigua.
+  final List<Solicitud> servicios;
   final FiltroHistorial filtro;
   final bool sinConexion;
 
-  List<Servicio> get visibles => [
+  List<Solicitud> get visibles => [
     for (final s in servicios)
       if (switch (filtro) {
         FiltroHistorial.todos => true,
-        FiltroHistorial.activos => s.estado.activo,
-        FiltroHistorial.completados => s.estado == EstadoServicio.completado,
+        FiltroHistorial.activos => s.estado.activa,
+        FiltroHistorial.completados =>
+          s.estado == EstadoSolicitud.finalizada ||
+              s.estado == EstadoSolicitud.calificada,
       })
         s,
   ];
 
-  Iterable<Servicio> get _completados =>
-      servicios.where((s) => s.estado == EstadoServicio.completado);
+  /// Las que ya terminaron el trabajo: finalizadas y calificadas.
+  Iterable<Solicitud> get _completados => servicios.where(
+    (s) =>
+        s.estado == EstadoSolicitud.finalizada ||
+        s.estado == EstadoSolicitud.calificada,
+  );
 
   int get totalCompletados => _completados.length;
 
   /// Superficie fumigada en los servicios completados, decimal exacto.
-  Decimal get hectareasFumigadas =>
-      _completados.fold(Decimal.zero, (a, s) => a + s.hectareasCubiertas);
+  Decimal get hectareasFumigadas => _completados.fold(
+    Decimal.zero,
+    (a, s) => a + (s.hectareasEjecutadas ?? Decimal.zero),
+  );
 
   /// Hectáreas fumigadas en cada uno de los últimos [meses] meses hasta
   /// [hasta], del más antiguo al más reciente. Los meses sin servicios van
@@ -66,10 +75,13 @@ class HistorialEstado {
       final suma = _completados
           .where(
             (s) =>
-                s.fechaDeseada.year == mes.year &&
-                s.fechaDeseada.month == mes.month,
+                s.ventanaDesde.year == mes.year &&
+                s.ventanaDesde.month == mes.month,
           )
-          .fold(Decimal.zero, (a, s) => a + s.hectareasCubiertas);
+          .fold(
+            Decimal.zero,
+            (a, s) => a + (s.hectareasEjecutadas ?? Decimal.zero),
+          );
       resultado.add(HectareasDelMes(mes: mes, hectareas: suma));
     }
     return resultado;
@@ -77,7 +89,7 @@ class HistorialEstado {
 
   HistorialEstado copiarCon({
     FaseHistorial? fase,
-    List<Servicio>? servicios,
+    List<Solicitud>? servicios,
     FiltroHistorial? filtro,
     bool? sinConexion,
   }) => HistorialEstado(
@@ -88,15 +100,15 @@ class HistorialEstado {
   );
 }
 
-/// Historial de servicios del cliente con un filtro simple.
+/// Historial de solicitudes del cliente con un filtro simple.
 class HistorialCubit extends Cubit<HistorialEstado> {
   HistorialCubit(this._repositorio)
     : super(const HistorialEstado(fase: FaseHistorial.cargando)) {
     _escuchar();
   }
 
-  final ServiciosClienteRepositorio _repositorio;
-  StreamSubscription<List<Servicio>>? _suscripcion;
+  final SolicitudesRepositorio _repositorio;
+  StreamSubscription<List<Solicitud>>? _suscripcion;
 
   void _escuchar() {
     _suscripcion?.cancel();

@@ -1,5 +1,3 @@
-import 'package:decimal/decimal.dart';
-
 import '../dominio/dominio.dart';
 
 /// Recorrido de vuelo ficticio sobre un lote: pasadas paralelas de este a
@@ -53,23 +51,5 @@ class RecorridoDemo {
     final t = avance.clamp(0.0, 1.0) * (puntos.length - 1);
     final i = t.floor();
     return [...puntos.take(i + 1), en(avance)];
-  }
-
-  /// Fotograma de seguimiento para [servicio] con [hectareasCubiertas].
-  SeguimientoVivo fotograma(Servicio servicio, Decimal hectareasCubiertas) {
-    final avance = servicio.hectareasDeclaradas == Decimal.zero
-        ? 0.0
-        : (hectareasCubiertas / servicio.hectareasDeclaradas)
-              .toDecimal(scaleOnInfinitePrecision: 4)
-              .toDouble();
-    final completo = hectareasCubiertas >= servicio.hectareasDeclaradas;
-    return SeguimientoVivo(
-      estado: completo ? EstadoServicio.completado : servicio.estado,
-      posicionDron: en(avance),
-      hectareasCubiertas: hectareasCubiertas,
-      hectareasDeclaradas: servicio.hectareasDeclaradas,
-      trazado: trazadoHasta(avance),
-      etaMinutos: completo ? 0 : (servicio.etaMinutos ?? 60),
-    );
   }
 }

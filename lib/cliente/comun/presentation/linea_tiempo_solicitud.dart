@@ -1,30 +1,30 @@
 import 'package:flutter/material.dart';
 
-import '../../../nucleo/marketplace/dominio/dominio.dart';
+import '../../solicitudes/domain/solicitud.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 
-/// Línea de tiempo del servicio: qué pasó, qué pasa ahora y qué sigue.
+/// Línea de tiempo de la solicitud: qué pasó, qué pasa ahora y qué sigue.
 ///
 /// Solo la etapa en curso lleva su explicación; las demás quedan en una
 /// línea para que la vista no compita con ella. Cuando una etapa cambia de
 /// estado, su nodo y su conector cambian de color con una transición corta.
-class LineaTiempoServicio extends StatelessWidget {
-  const LineaTiempoServicio({required this.hitos, super.key});
+class LineaTiempoSolicitud extends StatelessWidget {
+  const LineaTiempoSolicitud({required this.hitos, super.key});
 
-  final List<HitoServicio> hitos;
+  final List<HitoSolicitud> hitos;
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
       container: true,
-      label: 'Estado del servicio',
+      label: 'Avance de la solicitud',
       child: Column(
         children: [
           for (var i = 0; i < hitos.length; i++)
             _Hito(
-              key: ValueKey(hitos[i].etapa),
+              key: ValueKey(hitos[i].clave),
               hito: hitos[i],
               ultimo: i == hitos.length - 1,
             ),
@@ -37,7 +37,7 @@ class LineaTiempoServicio extends StatelessWidget {
 class _Hito extends StatelessWidget {
   const _Hito({required this.hito, required this.ultimo, super.key});
 
-  final HitoServicio hito;
+  final HitoSolicitud hito;
   final bool ultimo;
 
   static const double _nodo = EspaciadoCampo.xl;

@@ -7,6 +7,7 @@ import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../comun/presentation/boton_principal.dart';
+import '../../solicitudes/domain/solicitud.dart';
 import '../domain/calificacion_repositorio.dart';
 import 'calificar_cubit.dart';
 
@@ -14,7 +15,7 @@ import 'calificar_cubit.dart';
 /// si la calificación quedó registrada.
 Future<bool> mostrarHojaCalificar(
   BuildContext context,
-  Servicio servicio,
+  Solicitud servicio,
 ) async {
   final mensajero = ScaffoldMessenger.of(context);
   final enviada = await showModalBottomSheet<bool>(
@@ -42,7 +43,7 @@ Future<bool> mostrarHojaCalificar(
 class HojaCalificar extends StatelessWidget {
   const HojaCalificar({required this.servicio, super.key});
 
-  final Servicio servicio;
+  final Solicitud servicio;
 
   static const _palabras = [
     'Toca una estrella',
@@ -57,7 +58,17 @@ class HojaCalificar extends StatelessWidget {
   Widget build(BuildContext context) {
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
-    final proveedor = servicio.proveedor;
+    final nombre = servicio.nombreProveedor;
+    final proveedor = nombre == null
+        ? null
+        : Proveedor(
+            id: servicio.proveedorId ?? '0',
+            nombre: nombre,
+            tipo: TipoProveedor.independiente,
+            calificacion: 0,
+            serviciosCompletados: 0,
+            zonas: const [],
+          );
     final duracion = MovimientoCampo.duracion(context, MovimientoCampo.media);
     return BlocConsumer<CalificarCubit, CalificarEstado>(
       listenWhen: (a, b) => a.fase != b.fase,
@@ -104,7 +115,7 @@ class HojaCalificar extends StatelessWidget {
                 const SizedBox(height: EspaciadoCampo.xs),
                 Text(
                   '${servicio.lote.nombre} · '
-                  '${FormatoMarketplace.hectareas(servicio.hectareasDeclaradas)}',
+                  '${FormatoMarketplace.hectareas(servicio.hectareas)}',
                   style: texto.bodyMedium?.copyWith(
                     color: paleta.textoSecundario,
                   ),

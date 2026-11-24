@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
+import '../../solicitudes/domain/solicitud.dart';
 import '../domain/reglas_solicitud.dart';
 
 /// Pasos del flujo, uno por pantalla.
@@ -9,7 +10,7 @@ enum PasoSolicitud {
   lote('Lote'),
   aplicacion('Aplicación'),
   cuando('Cuándo'),
-  resumen('Resumen');
+  precio('Precio');
 
   const PasoSolicitud(this.etiqueta);
   final String etiqueta;
@@ -21,7 +22,7 @@ enum ModoLote { guardado, dibujo }
 enum CargaSolicitud { cargando, lista, error }
 
 /// Por qué no salió la solicitud.
-enum FalloEnvio { sinConexion, desconocido }
+enum FalloEnvio { sinConexion, rechazado, desconocido }
 
 const _sinCambio = Object();
 
@@ -44,16 +45,15 @@ class SolicitarEstado {
     this.hectareasTexto = '',
     this.cultivo,
     this.producto,
-    this.dosis,
     this.fecha,
     this.errorFecha,
-    this.ventana = VentanaHoraria.indistinta,
-    this.estimacion,
-    this.estimando = false,
-    this.falloEstimacion = false,
+    this.accesos = '',
+    this.observaciones = '',
+    this.precioTexto = '',
     this.enviando = false,
     this.falloEnvio,
-    this.servicio,
+    this.mensajeRechazo,
+    this.solicitud,
   });
 
   /// Nace al abrir el formulario y viaja en cada reintento.
@@ -79,20 +79,23 @@ class SolicitarEstado {
   final String hectareasTexto;
   final String? cultivo;
   final String? producto;
-  final Decimal? dosis;
   final DateTime? fecha;
   final String? errorFecha;
-  final VentanaHoraria ventana;
-  final EstimacionServicio? estimacion;
-  final bool estimando;
-  final bool falloEstimacion;
+
+  /// Cómo se llega al lote, para los pilotos que lo evalúan.
+  final String accesos;
+  final String observaciones;
+
+  /// Lo que hay escrito en el campo de precio por hectárea, tal cual.
+  final String precioTexto;
   final bool enviando;
   final FalloEnvio? falloEnvio;
 
-  /// El servicio creado; con valor, el flujo terminó.
-  final Servicio? servicio;
+  /// Lo que dijo el servidor cuando rechazó la solicitud.
+  final String? mensajeRechazo;
 
-  Decimal get dosisEfectiva => dosis ?? Decimal.one;
+  /// La solicitud publicada; con valor, el flujo terminó.
+  final Solicitud? solicitud;
 
   bool get contornoCerrado => vertices.length >= 3;
 
@@ -102,8 +105,17 @@ class SolicitarEstado {
     ModoLote.dibujo => contornoCerrado ? hectareasDePoligono(vertices) : null,
   };
 
-  String? get errorHectareas =>
-      ReglasSolicitud.errorDeHectareas(hectareasTexto);
+  String? get errorHectareas {
+    final base = ReglasSolicitud.errorDeHectareas(hectareasTexto);
+    if (base != null) return base;
+    // Un terreno ya registrado limita la superficie que se puede pedir.
+    final tope = modoLote == ModoLote.guardado ? loteGuardado?.hectareas : null;
+    final pedidas = ReglasSolicitud.parsearHectareas(hectareasTexto);
+    if (tope != null && pedidas != null && pedidas > tope) {
+      return 'El lote tiene $tope ha: no puedes pedir más.';
+    }
+    return null;
+  }
 
   /// Superficie a fumigar, o `null` si lo escrito no es válido.
   Decimal? get hectareas => errorHectareas == null
@@ -126,9 +138,22 @@ class SolicitarEstado {
           : null,
   };
 
-  Decimal? get litrosTotales {
+  /// El precio por hectárea escrito, o `null` si no sirve.
+  Decimal? get precio => ReglasSolicitud.errorDePrecio(precioTexto) == null
+      ? ReglasSolicitud.parsearPrecio(precioTexto)
+      : null;
+
+  /// El precio escrito dice algo incorrecto; `null` mientras el campo está
+  /// vacío (no se regaña antes de escribir).
+  String? get errorPrecio => precioTexto.trim().isEmpty
+      ? null
+      : ReglasSolicitud.errorDePrecio(precioTexto);
+
+  /// Total estimado con el precio propuesto.
+  Decimal? get total {
     final ha = hectareas;
-    return ha == null ? null : ha * dosisEfectiva;
+    final p = precio;
+    return ha == null || p == null ? null : ha * p;
   }
 
   bool get puedeAvanzar => switch (paso) {
@@ -136,7 +161,7 @@ class SolicitarEstado {
     PasoSolicitud.aplicacion =>
       hectareas != null && cultivo != null && producto != null,
     PasoSolicitud.cuando => fecha != null,
-    PasoSolicitud.resumen => estimacion != null && !estimando && !enviando,
+    PasoSolicitud.precio => precio != null && !enviando,
   };
 
   SolicitarEstado copiarCon({
@@ -153,16 +178,15 @@ class SolicitarEstado {
     String? hectareasTexto,
     Object? cultivo = _sinCambio,
     String? producto,
-    Decimal? dosis,
     Object? fecha = _sinCambio,
     Object? errorFecha = _sinCambio,
-    VentanaHoraria? ventana,
-    Object? estimacion = _sinCambio,
-    bool? estimando,
-    bool? falloEstimacion,
+    String? accesos,
+    String? observaciones,
+    String? precioTexto,
     bool? enviando,
     Object? falloEnvio = _sinCambio,
-    Servicio? servicio,
+    Object? mensajeRechazo = _sinCambio,
+    Solicitud? solicitud,
   }) => SolicitarEstado(
     claveIdempotencia: claveIdempotencia,
     carga: carga ?? this.carga,
@@ -180,21 +204,20 @@ class SolicitarEstado {
     hectareasTexto: hectareasTexto ?? this.hectareasTexto,
     cultivo: identical(cultivo, _sinCambio) ? this.cultivo : cultivo as String?,
     producto: producto ?? this.producto,
-    dosis: dosis ?? this.dosis,
     fecha: identical(fecha, _sinCambio) ? this.fecha : fecha as DateTime?,
     errorFecha: identical(errorFecha, _sinCambio)
         ? this.errorFecha
         : errorFecha as String?,
-    ventana: ventana ?? this.ventana,
-    estimacion: identical(estimacion, _sinCambio)
-        ? this.estimacion
-        : estimacion as EstimacionServicio?,
-    estimando: estimando ?? this.estimando,
-    falloEstimacion: falloEstimacion ?? this.falloEstimacion,
+    accesos: accesos ?? this.accesos,
+    observaciones: observaciones ?? this.observaciones,
+    precioTexto: precioTexto ?? this.precioTexto,
     enviando: enviando ?? this.enviando,
     falloEnvio: identical(falloEnvio, _sinCambio)
         ? this.falloEnvio
         : falloEnvio as FalloEnvio?,
-    servicio: servicio ?? this.servicio,
+    mensajeRechazo: identical(mensajeRechazo, _sinCambio)
+        ? this.mensajeRechazo
+        : mensajeRechazo as String?,
+    solicitud: solicitud ?? this.solicitud,
   );
 }

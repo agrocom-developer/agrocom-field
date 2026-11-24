@@ -7,10 +7,10 @@ import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../comun/presentation/estado_falla.dart';
-import '../domain/servicios_cliente_repositorio.dart';
+import '../domain/solicitudes_repositorio.dart';
 import 'historial_cubit.dart';
-import 'servicio_detalle_pantalla.dart';
-import 'tarjeta_servicio.dart';
+import 'solicitud_detalle_pantalla.dart';
+import 'tarjeta_solicitud.dart';
 
 /// Todos los servicios del cliente: cuánto lleva fumigado, un filtro simple
 /// y la lista.
@@ -24,7 +24,7 @@ class HistorialPantalla extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          HistorialCubit(context.read<ServiciosClienteRepositorio>()),
+          HistorialCubit(context.read<SolicitudesRepositorio>()),
       child: _Vista(reloj: reloj),
     );
   }
@@ -46,7 +46,7 @@ class _Vista extends StatelessWidget {
         if (estado.fase == FaseHistorial.error) {
           return EstadoFalla(
             sinConexion: estado.sinConexion,
-            queNoCargo: 'tus servicios',
+            queNoCargo: 'tus solicitudes',
             alReintentar: cubit.reintentar,
           );
         }
@@ -66,7 +66,7 @@ class _Vista extends StatelessWidget {
                 Semantics(
                   header: true,
                   child: Text(
-                    'Mis servicios',
+                    'Mis solicitudes',
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                 ),
@@ -123,29 +123,31 @@ class _Vista extends StatelessWidget {
                     EstadoVacioMarketplace(
                       icono: Icons.inbox_outlined,
                       titulo: switch (estado.filtro) {
-                        FiltroHistorial.todos => 'Todavía no pediste servicios',
-                        FiltroHistorial.activos => 'No hay servicios en curso',
+                        FiltroHistorial.todos =>
+                          'Todavía no publicaste solicitudes',
+                        FiltroHistorial.activos =>
+                          'No hay solicitudes en curso',
                         FiltroHistorial.completados =>
                           'Todavía no hay servicios terminados',
                       },
                       detalle: switch (estado.filtro) {
                         FiltroHistorial.completados =>
-                          'Cuando un servicio termina, queda guardado acá '
-                              'con sus evidencias.',
+                          'Cuando un piloto termina, queda guardado acá con '
+                              'sus fotos y el precio final.',
                         _ =>
-                          'Pide uno desde «Solicitar» y síguelo en vivo '
-                              'desde acá.',
+                          'Publica una desde «Solicitar», compara las ofertas '
+                              'de los pilotos y elige.',
                       },
                     )
                   else
                     for (final s in visibles) ...[
-                      TarjetaServicio(
-                        key: ValueKey('servicio-${s.id}'),
-                        servicio: s,
+                      TarjetaSolicitud(
+                        key: ValueKey('solicitud-${s.id}'),
+                        solicitud: s,
                         onTap: () => Navigator.of(context).push(
                           MaterialPageRoute<void>(
                             builder: (_) =>
-                                ServicioDetallePantalla(servicioId: s.id),
+                                SolicitudDetallePantalla(solicitudId: s.id),
                           ),
                         ),
                       ),

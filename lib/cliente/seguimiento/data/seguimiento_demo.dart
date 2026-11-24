@@ -1,112 +1,92 @@
 import 'dart:async';
 
-import 'package:decimal/decimal.dart';
+import 'package:flutter/services.dart';
 
-import '../../../nucleo/marketplace/demo/recorrido_demo.dart';
-import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../demo/almacen_demo_cliente.dart';
+import '../../solicitudes/domain/solicitud.dart';
+import '../domain/seguimiento.dart';
 import '../domain/seguimiento_repositorio.dart';
 
-/// Simula el avance del dron: emite un fotograma cada [intervalo] sumando
-/// [pasoHectareas] hasta completar el lote.
+/// Seguimiento simulado: el avance, la ubicación y el chat salen del almacén
+/// en memoria. La ubicación se reporta como «hace 90 s» para que la demo
+/// muestre un punto vigente.
 class SeguimientoDemo implements SeguimientoRepositorio {
   SeguimientoDemo(
     this._almacen, {
-    this.intervalo = const Duration(seconds: 2),
-    String pasoHectareas = '1.5',
-  }) : _paso = Decimal.parse(pasoHectareas);
+    this.latencia = const Duration(milliseconds: 250),
+  });
 
   final AlmacenDemoCliente _almacen;
-  final Duration intervalo;
-  final Decimal _paso;
+  final Duration latencia;
 
   @override
-  Stream<SeguimientoVivo> observar(String servicioId) {
-    Timer? reloj;
-    late final StreamController<SeguimientoVivo> control;
-
-    void arrancar() {
-      if (_almacen.sinRed) {
-        control
-          ..addError(const SinConexion())
-          ..close();
-        return;
-      }
-      final servicio = _almacen.porId(servicioId);
-      if (servicio == null) {
-        control.close();
-        return;
-      }
-      final recorrido = RecorridoDemo.paraLote(servicio.lote);
-      final inicial = servicio.hectareasCubiertas;
-      var cubiertas = inicial;
-      control.add(recorrido.fotograma(servicio, cubiertas));
-      if (servicio.estado != EstadoServicio.enEjecucion) {
-        control.close();
-        return;
-      }
-
-      void avanzar() {
-        if (cubiertas >= servicio.hectareasDeclaradas) {
-          control.close();
-          return;
-        }
-        reloj = Timer(intervalo, () {
-          if (_almacen.sinRed) {
-            control
-              ..addError(const SinConexion())
-              ..close();
-            return;
-          }
-          cubiertas = cubiertas + _paso;
-          if (cubiertas > servicio.hectareasDeclaradas) {
-            cubiertas = servicio.hectareasDeclaradas;
-          }
-          control.add(
-            _conEta(
-              recorrido.fotograma(servicio, cubiertas),
-              servicio,
-              inicial,
-            ),
-          );
-          avanzar();
-        });
-      }
-
-      avanzar();
-    }
-
-    // Al cancelar la suscripción se corta el reloj: no queda nada vivo
-    // cuando el cliente sale de la pantalla.
-    control = StreamController<SeguimientoVivo>(
-      onListen: arrancar,
-      onCancel: () => reloj?.cancel(),
-    );
-    return control.stream;
+  Future<AvanceServicio> avance(String solicitudId) async {
+    await Future<void>.delayed(latencia);
+    _almacen.exigirRed();
+    return _almacen.avanceDe(solicitudId);
   }
 
-  /// El tiempo restante baja en proporción a lo que falta cubrir.
-  SeguimientoVivo _conEta(
-    SeguimientoVivo f,
-    Servicio servicio,
-    Decimal inicial,
-  ) {
-    final etaInicial = servicio.etaMinutos;
-    final tramo = servicio.hectareasDeclaradas - inicial;
-    if (etaInicial == null || tramo <= Decimal.zero) return f;
-    final falta = servicio.hectareasDeclaradas - f.hectareasCubiertas;
-    final eta = (Decimal.fromInt(etaInicial) * falta / tramo)
-        .toDecimal(scaleOnInfinitePrecision: 2)
-        .ceil()
-        .toBigInt()
-        .toInt();
-    return SeguimientoVivo(
-      estado: f.estado,
-      posicionDron: f.posicionDron,
-      hectareasCubiertas: f.hectareasCubiertas,
-      hectareasDeclaradas: f.hectareasDeclaradas,
-      trazado: f.trazado,
-      etaMinutos: eta,
+  @override
+  Future<UbicacionPiloto?> ubicacionDelPiloto(String solicitudId) async {
+    _almacen.exigirRed();
+    final punto = _almacen.ubicacionDe(solicitudId);
+    final s = _almacen.porId(solicitudId);
+    if (punto == null || s?.estado != EstadoSolicitud.enEjecucion) return null;
+    return UbicacionPiloto(
+      punto: punto,
+      capturadaEn: _almacen.ahora.subtract(const Duration(seconds: 90)),
+      vigente: true,
+      precisionMetros: 12,
     );
   }
+
+  @override
+  Future<PaginaMensajes> mensajes(String solicitudId, {String? despues}) async {
+    _almacen.exigirRed();
+    final todos = _almacen.mensajesDe(solicitudId);
+    final desde = despues == null
+        ? 0
+        : todos.indexWhere((m) => m.id == despues) + 1;
+    final nuevos = todos.sublist(desde < 0 ? 0 : desde);
+    final s = _almacen.porId(solicitudId);
+    return PaginaMensajes(
+      mensajes: nuevos,
+      cursor: todos.isEmpty ? despues : todos.last.id,
+      soloLectura: s == null || s.estado == EstadoSolicitud.calificada,
+    );
+  }
+
+  @override
+  Future<MensajeChat> enviarMensaje(
+    String solicitudId, {
+    required String texto,
+    required String claveCliente,
+  }) async {
+    await Future<void>.delayed(latencia);
+    _almacen.exigirRed();
+    final previo = _almacen
+        .mensajesDe(solicitudId)
+        .where((m) => m.claveCliente == claveCliente)
+        .firstOrNull;
+    if (previo != null) return previo;
+    final mensaje = MensajeChat(
+      id: 'm-${_almacen.nuevoId()}',
+      texto: texto.trim(),
+      creadoEn: _almacen.ahora,
+      propio: true,
+      claveCliente: claveCliente,
+    );
+    _almacen.agregarMensaje(solicitudId, mensaje);
+    _almacen.responderMensaje(solicitudId);
+    return mensaje;
+  }
+
+  @override
+  Future<Uint8List> archivo(String ruta) async {
+    final datos = await rootBundle.load(ruta);
+    return datos.buffer.asUint8List();
+  }
+
+  @override
+  Future<void> marcarLeidos(String solicitudId, String cursor) async {}
 }
