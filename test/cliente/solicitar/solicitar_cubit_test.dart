@@ -1,8 +1,6 @@
-import 'dart:async';
-
-import 'package:agrocom_field/cliente/solicitar/presentation/busqueda_proveedor_cubit.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_cubit.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_estado.dart';
+import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -104,7 +102,6 @@ void main() {
 
       cubit.cambiarHectareas('40,25');
       expect(cubit.state.hectareas, Decimal.parse('40.25'));
-      expect(cubit.state.litrosTotales, Decimal.parse('40.25'));
       expect(cubit.state.puedeAvanzar, isTrue);
 
       cubit.cambiarHectareas('cuarenta');
@@ -115,6 +112,20 @@ void main() {
     },
   );
 
+  test(
+    'un lote registrado no admite pedir más hectáreas que las suyas',
+    () async {
+      await cubit.cargar();
+      cubit
+        ..elegirLote(cubit.state.lotes[1])
+        ..cambiarHectareas('90');
+      expect(cubit.state.errorHectareas, contains('85.5'));
+      expect(cubit.state.hectareas, isNull);
+      cubit.cambiarHectareas('85,5');
+      expect(cubit.state.errorHectareas, isNull);
+    },
+  );
+
   test('cambiar de lote descarta la edición manual de hectáreas', () async {
     await cubit.cargar();
     cubit
@@ -122,17 +133,6 @@ void main() {
       ..cambiarHectareas('40')
       ..elegirLote(cubit.state.lotes[0]);
     expect(cubit.state.hectareasTexto, '120');
-  });
-
-  test('la dosis sube y baja de a 0,1 y no llega a cero', () async {
-    cubit
-      ..subirDosis()
-      ..subirDosis();
-    expect(cubit.state.dosisEfectiva, Decimal.parse('1.2'));
-    for (var i = 0; i < 30; i++) {
-      cubit.bajarDosis();
-    }
-    expect(cubit.state.dosisEfectiva, Decimal.parse('0.1'));
   });
 
   test('fecha inválida: no se acepta y explica por qué', () async {
@@ -149,97 +149,112 @@ void main() {
     expect(cubit.state.errorFecha, isNull);
   });
 
-  test('el resumen estima con las hectáreas editadas, sin recargo', () async {
-    await completarHastaResumen(cubit);
-    expect(cubit.state.paso, PasoSolicitud.resumen);
-    final e = cubit.state.estimacion!;
-    expect(e.precio, Decimal.parse('7695'));
-    expect(e.recargos, isEmpty);
-    expect(e.litros, Decimal.parse('85.5'));
-  });
+  test('el precio por hectárea es decimal exacto y calcula el total', () async {
+    await completarHastaPrecio(cubit);
+    expect(cubit.state.paso, PasoSolicitud.precio);
+    expect(cubit.state.puedeAvanzar, isFalse, reason: 'falta el precio');
+    expect(cubit.state.errorPrecio, isNull, reason: 'no se regaña antes');
 
-  test('pedir para mañana suma el recargo por urgencia, visible', () async {
-    await completarHastaResumen(cubit, urgente: true);
-    final e = cubit.state.estimacion!;
-    expect(cubit.fechaUrgente, isTrue);
-    expect(e.subtotal, Decimal.parse('7695'));
-    expect(e.recargos.single.monto, Decimal.parse('769.5'));
-    expect(e.precio, Decimal.parse('8464.5'));
-  });
+    cubit.cambiarPrecio('118,40');
+    expect(cubit.state.precio, Decimal.parse('118.4'));
+    // 85,5 × 118,4: en double daría 10123.199999999999.
+    expect(cubit.state.total, Decimal.parse('10123.2'));
+    expect(cubit.state.puedeAvanzar, isTrue);
 
-  test(
-    'si la estimación falla no se puede confirmar hasta recalcular',
-    () async {
-      repo.fallaLaEstimacion = true;
-      await completarHastaResumen(cubit);
-      expect(cubit.state.falloEstimacion, isTrue);
-      expect(cubit.state.puedeAvanzar, isFalse);
-      repo.fallaLaEstimacion = false;
-      await cubit.estimar();
-      expect(cubit.state.estimacion, isNotNull);
-      expect(cubit.state.puedeAvanzar, isTrue);
-    },
-  );
+    cubit.cambiarPrecio('abc');
+    expect(cubit.state.errorPrecio, isNotNull);
+    expect(cubit.state.puedeAvanzar, isFalse);
+    cubit.cambiarPrecio('0');
+    expect(cubit.state.errorPrecio, contains('mayor a 0'));
+    cubit.cambiarPrecio('10,555');
+    expect(cubit.state.errorPrecio, contains('dos decimales'));
+  });
 
   test('volver atrás conserva lo elegido', () async {
-    await completarHastaResumen(cubit);
+    await completarHastaPrecio(cubit);
     cubit
+      ..cambiarPrecio('120')
+      ..cambiarObservaciones('Línea eléctrica al sur')
       ..retroceder()
       ..retroceder();
     expect(cubit.state.paso, PasoSolicitud.aplicacion);
     expect(cubit.state.avanza, isFalse);
     expect(cubit.state.producto, 'Insecticida piretroide');
     expect(cubit.state.fecha, DateTime(2026, 11, 26));
-    expect(cubit.state.ventana, VentanaHoraria.amanecer);
+    expect(cubit.state.precioTexto, '120');
+    expect(cubit.state.observaciones, 'Línea eléctrica al sur');
   });
 
-  test('doble envío: una sola solicitud y un solo servicio', () async {
-    await completarHastaResumen(cubit);
-    final antes = repo.almacen.servicios.length;
-    // Dos toques seguidos sobre «Confirmar solicitud».
+  test('pedir para mañana marca la solicitud como urgente', () async {
+    await completarHastaPrecio(cubit, urgente: true);
+    expect(cubit.fechaUrgente, isTrue);
+  });
+
+  test('doble envío: una sola solicitud publicada', () async {
+    await completarHastaPrecio(cubit);
+    cubit
+      ..cambiarPrecio('120')
+      ..cambiarObservaciones('  Línea eléctrica al sur  ');
+    final antes = repo.almacen.solicitudes.length;
+    // Dos toques seguidos sobre «Publicar solicitud».
     final primero = cubit.avanzar();
     final segundo = cubit.avanzar();
     expect(cubit.state.enviando, isTrue);
     await Future.wait([primero, segundo]);
 
     expect(repo.clavesEnviadas, ['clave-1']);
-    expect(repo.almacen.servicios.length, antes + 1);
-    final servicio = cubit.state.servicio!;
-    expect(servicio.estado, EstadoServicio.buscandoProveedor);
-    expect(servicio.hectareasDeclaradas, Decimal.parse('85.5'));
-    expect(servicio.precio, Decimal.parse('7695'));
+    expect(repo.almacen.solicitudes.length, antes + 1);
+    final solicitud = cubit.state.solicitud!;
+    expect(solicitud.estado, EstadoSolicitud.abierta);
+    expect(solicitud.hectareas, Decimal.parse('85.5'));
+    expect(solicitud.precioHaPropuesto, Decimal.fromInt(120));
+    expect(solicitud.totalEstimado, Decimal.parse('10260'));
+    expect(solicitud.observaciones, 'Línea eléctrica al sur');
 
-    // Un tercer toque, ya con el servicio creado, tampoco envía.
-    await cubit.enviar();
+    // Un tercer toque, ya publicada, tampoco envía.
+    await cubit.publicar();
     expect(repo.clavesEnviadas, hasLength(1));
+  });
+
+  test('la solicitud publicada aparece abierta y sin ofertas', () async {
+    await completarHastaPrecio(cubit);
+    cubit.cambiarPrecio('120');
+    await cubit.avanzar();
+    final guardada = repo.almacen.porId(cubit.state.solicitud!.id)!;
+    expect(guardada.estado, EstadoSolicitud.abierta);
+    expect(guardada.ofertasVigentes, 0);
+    expect(repo.almacen.ofertasDe(guardada.id), isEmpty);
   });
 
   test(
     'sin red conserva el formulario y el reintento usa la misma clave',
     () async {
-      await completarHastaResumen(cubit);
-      cubit.cambiarHectareas('60');
-      final antes = repo.almacen.servicios.length;
+      await completarHastaPrecio(cubit);
+      cubit
+        ..cambiarHectareas('60')
+        ..cambiarPrecio('125');
+      final antes = repo.almacen.solicitudes.length;
       repo.demo.sinConexion = true;
-      await cubit.enviar();
+      await cubit.publicar();
 
       expect(cubit.state.falloEnvio, FalloEnvio.sinConexion);
       expect(cubit.state.enviando, isFalse);
-      expect(cubit.state.servicio, isNull);
-      expect(cubit.state.paso, PasoSolicitud.resumen);
+      expect(cubit.state.solicitud, isNull);
+      expect(cubit.state.paso, PasoSolicitud.precio);
       expect(cubit.state.hectareasTexto, '60');
+      expect(cubit.state.precioTexto, '125');
       expect(cubit.state.producto, 'Insecticida piretroide');
       expect(cubit.state.fecha, DateTime(2026, 11, 26));
       expect(cubit.state.loteGuardado!.nombre, 'Maíz La Curva');
-      expect(repo.almacen.servicios.length, antes);
+      expect(repo.almacen.solicitudes.length, antes);
 
       repo.demo.sinConexion = false;
       await cubit.avanzar();
       expect(cubit.state.falloEnvio, isNull);
-      expect(cubit.state.servicio, isNotNull);
+      expect(cubit.state.solicitud, isNotNull);
       expect(repo.clavesEnviadas, ['clave-1', 'clave-1']);
-      expect(repo.almacen.servicios.length, antes + 1);
-      expect(cubit.state.servicio!.hectareasDeclaradas, Decimal.fromInt(60));
+      expect(repo.almacen.solicitudes.length, antes + 1);
+      expect(cubit.state.solicitud!.hectareas, Decimal.fromInt(60));
     },
   );
 
@@ -252,85 +267,16 @@ void main() {
       ..elegirCultivo('Soya')
       ..elegirProducto('Fertilizante foliar');
     await cubit.avanzar();
-    cubit.elegirFecha(cubit.state.fechas[3]);
+    cubit
+      ..elegirFecha(cubit.state.fechas[3])
+      ..cambiarAccesos('Portón azul');
     await cubit.avanzar();
+    cubit.cambiarPrecio('100');
     await cubit.avanzar();
-    final servicio = cubit.state.servicio!;
-    expect(servicio.lote.poligono, contornoDePrueba);
-    expect(servicio.lote.cultivo, 'Soya');
-    expect(servicio.hectareasDeclaradas, hectareasDePoligono(contornoDePrueba));
-  });
-
-  group('búsqueda de proveedor', () {
-    /// Completa y envía dentro del reloj falso de `testWidgets`.
-    Future<Servicio> solicitar(WidgetTester tester) async {
-      await completarHastaResumen(cubit);
-      final envio = cubit.avanzar();
-      // La latencia de la demo es un temporizador: hay que mover el reloj.
-      await tester.pump(const Duration(milliseconds: 1));
-      await envio;
-      return cubit.state.servicio!;
-    }
-
-    testWidgets('la demo ofrece a propios, después a terceros, y asigna', (
-      tester,
-    ) async {
-      final servicio = await solicitar(tester);
-      final busqueda = BusquedaProveedorCubit(repo, servicio.id)..iniciar();
-      final fases = <FaseBusqueda>[];
-      final escucha = busqueda.stream.listen((b) => fases.add(b.fase));
-      await tester.pump();
-      expect(busqueda.state.fase, FaseBusqueda.propios);
-
-      await tester.pump(const Duration(seconds: 4));
-      expect(busqueda.state.fase, FaseBusqueda.terceros);
-      expect(busqueda.state.radioKm, 50);
-
-      await tester.pump(const Duration(seconds: 4));
-      expect(busqueda.state.fase, FaseBusqueda.asignado);
-      expect(busqueda.state.terminada, isTrue);
-      expect(
-        busqueda.state.proveedor!.tipo,
-        isNot(TipoProveedor.propioAgrocom),
-      );
-      expect(fases, [
-        FaseBusqueda.propios,
-        FaseBusqueda.terceros,
-        FaseBusqueda.asignado,
-      ]);
-
-      final guardado = repo.almacen.porId(servicio.id)!;
-      expect(guardado.estado, EstadoServicio.asignado);
-      expect(guardado.proveedor, isNotNull);
-      // Sin `await`: la cancelación devuelve un futuro de la zona raíz y
-      // esperarlo saca a la prueba del reloj falso.
-      unawaited(escucha.cancel());
-      await busqueda.close();
-    });
-
-    testWidgets(
-      'cerrar la pantalla a mitad de la búsqueda no deja nada corriendo',
-      (tester) async {
-        final servicio = await solicitar(tester);
-        final busqueda = BusquedaProveedorCubit(repo, servicio.id)..iniciar();
-        await tester.pump();
-        await busqueda.close();
-        // Un temporizador vivo haría fallar la prueba al terminar.
-        await tester.pump(const Duration(seconds: 30));
-        expect(
-          repo.almacen.porId(servicio.id)!.estado,
-          EstadoServicio.buscandoProveedor,
-        );
-      },
-    );
-
-    test('un servicio ya asignado informa su proveedor de inmediato', () async {
-      final asignado = repo.almacen.servicios.firstWhere(
-        (s) => s.proveedor != null,
-      );
-      final cuadro = await repo.observarBusqueda(asignado.id).first;
-      expect(cuadro.fase, FaseBusqueda.asignado);
-      expect(cuadro.proveedor!.id, asignado.proveedor!.id);
-    });
+    final solicitud = cubit.state.solicitud!;
+    expect(solicitud.lote.poligono, contornoDePrueba);
+    expect(solicitud.cultivo, 'Soya');
+    expect(solicitud.hectareas, hectareasDePoligono(contornoDePrueba));
+    expect(solicitud.accesos, 'Portón azul');
   });
 }

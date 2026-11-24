@@ -7,7 +7,7 @@ import 'package:agrocom_field/cliente/inicio/data/inicio_cliente_demo.dart';
 import 'package:agrocom_field/cliente/inicio/domain/inicio_cliente_repositorio.dart';
 import 'package:agrocom_field/cliente/inicio/domain/reglas_inicio_cliente.dart';
 import 'package:agrocom_field/cliente/inicio/presentation/inicio_cliente_cubit.dart';
-import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
+import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
 import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,7 @@ import '../dobles_cliente.dart';
 ResumenInicio _resumenDemo() => ReglasInicioCliente.resumir(
   nombre: 'Hugo',
   empresa: 'Agropecuaria Los Tajibos',
-  servicios: almacenFijo().servicios,
+  solicitudes: almacenFijo().solicitudes,
   avisos: InicioClienteDemo.avisos,
 );
 
@@ -38,37 +38,53 @@ Future<void> _abrir(
 
 void main() {
   group('ReglasInicioCliente', () {
-    test('el servicio activo principal es el que está en ejecución', () {
+    test('la que espera una decisión del cliente es la principal', () {
       final r = _resumenDemo();
-      expect(r.servicioActivo?.estado, EstadoServicio.enEjecucion);
-      expect(r.otrosActivos, 2);
-      expect(r.porCalificar, isNotEmpty);
+      expect(r.solicitudActiva?.estado, EstadoSolicitud.conOfertas);
+      expect(r.otrosActivos, 1);
+      // La finalizada sin calificar tiene su propio bloque.
+      expect(r.porCalificar.map((s) => s.id), ['4103']);
       expect(
         r.recientes.length,
         lessThanOrEqualTo(ReglasInicioCliente.maximoRecientes),
       );
+      expect(r.recientes.map((s) => s.id), ['4104']);
       expect(r.recientes.every((s) => s.puntajeDelCliente != null), isTrue);
     });
 
-    test('sin servicios no hay activo ni historial', () {
-      final r = ReglasInicioCliente.resumir(nombre: 'Ana', servicios: const []);
-      expect(r.servicioActivo, isNull);
+    test('sin solicitudes no hay activa ni historial', () {
+      final r = ReglasInicioCliente.resumir(
+        nombre: 'Ana',
+        solicitudes: const [],
+      );
+      expect(r.solicitudActiva, isNull);
       expect(r.otrosActivos, 0);
       expect(r.recientes, isEmpty);
     });
 
-    test('sin ninguno volando toma el activo más reciente', () {
-      final servicios = almacenFijo().servicios
-          .where((s) => s.estado != EstadoServicio.enEjecucion)
+    test('sin ofertas esperando, la que está en ejecución es la activa', () {
+      final solicitudes = almacenFijo().solicitudes
+          .where((s) => s.estado != EstadoSolicitud.conOfertas)
           .toList();
       final r = ReglasInicioCliente.resumir(
         nombre: 'Ana',
-        servicios: servicios,
+        solicitudes: solicitudes,
       );
-      expect(
-        r.servicioActivo?.id,
-        servicios.firstWhere((s) => s.estado.activo).id,
+      expect(r.solicitudActiva?.estado, EstadoSolicitud.enEjecucion);
+      expect(r.otrosActivos, 0);
+    });
+
+    test('una abierta sin ofertas es activa pero pesa menos', () {
+      final solicitudes = almacenFijo().solicitudes;
+      final abierta = solicitudes.first.copiarCon(
+        estado: EstadoSolicitud.abierta,
       );
+      final r = ReglasInicioCliente.resumir(
+        nombre: 'Ana',
+        solicitudes: [abierta, solicitudes[1]],
+      );
+      expect(r.solicitudActiva?.estado, EstadoSolicitud.enEjecucion);
+      expect(r.otrosActivos, 1);
     });
   });
 
@@ -120,20 +136,20 @@ void main() {
       prepararTelefono(tester);
       await _abrir(tester, InicioControlado.pendiente());
       expect(find.byType(EsqueletoCampo), findsWidgets);
-      expect(find.text('Solicitar un servicio'), findsNothing);
+      expect(find.text('Publicar una solicitud'), findsNothing);
     });
 
-    testWidgets('muestra solicitar, servicio activo, avisos e historial', (
+    testWidgets('muestra publicar, solicitud activa, avisos e historial', (
       tester,
     ) async {
       prepararTelefono(tester);
       await _abrir(tester, InicioControlado.fijo(_resumenDemo()));
       await tester.pumpAndSettle();
       expect(find.text('Hola, Hugo'), findsOneWidget);
-      expect(find.text('Solicitar un servicio'), findsOneWidget);
-      expect(find.text('Servicio activo'), findsOneWidget);
-      expect(find.text('Seguir en vivo'), findsOneWidget);
-      expect(find.text('Ver los otros 2 servicios activos'), findsOneWidget);
+      expect(find.text('Publicar una solicitud'), findsOneWidget);
+      expect(find.text('Solicitud activa'), findsOneWidget);
+      expect(find.text('Ver ofertas'), findsOneWidget);
+      expect(find.text('Ver la otra solicitud activa'), findsOneWidget);
       await tester.scrollUntilVisible(find.text('Avisos'), 200);
       await tester.scrollUntilVisible(find.text('Historial reciente'), 200);
       expect(find.text('Ver todo'), findsOneWidget);
@@ -148,20 +164,20 @@ void main() {
       await tester.tap(find.byTooltip('Descartar aviso').first);
       await tester.pumpAndSettle();
       expect(aviso, findsNothing);
-      expect(find.text('Alta demanda esta semana'), findsOneWidget);
+      expect(find.text('Un buen precio atrae más ofertas'), findsOneWidget);
     });
 
-    testWidgets('«Ver todo» lleva a la pestaña Servicios', (tester) async {
+    testWidgets('«Ver todo» lleva a la pestaña Solicitudes', (tester) async {
       prepararTelefono(tester);
       await _abrir(tester, InicioControlado.fijo(_resumenDemo()));
       await tester.pumpAndSettle();
       await tester.scrollUntilVisible(find.text('Ver todo'), 200);
       await tester.tap(find.text('Ver todo'));
       await tester.pumpAndSettle();
-      expect(find.text('Mis servicios'), findsOneWidget);
+      expect(find.text('Mis solicitudes'), findsOneWidget);
     });
 
-    testWidgets('sin servicios orienta hacia la primera solicitud', (
+    testWidgets('sin solicitudes orienta hacia la primera solicitud', (
       tester,
     ) async {
       prepararTelefono(tester);
@@ -171,7 +187,7 @@ void main() {
       );
       await tester.pumpAndSettle();
       expect(find.text('Hola, Ana'), findsOneWidget);
-      expect(find.text('No tienes servicios en curso'), findsOneWidget);
+      expect(find.text('No tienes solicitudes en curso'), findsOneWidget);
       expect(find.text('Historial reciente'), findsNothing);
       await tester.tap(find.byKey(const Key('inicio-solicitar')));
       await tester.pumpAndSettle();

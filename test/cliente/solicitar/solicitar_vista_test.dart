@@ -1,12 +1,10 @@
 import 'dart:async';
 
-import 'package:agrocom_field/cliente/solicitar/presentation/buscando_proveedor_pantalla.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/mapa_solicitud.dart';
-import 'package:agrocom_field/cliente/solicitar/presentation/radar_busqueda.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_cubit.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_estado.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_pantalla.dart';
-import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
+import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,7 +32,7 @@ Future<void> tocar(WidgetTester tester, Finder objetivo) async {
 void main() {
   late RepositorioEspia repo;
   late SolicitarCubit cubit;
-  Servicio? solicitado;
+  Solicitud? solicitado;
 
   setUp(() {
     repo = RepositorioEspia();
@@ -65,7 +63,7 @@ void main() {
     unawaited(cubit.cargar());
     await tester.pumpAndSettle();
 
-    expect(find.text('Solicitar fumigación'), findsOneWidget);
+    expect(find.text('Publicar solicitud'), findsOneWidget);
     expect(find.text('Paso 1 de 4 · Lote'), findsOneWidget);
     expect(find.byType(MapaSolicitud), findsOneWidget);
     expect(botonHabilitado(tester), isFalse);
@@ -93,32 +91,49 @@ void main() {
     expect(botonHabilitado(tester), isFalse, reason: 'falta la fecha');
     await tester.tap(find.byKey(const ValueKey('fecha-2')));
     await tester.pumpAndSettle();
-    await tocar(tester, find.byKey(const ValueKey('ventana-amanecer')));
+    await tocar(tester, find.byKey(const ValueKey('solicitar-observaciones')));
+    await tester.enterText(
+      find.byKey(const ValueKey('solicitar-observaciones')),
+      'Hay una línea eléctrica al sur',
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(_continuar));
     await tester.pumpAndSettle();
 
-    expect(find.text('Paso 4 de 4 · Resumen'), findsOneWidget);
-    expect(find.byKey(const ValueKey('resumen-hectareas')), findsOneWidget);
-    expect(find.text('Bs 7.695'), findsWidgets);
-    expect(find.text('Confirmar solicitud'), findsOneWidget);
+    expect(find.text('Paso 4 de 4 · Precio'), findsOneWidget);
+    expect(find.text('Publicar solicitud'), findsWidgets);
+    expect(botonHabilitado(tester), isFalse, reason: 'falta el precio');
+    await tester.enterText(
+      find.byKey(const ValueKey('solicitar-precio')),
+      '120',
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('Bs 10.260'), findsWidgets);
+    expect(botonHabilitado(tester), isTrue);
     expect(find.byType(FilledButton), findsOneWidget);
 
     await tester.tap(find.byKey(_continuar));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));
     expect(solicitado, isNotNull);
-    expect(solicitado!.estado, EstadoServicio.buscandoProveedor);
+    expect(solicitado!.estado, EstadoSolicitud.abierta);
+    expect(solicitado!.precioHaPropuesto.toString(), '120');
     expect(repo.clavesEnviadas, hasLength(1));
+    expect(
+      repo.enviadas.single.observaciones,
+      'Hay una línea eléctrica al sur',
+    );
   });
 
   testWidgets('doble toque en confirmar envía una sola solicitud', (
     tester,
   ) async {
     prepararPantalla(tester, _telefono);
-    await completarHastaResumen(cubit);
+    await completarHastaPrecio(cubit);
+    cubit.cambiarPrecio('120');
     await tester.pumpWidget(vista());
     await tester.pumpAndSettle();
-    final antes = repo.almacen.servicios.length;
+    final antes = repo.almacen.solicitudes.length;
 
     await tester.tap(find.byKey(_continuar));
     await tester.tap(find.byKey(_continuar), warnIfMissed: false);
@@ -126,14 +141,15 @@ void main() {
     await tester.pump(const Duration(milliseconds: 10));
 
     expect(repo.clavesEnviadas, hasLength(1));
-    expect(repo.almacen.servicios.length, antes + 1);
+    expect(repo.almacen.solicitudes.length, antes + 1);
   });
 
   testWidgets('sin red: avisa, conserva el resumen y deja reintentar', (
     tester,
   ) async {
     prepararPantalla(tester, _telefono);
-    await completarHastaResumen(cubit);
+    await completarHastaPrecio(cubit);
+    cubit.cambiarPrecio('120');
     repo.demo.sinConexion = true;
     await tester.pumpWidget(vista());
     await tester.pumpAndSettle();
@@ -143,9 +159,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byKey(const ValueKey('aviso-sin-conexion')), findsOneWidget);
-    expect(find.text('Reintentar envío'), findsOneWidget);
-    expect(find.text('Paso 4 de 4 · Resumen'), findsOneWidget);
+    expect(find.text('Reintentar publicación'), findsOneWidget);
+    expect(find.text('Paso 4 de 4 · Precio'), findsOneWidget);
     expect(find.text('Insecticida piretroide'), findsOneWidget);
+    expect(find.text('Bs 10.260'), findsWidgets);
     expect(solicitado, isNull);
 
     repo.demo.sinConexion = false;
@@ -257,7 +274,7 @@ void main() {
 
   testWidgets('el paso anterior conserva lo escrito', (tester) async {
     prepararPantalla(tester, _telefono);
-    await completarHastaResumen(cubit);
+    await completarHastaPrecio(cubit);
     await tester.pumpWidget(vista());
     await tester.pumpAndSettle();
 
@@ -333,7 +350,7 @@ void main() {
     await tester.pumpAndSettle();
 
     Rect mapa() => tester.getRect(find.byType(MapaSolicitud));
-    final titulo = tester.getRect(find.text('Solicitar fumigación'));
+    final titulo = tester.getRect(find.text('Publicar solicitud'));
     expect(mapa().height, greaterThan(700));
     expect(mapa().right, lessThanOrEqualTo(titulo.left));
 
@@ -358,7 +375,7 @@ void main() {
       ..elegirProducto('Fungicida triazol + estrobilurina');
     await tester.pumpAndSettle();
     for (final paso in PasoSolicitud.values.skip(1)) {
-      if (paso == PasoSolicitud.resumen) {
+      if (paso == PasoSolicitud.precio) {
         cubit.elegirFecha(cubit.state.fechas.first);
       }
       unawaited(cubit.avanzar());
@@ -398,84 +415,5 @@ void main() {
       await expectLater(tester, meetsGuideline(labeledTapTargetGuideline));
     }
     semantica.dispose();
-  });
-
-  group('buscando proveedor', () {
-    late Servicio servicio;
-    late StreamController<BusquedaProveedor> busqueda;
-
-    setUp(() {
-      servicio = repo.almacen.servicios.first;
-      busqueda = StreamController<BusquedaProveedor>();
-      repo.busqueda = busqueda;
-    });
-    tearDown(() => busqueda.close());
-
-    Widget pantalla({VoidCallback? alVer, bool sinAnimaciones = false}) =>
-        envolver(
-          repositorio: repo,
-          conScaffold: false,
-          sinAnimaciones: sinAnimaciones,
-          child: BuscandoProveedorPantalla(
-            servicio: servicio,
-            alVerServicio: alVer ?? () {},
-          ),
-        );
-
-    testWidgets('muestra la ronda de propios, la de terceros y al asignado', (
-      tester,
-    ) async {
-      prepararPantalla(tester, _telefono);
-      var visto = false;
-      await tester.pumpWidget(pantalla(alVer: () => visto = true));
-      await tester.pump();
-      expect(find.text('Buscando proveedor'), findsOneWidget);
-      expect(find.byType(RadarBusqueda), findsOneWidget);
-      expect(find.text('1. Pilotos de Agrocom'), findsOneWidget);
-      expect(find.text('Buscando ahora'), findsOneWidget);
-      expect(find.text('Después'), findsOneWidget);
-
-      busqueda.add(
-        const BusquedaProveedor(fase: FaseBusqueda.terceros, radioKm: 50),
-      );
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 400));
-      expect(find.text('2. Proveedores de la zona · 50 km'), findsOneWidget);
-      expect(find.text('Sin disponibilidad'), findsOneWidget);
-      expect(find.text('Buscando ahora'), findsOneWidget);
-
-      final proveedor = repo.almacen.datos.proveedores[1];
-      busqueda.add(
-        BusquedaProveedor(fase: FaseBusqueda.asignado, proveedor: proveedor),
-      );
-      await tester.pump();
-      await tester.pumpAndSettle();
-      expect(find.text('Proveedor asignado'), findsOneWidget);
-      expect(find.text(proveedor.nombre), findsOneWidget);
-      expect(find.byType(RadarBusqueda), findsNothing);
-
-      await tester.tap(find.byKey(const ValueKey('buscando-ver-servicio')));
-      expect(visto, isTrue);
-    });
-
-    testWidgets('con movimiento reducido el radar queda quieto', (
-      tester,
-    ) async {
-      prepararPantalla(tester, _telefono);
-      await tester.pumpWidget(pantalla(sinAnimaciones: true));
-      await tester.pump();
-      expect(find.byType(RadarBusqueda), findsOneWidget);
-      expect(tester.hasRunningAnimations, isFalse);
-    });
-
-    testWidgets('sin proveedor: lo dice y deja ir al servicio', (tester) async {
-      prepararPantalla(tester, _telefono);
-      await tester.pumpWidget(pantalla(sinAnimaciones: true));
-      busqueda.add(const BusquedaProveedor(fase: FaseBusqueda.sinProveedor));
-      await tester.pump();
-      await tester.pumpAndSettle();
-      expect(find.text('Todavía no hay proveedor'), findsOneWidget);
-      expect(find.text('Ver el servicio'), findsOneWidget);
-    });
   });
 }

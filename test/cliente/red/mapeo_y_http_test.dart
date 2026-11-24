@@ -1,5 +1,8 @@
+import 'package:agrocom_field/cliente/ofertas/domain/oferta_recibida.dart';
 import 'package:agrocom_field/cliente/red/cliente_http.dart';
 import 'package:agrocom_field/cliente/red/mapeo_solicitud.dart';
+import 'package:agrocom_field/cliente/seguimiento/domain/seguimiento.dart';
+import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,52 +12,31 @@ import 'dobles_red.dart';
 void main() {
   group('MapeoSolicitud', () {
     test('cada estado de la API cae en un estado de la app', () {
+      expect(EstadoSolicitud.desdeApi('borrador'), EstadoSolicitud.borrador);
+      expect(EstadoSolicitud.desdeApi('abierta'), EstadoSolicitud.abierta);
       expect(
-        MapeoSolicitud.estado('borrador'),
-        EstadoServicio.buscandoProveedor,
-      );
-      expect(
-        MapeoSolicitud.estado('en_asignacion'),
-        EstadoServicio.buscandoProveedor,
+        EstadoSolicitud.desdeApi('con_ofertas'),
+        EstadoSolicitud.conOfertas,
       );
       expect(
-        MapeoSolicitud.estado('sin_proveedor'),
-        EstadoServicio.buscandoProveedor,
-      );
-      expect(MapeoSolicitud.estado('asignada'), EstadoServicio.asignado);
-      expect(MapeoSolicitud.estado('en_camino'), EstadoServicio.asignado);
-      expect(MapeoSolicitud.estado('en_ejecucion'), EstadoServicio.enEjecucion);
-      expect(
-        MapeoSolicitud.estado('suspendida_por_clima'),
-        EstadoServicio.enEjecucion,
-      );
-      expect(MapeoSolicitud.estado('ejecutada'), EstadoServicio.completado);
-      expect(MapeoSolicitud.estado('en_disputa'), EstadoServicio.completado);
-      expect(MapeoSolicitud.estado('completada'), EstadoServicio.completado);
-      expect(MapeoSolicitud.estado('cancelada'), EstadoServicio.cancelado);
-    });
-
-    test('separa el producto de la dosis y las vuelve a unir', () {
-      final (producto, dosis) = MapeoSolicitud.productoYDosis(
-        'Glifosato 480 SL, 2 L/ha',
-      );
-      expect(producto, 'Glifosato 480 SL');
-      expect(dosis, Decimal.parse('2'));
-      expect(
-        MapeoSolicitud.productoYDosis('Fungicida, 1,5 L/ha').$2,
-        Decimal.parse('1.5'),
+        EstadoSolicitud.desdeApi('adjudicada'),
+        EstadoSolicitud.adjudicada,
       );
       expect(
-        MapeoSolicitud.productoYDosis('Solo un producto').$2,
-        Decimal.zero,
+        EstadoSolicitud.desdeApi('en_ejecucion'),
+        EstadoSolicitud.enEjecucion,
       );
       expect(
-        MapeoSolicitud.productoIndicado(
-          'Glifosato 480 SL',
-          Decimal.parse('2.5'),
-        ),
-        'Glifosato 480 SL, 2.5 L/ha',
+        EstadoSolicitud.desdeApi('finalizada'),
+        EstadoSolicitud.finalizada,
       );
+      expect(
+        EstadoSolicitud.desdeApi('calificada'),
+        EstadoSolicitud.calificada,
+      );
+      expect(EstadoSolicitud.desdeApi('disputada'), EstadoSolicitud.disputada);
+      expect(EstadoSolicitud.desdeApi('expirada'), EstadoSolicitud.expirada);
+      expect(EstadoSolicitud.desdeApi('cancelada'), EstadoSolicitud.cancelada);
     });
 
     test('lee el GeoJSON (longitud, latitud) y quita el vértice repetido', () {
@@ -104,10 +86,13 @@ void main() {
       expect(anillo.last, anillo.first);
     });
 
-    test('el servicio conserva los importes y las hectáreas exactos', () {
-      final s = MapeoSolicitud.servicio(
+    test('la solicitud conserva los importes y las hectáreas exactos', () {
+      final s = MapeoSolicitud.solicitud(
         solicitudJson(
-          historial: [pasoHistorial('borrador', '2026-11-24T12:00:00+00:00')],
+          historial: [
+            pasoHistorial('borrador', '2026-11-24T12:00:00+00:00'),
+            pasoHistorial('abierta', '2026-11-24T12:01:00+00:00'),
+          ],
         ),
         zonas: const {
           6: ZonaCatalogo(
@@ -120,56 +105,95 @@ void main() {
         nombreProveedor: 'Agrocom SRL',
       );
       expect(s.id, '8');
-      expect(s.estado, EstadoServicio.completado);
-      expect(s.precio, Decimal.parse('7200.00'));
-      expect(s.hectareasDeclaradas, Decimal.parse('60'));
-      expect(s.hectareasCubiertas, s.hectareasDeclaradas);
-      expect(s.dosisLitrosPorHectarea, Decimal.parse('2'));
-      expect(s.producto, 'Glifosato 480 SL');
+      expect(s.estado, EstadoSolicitud.calificada);
+      expect(s.hectareas, Decimal.parse('60'));
+      expect(s.precioHaPropuesto, Decimal.parse('120'));
+      expect(s.precioHaAcordado, Decimal.parse('124'));
+      expect(s.montoFinal, Decimal.parse('7440.00'));
+      expect(s.totalAPagar, Decimal.parse('7440.00'));
+      expect(s.hectareasEjecutadas, Decimal.parse('60'));
+      expect(s.producto, 'Glifosato 480 SL, 2 L/ha');
       expect(s.lote.zona, 'Cuatro Cañadas');
       expect(s.lote.poligono, hasLength(4));
-      expect(s.fechaDeseada, DateTime(2026, 11, 27));
-      expect(s.proveedor?.nombre, 'Agrocom SRL');
+      expect(s.ventanaDesde, DateTime(2026, 11, 27));
+      expect(s.ventanaHasta, DateTime(2026, 12, 6));
+      expect(s.nombreProveedor, 'Agrocom SRL');
       expect(s.puntajeDelCliente, 5);
+      expect(s.proveedorId, '1');
+      expect(s.ofertaAdjudicadaId, '14');
+      expect(s.historial.map((c) => c.estado), [
+        EstadoSolicitud.borrador,
+        EstadoSolicitud.abierta,
+      ]);
     });
 
-    test('un servicio recién publicado no tiene proveedor ni avance', () {
-      final s = MapeoSolicitud.servicio(
-        solicitudJson(
-          estado: 'en_asignacion',
-          proveedorId: null,
-          montoFinal: null,
+    test(
+      'una solicitud abierta propone precio y no tiene acordado ni piloto',
+      () {
+        final s = MapeoSolicitud.solicitud(
+          solicitudJson(
+            estado: 'abierta',
+            proveedorId: null,
+            ofertaAdjudicadaId: null,
+            precioAcordado: null,
+            montoFinal: null,
+            ejecutadas: null,
+            porcentaje: '0.00',
+          ),
+          ofertasVigentes: 2,
+        );
+        expect(s.estado, EstadoSolicitud.abierta);
+        expect(s.precioHaAcordado, isNull);
+        expect(s.montoFinal, isNull);
+        expect(s.proveedorId, isNull);
+        expect(s.precioHaVigente, Decimal.parse('120'));
+        expect(s.totalAPagar, Decimal.parse('7440.00'));
+        expect(s.ofertasVigentes, 2);
+        expect(s.lote.zona, 'Sin zona asignada');
+      },
+    );
+
+    test('la oferta trae el precio, el piloto y su dron', () {
+      final o = MapeoSolicitud.oferta(
+        ofertaJson(
+          precioHa: '118.5000',
+          tipo: 'contraoferta',
+          numero: 3,
+          definitiva: true,
+          nota: 'Mejor precio',
         ),
       );
-      expect(s.estado, EstadoServicio.buscandoProveedor);
-      expect(s.proveedor, isNull);
-      expect(s.hectareasCubiertas, Decimal.zero);
-      expect(s.precio, Decimal.parse('7200.00'));
-      expect(s.lote.zona, 'Sin zona asignada');
+      expect(o.id, '20');
+      expect(o.numero, 3);
+      expect(o.autor, AutorOferta.proveedor);
+      expect(o.aceptaPropuesta, isFalse);
+      expect(o.esDefinitiva, isTrue);
+      expect(o.precioHa, Decimal.parse('118.5'));
+      expect(o.estado, EstadoOferta.vigente);
+      expect(o.nota, 'Mejor precio');
+      expect(o.distanciaKm, Decimal.parse('22.52'));
+      expect(o.proveedor.nombre, 'Mamani Agroservicios');
+      expect(o.proveedor.calificacion, 4.5);
+      expect(o.proveedor.calificaciones, 8);
+      expect(o.proveedor.tasaCancelacion, closeTo(0.1, 1e-9));
+      expect(o.proveedor.dron, 'DJI Agras T40');
+      expect(o.proveedor.capacidadLitros, Decimal.parse('40'));
     });
 
-    test('la estimación trae solo los recargos que cobran algo', () {
-      final e = MapeoSolicitud.estimacion(
-        {
-          'congelada': false,
-          'tarifa_base_hectarea': '120.0000',
-          'tarifa_hectarea': '132.0000',
-          'hectareas': '80.0000',
-          'subtotal_base': '9600.00',
-          'recargo_urgente': '1920.00',
-          'recargo_acceso_dificil': '0.00',
-          'recargo_producto': null,
-          'monto_estimado': '11520.00',
-        },
-        dosis: Decimal.parse('2'),
-        hectareas: Decimal.parse('80'),
+    test('una oferta vigente espera al cliente solo si la hizo el piloto', () {
+      final ahora = DateTime.utc(2026, 11, 24, 12);
+      final delPiloto = MapeoSolicitud.oferta(ofertaJson());
+      final delCliente = MapeoSolicitud.oferta(
+        ofertaJson(autor: 'cliente', numero: 2),
       );
-      expect(e.precio, Decimal.parse('11520.00'));
-      expect(e.subtotal, Decimal.parse('9600.00'));
-      expect(e.precioPorHectarea, Decimal.parse('120'));
-      expect(e.litros, Decimal.parse('160'));
-      expect(e.recargos, hasLength(1));
-      expect(e.recargos.single.monto, Decimal.parse('1920.00'));
+      final vencida = MapeoSolicitud.oferta(
+        ofertaJson(venceEn: '2026-11-24T11:00:00+00:00'),
+      );
+      expect(delPiloto.esperaAlCliente(ahora), isTrue);
+      expect(delCliente.esperaAlCliente(ahora), isFalse);
+      expect(delCliente.esperaAlPiloto(ahora), isTrue);
+      expect(vencida.esperaAlCliente(ahora), isFalse);
+      expect(vencida.restante(ahora), Duration.zero);
     });
 
     test('el tipo de aplicación sale del producto escrito', () {
@@ -184,6 +208,11 @@ void main() {
         'fertilizante_foliar',
       );
       expect(MapeoSolicitud.tipoAplicacion('Otra cosa'), 'otro');
+    });
+
+    test('las fechas de calendario viajan sin hora', () {
+      expect(MapeoSolicitud.diaApi(DateTime(2026, 3, 5)), '2026-03-05');
+      expect(MapeoSolicitud.dia('2026-12-06'), DateTime(2026, 12, 6));
     });
   });
 
@@ -252,6 +281,38 @@ void main() {
       await expectLater(
         red.http.enviar('/api/x'),
         throwsA(isA<OperacionRechazada>()),
+      );
+    });
+
+    test('un 409 de la negociación avisa que la oferta cambió', () async {
+      red.servidor.responder(
+        'POST',
+        '/api/ofertas/20/aceptar',
+        codigo: 409,
+        cuerpo: {
+          'message': 'La oferta ya no está vigente.',
+          'codigo': 'oferta_no_vigente',
+        },
+      );
+      await expectLater(
+        red.http.enviar('/api/ofertas/20/aceptar'),
+        throwsA(
+          isA<OfertaCambio>().having(
+            (e) => e.mensaje,
+            'mensaje',
+            'La oferta ya no está vigente.',
+          ),
+        ),
+      );
+      red.servidor.responder(
+        'POST',
+        '/api/solicitudes/8/mensajes',
+        codigo: 409,
+        cuerpo: {'message': 'El chat se cerró.', 'codigo': 'chat_cerrado'},
+      );
+      await expectLater(
+        red.http.enviar('/api/solicitudes/8/mensajes'),
+        throwsA(isA<ChatCerrado>()),
       );
     });
 

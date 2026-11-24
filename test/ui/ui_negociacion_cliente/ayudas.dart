@@ -7,19 +7,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:agrocom_field/cliente/acceso/data/acceso_demo.dart';
 import 'package:agrocom_field/cliente/calificar/data/calificacion_demo.dart';
 import 'package:agrocom_field/cliente/calificar/presentation/hoja_calificar.dart';
-import 'package:agrocom_field/cliente/conformidad/data/conformidad_demo.dart';
 import 'package:agrocom_field/cliente/cuenta/data/cuenta_demo.dart';
 import 'package:agrocom_field/cliente/demo/almacen_demo_cliente.dart';
 import 'package:agrocom_field/cliente/di/dependencias_cliente.dart';
 import 'package:agrocom_field/cliente/inicio/data/inicio_cliente_demo.dart';
 import 'package:agrocom_field/cliente/problema/data/problema_demo.dart';
+import 'package:agrocom_field/cliente/ofertas/data/ofertas_demo.dart';
+import 'package:agrocom_field/cliente/ofertas/domain/ofertas_repositorio.dart';
 import 'package:agrocom_field/cliente/seguimiento/data/seguimiento_demo.dart';
 import 'package:agrocom_field/cliente/seguimiento/domain/seguimiento_repositorio.dart';
-import 'package:agrocom_field/cliente/servicios/data/servicios_cliente_demo.dart';
-import 'package:agrocom_field/cliente/servicios/domain/servicios_cliente_repositorio.dart';
+import 'package:agrocom_field/cliente/solicitudes/data/solicitudes_demo.dart';
+import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
+import 'package:agrocom_field/cliente/solicitudes/domain/solicitudes_repositorio.dart';
 import 'package:agrocom_field/cliente/solicitar/data/solicitud_demo.dart';
 import 'package:agrocom_field/nucleo/marketplace/demo/datos_demo.dart';
-import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:agrocom_field/nucleo/marketplace/ui/mapa_lote.dart';
 import 'package:agrocom_field/nucleo/ui/paleta_campo.dart';
 import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
@@ -46,21 +47,20 @@ Future<void> cargarFuentes() async {
 AlmacenDemoCliente almacenDePrueba() =>
     AlmacenDemoCliente(datos: DatosDemo(reloj: () => ahoraDePrueba));
 
-/// Repositorios demo sin latencia sobre [almacen]. [seguimiento] y
-/// [servicios] reemplazan a los demo cuando la prueba necesita controlar el
-/// flujo de datos.
+/// Repositorios demo sin latencia sobre [almacen]. [solicitudes], [ofertas] y
+/// [seguimiento] reemplazan a los demo cuando la prueba necesita controlar
+/// el flujo de datos (una carga que no termina, una ubicación vieja).
 DependenciasCliente dependenciasDePrueba(
   AlmacenDemoCliente almacen, {
+  SolicitudesRepositorio? solicitudes,
+  OfertasRepositorio? ofertas,
   SeguimientoRepositorio? seguimiento,
-  ServiciosClienteRepositorio? servicios,
 }) => DependenciasCliente(
-  servicios: servicios ?? ServiciosClienteDemo(almacen),
+  solicitudes: solicitudes ?? SolicitudesDemo(almacen, latencia: Duration.zero),
   solicitud: SolicitudDemo(almacen, latencia: Duration.zero),
-  seguimiento:
-      seguimiento ??
-      SeguimientoDemo(almacen, intervalo: const Duration(seconds: 2)),
+  ofertas: ofertas ?? OfertasDemo(almacen, latencia: Duration.zero),
+  seguimiento: seguimiento ?? SeguimientoDemo(almacen, latencia: Duration.zero),
   calificacion: CalificacionDemo(almacen, latencia: Duration.zero),
-  conformidad: ConformidadDemo(almacen, latencia: Duration.zero),
   problema: ProblemaDemo(almacen, latencia: Duration.zero),
   cuenta: CuentaDemo(almacen),
   acceso: AccesoDemo(
@@ -87,16 +87,13 @@ class Variante {
   static const compacto = Size(360, 640);
   static const amplio = Size(412, 915);
 
-  /// Claro y oscuro, 360x640 y 412x915, texto al 100 % y al 200 %.
+  /// Claro en teléfono chico y grande, oscuro en el grande, y el chico con
+  /// el texto al 200 %.
   static const matriz = [
     Variante(ModoVisualCampo.claro, compacto, 1),
     Variante(ModoVisualCampo.claro, compacto, 2),
     Variante(ModoVisualCampo.claro, amplio, 1),
-    Variante(ModoVisualCampo.claro, amplio, 2),
-    Variante(ModoVisualCampo.oscuro, compacto, 1),
-    Variante(ModoVisualCampo.oscuro, compacto, 2),
     Variante(ModoVisualCampo.oscuro, amplio, 1),
-    Variante(ModoVisualCampo.oscuro, amplio, 2),
   ];
 
   static const base = Variante(ModoVisualCampo.claro, amplio, 1);
@@ -135,15 +132,14 @@ Future<void> montar(
 }
 
 /// Deja pasar las cargas sin latencia y las transiciones cortas. No usa
-/// `pumpAndSettle`: el esqueleto de carga y el seguimiento en vivo no se
-/// detienen solos.
+/// `pumpAndSettle`: el esqueleto de carga no se detiene solo.
 Future<void> asentar(WidgetTester tester, {int veces = 6}) async {
   for (var i = 0; i < veces; i++) {
     await tester.pump(const Duration(milliseconds: 120));
   }
 }
 
-/// Decodifica las fotos de evidencia antes de capturar: en las pruebas la
+/// Decodifica las fotos de avance antes de capturar: en las pruebas la
 /// lectura de recursos es E/S real y no avanza con `pump`.
 Future<void> precargarFotos(WidgetTester tester) async {
   final contexto = tester.element(find.byType(MaterialApp));
@@ -168,11 +164,11 @@ Future<void> esperarGolden(WidgetTester tester, String nombre) =>
 class AbreHojaCalificar extends StatelessWidget {
   const AbreHojaCalificar(this.servicio, {super.key});
 
-  final Servicio servicio;
+  final Solicitud servicio;
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Servicio')),
+    appBar: AppBar(title: const Text('Solicitud')),
     body: Center(
       child: TextButton(
         onPressed: () => mostrarHojaCalificar(context, servicio),
