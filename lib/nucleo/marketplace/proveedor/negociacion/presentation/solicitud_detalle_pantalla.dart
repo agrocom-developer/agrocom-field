@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../ui/componentes/esqueleto_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../dominio/dominio.dart';
+import '../../../terrenos/presentation/visor_fotos_terreno.dart';
 import '../../../ui/boton_principal_marketplace.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../domain/negociacion.dart';
@@ -159,6 +161,11 @@ class _Contenido extends StatelessWidget {
             const SizedBox(height: EspaciadoCampo.l),
             _Datos(solicitud: s),
             const SizedBox(height: EspaciadoCampo.l),
+            if (cargandoDetalle)
+              const EsqueletoCampo(alto: 120, radio: 14)
+            else
+              VisorFotosTerreno(fotos: s.terreno?.fotos ?? const []),
+            const SizedBox(height: EspaciadoCampo.l),
             Text(
               'Tu contacto con el cliente llega solo si te eligen. Hasta '
               'entonces no ves su nombre, teléfono ni dirección.',
@@ -302,6 +309,9 @@ class _Acciones extends StatelessWidget {
       hectareas: solicitud.hectareas,
       precioReferencia: solicitud.precioHaPropuesto,
       etiquetaReferencia: 'El cliente propone',
+      tipoAplicacion: solicitud.tipoAplicacion ?? 'otro',
+      zonaId: solicitud.zonaId,
+      macrorregion: solicitud.macrorregion?.codigo,
     );
     if (propuesta == null) return;
     await cubit.ofertar(

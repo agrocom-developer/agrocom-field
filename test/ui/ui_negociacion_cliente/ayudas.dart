@@ -20,7 +20,14 @@ import 'package:agrocom_field/cliente/solicitudes/data/solicitudes_demo.dart';
 import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
 import 'package:agrocom_field/cliente/solicitudes/domain/solicitudes_repositorio.dart';
 import 'package:agrocom_field/cliente/solicitar/data/solicitud_demo.dart';
+import 'package:agrocom_field/nucleo/marketplace/foto_perfil/foto_perfil_repositorio.dart';
+import 'package:agrocom_field/nucleo/marketplace/pago/pagos_repositorio.dart';
+import 'package:agrocom_field/nucleo/marketplace/referencias/precio_referencia.dart';
+import 'package:agrocom_field/nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
+import 'package:agrocom_field/nucleo/notificaciones/push/dispositivos_push_repositorio.dart';
+import 'package:agrocom_field/nucleo/notificaciones/push/token_push_store.dart';
 import 'package:agrocom_field/nucleo/marketplace/demo/datos_demo.dart';
+import '../../nucleo/marketplace/dobles_foto.dart';
 import 'package:agrocom_field/nucleo/marketplace/ui/mapa_lote.dart';
 import 'package:agrocom_field/nucleo/ui/paleta_campo.dart';
 import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
@@ -70,6 +77,12 @@ DependenciasCliente dependenciasDePrueba(
     sesionIniciada: true,
   ),
   inicio: InicioClienteDemo(almacen, latencia: Duration.zero),
+  referencias: ReferenciasDemo(),
+  fotoPerfil: FotoPerfilDemo(),
+  fotosTerreno: FotosTerrenoDemo(),
+  pagos: PagosDemo(),
+  preparadorFoto: preparadorDePrueba(),
+  push: DispositivosPushDemo(TokenPushEnMemoria()),
 );
 
 /// Variante visual de una captura: modo, tamaño lógico y escala de texto.

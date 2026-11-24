@@ -161,6 +161,12 @@ void main() {
     expect(find.byKey(const ValueKey('aviso-sin-conexion')), findsOneWidget);
     expect(find.text('Reintentar publicación'), findsOneWidget);
     expect(find.text('Paso 4 de 4 · Precio'), findsOneWidget);
+    // El resumen queda bajo la sugerencia de referencia: se baja hasta él.
+    await tester.dragUntilVisible(
+      find.text('Insecticida piretroide'),
+      find.byType(Scrollable).first,
+      const Offset(0, -120),
+    );
     expect(find.text('Insecticida piretroide'), findsOneWidget);
     expect(find.text('Bs 10.260'), findsWidgets);
     expect(solicitado, isNull);

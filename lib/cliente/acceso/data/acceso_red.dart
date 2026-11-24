@@ -42,11 +42,13 @@ class AccesoRed implements AccesoRepositorio {
     required DispositivoStore dispositivoStore,
     required OnboardingStore onboarding,
     void Function()? alCerrarSesion,
+    Future<void> Function()? retirarPush,
   }) : _api = api,
        _tokenStore = tokenStore,
        _dispositivo = dispositivoStore,
        _onboarding = onboarding,
-       _alCerrarSesion = alCerrarSesion;
+       _alCerrarSesion = alCerrarSesion,
+       _retirarPush = retirarPush;
 
   final ApiClient _api;
   final TokenStore _tokenStore;
@@ -55,6 +57,10 @@ class AccesoRed implements AccesoRepositorio {
 
   /// Limpia lo que la app guardó en memoria de esta cuenta.
   final void Function()? _alCerrarSesion;
+
+  /// Retira el token de push del servidor. Va antes de borrar el token de
+  /// sesión, porque la baja va autenticada (ADR 0020).
+  final Future<void> Function()? _retirarPush;
 
   static const rolCliente = 'cliente';
 
@@ -241,6 +247,13 @@ class AccesoRed implements AccesoRepositorio {
   /// local pase lo que pase.
   Future<void> _descartarToken() async {
     try {
+      // El token de push se retira mientras la sesión aún vale. Si falla
+      // (sin red), queda guardado para reintentar y la sesión se cierra igual.
+      try {
+        await _retirarPush?.call();
+      } on Object {
+        // Nada que hacer aquí: cerrar sesión no depende del push.
+      }
       await _api.delete('/api/auth/token');
     } on ApiExcepcion {
       // Sin red o ya revocado: el token local se borra igual.

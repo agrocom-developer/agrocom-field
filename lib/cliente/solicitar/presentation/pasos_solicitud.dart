@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
+import '../../../nucleo/marketplace/terrenos/presentation/galeria_fotos_terreno.dart';
+import '../../../nucleo/marketplace/referencias/presentation/sugerencia_precio_referencia.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
@@ -73,6 +75,10 @@ class PanelLote extends StatelessWidget {
             ),
             const SizedBox(height: EspaciadoCampo.s),
           ],
+        if (estado.lote != null) ...[
+          const SizedBox(height: EspaciadoCampo.l),
+          const GaleriaFotosTerreno(),
+        ],
       ],
     );
   }
@@ -731,6 +737,19 @@ class _PasoPrecioState extends State<PasoPrecio> {
               focusedErrorBorder: _borde(paleta.error, 2),
             ),
           ),
+        ),
+        const SizedBox(height: EspaciadoCampo.m),
+        SugerenciaPrecioReferencia(
+          tipoAplicacion: tipoAplicacionDe(e.producto),
+          actual: e.precio,
+          alUsar: (valor) {
+            final escrito = valor.toString();
+            _precio.value = TextEditingValue(
+              text: escrito,
+              selection: TextSelection.collapsed(offset: escrito.length),
+            );
+            cubit.cambiarPrecio(escrito);
+          },
         ),
         const SizedBox(height: EspaciadoCampo.m),
         SuperficieMarketplace(

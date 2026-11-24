@@ -5,6 +5,9 @@ import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_cubit.dar
 import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
 import 'package:agrocom_field/nucleo/marketplace/demo/datos_demo.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
+import 'package:agrocom_field/nucleo/marketplace/referencias/precio_referencia.dart';
+import 'package:agrocom_field/nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
+import 'package:agrocom_field/nucleo/marketplace/terrenos/presentation/fotos_terreno_cubit.dart';
 import 'package:agrocom_field/nucleo/marketplace/ui/mapa_lote.dart';
 import 'package:agrocom_field/nucleo/ui/paleta_campo.dart';
 import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
@@ -12,6 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../../nucleo/marketplace/dobles_foto.dart';
 
 /// Lunes 23 de noviembre de 2026, 10:00. «Mañana» es el martes 24.
 final ahoraDePrueba = DateTime(2026, 11, 23, 10);
@@ -119,19 +124,28 @@ Widget envolver({
   bool sinAnimaciones = false,
   bool conScaffold = true,
 }) {
-  return RepositoryProvider<SolicitudRepositorio>.value(
-    value: repositorio,
-    child: MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: AgrocomThemeCampo.construir(modo: modo),
-      builder: (context, hijo) => MediaQuery(
-        data: MediaQuery.of(context).copyWith(
-          textScaler: TextScaler.linear(escalaTexto),
-          disableAnimations: sinAnimaciones,
-        ),
-        child: hijo!,
+  return MultiRepositoryProvider(
+    providers: [
+      RepositoryProvider<SolicitudRepositorio>.value(value: repositorio),
+      RepositoryProvider<ReferenciasRepositorio>.value(
+        value: ReferenciasDemo(),
       ),
-      home: conScaffold ? Scaffold(body: SafeArea(child: child)) : child,
+    ],
+    child: BlocProvider(
+      create: (_) =>
+          FotosTerrenoCubit(FotosTerrenoDemo(), preparadorDePrueba()),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: AgrocomThemeCampo.construir(modo: modo),
+        builder: (context, hijo) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.linear(escalaTexto),
+            disableAnimations: sinAnimaciones,
+          ),
+          child: hijo!,
+        ),
+        home: conScaffold ? Scaffold(body: SafeArea(child: child)) : child,
+      ),
     ),
   );
 }

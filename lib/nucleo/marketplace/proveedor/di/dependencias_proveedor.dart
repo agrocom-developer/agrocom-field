@@ -1,6 +1,15 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../camara/selector_imagen.dart';
+import '../../../evidencias/compresor_adaptativo.dart';
+import '../../../notificaciones/push/dispositivos_push_repositorio.dart';
+import '../../../notificaciones/push/token_push_store.dart';
+import '../../foto_perfil/foto_perfil_repositorio.dart';
+import '../../foto_preparador.dart';
+import '../../pago/pagos_repositorio.dart';
+import '../../referencias/precio_referencia.dart';
 import '../acceso/domain/acceso_proveedor.dart';
 import '../demo/almacen_demo_proveedor.dart';
 import '../dron/data/drones_demo.dart';
@@ -24,6 +33,11 @@ class DependenciasProveedor {
     required this.ejecucion,
     required this.drones,
     required this.perfil,
+    required this.referencias,
+    required this.fotoPerfil,
+    required this.pagos,
+    required this.preparadorFoto,
+    required this.push,
   });
 
   factory DependenciasProveedor.demo(
@@ -31,6 +45,9 @@ class DependenciasProveedor {
     DependenciasNegociacion? negociacion,
     DependenciasEjecucion? ejecucion,
     bool compartirUbicacion = true,
+    SelectorImagen? selectorImagen,
+    PreparadorFoto? preparadorFoto,
+    PagosRepositorio? pagos,
   }) => DependenciasProveedor(
     negociacion: negociacion ?? DependenciasNegociacion.demo(),
     ejecucion:
@@ -38,6 +55,20 @@ class DependenciasProveedor {
         DependenciasEjecucion.demo(compartirUbicacion: compartirUbicacion),
     drones: DronesDemo(almacen),
     perfil: PerfilDemo(almacen),
+    referencias: ReferenciasDemo(),
+    fotoPerfil: FotoPerfilDemo(),
+    pagos:
+        pagos ??
+        PagosDemo(
+          montos: {10: Decimal.parse('9200'), 9: Decimal.parse('14880')},
+        ),
+    preparadorFoto:
+        preparadorFoto ??
+        PreparadorFoto(
+          selectorImagen ?? SelectorImagenImagePicker(),
+          CompresorEvidenciaAdaptativo(),
+        ),
+    push: DispositivosPushDemo(TokenPushEnMemoria()),
   );
 
   /// Contra la API: perfil y drones por red; la negociación y la ejecución
@@ -51,6 +82,14 @@ class DependenciasProveedor {
     ejecucion: ejecucion,
     drones: DronesRed(http),
     perfil: PerfilRed(http),
+    referencias: ReferenciasRed(http),
+    fotoPerfil: FotoPerfilRed(http),
+    pagos: PagosRed(http),
+    preparadorFoto: PreparadorFoto(
+      SelectorImagenImagePicker(),
+      CompresorEvidenciaAdaptativo(),
+    ),
+    push: DispositivosPushRed(http, TokenPushStoreSeguro()),
   );
 
   final DependenciasNegociacion negociacion;
@@ -58,12 +97,31 @@ class DependenciasProveedor {
   final DronesRepositorio drones;
   final PerfilRepositorio perfil;
 
+  /// Precio por hectárea de referencia para la hoja de contraoferta.
+  final ReferenciasRepositorio referencias;
+
+  /// Foto de perfil de la cuenta del proveedor.
+  final FotoPerfilRepositorio fotoPerfil;
+
+  /// «Ya recibí el pago» del titular en el servicio finalizado.
+  final PagosRepositorio pagos;
+
+  /// Elige y comprime las fotos que se suben (perfil).
+  final PreparadorFoto preparadorFoto;
+
+  /// Token de push del aparato; se retira al cerrar sesión.
+  final DispositivosPushRepositorio push;
+
   /// Para sumarlos al `MultiRepositoryProvider` del flavor.
   List<RepositoryProvider<Object>> get proveedores => [
     ...negociacion.proveedores,
     ...ejecucion.proveedores,
     RepositoryProvider<DronesRepositorio>.value(value: drones),
     RepositoryProvider<PerfilRepositorio>.value(value: perfil),
+    RepositoryProvider<ReferenciasRepositorio>.value(value: referencias),
+    RepositoryProvider<FotoPerfilRepositorio>.value(value: fotoPerfil),
+    RepositoryProvider<PagosRepositorio>.value(value: pagos),
+    RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
   ];
 
   Widget proveer({required Widget child}) =>

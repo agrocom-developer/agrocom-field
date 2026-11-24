@@ -1,11 +1,23 @@
 import 'dart:async';
 
+import 'package:decimal/decimal.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../nucleo/api/api_client.dart';
 import '../../nucleo/auth/dispositivo_store.dart';
+import '../../nucleo/api/marketplace_http.dart';
 import '../../nucleo/auth/token_store.dart';
+import '../../nucleo/camara/selector_imagen.dart';
+import '../../nucleo/evidencias/compresor_adaptativo.dart';
+import '../../nucleo/marketplace/foto_perfil/foto_perfil_repositorio.dart';
+import '../../nucleo/marketplace/foto_preparador.dart';
+import '../../nucleo/marketplace/pago/pago_confirmado.dart';
+import '../../nucleo/marketplace/pago/pagos_repositorio.dart';
+import '../../nucleo/marketplace/referencias/precio_referencia.dart';
+import '../../nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
+import '../../nucleo/notificaciones/push/dispositivos_push_repositorio.dart';
+import '../../nucleo/notificaciones/push/token_push_store.dart';
 import '../acceso/data/acceso_demo.dart';
 import '../acceso/data/acceso_red.dart';
 import '../acceso/domain/acceso_repositorio.dart';
@@ -55,6 +67,12 @@ class DependenciasCliente {
     required this.cuenta,
     required this.acceso,
     required this.inicio,
+    required this.referencias,
+    required this.fotoPerfil,
+    required this.fotosTerreno,
+    required this.pagos,
+    required this.preparadorFoto,
+    required this.push,
     this.notaAcceso,
     this.sesionExpirada,
   });
@@ -71,6 +89,9 @@ class DependenciasCliente {
     bool primerUso = false,
     AlmacenDemoCliente? almacen,
     Duration? latencia,
+    SelectorImagen? selectorImagen,
+    PreparadorFoto? preparadorFoto,
+    PagosRepositorio? pagos,
   }) {
     almacen ??= AlmacenDemoCliente(respuestasAutomaticas: primerUso);
     return DependenciasCliente(
@@ -99,9 +120,38 @@ class DependenciasCliente {
         sesionIniciada: !primerUso,
       ),
       inicio: InicioClienteDemo(almacen),
+      referencias: ReferenciasDemo(),
+      fotoPerfil: FotoPerfilDemo(),
+      fotosTerreno: FotosTerrenoDemo(),
+      pagos: pagos ?? _pagosDemo(almacen),
+      preparadorFoto:
+          preparadorFoto ??
+          PreparadorFoto(
+            selectorImagen ?? SelectorImagenImagePicker(),
+            CompresorEvidenciaAdaptativo(),
+          ),
+      push: DispositivosPushDemo(TokenPushEnMemoria()),
       notaAcceso:
           'Modo demo: entra con cualquier usuario y una contraseña de 8 '
           'caracteres o más. Los datos son ficticios.',
+    );
+  }
+
+  /// El pago de la solicitud finalizada de la demo ya está confirmado por
+  /// el piloto, para que el seguimiento muestre «Pago confirmado».
+  static PagosRepositorio _pagosDemo(AlmacenDemoCliente almacen) {
+    final lote = almacen.datos.lotes[2];
+    return PagosDemo(
+      previos: [
+        PagoConfirmado(
+          id: 1,
+          uuidCliente: 'demo-pago-4103',
+          solicitudId: 4103,
+          monto: lote.hectareas * Decimal.fromInt(125),
+          metodo: MetodoPago.transferencia,
+          confirmadoEn: almacen.ahora.subtract(const Duration(hours: 3)),
+        ),
+      ],
     );
   }
 
@@ -119,6 +169,8 @@ class DependenciasCliente {
     final http = ClienteHttp(api);
     final fuente = FuenteSolicitudes(http, ZonasRed(http));
     final cuenta = CuentaRed(http);
+    final marketplace = MarketplaceHttp(api);
+    final push = DispositivosPushRed(marketplace, TokenPushStoreSeguro());
     final expiracion = StreamController<void>.broadcast();
     void olvidar() {
       fuente.olvidar();
@@ -144,8 +196,18 @@ class DependenciasCliente {
         dispositivoStore: dispositivoStore,
         onboarding: onboarding ?? OnboardingStoreLocal(),
         alCerrarSesion: olvidar,
+        retirarPush: push.retirar,
       ),
       inicio: InicioClienteRed(fuente, http, cuenta),
+      referencias: ReferenciasRed(marketplace),
+      fotoPerfil: FotoPerfilRed(marketplace),
+      fotosTerreno: FotosTerrenoRed(marketplace),
+      pagos: PagosRed(marketplace),
+      preparadorFoto: PreparadorFoto(
+        SelectorImagenImagePicker(),
+        CompresorEvidenciaAdaptativo(),
+      ),
+      push: push,
       notaAcceso: notaAcceso,
       sesionExpirada: expiracion.stream,
     );
@@ -160,6 +222,24 @@ class DependenciasCliente {
   final CuentaRepositorio cuenta;
   final AccesoRepositorio acceso;
   final InicioClienteRepositorio inicio;
+
+  /// Precio por hectárea de referencia para el paso de precio.
+  final ReferenciasRepositorio referencias;
+
+  /// Foto de perfil de la cuenta.
+  final FotoPerfilRepositorio fotoPerfil;
+
+  /// Fotos de los terrenos del cliente (hasta 8 por terreno).
+  final FotosTerrenoRepositorio fotosTerreno;
+
+  /// El pago confirmado por el proveedor, de solo lectura para el cliente.
+  final PagosRepositorio pagos;
+
+  /// Elige y comprime las fotos que se suben.
+  final PreparadorFoto preparadorFoto;
+
+  /// Token de push del aparato; se retira al cerrar sesión.
+  final DispositivosPushRepositorio push;
 
   /// Nota que la pantalla de ingreso muestra bajo el formulario; solo la
   /// define el modo demo.
@@ -181,6 +261,11 @@ class DependenciasCliente {
       RepositoryProvider<CuentaRepositorio>.value(value: cuenta),
       RepositoryProvider<AccesoRepositorio>.value(value: acceso),
       RepositoryProvider<InicioClienteRepositorio>.value(value: inicio),
+      RepositoryProvider<ReferenciasRepositorio>.value(value: referencias),
+      RepositoryProvider<FotoPerfilRepositorio>.value(value: fotoPerfil),
+      RepositoryProvider<FotosTerrenoRepositorio>.value(value: fotosTerreno),
+      RepositoryProvider<PagosRepositorio>.value(value: pagos),
+      RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
     ],
     child: child,
   );

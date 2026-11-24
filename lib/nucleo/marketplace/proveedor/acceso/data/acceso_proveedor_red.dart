@@ -24,15 +24,21 @@ class AccesoProveedorRed implements AccesoProveedorRepositorio {
     required this.rolesPreferidos,
     required this.nombreDispositivo,
     Future<void> Function()? alCerrarSesion,
+    Future<void> Function()? retirarPush,
   }) : _api = api,
        _tokenStore = tokenStore,
        _dispositivo = dispositivoStore,
-       _alCerrarSesion = alCerrarSesion;
+       _alCerrarSesion = alCerrarSesion,
+       _retirarPush = retirarPush;
 
   final ApiClient _api;
   final TokenStore _tokenStore;
   final DispositivoStore _dispositivo;
   final Future<void> Function()? _alCerrarSesion;
+
+  /// Retira el token de push del servidor. Va antes de borrar el token de
+  /// sesión, porque la baja va autenticada (ADR 0020).
+  final Future<void> Function()? _retirarPush;
 
   /// Roles con los que este flavor puede operar, del preferido al último.
   final List<String> rolesPreferidos;
@@ -215,6 +221,13 @@ class AccesoProveedorRed implements AccesoProveedorRepositorio {
   /// local pase lo que pase.
   Future<void> _descartarToken() async {
     try {
+      // El token de push se retira mientras la sesión aún vale. Si falla
+      // (sin red), queda guardado para reintentar y la sesión se cierra igual.
+      try {
+        await _retirarPush?.call();
+      } on Object {
+        // Nada que hacer aquí: cerrar sesión no depende del push.
+      }
       await _api.delete('/api/auth/token');
     } on ApiExcepcion {
       // Sin red o ya revocado: el token local se borra igual.

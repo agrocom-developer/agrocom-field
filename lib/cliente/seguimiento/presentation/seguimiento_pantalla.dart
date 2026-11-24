@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../nucleo/marketplace/pago/presentation/tarjetas_pago.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/colores_campo.dart';
@@ -158,6 +159,10 @@ class _Contenido extends StatelessWidget {
               if (s.estado.terminada) ...[
                 const SizedBox(height: EspaciadoCampo.l),
                 _PrecioFinal(solicitud: s),
+                if (int.tryParse(s.id) != null) ...[
+                  const SizedBox(height: EspaciadoCampo.m),
+                  TarjetaPagoDelCliente(solicitudId: int.parse(s.id)),
+                ],
               ],
               if (enEjecucion || s.estado == EstadoSolicitud.adjudicada) ...[
                 const TituloSeccion('Dónde está el piloto'),
