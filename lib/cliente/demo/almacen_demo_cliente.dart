@@ -20,6 +20,24 @@ class AlmacenDemoCliente {
   /// Sesión del cliente en la demo; `null` mientras nadie haya entrado.
   SesionCliente? sesion;
 
+  /// Actas ya firmadas u observadas en esta sesión, por servicio.
+  final actas = <String, ActaConformidad>{};
+
+  /// Calificaciones que el cliente emitió en esta sesión, por servicio.
+  final calificaciones = <String, CalificacionEmitida>{};
+
+  /// Problemas reportados en esta sesión, por servicio (uno por servicio).
+  final problemas = <String, ProblemaReportado>{};
+
+  /// Simula la falta de red: con `true`, los repositorios demo lanzan
+  /// [SinConexion]. Sirve para ver y probar los estados sin conexión.
+  bool sinRed = false;
+
+  /// Lanza [SinConexion] si la demo está simulando la falta de red.
+  void exigirRed() {
+    if (sinRed) throw const SinConexion();
+  }
+
   List<Servicio> get servicios => List.unmodifiable(_servicios);
 
   Stream<List<Servicio>> observar() async* {

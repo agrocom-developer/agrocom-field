@@ -5,11 +5,15 @@ import '../acceso/data/acceso_demo.dart';
 import '../acceso/domain/acceso_repositorio.dart';
 import '../calificar/data/calificacion_demo.dart';
 import '../calificar/domain/calificacion_repositorio.dart';
+import '../conformidad/data/conformidad_demo.dart';
+import '../conformidad/domain/conformidad_repositorio.dart';
 import '../cuenta/data/cuenta_demo.dart';
 import '../cuenta/domain/cuenta_repositorio.dart';
 import '../demo/almacen_demo_cliente.dart';
 import '../inicio/data/inicio_cliente_demo.dart';
 import '../inicio/domain/inicio_cliente_repositorio.dart';
+import '../problema/data/problema_demo.dart';
+import '../problema/domain/problema_repositorio.dart';
 import '../seguimiento/data/seguimiento_demo.dart';
 import '../seguimiento/domain/seguimiento_repositorio.dart';
 import '../servicios/data/servicios_cliente_demo.dart';
@@ -29,6 +33,8 @@ class DependenciasCliente {
     required this.solicitud,
     required this.seguimiento,
     required this.calificacion,
+    required this.conformidad,
+    required this.problema,
     required this.cuenta,
     required this.acceso,
     required this.inicio,
@@ -39,14 +45,28 @@ class DependenciasCliente {
   ///
   /// Por defecto la sesión ya está iniciada y la app abre en el inicio. Con
   /// [primerUso] arranca como recién instalada: presentación, acceso y
-  /// después el inicio (así corre `main_cliente.dart` en modo demo).
-  factory DependenciasCliente.demo({bool primerUso = false}) {
-    final almacen = AlmacenDemoCliente();
+  /// después el inicio (así corre `main_cliente.dart` en modo demo). Con
+  /// [almacen] y [latencia] las pruebas fijan los datos y quitan la espera
+  /// simulada.
+  factory DependenciasCliente.demo({
+    bool primerUso = false,
+    AlmacenDemoCliente? almacen,
+    Duration? latencia,
+  }) {
+    almacen ??= AlmacenDemoCliente();
     return DependenciasCliente(
       servicios: ServiciosClienteDemo(almacen),
       solicitud: SolicitudDemo(almacen),
       seguimiento: SeguimientoDemo(almacen),
-      calificacion: CalificacionDemo(almacen),
+      calificacion: latencia == null
+          ? CalificacionDemo(almacen)
+          : CalificacionDemo(almacen, latencia: latencia),
+      conformidad: latencia == null
+          ? ConformidadDemo(almacen)
+          : ConformidadDemo(almacen, latencia: latencia),
+      problema: latencia == null
+          ? ProblemaDemo(almacen)
+          : ProblemaDemo(almacen, latencia: latencia),
       cuenta: CuentaDemo(almacen),
       acceso: AccesoDemo(
         almacen,
@@ -64,6 +84,8 @@ class DependenciasCliente {
   final SolicitudRepositorio solicitud;
   final SeguimientoRepositorio seguimiento;
   final CalificacionRepositorio calificacion;
+  final ConformidadRepositorio conformidad;
+  final ProblemaRepositorio problema;
   final CuentaRepositorio cuenta;
   final AccesoRepositorio acceso;
   final InicioClienteRepositorio inicio;
@@ -79,6 +101,8 @@ class DependenciasCliente {
       RepositoryProvider<SolicitudRepositorio>.value(value: solicitud),
       RepositoryProvider<SeguimientoRepositorio>.value(value: seguimiento),
       RepositoryProvider<CalificacionRepositorio>.value(value: calificacion),
+      RepositoryProvider<ConformidadRepositorio>.value(value: conformidad),
+      RepositoryProvider<ProblemaRepositorio>.value(value: problema),
       RepositoryProvider<CuentaRepositorio>.value(value: cuenta),
       RepositoryProvider<AccesoRepositorio>.value(value: acceso),
       RepositoryProvider<InicioClienteRepositorio>.value(value: inicio),

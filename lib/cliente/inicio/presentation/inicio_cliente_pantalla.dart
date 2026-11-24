@@ -9,7 +9,7 @@ import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tema_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
-import '../../calificar/presentation/calificar_pantalla.dart';
+import '../../calificar/presentation/hoja_calificar.dart';
 import '../../seguimiento/presentation/seguimiento_pantalla.dart';
 import '../../servicios/presentation/servicio_detalle_pantalla.dart';
 import '../../servicios/presentation/tarjeta_servicio.dart';
@@ -150,11 +150,7 @@ class _Contenido extends StatelessWidget {
                   onTap: () => _abrirDetalle(context, s),
                   acciones: [
                     OutlinedButton.icon(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute<bool>(
-                          builder: (_) => CalificarPantalla(servicio: s),
-                        ),
-                      ),
+                      onPressed: () => mostrarHojaCalificar(context, s),
                       icon: const Icon(Icons.star_outline_rounded),
                       label: const Text('Calificar'),
                     ),

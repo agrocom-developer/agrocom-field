@@ -177,6 +177,7 @@ class Proveedor {
     this.auxiliares = const [],
     this.aprobacion = EstadoAprobacion.aprobado,
     this.motivoAprobacion,
+    this.fotoRef,
   });
 
   final String id;
@@ -203,6 +204,10 @@ class Proveedor {
     for (final d in documentos)
       if (d.estado.requiereAccion) d,
   ];
+
+  /// Referencia del retrato: recurso empaquetado (`assets/…`) o URL. Sin
+  /// ella se muestran las iniciales.
+  final String? fotoRef;
 
   String get iniciales {
     final partes = nombre.split(' ').where((p) => p.isNotEmpty).toList();
