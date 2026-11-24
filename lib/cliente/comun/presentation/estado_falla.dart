@@ -45,9 +45,9 @@ class EstadoFalla extends StatelessWidget {
             const SizedBox(height: EspaciadoCampo.s),
             Text(
               sinConexion
-                  ? 'Necesitamos señal para cargar $queNoCargo. Revisá tu '
-                        'conexión y probá de nuevo.'
-                  : 'No pudimos cargar $queNoCargo. Probá de nuevo en un '
+                  ? 'Necesitamos señal para cargar $queNoCargo. Revisa tu '
+                        'conexión y prueba de nuevo.'
+                  : 'No pudimos cargar $queNoCargo. Prueba de nuevo en un '
                         'momento.',
               style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
               textAlign: TextAlign.center,

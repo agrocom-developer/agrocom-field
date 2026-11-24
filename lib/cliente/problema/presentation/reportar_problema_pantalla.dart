@@ -150,7 +150,7 @@ class _Formulario extends StatelessWidget {
               textCapitalization: TextCapitalization.sentences,
               onChanged: cubit.cambiarDetalle,
               decoration: const InputDecoration(
-                labelText: 'Contanos qué viste',
+                labelText: 'Cuéntanos qué viste',
                 helperText: 'Al menos una oración: dónde, cuándo y qué.',
                 helperMaxLines: 3,
                 alignLabelWithHint: true,
@@ -165,9 +165,9 @@ class _Formulario extends StatelessWidget {
                   tono: TonoAviso.error,
                   icono: estado.sinConexion ? Icons.wifi_off_rounded : null,
                   mensaje: estado.sinConexion
-                      ? 'Sin conexión. El reporte no se envió; probá de '
+                      ? 'Sin conexión. El reporte no se envió; prueba de '
                             'nuevo cuando tengas señal.'
-                      : 'No pudimos enviar el reporte. Probá de nuevo.',
+                      : 'No pudimos enviar el reporte. Prueba de nuevo.',
                 ),
               )
             else

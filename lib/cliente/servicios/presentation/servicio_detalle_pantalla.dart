@@ -59,7 +59,7 @@ class ServicioDetallePantalla extends StatelessWidget {
                 key: ValueKey('no-encontrado'),
                 icono: Icons.search_off_rounded,
                 titulo: 'No encontramos este servicio',
-                detalle: 'Volvé a «Mis servicios» y abrilo de nuevo.',
+                detalle: 'Vuelve a «Mis servicios» y ábrelo de nuevo.',
               ),
               FaseDetalle.listo => _Contenido(
                 key: const ValueKey('contenido'),
@@ -249,7 +249,7 @@ class _Contenido extends StatelessWidget {
                       tono: TonoAviso.alerta,
                       icono: Icons.cancel_outlined,
                       mensaje:
-                          'Este servicio se canceló. Podés pedir uno nuevo '
+                          'Este servicio se canceló. Puedes pedir uno nuevo '
                           'desde «Solicitar».',
                     ),
                   ],

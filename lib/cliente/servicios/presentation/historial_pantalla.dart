@@ -133,7 +133,7 @@ class _Vista extends StatelessWidget {
                           'Cuando un servicio termina, queda guardado acá '
                               'con sus evidencias.',
                         _ =>
-                          'Pedí uno desde «Solicitar» y seguilo en vivo '
+                          'Pide uno desde «Solicitar» y síguelo en vivo '
                               'desde acá.',
                       },
                     )

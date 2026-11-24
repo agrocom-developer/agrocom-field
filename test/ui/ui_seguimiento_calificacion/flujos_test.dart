@@ -215,7 +215,7 @@ void main() {
       // Calificar son dos toques: estrella y enviar.
       await tester.tap(find.text('Calificar al proveedor'));
       await asentar(tester);
-      expect(find.text('Tocá una estrella'), findsOneWidget);
+      expect(find.text('Toca una estrella'), findsOneWidget);
       final enviar = find.byKey(const ValueKey('enviar-calificacion'));
       expect(
         tester

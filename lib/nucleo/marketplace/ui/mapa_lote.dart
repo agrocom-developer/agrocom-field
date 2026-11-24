@@ -160,9 +160,13 @@ class MapaLote extends StatelessWidget {
                 ],
               ),
             if (teselas)
-              const SimpleAttributionWidget(
-                source: Text('© OpenStreetMap'),
-                backgroundColor: Color(0xCCFFFFFF),
+              // La atribución legal no escala con el texto del sistema: a
+              // 200 % su fila se salía del mapa.
+              MediaQuery.withNoTextScaling(
+                child: const SimpleAttributionWidget(
+                  source: Text('OpenStreetMap'),
+                  backgroundColor: Color(0xCCFFFFFF),
+                ),
               ),
           ],
         ),

@@ -50,7 +50,7 @@ class TarjetaServicio extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
-              InsigniaEstadoServicio(servicio.estado),
+              Flexible(child: InsigniaEstadoServicio(servicio.estado)),
             ],
           ),
           if (servicio.estado == EstadoServicio.enEjecucion) ...[

@@ -33,7 +33,7 @@ class InicioMinimoCliente extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Solicitá un servicio y seguilo en vivo.',
+                'Solicita un servicio y síguelo en vivo.',
                 style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
                 textAlign: TextAlign.center,
               ),

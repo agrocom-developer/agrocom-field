@@ -167,10 +167,12 @@ class _Fila extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              etiqueta,
-              style: texto.bodyMedium?.copyWith(
-                color: context.paleta.textoSecundario,
+            Flexible(
+              child: Text(
+                etiqueta,
+                style: texto.bodyMedium?.copyWith(
+                  color: context.paleta.textoSecundario,
+                ),
               ),
             ),
             const SizedBox(width: EspaciadoCampo.l),

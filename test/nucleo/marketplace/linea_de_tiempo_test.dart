@@ -76,7 +76,7 @@ void main() {
       faltaConformidad: true,
     );
     expect(estados(hitos), [hecho, hecho, hecho, actual, pendiente]);
-    expect(hitos[3].detalle, contains('firmá el acta'));
+    expect(hitos[3].detalle, contains('firma el acta'));
   });
 
   test('completado sin acta a la vista: se da por conforme', () {
@@ -89,7 +89,7 @@ void main() {
     final s = servicio('srv-1036');
     final hitos = lineaDeTiempo(s, acta: acta(s, EstadoActa.pendiente));
     expect(estados(hitos), [hecho, hecho, hecho, actual, pendiente]);
-    expect(hitos[3].detalle, contains('firmá el acta'));
+    expect(hitos[3].detalle, contains('firma el acta'));
   });
 
   test('completado con acta observada: sigue sin cerrarse', () {
