@@ -21,15 +21,15 @@ import '../../nucleo/auth/persona_operativa_store.dart';
 import '../../nucleo/camara/selector_foto.dart';
 import '../../nucleo/evidencias/evidencia_repository.dart';
 import '../../nucleo/ui/imagenes_campo.dart';
-import 'almacen_demo_piloto.dart';
+import '../../nucleo/marketplace/proveedor/demo/almacen_demo_proveedor.dart';
 
 /// Sesión de vuelo del perfil demo (`MODO_DEMO`, ADR 0010): la pantalla y
 /// los blocs son los de la app; lo que cambia son los repositorios, que
 /// guardan en memoria. No abre `drift`, no encola en el outbox ni toca la
 /// red. El servicio demo hace de trabajo: su `id` es el `uuid_cliente` del
-/// trabajo, y abrir, avanzar y cerrar se reflejan en [AlmacenDemoPiloto].
+/// trabajo, y abrir, avanzar y cerrar se reflejan en [AlmacenDemoProveedor].
 FabricasSesionVuelo fabricasSesionVueloDemo(
-  AlmacenDemoPiloto almacen, {
+  AlmacenDemoProveedor almacen, {
   Uuid uuid = const Uuid(),
   SelectorFoto? selectorFoto,
 }) {
@@ -62,7 +62,7 @@ class SesionRepositoryDemo implements SesionRepository {
   SesionRepositoryDemo(this._almacen, {Uuid uuid = const Uuid()})
     : _uuid = uuid;
 
-  final AlmacenDemoPiloto _almacen;
+  final AlmacenDemoProveedor _almacen;
   final Uuid _uuid;
   final _sesiones = <Sesion>[];
 
@@ -181,7 +181,7 @@ class SesionRepositoryDemo implements SesionRepository {
 class _TrabajoRepositoryDemo implements TrabajoRepository {
   _TrabajoRepositoryDemo(this._almacen, this._uuid);
 
-  final AlmacenDemoPiloto _almacen;
+  final AlmacenDemoProveedor _almacen;
   final Uuid _uuid;
 
   @override

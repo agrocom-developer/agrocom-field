@@ -15,9 +15,9 @@ El orden respeta dependencias: primero el flavor y el esquema local, después el
 | 32 | Sistema de diseño: tokens, tema del cliente, componentes y base de golden tests | no | `./bin/verify`; `flutter test test/ui`; test de tokens |
 | 33 | Registro e inicio de sesión de cliente y de proveedor | no | `./bin/verify`; tests de `auth` por flavor |
 | 34 | Catálogo de servicios asignados (lista y detalle sin red) | **sí** | `./bin/verify`; tests de catálogo y servicio asignado; ausencia de rastros del catálogo anterior |
-| 35 | Dron como vehículo del proveedor (con ciclos de batería) | no | `./bin/verify`; `flutter test test/piloto/dron` |
-| 36 | Perfil y documentos del proveedor | no | `./bin/verify`; `flutter test test/piloto/perfil` |
-| 37 | Bandeja de ofertas: aceptar y rechazar con red | **sí** | `./bin/verify`; `flutter test test/piloto/ofertas`; sin `cola_sync` en `lib/piloto/ofertas` |
+| 35 | Dron como vehículo del proveedor (con ciclos de batería) | no | `./bin/verify`; `flutter test test/nucleo/marketplace/proveedor` |
+| 36 | Perfil y documentos del proveedor | no | `./bin/verify`; `flutter test test/nucleo/marketplace/proveedor` |
+| 37 | Bandeja de ofertas: aceptar y rechazar con red | **sí** | `./bin/verify`; `flutter test test/nucleo/marketplace/proveedor`; sin `cola_sync` en `lib/nucleo/marketplace/proveedor/ofertas` |
 | 38 | Solicitar servicio: lote en el mapa, hectáreas, producto y fecha | no | `./bin/verify`; `flutter test test/cliente/solicitar`; reglas de importación |
 | 39 | Seguimiento en vivo del servicio | no | `./bin/verify`; `flutter test test/cliente/seguimiento` |
 | 40 | Calificar al proveedor y ver la calificación recibida | no | `./bin/verify`; tests de calificación; prueba de replay |
@@ -51,5 +51,5 @@ Material para que el dueño decida; no trabajo que el ciclo se autoasigna. Se ag
 
 | Origen | Hallazgo | Severidad | Dónde tocar |
 |---|---|---|---|
-| Diseño de la tarea 37 | El canal en vivo de ofertas (polling o push) depende de lo que publique `agrocom-api`; el polling consume batería | Media | `lib/piloto/ofertas` y el contrato |
+| Diseño de la tarea 37 | El canal en vivo de ofertas (polling o push) depende de lo que publique `agrocom-api`; el polling consume batería | Media | `lib/nucleo/marketplace/proveedor/ofertas` y el contrato |
 | Diseño de la tarea 38 | Las teselas abiertas del mapa tienen límites de uso para producción | Media | `nucleo/mapa`; evaluar un proveedor de teselas propio |

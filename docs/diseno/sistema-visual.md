@@ -122,9 +122,11 @@ Catálogo `*Campo` en `lib/nucleo/ui/componentes/` (un solo import: `componentes
 
 | Componente | Función |
 |---|---|
-| `OfertaServicioCampo` | Oferta entrante: pago, distancia, cuenta regresiva en anillo, aceptar y rechazar. Recibe `restante` y `total` desde el bloc; el monto llega ya formateado (nunca `double`). |
+| `OfertaServicioCampo` | Oferta entrante: cuenta regresiva en anillo, título, mapa del lote opcional, pago, distancia, aceptar y rechazar, con los estados «enviando» y «sin conexión». Recibe `restante` y `total` desde el bloc; el monto llega ya formateado (nunca `double`). |
+| `ChipEstadoMarketplace` | Estado en una píldora (aprobación, documento, dron): ícono, texto y tono semántico. En `lib/nucleo/marketplace/ui/`. |
+| `EstadoErrorMarketplace` | Error de carga con botón de reintento. En `lib/nucleo/marketplace/ui/`. |
 | `CalificacionCampo` | Estrellas de 1 a 5; interactiva para el cliente, de solo lectura para el proveedor. Objetivo táctil de 48 px y etiqueta accesible por estrella. |
-| `EsqueletoCampo` | Marcador de carga con la forma del contenido; estático con movimiento reducido. Solo flavor cliente. |
+| `EsqueletoCampo` | Marcador de carga con la forma del contenido; estático con movimiento reducido. Solo en lecturas en línea: flavor cliente y superficie del proveedor (ofertas, perfil, drones). |
 | `NavegacionAdaptativaCampo` | Barra inferior en teléfono; riel lateral en iPad y tabletas (extendido en horizontal); contenido acotado a 720 px. |
 | `BarraAccionesCampo` | Acciones ancladas al borde inferior de una pantalla del lote: principal abajo, secundaria encima, nota de apoyo opcional. Respeta el área segura. |
 | `EstadoSyncCampo` | Pastilla de estado de sincronización con ícono y texto en mono: «En el dispositivo», «Sincronizando», «Sincronizado», «Sin sincronizar». |
@@ -139,7 +141,7 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 
 **Mapa de seguimiento (cliente).** Mapa a pantalla completa con una hoja inferior arrastrable (peek 30 %, expandida 70 %): estado del servicio, proveedor, calificación, ETA. El marcador del dron se interpola entre posiciones; con movimiento reducido salta a la posición nueva. Ninguna decoración sobre el mapa salvo controles de zoom y recentrado a 48 px.
 
-**Oferta entrante (proveedor).** Se presenta como hoja modal con `OfertaServicioCampo`. Jerarquía: pago y tiempo restante arriba, detalle en medio, aceptar abajo (56 px, ancho completo), rechazar como botón secundario. Háptica `alerta` a los 10 s. Aceptar y rechazar requieren red (excepción documentada): si no hay señal, el botón muestra el estado y no se queda a medias.
+**Oferta entrante (proveedor).** Cada oferta de la bandeja es un `OfertaServicioCampo`. Jerarquía: cuenta regresiva arriba; hectáreas y cultivo como título; lote, zona, producto y fecha debajo; mapa del lote; pago estimado y distancia; aceptar abajo (56 px, ancho completo), rechazar como botón secundario y el acceso al detalle al final. La oferta que tomó otro proveedor y la vencida quedan a la vista con un texto neutro, sin color de error. Háptica `alerta` a los 10 s. Aceptar y rechazar requieren red (excepción documentada): si no hay señal, el botón muestra el estado y no se queda a medias.
 
 **Línea de tiempo del servicio (cliente).** Cinco etapas en vertical: solicitud, asignación, fumigación, conformidad y completado. Solo la etapa en curso lleva su explicación; las demás quedan en una línea. El nodo hecho lleva una tilde, el actual un punto sobre el acento y el pendiente un anillo vacío: el estado no depende solo del color.
 
@@ -147,7 +149,9 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 
 **Calificación (cliente).** Hoja inferior de dos toques: una estrella y enviar. Las etiquetas y el comentario aparecen después de elegir la estrella y son opcionales. Al terminar, confirmación inmediata y salida. La escribe solo el cliente; el proveedor la ve en su perfil.
 
-**Perfil de proveedor.** Encabezado con foto, nombre, calificación promedio y cantidad de servicios; debajo, drones (con sus ciclos de batería), zonas de cobertura y reseñas recientes. Sin métricas decorativas.
+**Perfil de proveedor.** Encabezado con nombre, tipo, calificación promedio y cantidad de servicios; estado de aprobación con chip semántico y lo que significa para operar; aviso si un documento pide atención. Debajo, cuatro métricas operativas (servicios, hectáreas, aceptación y cancelación), hectáreas por mes, documentos con su estado, el equipo (auxiliares asociados), zonas de cobertura y calificaciones recibidas con su distribución. Sin métricas decorativas.
+
+**Mis drones (proveedor).** Una tarjeta por dron: modelo, matrícula, propiedad y tanque; estado con chip; ciclos de batería con barra y los ciclos que quedan. Desde tres cuartos de vida útil la barra pasa a ámbar y el texto pide planificar el recambio. Primero se listan los drones que piden atención.
 
 **Servicios asignados (piloto).** El servicio vigente arriba y grande: estado, lote, hectáreas cubiertas con su barra de avance y la acción principal. Debajo, próximos y terminados como filas tocables de al menos 56 px. El detalle muestra el lote en el mapa, tres datos (superficie, dosis, caldo) y la acción principal anclada abajo.
 

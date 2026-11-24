@@ -23,6 +23,11 @@ class OfertaServicioCampo extends StatelessWidget {
     required this.total,
     required this.onAceptar,
     required this.onRechazar,
+    this.etiqueta = 'NUEVO SERVICIO',
+    this.mapa,
+    this.onDetalle,
+    this.respondiendo = false,
+    this.sinConexion = false,
     super.key,
   });
 
@@ -43,8 +48,32 @@ class OfertaServicioCampo extends StatelessWidget {
   final VoidCallback onAceptar;
   final VoidCallback onRechazar;
 
-  String get _restanteTexto {
+  /// Rótulo en mono sobre el título ("PRIORITARIA · FLOTA DE AGROCOM").
+  final String etiqueta;
+
+  /// Mapa del lote, entre el detalle y los datos. Sin él la tarjeta es solo
+  /// texto.
+  final Widget? mapa;
+
+  /// Abre el detalle de la oferta.
+  final VoidCallback? onDetalle;
+
+  /// La respuesta viaja al servidor: los botones quedan en espera para que
+  /// un segundo toque no dispare otra.
+  final bool respondiendo;
+
+  /// Sin red no se puede responder (ADR 0009): los botones se apagan y la
+  /// tarjeta dice por qué.
+  final bool sinConexion;
+
+  /// "00:47" por debajo de la hora; "1 h 05" por encima (ofertas
+  /// programadas, con ventana de horas).
+  static String textoRestante(Duration restante) {
     final seg = restante.inSeconds.clamp(0, 359999);
+    if (seg >= 3600) {
+      final minutos = ((seg % 3600) ~/ 60).toString().padLeft(2, '0');
+      return '${seg ~/ 3600} h $minutos';
+    }
     final m = (seg ~/ 60).toString().padLeft(2, '0');
     final s = (seg % 60).toString().padLeft(2, '0');
     return '$m:$s';
@@ -59,11 +88,13 @@ class OfertaServicioCampo extends StatelessWidget {
         : (restante.inMilliseconds / total.inMilliseconds).clamp(0.0, 1.0);
     final porVencer = restante.inSeconds <= 10;
     final colorTiempo = porVencer ? paleta.error : paleta.acentoTexto;
+    final bloqueada = respondiendo || sinConexion;
+    final tiempo = textoRestante(restante);
 
     return Semantics(
       container: true,
       label:
-          'Oferta de servicio: $titulo, $monto, quedan $_restanteTexto para responder',
+          'Oferta de servicio: $titulo, $monto, quedan $tiempo para responder',
       child: Container(
         padding: const EdgeInsets.all(EspaciadoCampo.xl),
         decoration: BoxDecoration(
@@ -80,17 +111,18 @@ class OfertaServicioCampo extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'NUEVO SERVICIO',
+                    etiqueta,
                     style: texto.labelSmall?.copyWith(
                       color: paleta.acentoTexto,
                     ),
                   ),
                 ),
+                const SizedBox(width: EspaciadoCampo.m),
                 _AnilloTiempo(
                   progreso: progreso,
                   color: colorTiempo,
                   pista: paleta.borde,
-                  texto: _restanteTexto,
+                  texto: tiempo,
                 ),
               ],
             ),
@@ -98,40 +130,88 @@ class OfertaServicioCampo extends StatelessWidget {
             Text(titulo, style: texto.headlineMedium),
             const SizedBox(height: EspaciadoCampo.xs),
             Text(detalle, style: texto.bodyMedium),
+            if (mapa != null) ...[
+              const SizedBox(height: EspaciadoCampo.l),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: SizedBox(height: 132, child: mapa),
+              ),
+            ],
             const SizedBox(height: EspaciadoCampo.l),
-            Row(
-              children: [
-                Expanded(
-                  child: _Dato(etiqueta: 'PAGO', valor: monto, paleta: paleta),
-                ),
-                Expanded(
-                  child: _Dato(
-                    etiqueta: 'DISTANCIA',
-                    valor: distancia,
-                    paleta: paleta,
-                  ),
-                ),
-              ],
+            // Dos columnas mientras entren; con el texto al 200 % cada dato
+            // ocupa su propia línea en vez de recortarse.
+            LayoutBuilder(
+              builder: (context, c) {
+                final mitad = (c.maxWidth - EspaciadoCampo.l) / 2;
+                return Wrap(
+                  spacing: EspaciadoCampo.l,
+                  runSpacing: EspaciadoCampo.m,
+                  children: [
+                    ConstrainedBox(
+                      constraints: BoxConstraints(minWidth: mitad),
+                      child: _Dato(etiqueta: 'PAGO', valor: monto),
+                    ),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(minWidth: mitad),
+                      child: _Dato(etiqueta: 'DISTANCIA', valor: distancia),
+                    ),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: EspaciadoCampo.xl),
+            if (sinConexion) ...[
+              Row(
+                key: const Key('oferta-sin-conexion'),
+                children: [
+                  Icon(Icons.wifi_off_rounded, size: 20, color: paleta.alerta),
+                  const SizedBox(width: EspaciadoCampo.s),
+                  Expanded(
+                    child: Text(
+                      'Sin conexión. Para responder necesitás red.',
+                      style: texto.bodyMedium?.copyWith(color: paleta.texto),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: EspaciadoCampo.m),
+            ],
             FilledButton(
-              onPressed: () {
-                HapticaCampo.confirmacion();
-                onAceptar();
-              },
+              onPressed: bloqueada
+                  ? null
+                  : () {
+                      HapticaCampo.confirmacion();
+                      onAceptar();
+                    },
               style: FilledButton.styleFrom(
                 minimumSize: const Size.fromHeight(ObjetivoTactilCampo.guantes),
+                disabledBackgroundColor: paleta.borde,
+                disabledForegroundColor: paleta.textoSecundario,
               ),
-              child: const Text('Aceptar servicio'),
+              child: Text(respondiendo ? 'Enviando…' : 'Aceptar servicio'),
             ),
             const SizedBox(height: EspaciadoCampo.s),
+            // El alto lo pone el tema: 48 en claro y oscuro, 56 en modo campo.
             OutlinedButton(
-              onPressed: onRechazar,
+              onPressed: bloqueada ? null : onRechazar,
               style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(ObjetivoTactilCampo.minimo),
+                disabledForegroundColor: paleta.textoSecundario,
               ),
               child: const Text('Rechazar'),
             ),
+            if (onDetalle != null) ...[
+              const SizedBox(height: EspaciadoCampo.xs),
+              TextButton(
+                onPressed: onDetalle,
+                style: TextButton.styleFrom(
+                  foregroundColor: paleta.acentoTexto,
+                  minimumSize: const Size.fromHeight(
+                    ObjetivoTactilCampo.minimo,
+                  ),
+                ),
+                child: const Text('Ver detalle y mapa'),
+              ),
+            ],
           ],
         ),
       ),
@@ -140,21 +220,17 @@ class OfertaServicioCampo extends StatelessWidget {
 }
 
 class _Dato extends StatelessWidget {
-  const _Dato({
-    required this.etiqueta,
-    required this.valor,
-    required this.paleta,
-  });
+  const _Dato({required this.etiqueta, required this.valor});
 
   final String etiqueta;
   final String valor;
-  final PaletaCampo paleta;
 
   @override
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         Text(etiqueta, style: texto.labelSmall),
         const SizedBox(height: EspaciadoCampo.xs),
@@ -179,18 +255,25 @@ class _AnilloTiempo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // El anillo crece con el texto del sistema hasta vez y media: más allá
+    // le quita el ancho al rótulo de al lado.
+    final factor = (MediaQuery.textScalerOf(context).scale(14) / 14).clamp(
+      1.0,
+      1.5,
+    );
     return SizedBox(
-      width: 64,
-      height: 64,
+      width: 64 * factor,
+      height: 64 * factor,
       child: CustomPaint(
         painter: _AnilloPainter(progreso: progreso, color: color, pista: pista),
         child: Center(
           child: Text(
             texto,
+            textScaler: TextScaler.noScaling,
             style: TextStyle(
               fontFamily: 'JetBrains Mono',
               fontWeight: FontWeight.w600,
-              fontSize: 14,
+              fontSize: 14 * factor,
               color: color,
             ),
           ),

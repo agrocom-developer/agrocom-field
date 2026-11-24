@@ -26,8 +26,8 @@ Cargá `verificacion`, `flujo-git-pr`.
 ## Criterio de aceptación
 
 - `./bin/verify` devuelve 0.
-- `flutter test test/piloto/ofertas` devuelve 0, con casos: aceptar con éxito, ya tomada, vencida, sin red (no queda aceptada), reintento idempotente y proveedor no aprobado.
-- `grep -rnE 'cola_sync|SyncEngine' lib/piloto/ofertas` no devuelve coincidencias (exit 1 de grep).
+- `flutter test test/nucleo/marketplace/proveedor` devuelve 0, con casos: aceptar con éxito, ya tomada, vencida, sin red (no queda aceptada), reintento idempotente y proveedor no aprobado.
+- `grep -rnE 'cola_sync|SyncEngine' lib/nucleo/marketplace/proveedor/ofertas` no devuelve coincidencias (exit 1 de grep).
 
 ## Cierre de cada etapa
 

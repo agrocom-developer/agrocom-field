@@ -24,7 +24,7 @@ Cargá `verificacion`, `flujo-git-pr`.
 ## Criterio de aceptación
 
 - `./bin/verify` devuelve 0.
-- `flutter test test/piloto/dron` devuelve 0, con casos de alta, baja lógica, selección para un servicio y escritura de `dron_id` en la sesión de vuelo.
+- `flutter test test/nucleo/marketplace/proveedor` devuelve 0, con casos de alta, baja lógica, selección para un servicio y escritura de `dron_id` en la sesión de vuelo.
 
 ## Cierre de cada etapa
 

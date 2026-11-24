@@ -52,6 +52,8 @@ class DatosDemo {
   late final List<Servicio> servicios;
   late final List<HectareasMensuales> hectareasMensuales;
   late final List<CalificacionRecibida> calificacionesDelCliente;
+  late final MetricasProveedor metricasPiloto;
+  late final ResumenCalificaciones calificacionesDelPiloto;
 
   static const clienteNombre = 'Hugo Antelo Suárez';
   static const clienteEmpresa = 'Agropecuaria Los Tajibos';
@@ -211,7 +213,13 @@ class DatosDemo {
         serviciosCompletados: 142,
         zonas: const ['Cuatro Cañadas', 'San Julián', 'Pailón'],
         drones: [drones[0], drones[1]],
-        auxiliares: const [auxiliarNombre, 'Jhonny Vaca Parada'],
+        auxiliares: const [
+          AuxiliarAsociado(nombre: auxiliarNombre, serviciosJuntos: 96),
+          AuxiliarAsociado(
+            nombre: 'Jhonny Vaca Parada',
+            aprobacion: EstadoAprobacion.pendiente,
+          ),
+        ],
         resenas: resenasRodrigo,
         documentos: [
           DocumentoProveedor(
@@ -243,7 +251,7 @@ class DatosDemo {
         serviciosCompletados: 88,
         zonas: const ['San Julián', 'Colonia Okinawa'],
         drones: [drones[2]],
-        auxiliares: const ['Cristian Egüez Paz'],
+        auxiliares: const [AuxiliarAsociado(nombre: 'Cristian Egüez Paz')],
       ),
       Proveedor(
         id: 'prov-fernando',
@@ -252,7 +260,10 @@ class DatosDemo {
         calificacion: 4.5,
         serviciosCompletados: 61,
         zonas: const ['Pailón', 'Colonia Okinawa'],
-        auxiliares: const ['Daniel Chuvé Masai', 'Wilson Salvatierra'],
+        auxiliares: const [
+          AuxiliarAsociado(nombre: 'Daniel Chuvé Masai'),
+          AuxiliarAsociado(nombre: 'Wilson Salvatierra'),
+        ],
       ),
       Proveedor(
         id: 'prov-daniela',
@@ -261,7 +272,7 @@ class DatosDemo {
         calificacion: 4.9,
         serviciosCompletados: 203,
         zonas: const ['Cuatro Cañadas', 'Colonia Okinawa'],
-        auxiliares: const ['Pablo Cuéllar'],
+        auxiliares: const [AuxiliarAsociado(nombre: 'Pablo Cuéllar')],
       ),
     ];
 
@@ -384,6 +395,29 @@ class DatosDemo {
       for (var i = 0; i < meses.length; i++)
         HectareasMensuales(etiqueta: meses[i], hectareas: _d(valores[i])),
     ];
+
+    metricasPiloto = MetricasProveedor(
+      serviciosCompletados: rodrigo.serviciosCompletados,
+      hectareasAtendidas: _d('11846.5'),
+      tasaAceptacion: 92,
+      tasaCancelacion: 2,
+    );
+
+    calificacionesDelPiloto = ResumenCalificaciones(
+      promedio: rodrigo.calificacion,
+      total: 128,
+      porPuntaje: const {5: 108, 4: 15, 3: 4, 2: 1, 1: 0},
+      recientes: [
+        for (var i = 0; i < resenasRodrigo.length; i++)
+          CalificacionRecibida(
+            servicioId: 'srv-res-$i',
+            autor: resenasRodrigo[i].autor,
+            puntaje: resenasRodrigo[i].puntaje,
+            fecha: resenasRodrigo[i].fecha,
+            comentario: resenasRodrigo[i].comentario,
+          ),
+      ],
+    );
 
     calificacionesDelCliente = [
       CalificacionRecibida(

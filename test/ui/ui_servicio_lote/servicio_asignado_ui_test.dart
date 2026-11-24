@@ -10,7 +10,7 @@ import 'package:agrocom_field/nucleo/marketplace/demo/datos_demo.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:agrocom_field/piloto/app_piloto_demo.dart';
-import 'package:agrocom_field/piloto/demo/almacen_demo_piloto.dart';
+import 'package:agrocom_field/nucleo/marketplace/proveedor/demo/almacen_demo_proveedor.dart';
 import 'package:agrocom_field/piloto/demo/sesion_vuelo_demo.dart';
 import 'package:agrocom_field/piloto/di/dependencias_piloto.dart';
 import 'package:agrocom_field/piloto/servicio_asignado/presentation/servicio_detalle_pantalla.dart';
@@ -30,10 +30,10 @@ class _ServicioAuxiliarFijo implements ServicioAsignadoAuxiliarRepositorio {
   Stream<Servicio?> observar() => Stream.value(_servicio);
 }
 
-AlmacenDemoPiloto _almacen() =>
-    AlmacenDemoPiloto(datos: DatosDemo(reloj: () => ahoraFijo));
+AlmacenDemoProveedor _almacen() =>
+    AlmacenDemoProveedor(datos: DatosDemo(reloj: () => ahoraFijo));
 
-Future<AlmacenDemoPiloto> _abrirServicios(WidgetTester tester) async {
+Future<AlmacenDemoProveedor> _abrirServicios(WidgetTester tester) async {
   final almacen = _almacen();
   await tester.pumpWidget(
     AppPilotoDemo(dependencias: DependenciasPiloto.demo(almacen: almacen)),
