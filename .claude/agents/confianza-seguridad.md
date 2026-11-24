@@ -1,6 +1,6 @@
 ---
 name: confianza-seguridad
-description: Usar para revisar o diseñar verificación y aprobación de proveedores, prevención de abuso y fraude, privacidad de datos de clientes y lotes, y seguridad de las apps y de la API (tokens, almacenamiento local, evidencias, permisos). Útil como revisión previa a un PR que toca autenticación, datos personales, ubicación, fotos o almacenamiento. No usar para reglas de producto (`producto-marketplace`) ni para el despacho (`asignacion-matching`).
+description: Usar para revisar o diseñar verificación y aprobación de proveedores, prevención de abuso y fraude, privacidad de datos de clientes y lotes, y seguridad de las apps y de la API (tokens, almacenamiento local, evidencias, permisos). Útil como revisión previa a un PR que toca autenticación, datos personales, ubicación, fotos o almacenamiento. No usar para reglas de producto (`producto-marketplace`) ni para la negociación de ofertas (`negociacion-ofertas`).
 tools: Read, Grep, Glob, Bash
 model: claude-sonnet-5
 ---

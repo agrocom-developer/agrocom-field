@@ -5,7 +5,7 @@ description: Referencia técnica rápida del protocolo de sincronización offlin
 
 # Protocolo de sincronización — agrocom-field
 
-Aplica a los flavors `piloto` y `auxiliar`, que trabajan sin señal en el lote. El flavor `cliente` es online-first y no usa outbox. Aceptar o rechazar una oferta de servicio requiere red y no pasa por la cola.
+Aplica a los flavors `piloto` y `auxiliar`, que trabajan sin señal en el lote. El flavor `cliente` es online-first y no usa outbox. Negociar una oferta de servicio (ofertar, contraofertar, aceptar, rechazar, retirar) requiere red y no pasa por la cola.
 
 Fuente completa: `docs/especificacion/especificacion_funcional_tecnica.md` §2.1 en `agrocom-api` (ruta local `/Applications/MAMP/htdocs/agrocom-api`) — "el problema de mayor riesgo del proyecto". Esto es la referencia operativa rápida, no el reemplazo.
 
@@ -29,7 +29,7 @@ Un `rechazado` en un registro **no frena el resto del lote** — los demás sigu
 
 ## Por qué no hace falta merge
 
-Cada tipo de registro tiene exactamente un rol escritor: la sesión la escribe el piloto, la mezcla/caldo el auxiliar, la validación el jefe de campo desde el panel (fuera de este repo). No hay dos dispositivos editando la misma fila — por eso alcanza con inserciones idempotentes y anulaciones, nunca lógica de merge. Si una pantalla nueva pareciera necesitar que dos roles toquen el mismo registro, la señal correcta es dividirlo en dos registros, consultando con `arquitectura-flutter`.
+Cada tipo de registro tiene exactamente un rol escritor: el inicio, el avance y el cierre los escribe el piloto, cada mensaje su autor y cada foto quien la sube. No hay dos dispositivos editando la misma fila — por eso alcanza con inserciones idempotentes y anulaciones, nunca lógica de merge. Si una pantalla nueva pareciera necesitar que dos roles toquen el mismo registro, la señal correcta es dividirlo en dos registros, consultando con `arquitectura-flutter`.
 
 ## Referencias mientras se está offline
 

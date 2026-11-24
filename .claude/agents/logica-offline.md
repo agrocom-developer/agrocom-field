@@ -1,6 +1,6 @@
 ---
 name: logica-offline
-description: Usar para implementar el motor de sincronización offline de los flavors `piloto` y `auxiliar` (`nucleo/sync`, outbox, push/pull, idempotencia por `uuid_cliente`) y las reglas de dominio de cada feature (`features/<feature>/domain/`) — el checklist de mezcla, las transiciones de sesión que la app propone al servidor, los cálculos de hectárea acumulada. El trabajo central de cada tarea técnica de este repo. No usar para pantallas (`flutter-ui`), para el esquema de `drift` en sí (`modelo-datos-flutter`, aunque suele coordinar con este), ni para decidir dónde encaja algo nuevo (`arquitectura-flutter`).
+description: Usar para implementar el motor de sincronización offline de los flavors `piloto` y `auxiliar` (`nucleo/sync`, outbox, push/pull, idempotencia por `uuid_cliente`) y las reglas de dominio de cada feature (`features/<feature>/domain/`) — los registros de inicio, avance y cierre que la app propone al servidor, los mensajes, los cálculos de hectárea acumulada y porcentaje. El trabajo central de cada tarea técnica de este repo. No usar para pantallas (`flutter-ui`), para el esquema de `drift` en sí (`modelo-datos-flutter`, aunque suele coordinar con este), ni para decidir dónde encaja algo nuevo (`arquitectura-flutter`).
 tools: Read, Write, Edit, Bash, Grep, Glob
 model: claude-sonnet-5
 ---
@@ -19,9 +19,9 @@ Reglas de trabajo:
 4. **Orden causal por `secuencia` local**, nunca por reloj de dispositivo — el push respeta ese orden (trabajo antes que sesión, sesión antes que recarga).
 5. **Un solo rol escritor por tipo de registro** — no escribas lógica de merge; si algo parece necesitarla, es señal de que el registro debería dividirse en dos (consultá con `arquitectura-flutter`).
 6. **`domain/` de cada feature es Dart puro** — sin `flutter`, sin `drift`, testeable sin emulador. Los repositorios (`SesionRepository`, etc.) son el único punto que toca `drift` y outbox.
-7. **Lo ejecutado en el lote sigue offline; la negociación del servicio requiere red.** Aceptar o rechazar una oferta de servicio es una llamada en línea con confirmación del servidor (excepción documentada, decisión revisable): no la encoles en el outbox. Quién recibe la oferta y en qué orden lo decide `asignacion-matching`, no la app.
-8. **La app no decide una transición de estado por su cuenta** — la propone al servidor (`POST /api/sesiones/{id}/cerrar`, por ejemplo) y modela localmente lo que el servidor confirma. Ningún `estado = ...` local que se adelante a esa confirmación.
+7. **Lo ejecutado en el lote sigue offline; la negociación del servicio requiere red.** Ofertar, contraofertar, aceptar, rechazar y retirar una oferta son llamadas en línea con confirmación del servidor (excepción documentada, decisión revisable): no las encoles en el outbox y reintentalas con el mismo `uuid_cliente`. Las reglas de la negociación (turnos, rondas, vigencias) las decide el servidor y las describe `negociacion-ofertas`; la app no las replica.
+8. **La app no decide una transición de estado por su cuenta** — la propone al servidor (el `cierre` del servicio, por ejemplo) y modela localmente lo que el servidor confirma. Ningún `estado = ...` local que se adelante a esa confirmación.
 9. **El caldo se registra por volumen, nunca por fórmula** (ver `docs/vision.md`, "Qué contradice la especificación entre sí" — §7 de la especificación es la vigente, no §4.3).
 10. **Prueba de replay antes de la primera pantalla**: el mismo lote de sync aplicado 10 veces, en orden y en desorden parcial, deja la base local idéntica. Es la aduana de este agente, no un test opcional.
 
-Si un caso de uso ya existe en otro feature con la misma forma, reutilizalo — no lo dupliques entre `sesion_vuelo` y `preparacion_mezcla`.
+Si un caso de uso ya existe en otro feature con la misma forma, reutilizalo — no lo dupliques entre `avance` y `fotos_avance`.
