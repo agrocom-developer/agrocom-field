@@ -214,6 +214,8 @@ Método: cada flavor corre en modo demo en el simulador, una prueba de `integrat
 - Ciclos de batería en Drones: la cifra baja de renglón con texto al 200 %.
 - Los ADR de `docs/decisiones/` tenían dos con el número 0011; el de acceso e inicio del cliente pasa a 0015.
 
+`./bin/verify --todo` termina en verde con 1061 pruebas (formato, análisis y suite completa).
+
 ## Qué falta
 
 1. **Esquema local del marketplace** (tarea 31): el esquema `drift` sigue en la versión 14 sin tablas del servicio asignado. Es crítica y lleva migración con datos y prueba de replay.
