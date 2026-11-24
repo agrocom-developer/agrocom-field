@@ -6,7 +6,9 @@
 #
 #   tool/capturar_pantallas.sh <cliente|piloto|auxiliar> <simulador> <dispositivo> <claro|oscuro|campo>
 #
-# Resultado: docs/diseno/capturas/<flavor>/<dispositivo>/<nombre>_<modo>.png
+# Resultado: docs/diseno/capturas/<flavor>/<dispositivo>/<nombre>_<modo>.jpg
+# (se reduce a 560 px de ancho en iPhone y 760 px en iPad, JPEG al 78 %, para
+# que el repositorio no cargue con capturas de varios megas).
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
 F=$1; ID=$2; DEV=$3; MODO=$4
@@ -28,3 +30,12 @@ while kill -0 "$PID" 2>/dev/null; do
   sleep 0.2
 done
 wait "$PID"
+ESTADO=$?
+
+for png in "$SALIDA"/*.png; do
+  [ -e "$png" ] || continue
+  ancho=$(sips -g pixelWidth "$png" | awk '/pixelWidth/ {print $2}')
+  destino=560; [ "$ancho" -ge 1500 ] && destino=760
+  sips -s format jpeg -s formatOptions 78 --resampleWidth "$destino" "$png" --out "${png%.png}.jpg" >/dev/null 2>&1 && rm -f "$png"
+done
+exit "$ESTADO"
