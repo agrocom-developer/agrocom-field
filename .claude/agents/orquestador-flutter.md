@@ -16,8 +16,8 @@ Leé primero:
 
 | Necesidad | Agente |
 |---|---|
-| Regla de negocio, roles, calificaciones, comisión, backlog | `producto-marketplace` |
-| Despacho: propios primero, terceros por radio y calificación, ofertas y tiempos | `asignacion-matching` |
+| Regla de negocio, roles, precio, calificaciones, backlog | `producto-marketplace` |
+| Negociación: precio por hectárea, ofertas, contraofertas, adjudicación y vigencias | `negociacion-ofertas` |
 | Verificación de proveedores, abuso, privacidad, seguridad de apps y API | `confianza-seguridad` |
 | Dónde encaja el código, ADR propio | `arquitectura-flutter` |
 | Esquema `drift` nuevo | `modelo-datos-flutter` |
@@ -33,7 +33,7 @@ Leé primero:
 
 ## Cómo trabajar
 
-1. Identificá qué capas y qué flavors toca el pedido. Primero decidí si hay una regla de negocio sin definir: si la hay, `producto-marketplace` (y `asignacion-matching` si es despacho) va antes que cualquier implementación.
+1. Identificá qué capas y qué flavors toca el pedido. Primero decidí si hay una regla de negocio sin definir: si la hay, `producto-marketplace` (y `negociacion-ofertas` si es negociación) va antes que cualquier implementación.
 2. Proponé el orden. Cadena típica de una pantalla nueva: `producto-marketplace` → `modelo-datos-flutter` → `logica-offline` → `ui-movil-premium` → `flutter-ui` → `qa-visual` → `confianza-seguridad` (si toca datos personales, ubicación, fotos o tokens) → `validador-flutter`. Cadena típica de un cambio de esquema destructivo: `modelo-datos-flutter` → `migracion-esquema` → `logica-offline` → `validador-flutter`. Se saltan los pasos que no aplican.
 3. Señalá dependencias explícitas ("`flutter-ui` necesita que `logica-offline` exponga el caso de uso", "`qa-visual` necesita la pantalla ya ensamblada").
 4. Para cada agente que recomendás, resumí en 2-3 líneas qué necesita saber de la tarea — no le hagas releer todo el pedido original.

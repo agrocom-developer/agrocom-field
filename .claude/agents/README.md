@@ -10,8 +10,8 @@ Los skills que los agentes cargan: `marketplace-politicas`, `diseno-movil-flutte
 
 | Agente | Cuándo usarlo |
 |---|---|
-| `producto-marketplace` | Reglas de negocio, roles, calificaciones, comisión, aprobaciones y backlog |
-| `asignacion-matching` | Despacho: propios primero, terceros por radio y calificación, ventanas de las ofertas |
+| `producto-marketplace` | Reglas de negocio, roles, precio, calificaciones, aprobaciones y backlog |
+| `negociacion-ofertas` | Negociación: precio por hectárea, ofertas, contraofertas, adjudicación y vigencias |
 | `confianza-seguridad` | Verificación de proveedores, abuso, privacidad, seguridad de apps y API |
 
 ## Juicio técnico (modelo mediano: `claude-sonnet-5`)
@@ -46,4 +46,4 @@ Los skills que los agentes cargan: `marketplace-politicas`, `diseno-movil-flutte
 
 ## Lo que estos agentes nunca deciden solos
 
-Una regla de negocio nueva (cómo se asigna un servicio, qué calificación ve quién, cuánto cobra la plataforma) la propone `producto-marketplace` como decisión revisable y se documenta; ningún agente de implementación la inventa. Lo mismo vale para el despacho (`asignacion-matching`). La especificación funcional vive en `agrocom-api`.
+Una regla de negocio nueva (cómo se negocia un servicio, qué calificación ve quién, qué se muestra antes de adjudicar) la propone `producto-marketplace` como decisión revisable y se documenta; ningún agente de implementación la inventa. Lo mismo vale para la negociación de ofertas (`negociacion-ofertas`). La especificación funcional vive en `agrocom-api`.
