@@ -6,15 +6,16 @@ Lo que una pantalla necesita y el contrato (`agrocom-api`, `docs/api/openapi.yam
 
 | Falta en la API | Qué hace la app hoy |
 |---|---|
-| El proveedor de una solicitud (nombre, tipo, calificación, piloto, dron). `SolicitudServicio` solo trae `proveedor_id`; el nombre sale de `GET /api/solicitudes/{id}/calificaciones` y solo en servicios completados. | Muestra «Proveedor asignado» sin calificación ni dron hasta que el servicio se completa. |
-| Posición del dron, hectáreas cubiertas y estela de un servicio en ejecución. | El seguimiento lee el estado real cada 10 s, ubica el dron en el centro del lote y da por cubierto el lote completo solo al ejecutarse. |
-| Evidencias (fotos, registro de vuelo) y acta de un servicio para el cliente. Las rutas de acta son del lado del proveedor. | El acta se arma con la solicitud y su historial (estado, fechas, hectáreas facturadas = monto final entre tarifa); las evidencias quedan vacías. |
-| Estimación sin crear una solicitud. `GET /api/solicitudes/{id}/estimacion` exige una solicitud existente. | Estimar crea un borrador; publicar usa ese mismo borrador. Los borradores abandonados quedan en el servidor y no se muestran. |
-| Dosis, producto y tipo de aplicación como campos. Solo hay `producto_indicado` (texto) y `tipo_aplicacion`. | La dosis viaja dentro del texto («Glifosato 480 SL, 2 L/ha») y se lee de vuelta; el tipo de aplicación se deduce del producto. |
-| Si el cliente ya calificó, en la lista de solicitudes. | Una lectura de calificaciones por cada servicio completado al cargar la lista. |
+| Varios terrenos en una solicitud. `POST /api/solicitudes` recibe un solo `terreno_id`. | Una solicitud por terreno: quien tiene varios lotes en una propiedad registra un terreno por lote y publica una solicitud por cada uno. |
+| El teléfono y los datos de contacto del piloto adjudicado en la solicitud. `GET /api/solicitudes/{id}` solo trae `proveedor_id`. | El nombre del piloto sale de la oferta adjudicada (`GET /api/ofertas/{id}`); el contacto es el chat. |
+| El número de ofertas vigentes en la lista de solicitudes. | Una lectura de las ofertas por cada solicitud abierta o con ofertas al cargar la lista. |
+| Si el cliente ya calificó, en la lista de solicitudes. | Una lectura de calificaciones por cada solicitud calificada al cargar la lista. |
+| Fotos del terreno (`POST /api/terrenos/{id}/fotos`), precio de referencia (`GET /api/referencias/precio`), confirmación de pago (`POST /api/solicitudes/{id}/pago-confirmado`) y edición de una solicitud (`PUT /api/solicitudes/{id}`), descritos en `negociacion-contrato.md` pero ausentes de `openapi.yaml`. | El cliente no sube fotos del terreno, no ve un precio de referencia ni marca el pago; el precio se cambia con `POST /api/solicitudes/{id}/precio`. |
+| La ruta de las fotos aprobadas del dron en la oferta. `proveedor.dron.fotos` llega vacío en los datos de demostración. | Muestra las fotos cuando traen `url`; si no, solo marca, modelo y capacidad. |
+| Dosis, producto y tipo de aplicación como campos. Solo hay `producto_indicado` (texto) y `tipo_aplicacion`. | El producto viaja como texto escrito o elegido; el tipo de aplicación se deduce del producto. |
 | Fecha de creación de la solicitud en la lista. | Usa el historial (detalle) o `publicada_en`. |
 | Contorno del terreno cuando `geometria` es nula. | Dibuja un cuadrado de reserva centrado en la zona, con la superficie del terreno, solo para ubicarlo en el mapa. |
-| Fase de la asignación (propios o terceros) y radio de búsqueda. | La búsqueda muestra la ronda de propios mientras la solicitud está en asignación. |
 | Catálogo de productos y cultivos sugeridos. | Listas fijas en la app. |
 | Calificaciones que el proveedor da al cliente (son privadas por diseño). | Solo se muestra el promedio y el conteo de la ficha del cliente. |
 | Marcar un aviso del inicio como leído desde la tarjeta. | Descartar un aviso solo lo oculta en la sesión. |
+| Entrega en tiempo real de mensajes y de ofertas. | Sondeo corto con la pantalla abierta (5 s el chat, 15 s el seguimiento, 20 s las ofertas); el contrato por cursor permite cambiar el transporte sin tocar los repositorios (ADR 0017). |
