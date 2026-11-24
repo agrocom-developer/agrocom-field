@@ -27,6 +27,7 @@ class NavegacionAdaptativaCampo extends StatelessWidget {
     required this.indice,
     required this.onSeleccionar,
     required this.cuerpo,
+    this.anchoCompleto = false,
     super.key,
   }) : assert(destinos.length >= 2 && destinos.length <= 5);
 
@@ -34,6 +35,10 @@ class NavegacionAdaptativaCampo extends StatelessWidget {
   final int indice;
   final ValueChanged<int> onSeleccionar;
   final Widget cuerpo;
+
+  /// El cuerpo ocupa todo el ancho disponible en vez de acotarse a 720 px:
+  /// para pantallas con panel dividido (mapa y formulario) en iPad.
+  final bool anchoCompleto;
 
   void _seleccionar(int i) {
     if (i != indice) HapticaCampo.seleccion();
@@ -44,13 +49,15 @@ class NavegacionAdaptativaCampo extends StatelessWidget {
   Widget build(BuildContext context) {
     final clase = ClasePantallaCampo.of(context);
     final paleta = context.paleta;
-    final contenido = Align(
-      alignment: Alignment.topCenter,
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 720),
-        child: cuerpo,
-      ),
-    );
+    final contenido = anchoCompleto
+        ? cuerpo
+        : Align(
+            alignment: Alignment.topCenter,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: cuerpo,
+            ),
+          );
 
     if (clase == ClasePantallaCampo.compacto) {
       return Scaffold(

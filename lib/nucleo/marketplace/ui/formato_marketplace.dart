@@ -61,6 +61,14 @@ abstract final class FormatoMarketplace {
   /// «23 nov».
   static String fechaCorta(DateTime f) => '${f.day} ${_meses[f.month - 1]}';
 
+  static const _dias = ['lun', 'mar', 'mié', 'jue', 'vie', 'sáb', 'dom'];
+
+  /// «lun».
+  static String diaSemana(DateTime f) => _dias[f.weekday - 1];
+
+  /// «lun 23 nov».
+  static String fechaConDia(DateTime f) => '${diaSemana(f)} ${fechaCorta(f)}';
+
   /// «23 nov 2026».
   static String fechaLarga(DateTime f) => '${fechaCorta(f)} ${f.year}';
 

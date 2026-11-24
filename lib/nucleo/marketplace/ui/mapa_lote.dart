@@ -11,6 +11,14 @@ LatLng _ll(GeoPunto p) => LatLng(p.latitud, p.longitud);
 /// apagan para no depender de la red.
 abstract final class ConfiguracionMapa {
   static bool teselas = true;
+
+  static const urlTeselas = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+  static const agenteUsuario = 'com.agrocom.agrocom_field';
+
+  /// Color del mapa sin teselas (sin red o mientras cargan).
+  static Color fondo(PaletaCampo paleta) => paleta.brillo == Brightness.dark
+      ? const Color(0xFF1B2A20)
+      : const Color(0xFFE4EBDD);
 }
 
 /// Mapa con el contorno de uno o más lotes, la estela del dron y su posición.
@@ -52,9 +60,7 @@ class MapaLote extends StatelessWidget {
         ...l.poligono,
       ?posicionDron,
     ];
-    final fondo = paleta.brillo == Brightness.dark
-        ? const Color(0xFF1B2A20)
-        : const Color(0xFFE4EBDD);
+    final fondo = ConfiguracionMapa.fondo(paleta);
     return Semantics(
       label: seleccionado != null
           ? 'Mapa del lote ${seleccionado!.nombre}, ${seleccionado!.zona}'
@@ -76,7 +82,10 @@ class MapaLote extends StatelessWidget {
             onTap: (_, punto) {
               if (alSeleccionar == null) return;
               for (final l in lotes) {
-                if (_contiene(l.poligono, punto)) {
+                if (poligonoContiene(
+                  l.poligono,
+                  GeoPunto(punto.latitude, punto.longitude),
+                )) {
                   alSeleccionar!(l);
                   return;
                 }
@@ -86,8 +95,8 @@ class MapaLote extends StatelessWidget {
           children: [
             if (teselas)
               TileLayer(
-                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.agrocom.agrocom_field',
+                urlTemplate: ConfiguracionMapa.urlTeselas,
+                userAgentPackageName: ConfiguracionMapa.agenteUsuario,
               ),
             PolygonLayer(
               polygons: [
@@ -159,23 +168,5 @@ class MapaLote extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  /// Punto en polígono (trazado de rayos).
-  static bool _contiene(List<GeoPunto> poligono, LatLng p) {
-    var dentro = false;
-    for (var i = 0, j = poligono.length - 1; i < poligono.length; j = i++) {
-      final a = poligono[i];
-      final b = poligono[j];
-      final cruza =
-          (a.latitud > p.latitude) != (b.latitud > p.latitude) &&
-          p.longitude <
-              (b.longitud - a.longitud) *
-                      (p.latitude - a.latitud) /
-                      (b.latitud - a.latitud) +
-                  a.longitud;
-      if (cruza) dentro = !dentro;
-    }
-    return dentro;
   }
 }

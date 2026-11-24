@@ -1,6 +1,7 @@
 /// Un solo import para el dominio compartido del marketplace.
 library;
 
+export 'busqueda_proveedor.dart';
 export 'calificacion.dart';
 export 'conformidad.dart';
 export 'falla.dart';

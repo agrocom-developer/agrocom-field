@@ -28,3 +28,11 @@ class Lote {
 
   GeoPunto get centro => centroDe(poligono);
 }
+
+/// Hectáreas de un contorno dibujado, como decimal exacto con un decimal.
+///
+/// La geometría se calcula en `double` (las coordenadas lo son) y se
+/// convierte a [Decimal] en este único punto: a partir de acá la superficie
+/// es una magnitud de negocio y nunca vuelve a `double` (ADR 0002).
+Decimal hectareasDePoligono(List<GeoPunto> poligono) =>
+    Decimal.parse((areaMetrosCuadrados(poligono) / 10000).toStringAsFixed(1));
