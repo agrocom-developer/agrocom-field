@@ -41,6 +41,9 @@ class ApiClient {
   Future<Response<dynamic>> post(String path, {Object? data}) =>
       _envolver(() => _dio.post(path, data: data));
 
+  Future<Response<dynamic>> put(String path, {Object? data}) =>
+      _envolver(() => _dio.put(path, data: data));
+
   Future<Response<dynamic>> delete(String path) =>
       _envolver(() => _dio.delete(path));
 

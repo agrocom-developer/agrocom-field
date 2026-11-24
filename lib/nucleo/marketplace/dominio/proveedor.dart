@@ -42,6 +42,33 @@ enum EstadoAprobacion {
   bool get habilitado => this == aprobado;
 }
 
+/// Estado de revisión de una foto del dron.
+enum EstadoFotoDron {
+  enRevision('En revisión'),
+  aprobada('Aprobada'),
+  rechazada('Rechazada');
+
+  const EstadoFotoDron(this.etiqueta);
+  final String etiqueta;
+}
+
+/// Una foto del dron que un administrador aprueba o rechaza con motivo.
+class FotoDelDron {
+  const FotoDelDron({
+    required this.id,
+    required this.tipo,
+    required this.estado,
+    this.motivo,
+  });
+
+  final int id;
+
+  /// `frontal`, `lateral`, `placa_serie` u `otra`.
+  final String tipo;
+  final EstadoFotoDron estado;
+  final String? motivo;
+}
+
 /// El dron es el «vehículo» del marketplace.
 class Dron {
   const Dron({
@@ -54,6 +81,7 @@ class Dron {
     required this.ciclosBateria,
     required this.cicloMaximoBateria,
     this.aprobacion = EstadoAprobacion.aprobado,
+    this.fotos = const [],
   });
 
   final String id;
@@ -69,6 +97,9 @@ class Dron {
 
   /// Ningún dron vuela sin aprobación de un administrador.
   final EstadoAprobacion aprobacion;
+
+  /// Las fotos que subió el proveedor, con su estado de revisión.
+  final List<FotoDelDron> fotos;
 
   /// Fracción de vida útil de la batería ya consumida, de 0 a 1.
   double get desgasteBateria => cicloMaximoBateria == 0

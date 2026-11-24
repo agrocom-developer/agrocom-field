@@ -15,9 +15,16 @@ final class SinConexion extends FallaMarketplace {
 
 /// El servidor rechazó la operación con un mensaje para el usuario.
 final class OperacionRechazada extends FallaMarketplace {
-  const OperacionRechazada(this.mensaje);
+  const OperacionRechazada(this.mensaje, {this.codigo, this.motivo});
 
   final String mensaje;
+
+  /// Código HTTP de la respuesta, si la hubo.
+  final int? codigo;
+
+  /// Código de negocio del servidor (`oferta_no_vigente`,
+  /// `solicitud_ya_adjudicada`...), si lo trae.
+  final String? motivo;
 
   @override
   String toString() => 'OperacionRechazada($mensaje)';
