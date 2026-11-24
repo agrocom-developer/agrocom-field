@@ -257,9 +257,13 @@ class _MapaSolicitudState extends State<MapaSolicitud>
                     ],
                   ),
                 if (teselas)
-                  SimpleAttributionWidget(
-                    source: const Text('OpenStreetMap'),
-                    backgroundColor: paleta.superficie.withValues(alpha: 0.8),
+                  // La atribución legal no escala con el texto del sistema:
+                  // a 200 % su fila se salía del mapa.
+                  MediaQuery.withNoTextScaling(
+                    child: SimpleAttributionWidget(
+                      source: const Text('OpenStreetMap'),
+                      backgroundColor: paleta.superficie.withValues(alpha: 0.8),
+                    ),
                   ),
               ],
             ),
