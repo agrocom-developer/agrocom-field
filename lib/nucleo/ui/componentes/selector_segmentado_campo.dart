@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../colores_campo.dart';
 
-/// Pill de N opciones con una seleccionada en lima — usado, por ejemplo,
+/// Pill de N opciones con una seleccionada en verde — usado, por ejemplo,
 /// para alternar entre dos variantes de un mismo formulario. Genérico sobre
 /// [T] para no acoplarse a ningún enum de dominio del catálogo.
 ///
@@ -89,7 +89,7 @@ class _Opcion extends StatelessWidget {
         ),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: seleccionada ? ColoresCampo.acentoLima : Colors.transparent,
+          color: seleccionada ? ColoresCampo.acentoHoja : Colors.transparent,
           borderRadius: BorderRadius.circular(999),
         ),
         child: Text(

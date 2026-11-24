@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../colores_campo.dart';
 
-/// Track oscuro + fill lima, radio pill — p. ej. litros cargados sobre la
+/// Track oscuro + fill verde, radio pill — p. ej. litros cargados sobre la
 /// capacidad del tanque. [fraccion] se acota a `[0, 1]`.
 class BarraProgresoCampo extends StatelessWidget {
   const BarraProgresoCampo({required this.fraccion, super.key});
@@ -20,7 +20,7 @@ class BarraProgresoCampo extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
           widthFactor: valor,
-          child: Container(color: ColoresCampo.acentoLima),
+          child: Container(color: ColoresCampo.acentoHoja),
         ),
       ),
     );

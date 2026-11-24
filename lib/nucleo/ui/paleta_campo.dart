@@ -25,6 +25,7 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     required this.texto,
     required this.textoSecundario,
     required this.acento,
+    required this.apoyo,
     required this.sobreAcento,
     required this.acentoTexto,
     required this.exito,
@@ -55,14 +56,18 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
   /// Texto de apoyo; contraste >= 4.5:1 en su superficie.
   final Color textoSecundario;
 
-  /// Relleno de la acción principal (lima de marca).
+  /// Relleno de la acción principal (verde hoja de marca).
   final Color acento;
+
+  /// Verde pasto de apoyo: relleno de íconos, marcadores y gráficos (no
+  /// texto); contraste >= 3:1 contra fondo y superficie.
+  final Color apoyo;
 
   /// Texto e íconos sobre [acento].
   final Color sobreAcento;
 
   /// El acento usado como color de texto o ícono sobre [fondo] (en claro es
-  /// un verde profundo: el lima no se lee sobre blanco).
+  /// el verde hoja; en oscuro y campo, el mismo relleno claro).
   final Color acentoTexto;
 
   final Color exito;
@@ -72,17 +77,18 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
 
   static const PaletaCampo claro = PaletaCampo(
     brillo: Brightness.light,
-    fondo: Color(0xFFF5F7F2),
-    superficie: Color(0xFFFFFFFF),
-    superficieElevada: Color(0xFFFFFFFF),
-    borde: Color(0xFFDDE4D8),
-    bordeFuerte: Color(0xFF7A8A7D),
-    texto: Color(0xFF101A12),
-    textoSecundario: Color(0xFF4A5A4D),
-    acento: ColoresCampo.acentoLima,
-    sobreAcento: Color(0xFF101A12),
-    acentoTexto: Color(0xFF2B6A0A),
-    exito: Color(0xFF2B6A0A),
+    fondo: Color(0xFFF6F2E4),
+    superficie: Color(0xFFFFFDF7),
+    superficieElevada: Color(0xFFFFFDF7),
+    borde: Color(0xFFD9D3BC),
+    bordeFuerte: Color(0xFF7A7F68),
+    texto: Color(0xFF15210F),
+    textoSecundario: Color(0xFF4A5240),
+    acento: ColoresCampo.verdeHoja,
+    apoyo: ColoresCampo.verdePasto,
+    sobreAcento: Color(0xFFFFFFFF),
+    acentoTexto: ColoresCampo.verdeHoja,
+    exito: ColoresCampo.verdeHoja,
     alerta: Color(0xFF8A5300),
     error: Color(0xFFB42318),
     info: Color(0xFF0B5E8A),
@@ -90,17 +96,18 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
 
   static const PaletaCampo oscuro = PaletaCampo(
     brillo: Brightness.dark,
-    fondo: Color(0xFF0E1511),
-    superficie: Color(0xFF16201A),
-    superficieElevada: Color(0xFF1E2A22),
-    borde: Color(0xFF2B3A30),
+    fondo: Color(0xFF0A110B),
+    superficie: Color(0xFF111B13),
+    superficieElevada: Color(0xFF19261B),
+    borde: Color(0xFF2A3A2D),
     bordeFuerte: Color(0xFF7F9186),
-    texto: Color(0xFFEEF5EF),
-    textoSecundario: Color(0xFFA9B8AD),
-    acento: ColoresCampo.acentoLima,
-    sobreAcento: Color(0xFF0E1511),
-    acentoTexto: ColoresCampo.acentoLima,
-    exito: ColoresCampo.acentoLima,
+    texto: Color(0xFFEEF5EA),
+    textoSecundario: Color(0xFFA9B8A5),
+    acento: ColoresCampo.acentoHojaOscuro,
+    apoyo: ColoresCampo.verdePasto,
+    sobreAcento: Color(0xFF0A110B),
+    acentoTexto: ColoresCampo.acentoHojaOscuro,
+    exito: ColoresCampo.acentoHojaOscuro,
     alerta: Color(0xFFFBBF24),
     error: Color(0xFFFF8A80),
     info: Color(0xFF7DD3FC),
@@ -112,15 +119,16 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     brillo: Brightness.dark,
     fondo: ColoresCampo.fondoProfundo,
     superficie: ColoresCampo.superficie,
-    superficieElevada: Color(0xFF12261A),
+    superficieElevada: Color(0xFF12220F),
     borde: Color(0xFF22362A),
-    bordeFuerte: Color(0xFF86A08D),
+    bordeFuerte: Color(0xFF8FA68F),
     texto: ColoresCampo.textoPrincipal,
     textoSecundario: Color(0xFFC9D8CD),
-    acento: ColoresCampo.acentoLima,
+    acento: ColoresCampo.acentoHoja,
+    apoyo: ColoresCampo.verdePasto,
     sobreAcento: ColoresCampo.fondoProfundo,
-    acentoTexto: ColoresCampo.acentoLima,
-    exito: ColoresCampo.acentoLima,
+    acentoTexto: ColoresCampo.acentoHoja,
+    exito: ColoresCampo.acentoHoja,
     alerta: ColoresCampo.acentoAmbarTexto,
     error: Color(0xFFFF9A92),
     info: Color(0xFF7DD3FC),
@@ -143,6 +151,7 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     Color? texto,
     Color? textoSecundario,
     Color? acento,
+    Color? apoyo,
     Color? sobreAcento,
     Color? acentoTexto,
     Color? exito,
@@ -160,6 +169,7 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
       texto: texto ?? this.texto,
       textoSecundario: textoSecundario ?? this.textoSecundario,
       acento: acento ?? this.acento,
+      apoyo: apoyo ?? this.apoyo,
       sobreAcento: sobreAcento ?? this.sobreAcento,
       acentoTexto: acentoTexto ?? this.acentoTexto,
       exito: exito ?? this.exito,
@@ -183,6 +193,7 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
       texto: mezcla(texto, other.texto),
       textoSecundario: mezcla(textoSecundario, other.textoSecundario),
       acento: mezcla(acento, other.acento),
+      apoyo: mezcla(apoyo, other.apoyo),
       sobreAcento: mezcla(sobreAcento, other.sobreAcento),
       acentoTexto: mezcla(acentoTexto, other.acentoTexto),
       exito: mezcla(exito, other.exito),

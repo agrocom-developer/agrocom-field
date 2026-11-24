@@ -5,7 +5,7 @@ import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 
 /// Pantalla de arranque: el logo entra (opacidad y escala desde 0,95), una
-/// línea lima se extiende debajo y aparece la propuesta en una frase. La
+/// línea verde se extiende debajo y aparece la propuesta en una frase. La
 /// secuencia corre una sola vez y avisa con [alTerminar]; mientras tanto la
 /// app lee la sesión guardada.
 ///

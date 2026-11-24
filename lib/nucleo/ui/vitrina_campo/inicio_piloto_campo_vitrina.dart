@@ -75,7 +75,7 @@ class InicioPilotoCampoVitrina extends StatelessWidget {
             const SizedBox(height: 18),
             TarjetaCampo(
               tamano: TamanoTarjetaCampo.grande,
-              acento: ColoresCampo.acentoLima,
+              acento: ColoresCampo.acentoHoja,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -87,7 +87,7 @@ class InicioPilotoCampoVitrina extends StatelessWidget {
                         style: TipografiaCampo.etiquetaMono.copyWith(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
-                          color: ColoresCampo.acentoLima,
+                          color: ColoresCampo.acentoHoja,
                         ),
                       ),
                       Text(

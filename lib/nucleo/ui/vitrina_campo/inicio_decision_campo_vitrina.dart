@@ -36,7 +36,7 @@ class InicioDecisionCampoVitrina extends StatelessWidget {
                 style: TipografiaCampo.etiquetaMono.copyWith(
                   fontSize: 12,
                   letterSpacing: 2,
-                  color: ColoresCampo.acentoLima,
+                  color: ColoresCampo.acentoHoja,
                 ),
               ),
               const SizedBox(height: 14),

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
+import '../../../nucleo/ui/colores_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../comun/presentation/barra_avance.dart';
@@ -372,7 +373,7 @@ class _Galeria extends StatelessWidget {
     showDialog<void>(
       context: context,
       builder: (_) => Dialog.fullscreen(
-        backgroundColor: Colors.black,
+        backgroundColor: ColoresCampo.visorFoto,
         child: Stack(
           children: [
             Positioned.fill(

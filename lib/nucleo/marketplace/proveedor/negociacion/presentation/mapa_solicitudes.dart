@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../ui/colores_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../ui/formato_marketplace.dart';
 import '../../../ui/mapa_lote.dart';
@@ -85,7 +86,7 @@ class MapaSolicitudes extends StatelessWidget {
               MediaQuery.withNoTextScaling(
                 child: const SimpleAttributionWidget(
                   source: Text('OpenStreetMap'),
-                  backgroundColor: Color(0xCCFFFFFF),
+                  backgroundColor: ColoresCampo.atribucionMapa,
                 ),
               ),
           ],
@@ -132,7 +133,10 @@ class _Marcador extends StatelessWidget {
                     width: activo ? 3 : 1.5,
                   ),
                   boxShadow: const [
-                    BoxShadow(blurRadius: 6, color: Color(0x44000000)),
+                    BoxShadow(
+                      blurRadius: 6,
+                      color: ColoresCampo.sombraPastilla,
+                    ),
                   ],
                 ),
                 child: Row(

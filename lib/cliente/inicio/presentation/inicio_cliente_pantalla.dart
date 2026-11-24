@@ -336,7 +336,7 @@ class _Saludo extends StatelessWidget {
 }
 
 /// La acción principal del inicio, destacada: una tarjeta grande con el
-/// único botón lima de la pantalla.
+/// único botón verde de la pantalla.
 class _TarjetaSolicitar extends StatelessWidget {
   const _TarjetaSolicitar({required this.alSolicitar});
 

@@ -5,13 +5,13 @@ import '../tema_campo.dart';
 import '../tipografia_campo.dart';
 
 /// Campo de texto del modo campo: tarjeta translúcida con el label mono en
-/// mayúscula arriba y el valor grande abajo, borde lima mientras tiene el
+/// mayúscula arriba y el valor grande abajo, borde verde mientras tiene el
 /// foco. Reemplaza al `TextFormField` "filled" de ADR 0003 en las pantallas
 /// que adoptan este modo — envuelve un `TextFormField` real, así la
 /// validación por `Form` y las pruebas por `Key` siguen funcionando igual.
 ///
 /// [accionTexto]/[onAccion] es una acción corta a la derecha del valor
-/// ("VER"/"OCULTAR" en una contraseña), en mono lima; sin ella, el campo
+/// ("VER"/"OCULTAR" en una contraseña), en mono verde; sin ella, el campo
 /// ocupa todo el ancho.
 ///
 /// [onChanged] y [maxLines] pasan tal cual al `TextFormField` — un
@@ -89,7 +89,7 @@ class _CampoTextoCampoState extends State<CampoTextoCampo> {
         borderRadius: BorderRadius.circular(radio),
         border: Border.all(
           color: _enfocado
-              ? ColoresCampo.acentoLima.withValues(alpha: 0.45)
+              ? ColoresCampo.acentoHoja.withValues(alpha: 0.45)
               : ColoresCampo.textoPrincipal.withValues(alpha: 0.16),
         ),
       ),
@@ -115,7 +115,7 @@ class _CampoTextoCampoState extends State<CampoTextoCampo> {
                   textInputAction: widget.textInputAction,
                   keyboardType: widget.keyboardType,
                   maxLines: widget.obscureText ? 1 : widget.maxLines,
-                  cursorColor: ColoresCampo.acentoLima,
+                  cursorColor: ColoresCampo.acentoHoja,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 17,
@@ -155,7 +155,7 @@ class _CampoTextoCampoState extends State<CampoTextoCampo> {
               style: TextButton.styleFrom(
                 minimumSize: const Size(48, 44),
                 padding: const EdgeInsets.symmetric(horizontal: 10),
-                foregroundColor: ColoresCampo.acentoLima,
+                foregroundColor: ColoresCampo.acentoHoja,
                 textStyle: TipografiaCampo.datoMonoDestacado,
               ),
               child: Text(widget.accionTexto!.toUpperCase()),

@@ -33,7 +33,7 @@ Ingreso y registro se alternan con estado local dentro de la puerta, no con ruta
 
 - Una acción principal por pantalla: «Continuar», «Ingresar», «Crear cuenta» y, en el inicio, «Publicar una solicitud» dentro de una tarjeta destacada. «Ver ofertas», «Ver seguimiento» y «Calificar» son botones de contorno.
 - Componentes compartidos en `lib/nucleo/marketplace/ui/`, todos sobre `PaletaCampo` (claro y oscuro): `CampoFormularioMarketplace` (etiqueta visible, error en línea, ver u ocultar contraseña), `BotonPrincipalMarketplace` (ancho completo, estado de envío, escala al presionar) y `AparicionMarketplace` (entrada en cascada de los bloques).
-- Movimiento: la splash es una secuencia única de 1400 ms (logo desde escala 0,95, línea lima, frase); los cambios de paso y de etapa duran entre 160 y 320 ms; el inicio entra en cascada con 50 ms entre bloques. Con «reducir movimiento» no hay desplazamientos ni escalas y la splash no espera.
+- Movimiento: la splash es una secuencia única de 1400 ms (logo desde escala 0,95, línea verde, frase); los cambios de paso y de etapa duran entre 160 y 320 ms; el inicio entra en cascada con 50 ms entre bloques. Con «reducir movimiento» no hay desplazamientos ni escalas y la splash no espera.
 - Carga con `EsqueletoCampo` con la forma del inicio; vacío que orienta («No tienes solicitudes en curso»); error con salida («Reintentar»); sin conexión dicho de forma explícita.
 - Adaptativo: en ancho expandido (iPad horizontal) el acceso suma un panel de marca con foto y la presentación pone foto y texto lado a lado; desde 600 px el inicio pasa a dos columnas (lo que pide acción a la izquierda, lo informativo a la derecha).
 

@@ -68,7 +68,7 @@ abstract final class AgrocomThemeCampo {
         : ObjetivoTactilCampo.minimo;
 
     final colorScheme = ColorScheme.fromSeed(
-      seedColor: ColoresCampo.acentoLima,
+      seedColor: ColoresCampo.verdeHoja,
       brightness: paleta.brillo,
       surface: paleta.fondo,
       onSurface: paleta.texto,

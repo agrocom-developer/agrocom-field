@@ -143,14 +143,14 @@ class _CondicionesCampoVitrinaState extends State<CondicionesCampoVitrina> {
                       ),
                     ] else ...[
                       TarjetaCampo(
-                        acento: ColoresCampo.acentoLima,
+                        acento: ColoresCampo.acentoHoja,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'Apto para aplicar',
                               style: TipografiaCampo.tituloTarjeta.copyWith(
-                                color: ColoresCampo.acentoLima,
+                                color: ColoresCampo.acentoHoja,
                               ),
                             ),
                             const SizedBox(height: 6),
