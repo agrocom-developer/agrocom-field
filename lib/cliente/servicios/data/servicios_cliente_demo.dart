@@ -8,7 +8,8 @@ class ServiciosClienteDemo implements ServiciosClienteRepositorio {
   final AlmacenDemoCliente _almacen;
 
   @override
-  Stream<List<Servicio>> observar() => _almacen.observar();
+  Stream<List<Servicio>> observar() =>
+      _almacen.sinRed ? Stream.error(const SinConexion()) : _almacen.observar();
 
   @override
   Future<Servicio?> porId(String id) async => _almacen.porId(id);
