@@ -67,20 +67,10 @@ class MapaSolicitudes extends StatelessWidget {
                 urlTemplate: ConfiguracionMapa.urlTeselas,
                 userAgentPackageName: ConfiguracionMapa.agenteUsuario,
               ),
-            MarkerLayer(
-              markers: [
-                for (final s in ubicadas)
-                  Marker(
-                    point: LatLng(s.ubicacion!.latitud, s.ubicacion!.longitud),
-                    width: 124,
-                    height: 48,
-                    child: _Marcador(
-                      solicitud: s,
-                      activo: s.id == seleccionada,
-                      alToque: () => alSeleccionar(s),
-                    ),
-                  ),
-              ],
+            _CapaMarcadores(
+              solicitudes: ubicadas,
+              seleccionada: seleccionada,
+              alSeleccionar: alSeleccionar,
             ),
             if (teselas)
               MediaQuery.withNoTextScaling(
@@ -95,6 +85,68 @@ class MapaSolicitudes extends StatelessWidget {
     );
   }
 }
+
+/// Capa de marcadores sin solapes. Con el zoom actual, cada pastilla que
+/// tapa a otra ya colocada baja un paso hasta quedar libre; el orden es el
+/// de la lista, así que el resultado es determinista. Se reconstruye con la
+/// cámara: al acercar, los marcadores vuelven a su sitio.
+class _CapaMarcadores extends StatelessWidget {
+  const _CapaMarcadores({
+    required this.solicitudes,
+    required this.seleccionada,
+    required this.alSeleccionar,
+  });
+
+  final List<SolicitudAbierta> solicitudes;
+  final int? seleccionada;
+  final ValueChanged<SolicitudAbierta> alSeleccionar;
+
+  @override
+  Widget build(BuildContext context) {
+    final camara = MapCamera.of(context);
+    final colocados = <Rect>[];
+    final marcadores = <Marker>[];
+    for (final s in solicitudes) {
+      final punto = LatLng(s.ubicacion!.latitud, s.ubicacion!.longitud);
+      final base = camara.latLngToScreenOffset(punto);
+      var desplazado = base;
+      Rect caja() => Rect.fromCenter(
+        center: desplazado,
+        width: _anchoPastilla,
+        height: _altoPastilla,
+      );
+      var intentos = 0;
+      while (colocados.any((c) => c.overlaps(caja())) &&
+          intentos < _maxIntentos) {
+        intentos++;
+        desplazado = base + Offset(0, intentos * _altoPastilla);
+      }
+      colocados.add(caja());
+      marcadores.add(
+        Marker(
+          point: intentos == 0
+              ? punto
+              : camara.screenOffsetToLatLng(desplazado),
+          width: _anchoMarcador,
+          height: _altoMarcador,
+          child: _Marcador(
+            solicitud: s,
+            activo: s.id == seleccionada,
+            alToque: () => alSeleccionar(s),
+          ),
+        ),
+      );
+    }
+    return MarkerLayer(markers: marcadores);
+  }
+}
+
+/// Medidas de la pastilla dibujada (con holgura) y del objetivo táctil.
+const double _anchoPastilla = 92;
+const double _altoPastilla = 34;
+const double _anchoMarcador = 124;
+const double _altoMarcador = 48;
+const int _maxIntentos = 12;
 
 class _Marcador extends StatelessWidget {
   const _Marcador({
