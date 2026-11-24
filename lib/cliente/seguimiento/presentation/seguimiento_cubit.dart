@@ -3,92 +3,127 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
+import '../../solicitudes/domain/solicitud.dart';
+import '../../solicitudes/domain/solicitudes_repositorio.dart';
+import '../domain/seguimiento.dart';
 import '../domain/seguimiento_repositorio.dart';
 
-enum FaseSeguimiento {
-  /// Todavía no llegó el primer fotograma.
-  cargando,
-
-  /// Hay un fotograma y el seguimiento sigue vivo.
-  enVivo,
-
-  /// Hay un fotograma, pero el seguimiento se cortó: se muestra lo último
-  /// conocido.
-  sinSenal,
-
-  /// No se pudo obtener ningún fotograma.
-  error,
-}
+enum FaseSeguimiento { cargando, listo, noEncontrado, error }
 
 class SeguimientoEstado {
   const SeguimientoEstado({
     required this.fase,
-    this.fotograma,
+    this.solicitud,
+    this.avance,
+    this.ubicacion,
     this.sinConexion = false,
   });
 
-  const SeguimientoEstado.cargando() : this(fase: FaseSeguimiento.cargando);
-
   final FaseSeguimiento fase;
+  final Solicitud? solicitud;
+  final AvanceServicio? avance;
 
-  /// Último fotograma conocido.
-  final SeguimientoVivo? fotograma;
+  /// La última ubicación del piloto; `null` si no reportó ninguna.
+  final UbicacionPiloto? ubicacion;
 
-  /// La falla fue por falta de red (y no por un error del servidor).
+  /// La última lectura falló por falta de red: se muestra lo último que
+  /// llegó.
   final bool sinConexion;
 
-  bool get terminado => fotograma?.estado == EstadoServicio.completado;
+  SeguimientoEstado copiarCon({
+    FaseSeguimiento? fase,
+    Solicitud? solicitud,
+    AvanceServicio? avance,
+    Object? ubicacion = _igual,
+    bool? sinConexion,
+  }) => SeguimientoEstado(
+    fase: fase ?? this.fase,
+    solicitud: solicitud ?? this.solicitud,
+    avance: avance ?? this.avance,
+    ubicacion: identical(ubicacion, _igual)
+        ? this.ubicacion
+        : ubicacion as UbicacionPiloto?,
+    sinConexion: sinConexion ?? this.sinConexion,
+  );
 }
 
-/// Seguimiento en vivo de un servicio. Lee el `Stream` del repositorio y
-/// conserva el último fotograma cuando la señal se corta.
+const _igual = Object();
+
+/// Seguimiento simple de un servicio adjudicado: el avance con sus fotos y la
+/// última ubicación del piloto. Vuelve a leer cada [intervalo] mientras la
+/// pantalla está abierta; sin red conserva lo último que llegó (ADR 0017).
 class SeguimientoCubit extends Cubit<SeguimientoEstado> {
-  SeguimientoCubit(this._repositorio, this.servicioId)
-    : super(const SeguimientoEstado.cargando()) {
-    _escuchar();
-  }
-
-  final SeguimientoRepositorio _repositorio;
-  final String servicioId;
-  StreamSubscription<SeguimientoVivo>? _suscripcion;
-
-  void _escuchar() {
-    _suscripcion?.cancel();
-    try {
-      _suscripcion = _repositorio
-          .observar(servicioId)
-          .listen(
-            (f) => emit(
-              SeguimientoEstado(fase: FaseSeguimiento.enVivo, fotograma: f),
-            ),
-            onError: _alFallar,
-          );
-    } on Object catch (e) {
-      _alFallar(e);
+  SeguimientoCubit({
+    required SeguimientoRepositorio seguimiento,
+    required SolicitudesRepositorio solicitudes,
+    required this.solicitudId,
+    Duration? intervalo = const Duration(seconds: 15),
+  }) : _seguimiento = seguimiento,
+       _solicitudes = solicitudes,
+       super(const SeguimientoEstado(fase: FaseSeguimiento.cargando)) {
+    if (intervalo != null) {
+      _temporizador = Timer.periodic(intervalo, (_) => unawaited(_leer()));
     }
   }
 
-  void _alFallar(Object error) {
-    if (isClosed) return;
-    final previo = state.fotograma;
-    emit(
-      SeguimientoEstado(
-        fase: previo == null ? FaseSeguimiento.error : FaseSeguimiento.sinSenal,
-        fotograma: previo,
-        sinConexion: error is SinConexion,
-      ),
-    );
+  final SeguimientoRepositorio _seguimiento;
+  final SolicitudesRepositorio _solicitudes;
+  final String solicitudId;
+  Timer? _temporizador;
+  var _leyendo = false;
+
+  Future<void> cargar() async {
+    if (state.solicitud == null) {
+      emit(const SeguimientoEstado(fase: FaseSeguimiento.cargando));
+    }
+    await _leer();
   }
 
-  /// Vuelve a suscribirse conservando el último fotograma.
-  void reintentar() {
-    if (state.fotograma == null) emit(const SeguimientoEstado.cargando());
-    _escuchar();
+  Future<void> _leer() async {
+    if (isClosed || _leyendo) return;
+    _leyendo = true;
+    try {
+      final solicitud = await _solicitudes.porId(solicitudId);
+      if (isClosed) return;
+      if (solicitud == null) {
+        emit(state.copiarCon(fase: FaseSeguimiento.noEncontrado));
+        return;
+      }
+      final avance = await _seguimiento.avance(solicitudId);
+      // La ubicación solo existe mientras el servicio está en ejecución.
+      final ubicacion = solicitud.estado == EstadoSolicitud.enEjecucion
+          ? await _seguimiento.ubicacionDelPiloto(solicitudId)
+          : null;
+      if (isClosed) return;
+      emit(
+        SeguimientoEstado(
+          fase: FaseSeguimiento.listo,
+          solicitud: solicitud,
+          avance: avance,
+          ubicacion: ubicacion,
+        ),
+      );
+    } on Object catch (e) {
+      if (isClosed) return;
+      emit(
+        state.copiarCon(
+          // Con datos a la vista se conservan; solo se avisa.
+          fase: state.solicitud == null
+              ? FaseSeguimiento.error
+              : FaseSeguimiento.listo,
+          sinConexion: e is SinConexion,
+        ),
+      );
+    } finally {
+      _leyendo = false;
+    }
   }
+
+  Future<void> actualizar() => _leer();
 
   @override
-  Future<void> close() async {
-    await _suscripcion?.cancel();
+  Future<void> close() {
+    _temporizador?.cancel();
     return super.close();
   }
 }

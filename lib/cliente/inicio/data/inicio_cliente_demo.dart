@@ -24,11 +24,11 @@ class InicioClienteDemo implements InicioClienteRepositorio {
           'Cañadas.',
     ),
     AvisoInicio(
-      id: 'alta-demanda',
-      titulo: 'Alta demanda esta semana',
+      id: 'precio-competitivo',
+      titulo: 'Un buen precio atrae más ofertas',
       detalle:
-          'Solicita con dos días de anticipación para asegurar la fecha '
-          'que necesitas.',
+          'Los pilotos comparan el precio por hectárea: si tardan en '
+          'ofertar, puedes subirlo.',
       tono: TonoAvisoInicio.alerta,
     ),
   ];
@@ -36,13 +36,13 @@ class InicioClienteDemo implements InicioClienteRepositorio {
   @override
   Stream<ResumenInicio> observar() async* {
     if (latencia > Duration.zero) await Future<void>.delayed(latencia);
-    await for (final servicios in _almacen.observar()) {
+    await for (final solicitudes in _almacen.observar()) {
       final sesion = _almacen.sesion;
       yield ReglasInicioCliente.resumir(
         nombre:
             sesion?.primerNombre ?? DatosDemo.clienteNombre.split(' ').first,
         empresa: sesion == null ? DatosDemo.clienteEmpresa : sesion.empresa,
-        servicios: servicios,
+        solicitudes: solicitudes,
         avisos: avisos,
       );
     }

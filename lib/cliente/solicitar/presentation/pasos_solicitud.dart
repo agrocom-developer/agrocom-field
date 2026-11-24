@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
-import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import 'opcion_solicitud.dart';
@@ -307,7 +306,7 @@ class _GuiaDibujo extends StatelessWidget {
 
 // ── Paso 2: aplicación ─────────────────────────────────────────────────
 
-/// Hectáreas, cultivo, producto y dosis.
+/// Hectáreas, cultivo y producto.
 class PasoAplicacion extends StatefulWidget {
   const PasoAplicacion({required this.estado, super.key});
 
@@ -345,8 +344,6 @@ class _PasoAplicacionState extends State<PasoAplicacion> {
       if (e.cultivo != null && e.cultivo!.isNotEmpty) e.cultivo!,
       ...e.cultivos,
     };
-    final litros = e.litrosTotales;
-
     return ListView(
       padding: _margen,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -382,7 +379,7 @@ class _PasoAplicacionState extends State<PasoAplicacion> {
                   ? null
                   : '${e.modoLote == ModoLote.dibujo ? 'Del contorno salen' : 'El lote tiene'} '
                         '${FormatoMarketplace.hectareas(calculadas)}. '
-                        'Ajustalas si vas a fumigar otra superficie.',
+                        'Ajústalas si vas a fumigar otra superficie.',
               helperMaxLines: 4,
               helperStyle: texto.bodySmall?.copyWith(
                 color: paleta.textoSecundario,
@@ -427,43 +424,6 @@ class _PasoAplicacionState extends State<PasoAplicacion> {
               ),
           ],
         ),
-        const TituloGrupoSolicitud('Dosis por hectárea'),
-        SuperficieMarketplace(
-          padding: const EdgeInsets.all(EspaciadoCampo.s),
-          child: Row(
-            children: [
-              IconButton.outlined(
-                tooltip: 'Bajar la dosis',
-                onPressed: cubit.bajarDosis,
-                icon: const Icon(Icons.remove_rounded),
-              ),
-              Expanded(
-                child: Semantics(
-                  liveRegion: true,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      '${FormatoMarketplace.numero(e.dosisEfectiva, decimales: 1)} L/ha',
-                      style: texto.headlineSmall,
-                    ),
-                  ),
-                ),
-              ),
-              IconButton.outlined(
-                tooltip: 'Subir la dosis',
-                onPressed: cubit.subirDosis,
-                icon: const Icon(Icons.add_rounded),
-              ),
-            ],
-          ),
-        ),
-        if (litros != null) ...[
-          const SizedBox(height: EspaciadoCampo.m),
-          Text(
-            'Caldo total: ${FormatoMarketplace.litros(litros)}',
-            style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
-          ),
-        ],
       ],
     );
   }
@@ -471,17 +431,39 @@ class _PasoAplicacionState extends State<PasoAplicacion> {
 
 // ── Paso 3: cuándo ─────────────────────────────────────────────────────
 
-/// Fecha deseada y ventana horaria.
-class PasoCuando extends StatelessWidget {
+/// Fecha deseada, accesos y observaciones: lo que un piloto necesita saber
+/// antes de ofertar.
+class PasoCuando extends StatefulWidget {
   const PasoCuando({required this.estado, super.key});
 
   final SolicitarEstado estado;
 
   @override
+  State<PasoCuando> createState() => _PasoCuandoState();
+}
+
+class _PasoCuandoState extends State<PasoCuando> {
+  late final _accesos = TextEditingController(text: widget.estado.accesos);
+  late final _observaciones = TextEditingController(
+    text: widget.estado.observaciones,
+  );
+
+  @override
+  void dispose() {
+    _accesos.dispose();
+    _observaciones.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final cubit = context.read<SolicitarCubit>();
+    final estado = widget.estado;
+    // Un terreno ya registrado trae sus accesos; solo uno nuevo los pide.
+    final pideAccesos = estado.modoLote == ModoLote.dibujo;
     return ListView(
       padding: _margen,
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       children: [
         const _Pregunta('¿Cuándo lo necesitas?'),
         const SizedBox(height: EspaciadoCampo.l),
@@ -513,23 +495,38 @@ class PasoCuando extends StatelessWidget {
           const SizedBox(height: EspaciadoCampo.m),
           const AvisoMarketplace(
             mensaje:
-                'Pedirlo para mañana lleva un recargo por urgencia. Lo ves '
-                'detallado en el resumen antes de confirmar.',
+                'Pedirlo para mañana marca tu solicitud como urgente. Los '
+                'pilotos con el dron libre responden más rápido.',
           ),
         ],
-        const TituloGrupoSolicitud('Horario preferido'),
-        for (final v in VentanaHoraria.values) ...[
-          OpcionSolicitud(
-            key: ValueKey('ventana-${v.name}'),
-            titulo: v == VentanaHoraria.indistinta
-                ? v.etiqueta
-                : '${v.etiqueta} · ${v.horario}',
-            apoyo: v.apoyo,
-            elegida: v == estado.ventana,
-            alElegir: () => cubit.elegirVentana(v),
+        const TituloGrupoSolicitud('Datos para los pilotos'),
+        if (pideAccesos) ...[
+          TextField(
+            key: const ValueKey('solicitar-accesos'),
+            controller: _accesos,
+            onChanged: cubit.cambiarAccesos,
+            maxLength: 300,
+            maxLines: 2,
+            textCapitalization: TextCapitalization.sentences,
+            decoration: const InputDecoration(
+              labelText: 'Cómo se llega al lote (opcional)',
+              hintText: 'Camino, portón, referencias',
+            ),
           ),
-          const SizedBox(height: EspaciadoCampo.s),
+          const SizedBox(height: EspaciadoCampo.m),
         ],
+        TextField(
+          key: const ValueKey('solicitar-observaciones'),
+          controller: _observaciones,
+          onChanged: cubit.cambiarObservaciones,
+          maxLength: 500,
+          maxLines: 3,
+          textCapitalization: TextCapitalization.sentences,
+          decoration: const InputDecoration(
+            labelText: 'Observaciones (opcional)',
+            hintText: 'Cultivos vecinos, líneas eléctricas, estado del lote',
+          ),
+        ),
       ],
     );
   }
@@ -610,30 +607,57 @@ class _TarjetaFecha extends StatelessWidget {
   }
 }
 
-// ── Paso 4: resumen ────────────────────────────────────────────────────
+// ── Paso 4: precio ─────────────────────────────────────────────────────
 
-/// Todo lo que se va a pedir, de un vistazo: la superficie como dato
-/// protagonista, el detalle y el precio estimado con sus recargos.
-class PasoResumen extends StatelessWidget {
-  const PasoResumen({required this.estado, super.key});
+/// El precio por hectárea que propone el cliente, con el total estimado y un
+/// resumen de lo que se va a publicar. El precio no es una tarifa: los
+/// pilotos aceptan o contraofertan.
+class PasoPrecio extends StatefulWidget {
+  const PasoPrecio({required this.estado, super.key});
 
   final SolicitarEstado estado;
 
   @override
+  State<PasoPrecio> createState() => _PasoPrecioState();
+}
+
+class _PasoPrecioState extends State<PasoPrecio> {
+  late final _precio = TextEditingController(text: widget.estado.precioTexto);
+
+  @override
+  void dispose() {
+    _precio.dispose();
+    super.dispose();
+  }
+
+  OutlineInputBorder _borde(Color color, [double ancho = 1]) =>
+      OutlineInputBorder(
+        borderRadius: BorderRadius.circular(radioOpcion),
+        borderSide: BorderSide(color: color, width: ancho),
+      );
+
+  @override
   Widget build(BuildContext context) {
     final cubit = context.read<SolicitarCubit>();
-    final e = estado;
+    final e = widget.estado;
     final lote = e.lote;
     final hectareas = e.hectareas;
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     if (lote == null || hectareas == null) return const SizedBox.shrink();
-    final litros = e.litrosTotales;
+    final total = e.total;
 
     return ListView(
       padding: _margen,
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       children: [
-        const _Pregunta('Revisa tu solicitud'),
+        const _Pregunta('¿Cuánto pagas por hectárea?'),
+        const SizedBox(height: EspaciadoCampo.s),
+        Text(
+          'Los pilotos pueden aceptar tu precio o proponer el suyo. Tú '
+          'eliges la oferta que prefieras.',
+          style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
+        ),
         if (e.falloEnvio != null) ...[
           const SizedBox(height: EspaciadoCampo.m),
           Semantics(
@@ -645,13 +669,20 @@ class PasoResumen extends StatelessWidget {
                 icono: Icons.wifi_off_rounded,
                 mensaje:
                     'Sin conexión. Tu solicitud sigue aquí, completa: cuando '
-                    'vuelva la señal, reintenta el envío.',
+                    'vuelva la señal, reintenta la publicación.',
+              ),
+              FalloEnvio.rechazado => AvisoMarketplace(
+                key: const ValueKey('aviso-rechazo'),
+                tono: TonoAviso.error,
+                mensaje:
+                    e.mensajeRechazo ??
+                    'No pudimos publicar la solicitud. Revisa los datos.',
               ),
               FalloEnvio.desconocido => const AvisoMarketplace(
                 key: ValueKey('aviso-fallo-envio'),
                 tono: TonoAviso.error,
                 mensaje:
-                    'No pudimos enviar la solicitud. Tus datos siguen aquí; '
+                    'No pudimos publicar la solicitud. Tus datos siguen aquí; '
                     'prueba de nuevo.',
               ),
             },
@@ -659,25 +690,81 @@ class PasoResumen extends StatelessWidget {
         ],
         const SizedBox(height: EspaciadoCampo.l),
         Semantics(
-          label:
-              '${FormatoMarketplace.hectareas(hectareas)} de ${e.cultivo}, '
-              '${lote.nombre}, ${lote.zona}',
-          excludeSemantics: true,
+          label: 'Precio por hectárea',
+          child: TextField(
+            key: const ValueKey('solicitar-precio'),
+            controller: _precio,
+            onChanged: cubit.cambiarPrecio,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            textInputAction: TextInputAction.done,
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),
+              LengthLimitingTextInputFormatter(8),
+            ],
+            style: texto.headlineSmall,
+            cursorColor: paleta.acentoTexto,
+            decoration: InputDecoration(
+              filled: true,
+              fillColor: paleta.superficie,
+              hintText: '0',
+              hintStyle: texto.headlineSmall?.copyWith(
+                color: paleta.bordeFuerte,
+              ),
+              prefixText: 'Bs ',
+              prefixStyle: texto.titleLarge?.copyWith(
+                color: paleta.textoSecundario,
+              ),
+              suffixText: 'por ha',
+              suffixStyle: texto.titleMedium?.copyWith(
+                color: paleta.textoSecundario,
+              ),
+              errorText: e.errorPrecio,
+              errorMaxLines: 3,
+              errorStyle: texto.bodySmall?.copyWith(color: paleta.error),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: EspaciadoCampo.l,
+                vertical: EspaciadoCampo.m,
+              ),
+              enabledBorder: _borde(paleta.bordeFuerte),
+              focusedBorder: _borde(paleta.acentoTexto, 2),
+              errorBorder: _borde(paleta.error),
+              focusedErrorBorder: _borde(paleta.error, 2),
+            ),
+          ),
+        ),
+        const SizedBox(height: EspaciadoCampo.m),
+        SuperficieMarketplace(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                'Total estimado',
+                style: texto.bodyMedium?.copyWith(
+                  color: paleta.textoSecundario,
+                ),
+              ),
               FittedBox(
                 fit: BoxFit.scaleDown,
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  FormatoMarketplace.hectareas(hectareas),
-                  key: const ValueKey('resumen-hectareas'),
-                  style: texto.displaySmall,
+                  total == null ? 'Bs —' : FormatoMarketplace.bs(total),
+                  key: const ValueKey('resumen-precio'),
+                  style: texto.headlineSmall,
                 ),
               ),
               Text(
-                '${e.cultivo} · ${lote.nombre}, ${lote.zona}',
-                style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
+                total == null
+                    ? 'Escribe un precio para ver cuánto sería.'
+                    : '${FormatoMarketplace.bs(e.precio!)}/ha × '
+                          '${FormatoMarketplace.hectareas(hectareas)}',
+                style: texto.bodySmall?.copyWith(color: paleta.textoSecundario),
+              ),
+              Divider(height: EspaciadoCampo.xl, color: paleta.borde),
+              Text(
+                'El precio final se calcula con las hectáreas realmente '
+                'ejecutadas. Le pagas al piloto al terminar, fuera de la '
+                'app.',
+                style: texto.bodySmall?.copyWith(color: paleta.textoSecundario),
               ),
             ],
           ),
@@ -686,130 +773,28 @@ class PasoResumen extends StatelessWidget {
         SuperficieMarketplace(
           child: Column(
             children: [
-              _FilaResumen('Producto', e.producto ?? ''),
+              _FilaResumen('Lote', '${lote.nombre}, ${lote.zona}'),
               _FilaResumen(
-                'Dosis',
-                '${FormatoMarketplace.numero(e.dosisEfectiva, decimales: 1)} L/ha',
+                'Superficie',
+                FormatoMarketplace.hectareas(hectareas),
               ),
-              if (litros != null)
-                _FilaResumen('Caldo total', FormatoMarketplace.litros(litros)),
+              _FilaResumen('Cultivo', e.cultivo ?? ''),
+              _FilaResumen('Producto', e.producto ?? ''),
               if (e.fecha != null)
                 _FilaResumen('Fecha', FormatoMarketplace.fechaConDia(e.fecha!)),
-              _FilaResumen(
-                'Horario',
-                e.ventana == VentanaHoraria.indistinta
-                    ? e.ventana.etiqueta
-                    : '${e.ventana.etiqueta}, ${e.ventana.horario}',
-              ),
             ],
           ),
-        ),
-        const SizedBox(height: EspaciadoCampo.m),
-        AnimatedSwitcher(
-          duration: MovimientoCampo.duracion(context, MovimientoCampo.media),
-          switchInCurve: MovimientoCampo.entrada,
-          child: e.estimacion != null
-              ? _Precio(
-                  key: const ValueKey('precio'),
-                  estimacion: e.estimacion!,
-                  hectareas: FormatoMarketplace.hectareas(hectareas),
-                )
-              : e.falloEstimacion
-              ? Column(
-                  key: const ValueKey('precio-error'),
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const AvisoMarketplace(
-                      tono: TonoAviso.error,
-                      mensaje:
-                          'No pudimos calcular el precio estimado. Revisa tu '
-                          'conexión.',
-                    ),
-                    const SizedBox(height: EspaciadoCampo.s),
-                    OutlinedButton.icon(
-                      onPressed: cubit.estimar,
-                      icon: const Icon(Icons.refresh_rounded),
-                      label: const Text('Calcular de nuevo'),
-                    ),
-                  ],
-                )
-              : const SuperficieMarketplace(
-                  key: ValueKey('precio-cargando'),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      EsqueletoCampo(ancho: 120, alto: 14),
-                      SizedBox(height: EspaciadoCampo.m),
-                      EsqueletoCampo(ancho: 160, alto: 28),
-                      SizedBox(height: EspaciadoCampo.m),
-                      EsqueletoCampo(alto: 14),
-                    ],
-                  ),
-                ),
         ),
       ],
     );
   }
 }
 
-class _Precio extends StatelessWidget {
-  const _Precio({required this.estimacion, required this.hectareas, super.key});
-
-  final EstimacionServicio estimacion;
-  final String hectareas;
-
-  @override
-  Widget build(BuildContext context) {
-    final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
-    final e = estimacion;
-    return SuperficieMarketplace(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Precio estimado',
-            style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
-          ),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              FormatoMarketplace.bs(e.precio),
-              key: const ValueKey('resumen-precio'),
-              style: texto.headlineSmall,
-            ),
-          ),
-          const SizedBox(height: EspaciadoCampo.s),
-          _FilaResumen(
-            '${FormatoMarketplace.bs(e.precioPorHectarea)}/ha × $hectareas',
-            FormatoMarketplace.bs(e.subtotal),
-            tenue: true,
-          ),
-          for (final r in e.recargos)
-            _FilaResumen(
-              r.concepto,
-              FormatoMarketplace.bs(r.monto),
-              tenue: true,
-            ),
-          Divider(height: EspaciadoCampo.xl, color: paleta.borde),
-          Text(
-            'Le pagas al proveedor al terminar, fuera de la app. La comisión '
-            'de Agrocom ya está dentro de este precio: no se suma nada.',
-            style: texto.bodySmall?.copyWith(color: paleta.textoSecundario),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _FilaResumen extends StatelessWidget {
-  const _FilaResumen(this.etiqueta, this.valor, {this.tenue = false});
+  const _FilaResumen(this.etiqueta, this.valor);
 
   final String etiqueta;
   final String valor;
-  final bool tenue;
 
   @override
   Widget build(BuildContext context) {
@@ -824,7 +809,7 @@ class _FilaResumen extends StatelessWidget {
       textAlign: _textoAmpliado(context) ? TextAlign.start : TextAlign.end,
       style: texto.bodyMedium?.copyWith(
         color: paleta.texto,
-        fontWeight: tenue ? FontWeight.w600 : FontWeight.w800,
+        fontWeight: FontWeight.w800,
       ),
     );
     return MergeSemantics(

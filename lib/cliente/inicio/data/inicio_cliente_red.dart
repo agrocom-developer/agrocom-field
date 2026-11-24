@@ -1,16 +1,16 @@
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../cuenta/domain/cuenta_repositorio.dart';
 import '../../red/cliente_http.dart';
-import '../../red/fuente_servicios.dart';
+import '../../red/fuente_solicitudes.dart';
 import '../domain/inicio_cliente_repositorio.dart';
 import '../domain/reglas_inicio_cliente.dart';
 
-/// Resumen del inicio armado con la API: los servicios del cliente, su
+/// Resumen del inicio armado con la API: las solicitudes del cliente, su
 /// nombre y los avisos sin leer (`GET /api/notificaciones`).
 class InicioClienteRed implements InicioClienteRepositorio {
   InicioClienteRed(this._fuente, this._http, this._cuenta);
 
-  final FuenteServicios _fuente;
+  final FuenteSolicitudes _fuente;
   final ClienteHttp _http;
   final CuentaRepositorio _cuenta;
 
@@ -21,11 +21,11 @@ class InicioClienteRed implements InicioClienteRepositorio {
   Stream<ResumenInicio> observar() async* {
     try {
       final perfil = await _perfil();
-      await for (final servicios in _fuente.observar()) {
+      await for (final solicitudes in _fuente.observar()) {
         yield ReglasInicioCliente.resumir(
           nombre: perfil.nombre.trim().split(RegExp(r'\s+')).first,
           empresa: perfil.empresa.isEmpty ? null : perfil.empresa,
-          servicios: servicios,
+          solicitudes: solicitudes,
           avisos: await _avisos(),
         );
       }
@@ -66,16 +66,18 @@ class InicioClienteRed implements InicioClienteRepositorio {
 
   static bool _esAlerta(String tipo) =>
       tipo.contains('disputa') ||
-      tipo.contains('sin_proveedor') ||
+      tipo.contains('expirada') ||
       tipo.contains('cancelada') ||
       tipo.contains('suspendida');
 
   static String _tituloDe(String tipo) {
     if (tipo.contains('disputa')) return 'Novedad en tu reclamo';
-    if (tipo.contains('completada')) return 'Servicio completado';
-    if (tipo.contains('sin_proveedor')) return 'Aún no hay proveedor';
-    if (tipo.contains('cancelada')) return 'Servicio cancelado';
-    if (tipo.contains('asignada')) return 'Ya tienes proveedor';
+    if (tipo.contains('oferta')) return 'Nueva oferta';
+    if (tipo.contains('mensaje')) return 'Mensaje del piloto';
+    if (tipo.contains('finalizada')) return 'Servicio terminado';
+    if (tipo.contains('expirada')) return 'Solicitud expirada';
+    if (tipo.contains('cancelada')) return 'Solicitud cancelada';
+    if (tipo.contains('adjudicada')) return 'Ya tienes piloto';
     return 'Aviso de Agrocom';
   }
 }

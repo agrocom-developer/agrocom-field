@@ -11,8 +11,9 @@ abstract final class ReglasSolicitud {
   /// Cuántos días hacia adelante se ofrecen para elegir.
   static const diasOfrecidos = 14;
 
-  /// Un pedido con menos de esta cantidad de días de anticipación es urgente
-  /// y lleva recargo.
+  /// Un pedido con menos de esta cantidad de días de anticipación se marca
+  /// como urgente para los pilotos. No lleva recargo: el precio lo negocian
+  /// las partes.
   static const diasUrgencia = 2;
 
   /// Superficie máxima de una sola solicitud, en hectáreas.
@@ -66,6 +67,23 @@ abstract final class ReglasSolicitud {
     if (valor > hectareasMaximas) {
       return 'Una solicitud admite hasta $hectareasMaximas ha.';
     }
+    return null;
+  }
+
+  /// Interpreta lo que el cliente escribió como precio por hectárea («120»
+  /// o «118,50»). Nunca pasa por `double`.
+  static Decimal? parsearPrecio(String texto) => parsearHectareas(texto);
+
+  /// Mensaje si el precio por hectárea no sirve; `null` si es válido. El
+  /// servidor vuelve a validar el máximo de sanidad.
+  static String? errorDePrecio(String texto) {
+    if (texto.trim().isEmpty) {
+      return 'Propón cuánto pagarías por hectárea.';
+    }
+    final valor = parsearPrecio(texto);
+    if (valor == null) return 'Escribe un número, por ejemplo 120.';
+    if (valor <= Decimal.zero) return 'El precio tiene que ser mayor a 0.';
+    if (valor.scale > 2) return 'Usa como máximo dos decimales.';
     return null;
   }
 }

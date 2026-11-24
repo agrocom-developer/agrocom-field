@@ -66,8 +66,5 @@ void main() {
       expect(trazo.length, greaterThanOrEqualTo(previo));
       previo = trazo.length;
     }
-    final f = r.fotograma(servicio, servicio.hectareasDeclaradas);
-    expect(f.estado, EstadoServicio.completado);
-    expect(f.progreso, 1.0);
   });
 }

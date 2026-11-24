@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
+import '../../solicitudes/domain/solicitud.dart';
 
 /// La solicitud no pudo salir porque el dispositivo no tiene conexión. El
 /// formulario conserva lo escrito y el reintento reutiliza la misma clave de
@@ -9,9 +10,42 @@ class SolicitudSinConexion implements Exception {
   const SolicitudSinConexion();
 }
 
-/// Solicitud de un servicio. Requiere red: no hay outbox en el flavor
-/// cliente. La `claveIdempotencia` de [SolicitudServicio] se genera al abrir
-/// el formulario y se reutiliza en cada reintento (ADR 0009).
+/// Lo que el cliente declara para abrir su solicitud a los pilotos.
+/// `claveIdempotencia` nace en el dispositivo al abrir el formulario para que
+/// un reintento no cree dos solicitudes (ADR 0009).
+class NuevaSolicitud {
+  const NuevaSolicitud({
+    required this.lote,
+    required this.hectareas,
+    required this.cultivo,
+    required this.producto,
+    required this.fechaDeseada,
+    required this.precioHa,
+    required this.claveIdempotencia,
+    this.accesos,
+    this.observaciones,
+  });
+
+  final Lote lote;
+  final Decimal hectareas;
+  final String cultivo;
+  final String producto;
+  final DateTime fechaDeseada;
+
+  /// Precio por hectárea que propone el cliente.
+  final Decimal precioHa;
+  final String claveIdempotencia;
+
+  /// Cómo se llega al lote; solo se guarda si el lote es nuevo.
+  final String? accesos;
+  final String? observaciones;
+
+  /// Total estimado con el precio propuesto.
+  Decimal get total => hectareas * precioHa;
+}
+
+/// Publicación de una solicitud. Requiere red: no hay outbox en el flavor
+/// cliente.
 abstract interface class SolicitudRepositorio {
   /// Lotes que el cliente tiene registrados.
   Future<List<Lote>> lotesDelCliente();
@@ -22,29 +56,7 @@ abstract interface class SolicitudRepositorio {
   /// Cultivos habituales de la zona, para elegir sin teclear.
   Future<List<String>> cultivosSugeridos();
 
-  /// Precio estimado. [hectareas] es la superficie a fumigar (por defecto la
-  /// del lote) y [fechaDeseada] permite calcular el recargo por urgencia.
-  ///
-  /// El resto de los datos de la solicitud ([producto], [cultivo],
-  /// [ventana] y [claveIdempotencia]) los necesita el repositorio de red,
-  /// que calcula la tarifa sobre un borrador de la solicitud; el repositorio
-  /// demo los ignora. Con la misma clave y los mismos datos, el borrador es
-  /// el mismo que después se publica en [solicitar].
-  Future<EstimacionServicio> estimar({
-    required Lote lote,
-    required Decimal dosisLitrosPorHectarea,
-    Decimal? hectareas,
-    DateTime? fechaDeseada,
-    String? producto,
-    String? cultivo,
-    VentanaHoraria ventana = VentanaHoraria.indistinta,
-    String? claveIdempotencia,
-  });
-
-  /// Crea el servicio. Lanza [SolicitudSinConexion] si no hay red.
-  Future<Servicio> solicitar(SolicitudServicio solicitud);
-
-  /// Avance de la asignación de un servicio recién solicitado: primero
-  /// proveedores propios de Agrocom, después terceros de la zona.
-  Stream<BusquedaProveedor> observarBusqueda(String servicioId);
+  /// Crea la solicitud y la abre a los pilotos. Lanza [SolicitudSinConexion]
+  /// si no hay red.
+  Future<Solicitud> publicar(NuevaSolicitud solicitud);
 }

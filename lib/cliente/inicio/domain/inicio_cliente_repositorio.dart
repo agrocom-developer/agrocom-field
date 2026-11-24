@@ -1,4 +1,4 @@
-import '../../../nucleo/marketplace/dominio/dominio.dart';
+import '../../solicitudes/domain/solicitud.dart';
 
 enum TonoAvisoInicio { info, alerta }
 
@@ -18,12 +18,12 @@ class AvisoInicio {
 }
 
 /// Lo que muestra el inicio del cliente, ya resuelto: la pantalla no filtra
-/// ni ordena servicios.
+/// ni ordena solicitudes.
 class ResumenInicio {
   const ResumenInicio({
     required this.nombre,
     this.empresa,
-    this.servicioActivo,
+    this.solicitudActiva,
     this.otrosActivos = 0,
     this.porCalificar = const [],
     this.recientes = const [],
@@ -34,25 +34,25 @@ class ResumenInicio {
   final String nombre;
   final String? empresa;
 
-  /// El servicio activo más relevante: el que está en ejecución o, si no
-  /// hay ninguno volando, el activo más reciente.
-  final Servicio? servicioActivo;
+  /// La solicitud activa más relevante: la que tiene ofertas esperando, la
+  /// que está en ejecución o, si no hay, la activa más reciente.
+  final Solicitud? solicitudActiva;
 
-  /// Cuántos servicios activos hay además de [servicioActivo].
+  /// Cuántas solicitudes activas hay además de [solicitudActiva].
   final int otrosActivos;
 
-  /// Completados que el cliente todavía no calificó.
-  final List<Servicio> porCalificar;
+  /// Finalizadas que el cliente todavía no calificó.
+  final List<Solicitud> porCalificar;
 
-  /// Últimos servicios cerrados, del más reciente al más antiguo.
-  final List<Servicio> recientes;
+  /// Últimas solicitudes cerradas, de la más reciente a la más antigua.
+  final List<Solicitud> recientes;
 
   final List<AvisoInicio> avisos;
 
   ResumenInicio sinAviso(String id) => ResumenInicio(
     nombre: nombre,
     empresa: empresa,
-    servicioActivo: servicioActivo,
+    solicitudActiva: solicitudActiva,
     otrosActivos: otrosActivos,
     porCalificar: porCalificar,
     recientes: recientes,

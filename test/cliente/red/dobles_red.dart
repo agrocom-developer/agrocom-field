@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:agrocom_field/cliente/red/cliente_http.dart';
-import 'package:agrocom_field/cliente/red/fuente_servicios.dart';
+import 'package:agrocom_field/cliente/red/fuente_solicitudes.dart';
 import 'package:agrocom_field/nucleo/api/api_client.dart';
 import 'package:agrocom_field/nucleo/auth/dispositivo_store.dart';
 import 'package:agrocom_field/nucleo/auth/token_store.dart';
@@ -134,14 +134,14 @@ class EntornoRed {
         ..httpClientAdapter = servidor,
     );
     http = ClienteHttp(api);
-    fuente = FuenteServicios(http, ZonasRed(http));
+    fuente = FuenteSolicitudes(http, ZonasRed(http));
   }
 
   final servidor = AdaptadorFalso();
   final TokenEnMemoria tokens;
   late final ApiClient api;
   late final ClienteHttp http;
-  late final FuenteServicios fuente;
+  late final FuenteSolicitudes fuente;
 }
 
 // ── Cuerpos de ejemplo, con la forma de `docs/api/openapi.yaml` ──────────
@@ -165,9 +165,13 @@ Map<String, dynamic> terrenoJson({
 
 Map<String, dynamic> solicitudJson({
   int id = 8,
-  String estado = 'completada',
+  String estado = 'calificada',
   int? proveedorId = 1,
-  String? montoFinal = '7200.00',
+  int? ofertaAdjudicadaId = 14,
+  String? precioAcordado = '124.0000',
+  String? montoFinal = '7440.00',
+  String? ejecutadas = '60.0000',
+  String porcentaje = '100.00',
   List<Map<String, dynamic>>? historial,
   Map<String, dynamic>? terreno,
 }) => {
@@ -183,16 +187,69 @@ Map<String, dynamic> solicitudJson({
   'ventana_hasta': '2026-12-06',
   'urgente': false,
   'observaciones': null,
-  'tarifa_hectarea': '120.0000',
-  'monto_estimado': '7200.00',
+  'precio_ha_propuesto': '120.0000',
+  'precio_ha_acordado': precioAcordado,
+  'monto_estimado': '7440.00',
+  'hectareas_ejecutadas': ejecutadas,
+  'porcentaje_avance': porcentaje,
   'monto_final': montoFinal,
   'estado': estado,
+  'oferta_adjudicada_id': ofertaAdjudicadaId,
   'proveedor_id': proveedorId,
+  'vence_en': '2026-12-01T12:18:29+00:00',
   'publicada_en': '2026-11-24T12:18:29+00:00',
   'motivo_cancelacion': null,
   'cancelada_por': null,
   'terreno': terreno ?? terrenoJson(),
   'historial': ?historial,
+};
+
+/// Una oferta como la devuelve `GET /api/solicitudes/{id}/ofertas`.
+Map<String, dynamic> ofertaJson({
+  int id = 20,
+  int solicitudId = 8,
+  int numero = 1,
+  String autor = 'proveedor',
+  String tipo = 'acepta_propuesta',
+  String precioHa = '120.0000',
+  String estado = 'vigente',
+  bool definitiva = false,
+  String venceEn = '2026-11-25T06:00:00+00:00',
+  String? nota,
+  String nombre = 'Mamani Agroservicios',
+}) => {
+  'id': id,
+  'uuid_cliente': 'a1b2c3d4-0000-4000-8000-00000000000$id',
+  'solicitud_id': solicitudId,
+  'proveedor_id': 2,
+  'equipo_id': 3,
+  'numero': numero,
+  'autor': autor,
+  'tipo': tipo,
+  'precio_ha': precioHa,
+  'monto_estimado': '7200.00',
+  'estado': estado,
+  'es_definitiva': definitiva,
+  'nota': nota,
+  'oferta_anterior_id': null,
+  'distancia_km': '22.52',
+  'vence_en': venceEn,
+  'respondida_en': null,
+  'creada_en': '2026-11-24T06:00:00+00:00',
+  'proveedor': {
+    'id': 2,
+    'nombre': nombre,
+    'calificacion_promedio': '4.50',
+    'calificaciones_conteo': 8,
+    'tasa_cancelacion': '0.1000',
+    'dron': {
+      'marca': 'DJI',
+      'modelo': 'Agras T40',
+      'anio': 2024,
+      'capacidad_tanque_l': '40.00',
+      'fotos': <Object>[],
+    },
+  },
 };
 
 Map<String, dynamic> pasoHistorial(String estado, String cuando) => {

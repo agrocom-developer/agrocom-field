@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../nucleo/marketplace/dominio/dominio.dart';
 import '../nucleo/ui/paleta_campo.dart';
 import '../nucleo/ui/componentes/componentes_campo.dart';
 import '../nucleo/ui/tema_campo.dart';
@@ -11,11 +10,11 @@ import 'di/dependencias_cliente.dart';
 import 'inicio/domain/inicio_cliente_repositorio.dart';
 import 'inicio/presentation/inicio_cliente_cubit.dart';
 import 'inicio/presentation/inicio_cliente_pantalla.dart';
-import 'solicitar/presentation/buscando_proveedor_pantalla.dart';
 import 'solicitar/presentation/solicitar_pantalla.dart';
+import 'solicitudes/domain/solicitud.dart';
+import 'solicitudes/presentation/historial_pantalla.dart';
+import 'solicitudes/presentation/solicitud_detalle_pantalla.dart';
 import 'cuenta/presentation/cuenta_pantalla.dart';
-import 'servicios/presentation/historial_pantalla.dart';
-import 'servicios/presentation/servicio_detalle_pantalla.dart';
 
 /// App del flavor cliente. Tema claro por defecto y oscuro según el sistema
 /// (sistema visual, §2); el modo campo es solo de piloto y auxiliar.
@@ -46,7 +45,7 @@ class AppCliente extends StatelessWidget {
   }
 }
 
-/// Navegación raíz del cliente: Inicio, Solicitar, Servicios y Cuenta. Barra
+/// Navegación raíz del cliente: Inicio, Solicitar, Solicitudes y Cuenta. Barra
 /// inferior en teléfono y riel lateral en iPad (`NavegacionAdaptativaCampo`).
 class ShellCliente extends StatefulWidget {
   const ShellCliente({this.alCerrarSesion, super.key});
@@ -76,7 +75,7 @@ class _ShellClienteState extends State<ShellCliente> {
     DestinoCampo(
       icono: Icons.list_alt_outlined,
       iconoActivo: Icons.list_alt_rounded,
-      etiqueta: 'Servicios',
+      etiqueta: 'Solicitudes',
     ),
     DestinoCampo(
       icono: Icons.person_outline_rounded,
@@ -97,22 +96,21 @@ class _ShellClienteState extends State<ShellCliente> {
     super.dispose();
   }
 
-  /// La solicitud ya está creada: se muestra la búsqueda de proveedor y,
-  /// desde ahí, el detalle del servicio. Debajo queda el inicio.
-  void _alSolicitado(Servicio servicio) {
+  /// La solicitud ya está publicada: se abre su detalle, desde donde se ven
+  /// las ofertas cuando lleguen. Debajo queda el inicio.
+  void _alSolicitado(Solicitud solicitud) {
     setState(() => _indice = 0);
     final navegador = Navigator.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Publicamos tu solicitud. Te avisamos cuando lleguen ofertas.',
+        ),
+      ),
+    );
     navegador.push(
       MaterialPageRoute<void>(
-        fullscreenDialog: true,
-        builder: (_) => BuscandoProveedorPantalla(
-          servicio: servicio,
-          alVerServicio: () => navegador.pushReplacement(
-            MaterialPageRoute<void>(
-              builder: (_) => ServicioDetallePantalla(servicioId: servicio.id),
-            ),
-          ),
-        ),
+        builder: (_) => SolicitudDetallePantalla(solicitudId: solicitud.id),
       ),
     );
   }

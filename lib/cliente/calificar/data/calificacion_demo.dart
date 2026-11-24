@@ -1,5 +1,6 @@
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../demo/almacen_demo_cliente.dart';
+import '../../solicitudes/domain/solicitud.dart';
 import '../domain/calificacion_repositorio.dart';
 
 class CalificacionDemo implements CalificacionRepositorio {
@@ -29,7 +30,12 @@ class CalificacionDemo implements CalificacionRepositorio {
       comentario: comentario,
       fecha: _almacen.datos.ahora,
     );
-    _almacen.reemplazar(servicio.copiarCon(puntajeDelCliente: puntaje));
+    _almacen.reemplazar(
+      servicio.copiarCon(
+        puntajeDelCliente: puntaje,
+        estado: EstadoSolicitud.calificada,
+      ),
+    );
   }
 
   @override
@@ -49,7 +55,7 @@ class CalificacionDemo implements CalificacionRepositorio {
               EtiquetaCalificacion.coberturaPareja,
             }
           : const {EtiquetaCalificacion.comunicacion},
-      fecha: servicio.fechaDeseada.add(const Duration(days: 1)),
+      fecha: servicio.ventanaDesde.add(const Duration(days: 1)),
     );
   }
 

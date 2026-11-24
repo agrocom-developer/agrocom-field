@@ -1,15 +1,13 @@
-import 'dart:async';
-
 import 'package:agrocom_field/cliente/demo/almacen_demo_cliente.dart';
 import 'package:agrocom_field/cliente/solicitar/data/solicitud_demo.dart';
 import 'package:agrocom_field/cliente/solicitar/domain/solicitud_repositorio.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_cubit.dart';
+import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
 import 'package:agrocom_field/nucleo/marketplace/demo/datos_demo.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:agrocom_field/nucleo/marketplace/ui/mapa_lote.dart';
 import 'package:agrocom_field/nucleo/ui/paleta_campo.dart';
 import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,15 +19,11 @@ final ahoraDePrueba = DateTime(2026, 11, 23, 10);
 DateTime relojDePrueba() => ahoraDePrueba;
 
 /// Repositorio de prueba: delega en la demo con reloj fijo, cuenta las
-/// solicitudes que salen y deja controlar la carga y la búsqueda.
+/// solicitudes que salen y deja controlar la carga.
 class RepositorioEspia implements SolicitudRepositorio {
   RepositorioEspia({this.lotes, this.fallaLaCarga = false})
     : almacen = AlmacenDemoCliente(datos: DatosDemo(reloj: relojDePrueba)) {
-    demo = SolicitudDemo(
-      almacen,
-      latencia: Duration.zero,
-      pasoBusqueda: const Duration(seconds: 4),
-    );
+    demo = SolicitudDemo(almacen, latencia: Duration.zero);
   }
 
   final AlmacenDemoCliente almacen;
@@ -38,13 +32,14 @@ class RepositorioEspia implements SolicitudRepositorio {
   /// Con valor, reemplaza los lotes de la demo.
   final List<Lote>? lotes;
   bool fallaLaCarga;
-  bool fallaLaEstimacion = false;
 
-  /// Claves de idempotencia de cada llamada a [solicitar], en orden.
-  final clavesEnviadas = <String>[];
+  /// Solicitudes enviadas a [publicar], en orden.
+  final enviadas = <NuevaSolicitud>[];
 
-  /// Con valor, [observarBusqueda] devuelve este flujo en vez del de la demo.
-  StreamController<BusquedaProveedor>? busqueda;
+  /// Claves de idempotencia de cada llamada a [publicar], en orden.
+  List<String> get clavesEnviadas => [
+    for (final s in enviadas) s.claveIdempotencia,
+  ];
 
   @override
   Future<List<Lote>> lotesDelCliente() async {
@@ -59,34 +54,10 @@ class RepositorioEspia implements SolicitudRepositorio {
   Future<List<String>> cultivosSugeridos() => demo.cultivosSugeridos();
 
   @override
-  Future<EstimacionServicio> estimar({
-    required Lote lote,
-    required Decimal dosisLitrosPorHectarea,
-    Decimal? hectareas,
-    DateTime? fechaDeseada,
-    String? producto,
-    String? cultivo,
-    VentanaHoraria ventana = VentanaHoraria.indistinta,
-    String? claveIdempotencia,
-  }) {
-    if (fallaLaEstimacion) throw Exception('sin red');
-    return demo.estimar(
-      lote: lote,
-      dosisLitrosPorHectarea: dosisLitrosPorHectarea,
-      hectareas: hectareas,
-      fechaDeseada: fechaDeseada,
-    );
+  Future<Solicitud> publicar(NuevaSolicitud solicitud) {
+    enviadas.add(solicitud);
+    return demo.publicar(solicitud);
   }
-
-  @override
-  Future<Servicio> solicitar(SolicitudServicio solicitud) {
-    clavesEnviadas.add(solicitud.claveIdempotencia);
-    return demo.solicitar(solicitud);
-  }
-
-  @override
-  Stream<BusquedaProveedor> observarBusqueda(String servicioId) =>
-      busqueda?.stream ?? demo.observarBusqueda(servicioId);
 }
 
 SolicitarCubit crearCubit(RepositorioEspia repo) =>
@@ -100,9 +71,9 @@ const contornoDePrueba = [
   GeoPunto(-16.9310, -62.6300),
 ];
 
-/// Deja el formulario completo y parado en el resumen, con el lote «Maíz La
-/// Curva» (85,5 ha) para el martes 24 (urgente) o el jueves 26.
-Future<void> completarHastaResumen(
+/// Deja el formulario completo y parado en el paso del precio, con el lote
+/// «Maíz La Curva» (85,5 ha) para el martes 24 (urgente) o el jueves 26.
+Future<void> completarHastaPrecio(
   SolicitarCubit cubit, {
   bool urgente = false,
 }) async {
@@ -112,9 +83,7 @@ Future<void> completarHastaResumen(
     ..elegirProducto('Insecticida piretroide');
   await cubit.avanzar();
   await cubit.avanzar();
-  cubit
-    ..elegirFecha(cubit.state.fechas[urgente ? 0 : 2])
-    ..elegirVentana(VentanaHoraria.amanecer);
+  cubit.elegirFecha(cubit.state.fechas[urgente ? 0 : 2]);
   await cubit.avanzar();
 }
 

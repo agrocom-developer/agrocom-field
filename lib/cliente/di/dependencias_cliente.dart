@@ -12,9 +12,7 @@ import '../acceso/domain/acceso_repositorio.dart';
 import '../calificar/data/calificacion_demo.dart';
 import '../calificar/data/calificacion_red.dart';
 import '../calificar/domain/calificacion_repositorio.dart';
-import '../conformidad/data/conformidad_demo.dart';
-import '../conformidad/data/conformidad_red.dart';
-import '../conformidad/domain/conformidad_repositorio.dart';
+import '../comun/presentation/foto_remota.dart';
 import '../cuenta/data/cuenta_demo.dart';
 import '../cuenta/data/cuenta_red.dart';
 import '../cuenta/domain/cuenta_repositorio.dart';
@@ -22,20 +20,23 @@ import '../demo/almacen_demo_cliente.dart';
 import '../inicio/data/inicio_cliente_demo.dart';
 import '../inicio/data/inicio_cliente_red.dart';
 import '../inicio/domain/inicio_cliente_repositorio.dart';
+import '../ofertas/data/ofertas_demo.dart';
+import '../ofertas/data/ofertas_red.dart';
+import '../ofertas/domain/ofertas_repositorio.dart';
 import '../problema/data/problema_demo.dart';
 import '../problema/data/problema_red.dart';
-import '../red/cliente_http.dart';
-import '../red/fuente_servicios.dart';
 import '../problema/domain/problema_repositorio.dart';
+import '../red/cliente_http.dart';
+import '../red/fuente_solicitudes.dart';
 import '../seguimiento/data/seguimiento_demo.dart';
 import '../seguimiento/data/seguimiento_red.dart';
 import '../seguimiento/domain/seguimiento_repositorio.dart';
-import '../servicios/data/servicios_cliente_demo.dart';
-import '../servicios/data/servicios_cliente_red.dart';
-import '../servicios/domain/servicios_cliente_repositorio.dart';
 import '../solicitar/data/solicitud_demo.dart';
 import '../solicitar/data/solicitud_red.dart';
 import '../solicitar/domain/solicitud_repositorio.dart';
+import '../solicitudes/data/solicitudes_demo.dart';
+import '../solicitudes/data/solicitudes_red.dart';
+import '../solicitudes/domain/solicitudes_repositorio.dart';
 
 /// Repositorios del flavor cliente. La interfaz de cada feature es lo único
 /// que ven las pantallas; este contenedor decide qué implementación se usa.
@@ -45,11 +46,11 @@ import '../solicitar/domain/solicitud_repositorio.dart';
 /// regla 5; lo vigila `test/arquitectura/importaciones_test.dart`).
 class DependenciasCliente {
   const DependenciasCliente({
-    required this.servicios,
+    required this.solicitudes,
     required this.solicitud,
+    required this.ofertas,
     required this.seguimiento,
     required this.calificacion,
-    required this.conformidad,
     required this.problema,
     required this.cuenta,
     required this.acceso,
@@ -62,25 +63,32 @@ class DependenciasCliente {
   ///
   /// Por defecto la sesión ya está iniciada y la app abre en el inicio. Con
   /// [primerUso] arranca como recién instalada: presentación, acceso y
-  /// después el inicio (así corre `main_cliente.dart` en modo demo). Con
-  /// [almacen] y [latencia] las pruebas fijan los datos y quitan la espera
-  /// simulada.
+  /// después el inicio (así corre `main_cliente.dart` en modo demo), y los
+  /// pilotos simulados responden: ofertan, contraofertan y contestan el chat.
+  /// Con [almacen] y [latencia] las pruebas fijan los datos y quitan la
+  /// espera simulada.
   factory DependenciasCliente.demo({
     bool primerUso = false,
     AlmacenDemoCliente? almacen,
     Duration? latencia,
   }) {
-    almacen ??= AlmacenDemoCliente();
+    almacen ??= AlmacenDemoCliente(respuestasAutomaticas: primerUso);
     return DependenciasCliente(
-      servicios: ServiciosClienteDemo(almacen),
-      solicitud: SolicitudDemo(almacen),
-      seguimiento: SeguimientoDemo(almacen),
+      solicitudes: latencia == null
+          ? SolicitudesDemo(almacen)
+          : SolicitudesDemo(almacen, latencia: latencia),
+      solicitud: latencia == null
+          ? SolicitudDemo(almacen)
+          : SolicitudDemo(almacen, latencia: latencia),
+      ofertas: latencia == null
+          ? OfertasDemo(almacen)
+          : OfertasDemo(almacen, latencia: latencia),
+      seguimiento: latencia == null
+          ? SeguimientoDemo(almacen)
+          : SeguimientoDemo(almacen, latencia: latencia),
       calificacion: latencia == null
           ? CalificacionDemo(almacen)
           : CalificacionDemo(almacen, latencia: latencia),
-      conformidad: latencia == null
-          ? ConformidadDemo(almacen)
-          : ConformidadDemo(almacen, latencia: latencia),
       problema: latencia == null
           ? ProblemaDemo(almacen)
           : ProblemaDemo(almacen, latencia: latencia),
@@ -109,20 +117,25 @@ class DependenciasCliente {
     String? notaAcceso,
   }) {
     final http = ClienteHttp(api);
-    final fuente = FuenteServicios(http, ZonasRed(http));
+    final fuente = FuenteSolicitudes(http, ZonasRed(http));
     final cuenta = CuentaRed(http);
     final expiracion = StreamController<void>.broadcast();
+    void olvidar() {
+      fuente.olvidar();
+      FotoRemota.limpiarCache();
+    }
+
     api.alSesionExpirada = () {
       unawaited(tokenStore.borrarToken());
-      fuente.olvidar();
+      olvidar();
       expiracion.add(null);
     };
     return DependenciasCliente(
-      servicios: ServiciosClienteRed(fuente),
+      solicitudes: SolicitudesRed(http, fuente),
       solicitud: SolicitudRed(http, fuente),
-      seguimiento: SeguimientoRed(fuente),
+      ofertas: OfertasRed(http, fuente),
+      seguimiento: SeguimientoRed(http),
       calificacion: CalificacionRed(http, fuente),
-      conformidad: ConformidadRed(http, fuente),
       problema: ProblemaRed(http, fuente),
       cuenta: cuenta,
       acceso: AccesoRed(
@@ -130,7 +143,7 @@ class DependenciasCliente {
         tokenStore: tokenStore,
         dispositivoStore: dispositivoStore,
         onboarding: onboarding ?? OnboardingStoreLocal(),
-        alCerrarSesion: fuente.olvidar,
+        alCerrarSesion: olvidar,
       ),
       inicio: InicioClienteRed(fuente, http, cuenta),
       notaAcceso: notaAcceso,
@@ -138,11 +151,11 @@ class DependenciasCliente {
     );
   }
 
-  final ServiciosClienteRepositorio servicios;
+  final SolicitudesRepositorio solicitudes;
   final SolicitudRepositorio solicitud;
+  final OfertasRepositorio ofertas;
   final SeguimientoRepositorio seguimiento;
   final CalificacionRepositorio calificacion;
-  final ConformidadRepositorio conformidad;
   final ProblemaRepositorio problema;
   final CuentaRepositorio cuenta;
   final AccesoRepositorio acceso;
@@ -159,11 +172,11 @@ class DependenciasCliente {
   /// Expone los repositorios al árbol de widgets.
   Widget proveer({required Widget child}) => MultiRepositoryProvider(
     providers: [
-      RepositoryProvider<ServiciosClienteRepositorio>.value(value: servicios),
+      RepositoryProvider<SolicitudesRepositorio>.value(value: solicitudes),
       RepositoryProvider<SolicitudRepositorio>.value(value: solicitud),
+      RepositoryProvider<OfertasRepositorio>.value(value: ofertas),
       RepositoryProvider<SeguimientoRepositorio>.value(value: seguimiento),
       RepositoryProvider<CalificacionRepositorio>.value(value: calificacion),
-      RepositoryProvider<ConformidadRepositorio>.value(value: conformidad),
       RepositoryProvider<ProblemaRepositorio>.value(value: problema),
       RepositoryProvider<CuentaRepositorio>.value(value: cuenta),
       RepositoryProvider<AccesoRepositorio>.value(value: acceso),

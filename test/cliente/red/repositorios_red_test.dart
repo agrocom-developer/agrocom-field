@@ -1,11 +1,14 @@
 import 'package:agrocom_field/cliente/calificar/data/calificacion_red.dart';
-import 'package:agrocom_field/cliente/conformidad/data/conformidad_red.dart';
 import 'package:agrocom_field/cliente/cuenta/data/cuenta_red.dart';
 import 'package:agrocom_field/cliente/inicio/data/inicio_cliente_red.dart';
 import 'package:agrocom_field/cliente/inicio/domain/inicio_cliente_repositorio.dart';
 import 'package:agrocom_field/cliente/problema/data/problema_red.dart';
+import 'package:agrocom_field/cliente/ofertas/data/ofertas_red.dart';
+import 'package:agrocom_field/cliente/ofertas/domain/oferta_recibida.dart';
 import 'package:agrocom_field/cliente/seguimiento/data/seguimiento_red.dart';
-import 'package:agrocom_field/cliente/servicios/data/servicios_cliente_red.dart';
+import 'package:agrocom_field/cliente/seguimiento/domain/seguimiento.dart';
+import 'package:agrocom_field/cliente/solicitudes/data/solicitudes_red.dart';
+import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -42,13 +45,45 @@ EntornoRed _entornoConServicios() {
       '/api/solicitudes',
       cuerpo: {
         'solicitudes': [
-          solicitudJson(id: 9, estado: 'borrador', proveedorId: null),
+          solicitudJson(
+            id: 9,
+            estado: 'borrador',
+            proveedorId: null,
+            ofertaAdjudicadaId: null,
+          ),
           solicitudJson(id: 8),
-          solicitudJson(id: 5, estado: 'asignada', montoFinal: null),
+          solicitudJson(
+            id: 5,
+            estado: 'con_ofertas',
+            proveedorId: null,
+            ofertaAdjudicadaId: null,
+            precioAcordado: null,
+            montoFinal: null,
+            ejecutadas: null,
+            porcentaje: '0.00',
+          ),
         ],
         'pagina': 1,
         'paginas': 1,
         'total': 3,
+      },
+    )
+    ..responder(
+      'GET',
+      '/api/solicitudes/5/ofertas',
+      cuerpo: {
+        'ofertas': [
+          ofertaJson(id: 21, solicitudId: 5, precioHa: '130.0000'),
+          ofertaJson(id: 22, solicitudId: 5, precioHa: '118.0000'),
+          ofertaJson(id: 23, solicitudId: 5, estado: 'vencida'),
+        ],
+      },
+    )
+    ..responder(
+      'GET',
+      '/api/ofertas/14',
+      cuerpo: {
+        'oferta': ofertaJson(id: 14, solicitudId: 8, estado: 'aceptada'),
       },
     )
     ..responder(
@@ -68,18 +103,25 @@ EntornoRed _entornoConServicios() {
 }
 
 void main() {
-  group('ServiciosClienteRed', () {
-    test('lista los servicios sin borradores y con su calificación', () async {
-      final red = _entornoConServicios();
-      final repo = ServiciosClienteRed(red.fuente);
-      final servicios = await repo.observar().first;
-      expect(servicios.map((s) => s.id), ['8', '5']);
-      final completado = servicios.first;
-      expect(completado.puntajeDelCliente, 4);
-      expect(completado.proveedor?.nombre, 'Agrocom SRL');
-      expect(completado.lote.zona, 'Cuatro Cañadas');
-      expect(servicios.last.estado, EstadoServicio.asignado);
-    });
+  group('SolicitudesRed', () {
+    test(
+      'lista las solicitudes sin borradores, con piloto y calificación',
+      () async {
+        final red = _entornoConServicios();
+        final repo = SolicitudesRed(red.http, red.fuente);
+        final solicitudes = await repo.observar().first;
+        expect(solicitudes.map((s) => s.id), ['8', '5']);
+        final calificada = solicitudes.first;
+        expect(calificada.estado, EstadoSolicitud.calificada);
+        expect(calificada.puntajeDelCliente, 4);
+        expect(calificada.nombreProveedor, 'Mamani Agroservicios');
+        expect(calificada.lote.zona, 'Cuatro Cañadas');
+        final conOfertas = solicitudes.last;
+        expect(conOfertas.estado, EstadoSolicitud.conOfertas);
+        // Cuenta solo las ofertas vigentes: la vencida no suma.
+        expect(conOfertas.ofertasVigentes, 2);
+      },
+    );
 
     test('recorre todas las páginas', () async {
       final red = EntornoRed();
@@ -89,14 +131,20 @@ void main() {
           'GET',
           '/api/solicitudes',
           cuerpo: {
-            'solicitudes': [solicitudJson(id: 1, estado: 'asignada')],
+            'solicitudes': [
+              solicitudJson(
+                id: 1,
+                estado: 'adjudicada',
+                ofertaAdjudicadaId: null,
+              ),
+            ],
             'pagina': 1,
             'paginas': 2,
             'total': 2,
           },
         );
-      final servicios = await red.fuente.cargar();
-      expect(servicios, hasLength(2));
+      final solicitudes = await red.fuente.cargar();
+      expect(solicitudes, hasLength(2));
       expect(
         red.servidor.de('GET', '/api/solicitudes').map((p) => p.query['page']),
         [1, 2],
@@ -105,7 +153,7 @@ void main() {
 
     test('sin red muestra lo último conocido; sin nada, falla', () async {
       final red = _entornoConServicios();
-      final repo = ServiciosClienteRed(red.fuente);
+      final repo = SolicitudesRed(red.http, red.fuente);
       red.servidor.sinRed = true;
       await expectLater(repo.observar().first, throwsA(isA<SinConexion>()));
       red.servidor.sinRed = false;
@@ -114,16 +162,83 @@ void main() {
       expect((await repo.observar().first).map((s) => s.id), ['8', '5']);
     });
 
-    test('porId devuelve el servicio o null si no es del cliente', () async {
+    test('porId devuelve la solicitud o null si no es del cliente', () async {
       final red = _entornoConServicios();
       red.servidor.responder(
         'GET',
         '/api/solicitudes/8',
         cuerpo: {'solicitud': solicitudJson(id: 8)},
       );
-      final repo = ServiciosClienteRed(red.fuente);
-      expect((await repo.porId('8'))?.precio, Decimal.parse('7200.00'));
+      final repo = SolicitudesRed(red.http, red.fuente);
+      expect((await repo.porId('8'))?.montoFinal, Decimal.parse('7440.00'));
       expect(await repo.porId('77'), isNull);
+    });
+
+    test(
+      'cambiar el precio manda el decimal como texto y vuelve a leer',
+      () async {
+        final red = _entornoConServicios();
+        red.servidor.responder(
+          'POST',
+          '/api/solicitudes/5/precio',
+          cuerpo: {'solicitud': solicitudJson(id: 5, estado: 'abierta')},
+        );
+        final repo = SolicitudesRed(red.http, red.fuente);
+        await repo.observar().first;
+        final antes = red.servidor.de('GET', '/api/solicitudes').length;
+        await repo.cambiarPrecio('5', Decimal.parse('118.50'));
+        final envio = red.servidor
+            .de('POST', '/api/solicitudes/5/precio')
+            .single;
+        expect((envio.cuerpo! as Map)['precio_ha_propuesto'], '118.5');
+        expect(red.servidor.de('GET', '/api/solicitudes').length, antes + 1);
+      },
+    );
+
+    test('cancelar manda el motivo; un 422 se explica', () async {
+      final red = _entornoConServicios();
+      red.servidor.responder(
+        'POST',
+        '/api/solicitudes/5/cancelar',
+        cuerpo: {'solicitud': solicitudJson(id: 5, estado: 'cancelada')},
+      );
+      final repo = SolicitudesRed(red.http, red.fuente);
+      await repo.cancelar('5', ' Cambió la fecha ');
+      expect(
+        (red.servidor.de('POST', '/api/solicitudes/5/cancelar').single.cuerpo!
+            as Map)['motivo'],
+        'Cambió la fecha',
+      );
+      red.servidor.responder(
+        'POST',
+        '/api/solicitudes/8/cancelar',
+        codigo: 422,
+        cuerpo: {'message': 'La solicitud ya no admite cancelación.'},
+      );
+      await expectLater(
+        repo.cancelar('8', 'x'),
+        throwsA(
+          isA<OperacionRechazada>().having(
+            (e) => e.mensaje,
+            'mensaje',
+            contains('cancelación'),
+          ),
+        ),
+      );
+    });
+
+    test('renovar vuelve a abrir la solicitud expirada', () async {
+      final red = _entornoConServicios();
+      red.servidor.responder(
+        'POST',
+        '/api/solicitudes/5/renovar',
+        cuerpo: {'solicitud': solicitudJson(id: 5, estado: 'abierta')},
+      );
+      await SolicitudesRed(red.http, red.fuente).renovar('5');
+      expect(
+        red.servidor.de('POST', '/api/solicitudes/5/renovar'),
+        hasLength(1),
+      );
     });
 
     test('cerrar sesión descarta lo guardado', () async {
@@ -133,6 +248,114 @@ void main() {
       red.servidor.sinRed = true;
       await expectLater(
         red.fuente.observar().first,
+        throwsA(isA<SinConexion>()),
+      );
+    });
+  });
+
+  group('OfertasRed', () {
+    test('lista primero las vigentes, de menor a mayor precio', () async {
+      final red = _entornoConServicios();
+      final ofertas = await OfertasRed(red.http, red.fuente).deLaSolicitud('5');
+      expect(ofertas.map((o) => o.id), ['22', '21', '23']);
+      expect(ofertas.first.precioHa, Decimal.parse('118'));
+      expect(ofertas.last.estado, EstadoOferta.vencida);
+    });
+
+    test('aceptar adjudica y vuelve a leer las solicitudes', () async {
+      final red = _entornoConServicios();
+      red.servidor.responder(
+        'POST',
+        '/api/ofertas/22/aceptar',
+        cuerpo: {'oferta': ofertaJson(id: 22, estado: 'aceptada')},
+      );
+      final repo = OfertasRed(red.http, red.fuente);
+      await repo.aceptar('22');
+      expect(red.servidor.de('POST', '/api/ofertas/22/aceptar'), hasLength(1));
+      expect(red.servidor.de('GET', '/api/solicitudes'), isNotEmpty);
+    });
+
+    test('contraofertar manda el precio y la clave de idempotencia', () async {
+      final red = _entornoConServicios();
+      red.servidor.responder(
+        'POST',
+        '/api/ofertas/21/contraofertar',
+        codigo: 201,
+        cuerpo: {'oferta': ofertaJson(id: 30, numero: 2, autor: 'cliente')},
+      );
+      await OfertasRed(red.http, red.fuente).contraofertar(
+        '21',
+        precioHa: Decimal.parse('122.50'),
+        claveIdempotencia: 'clave-1',
+        nota: ' Mi mejor precio ',
+      );
+      final cuerpo =
+          red.servidor
+                  .de('POST', '/api/ofertas/21/contraofertar')
+                  .single
+                  .cuerpo!
+              as Map;
+      expect(cuerpo['precio_ha'], '122.5');
+      expect(cuerpo['uuid_cliente'], 'clave-1');
+      expect(cuerpo['nota'], 'Mi mejor precio');
+    });
+
+    test('rechazar cierra esa negociación', () async {
+      final red = _entornoConServicios();
+      red.servidor.responder(
+        'POST',
+        '/api/ofertas/21/rechazar',
+        cuerpo: {'oferta': ofertaJson(id: 21, estado: 'rechazada')},
+      );
+      await OfertasRed(red.http, red.fuente).rechazar('21');
+      expect(red.servidor.de('POST', '/api/ofertas/21/rechazar'), hasLength(1));
+    });
+
+    test('una oferta que ya no está vigente llega como OfertaCambio', () async {
+      final red = _entornoConServicios();
+      red.servidor.responder(
+        'POST',
+        '/api/ofertas/21/aceptar',
+        codigo: 409,
+        cuerpo: {
+          'message': 'La oferta ya no está vigente: venció o la retiraron.',
+          'codigo': 'oferta_no_vigente',
+        },
+      );
+      await expectLater(
+        OfertasRed(red.http, red.fuente).aceptar('21'),
+        throwsA(
+          isA<OfertaCambio>().having(
+            (e) => e.mensaje,
+            'mensaje',
+            contains('ya no está vigente'),
+          ),
+        ),
+      );
+    });
+
+    test('si otra oferta ya se adjudicó, también es OfertaCambio', () async {
+      final red = _entornoConServicios();
+      red.servidor.responder(
+        'POST',
+        '/api/ofertas/21/aceptar',
+        codigo: 409,
+        cuerpo: {
+          'message': 'La solicitud ya se adjudicó.',
+          'codigo': 'solicitud_ya_adjudicada',
+        },
+      );
+      await expectLater(
+        OfertasRed(red.http, red.fuente).aceptar('21'),
+        throwsA(isA<OfertaCambio>()),
+      );
+    });
+
+    test('sin red falla con SinConexion', () async {
+      final red = _entornoConServicios();
+      red.servidor.sinRed = true;
+      await expectLater(
+        OfertasRed(red.http, red.fuente).aceptar('21'),
         throwsA(isA<SinConexion>()),
       );
     });
@@ -175,7 +398,7 @@ void main() {
       final resumen = await repo.observar().first;
       expect(resumen.nombre, 'Rosario');
       expect(resumen.empresa, 'Agropecuaria San Rafael SRL');
-      expect(resumen.servicioActivo?.id, '5');
+      expect(resumen.solicitudActiva?.id, '5');
       expect(resumen.recientes.map((s) => s.id), ['8']);
       expect(resumen.avisos, hasLength(1));
       expect(resumen.avisos.single.tono, TonoAvisoInicio.alerta);
@@ -411,165 +634,221 @@ void main() {
     });
   });
 
-  group('ConformidadRed', () {
-    final historial = [
-      pasoHistorial('borrador', '2026-11-24T12:00:00+00:00'),
-      pasoHistorial('en_ejecucion', '2026-11-27T10:00:00+00:00'),
-      pasoHistorial('ejecutada', '2026-11-27T13:25:00+00:00'),
-    ];
-
-    test('un servicio ejecutado espera la firma del cliente', () async {
-      final red = _entornoConServicios();
-      red.servidor.responder(
-        'GET',
-        '/api/solicitudes/6',
-        cuerpo: {
-          'solicitud': solicitudJson(
-            id: 6,
-            estado: 'ejecutada',
-            montoFinal: null,
-            historial: historial,
-          ),
-        },
-      );
-      final expediente = await ConformidadRed(
-        red.http,
-        red.fuente,
-      ).expediente('6');
-      final acta = expediente.acta!;
-      expect(acta.estado, EstadoActa.pendiente);
-      expect(acta.hectareasConfirmadas, Decimal.parse('60'));
-      expect(acta.litrosAplicados, Decimal.parse('120'));
-      expect(
-        acta.fin.difference(acta.inicio),
-        const Duration(hours: 3, minutes: 25),
-      );
-      expect(
-        acta.venceConformidad.difference(acta.fin),
-        const Duration(hours: 72),
-      );
-      expect(expediente.evidencias, isEmpty);
-    });
-
-    test('las hectáreas confirmadas salen del monto final facturado', () async {
-      final red = _entornoConServicios();
-      red.servidor.responder(
-        'GET',
-        '/api/solicitudes/6',
-        cuerpo: {
-          'solicitud': solicitudJson(
-            id: 6,
-            montoFinal: '6000.00',
-            historial: [
-              ...historial,
-              pasoHistorial('completada', '2026-11-28T09:00:00+00:00'),
-            ],
-          ),
-        },
-      );
-      final acta = (await ConformidadRed(
-        red.http,
-        red.fuente,
-      ).expediente('6')).acta!;
-      expect(acta.estado, EstadoActa.firmada);
-      expect(acta.hectareasConfirmadas, Decimal.parse('50'));
-      expect(acta.firmadaEn, isNotNull);
-    });
-
-    test('un servicio en disputa queda con el acta observada', () {
-      expect(
-        ConformidadRed.actaDe(solicitudJson(estado: 'en_disputa'))?.estado,
-        EstadoActa.observada,
-      );
-      expect(ConformidadRed.actaDe(solicitudJson(estado: 'asignada')), isNull);
-    });
+  group('SeguimientoRed', () {
+    const avance = {
+      'avance': {
+        'solicitud_id': 5,
+        'estado': 'en_ejecucion',
+        'lado': 'cliente',
+        'hectareas_solicitadas': '80.0000',
+        'hectareas_ejecutadas': '51.2000',
+        'porcentaje_avance': '64.00',
+        'precio_ha_acordado': '115.0000',
+        'monto_estimado': '9200.00',
+        'monto_final': null,
+        'iniciada_en': '2026-11-24T11:03:45+00:00',
+        'ultimo_avance_en': '2026-11-24T14:03:45+00:00',
+        'cierre_solicitado_en': null,
+        'finalizada_en': null,
+        'registros': [
+          {
+            'id': 3,
+            'uuid_cliente': 'u3',
+            'tipo': 'avance',
+            'hectareas_ejecutadas': '51.2000',
+            'porcentaje': '64.00',
+            'nota': 'Terminamos el sector central.',
+            'registrado_en': '2026-11-24T14:03:45+00:00',
+          },
+        ],
+        'fotos': [
+          {
+            'id': 2,
+            'uuid_cliente': 'f2',
+            'tipo': 'foto_avance',
+            'avance_id': 3,
+            'url': '/api/evidencias/2/archivo',
+            'subida_en': '2026-11-24T14:03:45+00:00',
+          },
+        ],
+      },
+    };
 
     test(
-      'firmar usa el endpoint de conformidad y devuelve el acta firmada',
+      'el avance trae las hectáreas exactas, las notas y las fotos',
       () async {
-        final red = _entornoConServicios();
+        final red = EntornoRed();
         red.servidor.responder(
-          'POST',
-          '/api/solicitudes/6/conformidad',
-          cuerpo: {
-            'solicitud': solicitudJson(
-              id: 6,
-              historial: [
-                ...historial,
-                pasoHistorial('completada', '2026-11-28T09:00:00+00:00'),
-              ],
-            ),
-          },
+          'GET',
+          '/api/solicitudes/5/avance',
+          cuerpo: avance,
         );
-        final acta = await ConformidadRed(
-          red.http,
-          red.fuente,
-        ).firmar(servicioId: '6', claveIdempotencia: 'k');
-        expect(acta.estado, EstadoActa.firmada);
-        expect(
-          red.servidor.de('POST', '/api/solicitudes/6/conformidad'),
-          hasLength(1),
-        );
+        final a = await SeguimientoRed(red.http).avance('5');
+        expect(a.hectareasEjecutadas, Decimal.parse('51.2'));
+        expect(a.porcentaje, Decimal.parse('64'));
+        expect(a.progreso, closeTo(0.64, 1e-9));
+        expect(a.registros.single.nota, 'Terminamos el sector central.');
+        expect(a.fotos.single.ruta, '/api/evidencias/2/archivo');
+        // La foto lleva la nota del avance al que pertenece.
+        expect(a.fotos.single.nota, 'Terminamos el sector central.');
       },
     );
 
-    test('firmar antes de tiempo muestra el motivo del servidor', () async {
-      final red = _entornoConServicios();
-      red.servidor.responder(
-        'POST',
-        '/api/solicitudes/6/conformidad',
-        codigo: 422,
-        cuerpo: {'message': 'La solicitud todavía no está ejecutada.'},
-      );
-      await expectLater(
-        ConformidadRed(
-          red.http,
-          red.fuente,
-        ).firmar(servicioId: '6', claveIdempotencia: 'k'),
-        throwsA(
-          isA<OperacionRechazada>().having(
-            (e) => e.mensaje,
-            'mensaje',
-            contains('ejecutada'),
-          ),
-        ),
-      );
-    });
-  });
-
-  group('SeguimientoRed', () {
-    test('emite el estado real y termina cuando el servicio cierra', () async {
-      final red = _entornoConServicios();
+    test('la ubicación del piloto es un punto con su antigüedad', () async {
+      final red = EntornoRed();
       red.servidor.responder(
         'GET',
-        '/api/solicitudes/5',
-        secuencia: [
-          {
-            'solicitud': solicitudJson(
-              id: 5,
-              estado: 'en_ejecucion',
-              montoFinal: null,
-            ),
+        '/api/solicitudes/5/ubicacion-piloto',
+        cuerpo: {
+          'ubicacion': {
+            'latitud': -17.512,
+            'longitud': -63.17,
+            'precision_m': 12,
+            'capturado_en': '2026-11-24T16:01:45+00:00',
+            'antiguedad_s': 90,
+            'vigente': true,
           },
-          {'solicitud': solicitudJson(id: 5, estado: 'ejecutada')},
-        ],
-        cuerpo: null,
+        },
       );
-      final repo = SeguimientoRed(red.fuente, intervalo: Duration.zero);
-      final cuadros = await repo.observar('5').toList();
-      expect(cuadros.map((c) => c.estado), [
-        EstadoServicio.enEjecucion,
-        EstadoServicio.completado,
-      ]);
-      expect(cuadros.first.hectareasDeclaradas, Decimal.parse('60'));
-      expect(cuadros.first.trazado, isEmpty);
+      final u = await SeguimientoRed(red.http).ubicacionDelPiloto('5');
+      expect(u?.punto, const GeoPunto(-17.512, -63.17));
+      expect(u?.vigente, isTrue);
+      expect(u?.precisionMetros, 12);
     });
 
-    test('sin red el error llega al flujo', () async {
+    test('sin ubicación el servidor responde null', () async {
+      final red = EntornoRed();
+      red.servidor.responder(
+        'GET',
+        '/api/solicitudes/5/ubicacion-piloto',
+        cuerpo: {'ubicacion': null},
+      );
+      expect(await SeguimientoRed(red.http).ubicacionDelPiloto('5'), isNull);
+    });
+
+    test(
+      'los mensajes se piden con el cursor y marcan quién escribió',
+      () async {
+        final red = EntornoRed();
+        red.servidor.responder(
+          'GET',
+          '/api/solicitudes/5/mensajes',
+          cuerpo: {
+            'mensajes': [
+              {
+                'id': 7,
+                'uuid_cliente': 'm7',
+                'solicitud_id': 5,
+                'autor_rol': 'proveedor',
+                'propio': false,
+                'texto': 'Empezamos.',
+                'leido_en': null,
+                'creado_en': '2026-11-24T12:03:45+00:00',
+              },
+              {
+                'id': 8,
+                'uuid_cliente': 'm8',
+                'solicitud_id': 5,
+                'autor_rol': 'cliente',
+                'propio': true,
+                'texto': 'Gracias.',
+                'leido_en': null,
+                'creado_en': '2026-11-24T13:03:45+00:00',
+              },
+            ],
+            'cursor': 8,
+            'solo_lectura': false,
+          },
+        );
+        final pagina = await SeguimientoRed(
+          red.http,
+        ).mensajes('5', despues: '6');
+        expect(pagina.mensajes.map((m) => m.propio), [false, true]);
+        expect(pagina.cursor, '8');
+        expect(pagina.soloLectura, isFalse);
+        final peticion = red.servidor
+            .de('GET', '/api/solicitudes/5/mensajes')
+            .single;
+        expect(peticion.query['despues'], '6');
+      },
+    );
+
+    test(
+      'enviar manda el texto y la clave; el servidor devuelve el mensaje',
+      () async {
+        final red = EntornoRed();
+        red.servidor.responder(
+          'POST',
+          '/api/solicitudes/5/mensajes',
+          codigo: 201,
+          cuerpo: {
+            'mensaje': {
+              'id': 9,
+              'uuid_cliente': 'clave-9',
+              'solicitud_id': 5,
+              'autor_rol': 'cliente',
+              'propio': true,
+              'texto': 'Hola',
+              'leido_en': null,
+              'creado_en': '2026-11-24T14:00:00+00:00',
+            },
+          },
+        );
+        final m = await SeguimientoRed(
+          red.http,
+        ).enviarMensaje('5', texto: ' Hola ', claveCliente: 'clave-9');
+        expect(m.id, '9');
+        expect(m.propio, isTrue);
+        final cuerpo =
+            red.servidor
+                    .de('POST', '/api/solicitudes/5/mensajes')
+                    .single
+                    .cuerpo!
+                as Map;
+        expect(cuerpo['texto'], 'Hola');
+        expect(cuerpo['uuid_cliente'], 'clave-9');
+      },
+    );
+
+    test('con el chat cerrado el envío lanza ChatCerrado', () async {
+      final red = EntornoRed();
+      red.servidor.responder(
+        'POST',
+        '/api/solicitudes/5/mensajes',
+        codigo: 409,
+        cuerpo: {'message': 'El chat se cerró.', 'codigo': 'chat_cerrado'},
+      );
+      await expectLater(
+        SeguimientoRed(
+          red.http,
+        ).enviarMensaje('5', texto: 'Hola', claveCliente: 'k'),
+        throwsA(isA<ChatCerrado>()),
+      );
+    });
+
+    test('marcar leídos manda el cursor como entero', () async {
+      final red = EntornoRed();
+      red.servidor.responder(
+        'POST',
+        '/api/solicitudes/5/mensajes/leidos',
+        cuerpo: {},
+      );
+      await SeguimientoRed(red.http).marcarLeidos('5', '8');
+      expect(
+        (red.servidor
+                .de('POST', '/api/solicitudes/5/mensajes/leidos')
+                .single
+                .cuerpo!
+            as Map)['hasta'],
+        8,
+      );
+    });
+
+    test('sin red todo falla con SinConexion', () async {
       final red = EntornoRed();
       red.servidor.sinRed = true;
       await expectLater(
-        SeguimientoRed(red.fuente).observar('5').first,
+        SeguimientoRed(red.http).avance('5'),
         throwsA(isA<SinConexion>()),
       );
     });

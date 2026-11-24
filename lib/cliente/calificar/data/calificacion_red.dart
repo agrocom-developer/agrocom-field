@@ -2,7 +2,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../red/cliente_http.dart';
-import '../../red/fuente_servicios.dart';
+import '../../red/fuente_solicitudes.dart';
 import '../../red/mapeo_solicitud.dart';
 import '../domain/calificacion_repositorio.dart';
 
@@ -20,7 +20,7 @@ class CalificacionRed implements CalificacionRepositorio {
     : _uuid = uuid ?? const Uuid();
 
   final ClienteHttp _http;
-  final FuenteServicios _fuente;
+  final FuenteSolicitudes _fuente;
   final Uuid _uuid;
 
   static const _etiquetasApi = {
