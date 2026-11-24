@@ -141,7 +141,11 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 
 **Oferta entrante (proveedor).** Se presenta como hoja modal con `OfertaServicioCampo`. Jerarquía: pago y tiempo restante arriba, detalle en medio, aceptar abajo (56 px, ancho completo), rechazar como botón secundario. Háptica `alerta` a los 10 s. Aceptar y rechazar requieren red (excepción documentada): si no hay señal, el botón muestra el estado y no se queda a medias.
 
-**Calificación (cliente).** Pantalla con estrellas grandes, un campo de comentario opcional y un botón. Al terminar, confirmación inmediata y salida. La escribe solo el cliente; el proveedor la ve en su perfil.
+**Línea de tiempo del servicio (cliente).** Cinco etapas en vertical: solicitud, asignación, fumigación, conformidad y completado. Solo la etapa en curso lleva su explicación; las demás quedan en una línea. El nodo hecho lleva una tilde, el actual un punto sobre el acento y el pendiente un anillo vacío: el estado no depende solo del color.
+
+**Evidencias y acta (cliente).** Superficie confirmada como dato protagonista, estado del acta con ícono y texto, datos de la aplicación y grilla de evidencias con la leyenda debajo de cada foto. La acción principal es dar la conformidad, con una confirmación en hoja; reportar un problema es la acción secundaria en texto.
+
+**Calificación (cliente).** Hoja inferior de dos toques: una estrella y enviar. Las etiquetas y el comentario aparecen después de elegir la estrella y son opcionales. Al terminar, confirmación inmediata y salida. La escribe solo el cliente; el proveedor la ve en su perfil.
 
 **Perfil de proveedor.** Encabezado con foto, nombre, calificación promedio y cantidad de servicios; debajo, drones (con sus ciclos de batería), zonas de cobertura y reseñas recientes. Sin métricas decorativas.
 
