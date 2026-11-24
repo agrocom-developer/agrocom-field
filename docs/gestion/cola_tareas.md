@@ -13,25 +13,25 @@ El orden respeta dependencias: primero el flavor y el esquema local, después el
 | 30 | Flavor `cliente`: Gradle, `main_cliente.dart`, `applicationId` `com.agrocom.agrocom_field.cliente` | no | `./bin/verify`; `flutter build apk --debug --flavor cliente -t lib/main_cliente.dart`; test de reglas de importación | Hecha (#81) |
 | 31 | Adaptación del esquema `drift` al servicio asignado (migración sin pérdida de datos) | **sí** | `./bin/verify`; test de migración con datos; prueba de replay | Hecha para la ejecución del piloto (ADR 0018): esquema v15 con `servicio_adjudicado`, `registro_ejecucion` y `foto_ejecucion`; migración sin pérdida y prueba de replay |
 | 32 | Sistema de diseño: tokens, tema del cliente, componentes y base de golden tests | no | `./bin/verify`; `flutter test test/ui`; test de tokens | Hecha (#79) |
-| 33 | Registro e inicio de sesión de cliente y de proveedor | no | `./bin/verify`; tests de `auth` por flavor | Hecha para `piloto` y `auxiliar`: ingreso por usuario y alta del piloto independiente contra la API (ADR 0018); falta el flavor `cliente` |
-| 34 | Catálogo de servicios asignados (lista y detalle sin red) | **sí** | `./bin/verify`; tests de catálogo y servicio asignado; ausencia de rastros del catálogo anterior | Hecha para `piloto` y `auxiliar` (ADR 0018): el catálogo baja a `drift` y la ejecución se opera sin red |
+| 33 | Registro e inicio de sesión de cliente y de proveedor | no | `./bin/verify`; tests de `auth` por flavor | Hecha para `piloto` y `auxiliar`: ingreso por usuario y alta del piloto independiente contra la API (ADR 0018); acceso del cliente contra la API (ADR 0015) |
+| 34 | Servicios adjudicados del piloto (lista y detalle sin red) | **sí** | `./bin/verify`; `flutter test test/nucleo/marketplace/proveedor test/nucleo/db/migracion_ejecucion_test.dart` | Hecha para `piloto` y `auxiliar` (ADR 0018): el catálogo baja a `drift` y la ejecución se opera sin red |
 | 35 | Dron como vehículo del proveedor (con ciclos de batería) | no | `./bin/verify`; `flutter test test/nucleo/marketplace/proveedor` | Hecha para `piloto` y `auxiliar`: lista de drones con sus fotos y alta con fotos contra la API (ADR 0018); falta agregar un dron después del alta |
 | 36 | Perfil y documentos del proveedor | no | `./bin/verify`; `flutter test test/nucleo/marketplace/proveedor` | Perfil contra la API hecho (ADR 0018); faltan documentos y hectáreas por mes |
-| 37 | Negociación del piloto: mapa, oferta, contraoferta y chat con red | **sí** | `./bin/verify`; `flutter test test/nucleo/marketplace/proveedor test/ui/ui_negociacion_piloto`; sin `cola_sync` en `lib/nucleo/marketplace/proveedor/negociacion` | Hecha (ADR 0018) |
-| 38 | Solicitar servicio: lote en el mapa, hectáreas, producto y fecha | no | `./bin/verify`; `flutter test test/cliente/solicitar`; reglas de importación | Interfaz y repositorio demo hechos (#86); falta el repositorio de red |
-| 39 | Seguimiento en vivo del servicio | no | `./bin/verify`; `flutter test test/cliente/seguimiento` | Interfaz y repositorio demo hechos (#85); falta el canal en vivo real |
-| 40 | Calificar al proveedor y ver la calificación recibida | no | `./bin/verify`; tests de calificación; prueba de replay | Interfaz y repositorio demo hechos (#85); falta el repositorio de red |
+| 37 | Negociación del piloto: mapa de solicitudes, oferta, contraoferta y chat con red | **sí** | `./bin/verify`; `flutter test test/nucleo/marketplace/proveedor test/ui/ui_negociacion_piloto`; sin `cola_sync` en `lib/nucleo/marketplace/proveedor/negociacion` | Hecha (ADR 0018) |
+| 38 | Solicitar servicio: lote en el mapa, hectáreas, producto y fecha | no | `./bin/verify`; `flutter test test/cliente/solicitar`; reglas de importación | Hecha (#86); repositorios demo y de red (ADR 0013 y 0014) |
+| 39 | Seguimiento del servicio: avance, fotos, mensajes y última ubicación del piloto | no | `./bin/verify`; `flutter test test/cliente/seguimiento` | Hecha (#85); repositorios demo y de red (ADR 0013 y 0017) |
+| 40 | Calificar al proveedor y ver la calificación recibida | no | `./bin/verify`; tests de calificación; prueba de replay | Hecha (#85); repositorios demo y de red (ADR 0013 y 0017) |
 | 41 | UI premium de acceso del cliente | no | `./bin/verify`; goldens de `ui_acceso_cliente` | Hecha (#82) |
 | 42 | UI premium de solicitar servicio | no | `./bin/verify`; goldens de `ui_solicitar_servicio` | Hecha (#86) |
-| 43 | UI premium de seguimiento y calificación | no | `./bin/verify`; goldens de `ui_negociacion_cliente` | Hecha (#85) |
-| 44 | UI premium del mapa, el detalle y mis ofertas | no | `./bin/verify`; goldens de `ui_negociacion_piloto` | Hecha (ADR 0018) |
+| 43 | UI premium de ofertas, seguimiento y calificación del cliente | no | `./bin/verify`; goldens de `ui_negociacion_cliente` | Hecha (#85) |
+| 44 | UI premium del mapa de solicitudes, el detalle y mis ofertas del piloto | no | `./bin/verify`; goldens de `ui_negociacion_piloto` | Hecha (ADR 0018) |
 | 45 | UI premium de perfil, documentos y drones | no | `./bin/verify`; goldens de `ui_perfil_dron` | Hecha (#83) |
-| 46 | UI premium del servicio asignado y la sesión de vuelo | no | `./bin/verify`; goldens de `ui_servicio_lote` | Hecha (#84) |
+| 46 | UI premium del servicio adjudicado y las fotos de avance | no | `./bin/verify`; goldens de la ejecución del piloto | Hecha para la superficie compartida (#84); el detalle de ejecución sigue ADR 0018 |
 | 47 | Pase transversal de UI: estados, accesibilidad y consistencia | no | `./bin/verify`; goldens de `ui_pase_transversal` | Parcial: QA visual, auditoría de accesibilidad automática y correcciones hechas (ver [informe-avance.md](informe-avance.md)); falta la suite de goldens `ui_pase_transversal` |
 
-La columna *Estado* refleja `develop` al cierre del QA visual: las pantallas de los tres flavors existen y corren en modo demo (repositorios en memoria, ADR 0010); el cableado a la red y a `drift` del marketplace es lo que falta.
+La columna *Estado* refleja `develop`: los tres flavors corren contra la API y también en modo demo con repositorios en memoria (ADR 0010). Lo que falta está en cada fila.
 
-Las tareas marcadas **crítica** (motor de sync, esquema `drift`, aceptación con red) se integran como cualquier otra y quedan anotadas en `runs/revision-pendiente.txt` para la revisión línea por línea del dueño sobre `develop`; nunca se retienen en borrador.
+Las tareas marcadas **crítica** (motor de sync, esquema `drift`, negociación con red) se integran como cualquier otra y quedan anotadas en `runs/revision-pendiente.txt` para la revisión línea por línea del dueño sobre `develop`; nunca se retienen en borrador.
 
 Las tareas 33 a 40 dependen del contrato publicado por `agrocom-api`. Si un endpoint no existe todavía, la tarea queda `BLOQUEADA` con un PR en borrador que lista la diferencia exacta, y la cola sigue con la siguiente.
 
