@@ -65,6 +65,10 @@ class ArranqueCubit extends Cubit<ArranqueEstado> {
   void sesionIniciada(SesionCliente sesion) =>
       emit(ArranqueEstado(EtapaArranque.dentro, sesion: sesion));
 
+  /// El servidor rechazó el token (venció o lo revocaron): se vuelve al
+  /// ingreso sin llamar al servidor.
+  void sesionVencida() => emit(const ArranqueEstado(EtapaArranque.acceso));
+
   Future<void> cerrarSesion() async {
     try {
       await _acceso.cerrarSesion();

@@ -25,7 +25,7 @@ class FormularioAccesoEstado {
   String? get mensajeFallo => switch (fallo) {
     null || MotivoFalloAcceso.validacion => null,
     MotivoFalloAcceso.credencialesInvalidas =>
-      'El correo o la contraseña no coinciden. Revísalos e intenta de nuevo.',
+      'El usuario o la contraseña no coinciden. Revísalos e intenta de nuevo.',
     MotivoFalloAcceso.sinConexion =>
       'Sin conexión. Lo que escribiste sigue aquí: intenta de nuevo cuando '
           'tengas señal.',

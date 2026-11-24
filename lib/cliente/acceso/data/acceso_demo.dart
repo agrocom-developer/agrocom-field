@@ -3,12 +3,12 @@ import '../../demo/almacen_demo_cliente.dart';
 import '../domain/acceso_repositorio.dart';
 
 /// Acceso en memoria del modo demo (ADR 0010 y 0011). No hay cuentas reales:
-/// cualquier correo bien escrito entra con una contraseña de 8 caracteres o
+/// cualquier usuario entra con una contraseña de 8 caracteres o
 /// más. Tres valores fijos permiten ver los estados de error:
 ///
-/// - correo [correoSinConexion]: responde como si no hubiera red;
+/// - usuario [usuarioSinConexion]: responde como si no hubiera red;
 /// - contraseña [contrasenaIncorrecta]: credenciales inválidas;
-/// - registro con [correoOcupado]: error de validación junto al campo.
+/// - registro con [usuarioOcupado]: error de validación junto al campo.
 class AccesoDemo implements AccesoRepositorio {
   AccesoDemo(
     this._almacen, {
@@ -19,15 +19,15 @@ class AccesoDemo implements AccesoRepositorio {
     if (sesionIniciada) _almacen.sesion = sesionBase;
   }
 
-  static const correoSinConexion = 'sinred@agrocom.example';
-  static const correoOcupado = 'ocupado@agrocom.example';
+  static const usuarioSinConexion = 'sinred';
+  static const usuarioOcupado = 'ocupado';
   static const contrasenaIncorrecta = 'incorrecta';
 
   /// El cliente ficticio de los datos demo.
   static const sesionBase = SesionCliente(
     nombre: DatosDemo.clienteNombre,
     empresa: DatosDemo.clienteEmpresa,
-    correo: 'hugo.antelo@lostajibos.example',
+    usuario: 'hugo.antelo',
     telefono: '+591 7712 3456',
   );
 
@@ -46,12 +46,12 @@ class AccesoDemo implements AccesoRepositorio {
 
   @override
   Future<SesionCliente> iniciarSesion({
-    required String correo,
+    required String usuario,
     required String contrasena,
   }) async {
     await Future<void>.delayed(latencia);
-    final c = correo.trim().toLowerCase();
-    if (c == correoSinConexion) {
+    final c = usuario.trim().toLowerCase();
+    if (c == usuarioSinConexion) {
       throw const AccesoExcepcion(MotivoFalloAcceso.sinConexion);
     }
     if (contrasena == contrasenaIncorrecta || contrasena.length < 8) {
@@ -60,7 +60,7 @@ class AccesoDemo implements AccesoRepositorio {
     final sesion = SesionCliente(
       nombre: sesionBase.nombre,
       empresa: sesionBase.empresa,
-      correo: c,
+      usuario: c,
       telefono: sesionBase.telefono,
     );
     _almacen.sesion = sesion;
@@ -70,19 +70,19 @@ class AccesoDemo implements AccesoRepositorio {
   @override
   Future<SesionCliente> registrar(DatosRegistroCliente datos) async {
     await Future<void>.delayed(latencia);
-    final c = datos.correo.trim().toLowerCase();
-    if (c == correoSinConexion) {
+    final c = datos.usuario.trim().toLowerCase();
+    if (c == usuarioSinConexion) {
       throw const AccesoExcepcion(MotivoFalloAcceso.sinConexion);
     }
-    if (c == correoOcupado) {
+    if (c == usuarioOcupado) {
       throw const AccesoExcepcion(
         MotivoFalloAcceso.validacion,
-        porCampo: {CampoAcceso.correo: 'Ya existe una cuenta con este correo'},
+        porCampo: {CampoAcceso.usuario: 'Ese usuario ya existe. Elige otro'},
       );
     }
     final sesion = SesionCliente(
       nombre: datos.nombre.trim(),
-      correo: c,
+      usuario: c,
       telefono: datos.telefono.trim(),
     );
     _almacen.sesion = sesion;

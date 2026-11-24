@@ -152,7 +152,7 @@ void main() {
         await _tocar(tester, find.byKey(const Key('login-ingresar')));
         await _comparar(tester, 'login_validacion_$modo');
 
-        await tester.enterText(find.bySemanticsLabel('Correo'), 'ana@finca.bo');
+        await tester.enterText(find.bySemanticsLabel('Usuario'), 'ana.finca');
         await tester.enterText(
           find.bySemanticsLabel('Contraseña'),
           AccesoDemo.contrasenaIncorrecta,
@@ -161,8 +161,8 @@ void main() {
         await _comparar(tester, 'login_error_$modo');
 
         await tester.enterText(
-          find.bySemanticsLabel('Correo'),
-          AccesoDemo.correoSinConexion,
+          find.bySemanticsLabel('Usuario'),
+          AccesoDemo.usuarioSinConexion,
         );
         await tester.enterText(
           find.bySemanticsLabel('Contraseña'),
@@ -185,8 +185,8 @@ void main() {
         );
         await tester.enterText(find.bySemanticsLabel('Teléfono'), '771');
         await tester.enterText(
-          find.bySemanticsLabel('Correo'),
-          AccesoDemo.correoOcupado,
+          find.bySemanticsLabel('Usuario'),
+          AccesoDemo.usuarioOcupado,
         );
         await tester.enterText(
           find.bySemanticsLabel('Contraseña'),
@@ -276,7 +276,7 @@ void main() {
       await _comparar(tester, 'ipad_h_onboarding_1');
       await _tocar(tester, find.byKey(const Key('onboarding-saltar')));
       await _comparar(tester, 'ipad_h_login');
-      await tester.enterText(find.bySemanticsLabel('Correo'), 'ana@finca.bo');
+      await tester.enterText(find.bySemanticsLabel('Usuario'), 'ana.finca');
       await tester.enterText(find.bySemanticsLabel('Contraseña'), 'segura123');
       await _tocar(tester, find.byKey(const Key('login-ingresar')));
       await _comparar(tester, 'ipad_h_inicio');

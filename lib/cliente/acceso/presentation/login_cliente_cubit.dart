@@ -11,14 +11,14 @@ class LoginClienteCubit extends Cubit<FormularioAccesoEstado> {
   final AccesoRepositorio _acceso;
 
   Future<void> enviar({
-    required String correo,
+    required String usuario,
     required String contrasena,
   }) async {
     if (state.enviando) return;
     emit(const FormularioAccesoEstado(enviando: true));
     try {
       final sesion = await _acceso.iniciarSesion(
-        correo: correo.trim(),
+        usuario: usuario.trim(),
         contrasena: contrasena,
       );
       emit(FormularioAccesoEstado(sesion: sesion));

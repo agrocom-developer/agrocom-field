@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -17,10 +19,19 @@ import 'splash_pantalla.dart';
 /// Ingreso y registro se alternan aquí, no con rutas apiladas: al iniciar
 /// sesión no queda ninguna pantalla de acceso debajo de la navegación.
 class PuertaAccesoCliente extends StatefulWidget {
-  const PuertaAccesoCliente({required this.dentro, this.notaAcceso, super.key});
+  const PuertaAccesoCliente({
+    required this.dentro,
+    this.notaAcceso,
+    this.sesionExpirada,
+    super.key,
+  });
 
   final WidgetBuilder dentro;
   final String? notaAcceso;
+
+  /// Avisa cuando el servidor rechaza el token: la puerta vuelve al ingreso
+  /// con un mensaje que lo explica.
+  final Stream<void>? sesionExpirada;
 
   @override
   State<PuertaAccesoCliente> createState() => _PuertaAccesoClienteState();
@@ -32,21 +43,37 @@ class _PuertaAccesoClienteState extends State<PuertaAccesoCliente> {
   );
   bool _splashLista = false;
   bool _registro = false;
+  bool _vencida = false;
+  StreamSubscription<void>? _expiracion;
+
+  static const _avisoVencida = 'Tu sesión venció. Entra de nuevo.';
 
   @override
   void initState() {
     super.initState();
     _arranque.resolver();
+    _expiracion = widget.sesionExpirada?.listen((_) {
+      if (!mounted) return;
+      setState(() {
+        _vencida = true;
+        _registro = false;
+      });
+      _arranque.sesionVencida();
+    });
   }
 
   @override
   void dispose() {
+    _expiracion?.cancel();
     _arranque.close();
     super.dispose();
   }
 
   void _entrar(SesionCliente sesion) {
-    setState(() => _registro = false);
+    setState(() {
+      _registro = false;
+      _vencida = false;
+    });
     _arranque.sesionIniciada(sesion);
   }
 
@@ -84,7 +111,7 @@ class _PuertaAccesoClienteState extends State<PuertaAccesoCliente> {
               LoginClientePantalla(
                 alEntrar: _entrar,
                 alCrearCuenta: () => setState(() => _registro = true),
-                nota: widget.notaAcceso,
+                nota: _vencida ? _avisoVencida : widget.notaAcceso,
               ),
             ),
             EtapaArranque.dentro => ('dentro', widget.dentro(context)),

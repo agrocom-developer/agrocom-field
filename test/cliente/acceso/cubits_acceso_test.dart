@@ -104,13 +104,13 @@ void main() {
     blocTest<LoginClienteCubit, FormularioAccesoEstado>(
       'ingreso exitoso emite la sesión',
       build: () => LoginClienteCubit(_demo()),
-      act: (c) => c.enviar(correo: 'ana@finca.bo', contrasena: 'segura123'),
+      act: (c) => c.enviar(usuario: 'ana.finca', contrasena: 'segura123'),
       expect: () => [
         const FormularioAccesoEstado(enviando: true),
         isA<FormularioAccesoEstado>().having(
-          (e) => e.sesion?.correo,
-          'correo',
-          'ana@finca.bo',
+          (e) => e.sesion?.usuario,
+          'usuario',
+          'ana.finca',
         ),
       ],
     );
@@ -120,7 +120,7 @@ void main() {
       build: () => LoginClienteCubit(_demo()),
       act: (c) async {
         await c.enviar(
-          correo: 'ana@finca.bo',
+          usuario: 'ana.finca',
           contrasena: AccesoDemo.contrasenaIncorrecta,
         );
         c.limpiarFallo();
@@ -142,7 +142,7 @@ void main() {
       'sin conexión se distingue del resto de fallos',
       build: () => LoginClienteCubit(_demo()),
       act: (c) => c.enviar(
-        correo: AccesoDemo.correoSinConexion,
+        usuario: AccesoDemo.usuarioSinConexion,
         contrasena: 'segura123',
       ),
       skip: 1,
@@ -160,7 +160,7 @@ void main() {
     const datos = DatosRegistroCliente(
       nombre: 'Ana Roca',
       telefono: '77123456',
-      correo: AccesoDemo.correoOcupado,
+      usuario: AccesoDemo.usuarioOcupado,
       contrasena: 'segura123',
     );
 
@@ -171,17 +171,21 @@ void main() {
       act: (c) async {
         await c.enviar(datos);
         c.campoEditado(CampoAcceso.nombre);
-        c.campoEditado(CampoAcceso.correo);
+        c.campoEditado(CampoAcceso.usuario);
       },
       skip: 1,
       expect: () => [
         isA<FormularioAccesoEstado>()
-            .having((e) => e.porCampo[CampoAcceso.correo], 'correo', isNotNull)
+            .having(
+              (e) => e.porCampo[CampoAcceso.usuario],
+              'usuario',
+              isNotNull,
+            )
             .having((e) => e.mensajeFallo, 'sin aviso general', isNull),
         // Editar otro campo retira el motivo pero conserva el error.
         isA<FormularioAccesoEstado>().having(
-          (e) => e.porCampo[CampoAcceso.correo],
-          'correo',
+          (e) => e.porCampo[CampoAcceso.usuario],
+          'usuario',
           isNotNull,
         ),
         const FormularioAccesoEstado(),

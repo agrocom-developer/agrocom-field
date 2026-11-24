@@ -27,7 +27,7 @@ void main() {
       await tocar(t, find.byKey(const Key('login-crear-cuenta')));
       await captura(t, 'cliente_06_registro');
       await tocar(t, find.byKey(const Key('registro-volver')));
-      await t.enterText(find.bySemanticsLabel('Correo'), 'ana@finca.bo');
+      await t.enterText(find.bySemanticsLabel('Usuario'), 'ana.finca');
       await t.enterText(find.bySemanticsLabel('Contraseña'), 'segura123');
       await esperar(t, 300);
       await tocar(t, find.byKey(const Key('login-ingresar')), ms: 1800);

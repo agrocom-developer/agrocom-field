@@ -64,6 +64,10 @@ class RepositorioEspia implements SolicitudRepositorio {
     required Decimal dosisLitrosPorHectarea,
     Decimal? hectareas,
     DateTime? fechaDeseada,
+    String? producto,
+    String? cultivo,
+    VentanaHoraria ventana = VentanaHoraria.indistinta,
+    String? claveIdempotencia,
   }) {
     if (fallaLaEstimacion) throw Exception('sin red');
     return demo.estimar(

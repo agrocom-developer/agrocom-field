@@ -63,6 +63,10 @@ class SolicitudDemo implements SolicitudRepositorio {
     required Decimal dosisLitrosPorHectarea,
     Decimal? hectareas,
     DateTime? fechaDeseada,
+    String? producto,
+    String? cultivo,
+    VentanaHoraria ventana = VentanaHoraria.indistinta,
+    String? claveIdempotencia,
   }) async {
     final superficie = hectareas ?? lote.hectareas;
     final subtotal = superficie * _tarifaPorHectarea;

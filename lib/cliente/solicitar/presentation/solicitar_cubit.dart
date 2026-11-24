@@ -211,6 +211,10 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
         dosisLitrosPorHectarea: state.dosisEfectiva,
         hectareas: hectareas,
         fechaDeseada: state.fecha,
+        producto: state.producto,
+        cultivo: state.cultivo,
+        ventana: state.ventana,
+        claveIdempotencia: state.claveIdempotencia,
       );
       if (isClosed || turno != _turnoEstimacion) return;
       emit(state.copiarCon(estimando: false, estimacion: estimacion));
