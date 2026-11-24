@@ -31,3 +31,7 @@ Para guardarlas en el repositorio se comprimen a JPEG (`sips -s format jpeg -s f
 ## Cuándo correrlo
 
 Antes de abrir el PR de un cambio que toque un flujo del cliente o del piloto, y después de cambiar el contrato con la API. Complementa a las pruebas golden: estas validan cada pantalla aislada; el recorrido valida que el flujo real funciona con datos reales.
+
+## Capturas con datos ficticios
+
+Para los tres flavors, sin API, `tool/capturar_pantallas.sh <cliente|piloto|auxiliar> <simulador> <dispositivo> <claro|oscuro|campo>` corre `integration_test/<flavor>_capturas_test.dart` en modo demo y deja JPEG (560 px, calidad 78) en `docs/diseno/capturas/<flavor>/<dispositivo>/`. Cubre una pantalla por destino de navegación: cliente (acceso, inicio, solicitar, solicitudes, cuenta), piloto (mapa, ofertas, servicio, drones, perfil) y auxiliar (servicio, perfil). Los flujos completos con datos reales los cubre el recorrido de arriba.
