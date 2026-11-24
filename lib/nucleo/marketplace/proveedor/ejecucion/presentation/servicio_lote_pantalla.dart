@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
+import '../../../pago/presentation/tarjetas_pago.dart';
 import '../../../ui/boton_principal_marketplace.dart';
 import '../../../ui/campo_formulario_marketplace.dart';
 import '../../../ui/marketplace_ui.dart';
@@ -171,9 +172,11 @@ class _Contenido extends StatelessWidget {
           _Avance(servicio: s),
           const SizedBox(height: EspaciadoCampo.l),
         ],
-        if (s.estado == EstadoServicioLote.finalizada)
-          _PrecioFinal(servicio: s)
-        else if (s.estado == EstadoServicioLote.enEjecucion)
+        if (s.estado == EstadoServicioLote.finalizada) ...[
+          _PrecioFinal(servicio: s),
+          const SizedBox(height: EspaciadoCampo.l),
+          TarjetaConfirmarPago(solicitudId: s.id),
+        ] else if (s.estado == EstadoServicioLote.enEjecucion)
           _AccionesSecundarias(servicio: s, ocupado: estado.ocupado),
         if (s.estado == EstadoServicioLote.enEjecucion &&
             context.read<DependenciasEjecucion>().compartirUbicacion) ...[

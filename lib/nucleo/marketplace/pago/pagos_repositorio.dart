@@ -76,10 +76,17 @@ class PagosRed implements PagosRepositorio {
 /// servidor que importan a la pantalla: un solo pago por solicitud,
 /// idempotente por `uuid_cliente`.
 class PagosDemo implements PagosRepositorio {
-  PagosDemo({Map<int, Decimal> montos = const {}, DateTime Function()? reloj})
-    : _montos = montos,
-      _reloj = reloj ?? DateTime.now,
-      _ids = Random(1);
+  PagosDemo({
+    Map<int, Decimal> montos = const {},
+    Iterable<PagoConfirmado> previos = const [],
+    DateTime Function()? reloj,
+  }) : _montos = montos,
+       _reloj = reloj ?? DateTime.now,
+       _ids = Random(1) {
+    for (final p in previos) {
+      _pagos[p.solicitudId] = p;
+    }
+  }
 
   final Map<int, Decimal> _montos;
   final DateTime Function() _reloj;

@@ -93,12 +93,14 @@ Future<ComposicionProveedor> componerProveedor(
     });
   }
 
+  final proveedor = DependenciasProveedor.red(
+    http,
+    negociacion: negociacion,
+    ejecucion: ejecucion,
+  );
+
   return ComposicionProveedor(
-    proveedor: DependenciasProveedor.red(
-      http,
-      negociacion: negociacion,
-      ejecucion: ejecucion,
-    ),
+    proveedor: proveedor,
     acceso: DependenciasAccesoProveedor(
       acceso: AccesoProveedorRed(
         api: api,
@@ -109,6 +111,7 @@ Future<ComposicionProveedor> componerProveedor(
             : const ['auxiliar'],
         nombreDispositivo: esPiloto ? 'Agrocom Piloto' : 'Agrocom Auxiliar',
         alCerrarSesion: ejecucion.repositorio.limpiarAlCerrarSesion,
+        retirarPush: proveedor.push.retirar,
       ),
       registroDrones: RegistroDronesRed(http),
       sesionExpirada: expiracion.stream,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
+import '../../../nucleo/marketplace/foto_perfil/presentation/foto_perfil_widgets.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
@@ -16,6 +17,13 @@ class CuentaPantalla extends StatelessWidget {
 
   /// Acción de cerrar sesión; sin ella el botón no se muestra.
   final VoidCallback? alCerrarSesion;
+
+  static String _iniciales(String nombre) => nombre
+      .split(' ')
+      .where((p) => p.isNotEmpty)
+      .take(2)
+      .map((p) => p[0].toUpperCase())
+      .join();
 
   static Future<(CuentaCliente, ResumenCalificaciones)> _cargar(
     CuentaRepositorio cuentas,
@@ -45,43 +53,47 @@ class CuentaPantalla extends StatelessWidget {
           children: [
             Text('Cuenta', style: texto.headlineMedium),
             const SizedBox(height: 16),
-            SuperficieMarketplace(
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    radius: 28,
-                    backgroundColor: paleta.acento,
-                    child: Text(
-                      cuenta.nombre.split(' ').take(2).map((p) => p[0]).join(),
-                      style: texto.titleLarge?.copyWith(
-                        color: paleta.sobreAcento,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            FotoPerfilProveedor(
+              child: SuperficieMarketplace(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Row(
                       children: [
-                        Text(cuenta.nombre, style: texto.titleMedium),
-                        if (cuenta.empresa.isNotEmpty)
-                          Text(
-                            cuenta.empresa,
-                            style: texto.bodyMedium?.copyWith(
-                              color: paleta.textoSecundario,
-                            ),
+                        AvatarFotoPerfil(
+                          iniciales: _iniciales(cuenta.nombre),
+                          nombre: cuenta.nombre,
+                          tamano: 64,
+                        ),
+                        const SizedBox(width: 14),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(cuenta.nombre, style: texto.titleMedium),
+                              if (cuenta.empresa.isNotEmpty)
+                                Text(
+                                  cuenta.empresa,
+                                  style: texto.bodyMedium?.copyWith(
+                                    color: paleta.textoSecundario,
+                                  ),
+                                ),
+                              Text(
+                                cuenta.usuario,
+                                style: texto.bodySmall?.copyWith(
+                                  color: paleta.textoSecundario,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
-                        Text(
-                          cuenta.usuario,
-                          style: texto.bodySmall?.copyWith(
-                            color: paleta.textoSecundario,
-                          ),
-                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
-                  ),
-                ],
+                    const SizedBox(height: EspaciadoCampo.s),
+                    const AccionesFotoPerfil(),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 16),

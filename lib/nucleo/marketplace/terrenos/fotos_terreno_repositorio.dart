@@ -91,3 +91,10 @@ class FotosTerrenoDemo implements FotosTerrenoRepositorio {
     }
   }
 }
+
+/// El id numérico del terreno para las rutas de fotos. Los terrenos del
+/// servidor ya tienen un id numérico; los lotes de ejemplo del modo demo usan
+/// un texto, que se convierte en un número estable.
+extension TerrenoIdDeLote on Lote {
+  int get terrenoId => int.tryParse(id) ?? (id.hashCode & 0x3fffffff);
+}

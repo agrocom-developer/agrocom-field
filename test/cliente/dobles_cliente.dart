@@ -16,7 +16,14 @@ import 'package:agrocom_field/cliente/seguimiento/data/seguimiento_demo.dart';
 import 'package:agrocom_field/cliente/ofertas/data/ofertas_demo.dart';
 import 'package:agrocom_field/cliente/solicitudes/data/solicitudes_demo.dart';
 import 'package:agrocom_field/cliente/solicitar/data/solicitud_demo.dart';
+import 'package:agrocom_field/nucleo/marketplace/foto_perfil/foto_perfil_repositorio.dart';
+import 'package:agrocom_field/nucleo/marketplace/pago/pagos_repositorio.dart';
+import 'package:agrocom_field/nucleo/marketplace/referencias/precio_referencia.dart';
+import 'package:agrocom_field/nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
+import 'package:agrocom_field/nucleo/notificaciones/push/dispositivos_push_repositorio.dart';
+import 'package:agrocom_field/nucleo/notificaciones/push/token_push_store.dart';
 import 'package:agrocom_field/nucleo/marketplace/demo/datos_demo.dart';
+import '../nucleo/marketplace/dobles_foto.dart';
 
 /// Reloj fijo: las fechas de los datos demo no cambian entre corridas.
 DateTime relojFijo() => DateTime(2026, 11, 20, 10);
@@ -103,5 +110,11 @@ DependenciasCliente dependenciasDePrueba({
         ),
     inicio: inicio ?? InicioClienteDemo(almacen, latencia: Duration.zero),
     notaAcceso: notaAcceso,
+    referencias: ReferenciasDemo(),
+    fotoPerfil: FotoPerfilDemo(),
+    fotosTerreno: FotosTerrenoDemo(),
+    pagos: PagosDemo(),
+    preparadorFoto: preparadorDePrueba(),
+    push: DispositivosPushDemo(TokenPushEnMemoria()),
   );
 }

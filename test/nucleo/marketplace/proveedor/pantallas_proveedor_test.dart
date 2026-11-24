@@ -195,6 +195,11 @@ void main() {
         ejecucion: deps.ejecucion,
         drones: deps.drones,
         perfil: _PerfilEnRevision(almacen, almacen.piloto),
+        referencias: deps.referencias,
+        fotoPerfil: deps.fotoPerfil,
+        pagos: deps.pagos,
+        preparadorFoto: deps.preparadorFoto,
+        push: deps.push,
       );
       await montar(
         tester,
@@ -284,6 +289,11 @@ void main() {
         ejecucion: deps.ejecucion,
         drones: _SinDrones(),
         perfil: deps.perfil,
+        referencias: deps.referencias,
+        fotoPerfil: deps.fotoPerfil,
+        pagos: deps.pagos,
+        preparadorFoto: deps.preparadorFoto,
+        push: deps.push,
       );
       await montar(tester, const DronesPantalla(), dependencias: sinDrones);
       expect(find.text('Todavía no registraste drones'), findsOneWidget);

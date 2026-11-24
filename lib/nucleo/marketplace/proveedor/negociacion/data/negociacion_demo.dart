@@ -114,6 +114,17 @@ class AlmacenNegociacionDemo {
   void agregarMensaje(MensajeChat m) =>
       _mensajes[m.solicitudId] = [...?_mensajes[m.solicitudId], m];
 
+  /// Fotos de ejemplo del terreno (recursos empaquetados).
+  static const fotosDemoDeTerreno = [
+    FotoTerreno(
+      id: 1,
+      url: 'assets/imagenes/fondo_dron_pulverizando.jpg',
+      descripcion: 'Borde norte',
+    ),
+    FotoTerreno(id: 2, url: 'assets/imagenes/fondo_dron_sobre_agua.jpg'),
+    FotoTerreno(id: 3, url: 'assets/imagenes/fondo_equipo_dron.jpg'),
+  ];
+
   static Lote _lote(
     int id,
     String zona,
@@ -128,6 +139,9 @@ class AlmacenNegociacionDemo {
       zona: zona,
       cultivo: cultivo,
       hectareas: Decimal.parse(ha),
+      // Las solicitudes impares traen fotos del terreno; las pares no, para
+      // ver los dos estados.
+      fotos: id.isOdd ? fotosDemoDeTerreno : const [],
       poligono: [
         GeoPunto(c.latitud - d, c.longitud - d),
         GeoPunto(c.latitud - d, c.longitud + d),

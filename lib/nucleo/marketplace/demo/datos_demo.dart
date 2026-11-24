@@ -78,6 +78,14 @@ class DatosDemo {
         zona: 'Cuatro Cañadas',
         cultivo: 'Soya',
         hectareas: _d('120.0'),
+        fotos: const [
+          FotoTerreno(
+            id: 1,
+            url: 'assets/imagenes/fondo_dron_pulverizando.jpg',
+            descripcion: 'Borde norte',
+          ),
+          FotoTerreno(id: 2, url: 'assets/imagenes/fondo_dron_sobre_agua.jpg'),
+        ],
         poligono: _parcela(
           -17.1830,
           -62.5560,

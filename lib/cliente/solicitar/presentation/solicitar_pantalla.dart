@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../nucleo/marketplace/dominio/dominio.dart' show Lote;
+import '../../../nucleo/marketplace/foto_preparador.dart';
+import '../../../nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
+import '../../../nucleo/marketplace/terrenos/presentation/fotos_terreno_cubit.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
@@ -32,9 +36,19 @@ class SolicitarPantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          SolicitarCubit(context.read<SolicitudRepositorio>())..cargar(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              SolicitarCubit(context.read<SolicitudRepositorio>())..cargar(),
+        ),
+        BlocProvider(
+          create: (context) => FotosTerrenoCubit(
+            context.read<FotosTerrenoRepositorio>(),
+            context.read<PreparadorFoto>(),
+          ),
+        ),
+      ],
       child: SolicitarVista(alSolicitado: alSolicitado),
     );
   }
@@ -48,12 +62,45 @@ class SolicitarVista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocListener<SolicitarCubit, SolicitarEstado>(
+      // Las fotos siguen al terreno elegido: uno guardado o el contorno nuevo.
+      listenWhen: (antes, ahora) =>
+          antes.modoLote != ahora.modoLote ||
+          antes.loteGuardado?.id != ahora.loteGuardado?.id,
+      listener: (context, estado) {
+        final Lote? lote = estado.modoLote == ModoLote.guardado
+            ? estado.loteGuardado
+            : null;
+        context.read<FotosTerrenoCubit>().usarTerreno(
+          lote?.terrenoId,
+          lote?.fotos ?? const [],
+        );
+      },
+      child: _VistaSolicitar(alSolicitado: alSolicitado),
+    );
+  }
+}
+
+class _VistaSolicitar extends StatelessWidget {
+  const _VistaSolicitar({required this.alSolicitado});
+
+  final ValueChanged<Solicitud> alSolicitado;
+
+  @override
+  Widget build(BuildContext context) {
     return BlocConsumer<SolicitarCubit, SolicitarEstado>(
       listenWhen: (antes, ahora) =>
           antes.solicitud == null && ahora.solicitud != null,
-      listener: (context, estado) {
+      listener: (context, estado) async {
         HapticaCampo.confirmacion();
-        alSolicitado(estado.solicitud!);
+        final fotos = context.read<FotosTerrenoCubit>();
+        final solicitud = estado.solicitud!;
+        // Un contorno nuevo ya es un terreno: las fotos que se eligieron
+        // antes salen ahora.
+        if (estado.modoLote == ModoLote.dibujo && fotos.pendientes > 0) {
+          await fotos.subirPendientes(solicitud.lote.terrenoId);
+        }
+        alSolicitado(solicitud);
       },
       builder: (context, estado) => LayoutBuilder(
         builder: (context, limites) {

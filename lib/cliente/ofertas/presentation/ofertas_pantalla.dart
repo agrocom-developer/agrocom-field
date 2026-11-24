@@ -399,7 +399,7 @@ class _TarjetaOferta extends StatelessWidget {
         children: [
           Row(
             children: [
-              _Avatar(iniciales: p.iniciales),
+              _Avatar(proveedor: p),
               const SizedBox(width: EspaciadoCampo.m),
               Expanded(
                 child: Column(
@@ -630,30 +630,17 @@ class _Etiqueta extends StatelessWidget {
 }
 
 class _Avatar extends StatelessWidget {
-  const _Avatar({required this.iniciales});
+  const _Avatar({required this.proveedor});
 
-  final String iniciales;
+  final ProveedorOfertante proveedor;
 
   @override
-  Widget build(BuildContext context) {
-    final paleta = context.paleta;
-    return ExcludeSemantics(
-      child: Container(
-        width: 44,
-        height: 44,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(color: paleta.acento, shape: BoxShape.circle),
-        child: Text(
-          iniciales,
-          textScaler: TextScaler.noScaling,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: paleta.sobreAcento,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => AvatarFoto(
+    iniciales: proveedor.iniciales,
+    etiqueta: 'Foto de ${proveedor.nombre}',
+    url: proveedor.fotoUrl,
+    tamano: 44,
+  );
 }
 
 class _FilaCerrada extends StatelessWidget {

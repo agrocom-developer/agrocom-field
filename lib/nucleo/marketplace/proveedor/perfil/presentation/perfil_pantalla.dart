@@ -6,6 +6,7 @@ import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../dominio/dominio.dart';
+import '../../../foto_perfil/presentation/foto_perfil_widgets.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../domain/perfil_repositorio.dart';
 import 'perfil_cubit.dart';
@@ -135,147 +136,162 @@ class _Contenido extends StatelessWidget {
     final p = datos.proveedor;
     final texto = Theme.of(context).textTheme;
     final conAccion = p.documentosConAccion;
-    return ListView(
-      padding: const EdgeInsets.all(EspaciadoCampo.l),
-      children: [
-        Row(
-          children: [
-            AvatarProveedor(p, tamano: 64),
-            const SizedBox(width: EspaciadoCampo.l),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(p.nombre, style: texto.titleLarge),
-                  const SizedBox(height: EspaciadoCampo.xs),
-                  Text(p.tipo.etiqueta, style: texto.bodyMedium),
-                  const SizedBox(height: EspaciadoCampo.xs),
-                  if (datos.calificaciones.total == 0)
-                    Text('Todavía sin calificaciones', style: texto.bodyMedium)
-                  else
-                    CalificacionPromedio(
-                      valor: p.calificacion,
-                      detalle: '${p.serviciosCompletados} servicios',
+    return FotoPerfilProveedor(
+      urlInicial: p.fotoUrl,
+      child: ListView(
+        padding: const EdgeInsets.all(EspaciadoCampo.l),
+        children: [
+          Row(
+            children: [
+              AvatarFotoPerfil(
+                iniciales: p.iniciales,
+                nombre: p.nombre,
+                tamano: 64,
+              ),
+              const SizedBox(width: EspaciadoCampo.l),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(p.nombre, style: texto.titleLarge),
+                    const SizedBox(height: EspaciadoCampo.xs),
+                    Text(p.tipo.etiqueta, style: texto.bodyMedium),
+                    const SizedBox(height: EspaciadoCampo.xs),
+                    if (datos.calificaciones.total == 0)
+                      Text(
+                        'Todavía sin calificaciones',
+                        style: texto.bodyMedium,
+                      )
+                    else
+                      CalificacionPromedio(
+                        valor: p.calificacion,
+                        detalle: '${p.serviciosCompletados} servicios',
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: EspaciadoCampo.s),
+          const AccionesFotoPerfil(),
+          const SizedBox(height: EspaciadoCampo.m),
+          _Aprobacion(proveedor: p),
+          if (conAccion.isNotEmpty && p.aprobacion.habilitado) ...[
+            const SizedBox(height: EspaciadoCampo.m),
+            AvisoMarketplace(
+              key: const Key('perfil-documentos-accion'),
+              tono: TonoAviso.alerta,
+              mensaje: conAccion.length == 1
+                  ? '«${conAccion.first.nombre}» necesita tu atención. Un '
+                        'documento vencido suspende las ofertas.'
+                  : '${conAccion.length} documentos necesitan tu atención. Un '
+                        'documento vencido suspende las ofertas.',
+            ),
+          ],
+          const _Titulo('Métricas'),
+          _Metricas(metricas: datos.metricas),
+          for (final e in extras) ...[
+            const SizedBox(height: EspaciadoCampo.m),
+            e,
+          ],
+          if (onVerDrones != null) ...[
+            const SizedBox(height: EspaciadoCampo.m),
+            SuperficieMarketplace(
+              key: const Key('perfil-ver-drones'),
+              onTap: onVerDrones,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minHeight: ObjetivoTactilCampo.guantes - EspaciadoCampo.xxl,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.flight_rounded,
+                      color: context.paleta.acentoTexto,
                     ),
-                ],
+                    const SizedBox(width: EspaciadoCampo.m),
+                    Expanded(
+                      child: Text(
+                        p.drones.length == 1
+                            ? 'Mis drones · 1 dron'
+                            : 'Mis drones · ${p.drones.length} drones',
+                        style: texto.titleLarge,
+                      ),
+                    ),
+                    Icon(
+                      Icons.chevron_right_rounded,
+                      color: context.paleta.textoSecundario,
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
-        ),
-        const SizedBox(height: EspaciadoCampo.l),
-        _Aprobacion(proveedor: p),
-        if (conAccion.isNotEmpty && p.aprobacion.habilitado) ...[
-          const SizedBox(height: EspaciadoCampo.m),
-          AvisoMarketplace(
-            key: const Key('perfil-documentos-accion'),
-            tono: TonoAviso.alerta,
-            mensaje: conAccion.length == 1
-                ? '«${conAccion.first.nombre}» necesita tu atención. Un '
-                      'documento vencido suspende las ofertas.'
-                : '${conAccion.length} documentos necesitan tu atención. Un '
-                      'documento vencido suspende las ofertas.',
-          ),
-        ],
-        const _Titulo('Métricas'),
-        _Metricas(metricas: datos.metricas),
-        for (final e in extras) ...[
-          const SizedBox(height: EspaciadoCampo.m),
-          e,
-        ],
-        if (onVerDrones != null) ...[
-          const SizedBox(height: EspaciadoCampo.m),
-          SuperficieMarketplace(
-            key: const Key('perfil-ver-drones'),
-            onTap: onVerDrones,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minHeight: ObjetivoTactilCampo.guantes - EspaciadoCampo.xxl,
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.flight_rounded, color: context.paleta.acentoTexto),
-                  const SizedBox(width: EspaciadoCampo.m),
-                  Expanded(
-                    child: Text(
-                      p.drones.length == 1
-                          ? 'Mis drones · 1 dron'
-                          : 'Mis drones · ${p.drones.length} drones',
-                      style: texto.titleLarge,
-                    ),
-                  ),
-                  Icon(
-                    Icons.chevron_right_rounded,
-                    color: context.paleta.textoSecundario,
-                  ),
-                ],
+          const _Titulo('Hectáreas por mes'),
+          if (datos.hectareasPorMes.every((m) => m.hectareas.sign <= 0))
+            Text(
+              'Las hectáreas de cada mes aparecen acá después de tu primer '
+              'servicio.',
+              style: texto.bodyMedium,
+            )
+          else
+            SuperficieMarketplace(
+              child: SizedBox(
+                height: 180,
+                child: _GraficoHectareas(meses: datos.hectareasPorMes),
               ),
             ),
-          ),
-        ],
-        const _Titulo('Hectáreas por mes'),
-        if (datos.hectareasPorMes.every((m) => m.hectareas.sign <= 0))
-          Text(
-            'Las hectáreas de cada mes aparecen acá después de tu primer '
-            'servicio.',
-            style: texto.bodyMedium,
-          )
-        else
-          SuperficieMarketplace(
-            child: SizedBox(
-              height: 180,
-              child: _GraficoHectareas(meses: datos.hectareasPorMes),
+          const _Titulo('Documentos'),
+          if (p.documentos.isEmpty)
+            Text(
+              'Todavía no cargaste documentos. Sin ellos no se puede aprobar '
+              'tu perfil.',
+              style: texto.bodyMedium,
             ),
-          ),
-        const _Titulo('Documentos'),
-        if (p.documentos.isEmpty)
-          Text(
-            'Todavía no cargaste documentos. Sin ellos no se puede aprobar '
-            'tu perfil.',
-            style: texto.bodyMedium,
-          ),
-        for (final doc in p.documentos) ...[
-          _FilaDocumento(documento: doc),
-          const SizedBox(height: EspaciadoCampo.s),
-        ],
-        const _Titulo('Mi equipo'),
-        if (p.auxiliares.isEmpty)
-          Text(
-            'No tenés un auxiliar asociado. Podés operar solo o registrar '
-            'uno para que prepare la mezcla.',
-            style: texto.bodyMedium,
-          ),
-        for (final a in p.auxiliares) ...[
-          _FilaAuxiliar(auxiliar: a),
-          const SizedBox(height: EspaciadoCampo.s),
-        ],
-        const _Titulo('Zonas de cobertura'),
-        Wrap(
-          spacing: EspaciadoCampo.s,
-          runSpacing: EspaciadoCampo.s,
-          children: [
-            for (final z in p.zonas)
-              ChipEstadoMarketplace(
-                etiqueta: z,
-                etiquetaSemantica: 'Zona: $z',
-                tono: TonoEstado.neutro,
-                icono: Icons.place_outlined,
-              ),
+          for (final doc in p.documentos) ...[
+            _FilaDocumento(documento: doc),
+            const SizedBox(height: EspaciadoCampo.s),
           ],
-        ),
-        const _Titulo('Calificaciones recibidas'),
-        _ResumenCalificaciones(resumen: datos.calificaciones),
-        const SizedBox(height: EspaciadoCampo.m),
-        if (datos.calificaciones.recientes.isEmpty)
-          Text(
-            'Las reseñas de tus clientes aparecen acá después de cada '
-            'servicio.',
-            style: texto.bodyMedium,
+          const _Titulo('Mi equipo'),
+          if (p.auxiliares.isEmpty)
+            Text(
+              'No tenés un auxiliar asociado. Podés operar solo o registrar '
+              'uno para que prepare la mezcla.',
+              style: texto.bodyMedium,
+            ),
+          for (final a in p.auxiliares) ...[
+            _FilaAuxiliar(auxiliar: a),
+            const SizedBox(height: EspaciadoCampo.s),
+          ],
+          const _Titulo('Zonas de cobertura'),
+          Wrap(
+            spacing: EspaciadoCampo.s,
+            runSpacing: EspaciadoCampo.s,
+            children: [
+              for (final z in p.zonas)
+                ChipEstadoMarketplace(
+                  etiqueta: z,
+                  etiquetaSemantica: 'Zona: $z',
+                  tono: TonoEstado.neutro,
+                  icono: Icons.place_outlined,
+                ),
+            ],
           ),
-        for (final c in datos.calificaciones.recientes) ...[
-          _Resena(calificacion: c, ahora: ahora),
-          const SizedBox(height: EspaciadoCampo.s),
+          const _Titulo('Calificaciones recibidas'),
+          _ResumenCalificaciones(resumen: datos.calificaciones),
+          const SizedBox(height: EspaciadoCampo.m),
+          if (datos.calificaciones.recientes.isEmpty)
+            Text(
+              'Las reseñas de tus clientes aparecen acá después de cada '
+              'servicio.',
+              style: texto.bodyMedium,
+            ),
+          for (final c in datos.calificaciones.recientes) ...[
+            _Resena(calificacion: c, ahora: ahora),
+            const SizedBox(height: EspaciadoCampo.s),
+          ],
         ],
-      ],
+      ),
     );
   }
 }

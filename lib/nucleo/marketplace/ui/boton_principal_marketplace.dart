@@ -15,6 +15,7 @@ class BotonPrincipalMarketplace extends StatefulWidget {
     required this.onPressed,
     this.cargando = false,
     this.icono,
+    this.alto = altoMinimo,
     super.key,
   });
 
@@ -24,6 +25,9 @@ class BotonPrincipalMarketplace extends StatefulWidget {
 
   /// Ícono al final del texto (por ejemplo, una flecha de avance).
   final IconData? icono;
+
+  /// Alto mínimo; 56 dp con guantes en piloto y auxiliar.
+  final double alto;
 
   /// Alto mínimo: cuatro pasos por encima del objetivo táctil del cliente.
   static const double altoMinimo =
@@ -63,10 +67,7 @@ class _BotonPrincipalMarketplaceState extends State<BotonPrincipalMarketplace> {
             child: FilledButton(
               onPressed: activo ? widget.onPressed : null,
               style: FilledButton.styleFrom(
-                minimumSize: const Size(
-                  64,
-                  BotonPrincipalMarketplace.altoMinimo,
-                ),
+                minimumSize: Size(64, widget.alto),
                 // Enviando conserva el verde: un botón gris parecería
                 // deshabilitado por un error.
                 disabledBackgroundColor: widget.cargando
