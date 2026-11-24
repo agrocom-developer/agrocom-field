@@ -23,7 +23,7 @@ void main() {
     expect(find.byType(NavigationBar), findsOneWidget);
   });
 
-  testWidgets('solicitar un servicio en tres pasos lo agrega al historial', (
+  testWidgets('solicitar un servicio en cuatro pasos lo agrega al historial', (
     tester,
   ) async {
     prepararTelefono(tester);
@@ -32,31 +32,61 @@ void main() {
     );
     await tester.pumpAndSettle();
 
+    Future<void> tocar(Finder objetivo) async {
+      await tester.scrollUntilVisible(
+        objetivo,
+        120,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(objetivo);
+      await tester.pumpAndSettle();
+      await tester.tap(objetivo);
+      await tester.pumpAndSettle();
+    }
+
     await tester.tap(find.text('Solicitar').last);
     await tester.pumpAndSettle();
-    expect(find.text('Paso 1 de 3 · Dónde'), findsOneWidget);
+    expect(find.text('Paso 1 de 4 · Lote'), findsOneWidget);
 
-    await tester.tap(find.text('Maíz La Curva'));
+    await tocar(find.text('Maíz La Curva'));
+    await tester.tap(find.text('Continuar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Paso 2 de 4 · Aplicación'), findsOneWidget);
+
+    await tocar(find.text('Insecticida piretroide'));
+    await tester.tap(find.text('Continuar'));
+    await tester.pumpAndSettle();
+    expect(find.text('Paso 3 de 4 · Cuándo'), findsOneWidget);
+
+    // El tercer día ofrecido: sin recargo por urgencia.
+    await tester.tap(find.byKey(const ValueKey('fecha-2')));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Continuar'));
     await tester.pumpAndSettle();
-    expect(find.text('Paso 2 de 3 · Qué'), findsOneWidget);
+    expect(find.text('Paso 4 de 4 · Resumen'), findsOneWidget);
+    expect(find.text('Bs 7.695'), findsWidgets);
 
-    await tester.tap(find.text('Insecticida piretroide'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Continuar'));
-    await tester.pumpAndSettle();
-    expect(find.text('Paso 3 de 3 · Cuándo'), findsOneWidget);
-    expect(find.text('Bs 7.695'), findsOneWidget);
+    await tester.tap(find.text('Confirmar solicitud'));
+    // La búsqueda de proveedor anima en bucle: se avanza el reloj a mano.
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('Buscando proveedor'), findsOneWidget);
+    expect(find.text('1. Pilotos de Agrocom'), findsOneWidget);
 
-    final fecha = find.byType(ChoiceChip).first;
-    await tester.tap(fecha);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Solicitar servicio').last);
-    await tester.pumpAndSettle(const Duration(seconds: 2));
+    // Dos rondas de la demo (propios, terceros) y un proveedor acepta.
+    await tester.pump(const Duration(seconds: 4));
+    await tester.pump(const Duration(seconds: 4));
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('Proveedor asignado'), findsOneWidget);
 
+    await tester.tap(find.text('Ver el servicio'));
+    await tester.pumpAndSettle();
     expect(find.text('Servicio'), findsWidgets);
-    expect(find.text('Buscando proveedor'), findsWidgets);
+    expect(find.text('Proveedor asignado'), findsWidgets);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    expect(find.text('Hola, Hugo'), findsOneWidget);
   });
 
   testWidgets('en iPad la navegación pasa a riel lateral', (tester) async {
