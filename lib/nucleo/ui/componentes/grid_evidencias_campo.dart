@@ -72,7 +72,7 @@ class _CeldaCapturada extends StatelessWidget {
       child: Text(
         celda.etiqueta,
         style: TextStyle(
-          fontFamily: 'monospace',
+          fontFamily: 'JetBrains Mono',
           fontSize: 10,
           color: ColoresCampo.textoPrincipal.withValues(alpha: 0.85),
           shadows: const [Shadow(blurRadius: 4, color: Colors.black)],
@@ -112,7 +112,7 @@ class _CeldaPendiente extends StatelessWidget {
               celda.etiqueta,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'monospace',
+                fontFamily: 'JetBrains Mono',
                 fontSize: 11,
                 fontWeight: FontWeight.w600,
                 color: color,

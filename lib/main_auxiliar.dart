@@ -20,6 +20,7 @@ import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
 import 'nucleo/notificaciones/notificador_local.dart';
 import 'nucleo/sync/disparador_sync.dart';
+import 'nucleo/sync/sync_cubit.dart';
 import 'nucleo/version/version_watcher.dart';
 
 Future<void> main() async {
@@ -92,6 +93,7 @@ Future<void> main() async {
       ),
       alIngresarConExito: () =>
           unawaited(getIt<DisparadorSync>().sincronizarAhora()),
+      syncCubit: getIt<SyncCubit>(),
     ),
   );
 }

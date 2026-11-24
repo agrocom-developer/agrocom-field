@@ -26,8 +26,10 @@ class EncabezadoCampo extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: preferredSize.height,
+    // Alto mínimo, no fijo: título y subtítulo escalados al 200 % crecen
+    // hacia abajo en vez de desbordar.
+    return ConstrainedBox(
+      constraints: BoxConstraints(minHeight: preferredSize.height),
       child: Row(
         children: [
           BotonCircularCampo(

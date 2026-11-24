@@ -5,6 +5,8 @@ import '../../../nucleo/ui/colores_campo.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/imagenes_campo.dart';
 import '../../../nucleo/ui/tipografia_campo.dart';
+import '../../../nucleo/ui/tokens_campo.dart';
+import '../../estado_sync/presentation/indicador_sync.dart';
 import '../../incidencias/presentation/incidencia_cubit.dart';
 import '../../sesion_vuelo/presentation/sesion_bloc.dart';
 import '../../sesion_vuelo/presentation/sesion_vuelo_pantalla.dart';
@@ -17,16 +19,16 @@ import '../../sesion_vuelo/domain/trabajo_en_curso.dart';
 import 'inicio_cubit.dart';
 import 'inicio_estado.dart';
 
-/// «Inicio» del piloto (HU-70) en modo campo (ADR 0008), con el lenguaje de
-/// la vista previa 03 (`inicio_piloto_campo_vitrina.dart`): foto superior,
-/// saludo, tarjeta del trabajo asignado con sus `StatChipCampo` y «Crear
-/// aplicación», y la barra de navegación.
+/// «Inicio» del piloto (HU-70) en modo campo (ADR 0008 y ADR 0011): sus
+/// servicios asignados. Foto superior, saludo con el estado de
+/// sincronización, lo que el dispositivo tiene en curso, la tarjeta del
+/// trabajo asignado con sus `StatChipCampo` y «Crear aplicación», y la
+/// barra de navegación.
 ///
-/// De la 03 se muestra solo lo que tiene fuente en `drift`: el nombre del
-/// piloto, el clima, la hora de asignación y el banner «SIN CONEXIÓN · N
-/// pendientes» quedan fuera (no hay en este repo un conteo reactivo del
-/// outbox ni estado de conectividad para la UI), y la barra lleva solo los
-/// destinos con pantalla real: Inicio y Órdenes. Un dato ausente se lee
+/// Se muestra solo lo que tiene fuente en `drift` o en el motor de sync: el
+/// nombre del piloto, el clima, la hora de asignación y el conteo de
+/// pendientes del outbox quedan fuera, y la barra lleva solo los destinos
+/// con pantalla real: Inicio y Órdenes. Un dato ausente se lee
 /// «sin datos», nunca se inventa; sin trabajo asignado, un estado vacío
 /// explícito. Debajo del trabajo, sus límites climáticos y parámetros de
 /// vuelo (tarea 23), los del propio trabajo asignado. Arriba de todo, lo
@@ -69,6 +71,7 @@ class InicioVista extends StatelessWidget {
   void _crearAplicacion(BuildContext context, TrabajoAsignado trabajo) {
     final nroAplicacion = trabajo.nroAplicacion;
     if (nroAplicacion == null) return;
+    HapticaCampo.confirmacion();
     context.read<TrabajoCubit>().abrirAsignado(
       uuidCliente: trabajo.uuidCliente,
       ordenId: trabajo.ordenId,
@@ -85,6 +88,7 @@ class InicioVista extends StatelessWidget {
           _abrirSesionVuelo(context, estado.trabajo.uuidCliente);
         }
         if (estado is TrabajoError) {
+          HapticaCampo.alerta();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(estado.mensaje),
@@ -119,17 +123,46 @@ class InicioVista extends StatelessWidget {
                   children: [
                     Expanded(
                       child: ListView(
-                        padding: const EdgeInsets.fromLTRB(18, 8, 18, 24),
+                        padding: EdgeInsets.fromLTRB(
+                          EspaciadoCampo.margenLateral(
+                            MediaQuery.sizeOf(context).width,
+                          ),
+                          EspaciadoCampo.s,
+                          EspaciadoCampo.margenLateral(
+                            MediaQuery.sizeOf(context).width,
+                          ),
+                          EspaciadoCampo.xl,
+                        ),
                         children: [
                           const _Saludo(),
-                          const SizedBox(height: 18),
+                          const SizedBox(height: EspaciadoCampo.m),
+                          const Align(
+                            alignment: AlignmentDirectional.centerStart,
+                            child: IndicadorSync(),
+                          ),
+                          const SizedBox(height: EspaciadoCampo.xl),
+                          Semantics(
+                            header: true,
+                            child: Text(
+                              'MIS SERVICIOS ASIGNADOS',
+                              key: const Key('inicio_titulo_servicios'),
+                              style: TipografiaCampo.etiquetaMono.copyWith(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: EspaciadoCampo.m),
                           if (enCurso != null) ...[
                             _TarjetaEnCurso(
                               enCurso: enCurso,
-                              onVolver: () => _abrirSesionVuelo(
-                                context,
-                                enCurso.trabajoUuidCliente,
-                              ),
+                              onVolver: () {
+                                HapticaCampo.seleccion();
+                                _abrirSesionVuelo(
+                                  context,
+                                  enCurso.trabajoUuidCliente,
+                                );
+                              },
                             ),
                             const SizedBox(height: 12),
                           ],
@@ -237,14 +270,8 @@ class _Saludo extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Hola',
-                style: TipografiaCampo.tituloSeccion.copyWith(fontSize: 20),
-              ),
-              Text(
-                'Piloto',
-                style: TipografiaCampo.cuerpoSecundario.copyWith(fontSize: 13),
-              ),
+              const Text('Hola', style: TipografiaCampo.tituloSeccion),
+              Text('Piloto', style: TipografiaCampo.cuerpoSecundario),
             ],
           ),
         ),
@@ -268,7 +295,7 @@ class _SinTrabajo extends StatelessWidget {
         children: [
           Text(
             'SIN TRABAJO ASIGNADO',
-            style: TipografiaCampo.etiquetaMono.copyWith(fontSize: 11),
+            style: TipografiaCampo.etiquetaMono.copyWith(fontSize: 12),
           ),
           const SizedBox(height: 12),
           const Text(
@@ -283,10 +310,14 @@ class _SinTrabajo extends StatelessWidget {
             style: TipografiaCampo.cuerpoSecundario,
           ),
           const SizedBox(height: 16),
-          BotonSecundarioCampo(
-            key: const Key('inicio_ver_ordenes'),
-            texto: 'Ver órdenes',
-            onPressed: onVerOrdenes,
+          // Ancho completo: la acción principal es el elemento de mayor peso.
+          SizedBox(
+            width: double.infinity,
+            child: BotonSecundarioCampo(
+              key: const Key('inicio_ver_ordenes'),
+              texto: 'Ver órdenes',
+              onPressed: onVerOrdenes,
+            ),
           ),
         ],
       ),
@@ -326,7 +357,7 @@ class _TarjetaEnCurso extends StatelessWidget {
             enCurso.conSesion ? 'SESIÓN EN CURSO' : 'TRABAJO EN CURSO',
             key: const Key('inicio_en_curso_titulo'),
             style: TipografiaCampo.etiquetaMono.copyWith(
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
               color: ColoresCampo.acentoLima,
             ),
@@ -351,12 +382,16 @@ class _TarjetaEnCurso extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 16),
-          BotonPrimarioCampo(
-            key: const Key('boton_volver_en_curso'),
-            texto: enCurso.conSesion
-                ? 'Volver a la sesión'
-                : 'Volver al trabajo',
-            onPressed: onVolver,
+          // Ancho completo: la acción principal es el elemento de mayor peso.
+          SizedBox(
+            width: double.infinity,
+            child: BotonPrimarioCampo(
+              key: const Key('boton_volver_en_curso'),
+              texto: enCurso.conSesion
+                  ? 'Volver a la sesión'
+                  : 'Volver al trabajo',
+              onPressed: onVolver,
+            ),
           ),
         ],
       ),
@@ -397,7 +432,7 @@ class _TarjetaTrabajo extends StatelessWidget {
           Text(
             'ASIGNADO POR JEFE DE CAMPO',
             style: TipografiaCampo.etiquetaMono.copyWith(
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w600,
               color: ColoresCampo.acentoLima,
             ),
@@ -426,46 +461,41 @@ class _TarjetaTrabajo extends StatelessWidget {
             style: TipografiaCampo.cuerpoSecundario,
           ),
           const SizedBox(height: 16),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          GrupoStatsCampo(
             children: [
-              Expanded(
-                child: StatChipCampo(
-                  key: const Key('inicio_hectareas'),
-                  etiqueta: 'Hectáreas',
-                  valor: _valor(trabajo.hectareasDeclaradas),
-                  unidad: 'ha',
-                ),
+              StatChipCampo(
+                key: const Key('inicio_hectareas'),
+                etiqueta: 'Hectáreas',
+                valor: _valor(trabajo.hectareasDeclaradas),
+                unidad: 'ha',
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: StatChipCampo(
-                  key: const Key('inicio_dosis'),
-                  etiqueta: dosis?.etiqueta ?? 'Dosis',
-                  valor: _valor(dosis?.valor),
-                  unidad: dosis?.unidad,
-                ),
+              StatChipCampo(
+                key: const Key('inicio_dosis'),
+                etiqueta: dosis?.etiqueta ?? 'Dosis',
+                valor: _valor(dosis?.valor),
+                unidad: dosis?.unidad,
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: StatChipCampo(
-                  key: const Key('inicio_lotes_orden'),
-                  etiqueta: 'Lotes orden',
-                  valor: _valor(trabajo.cantidadLotesOrden),
-                ),
+              StatChipCampo(
+                key: const Key('inicio_lotes_orden'),
+                etiqueta: 'Lotes orden',
+                valor: _valor(trabajo.cantidadLotesOrden),
               ),
             ],
           ),
           const SizedBox(height: 16),
-          BotonPrimarioCampo(
-            key: const Key('boton_crear_aplicacion'),
-            texto: 'Crear aplicación',
-            cargando: context.select<TrabajoCubit, bool>(
-              (cubit) => cubit.state is TrabajoCargando,
+          // Ancho completo: la acción principal es el elemento de mayor peso.
+          SizedBox(
+            width: double.infinity,
+            child: BotonPrimarioCampo(
+              key: const Key('boton_crear_aplicacion'),
+              texto: 'Crear aplicación',
+              cargando: context.select<TrabajoCubit, bool>(
+                (cubit) => cubit.state is TrabajoCargando,
+              ),
+              onPressed: trabajo.puedeCrearAplicacion && motivoBloqueo == null
+                  ? onCrearAplicacion
+                  : null,
             ),
-            onPressed: trabajo.puedeCrearAplicacion && motivoBloqueo == null
-                ? onCrearAplicacion
-                : null,
           ),
           if (motivoBloqueo case final motivo?) ...[
             const SizedBox(height: 10),
@@ -504,13 +534,11 @@ class _TarjetaLimites extends StatelessWidget {
     String etiqueta,
     Object? valor,
     String unidad,
-  ) => Expanded(
-    child: StatChipCampo(
-      key: Key(key),
-      etiqueta: etiqueta,
-      valor: valor?.toString() ?? InicioVista._sinDatos,
-      unidad: valor == null ? null : unidad,
-    ),
+  ) => StatChipCampo(
+    key: Key(key),
+    etiqueta: etiqueta,
+    valor: valor?.toString() ?? InicioVista._sinDatos,
+    unidad: valor == null ? null : unidad,
   );
 
   @override
@@ -525,8 +553,7 @@ class _TarjetaLimites extends StatelessWidget {
             style: TipografiaCampo.tituloTarjeta,
           ),
           const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          GrupoStatsCampo(
             children: [
               _chip(
                 'inicio_viento_max',
@@ -534,7 +561,6 @@ class _TarjetaLimites extends StatelessWidget {
                 trabajo.vientoMaxKmh,
                 'km/h',
               ),
-              const SizedBox(width: 10),
               _chip(
                 'inicio_temperatura_max',
                 'Temp. máx',
@@ -544,8 +570,7 @@ class _TarjetaLimites extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 10),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          GrupoStatsCampo(
             children: [
               _chip(
                 'inicio_humedad_min',
@@ -553,7 +578,6 @@ class _TarjetaLimites extends StatelessWidget {
                 trabajo.humedadMinPct,
                 '%',
               ),
-              const SizedBox(width: 10),
               _chip(
                 'inicio_humedad_max',
                 'Humedad máx',
@@ -568,18 +592,15 @@ class _TarjetaLimites extends StatelessWidget {
             style: TipografiaCampo.tituloTarjeta,
           ),
           const SizedBox(height: 12),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          GrupoStatsCampo(
             children: [
               _chip('inicio_altura_vuelo', 'Altura', trabajo.alturaVueloM, 'm'),
-              const SizedBox(width: 10),
               _chip(
                 'inicio_velocidad_vuelo',
                 'Velocidad',
                 trabajo.velocidadVueloKmh,
                 'km/h',
               ),
-              const SizedBox(width: 10),
               _chip(
                 'inicio_ancho_pasada',
                 'Ancho pasada',

@@ -59,6 +59,34 @@ class AlmacenDemoProveedor {
     return null;
   }
 
+  void _reemplazar(String id, Servicio Function(Servicio) cambio) {
+    if (!_asignados.any((s) => s.id == id)) return;
+    _asignados = [for (final s in _asignados) s.id == id ? cambio(s) : s];
+    _asignadosCambios.add(asignados);
+  }
+
+  /// El servicio pasa a ejecución al abrirse su primera sesión de vuelo.
+  void iniciarServicio(String id) => _reemplazar(
+    id,
+    (s) => s.estado == EstadoServicio.asignado
+        ? s.copiarCon(estado: EstadoServicio.enEjecucion)
+        : s,
+  );
+
+  /// Suma las hectáreas de una sesión cerrada, sin pasar de las declaradas.
+  void registrarAvance(String id, Decimal hectareas) => _reemplazar(id, (s) {
+    final total = s.hectareasCubiertas + hectareas;
+    return s.copiarCon(
+      hectareasCubiertas: total > s.hectareasDeclaradas
+          ? s.hectareasDeclaradas
+          : total,
+    );
+  });
+
+  /// El cierre del trabajo completa el servicio.
+  void completarServicio(String id) =>
+      _reemplazar(id, (s) => s.copiarCon(estado: EstadoServicio.completado));
+
   /// Registra la respuesta una sola vez por clave (idempotencia) y quita la
   /// oferta de la bandeja. Una oferta aceptada pasa a servicios asignados.
   ResultadoRespuestaOferta responder(

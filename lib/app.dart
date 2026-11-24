@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'features/auth/login_cubit.dart';
 import 'features/auth/login_pantalla.dart';
@@ -14,6 +15,7 @@ import 'nucleo/auth/token_store.dart';
 import 'nucleo/entorno/info_entorno.dart';
 import 'nucleo/flavor.dart';
 import 'nucleo/linterna/linterna_controlador.dart';
+import 'nucleo/sync/sync_cubit.dart';
 import 'nucleo/ui/colores_campo.dart';
 import 'nucleo/ui/componentes/componentes_campo.dart';
 import 'nucleo/ui/tema_campo.dart';
@@ -54,6 +56,12 @@ class AgrocomApp extends StatelessWidget {
   /// pantalla inicial sigue siendo la lista de órdenes.
   final InicioCubit Function()? crearInicioCubit;
 
+  /// Estado del motor de sync para las pantallas del lote (`IndicadorSync`).
+  /// Se provee por encima del `Navigator` para que lo lean todas las rutas.
+  /// Sin él, las pantallas muestran solo que el registro quedó guardado en
+  /// el dispositivo.
+  final SyncCubit? syncCubit;
+
   const AgrocomApp({
     required this.flavor,
     required this.infoEntorno,
@@ -67,14 +75,20 @@ class AgrocomApp extends StatelessWidget {
     required this.crearIncidenciaCubit,
     required this.alIngresarConExito,
     this.crearInicioCubit,
+    this.syncCubit,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
+    final syncCubit = this.syncCubit;
     return MaterialApp(
       title: 'Agrocom',
       theme: AgrocomThemeCampo.construir(),
+      builder: syncCubit == null
+          ? null
+          : (context, child) =>
+                BlocProvider<SyncCubit>.value(value: syncCubit, child: child!),
       home: VersionBloqueoOverlay(
         estadoVersion: estadoVersion,
         child: EmergenciaBoton(

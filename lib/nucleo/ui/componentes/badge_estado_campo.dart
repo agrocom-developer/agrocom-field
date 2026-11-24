@@ -38,7 +38,7 @@ class BadgeEstadoCampo extends StatelessWidget {
       child: Text(
         texto.toUpperCase(),
         style: TextStyle(
-          fontFamily: 'monospace',
+          fontFamily: 'JetBrains Mono',
           fontSize: 10,
           fontWeight: FontWeight.w500,
           color: color,

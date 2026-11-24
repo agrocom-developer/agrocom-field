@@ -43,9 +43,12 @@ class FilaDatoCampo extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: Text(etiqueta, style: estilo)),
+              Expanded(flex: 3, child: Text(etiqueta, style: estilo)),
               const SizedBox(width: 12),
-              Flexible(
+              // Ancho propio para el valor: queda alineado al borde derecho
+              // de la tarjeta, fila tras fila.
+              Expanded(
+                flex: 2,
                 child: Text(
                   textoValor,
                   textAlign: TextAlign.end,

@@ -113,7 +113,7 @@ Reglas:
 2. Nada aparece desde escala 0: las entradas parten de 0,95 con opacidad.
 3. Solo se animan `transform` y `opacity`; no se animan dimensiones de layout en listas largas.
 4. **Reducción de movimiento.** Con "Reducir movimiento" (iOS) o "Quitar animaciones" (Android), `MovimientoCampo.duracion(context, d)` devuelve `Duration.zero`: los desplazamientos, escalas y el barrido del esqueleto se detienen. La opacidad y el color pueden seguir cambiando: reducir no es eliminar el feedback.
-5. Háptica (`HapticaCampo`): `seleccion` al cambiar una selección, `confirmacion` al aceptar un servicio, `alerta` en una oferta por vencer. Nunca es el único canal de feedback.
+5. Háptica (`HapticaCampo`): `seleccion` al cambiar una selección o tomar una foto, `confirmacion` al aceptar un servicio o confirmar una apertura, un cierre o una incidencia, `alerta` en una oferta por vencer, en un error y al abrir el modo emergencia. Nunca es el único canal de feedback.
 6. Ningún elemento anima en bucle salvo el esqueleto de carga y el indicador de sincronización activa.
 
 ## 8. Componentes
@@ -128,9 +128,12 @@ Catálogo `*Campo` en `lib/nucleo/ui/componentes/` (un solo import: `componentes
 | `CalificacionCampo` | Estrellas de 1 a 5; interactiva para el cliente, de solo lectura para el proveedor. Objetivo táctil de 48 px y etiqueta accesible por estrella. |
 | `EsqueletoCampo` | Marcador de carga con la forma del contenido; estático con movimiento reducido. Solo en lecturas en línea: flavor cliente y superficie del proveedor (ofertas, perfil, drones). |
 | `NavegacionAdaptativaCampo` | Barra inferior en teléfono; riel lateral en iPad y tabletas (extendido en horizontal); contenido acotado a 720 px. |
+| `BarraAccionesCampo` | Acciones ancladas al borde inferior de una pantalla del lote: principal abajo, secundaria encima, nota de apoyo opcional. Respeta el área segura. |
+| `EstadoSyncCampo` | Pastilla de estado de sincronización con ícono y texto en mono: «En el dispositivo», «Sincronizando», «Sincronizado», «Sin sincronizar». |
+| `GrupoStatsCampo` | Fila de `StatChipCampo` que se apila cuando el ancho no alcanza para el texto escalado. |
 | Botones, tarjetas, badges, campos, listas, banners | Catálogo base (ADR 0008), modo campo. |
 
-Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`) están configurados por modo con el alto táctil correspondiente.
+Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`) están configurados por modo con el alto táctil correspondiente. `BotonPrimarioCampo` y `BotonSecundarioCampo` tienen 56 px de alto mínimo y crecen con el texto escalado; aceptan un ícono que acompaña a la etiqueta.
 
 ## 9. Patrones por pantalla clave
 
@@ -146,7 +149,11 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 
 **Mis drones (proveedor).** Una tarjeta por dron: modelo, matrícula, propiedad y tanque; estado con chip; ciclos de batería con barra y los ciclos que quedan. Desde tres cuartos de vida útil la barra pasa a ámbar y el texto pide planificar el recambio. Primero se listan los drones que piden atención.
 
-**Sesión de vuelo (piloto y auxiliar).** Modo campo. Un dato protagonista (hectáreas cubiertas, `valorDestacado`), estado de sincronización en mono, acción principal de 56 px. Todo viene de `drift`: sin esqueleto, sin espera. Las evidencias muestran su estado de subida.
+**Servicios asignados (piloto).** El servicio vigente arriba y grande: estado, lote, hectáreas cubiertas con su barra de avance y la acción principal. Debajo, próximos y terminados como filas tocables de al menos 56 px. El detalle muestra el lote en el mapa, tres datos (superficie, dosis, caldo) y la acción principal anclada abajo.
+
+**Sesión de vuelo (piloto y auxiliar).** Modo campo. Encabezado con `EstadoSyncCampo` debajo; una tarjeta por estado (sin sesión, en vuelo, cerrada, error) con su dato protagonista en `valorDestacado`; acciones en `BarraAccionesCampo`, la principal de 56 px siempre visible. Los formularios de condiciones y de cierre son hojas a casi todo el ancho con las acciones fuera del scroll. Una pausa es el cierre de la sesión con su motivo; la pantalla de sesión cerrada ofrece abrir la siguiente. Todo viene de `drift`: sin esqueleto, sin espera. Cada pantalla que escribe dice en una `NotaTecnicaCampo` que el registro quedó en el dispositivo. Detalle en ADR 0011.
+
+**Incidencia con foto.** Tipo en un selector segmentado, descripción opcional y la foto obligatoria con el hueco en ámbar mientras falte. «Guardar incidencia» anclado abajo, habilitado recién con tipo y foto.
 
 ## 10. Reglas por plataforma
 
