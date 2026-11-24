@@ -44,6 +44,17 @@ class ApiClient {
   Future<Response<dynamic>> put(String path, {Object? data}) =>
       _envolver(() => _dio.put(path, data: data));
 
+  /// Descarga un archivo (una foto) con la sesión del dispositivo.
+  Future<List<int>> getBytes(String path) async {
+    final r = await _envolver(
+      () => _dio.get<List<int>>(
+        path,
+        options: Options(responseType: ResponseType.bytes),
+      ),
+    );
+    return (r.data as List<int>?) ?? const [];
+  }
+
   Future<Response<dynamic>> delete(String path) =>
       _envolver(() => _dio.delete(path));
 

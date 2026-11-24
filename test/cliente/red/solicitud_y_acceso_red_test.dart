@@ -1,6 +1,7 @@
 import 'package:agrocom_field/cliente/acceso/data/acceso_red.dart';
 import 'package:agrocom_field/cliente/acceso/domain/acceso_repositorio.dart';
 import 'package:agrocom_field/cliente/di/dependencias_cliente.dart';
+import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
 import 'package:agrocom_field/cliente/solicitar/data/solicitud_red.dart';
 import 'package:agrocom_field/cliente/solicitar/domain/solicitud_repositorio.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
@@ -18,18 +19,6 @@ class _OnboardingEnMemoria implements OnboardingStore {
   @override
   Future<void> marcar() async => _visto = true;
 }
-
-const _estimacion = {
-  'estimacion': {
-    'congelada': false,
-    'tarifa_base_hectarea': '120.0000',
-    'tarifa_hectarea': '132.0000',
-    'hectareas': '80.0000',
-    'subtotal_base': '9600.00',
-    'recargo_urgente': '1920.00',
-    'monto_estimado': '11520.00',
-  },
-};
 
 void main() {
   group('SolicitudRed', () {
@@ -57,14 +46,13 @@ void main() {
               id: 31,
               estado: 'borrador',
               proveedorId: null,
+              ofertaAdjudicadaId: null,
+              precioAcordado: null,
               montoFinal: null,
+              ejecutadas: null,
+              porcentaje: '0.00',
             ),
           },
-        )
-        ..responder(
-          'GET',
-          '/api/solicitudes/31/estimacion',
-          cuerpo: _estimacion,
         )
         ..responder(
           'POST',
@@ -72,9 +60,13 @@ void main() {
           cuerpo: {
             'solicitud': solicitudJson(
               id: 31,
-              estado: 'publicada',
+              estado: 'abierta',
               proveedorId: null,
+              ofertaAdjudicadaId: null,
+              precioAcordado: null,
               montoFinal: null,
+              ejecutadas: null,
+              porcentaje: '0.00',
             ),
           },
         )
@@ -87,85 +79,54 @@ void main() {
         red.http,
         red.fuente,
         reloj: () => DateTime(2026, 11, 24, 9),
-        pasoBusqueda: Duration.zero,
       );
       lote = (await repo.lotesDelCliente()).single;
     });
 
-    SolicitudServicio solicitud({String clave = 'clave-1'}) =>
-        SolicitudServicio(
+    NuevaSolicitud nueva({String clave = 'clave-1', String precio = '121.5'}) =>
+        NuevaSolicitud(
           lote: lote,
-          producto: 'Glifosato 480 SL',
-          dosisLitrosPorHectarea: Decimal.parse('2'),
-          fechaDeseada: DateTime(2026, 11, 25),
-          claveIdempotencia: clave,
-          hectareas: Decimal.parse('80'),
+          hectareas: Decimal.parse('60'),
           cultivo: 'Soya',
-          ventana: VentanaHoraria.amanecer,
+          producto: 'Glifosato 480 SL',
+          fechaDeseada: DateTime(2026, 11, 25),
+          precioHa: Decimal.parse(precio),
+          claveIdempotencia: clave,
+          observaciones: 'Hay una línea eléctrica al sur',
         );
 
-    test('los lotes son los terrenos del cliente con su zona', () {
+    test('lee los terrenos del cliente como lotes con su zona', () {
       expect(lote.id, '1');
-      expect(lote.nombre, 'Lote Norte');
       expect(lote.zona, 'Cuatro Cañadas');
       expect(lote.hectareas, Decimal.parse('80'));
-      expect(lote.poligono.length, greaterThanOrEqualTo(3));
     });
 
-    test('estimar crea un borrador y lee la tarifa de ese borrador', () async {
-      final s = solicitud();
-      final e = await repo.estimar(
-        lote: lote,
-        dosisLitrosPorHectarea: s.dosisLitrosPorHectarea,
-        hectareas: s.hectareas,
-        fechaDeseada: s.fechaDeseada,
-        producto: s.producto,
-        cultivo: s.cultivo,
-        ventana: s.ventana,
-        claveIdempotencia: s.claveIdempotencia,
-      );
-      expect(e.precio, Decimal.parse('11520.00'));
-      expect(e.recargos.single.concepto, contains('urgencia'));
-      final cuerpo =
+    test('crea el borrador con el precio propuesto y lo publica', () async {
+      final solicitud = await repo.publicar(nueva());
+      expect(solicitud.id, '31');
+      expect(solicitud.estado, EstadoSolicitud.abierta);
+      final borrador =
           red.servidor.de('POST', '/api/solicitudes').single.cuerpo! as Map;
-      expect(cuerpo['terreno_id'], 1);
-      expect(cuerpo['tipo_aplicacion'], 'herbicida');
-      expect(cuerpo['hectareas_solicitadas'], '80');
-      expect(cuerpo['producto_indicado'], 'Glifosato 480 SL, 2 L/ha');
-      expect(cuerpo['ventana_desde'], '2026-11-25');
-      expect(cuerpo['ventana_hasta'], '2026-12-02');
-      expect(cuerpo['urgente'], isTrue);
-      expect(cuerpo['observaciones'], contains('Amanecer'));
-    });
-
-    test('solicitar publica el mismo borrador que se estimó', () async {
-      final s = solicitud();
-      await repo.estimar(
-        lote: lote,
-        dosisLitrosPorHectarea: s.dosisLitrosPorHectarea,
-        hectareas: s.hectareas,
-        fechaDeseada: s.fechaDeseada,
-        producto: s.producto,
-        cultivo: s.cultivo,
-        ventana: s.ventana,
-        claveIdempotencia: s.claveIdempotencia,
-      );
-      final servicio = await repo.solicitar(s);
-      expect(servicio.id, '31');
-      expect(servicio.estado, EstadoServicio.buscandoProveedor);
-      expect(red.servidor.de('POST', '/api/solicitudes'), hasLength(1));
+      expect(borrador['terreno_id'], 1);
+      expect(borrador['hectareas_solicitadas'], '60');
+      expect(borrador['precio_ha_propuesto'], '121.5');
+      expect(borrador['producto_indicado'], 'Glifosato 480 SL');
+      expect(borrador['tipo_aplicacion'], 'herbicida');
+      expect(borrador['ventana_desde'], '2026-11-25');
+      expect(borrador['ventana_hasta'], '2026-11-28');
+      expect(borrador['observaciones'], 'Hay una línea eléctrica al sur');
+      expect(borrador['urgente'], isTrue);
       expect(
         red.servidor.de('POST', '/api/solicitudes/31/publicar'),
         hasLength(1),
       );
+      // Ya no existe estimación de tarifa: el precio lo negocian las partes.
+      expect(red.servidor.de('GET', '/api/solicitudes/31/estimacion'), isEmpty);
     });
 
-    test('el mismo envío reintentado manda el mismo uuid_cliente', () async {
-      final a = solicitud();
-      await repo.solicitar(a);
-      // Otra instancia (la app se reinició): mismo dato, misma clave.
-      final otra = SolicitudRed(red.http, red.fuente);
-      await otra.solicitar(a);
+    test('un reintento con los mismos datos manda el mismo uuid', () async {
+      await repo.publicar(nueva());
+      await repo.publicar(nueva());
       final uuids = red.servidor
           .de('POST', '/api/solicitudes')
           .map((p) => (p.cuerpo! as Map)['uuid_cliente'])
@@ -173,27 +134,23 @@ void main() {
       expect(uuids, hasLength(1));
     });
 
-    test(
-      'sin red, solicitar lanza SolicitudSinConexion y se puede reintentar',
-      () async {
-        red.servidor.sinRed = true;
-        await expectLater(
-          repo.solicitar(solicitud()),
-          throwsA(isA<SolicitudSinConexion>()),
-        );
-        red.servidor.sinRed = false;
-        expect((await repo.solicitar(solicitud())).id, '31');
-      },
-    );
+    test('cambiar el precio crea otro borrador con otro uuid', () async {
+      await repo.publicar(nueva());
+      await repo.publicar(nueva(precio: '130'));
+      final uuids = red.servidor
+          .de('POST', '/api/solicitudes')
+          .map((p) => (p.cuerpo! as Map)['uuid_cliente'])
+          .toSet();
+      expect(uuids, hasLength(2));
+    });
 
-    test('si la publicación ya había llegado, el reintento no falla', () async {
-      await repo.solicitar(solicitud());
+    test('si la publicación ya había llegado, devuelve la solicitud', () async {
       red.servidor
         ..responder(
           'POST',
           '/api/solicitudes/31/publicar',
           codigo: 422,
-          cuerpo: {'message': 'La solicitud ya fue publicada.'},
+          cuerpo: {'message': 'La solicitud ya no está en borrador.'},
         )
         ..responder(
           'GET',
@@ -201,107 +158,126 @@ void main() {
           cuerpo: {
             'solicitud': solicitudJson(
               id: 31,
-              estado: 'en_asignacion',
+              estado: 'abierta',
               proveedorId: null,
+              ofertaAdjudicadaId: null,
+              precioAcordado: null,
               montoFinal: null,
+              ejecutadas: null,
+              porcentaje: '0.00',
             ),
           },
         );
-      // Otra instancia con el mismo dato: el borrador se vuelve a pedir y
-      // la publicación repetida se resuelve leyendo la solicitud.
-      final servicio = await SolicitudRed(
-        red.http,
-        red.fuente,
-      ).solicitar(solicitud());
-      expect(servicio.id, '31');
+      final solicitud = await repo.publicar(nueva());
+      expect(solicitud.estado, EstadoSolicitud.abierta);
     });
 
-    test('un contorno dibujado crea primero el terreno', () async {
+    test(
+      'un borrador que el servidor no deja publicar falla con su motivo',
+      () async {
+        red.servidor
+          ..responder(
+            'POST',
+            '/api/solicitudes/31/publicar',
+            codigo: 422,
+            cuerpo: {'message': 'Falta un teléfono en tu cuenta.'},
+          )
+          ..responder(
+            'GET',
+            '/api/solicitudes/31',
+            cuerpo: {
+              'solicitud': solicitudJson(
+                id: 31,
+                estado: 'borrador',
+                proveedorId: null,
+                ofertaAdjudicadaId: null,
+                precioAcordado: null,
+                montoFinal: null,
+                ejecutadas: null,
+                porcentaje: '0.00',
+              ),
+            },
+          );
+        await expectLater(
+          repo.publicar(nueva()),
+          throwsA(
+            isA<OperacionRechazada>().having(
+              (e) => e.mensaje,
+              'mensaje',
+              contains('teléfono'),
+            ),
+          ),
+        );
+      },
+    );
+
+    test('un contorno dibujado primero se guarda como terreno', () async {
       red.servidor.responder(
         'POST',
         '/api/terrenos',
         codigo: 201,
-        cuerpo: {'terreno': terrenoJson(id: 44)},
+        cuerpo: {'terreno': terrenoJson(id: 77)},
       );
       final dibujado = Lote(
-        id: 'lote-clave-1',
+        id: 'lote-clave',
         nombre: 'Lote nuevo',
         zona: 'Contorno dibujado',
-        cultivo: 'Maíz',
-        hectareas: Decimal.parse('12.5'),
+        cultivo: 'Soya',
+        hectareas: Decimal.parse('45.5'),
         poligono: const [
           GeoPunto(-17.0, -62.0),
-          GeoPunto(-17.0, -61.99),
-          GeoPunto(-16.99, -61.99),
+          GeoPunto(-17.0, -61.9),
+          GeoPunto(-16.9, -61.9),
         ],
       );
-      await repo.solicitar(
-        SolicitudServicio(
+      await repo.publicar(
+        NuevaSolicitud(
           lote: dibujado,
-          producto: 'Fertilizante foliar',
-          dosisLitrosPorHectarea: Decimal.one,
-          fechaDeseada: DateTime(2026, 12, 1),
-          claveIdempotencia: 'clave-2',
-          hectareas: Decimal.parse('12.5'),
+          hectareas: Decimal.parse('45.5'),
+          cultivo: 'Soya',
+          producto: 'Insecticida piretroide',
+          fechaDeseada: DateTime(2026, 11, 28),
+          precioHa: Decimal.parse('110'),
+          claveIdempotencia: 'k2',
+          accesos: 'Portón azul',
         ),
       );
       final terreno =
           red.servidor.de('POST', '/api/terrenos').single.cuerpo! as Map;
-      expect(terreno['hectareas'], '12.5');
+      expect(terreno['hectareas'], '45.5');
+      expect(terreno['referencias_acceso'], 'Portón azul');
       expect((terreno['geometria'] as Map)['type'], 'Polygon');
       final solicitud =
           red.servidor.de('POST', '/api/solicitudes').single.cuerpo! as Map;
-      expect(solicitud['terreno_id'], 44);
-      expect(solicitud['tipo_aplicacion'], 'fertilizante_foliar');
+      expect(solicitud['terreno_id'], 77);
+      // Otra publicación con el mismo contorno no crea otro terreno.
+      await repo.publicar(
+        NuevaSolicitud(
+          lote: dibujado,
+          hectareas: Decimal.parse('45.5'),
+          cultivo: 'Soya',
+          producto: 'Insecticida piretroide',
+          fechaDeseada: DateTime(2026, 11, 28),
+          precioHa: Decimal.parse('112'),
+          claveIdempotencia: 'k2',
+        ),
+      );
+      expect(red.servidor.de('POST', '/api/terrenos'), hasLength(1));
     });
 
-    test('la búsqueda sigue la solicitud hasta que se asigna', () async {
-      red.servidor.responder(
-        'GET',
-        '/api/solicitudes/31',
-        secuencia: [
-          {
-            'solicitud': solicitudJson(
-              id: 31,
-              estado: 'en_asignacion',
-              proveedorId: null,
-              montoFinal: null,
-            ),
-          },
-          {
-            'solicitud': solicitudJson(
-              id: 31,
-              estado: 'asignada',
-              montoFinal: null,
-            ),
-          },
-        ],
-        cuerpo: null,
-      );
-      final fases = await repo.observarBusqueda('31').toList();
-      expect(fases.map((b) => b.fase), [
-        FaseBusqueda.propios,
-        FaseBusqueda.asignado,
-      ]);
-      expect(fases.last.proveedor, isNotNull);
-    });
-
-    test('sin proveedor termina la búsqueda', () async {
-      red.servidor.responder(
-        'GET',
-        '/api/solicitudes/31',
-        cuerpo: {
-          'solicitud': solicitudJson(
-            id: 31,
-            estado: 'sin_proveedor',
-            proveedorId: null,
-            montoFinal: null,
-          ),
-        },
-      );
-      final fases = await repo.observarBusqueda('31').toList();
-      expect(fases.single.fase, FaseBusqueda.sinProveedor);
-    });
+    test(
+      'sin red lanza SolicitudSinConexion y conserva el reintento',
+      () async {
+        red.servidor.sinRed = true;
+        await expectLater(
+          repo.publicar(nueva()),
+          throwsA(isA<SolicitudSinConexion>()),
+        );
+        red.servidor.sinRed = false;
+        final solicitud = await repo.publicar(nueva());
+        expect(solicitud.id, '31');
+      },
+    );
   });
 
   group('AccesoRed', () {
@@ -620,7 +596,7 @@ void main() {
       final avisos = <void>[];
       final sub = deps.sesionExpirada!.listen(avisos.add);
       await expectLater(
-        deps.servicios.observar().first,
+        deps.solicitudes.observar().first,
         throwsA(isA<OperacionRechazada>()),
       );
       await Future<void>.delayed(Duration.zero);

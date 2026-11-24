@@ -1,5 +1,6 @@
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../demo/almacen_demo_cliente.dart';
+import '../../solicitudes/domain/solicitud.dart';
 import '../domain/problema_repositorio.dart';
 
 class ProblemaDemo implements ProblemaRepositorio {
@@ -31,6 +32,10 @@ class ProblemaDemo implements ProblemaRepositorio {
       abiertoEn: _almacen.datos.ahora,
     );
     _almacen.problemas[reporte.servicioId] = caso;
+    final s = _almacen.porId(reporte.servicioId);
+    if (s != null) {
+      _almacen.reemplazar(s.copiarCon(estado: EstadoSolicitud.disputada));
+    }
     return caso;
   }
 }

@@ -1,6 +1,6 @@
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../red/cliente_http.dart';
-import '../../red/fuente_servicios.dart';
+import '../../red/fuente_solicitudes.dart';
 import '../../red/mapeo_solicitud.dart';
 import '../domain/problema_repositorio.dart';
 
@@ -11,7 +11,7 @@ class ProblemaRed implements ProblemaRepositorio {
   ProblemaRed(this._http, this._fuente);
 
   final ClienteHttp _http;
-  final FuenteServicios _fuente;
+  final FuenteSolicitudes _fuente;
 
   static const _motivosApi = {
     MotivoProblema.coberturaIncompleta: 'cobertura_incompleta',

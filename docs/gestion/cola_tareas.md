@@ -23,7 +23,7 @@ El orden respeta dependencias: primero el flavor y el esquema local, después el
 | 40 | Calificar al proveedor y ver la calificación recibida | no | `./bin/verify`; tests de calificación; prueba de replay | Interfaz y repositorio demo hechos (#85); falta el repositorio de red |
 | 41 | UI premium de acceso del cliente | no | `./bin/verify`; goldens de `ui_acceso_cliente` | Hecha (#82) |
 | 42 | UI premium de solicitar servicio | no | `./bin/verify`; goldens de `ui_solicitar_servicio` | Hecha (#86) |
-| 43 | UI premium de seguimiento y calificación | no | `./bin/verify`; goldens de `ui_seguimiento_calificacion` | Hecha (#85) |
+| 43 | UI premium de seguimiento y calificación | no | `./bin/verify`; goldens de `ui_negociacion_cliente` | Hecha (#85) |
 | 44 | UI premium del mapa, el detalle y mis ofertas | no | `./bin/verify`; goldens de `ui_negociacion_piloto` | Hecha (ADR 0018) |
 | 45 | UI premium de perfil, documentos y drones | no | `./bin/verify`; goldens de `ui_perfil_dron` | Hecha (#83) |
 | 46 | UI premium del servicio asignado y la sesión de vuelo | no | `./bin/verify`; goldens de `ui_servicio_lote` | Hecha (#84) |

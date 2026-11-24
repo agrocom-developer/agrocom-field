@@ -8,8 +8,6 @@ import '../domain/reglas_solicitud.dart';
 import '../domain/solicitud_repositorio.dart';
 import 'solicitar_estado.dart';
 
-final _pasoDosis = Decimal.parse('0.1');
-
 /// Texto editable de una superficie: «85,5», «120».
 String _textoHectareas(Decimal valor) {
   final entera = valor.toStringAsFixed(1).endsWith('.0');
@@ -22,7 +20,7 @@ String _textoHectareas(Decimal valor) {
 /// Formulario de solicitud del flavor cliente. Online-first: no hay outbox;
 /// si el envío falla, el estado conserva todo lo escrito y el reintento usa
 /// la misma clave de idempotencia, de modo que un doble toque o un reintento
-/// nunca crean dos servicios (ADR 0009).
+/// nunca crean dos solicitudes (ADR 0009).
 class SolicitarCubit extends Cubit<SolicitarEstado> {
   SolicitarCubit(
     this._repositorio, {
@@ -37,10 +35,6 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
 
   final SolicitudRepositorio _repositorio;
   final DateTime Function() _reloj;
-
-  /// Descarta la respuesta de una estimación que ya no corresponde a lo que
-  /// hay en pantalla.
-  int _turnoEstimacion = 0;
 
   Future<void> cargar() async {
     emit(state.copiarCon(carga: CargaSolicitud.cargando));
@@ -126,15 +120,7 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
   void elegirProducto(String producto) =>
       emit(state.copiarCon(producto: producto));
 
-  void subirDosis() =>
-      emit(state.copiarCon(dosis: state.dosisEfectiva + _pasoDosis));
-
-  void bajarDosis() {
-    if (state.dosisEfectiva <= _pasoDosis) return;
-    emit(state.copiarCon(dosis: state.dosisEfectiva - _pasoDosis));
-  }
-
-  // ── Paso 3: cuándo ───────────────────────────────────────────────────
+  // ── Paso 3: cuándo y accesos ─────────────────────────────────────────
 
   void elegirFecha(DateTime fecha) {
     final error = ReglasSolicitud.errorDeFecha(fecha, _reloj());
@@ -153,13 +139,15 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
   bool get fechaUrgente =>
       state.fecha != null && ReglasSolicitud.esUrgente(state.fecha!, _reloj());
 
-  void elegirVentana(VentanaHoraria ventana) =>
-      emit(state.copiarCon(ventana: ventana));
+  void cambiarAccesos(String texto) => emit(state.copiarCon(accesos: texto));
+
+  void cambiarObservaciones(String texto) =>
+      emit(state.copiarCon(observaciones: texto));
 
   // ── Navegación entre pasos ───────────────────────────────────────────
 
-  /// Acción principal de la pantalla: siguiente paso o, en el resumen,
-  /// enviar.
+  /// Acción principal de la pantalla: siguiente paso o, en el último,
+  /// publicar.
   Future<void> avanzar() async {
     if (!state.puedeAvanzar) return;
     switch (state.paso) {
@@ -170,14 +158,13 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
       case PasoSolicitud.cuando:
         emit(
           state.copiarCon(
-            paso: PasoSolicitud.resumen,
+            paso: PasoSolicitud.precio,
             avanza: true,
             falloEnvio: null,
           ),
         );
-        await estimar();
-      case PasoSolicitud.resumen:
-        await enviar();
+      case PasoSolicitud.precio:
+        await publicar();
     }
   }
 
@@ -191,72 +178,59 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
     );
   }
 
-  // ── Paso 4: resumen y envío ──────────────────────────────────────────
+  // ── Paso 4: precio y publicación ─────────────────────────────────────
 
-  Future<void> estimar() async {
+  void cambiarPrecio(String texto) => emit(state.copiarCon(precioTexto: texto));
+
+  Future<void> publicar() async {
     final lote = state.lote;
     final hectareas = state.hectareas;
-    if (lote == null || hectareas == null) return;
-    final turno = ++_turnoEstimacion;
-    emit(
-      state.copiarCon(
-        estimando: true,
-        falloEstimacion: false,
-        estimacion: null,
-      ),
-    );
-    try {
-      final estimacion = await _repositorio.estimar(
-        lote: lote,
-        dosisLitrosPorHectarea: state.dosisEfectiva,
-        hectareas: hectareas,
-        fechaDeseada: state.fecha,
-        producto: state.producto,
-        cultivo: state.cultivo,
-        ventana: state.ventana,
-        claveIdempotencia: state.claveIdempotencia,
-      );
-      if (isClosed || turno != _turnoEstimacion) return;
-      emit(state.copiarCon(estimando: false, estimacion: estimacion));
-    } on Object {
-      if (isClosed || turno != _turnoEstimacion) return;
-      emit(state.copiarCon(estimando: false, falloEstimacion: true));
-    }
-  }
-
-  Future<void> enviar() async {
-    final lote = state.lote;
-    final hectareas = state.hectareas;
+    final precio = state.precio;
     // Un segundo toque mientras viaja el primero no hace nada; y si llegara
-    // a salir, la clave de idempotencia lo deja en un solo servicio.
-    if (state.enviando || state.servicio != null) return;
+    // a salir, la clave de idempotencia lo deja en una sola solicitud.
+    if (state.enviando || state.solicitud != null) return;
     if (lote == null ||
         hectareas == null ||
+        precio == null ||
         state.cultivo == null ||
         state.producto == null ||
         state.fecha == null) {
       return;
     }
-    emit(state.copiarCon(enviando: true, falloEnvio: null));
+    emit(
+      state.copiarCon(enviando: true, falloEnvio: null, mensajeRechazo: null),
+    );
     try {
-      final servicio = await _repositorio.solicitar(
-        SolicitudServicio(
+      final accesos = state.accesos.trim();
+      final observaciones = state.observaciones.trim();
+      final solicitud = await _repositorio.publicar(
+        NuevaSolicitud(
           lote: lote,
-          producto: state.producto!,
-          dosisLitrosPorHectarea: state.dosisEfectiva,
-          fechaDeseada: state.fecha!,
-          claveIdempotencia: state.claveIdempotencia,
           hectareas: hectareas,
-          cultivo: state.cultivo,
-          ventana: state.ventana,
+          cultivo: state.cultivo!,
+          producto: state.producto!,
+          fechaDeseada: state.fecha!,
+          precioHa: precio,
+          claveIdempotencia: state.claveIdempotencia,
+          accesos: accesos.isEmpty ? null : accesos,
+          observaciones: observaciones.isEmpty ? null : observaciones,
         ),
       );
       if (isClosed) return;
-      emit(state.copiarCon(enviando: false, servicio: servicio));
+      emit(state.copiarCon(enviando: false, solicitud: solicitud));
     } on SolicitudSinConexion {
       if (isClosed) return;
       emit(
         state.copiarCon(enviando: false, falloEnvio: FalloEnvio.sinConexion),
+      );
+    } on OperacionRechazada catch (e) {
+      if (isClosed) return;
+      emit(
+        state.copiarCon(
+          enviando: false,
+          falloEnvio: FalloEnvio.rechazado,
+          mensajeRechazo: e.mensaje,
+        ),
       );
     } on Object {
       if (isClosed) return;

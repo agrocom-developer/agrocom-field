@@ -3,6 +3,8 @@ import 'dart:math' as math;
 import 'package:decimal/decimal.dart';
 
 import '../../nucleo/marketplace/dominio/dominio.dart';
+import '../ofertas/domain/oferta_recibida.dart';
+import '../solicitudes/domain/solicitud.dart';
 
 /// Zona del catálogo (`GET /api/zonas`): nombre y centroide.
 class ZonaCatalogo {
@@ -17,10 +19,10 @@ class ZonaCatalogo {
   final GeoPunto centro;
 }
 
-/// Traducción entre el JSON de la API (`SolicitudServicio`, `Terreno`,
-/// `EstimacionSolicitud`) y el dominio de la app. Funciones puras: se
-/// prueban sin red. Los importes y las hectáreas viajan como `string`
-/// decimal y nunca pasan por `double` (ADR 0002).
+/// Traducción entre el JSON de la API (`SolicitudServicio`, `Terreno`) y el
+/// dominio de la app. Funciones puras: se prueban sin red. Los importes y las
+/// hectáreas viajan como `string` decimal y nunca pasan por `double`
+/// (ADR 0002).
 abstract final class MapeoSolicitud {
   /// Santa Cruz de la Sierra: centro de reserva cuando un terreno no tiene
   /// geometría ni zona.
@@ -31,23 +33,27 @@ abstract final class MapeoSolicitud {
     return Decimal.tryParse('$valor') ?? porDefecto ?? Decimal.zero;
   }
 
+  static Decimal? decimalOpcional(Object? valor) =>
+      valor == null ? null : Decimal.tryParse('$valor');
+
   static DateTime? fecha(Object? valor) {
     if (valor is! String) return null;
     final f = DateTime.tryParse(valor);
     return f == null ? null : (f.isUtc ? f.toLocal() : f);
   }
 
-  static EstadoServicio estado(String? estadoApi) => switch (estadoApi) {
-    'borrador' ||
-    'publicada' ||
-    'en_asignacion' ||
-    'sin_proveedor' => EstadoServicio.buscandoProveedor,
-    'asignada' || 'en_camino' => EstadoServicio.asignado,
-    'en_ejecucion' || 'suspendida_por_clima' => EstadoServicio.enEjecucion,
-    'ejecutada' || 'en_disputa' || 'completada' => EstadoServicio.completado,
-    'cancelada' => EstadoServicio.cancelado,
-    _ => EstadoServicio.buscandoProveedor,
-  };
+  /// Fecha de calendario (`2026-12-06`) como día local, sin hora.
+  static DateTime? dia(Object? valor) {
+    if (valor is! String) return null;
+    final f = DateTime.tryParse(valor);
+    return f == null ? null : DateTime(f.year, f.month, f.day);
+  }
+
+  /// `2026-12-06`, para enviar una fecha de calendario.
+  static String diaApi(DateTime f) =>
+      '${f.year.toString().padLeft(4, '0')}-'
+      '${f.month.toString().padLeft(2, '0')}-'
+      '${f.day.toString().padLeft(2, '0')}';
 
   /// Cuántos metros mide un grado de latitud, para dibujar el contorno de
   /// reserva.
@@ -56,8 +62,7 @@ abstract final class MapeoSolicitud {
   /// Contorno del terreno a partir de su GeoJSON (`Polygon` o
   /// `MultiPolygon`). Sin geometría devuelve un cuadrado de reserva centrado
   /// en [centro] con la superficie del terreno, solo para ubicarlo en el
-  /// mapa; el servidor no tiene el contorno real (ver
-  /// `docs/gestion/brechas-api.md`).
+  /// mapa.
   static List<GeoPunto> poligono(
     Object? geometria, {
     required Decimal hectareas,
@@ -141,139 +146,6 @@ abstract final class MapeoSolicitud {
     );
   }
 
-  static final _dosis = RegExp(r',?\s*(\d+(?:[.,]\d+)?)\s*L\s*/\s*ha\s*$');
-
-  /// Separa «Glifosato 480 SL, 2 L/ha» en producto y dosis.
-  static (String, Decimal) productoYDosis(String texto) {
-    final m = _dosis.firstMatch(texto);
-    if (m == null) return (texto.trim(), Decimal.zero);
-    final dosis = Decimal.tryParse(m.group(1)!.replaceAll(',', '.'));
-    return (texto.substring(0, m.start).trim(), dosis ?? Decimal.zero);
-  }
-
-  /// Arma el texto de `producto_indicado` con la dosis (ver [productoYDosis]).
-  static String productoIndicado(String producto, Decimal dosis) =>
-      '$producto, $dosis L/ha';
-
-  /// Cuándo ocurrió la transición a [estadoNuevo] según el historial.
-  static DateTime? momentoDe(
-    Map<String, dynamic> solicitud,
-    String estadoNuevo,
-  ) {
-    final historial = solicitud['historial'];
-    if (historial is! List) return null;
-    for (final paso in historial.reversed) {
-      if (paso is Map && paso['estado_nuevo'] == estadoNuevo) {
-        return fecha(paso['creado_en']);
-      }
-    }
-    return null;
-  }
-
-  /// El proveedor que el cliente ve. La API de solicitudes solo trae
-  /// `proveedor_id`; el nombre sale de [nombre] cuando se conoce (las
-  /// calificaciones de un servicio completado lo traen).
-  static Proveedor? proveedor(
-    Map<String, dynamic> solicitud, {
-    String? nombre,
-  }) {
-    final id = solicitud['proveedor_id'];
-    if (id == null) return null;
-    return Proveedor(
-      id: '$id',
-      nombre: nombre ?? 'Proveedor asignado',
-      tipo: TipoProveedor.independiente,
-      calificacion: 0,
-      serviciosCompletados: 0,
-      zonas: const [],
-    );
-  }
-
-  static Servicio servicio(
-    Map<String, dynamic> j, {
-    Map<int, ZonaCatalogo> zonas = const {},
-    int? puntajeDelCliente,
-    String? nombreProveedor,
-    String clienteNombre = 'Cliente',
-  }) {
-    final terreno = j['terreno'] is Map
-        ? Map<String, dynamic>.from(j['terreno'] as Map)
-        : <String, dynamic>{
-            'id': j['terreno_id'],
-            'nombre': 'Terreno',
-            'hectareas': j['hectareas_solicitadas'],
-          };
-    final lote = MapeoSolicitud.lote(
-      terreno,
-      zonas: zonas,
-      cultivoDeSolicitud: j['cultivo'] as String?,
-    );
-    final (producto, dosis) = productoYDosis('${j['producto_indicado'] ?? ''}');
-    final estadoApi = j['estado'] as String?;
-    final estadoDominio = estado(estadoApi);
-    final declaradas = decimal(j['hectareas_solicitadas']);
-    // La API no informa el avance del vuelo al cliente: se da por cubierto
-    // el lote completo una vez ejecutado el servicio.
-    final terminado =
-        estadoApi == 'ejecutada' ||
-        estadoApi == 'en_disputa' ||
-        estadoApi == 'completada';
-    final precio = j['monto_final'] ?? j['monto_estimado'];
-    return Servicio(
-      id: '${j['id']}',
-      lote: Lote(
-        id: lote.id,
-        nombre: lote.nombre,
-        zona: lote.zona,
-        cultivo: (j['cultivo'] as String?) ?? lote.cultivo,
-        hectareas: lote.hectareas,
-        poligono: lote.poligono,
-      ),
-      producto: producto,
-      dosisLitrosPorHectarea: dosis,
-      hectareasDeclaradas: declaradas,
-      hectareasCubiertas: terminado ? declaradas : Decimal.zero,
-      fechaDeseada: fecha(j['ventana_desde']) ?? DateTime.now(),
-      estado: estadoDominio,
-      precio: decimal(precio),
-      solicitadoEn:
-          momentoDe(j, 'borrador') ??
-          fecha(j['publicada_en']) ??
-          fecha(j['ventana_desde']) ??
-          DateTime.now(),
-      proveedor: proveedor(j, nombre: nombreProveedor),
-      puntajeDelCliente: puntajeDelCliente,
-      clienteNombre: clienteNombre,
-    );
-  }
-
-  static EstimacionServicio estimacion(
-    Map<String, dynamic> j, {
-    required Decimal dosis,
-    required Decimal hectareas,
-  }) {
-    final recargos = <RecargoServicio>[];
-    void sumar(String clave, String concepto) {
-      final monto = decimal(j[clave]);
-      if (monto > Decimal.zero) {
-        recargos.add(RecargoServicio(concepto: concepto, monto: monto));
-      }
-    }
-
-    sumar('recargo_urgente', 'Recargo por urgencia');
-    sumar('recargo_acceso_dificil', 'Recargo por acceso difícil');
-    sumar('recargo_producto', 'Recargo por producto del proveedor');
-    return EstimacionServicio(
-      precio: decimal(j['monto_estimado']),
-      litros: hectareas * dosis,
-      precioPorHectarea: decimal(
-        j['tarifa_base_hectarea'] ?? j['tarifa_hectarea'],
-      ),
-      subtotal: j['subtotal_base'] == null ? null : decimal(j['subtotal_base']),
-      recargos: recargos,
-    );
-  }
-
   /// Tipo de aplicación del contrato a partir del producto escrito.
   static String tipoAplicacion(String producto) {
     final p = producto.toLowerCase();
@@ -289,5 +161,139 @@ abstract final class MapeoSolicitud {
     if (p.contains('fertilizante')) return 'fertilizante_foliar';
     if (p.contains('desecante')) return 'desecante';
     return 'otro';
+  }
+
+  /// La solicitud tal como la devuelve `GET /api/solicitudes[/{id}]`.
+  static Solicitud solicitud(
+    Map<String, dynamic> j, {
+    Map<int, ZonaCatalogo> zonas = const {},
+    int? puntajeDelCliente,
+    String? nombreProveedor,
+    int? ofertasVigentes,
+  }) {
+    final terreno = j['terreno'] is Map
+        ? Map<String, dynamic>.from(j['terreno'] as Map)
+        : <String, dynamic>{
+            'id': j['terreno_id'],
+            'nombre': 'Terreno',
+            'hectareas': j['hectareas_solicitadas'],
+          };
+    final lote = MapeoSolicitud.lote(
+      terreno,
+      zonas: zonas,
+      cultivoDeSolicitud: j['cultivo'] as String?,
+    );
+    final historial = <CambioEstado>[];
+    final crudo = j['historial'];
+    if (crudo is List) {
+      for (final paso in crudo) {
+        if (paso is! Map) continue;
+        final momento = fecha(paso['creado_en']);
+        if (momento == null) continue;
+        historial.add(
+          CambioEstado(
+            estado: EstadoSolicitud.desdeApi(paso['estado_nuevo'] as String?),
+            momento: momento,
+          ),
+        );
+      }
+    }
+    final acceso = terreno['referencias_acceso'];
+    return Solicitud(
+      id: '${j['id']}',
+      lote: lote,
+      hectareas: decimal(j['hectareas_solicitadas']),
+      cultivo: '${j['cultivo'] ?? lote.cultivo}',
+      producto: '${j['producto_indicado'] ?? ''}',
+      tipoAplicacion: '${j['tipo_aplicacion'] ?? 'otro'}',
+      ventanaDesde: dia(j['ventana_desde']) ?? DateTime.now(),
+      ventanaHasta:
+          dia(j['ventana_hasta']) ?? dia(j['ventana_desde']) ?? DateTime.now(),
+      observaciones: j['observaciones'] as String?,
+      accesos: acceso is String && acceso.trim().isNotEmpty ? acceso : null,
+      precioHaPropuesto: decimal(j['precio_ha_propuesto']),
+      precioHaAcordado: decimalOpcional(j['precio_ha_acordado']),
+      montoEstimado: decimalOpcional(j['monto_estimado']),
+      hectareasEjecutadas: decimalOpcional(j['hectareas_ejecutadas']),
+      porcentajeAvance: decimalOpcional(j['porcentaje_avance']),
+      montoFinal: decimalOpcional(j['monto_final']),
+      estado: EstadoSolicitud.desdeApi(j['estado'] as String?),
+      proveedorId: j['proveedor_id'] == null ? null : '${j['proveedor_id']}',
+      ofertaAdjudicadaId: j['oferta_adjudicada_id'] == null
+          ? null
+          : '${j['oferta_adjudicada_id']}',
+      venceEn: fecha(j['vence_en']),
+      publicadaEn: fecha(j['publicada_en']),
+      motivoCancelacion: j['motivo_cancelacion'] as String?,
+      historial: historial,
+      puntajeDelCliente: puntajeDelCliente,
+      nombreProveedor: nombreProveedor,
+      ofertasVigentes: ofertasVigentes,
+    );
+  }
+
+  /// La oferta tal como la devuelve `GET /api/solicitudes/{id}/ofertas`.
+  static OfertaRecibida oferta(Map<String, dynamic> j) {
+    final p = j['proveedor'] is Map
+        ? Map<String, dynamic>.from(j['proveedor'] as Map)
+        : <String, dynamic>{};
+    final d = p['dron'] is Map
+        ? Map<String, dynamic>.from(p['dron'] as Map)
+        : <String, dynamic>{};
+    final fotos = <FotoDron>[];
+    if (d['fotos'] is List) {
+      for (final f in d['fotos'] as List) {
+        if (f is! Map) continue;
+        final url = f['url'] ?? f['archivo'];
+        if (url is! String) continue;
+        fotos.add(
+          FotoDron(id: '${f['id']}', ruta: url, tipo: f['tipo'] as String?),
+        );
+      }
+    }
+    final historial = <OfertaRecibida>[];
+    if (j['historial'] is List) {
+      for (final h in j['historial'] as List) {
+        if (h is Map) {
+          historial.add(
+            oferta({
+              ...Map<String, dynamic>.from(h),
+              'proveedor': p,
+              'historial': null,
+            }),
+          );
+        }
+      }
+    }
+    return OfertaRecibida(
+      id: '${j['id']}',
+      solicitudId: '${j['solicitud_id']}',
+      numero: (j['numero'] as num?)?.toInt() ?? 1,
+      autor: j['autor'] == 'cliente'
+          ? AutorOferta.cliente
+          : AutorOferta.proveedor,
+      precioHa: decimal(j['precio_ha']),
+      montoEstimado: decimal(j['monto_estimado']),
+      estado: EstadoOferta.desdeApi(j['estado'] as String?),
+      esDefinitiva: j['es_definitiva'] == true,
+      aceptaPropuesta: j['tipo'] == 'acepta_propuesta',
+      nota: j['nota'] as String?,
+      distanciaKm: decimalOpcional(j['distancia_km']),
+      venceEn: fecha(j['vence_en']),
+      creadaEn: fecha(j['creada_en']),
+      ronda: historial,
+      proveedor: ProveedorOfertante(
+        id: '${j['proveedor_id'] ?? p['id']}',
+        nombre: '${p['nombre'] ?? 'Piloto'}',
+        calificacion: double.tryParse('${p['calificacion_promedio']}') ?? 0,
+        calificaciones: (p['calificaciones_conteo'] as num?)?.toInt() ?? 0,
+        tasaCancelacion: double.tryParse('${p['tasa_cancelacion']}') ?? 0,
+        marcaDron: d['marca'] as String?,
+        modeloDron: d['modelo'] as String?,
+        anioDron: (d['anio'] as num?)?.toInt(),
+        capacidadLitros: decimalOpcional(d['capacidad_tanque_l']),
+        fotosDron: fotos,
+      ),
+    );
   }
 }

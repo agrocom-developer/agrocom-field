@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/aparicion_marketplace.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
@@ -10,14 +9,16 @@ import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tema_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../calificar/presentation/hoja_calificar.dart';
+import '../../ofertas/presentation/ofertas_pantalla.dart';
 import '../../seguimiento/presentation/seguimiento_pantalla.dart';
-import '../../servicios/presentation/servicio_detalle_pantalla.dart';
-import '../../servicios/presentation/tarjeta_servicio.dart';
+import '../../solicitudes/domain/solicitud.dart';
+import '../../solicitudes/presentation/solicitud_detalle_pantalla.dart';
+import '../../solicitudes/presentation/tarjeta_solicitud.dart';
 import '../domain/inicio_cliente_repositorio.dart';
 import 'inicio_cliente_cubit.dart';
 
-/// Inicio del cliente: la acción principal (solicitar un servicio), el
-/// servicio activo, los avisos del día y el historial reciente. Lee el
+/// Inicio del cliente: la acción principal (publicar una solicitud), la
+/// solicitud activa, los avisos del día y el historial reciente. Lee el
 /// `InicioClienteCubit` que provee la navegación principal.
 ///
 /// En teléfono es una columna; desde 600 px de ancho (iPad) pasa a dos
@@ -95,7 +96,7 @@ class _Contenido extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final activo = resumen.servicioActivo;
+    final activo = resumen.solicitudActiva;
 
     final saludo = _Saludo(nombre: resumen.nombre, empresa: resumen.empresa);
     final solicitar = _TarjetaSolicitar(alSolicitar: alSolicitar);
@@ -103,20 +104,28 @@ class _Contenido extends StatelessWidget {
     final bloqueActivo = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const _Seccion('Servicio activo'),
+        const _Seccion('Solicitud activa'),
         if (activo == null)
           const _SinServicioActivo()
         else ...[
-          TarjetaServicio(
-            servicio: activo,
-            resaltada: activo.estado == EstadoServicio.enEjecucion,
+          TarjetaSolicitud(
+            solicitud: activo,
+            resaltada:
+                activo.estado == EstadoSolicitud.enEjecucion ||
+                activo.estado == EstadoSolicitud.conOfertas,
             onTap: () => _abrirDetalle(context, activo),
             acciones: [
-              if (activo.estado == EstadoServicio.enEjecucion)
+              if (activo.estado == EstadoSolicitud.conOfertas)
+                OutlinedButton.icon(
+                  onPressed: () => _verOfertas(context, activo),
+                  icon: const Icon(Icons.local_offer_rounded),
+                  label: const Text('Ver ofertas'),
+                )
+              else if (activo.estado.conPiloto)
                 OutlinedButton.icon(
                   onPressed: () => _seguir(context, activo),
-                  icon: const Icon(Icons.map_rounded),
-                  label: const Text('Seguir en vivo'),
+                  icon: const Icon(Icons.timeline_rounded),
+                  label: const Text('Ver seguimiento'),
                 ),
             ],
           ),
@@ -128,9 +137,9 @@ class _Contenido extends StatelessWidget {
                 style: _estiloEnlace(context),
                 child: Text(
                   resumen.otrosActivos == 1
-                      ? 'Ver el otro servicio activo'
-                      : 'Ver los otros ${resumen.otrosActivos} servicios '
-                            'activos',
+                      ? 'Ver la otra solicitud activa'
+                      : 'Ver las otras ${resumen.otrosActivos} solicitudes '
+                            'activas',
                 ),
               ),
             ),
@@ -145,8 +154,8 @@ class _Contenido extends StatelessWidget {
             children: [
               const _Seccion('Por calificar'),
               for (final s in resumen.porCalificar) ...[
-                TarjetaServicio(
-                  servicio: s,
+                TarjetaSolicitud(
+                  solicitud: s,
                   onTap: () => _abrirDetalle(context, s),
                   acciones: [
                     OutlinedButton.icon(
@@ -193,7 +202,7 @@ class _Contenido extends StatelessWidget {
                 alAccionar: alVerServicios,
               ),
               _ListaRecientes(
-                servicios: resumen.recientes,
+                solicitudes: resumen.recientes,
                 alAbrir: (s) => _abrirDetalle(context, s),
               ),
             ],
@@ -271,17 +280,27 @@ class _Contenido extends StatelessWidget {
         foregroundColor: context.paleta.acentoTexto,
       );
 
-  static void _abrirDetalle(BuildContext context, Servicio s) {
+  static void _abrirDetalle(BuildContext context, Solicitud s) {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
-        builder: (_) => ServicioDetallePantalla(servicioId: s.id),
+        builder: (_) => SolicitudDetallePantalla(solicitudId: s.id),
       ),
     );
   }
 
-  static void _seguir(BuildContext context, Servicio s) {
+  static void _verOfertas(BuildContext context, Solicitud s) {
     Navigator.of(context).push(
-      MaterialPageRoute<void>(builder: (_) => SeguimientoPantalla(servicio: s)),
+      MaterialPageRoute<void>(
+        builder: (_) => OfertasPantalla(solicitudId: s.id),
+      ),
+    );
+  }
+
+  static void _seguir(BuildContext context, Solicitud s) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => SeguimientoPantalla(solicitudId: s.id),
+      ),
     );
   }
 }
@@ -341,21 +360,21 @@ class _TarjetaSolicitar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'NUEVO SERVICIO',
+            'NUEVA SOLICITUD',
             style: texto.labelSmall?.copyWith(color: paleta.acentoTexto),
           ),
           const SizedBox(height: EspaciadoCampo.s),
           Text('¿Qué lote fumigamos?', style: texto.headlineSmall),
           const SizedBox(height: EspaciadoCampo.s),
           Text(
-            'Elige el lote, el producto y la fecha. Nosotros asignamos al '
-            'piloto.',
+            'Marca tu lote, propón un precio por hectárea y elige entre las '
+            'ofertas de los pilotos.',
             style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
           ),
           const SizedBox(height: EspaciadoCampo.xl),
           BotonPrincipalMarketplace(
             key: const Key('inicio-solicitar'),
-            texto: 'Solicitar un servicio',
+            texto: 'Publicar una solicitud',
             icono: Icons.arrow_forward_rounded,
             onPressed: alSolicitar,
           ),
@@ -430,10 +449,13 @@ class _SinServicioActivo extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('No tienes servicios en curso', style: texto.titleMedium),
+                Text(
+                  'No tienes solicitudes en curso',
+                  style: texto.titleMedium,
+                ),
                 const SizedBox(height: EspaciadoCampo.xs),
                 Text(
-                  'Cuando solicites uno, lo sigues en vivo desde aquí.',
+                  'Publica tu primera solicitud y compara las ofertas de los pilotos.',
                   style: texto.bodyMedium?.copyWith(
                     color: paleta.textoSecundario,
                   ),
@@ -518,10 +540,10 @@ class _TarjetaAviso extends StatelessWidget {
 
 /// Historial reciente: filas compactas dentro de una sola superficie.
 class _ListaRecientes extends StatelessWidget {
-  const _ListaRecientes({required this.servicios, required this.alAbrir});
+  const _ListaRecientes({required this.solicitudes, required this.alAbrir});
 
-  final List<Servicio> servicios;
-  final ValueChanged<Servicio> alAbrir;
+  final List<Solicitud> solicitudes;
+  final ValueChanged<Solicitud> alAbrir;
 
   @override
   Widget build(BuildContext context) {
@@ -531,10 +553,10 @@ class _ListaRecientes extends StatelessWidget {
       padding: EdgeInsets.zero,
       child: Column(
         children: [
-          for (var i = 0; i < servicios.length; i++) ...[
+          for (var i = 0; i < solicitudes.length; i++) ...[
             if (i > 0) Divider(height: 1, color: paleta.borde),
             InkWell(
-              onTap: () => alAbrir(servicios[i]),
+              onTap: () => alAbrir(solicitudes[i]),
               child: ConstrainedBox(
                 constraints: const BoxConstraints(
                   minHeight: ObjetivoTactilCampo.guantes,
@@ -551,13 +573,13 @@ class _ListaRecientes extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              servicios[i].lote.nombre,
+                              solicitudes[i].lote.nombre,
                               style: texto.titleMedium,
                             ),
                             const SizedBox(height: EspaciadoCampo.xs),
                             Text(
-                              '${FormatoMarketplace.fechaCorta(servicios[i].fechaDeseada)} · '
-                              '${FormatoMarketplace.hectareas(servicios[i].hectareasDeclaradas)}',
+                              '${FormatoMarketplace.fechaCorta(solicitudes[i].ventanaDesde)} · '
+                              '${FormatoMarketplace.hectareas(solicitudes[i].hectareas)}',
                               style: texto.bodyMedium?.copyWith(
                                 color: paleta.textoSecundario,
                               ),
@@ -565,11 +587,11 @@ class _ListaRecientes extends StatelessWidget {
                           ],
                         ),
                       ),
-                      if (servicios[i].puntajeDelCliente != null)
+                      if (solicitudes[i].puntajeDelCliente != null)
                         Semantics(
                           label:
                               'Calificaste con '
-                              '${servicios[i].puntajeDelCliente} de 5',
+                              '${solicitudes[i].puntajeDelCliente} de 5',
                           child: ExcludeSemantics(
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -581,7 +603,7 @@ class _ListaRecientes extends StatelessWidget {
                                 ),
                                 const SizedBox(width: EspaciadoCampo.xs),
                                 Text(
-                                  '${servicios[i].puntajeDelCliente}',
+                                  '${solicitudes[i].puntajeDelCliente}',
                                   style: texto.titleMedium,
                                 ),
                               ],
@@ -665,8 +687,8 @@ class _Fallo extends StatelessWidget {
                   ? 'Sin conexión'
                   : 'No pudimos cargar tu inicio',
               detalle: sinConexion
-                  ? 'Revisa tu señal e intenta de nuevo. Solicitar un '
-                        'servicio requiere conexión.'
+                  ? 'Revisa tu señal e intenta de nuevo. Publicar una '
+                        'solicitud requiere conexión.'
                   : 'Intenta de nuevo en un momento.',
             ),
             OutlinedButton.icon(

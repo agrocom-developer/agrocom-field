@@ -7,6 +7,7 @@ import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../comun/presentation/boton_principal.dart';
+import '../../solicitudes/domain/solicitud.dart';
 import '../domain/problema_repositorio.dart';
 import 'reportar_problema_cubit.dart';
 
@@ -16,7 +17,7 @@ import 'reportar_problema_cubit.dart';
 class ReportarProblemaPantalla extends StatelessWidget {
   const ReportarProblemaPantalla({required this.servicio, super.key});
 
-  final Servicio servicio;
+  final Solicitud servicio;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class ReportarProblemaPantalla extends StatelessWidget {
 class _Vista extends StatelessWidget {
   const _Vista({required this.servicio});
 
-  final Servicio servicio;
+  final Solicitud servicio;
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +91,7 @@ class _Vista extends StatelessWidget {
 class _Formulario extends StatelessWidget {
   const _Formulario({required this.servicio, required this.estado, super.key});
 
-  final Servicio servicio;
+  final Solicitud servicio;
   final ReportarProblemaEstado estado;
 
   @override
@@ -115,7 +116,7 @@ class _Formulario extends StatelessWidget {
           children: [
             Text(
               '${servicio.lote.nombre} · '
-              '${FormatoMarketplace.fechaLarga(servicio.fechaDeseada)}',
+              '${FormatoMarketplace.fechaLarga(servicio.ventanaDesde)}',
               style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
             ),
             const SizedBox(height: EspaciadoCampo.xs),

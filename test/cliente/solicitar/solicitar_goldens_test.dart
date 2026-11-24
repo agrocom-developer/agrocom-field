@@ -1,19 +1,15 @@
-// Golden tests del flujo «Solicitar fumigación» y de la búsqueda de
-// proveedor: cada pantalla y estado en claro (360x640 y 412x915), en oscuro
+// Golden tests del flujo «Publicar solicitud»: cada pantalla y estado en claro (360x640 y 412x915), en oscuro
 // (412x915) y con el texto al 200 % (360x640), más el panel dividido de iPad.
 //
 // Se regeneran con
 //   flutter test --update-goldens test/cliente/solicitar/solicitar_goldens_test.dart
 // y se revisan a ojo antes de commitear.
 
-import 'dart:async';
 import 'dart:io' show Platform;
 
-import 'package:agrocom_field/cliente/solicitar/presentation/buscando_proveedor_pantalla.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_cubit.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_estado.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_pantalla.dart';
-import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:agrocom_field/nucleo/ui/paleta_campo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -129,34 +125,67 @@ final _escenasFormulario = <String, (_Preparar, List<_Variante>)>{
     (c, r) async {
       await _hastaAplicacion(c, r);
       await c.avanzar();
+      c.elegirFecha(c.state.fechas.first);
+    },
+    _variantes,
+  ),
+  'cuando_dibujo_con_accesos': (
+    (c, r) async {
+      await c.cargar();
+      c.cambiarModoLote(ModoLote.dibujo);
+      contornoDePrueba.forEach(c.agregarVertice);
+      await c.avanzar();
       c
-        ..elegirFecha(c.state.fechas.first)
-        ..elegirVentana(VentanaHoraria.amanecer);
-    },
-    _variantes,
-  ),
-  'resumen': ((c, r) => completarHastaResumen(c, urgente: true), _variantes),
-  'resumen_precio_cargando': (
-    (c, r) async {
-      await completarHastaResumen(c);
-      // Una estimación que no termina deja el esqueleto del precio.
-      c.emit(c.state.copiarCon(estimando: true, estimacion: null));
+        ..elegirCultivo('Soya')
+        ..elegirProducto('Fertilizante foliar');
+      await c.avanzar();
+      c
+        ..elegirFecha(c.state.fechas[2])
+        ..cambiarAccesos('Portón azul, a 3 km de la ruta.')
+        ..cambiarObservaciones('Línea eléctrica al sur del lote.');
     },
     _soloChico,
   ),
-  'resumen_precio_error': (
+  'precio_vacio': (
+    (c, r) => completarHastaPrecio(c, urgente: true),
+    _variantes,
+  ),
+  'precio': (
     (c, r) async {
-      r.fallaLaEstimacion = true;
-      await completarHastaResumen(c);
+      await completarHastaPrecio(c);
+      c.cambiarPrecio('118,40');
+    },
+    _variantes,
+  ),
+  'precio_invalido': (
+    (c, r) async {
+      await completarHastaPrecio(c);
+      c.cambiarPrecio('0');
     },
     _soloChico,
   ),
-  'resumen_sin_conexion': (
+  'precio_sin_conexion': (
     (c, r) async {
-      await completarHastaResumen(c);
-      c.emit(c.state.copiarCon(falloEnvio: FalloEnvio.sinConexion));
+      await completarHastaPrecio(c);
+      c
+        ..cambiarPrecio('118,40')
+        ..emit(c.state.copiarCon(falloEnvio: FalloEnvio.sinConexion));
     },
     _variantes,
+  ),
+  'precio_rechazado': (
+    (c, r) async {
+      await completarHastaPrecio(c);
+      c
+        ..cambiarPrecio('118,40')
+        ..emit(
+          c.state.copiarCon(
+            falloEnvio: FalloEnvio.rechazado,
+            mensajeRechazo: 'Falta un teléfono en tu cuenta.',
+          ),
+        );
+    },
+    _soloChico,
   ),
   'ipad_lote_guardado': (
     (c, r) async {
@@ -165,28 +194,12 @@ final _escenasFormulario = <String, (_Preparar, List<_Variante>)>{
     },
     _soloIpad,
   ),
-  'ipad_resumen': (
-    (c, r) => completarHastaResumen(c, urgente: true),
+  'ipad_precio': (
+    (c, r) async {
+      await completarHastaPrecio(c);
+      c.cambiarPrecio('118,40');
+    },
     _soloIpad,
-  ),
-};
-
-final _escenasBusqueda = <String, (BusquedaProveedor?, List<_Variante>)>{
-  'buscando_propios': (null, _variantes),
-  'buscando_terceros': (
-    const BusquedaProveedor(fase: FaseBusqueda.terceros, radioKm: 50),
-    _variantes,
-  ),
-  'asignado': (
-    BusquedaProveedor(
-      fase: FaseBusqueda.asignado,
-      proveedor: RepositorioEspia().almacen.datos.proveedores[1],
-    ),
-    _variantes,
-  ),
-  'sin_proveedor': (
-    const BusquedaProveedor(fase: FaseBusqueda.sinProveedor),
-    _soloChico,
   ),
 };
 
@@ -194,7 +207,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(cargarFuentes);
 
-  group('solicitar fumigación', () {
+  group('publicar solicitud', () {
     for (final MapEntry(key: escena, value: (preparar, variantes))
         in _escenasFormulario.entries) {
       for (final v in variantes) {
@@ -217,47 +230,6 @@ void main() {
               ),
             ),
           );
-          await tester.pumpAndSettle();
-
-          await expectLater(
-            find.byType(MaterialApp),
-            matchesGoldenFile('goldens/${escena}_${v.nombre}.png'),
-          );
-        }, skip: _saltar != null);
-      }
-    }
-  });
-
-  group('buscando proveedor', () {
-    for (final MapEntry(key: escena, value: (cuadro, variantes))
-        in _escenasBusqueda.entries) {
-      for (final v in variantes) {
-        testWidgets('$escena · ${v.nombre}', (tester) async {
-          prepararPantalla(tester, v.tamano);
-          final repo = RepositorioEspia();
-          final flujo = StreamController<BusquedaProveedor>();
-          addTearDown(flujo.close);
-          repo.busqueda = flujo;
-          final servicio = repo.almacen.servicios.firstWhere(
-            (s) => s.estado == EstadoServicio.buscandoProveedor,
-            orElse: () => repo.almacen.servicios.first,
-          );
-
-          await tester.pumpWidget(
-            envolver(
-              repositorio: repo,
-              modo: v.modo,
-              escalaTexto: v.escala,
-              sinAnimaciones: true,
-              conScaffold: false,
-              child: BuscandoProveedorPantalla(
-                servicio: servicio,
-                alVerServicio: () {},
-              ),
-            ),
-          );
-          if (cuadro != null) flujo.add(cuadro);
-          await tester.pump();
           await tester.pumpAndSettle();
 
           await expectLater(

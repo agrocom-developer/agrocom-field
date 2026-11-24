@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
+import '../../solicitudes/domain/solicitud.dart';
 import '../domain/solicitud_repositorio.dart';
 import 'mapa_solicitud.dart';
 import 'pasos_solicitud.dart';
@@ -15,19 +15,20 @@ import 'solicitar_estado.dart';
 /// Ancho del panel del formulario cuando la pantalla se divide en dos.
 const _anchoPanel = 420.0;
 
-/// Solicitar una fumigación, un paso por pantalla: lote (en el mapa),
-/// aplicación (hectáreas, cultivo, producto), cuándo (fecha y horario) y
-/// resumen con el precio estimado. En iPad horizontal el mapa queda fijo a
-/// la izquierda y el formulario a la derecha.
+/// Publicar una solicitud de fumigación, un paso por pantalla: lote (en el
+/// mapa), aplicación (hectáreas, cultivo, producto), cuándo (fecha, accesos y
+/// observaciones) y precio por hectárea. La solicitud queda abierta para que
+/// los pilotos oferten. En iPad horizontal el mapa queda fijo a la izquierda
+/// y el formulario a la derecha.
 ///
 /// La clave de idempotencia nace con el cubit, al abrir el formulario, y se
-/// reutiliza en cada reintento: un doble toque no crea dos servicios
+/// reutiliza en cada reintento: un doble toque no crea dos solicitudes
 /// (ADR 0009).
 class SolicitarPantalla extends StatelessWidget {
   const SolicitarPantalla({required this.alSolicitado, super.key});
 
-  /// Se llama con el servicio creado, para que el contenedor navegue.
-  final ValueChanged<Servicio> alSolicitado;
+  /// Se llama con la solicitud publicada, para que el contenedor navegue.
+  final ValueChanged<Solicitud> alSolicitado;
 
   @override
   Widget build(BuildContext context) {
@@ -43,16 +44,16 @@ class SolicitarPantalla extends StatelessWidget {
 class SolicitarVista extends StatelessWidget {
   const SolicitarVista({required this.alSolicitado, super.key});
 
-  final ValueChanged<Servicio> alSolicitado;
+  final ValueChanged<Solicitud> alSolicitado;
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<SolicitarCubit, SolicitarEstado>(
       listenWhen: (antes, ahora) =>
-          antes.servicio == null && ahora.servicio != null,
+          antes.solicitud == null && ahora.solicitud != null,
       listener: (context, estado) {
         HapticaCampo.confirmacion();
-        alSolicitado(estado.servicio!);
+        alSolicitado(estado.solicitud!);
       },
       builder: (context, estado) => LayoutBuilder(
         builder: (context, limites) {
@@ -156,7 +157,7 @@ class _Columna extends StatelessWidget {
                 conMapa ? _LoteConMapa(estado: e) : PanelLote(estado: e),
               PasoSolicitud.aplicacion => PasoAplicacion(estado: e),
               PasoSolicitud.cuando => PasoCuando(estado: e),
-              PasoSolicitud.resumen => PasoResumen(estado: e),
+              PasoSolicitud.precio => PasoPrecio(estado: e),
             },
           ),
         ),
@@ -233,7 +234,7 @@ class _Encabezado extends StatelessWidget {
               Expanded(
                 child: Semantics(
                   header: true,
-                  child: Text('Solicitar fumigación', style: texto.titleLarge),
+                  child: Text('Publicar solicitud', style: texto.titleLarge),
                 ),
               ),
             ],
@@ -325,8 +326,8 @@ class _BarraAccion extends StatelessWidget {
     final e = estado;
     final paleta = context.paleta;
     final etiqueta = switch (e.paso) {
-      PasoSolicitud.resumen =>
-        e.falloEnvio != null ? 'Reintentar envío' : 'Confirmar solicitud',
+      PasoSolicitud.precio =>
+        e.falloEnvio != null ? 'Reintentar publicación' : 'Publicar solicitud',
       _ => 'Continuar',
     };
     return Padding(
@@ -420,7 +421,7 @@ class _ErrorDeCarga extends StatelessWidget {
               icono: Icons.cloud_off_rounded,
               titulo: 'No pudimos cargar tus lotes',
               detalle:
-                  'Solicitar un servicio necesita conexión. Revisa la señal '
+                  'Publicar una solicitud necesita conexión. Revisa la señal '
                   'y vuelve a intentar.',
             ),
             FilledButton.icon(

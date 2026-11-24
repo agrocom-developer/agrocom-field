@@ -11,7 +11,7 @@ La interfaz es la parte del producto que más hay que ver y probar, y el backend
 ### Navegación
 
 - Cada flavor tiene un *shell* raíz que usa `NavegacionAdaptativaCampo` (barra inferior en teléfono, riel lateral en iPad y tabletas) y cambia de destino con estado local. Las pantallas secundarias (detalle, seguimiento, calificar) se apilan con `Navigator`.
-- Destinos por flavor: `cliente` (Inicio, Solicitar, Servicios, Cuenta), `piloto` (Mapa, Ofertas, Servicio, Drones, Perfil) y `auxiliar` (Servicio, Perfil). La negociación, la ejecución del servicio, el perfil y los drones son la misma superficie del proveedor en los dos flavors (ADR 0012 y 0018).
+- Destinos por flavor: `cliente` (Inicio, Solicitar, Solicitudes, Cuenta), `piloto` (Mapa, Ofertas, Servicio, Drones, Perfil) y `auxiliar` (Servicio, Perfil). La negociación, la ejecución del servicio, el perfil y los drones son la misma superficie del proveedor en los dos flavors (ADR 0012 y 0018).
 - No se agrega `go_router`: la app no tiene enlaces profundos ni rutas por URL, y un `Navigator` con un shell cubre todos los recorridos. Se reevalúa cuando haya notificaciones que abran una pantalla concreta.
 
 ### Capa de datos

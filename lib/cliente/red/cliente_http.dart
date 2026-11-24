@@ -1,6 +1,8 @@
 import '../../nucleo/api/api_client.dart';
 import '../../nucleo/api/api_excepcion.dart';
 import '../../nucleo/marketplace/dominio/dominio.dart';
+import '../ofertas/domain/oferta_recibida.dart';
+import '../seguimiento/domain/seguimiento.dart';
 
 /// Puerta de las implementaciones de red del flavor cliente hacia
 /// [ApiClient]: devuelve JSON ya decodificado y traduce los fallos de red a
@@ -54,6 +56,10 @@ class ClienteHttp {
 
   static const claveConflicto = 'conflicto';
 
+  /// Descarga el archivo de [ruta] (una foto de avance o del dron).
+  Future<List<int>> descargar(String ruta) =>
+      proteger(() => _api.getBytes(ruta));
+
   Future<void> borrar(String ruta) => proteger(() async {
     await _api.delete(ruta);
   });
@@ -66,11 +72,35 @@ class ClienteHttp {
     } on ApiExcepcionRed {
       throw const SinConexion();
     } on ApiExcepcionServidor catch (e) {
+      if (e.codigo == 409) {
+        final codigo = codigoDeError(e.cuerpo);
+        if (codigo == 'chat_cerrado') throw const ChatCerrado();
+        if (_codigosDeCambio.contains(codigo)) {
+          throw OfertaCambio(
+            mensajeDeValidacion(e.cuerpo) ??
+                'La oferta cambió. Revisa las ofertas actuales.',
+          );
+        }
+      }
       throw OperacionRechazada(mensajeDeServidor(e.codigo, e.cuerpo));
     } on ApiExcepcionDesconocida {
       throw const OperacionRechazada(_mensajeGenerico);
     }
   }
+
+  /// Respuestas `409` de la negociación: la oferta o la solicitud cambiaron
+  /// mientras el cliente decidía (ADR 0016).
+  static const _codigosDeCambio = {
+    'oferta_no_vigente',
+    'solicitud_ya_adjudicada',
+    'equipo_no_disponible',
+  };
+
+  /// El `codigo` de máquina que el servidor agrega a un error, si viene.
+  static String? codigoDeError(Object? cuerpo) =>
+      cuerpo is Map && cuerpo['codigo'] is String
+      ? cuerpo['codigo'] as String
+      : null;
 
   static const _mensajeGenerico =
       'No pudimos completar la operación. Intenta de nuevo en un momento.';
@@ -86,7 +116,8 @@ class ClienteHttp {
       401 => 'Tu sesión venció. Entra de nuevo.',
       403 => 'Esta cuenta no tiene permiso para hacer esto.',
       404 => 'No encontramos lo que buscas. Puede haber cambiado.',
-      409 => 'Esta operación ya se había registrado.',
+      409 =>
+        mensajeDeValidacion(cuerpo) ?? 'Esta operación ya se había registrado.',
       422 =>
         mensajeDeValidacion(cuerpo) ?? 'Revisa los datos e intenta de nuevo.',
       429 => 'Demasiados intentos. Espera un momento e intenta de nuevo.',
