@@ -209,6 +209,7 @@ class Proveedor {
     this.aprobacion = EstadoAprobacion.aprobado,
     this.motivoAprobacion,
     this.fotoRef,
+    this.fotoUrl,
   });
 
   final String id;
@@ -229,6 +230,10 @@ class Proveedor {
 
   /// Motivo que dio el administrador al suspender o rechazar.
   final String? motivoAprobacion;
+
+  /// Foto de perfil: URL firmada y de corta vida (15 minutos) que el
+  /// servidor entrega con la sesión; `null` si la cuenta no tiene foto.
+  final String? fotoUrl;
 
   /// Documentos que el proveedor tiene que renovar o volver a subir.
   List<DocumentoProveedor> get documentosConAccion => [

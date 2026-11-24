@@ -143,6 +143,7 @@ abstract final class MapeoSolicitud {
       cultivo: '${terreno['cultivo'] ?? cultivoDeSolicitud ?? ''}',
       hectareas: hectareas,
       poligono: poligono,
+      fotos: FotoTerreno.lista(terreno['fotos']),
     );
   }
 
@@ -293,6 +294,7 @@ abstract final class MapeoSolicitud {
         anioDron: (d['anio'] as num?)?.toInt(),
         capacidadLitros: decimalOpcional(d['capacidad_tanque_l']),
         fotosDron: fotos,
+        fotoUrl: p['foto_url'] as String?,
       ),
     );
   }

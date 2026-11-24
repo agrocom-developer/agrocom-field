@@ -51,6 +51,7 @@ class ProveedorOfertante {
     this.anioDron,
     this.capacidadLitros,
     this.fotosDron = const [],
+    this.fotoUrl,
   });
 
   final String id;
@@ -67,6 +68,10 @@ class ProveedorOfertante {
   final int? anioDron;
   final Decimal? capacidadLitros;
   final List<FotoDron> fotosDron;
+
+  /// Foto de perfil del piloto: URL firmada de corta vida (15 minutos), que
+  /// se pide sin token; `null` si no tiene.
+  final String? fotoUrl;
 
   String get dron => [?marcaDron, ?modeloDron].join(' ');
 

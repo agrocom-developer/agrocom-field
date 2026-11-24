@@ -3,6 +3,7 @@ library;
 
 export 'calificacion.dart';
 export 'falla.dart';
+export 'foto_terreno.dart';
 export 'geo.dart';
 export 'lote.dart';
 export 'oferta.dart';
