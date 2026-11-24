@@ -10,9 +10,11 @@ import '../domain/perfil_repositorio.dart';
 /// `/api/proveedores/mi`, `/api/proveedores/drones`, `/api/reputacion` y
 /// `/api/calificaciones/recibidas`.
 ///
-/// Una cuenta con rol `piloto` (un piloto de Agrocom, por ejemplo) no
-/// administra un proveedor: `proveedores/mi` le responde `403`. En ese caso
-/// el perfil muestra a la persona con su reputación y sin drones propios.
+/// Una cuenta con rol `piloto` (un piloto de Agrocom, por ejemplo) consulta
+/// `proveedores/mi` y `proveedores/drones` en solo lectura: recibe el
+/// proveedor al que pertenece. Si una cuenta aún no pertenece a ninguno
+/// (`403` o `404`), el perfil muestra a la persona con su reputación y sin
+/// drones propios.
 class PerfilRed implements PerfilRepositorio {
   PerfilRed(this._http);
 
@@ -48,6 +50,7 @@ class PerfilRed implements PerfilRepositorio {
         calificacion: promedio,
         serviciosCompletados: conteo,
         zonas: const [],
+        fotoUrl: usuario['foto_url'] as String?,
       );
     }
     final p = Map<String, dynamic>.from(mi['proveedor'] as Map);
@@ -66,6 +69,7 @@ class PerfilRed implements PerfilRepositorio {
       serviciosCompletados: conteo,
       zonas: const [],
       drones: drones,
+      fotoUrl: usuario['foto_url'] as String?,
       aprobacion: switch (p['estado']) {
         'aprobado' => EstadoAprobacion.aprobado,
         'suspendido' || 'baja' => EstadoAprobacion.suspendido,

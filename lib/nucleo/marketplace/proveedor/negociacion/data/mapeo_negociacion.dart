@@ -58,6 +58,7 @@ abstract final class MapeoNegociacion {
           cultivo: '${terreno['cultivo'] ?? j['cultivo'] ?? ''}',
           hectareas: decimal(terreno['hectareas']),
           poligono: poligonoTerreno,
+          fotos: FotoTerreno.lista(terreno['fotos']),
         );
       }
     }

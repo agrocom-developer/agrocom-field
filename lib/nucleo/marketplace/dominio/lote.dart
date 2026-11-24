@@ -1,5 +1,6 @@
 import 'package:decimal/decimal.dart';
 
+import 'foto_terreno.dart';
 import 'geo.dart';
 
 /// Terreno del cliente sobre el que se solicita un servicio.
@@ -11,6 +12,7 @@ class Lote {
     required this.cultivo,
     required this.hectareas,
     required this.poligono,
+    this.fotos = const [],
   });
 
   final String id;
@@ -25,6 +27,9 @@ class Lote {
 
   /// Vértices del contorno, en orden.
   final List<GeoPunto> poligono;
+
+  /// Fotos del estado del terreno (hasta 8), con URL firmada de corta vida.
+  final List<FotoTerreno> fotos;
 
   GeoPunto get centro => centroDe(poligono);
 }

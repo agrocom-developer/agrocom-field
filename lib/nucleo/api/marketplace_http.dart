@@ -36,20 +36,29 @@ class MarketplaceHttp {
         return _mapa(r.data);
       });
 
-  /// Sube un archivo (multipart) con sus campos de texto.
+  /// Borra un recurso (`DELETE`); las respuestas `204` no traen cuerpo.
+  Future<void> borrar(String ruta) => proteger(() async {
+    await _api.delete(ruta);
+  });
+
+  /// Sube un archivo (multipart) con sus campos de texto. Con [reemplazar]
+  /// usa `PUT` (la foto de perfil); si no, `POST`.
   Future<Map<String, dynamic>> subir(
     String ruta, {
     required Map<String, Object?> campos,
     required String campoArchivo,
     required List<int> bytes,
     String nombreArchivo = 'foto.jpg',
+    bool reemplazar = false,
   }) => proteger(() async {
     final formulario = FormData.fromMap({
       for (final e in campos.entries)
         if (e.value != null) e.key: e.value,
       campoArchivo: MultipartFile.fromBytes(bytes, filename: nombreArchivo),
     });
-    final r = await _api.post(ruta, data: formulario);
+    final r = reemplazar
+        ? await _api.put(ruta, data: formulario)
+        : await _api.post(ruta, data: formulario);
     return _mapa(r.data);
   });
 
