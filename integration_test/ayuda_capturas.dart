@@ -41,9 +41,15 @@ Future<void> paso(String nombre, Future<void> Function() accion) async {
   try {
     await accion();
   } catch (e) {
-    debugPrint('PASO FALLIDO [$nombre]: ${e.toString().split('\n').first}');
+    final resumen = '$nombre: ${e.toString().split('\n').first}';
+    pasosFallidos.add(resumen);
+    debugPrint('PASO FALLIDO [$resumen]');
   }
 }
+
+/// Pasos que fallaron en la corrida; los recorridos conectados los revisan
+/// al final para que un paso roto no pase por verde.
+final List<String> pasosFallidos = [];
 
 Future<void> tocar(WidgetTester t, Finder f, {int ms = 600}) async {
   if (f.evaluate().isEmpty) {
@@ -84,4 +90,13 @@ Future<void> atras(WidgetTester t) async {
     await nav.maybePop();
     await esperar(t);
   }
+}
+
+/// Escribe [texto] en [campo] y cierra el teclado, para que no tape los
+/// controles que siguen ni la captura.
+Future<void> escribir(WidgetTester t, Finder campo, String texto) async {
+  await t.enterText(campo, texto);
+  await esperar(t, 200);
+  FocusManager.instance.primaryFocus?.unfocus();
+  await esperar(t, 500);
 }

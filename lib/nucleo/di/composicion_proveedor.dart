@@ -42,7 +42,13 @@ class ComposicionProveedor {
 ///
 /// El motor de subida de la ejecución (`EjecucionSyncEngine`) corre al abrir
 /// la app, al volver la conectividad y cuando el piloto pide actualizar.
-Future<ComposicionProveedor> componerProveedor(Flavor flavor) async {
+///
+/// [selectorFoto] reemplaza la cámara real; solo lo usan las pruebas de
+/// integración, porque el simulador no tiene cámara.
+Future<ComposicionProveedor> componerProveedor(
+  Flavor flavor, {
+  SelectorFoto? selectorFoto,
+}) async {
   final tokenStore = TokenStoreSeguro();
   final api = ApiClient(baseUrl: apiBaseUrl, tokenStore: tokenStore);
   final http = MarketplaceHttp(api);
@@ -61,7 +67,7 @@ Future<ComposicionProveedor> componerProveedor(Flavor flavor) async {
     api: api,
     compresor: CompresorEvidenciaAdaptativo(),
     directorioFotos: directorio,
-    selectorFoto: SelectorFotoImagePicker(),
+    selectorFoto: selectorFoto ?? SelectorFotoImagePicker(),
     compartirUbicacion: esPiloto,
   );
   final negociacion = DependenciasNegociacion.red(
