@@ -178,13 +178,14 @@ class TarjetaDron extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+                // `Wrap` y no `Row`: con texto grande la cifra baja de renglón
+                // en vez de desbordar.
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  crossAxisAlignment: WrapCrossAlignment.end,
+                  spacing: EspaciadoCampo.m,
                   children: [
-                    Expanded(
-                      child: Text('CICLOS DE BATERÍA', style: texto.labelSmall),
-                    ),
-                    const SizedBox(width: EspaciadoCampo.m),
+                    Text('CICLOS DE BATERÍA', style: texto.labelSmall),
                     Text.rich(
                       TextSpan(
                         children: [

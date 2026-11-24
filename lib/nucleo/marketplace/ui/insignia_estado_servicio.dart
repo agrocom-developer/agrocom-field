@@ -20,25 +20,34 @@ class InsigniaEstadoServicio extends StatelessWidget {
       EstadoServicio.completado => (paleta.exito, Icons.check_circle_rounded),
       EstadoServicio.cancelado => (paleta.error, Icons.cancel_rounded),
     };
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.14),
-        borderRadius: BorderRadius.circular(999),
+    // Con texto grande la etiqueta baja de renglón en vez de desbordar: el
+    // ancho máximo da un límite al `Row` aunque el padre no lo dé.
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxWidth: MediaQuery.sizeOf(context).width * 0.6,
       ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icono, size: 14, color: color),
-          const SizedBox(width: 6),
-          Text(
-            estado.etiqueta,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: color,
-              fontWeight: FontWeight.w700,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.14),
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icono, size: 14, color: color),
+            const SizedBox(width: 6),
+            Flexible(
+              child: Text(
+                estado.etiqueta,
+                style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  color: color,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
