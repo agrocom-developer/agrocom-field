@@ -40,12 +40,14 @@ class BotonAgregarPunteadoCampo extends StatelessWidget {
           children: [
             Icon(Icons.add, color: color, size: 18),
             const SizedBox(width: 8),
-            Text(
-              texto,
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                fontSize: 14,
-                color: alerta ? ColoresCampo.acentoAmbarTexto : color,
+            Flexible(
+              child: Text(
+                texto,
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  color: alerta ? ColoresCampo.acentoAmbarTexto : color,
+                ),
               ),
             ),
           ],

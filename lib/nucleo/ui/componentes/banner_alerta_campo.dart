@@ -29,7 +29,7 @@ class BannerAlertaCampo extends StatelessWidget {
             child: Text(
               texto,
               style: const TextStyle(
-                fontFamily: 'monospace',
+                fontFamily: 'JetBrains Mono',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: ColoresCampo.acentoAmbarTexto,
@@ -41,7 +41,7 @@ class BannerAlertaCampo extends StatelessWidget {
             Text(
               valor!,
               style: const TextStyle(
-                fontFamily: 'monospace',
+                fontFamily: 'JetBrains Mono',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: ColoresCampo.acentoAmbarTexto,

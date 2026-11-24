@@ -3,10 +3,12 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../nucleo/ui/colores_campo.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
+import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tema_campo.dart';
 import '../../../nucleo/ui/tipografia_campo.dart';
+import '../../../nucleo/ui/tokens_campo.dart';
+import '../../estado_sync/presentation/indicador_sync.dart';
 import '../domain/tipo_incidencia.dart';
 import 'incidencia_cubit.dart';
 import 'incidencia_estado.dart';
@@ -32,11 +34,12 @@ const _tiposIncidencia = [
 /// cierra" de HU-09): el botón de envío queda deshabilitado hasta que haya
 /// una, y no hay forma de enviar sin ella.
 ///
-/// En modo campo (ADR 0008, decisión del 1/10/2026): `EncabezadoCampo` en
-/// vez de la barra de Material, el tipo con un `SelectorSegmentadoCampo`
-/// desplazable, la descripción con `CampoTextoCampo` y la foto con el hueco
-/// en ámbar mientras falte — el mismo patrón que el cierre de trabajo de
-/// `SesionVueloVista`. Solo cambia el aspecto.
+/// En modo campo (ADR 0008 y ADR 0011): `EncabezadoCampo` con el estado de
+/// sincronización debajo, el tipo con un `SelectorSegmentadoCampo`
+/// desplazable, la descripción con `CampoTextoCampo`, la foto con el hueco
+/// en ámbar mientras falte y «Guardar incidencia» anclado abajo — el mismo
+/// patrón que `SesionVueloVista`. Cada paso lleva háptica además del cambio
+/// visible.
 class IncidenciaVista extends StatefulWidget {
   const IncidenciaVista({super.key});
 
@@ -65,6 +68,7 @@ class _IncidenciaVistaState extends State<IncidenciaVista> {
     final cubit = context.read<IncidenciaCubit>();
     final bytes = await cubit.tomarFoto();
     if (!mounted || bytes == null) return;
+    HapticaCampo.seleccion();
     setState(() => _bytesFoto = bytes);
   }
 
@@ -73,6 +77,7 @@ class _IncidenciaVistaState extends State<IncidenciaVista> {
     final bytesFoto = _bytesFoto;
     if (tipo == null || bytesFoto == null) return;
 
+    HapticaCampo.confirmacion();
     final descripcion = _descripcionController.text.trim();
     context.read<IncidenciaCubit>().registrar(
       tipo: tipo,
@@ -86,8 +91,9 @@ class _IncidenciaVistaState extends State<IncidenciaVista> {
     return Theme(
       data: AgrocomThemeCampo.construir(),
       child: Scaffold(
-        backgroundColor: ColoresCampo.fondoProfundo,
+        backgroundColor: PaletaCampo.campo.fondo,
         body: SafeArea(
+          bottom: false,
           child: BlocConsumer<IncidenciaCubit, IncidenciaEstado>(
             listener: (context, estado) {
               if (estado is IncidenciaExitosa) {
@@ -97,6 +103,7 @@ class _IncidenciaVistaState extends State<IncidenciaVista> {
                 Navigator.of(context).pop();
               }
               if (estado is IncidenciaError) {
+                HapticaCampo.alerta();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(estado.mensaje),
@@ -110,20 +117,48 @@ class _IncidenciaVistaState extends State<IncidenciaVista> {
               final puedeGuardar =
                   !enviando && _tipoSeleccionado != null && _bytesFoto != null;
 
+              final margen = EspaciadoCampo.margenLateral(
+                MediaQuery.sizeOf(context).width,
+              );
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(18, 8, 18, 0),
-                    child: EncabezadoCampo(titulo: 'Reportar incidencia'),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      margen,
+                      EspaciadoCampo.s,
+                      margen,
+                      0,
+                    ),
+                    child: const EncabezadoCampo(titulo: 'Reportar incidencia'),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                      margen,
+                      EspaciadoCampo.s,
+                      margen,
+                      0,
+                    ),
+                    child: const Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: IndicadorSync(),
+                    ),
                   ),
                   Expanded(
                     child: ListView(
-                      padding: const EdgeInsets.fromLTRB(18, 16, 18, 12),
+                      padding: EdgeInsets.fromLTRB(
+                        margen,
+                        EspaciadoCampo.l,
+                        margen,
+                        EspaciadoCampo.xl,
+                      ),
                       children: [
                         Text(
                           'Tipo de incidencia'.toUpperCase(),
-                          style: TipografiaCampo.etiquetaMono,
+                          style: TipografiaCampo.etiquetaMono.copyWith(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         // Seis tipos no entran a lo ancho en un celular: la
@@ -135,6 +170,7 @@ class _IncidenciaVistaState extends State<IncidenciaVista> {
                           seleccionado: _tipoSeleccionado,
                           onSeleccionar: (valor) {
                             if (enviando) return;
+                            HapticaCampo.seleccion();
                             setState(() => _tipoSeleccionado = valor);
                           },
                         ),
@@ -182,14 +218,21 @@ class _IncidenciaVistaState extends State<IncidenciaVista> {
                                 'puede registrar la incidencia.',
                           ),
                         ],
+                        const SizedBox(height: EspaciadoCampo.l),
+                        const NotaTecnicaCampo(
+                          key: Key('incidencia_nota_guardado'),
+                          texto:
+                              'Se guarda en este dispositivo con su foto '
+                              'comprimida. Se envía sola cuando haya señal.',
+                        ),
                       ],
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 0, 18, 20),
-                    child: BotonPrimarioCampo(
+                  BarraAccionesCampo(
+                    principal: BotonPrimarioCampo(
                       key: const Key('boton_guardar_incidencia'),
                       texto: 'Guardar incidencia',
+                      icono: Icons.save_alt_rounded,
                       cargando: enviando,
                       onPressed: puedeGuardar ? () => _guardar(context) : null,
                     ),

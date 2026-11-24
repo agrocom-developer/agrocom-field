@@ -4,6 +4,7 @@ import '../../../nucleo/flavor.dart';
 import '../../../nucleo/linterna/linterna_controlador.dart';
 import '../../../nucleo/ui/colores_campo.dart';
 import '../../../nucleo/ui/tema_campo.dart';
+import '../../../nucleo/ui/tokens_campo.dart';
 import 'linterna_panel.dart';
 
 /// Punto de entrada de un toque al modo emergencia (HU-68, Sprint 15 —
@@ -41,10 +42,14 @@ class EmergenciaBoton extends StatelessWidget {
             child: FloatingActionButton(
               key: const Key('emergencia_boton'),
               heroTag: 'emergencia_boton',
+              tooltip: 'Modo emergencia',
               backgroundColor: ColoresCampo.acentoRojo,
               foregroundColor: ColoresCampo.fondoProfundo,
-              onPressed: () => _abrirPanel(context),
-              child: const Icon(Icons.warning_amber_rounded),
+              onPressed: () {
+                HapticaCampo.alerta();
+                _abrirPanel(context);
+              },
+              child: const Icon(Icons.warning_amber_rounded, size: 28),
             ),
           ),
         ),
@@ -58,6 +63,7 @@ class EmergenciaBoton extends StatelessWidget {
         const TemaCampo().radioTarjetaGrande;
     showModalBottomSheet<void>(
       context: context,
+      showDragHandle: true,
       backgroundColor: ColoresCampo.superficie,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(radio)),

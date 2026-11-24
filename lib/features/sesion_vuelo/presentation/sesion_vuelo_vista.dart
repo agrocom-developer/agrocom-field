@@ -4,10 +4,12 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../nucleo/ui/colores_campo.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
+import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tema_campo.dart';
 import '../../../nucleo/ui/tipografia_campo.dart';
+import '../../../nucleo/ui/tokens_campo.dart';
+import '../../estado_sync/presentation/indicador_sync.dart';
 import '../../incidencias/presentation/incidencia_cubit.dart';
 import '../../incidencias/presentation/incidencia_pantalla.dart';
 import '../domain/auxiliar.dart';
@@ -31,13 +33,20 @@ import 'trabajo_estado.dart';
 /// con `crearTrabajoCubit`: construirlo eager en un flavor que no lo
 /// soporta rompería ese flavor incluso con el botón oculto).
 ///
-/// En modo campo (ADR 0008, decisión del 1/10/2026): sin barra de título de
-/// Material, con `EncabezadoCampo`, y los formularios de apertura y cierre
-/// con `CampoTextoCampo`/`SelectorDesplegableCampo` — los validadores y las
-/// `Key`s de siempre. Las condiciones fuera de rango se avisan con un
-/// `BannerAlertaCampo` (ámbar) y la foto obligatoria del cierre de trabajo,
-/// con el hueco en ámbar mientras falte. Solo cambia el aspecto: eventos,
-/// estados y reglas (`reglas_condiciones.dart`) son los mismos.
+/// En modo campo (ADR 0008 y ADR 0011): `EncabezadoCampo` con el estado de
+/// sincronización debajo, el contenido de cada estado en una tarjeta y las
+/// acciones ancladas abajo en una `BarraAccionesCampo` — la principal
+/// siempre al alcance del pulgar, sin scroll. Los formularios de apertura y
+/// cierre son hojas a casi todo el ancho con `CampoTextoCampo` y
+/// `SelectorDesplegableCampo`. Las condiciones fuera de rango se avisan con
+/// un `BannerAlertaCampo` (ámbar) y la foto obligatoria del cierre de
+/// trabajo, con el hueco en ámbar mientras falte. Cada confirmación lleva
+/// háptica además del cambio visible. Eventos, estados y reglas
+/// (`reglas_condiciones.dart`) son los del bloc.
+///
+/// Una pausa de vuelo es el cierre de la sesión con su motivo (clima, fin
+/// de jornada, relevo, cambio de dron): la pantalla de sesión cerrada
+/// ofrece abrir la siguiente sobre el mismo trabajo.
 class SesionVueloVista extends StatefulWidget {
   const SesionVueloVista({required this.crearIncidenciaCubit, super.key});
 
@@ -229,6 +238,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                   : () {
                       if (!_formAperturaKey.currentState!.validate()) return;
 
+                      HapticaCampo.confirmacion();
                       context.read<SesionBloc>().add(
                         SesionAbrirSolicitada(
                           vientoKmh: Decimal.parse(_vientoController.text),
@@ -442,6 +452,9 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
       context: context,
       builder: (dialogContext) => _DialogoCampo(
         titulo: 'Cerrar sesión',
+        apoyo:
+            'Si es una pausa, elegí el motivo: al retomar se abre la '
+            'sesión siguiente sobre el mismo trabajo.',
         formKey: _formKey,
         onCancelar: () => Navigator.pop(dialogContext),
         botonConfirmar: BotonPrimarioCampo(
@@ -450,6 +463,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
           onPressed: () {
             if (!_formKey.currentState!.validate()) return;
 
+            HapticaCampo.confirmacion();
             final litros = _litrosController.text.isEmpty
                 ? null
                 : Decimal.parse(_litrosController.text);
@@ -583,6 +597,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
           Future<void> tomarFoto() async {
             final bytes = await context.read<TrabajoCubit>().tomarFotoCampo();
             if (bytes == null) return;
+            HapticaCampo.seleccion();
             setStateDialog(() => bytesFoto = bytes);
           }
 
@@ -594,6 +609,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
 
           return _DialogoCampo(
             titulo: 'Cerrar trabajo',
+            apoyo: 'Cierra el trabajo completo, no solo esta sesión.',
             formKey: _formCierreTrabajoKey,
             onCancelar: () => Navigator.pop(dialogContext),
             botonConfirmar: BotonPrimarioCampo(
@@ -606,6 +622,7 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
                         return;
                       }
 
+                      HapticaCampo.confirmacion();
                       final litrosTexto = _litrosSobranteController.text.trim();
                       context.read<TrabajoCubit>().cerrar(
                         trabajoUuidCliente: trabajoUuidCliente,
@@ -681,11 +698,13 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
       child: BlocListener<TrabajoCubit, TrabajoEstado>(
         listener: (context, estado) {
           if (estado is TrabajoCerrado) {
+            HapticaCampo.confirmacion();
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(const SnackBar(content: Text('Trabajo cerrado')));
           }
           if (estado is TrabajoError) {
+            HapticaCampo.alerta();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(estado.mensaje),
@@ -694,89 +713,177 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
             );
           }
         },
-        child: Scaffold(
-          backgroundColor: ColoresCampo.fondoProfundo,
-          body: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(18, 8, 18, 0),
-                  child: EncabezadoCampo(titulo: 'Sesión de vuelo'),
-                ),
-                // Trabajo retirado del catálogo (tarea 27): se avisa en toda
-                // la pantalla; lo abierto se sigue y se cierra igual.
-                if (_restriccionPantalla?.aviso case final aviso?)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(18, 12, 18, 0),
-                    child: NotaInlineCampo(
-                      key: const Key('sesion_aviso_retiro'),
-                      texto: aviso,
+        // El `Builder` deja leer la paleta del tema campo de arriba: el
+        // `context` de `build` todavía es el del tema que envuelve a la
+        // pantalla.
+        child: Builder(
+          builder: (context) {
+            final margen = _margen(context);
+            return Scaffold(
+              backgroundColor: context.paleta.fondo,
+              body: SafeArea(
+                bottom: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        margen,
+                        EspaciadoCampo.s,
+                        margen,
+                        0,
+                      ),
+                      child: const EncabezadoCampo(titulo: 'Sesión de vuelo'),
                     ),
-                  ),
-                Expanded(
-                  child: BlocConsumer<SesionBloc, SesionEstado>(
-                    listener: (context, estado) {
-                      if (estado is SesionError) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(estado.mensaje),
-                            backgroundColor: Theme.of(
-                              context,
-                            ).colorScheme.error,
-                          ),
-                        );
-                      }
-                    },
-                    builder: (context, estado) => switch (estado) {
-                      SesionInicial() => _sesionInicial(context),
-                      SesionAbriendo() => const Center(
-                        child: CircularProgressIndicator(),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        margen,
+                        EspaciadoCampo.s,
+                        margen,
+                        0,
                       ),
-                      SesionActiva(:final sesion) => _sesionActiva(
-                        context,
-                        sesion,
+                      child: const Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: IndicadorSync(),
                       ),
-                      SesionCerrando() => const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                      SesionCerrada(:final sesion) => _sesionCerrada(
-                        context,
-                        sesion,
-                      ),
-                      SesionError(:final mensaje) => Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(18),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Text(
-                                mensaje,
-                                style: TipografiaCampo.cuerpo.copyWith(
-                                  color: ColoresCampo.acentoRojo,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 24),
-                              BotonSecundarioCampo(
-                                key: const Key('boton_reintentar'),
-                                texto: 'Reintentar',
-                                onPressed: () =>
-                                    _mostrarFormularioApertura(context),
-                              ),
-                            ],
-                          ),
+                    ),
+                    // Trabajo retirado del catálogo (tarea 27): se avisa en
+                    // toda la pantalla; lo abierto se sigue y se cierra
+                    // igual.
+                    if (_restriccionPantalla?.aviso case final aviso?)
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          margen,
+                          EspaciadoCampo.m,
+                          margen,
+                          0,
+                        ),
+                        child: NotaInlineCampo(
+                          key: const Key('sesion_aviso_retiro'),
+                          texto: aviso,
                         ),
                       ),
-                    },
-                  ),
+                    Expanded(
+                      child: BlocConsumer<SesionBloc, SesionEstado>(
+                        listener: (context, estado) {
+                          if (estado is SesionActiva ||
+                              estado is SesionCerrada) {
+                            HapticaCampo.seleccion();
+                          }
+                          if (estado is SesionError) {
+                            HapticaCampo.alerta();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(estado.mensaje),
+                                backgroundColor: Theme.of(
+                                  context,
+                                ).colorScheme.error,
+                              ),
+                            );
+                          }
+                        },
+                        builder: (context, estado) => switch (estado) {
+                          SesionInicial() => _sesionInicial(context),
+                          SesionAbriendo() => const _Guardando(
+                            texto: 'Abriendo la sesión en el dispositivo',
+                          ),
+                          SesionActiva(:final sesion) => _sesionActiva(
+                            context,
+                            sesion,
+                          ),
+                          SesionCerrando() => const _Guardando(
+                            texto: 'Guardando el cierre en el dispositivo',
+                          ),
+                          SesionCerrada(:final sesion) => _sesionCerrada(
+                            context,
+                            sesion,
+                          ),
+                          SesionError(:final mensaje) => _sesionError(
+                            context,
+                            mensaje,
+                          ),
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  static double _margen(BuildContext context) =>
+      EspaciadoCampo.margenLateral(MediaQuery.sizeOf(context).width);
+
+  static EdgeInsets _margenContenido(BuildContext context) {
+    final margen = _margen(context);
+    return EdgeInsets.fromLTRB(
+      margen,
+      EspaciadoCampo.l,
+      margen,
+      EspaciadoCampo.xl,
+    );
+  }
+
+  /// Etiqueta mono sobre el dato protagonista de una tarjeta. 12 px: el
+  /// modo campo no lleva texto por debajo de ese tamaño.
+  static Widget _etiqueta(String texto, {Color? color, IconData? icono}) {
+    final estilo = TipografiaCampo.etiquetaMono.copyWith(
+      fontSize: 12,
+      fontWeight: FontWeight.w600,
+      color: color,
+    );
+    if (icono == null) return Text(texto.toUpperCase(), style: estilo);
+    return Row(
+      children: [
+        Icon(icono, size: 18, color: color),
+        const SizedBox(width: EspaciadoCampo.s),
+        Expanded(child: Text(texto.toUpperCase(), style: estilo)),
+      ],
+    );
+  }
+
+  /// El error con su salida: el mensaje del bloc y «Reintentar» anclado
+  /// abajo, que vuelve a pedir las condiciones.
+  Widget _sesionError(BuildContext context, String mensaje) {
+    final paleta = context.paleta;
+    return Column(
+      children: [
+        Expanded(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: _margenContenido(context),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.error_outline_rounded,
+                    size: 40,
+                    color: paleta.error,
+                  ),
+                  const SizedBox(height: EspaciadoCampo.m),
+                  Text(
+                    mensaje,
+                    style: TipografiaCampo.cuerpo.copyWith(color: paleta.error),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
+        BarraAccionesCampo(
+          principal: BotonSecundarioCampo(
+            key: const Key('boton_reintentar'),
+            texto: 'Reintentar',
+            icono: Icons.refresh_rounded,
+            onPressed: () => _mostrarFormularioApertura(context),
+          ),
+        ),
+      ],
     );
   }
 
@@ -784,32 +891,71 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
   /// en curso (tarea 27), cerrar el trabajo sin pasar por una sesión. Con
   /// el trabajo ya cerrado no se abre otra sesión sobre él.
   Widget _sesionInicial(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 18),
-        child: BlocBuilder<TrabajoCubit, TrabajoEstado>(
-          builder: (context, estadoTrabajo) => Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              BotonPrimarioCampo(
-                key: const Key('boton_abrir_sesion'),
-                texto: 'Abrir sesión',
-                onPressed: estadoTrabajo is TrabajoCerrado
-                    ? null
-                    : () => _mostrarFormularioApertura(context),
+    return BlocBuilder<TrabajoCubit, TrabajoEstado>(
+      builder: (context, estadoTrabajo) {
+        final cerrado = estadoTrabajo is TrabajoCerrado;
+        return Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: _margenContenido(context),
+                children: [
+                  TarjetaCampo(
+                    tamano: TamanoTarjetaCampo.grande,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _etiqueta(
+                          cerrado ? 'Trabajo finalizado' : 'Sin sesión abierta',
+                          icono: cerrado
+                              ? Icons.task_alt_rounded
+                              : Icons.flight_takeoff_rounded,
+                        ),
+                        const SizedBox(height: EspaciadoCampo.m),
+                        Text(
+                          cerrado
+                              ? 'No queda nada por registrar'
+                              : 'Medí el lote antes de despegar',
+                          style: TipografiaCampo.valorDestacado,
+                        ),
+                        const SizedBox(height: EspaciadoCampo.s),
+                        Text(
+                          cerrado
+                              ? 'El cierre quedó guardado en este '
+                                    'dispositivo y se envía solo cuando haya '
+                                    'señal.'
+                              : 'Al abrir la sesión se registran viento, '
+                                    'temperatura y humedad. Si una medición '
+                                    'queda fuera de los límites del trabajo, '
+                                    'se pide la observación y la firma del '
+                                    'agrónomo.',
+                          style: TipografiaCampo.cuerpoSecundario,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 12),
-              _cierreTrabajo(
+            ),
+            BarraAccionesCampo(
+              secundaria: _cierreTrabajo(
                 context,
                 estadoTrabajo,
                 context.read<SesionBloc>().trabajoUuidCliente,
                 primario: false,
               ),
-            ],
-          ),
-        ),
-      ),
+              principal: BotonPrimarioCampo(
+                key: const Key('boton_abrir_sesion'),
+                texto: 'Abrir sesión',
+                icono: Icons.flight_takeoff_rounded,
+                onPressed: cerrado
+                    ? null
+                    : () => _mostrarFormularioApertura(context),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -821,11 +967,14 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     required bool primario,
   }) {
     if (estadoTrabajo is TrabajoCerrado) {
-      return const NotaInlineCampo(
-        key: Key('trabajo_cerrado'),
-        texto: 'Trabajo cerrado',
-        color: ColoresCampo.acentoLima,
-        centrada: true,
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: EspaciadoCampo.s),
+        child: NotaInlineCampo(
+          key: const Key('trabajo_cerrado'),
+          texto: 'Trabajo cerrado',
+          color: context.paleta.exito,
+          centrada: true,
+        ),
       );
     }
     void alCerrar() =>
@@ -840,125 +989,173 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
     return BotonPrimarioCampo(
       key: const Key('boton_cerrar_trabajo'),
       texto: 'Cerrar trabajo',
+      icono: Icons.task_alt_rounded,
       cargando: estadoTrabajo is TrabajoCerrando,
       onPressed: alCerrar,
     );
   }
 
-  /// Sesión abierta: los tres datos clave como `StatChipCampo`, y debajo las
-  /// dos acciones — reportar una incidencia (secundaria) o cerrar la sesión.
+  /// Sesión abierta: los tres datos clave como `StatChipCampo`, la nota de
+  /// guardado local y, ancladas abajo, las dos acciones — reportar una
+  /// incidencia (secundaria) y cerrar la sesión (principal).
   Widget _sesionActiva(BuildContext context, Sesion sesion) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 20),
+    final paleta = context.paleta;
+    return Column(
       children: [
-        TarjetaCampo(
-          tamano: TamanoTarjetaCampo.grande,
-          acento: ColoresCampo.acentoLima,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+        Expanded(
+          child: ListView(
+            padding: _margenContenido(context),
             children: [
-              Text(
-                'Sesión activa',
-                style: TipografiaCampo.valorDestacado.copyWith(
-                  color: ColoresCampo.acentoLima,
+              TarjetaCampo(
+                tamano: TamanoTarjetaCampo.grande,
+                acento: paleta.acento,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _etiqueta(
+                      'En vuelo',
+                      color: paleta.acentoTexto,
+                      icono: Icons.flight_rounded,
+                    ),
+                    const SizedBox(height: EspaciadoCampo.m),
+                    Text(
+                      'Sesión activa',
+                      style: TipografiaCampo.valorDestacado.copyWith(
+                        color: paleta.acentoTexto,
+                      ),
+                    ),
+                    const SizedBox(height: EspaciadoCampo.l),
+                    GrupoStatsCampo(
+                      children: [
+                        StatChipCampo(
+                          key: const Key('sesion_secuencia'),
+                          etiqueta: 'Secuencia',
+                          valor: '${sesion.secuencia}',
+                        ),
+                        StatChipCampo(
+                          key: const Key('sesion_inicio'),
+                          etiqueta: 'Inicio',
+                          valor: _formatearHora(sesion.inicio),
+                        ),
+                        StatChipCampo(
+                          key: const Key('sesion_hectareas'),
+                          etiqueta: 'Hectáreas',
+                          valor: sesion.hectareasDeclaradas.toString(),
+                          unidad: 'ha',
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 16),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: StatChipCampo(
-                      key: const Key('sesion_secuencia'),
-                      etiqueta: 'Secuencia',
-                      valor: '${sesion.secuencia}',
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: StatChipCampo(
-                      key: const Key('sesion_inicio'),
-                      etiqueta: 'Inicio',
-                      valor: _formatearHora(sesion.inicio),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: StatChipCampo(
-                      key: const Key('sesion_hectareas'),
-                      etiqueta: 'Hectáreas',
-                      valor: sesion.hectareasDeclaradas.toString(),
-                      unidad: 'ha',
-                    ),
-                  ),
-                ],
+              const SizedBox(height: EspaciadoCampo.l),
+              const NotaTecnicaCampo(
+                key: Key('sesion_nota_guardado'),
+                texto:
+                    'La apertura ya está guardada en este dispositivo. Se '
+                    'envía sola cuando haya señal: podés volar sin conexión.',
               ),
             ],
           ),
         ),
-        const SizedBox(height: 20),
-        BotonSecundarioCampo(
-          key: const Key('boton_reportar_incidencia'),
-          texto: 'Reportar incidencia',
-          onPressed: () => _reportarIncidencia(context, sesion.uuidCliente),
-        ),
-        const SizedBox(height: 12),
-        BotonPrimarioCampo(
-          key: const Key('boton_cerrar_sesion'),
-          texto: 'Cerrar sesión',
-          onPressed: () => _mostrarFormularioCierre(context, sesion),
+        BarraAccionesCampo(
+          secundaria: BotonSecundarioCampo(
+            key: const Key('boton_reportar_incidencia'),
+            texto: 'Reportar incidencia',
+            icono: Icons.report_problem_outlined,
+            onPressed: () => _reportarIncidencia(context, sesion.uuidCliente),
+          ),
+          principal: BotonPrimarioCampo(
+            key: const Key('boton_cerrar_sesion'),
+            texto: 'Cerrar sesión',
+            icono: Icons.flight_land_rounded,
+            onPressed: () => _mostrarFormularioCierre(context, sesion),
+          ),
         ),
       ],
     );
   }
 
   /// Sesión cerrada: el resumen del cierre como filas «etiqueta … valor» y,
-  /// debajo, el cierre del TRABAJO (HU-09) o su confirmación.
+  /// ancladas abajo, las acciones — cerrar el TRABAJO (HU-09) o su
+  /// confirmación y, si el cierre fue una pausa (cualquier motivo distinto
+  /// de «completado»), abrir la sesión siguiente sobre el mismo trabajo.
   Widget _sesionCerrada(BuildContext context, Sesion sesion) {
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(18, 16, 18, 20),
+    final fuePausa = sesion.motivoCierre != 'completado';
+    return Column(
       children: [
-        TarjetaCampo(
-          tamano: TamanoTarjetaCampo.grande,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+        Expanded(
+          child: ListView(
+            padding: _margenContenido(context),
             children: [
-              const Text(
-                'Sesión cerrada',
-                style: TipografiaCampo.valorDestacado,
-              ),
-              const SizedBox(height: 14),
-              FilaDatoCampo(
-                key: const Key('sesion_motivo'),
-                etiqueta: 'Motivo',
-                valor: _etiquetaMotivo(sesion.motivoCierre ?? ''),
-              ),
-              FilaDatoCampo(
-                key: const Key('sesion_hectareas_cierre'),
-                etiqueta: 'Hectáreas declaradas (cierre)',
-                valor: sesion.hectareasDeclaradasCierre?.toString() ?? '—',
-              ),
-              if (sesion.litrosConsumidos != null)
-                FilaDatoCampo(
-                  key: const Key('sesion_litros_consumidos'),
-                  etiqueta: 'Litros consumidos',
-                  valor: sesion.litrosConsumidos!.toString(),
+              TarjetaCampo(
+                tamano: TamanoTarjetaCampo.grande,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _etiqueta(
+                      'Sesión N.º ${sesion.secuencia}',
+                      icono: Icons.flight_land_rounded,
+                    ),
+                    const SizedBox(height: EspaciadoCampo.m),
+                    const Text(
+                      'Sesión cerrada',
+                      style: TipografiaCampo.valorDestacado,
+                    ),
+                    const SizedBox(height: EspaciadoCampo.m),
+                    FilaDatoCampo(
+                      key: const Key('sesion_motivo'),
+                      etiqueta: 'Motivo',
+                      valor: _etiquetaMotivo(sesion.motivoCierre ?? ''),
+                    ),
+                    FilaDatoCampo(
+                      key: const Key('sesion_hectareas_cierre'),
+                      etiqueta: 'Hectáreas declaradas (cierre)',
+                      valor:
+                          sesion.hectareasDeclaradasCierre?.toString() ?? '—',
+                    ),
+                    if (sesion.litrosConsumidos != null)
+                      FilaDatoCampo(
+                        key: const Key('sesion_litros_consumidos'),
+                        etiqueta: 'Litros consumidos',
+                        valor: sesion.litrosConsumidos!.toString(),
+                      ),
+                    FilaDatoCampo(
+                      key: const Key('sesion_fin'),
+                      etiqueta: 'Fin',
+                      valor: _formatearHora(sesion.fin ?? DateTime.now()),
+                    ),
+                  ],
                 ),
-              FilaDatoCampo(
-                key: const Key('sesion_fin'),
-                etiqueta: 'Fin',
-                valor: _formatearHora(sesion.fin ?? DateTime.now()),
+              ),
+              const SizedBox(height: EspaciadoCampo.l),
+              const NotaTecnicaCampo(
+                key: Key('sesion_nota_guardado'),
+                texto:
+                    'El cierre ya está guardado en este dispositivo. Se '
+                    'envía solo cuando haya señal.',
               ),
             ],
           ),
         ),
-        const SizedBox(height: 20),
         BlocBuilder<TrabajoCubit, TrabajoEstado>(
-          builder: (context, estadoTrabajo) => _cierreTrabajo(
-            context,
-            estadoTrabajo,
-            sesion.trabajoUuidCliente,
-            primario: true,
+          builder: (context, estadoTrabajo) => BarraAccionesCampo(
+            secundaria: fuePausa && estadoTrabajo is! TrabajoCerrado
+                ? BotonSecundarioCampo(
+                    key: const Key('boton_abrir_otra_sesion'),
+                    texto: 'Abrir otra sesión',
+                    icono: Icons.flight_takeoff_rounded,
+                    onPressed: estadoTrabajo is TrabajoCerrando
+                        ? null
+                        : () => _mostrarFormularioApertura(context),
+                  )
+                : null,
+            principal: _cierreTrabajo(
+              context,
+              estadoTrabajo,
+              sesion.trabajoUuidCliente,
+              primario: true,
+            ),
           ),
         ),
       ],
@@ -987,10 +1184,40 @@ class _SesionVueloVistaState extends State<SesionVueloVista> {
   }
 }
 
-/// Diálogo de formulario del modo campo: título, campos y las dos acciones
-/// (cancelar como secundaria, confirmar como primaria) una al lado de la
-/// otra. Solo arma el aspecto — cada formulario trae sus campos,
-/// su `Form` y su botón de confirmar con la `Key` de siempre.
+/// Lo que se ve mientras el repositorio escribe en `drift`: dura un
+/// instante, sin esqueleto (sistema visual, §1.4).
+class _Guardando extends StatelessWidget {
+  const _Guardando({required this.texto});
+
+  final String texto;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(EspaciadoCampo.xl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(color: context.paleta.acento),
+            const SizedBox(height: EspaciadoCampo.l),
+            Text(
+              texto,
+              textAlign: TextAlign.center,
+              style: TipografiaCampo.cuerpoSecundario,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Hoja de formulario del modo campo: título, apoyo, campos con scroll y
+/// las dos acciones fuera del scroll (cancelar como secundaria, confirmar
+/// como primaria). Ocupa casi todo el ancho para que los campos midan lo
+/// que un dedo con guante necesita. Solo arma el aspecto — cada formulario
+/// trae sus campos, su `Form` y su botón de confirmar con su `Key`.
 class _DialogoCampo extends StatelessWidget {
   const _DialogoCampo({
     required this.titulo,
@@ -998,9 +1225,11 @@ class _DialogoCampo extends StatelessWidget {
     required this.onCancelar,
     required this.botonConfirmar,
     required this.children,
+    this.apoyo,
   });
 
   final String titulo;
+  final String? apoyo;
   final GlobalKey<FormState> formKey;
   final VoidCallback onCancelar;
   final Widget botonConfirmar;
@@ -1008,42 +1237,77 @@ class _DialogoCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Las acciones van dentro del contenido, fuera del scroll: las
-    // `actions` de `AlertDialog` no dejan repartir el ancho entre dos
-    // botones del catálogo.
-    return AlertDialog(
-      backgroundColor: ColoresCampo.superficie,
-      title: Text(titulo, style: TipografiaCampo.tituloSeccion),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Flexible(
-            child: SingleChildScrollView(
-              child: Form(
-                key: formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: children,
-                ),
-              ),
-            ),
+    final paleta = context.paleta;
+    final radio =
+        Theme.of(context).extension<TemaCampo>()?.radioTarjetaGrande ??
+        const TemaCampo().radioTarjetaGrande;
+    final cancelar = BotonSecundarioCampo(
+      texto: 'Cancelar',
+      onPressed: onCancelar,
+    );
+    // Con el texto escalado, dos botones lado a lado cortan la etiqueta:
+    // se apilan, con la acción principal arriba.
+    final apilar = MediaQuery.textScalerOf(context).scale(1) > 1.3;
+    return Dialog(
+      backgroundColor: paleta.superficieElevada,
+      insetPadding: const EdgeInsets.symmetric(
+        horizontal: EspaciadoCampo.m,
+        vertical: EspaciadoCampo.l,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(radio),
+        side: BorderSide(color: paleta.borde),
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 560),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            EspaciadoCampo.l,
+            EspaciadoCampo.xl,
+            EspaciadoCampo.l,
+            EspaciadoCampo.l,
           ),
-          const SizedBox(height: 20),
-          Row(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Expanded(
-                child: BotonSecundarioCampo(
-                  texto: 'Cancelar',
-                  onPressed: onCancelar,
+              Semantics(
+                header: true,
+                child: Text(titulo, style: TipografiaCampo.tituloSeccion),
+              ),
+              if (apoyo != null) ...[
+                const SizedBox(height: EspaciadoCampo.xs),
+                Text(apoyo!, style: TipografiaCampo.cuerpoSecundario),
+              ],
+              const SizedBox(height: EspaciadoCampo.l),
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: children,
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(width: 12),
-              Expanded(child: botonConfirmar),
+              const SizedBox(height: EspaciadoCampo.l),
+              if (apilar) ...[
+                botonConfirmar,
+                const SizedBox(height: EspaciadoCampo.m),
+                cancelar,
+              ] else
+                Row(
+                  children: [
+                    Expanded(child: cancelar),
+                    const SizedBox(width: EspaciadoCampo.m),
+                    Expanded(child: botonConfirmar),
+                  ],
+                ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
