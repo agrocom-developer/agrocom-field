@@ -10,7 +10,7 @@ Lo que una pantalla necesita y el contrato (`agrocom-api`, `docs/api/openapi.yam
 | El teléfono y los datos de contacto del piloto adjudicado en la solicitud. `GET /api/solicitudes/{id}` solo trae `proveedor_id`. | El nombre del piloto sale de la oferta adjudicada (`GET /api/ofertas/{id}`); el contacto es el chat. |
 | El número de ofertas vigentes en la lista de solicitudes. | Una lectura de las ofertas por cada solicitud abierta o con ofertas al cargar la lista. |
 | Si el cliente ya calificó, en la lista de solicitudes. | Una lectura de calificaciones por cada solicitud calificada al cargar la lista. |
-| Fotos del terreno (`POST /api/terrenos/{id}/fotos`), precio de referencia (`GET /api/referencias/precio`), confirmación de pago (`POST /api/solicitudes/{id}/pago-confirmado`) y edición de una solicitud (`PUT /api/solicitudes/{id}`), descritos en `negociacion-contrato.md` pero ausentes de `openapi.yaml`. | El cliente no sube fotos del terreno, no ve un precio de referencia ni marca el pago; el precio se cambia con `POST /api/solicitudes/{id}/precio`. |
+| Edición de una solicitud (`PUT /api/solicitudes/{id}`), descrita en `negociacion-contrato.md` pero ausente de `openapi.yaml`. | El precio se cambia con `POST /api/solicitudes/{id}/precio`. |
 | La ruta de las fotos aprobadas del dron en la oferta. `proveedor.dron.fotos` llega vacío en los datos de demostración. | Muestra las fotos cuando traen `url`; si no, solo marca, modelo y capacidad. |
 | Dosis, producto y tipo de aplicación como campos. Solo hay `producto_indicado` (texto) y `tipo_aplicacion`. | El producto viaja como texto escrito o elegido; el tipo de aplicación se deduce del producto. |
 | Fecha de creación de la solicitud en la lista. | Usa el historial (detalle) o `publicada_en`. |
@@ -19,3 +19,15 @@ Lo que una pantalla necesita y el contrato (`agrocom-api`, `docs/api/openapi.yam
 | Calificaciones que el proveedor da al cliente (son privadas por diseño). | Solo se muestra el promedio y el conteo de la ficha del cliente. |
 | Marcar un aviso del inicio como leído desde la tarjeta. | Descartar un aviso solo lo oculta en la sesión. |
 | Entrega en tiempo real de mensajes y de ofertas. | Sondeo corto con la pantalla abierta (5 s el chat, 15 s el seguimiento, 20 s las ofertas); el contrato por cursor permite cambiar el transporte sin tocar los repositorios (ADR 0017). |
+
+## Datos listos, pantalla pendiente
+
+La capa de datos ya cubre estas rutas (ADR 0020); falta la pantalla que las use.
+
+| Ruta | Pantalla que falta |
+|---|---|
+| `GET /api/referencias/precio` | El precio de referencia junto al campo de precio al solicitar (cliente), y en la hoja de oferta del piloto. |
+| `PUT` y `DELETE /api/perfil/foto` | Elegir, cambiar y quitar la foto de perfil en la cuenta (cliente) y en el perfil (piloto y auxiliar); mostrarla en la tarjeta del proveedor de la oferta. |
+| `POST` y `DELETE /api/terrenos/{id}/fotos` | Galería de fotos del terreno al crearlo o editarlo (cliente); verlas en el detalle de la solicitud abierta (piloto). |
+| `GET` y `POST /api/solicitudes/{id}/pago-confirmado` | «Ya recibí el pago» del proveedor titular en el servicio finalizado; el cliente ve el pago confirmado en el seguimiento. |
+| `POST /api/dispositivos` y `DELETE /api/dispositivos/{token}` | Sin pantalla: se llaman al iniciar y cerrar sesión cuando exista un proveedor de push que entregue el token. |
