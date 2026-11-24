@@ -1,4 +1,4 @@
-# ADR 0009 — Sistema visual del marketplace y librerías de interfaz
+# ADR 0019 — Sistema visual del marketplace y librerías de interfaz
 
 **Estado:** Aceptada (decisión revisable) · **Serie:** ADR propios de `agrocom-field`.
 
