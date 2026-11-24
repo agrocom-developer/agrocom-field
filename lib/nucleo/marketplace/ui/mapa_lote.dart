@@ -161,7 +161,7 @@ class MapaLote extends StatelessWidget {
               ),
             if (teselas)
               const SimpleAttributionWidget(
-                source: Text('© OpenStreetMap'),
+                source: Text('OpenStreetMap'),
                 backgroundColor: Color(0xCCFFFFFF),
               ),
           ],

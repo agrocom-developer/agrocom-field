@@ -258,7 +258,7 @@ class _MapaSolicitudState extends State<MapaSolicitud>
                   ),
                 if (teselas)
                   SimpleAttributionWidget(
-                    source: const Text('© OpenStreetMap'),
+                    source: const Text('OpenStreetMap'),
                     backgroundColor: paleta.superficie.withValues(alpha: 0.8),
                   ),
               ],
