@@ -114,7 +114,7 @@ Reglas:
 3. Solo se animan `transform` y `opacity`; no se animan dimensiones de layout en listas largas.
 4. **Reducción de movimiento.** Con "Reducir movimiento" (iOS) o "Quitar animaciones" (Android), `MovimientoCampo.duracion(context, d)` devuelve `Duration.zero`: los desplazamientos, escalas y el barrido del esqueleto se detienen. La opacidad y el color pueden seguir cambiando: reducir no es eliminar el feedback.
 5. Háptica (`HapticaCampo`): `seleccion` al cambiar una selección o tomar una foto, `confirmacion` al aceptar un servicio o confirmar una apertura, un cierre o una incidencia, `alerta` en una oferta por vencer, en un error y al abrir el modo emergencia. Nunca es el único canal de feedback.
-6. Ningún elemento anima en bucle salvo el esqueleto de carga y el indicador de sincronización activa.
+6. Ningún elemento anima en bucle salvo el esqueleto de carga, el indicador de sincronización activa y el radar de la búsqueda de proveedor (una espera activa del servidor). Con movimiento reducido los tres quedan quietos.
 
 ## 8. Componentes
 
@@ -137,7 +137,16 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 
 ## 9. Patrones por pantalla clave
 
-**Solicitar servicio (cliente).** Un paso por pantalla: dónde (mapa con pin sobre el lote), qué (cultivo, hectáreas, producto), cuándo. Barra de progreso arriba, botón lima abajo anclado sobre el teclado. Resumen con precio estimado antes de confirmar. Estado de red explícito: la solicitud requiere conexión y lo dice antes de que el usuario complete el formulario.
+**Solicitar fumigación (cliente).** Cuatro pasos, uno por pantalla: lote, aplicación, cuándo y resumen. Barra de progreso de cuatro segmentos arriba y un único botón lima abajo, anclado sobre el teclado. El paso nuevo entra desde el lado hacia el que se avanza (`media`, 240 ms).
+
+- *Lote.* El mapa ocupa la mitad superior y es el protagonista: un toque elige un lote guardado o marca una esquina del contorno; cada esquina se arrastra (objetivo de 56 px) y la superficie se lee en grande sobre el mapa. Sin doble toque para acercar: el toque responde al instante y el zoom es por pellizco. Debajo, un selector «Mis lotes / Dibujar» y la lista o la guía de dibujo.
+- *Aplicación.* Hectáreas editables (propuestas desde el lote o el contorno), cultivo, producto y dosis. Las opciones son pastillas con tilde y borde de acento cuando están elegidas.
+- *Cuándo.* Tira horizontal de fechas a partir de mañana y tres franjas horarias. El recargo por urgencia se avisa en el momento de elegir la fecha.
+- *Resumen.* La superficie total es el dato protagonista (`tituloHero`); debajo, el detalle y el precio estimado con la tarifa por hectárea y cada recargo. La app no cobra: el texto dice a quién se paga y que la comisión no se suma. Un solo botón confirma.
+- *Estados.* Esqueleto al cargar, vacío que lleva a dibujar, error con reintento, y sin conexión al enviar: el aviso aparece arriba del resumen, el formulario queda intacto y el botón pasa a «Reintentar envío».
+- *iPad horizontal.* Panel dividido: el mapa fijo a la izquierda en los cuatro pasos y el formulario en una columna de 420 px a la derecha (`NavegacionAdaptativaCampo.anchoCompleto`).
+
+**Buscando proveedor (cliente).** Pantalla completa que sigue a la confirmación. Un radar con ondas que salen del lote, el título del estado y las dos rondas de la asignación en orden: pilotos de Agrocom y, después, proveedores de la zona con el radio de búsqueda. Al aceptar un proveedor, el radar deja paso a un sello de confirmación y a su tarjeta (nombre, tipo y calificación). Una sola acción: «Ver el servicio». El cliente puede cerrar la pantalla; la búsqueda sigue en el servidor.
 
 **Mapa de seguimiento (cliente).** Mapa a pantalla completa con una hoja inferior arrastrable (peek 30 %, expandida 70 %): estado del servicio, proveedor, calificación, ETA. El marcador del dron se interpola entre posiciones; con movimiento reducido salta a la posición nueva. Ninguna decoración sobre el mapa salvo controles de zoom y recentrado a 48 px.
 
