@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:decimal/decimal.dart';
 
 import '../../../nucleo/marketplace/demo/recorrido_demo.dart';
@@ -19,20 +21,92 @@ class SeguimientoDemo implements SeguimientoRepositorio {
   final Decimal _paso;
 
   @override
-  Stream<SeguimientoVivo> observar(String servicioId) async* {
-    final servicio = _almacen.porId(servicioId);
-    if (servicio == null) return;
-    final recorrido = RecorridoDemo.paraLote(servicio.lote);
-    var cubiertas = servicio.hectareasCubiertas;
-    yield recorrido.fotograma(servicio, cubiertas);
-    if (servicio.estado != EstadoServicio.enEjecucion) return;
-    while (cubiertas < servicio.hectareasDeclaradas) {
-      await Future<void>.delayed(intervalo);
-      cubiertas = cubiertas + _paso;
-      if (cubiertas > servicio.hectareasDeclaradas) {
-        cubiertas = servicio.hectareasDeclaradas;
+  Stream<SeguimientoVivo> observar(String servicioId) {
+    Timer? reloj;
+    late final StreamController<SeguimientoVivo> control;
+
+    void arrancar() {
+      if (_almacen.sinRed) {
+        control
+          ..addError(const SinConexion())
+          ..close();
+        return;
       }
-      yield recorrido.fotograma(servicio, cubiertas);
+      final servicio = _almacen.porId(servicioId);
+      if (servicio == null) {
+        control.close();
+        return;
+      }
+      final recorrido = RecorridoDemo.paraLote(servicio.lote);
+      final inicial = servicio.hectareasCubiertas;
+      var cubiertas = inicial;
+      control.add(recorrido.fotograma(servicio, cubiertas));
+      if (servicio.estado != EstadoServicio.enEjecucion) {
+        control.close();
+        return;
+      }
+
+      void avanzar() {
+        if (cubiertas >= servicio.hectareasDeclaradas) {
+          control.close();
+          return;
+        }
+        reloj = Timer(intervalo, () {
+          if (_almacen.sinRed) {
+            control
+              ..addError(const SinConexion())
+              ..close();
+            return;
+          }
+          cubiertas = cubiertas + _paso;
+          if (cubiertas > servicio.hectareasDeclaradas) {
+            cubiertas = servicio.hectareasDeclaradas;
+          }
+          control.add(
+            _conEta(
+              recorrido.fotograma(servicio, cubiertas),
+              servicio,
+              inicial,
+            ),
+          );
+          avanzar();
+        });
+      }
+
+      avanzar();
     }
+
+    // Al cancelar la suscripción se corta el reloj: no queda nada vivo
+    // cuando el cliente sale de la pantalla.
+    control = StreamController<SeguimientoVivo>(
+      onListen: arrancar,
+      onCancel: () => reloj?.cancel(),
+    );
+    return control.stream;
+  }
+
+  /// El tiempo restante baja en proporción a lo que falta cubrir.
+  SeguimientoVivo _conEta(
+    SeguimientoVivo f,
+    Servicio servicio,
+    Decimal inicial,
+  ) {
+    final etaInicial = servicio.etaMinutos;
+    final tramo = servicio.hectareasDeclaradas - inicial;
+    if (etaInicial == null || tramo <= Decimal.zero) return f;
+    final falta = servicio.hectareasDeclaradas - f.hectareasCubiertas;
+    final eta = (Decimal.fromInt(etaInicial) * falta / tramo)
+        .toDecimal(scaleOnInfinitePrecision: 2)
+        .ceil()
+        .toBigInt()
+        .toInt();
+    return SeguimientoVivo(
+      estado: f.estado,
+      posicionDron: f.posicionDron,
+      hectareasCubiertas: f.hectareasCubiertas,
+      hectareasDeclaradas: f.hectareasDeclaradas,
+      trazado: f.trazado,
+      etaMinutos: eta,
+    );
   }
 }

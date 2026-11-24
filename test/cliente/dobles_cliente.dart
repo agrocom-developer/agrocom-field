@@ -6,11 +6,13 @@ import 'dart:async';
 import 'package:agrocom_field/cliente/acceso/data/acceso_demo.dart';
 import 'package:agrocom_field/cliente/acceso/domain/acceso_repositorio.dart';
 import 'package:agrocom_field/cliente/calificar/data/calificacion_demo.dart';
+import 'package:agrocom_field/cliente/conformidad/data/conformidad_demo.dart';
 import 'package:agrocom_field/cliente/cuenta/data/cuenta_demo.dart';
 import 'package:agrocom_field/cliente/demo/almacen_demo_cliente.dart';
 import 'package:agrocom_field/cliente/di/dependencias_cliente.dart';
 import 'package:agrocom_field/cliente/inicio/data/inicio_cliente_demo.dart';
 import 'package:agrocom_field/cliente/inicio/domain/inicio_cliente_repositorio.dart';
+import 'package:agrocom_field/cliente/problema/data/problema_demo.dart';
 import 'package:agrocom_field/cliente/seguimiento/data/seguimiento_demo.dart';
 import 'package:agrocom_field/cliente/servicios/data/servicios_cliente_demo.dart';
 import 'package:agrocom_field/cliente/solicitar/data/solicitud_demo.dart';
@@ -87,7 +89,9 @@ DependenciasCliente dependenciasDePrueba({
     servicios: ServiciosClienteDemo(almacen),
     solicitud: SolicitudDemo(almacen, latencia: Duration.zero),
     seguimiento: SeguimientoDemo(almacen),
-    calificacion: CalificacionDemo(almacen),
+    calificacion: CalificacionDemo(almacen, latencia: Duration.zero),
+    conformidad: ConformidadDemo(almacen, latencia: Duration.zero),
+    problema: ProblemaDemo(almacen, latencia: Duration.zero),
     cuenta: CuentaDemo(almacen),
     acceso:
         acceso ??
