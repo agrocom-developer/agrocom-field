@@ -6,12 +6,10 @@ import '../../../ui/tokens_campo.dart';
 import '../../foto_preparador.dart';
 import '../../ui/aviso_marketplace.dart';
 import '../fotos_terreno_repositorio.dart';
+import 'casilla_agregar_foto.dart';
 import 'fotos_terreno_cubit.dart';
-import 'imagen_terreno.dart';
+import 'miniatura_foto_terreno.dart';
 import 'visor_fotos_terreno.dart';
-
-/// Lado de una miniatura: cabe tres por fila en un teléfono chico.
-const double _lado = 96;
 
 /// Galería editable de las fotos del terreno (hasta 8): agregar desde la
 /// cámara o la galería, ver el avance de cada subida, reintentar una que
@@ -77,7 +75,7 @@ class GaleriaFotosTerreno extends StatelessWidget {
               runSpacing: EspaciadoCampo.s,
               children: [
                 for (var i = 0; i < estado.fotos.length; i++)
-                  _Miniatura(
+                  MiniaturaFotoTerreno(
                     foto: estado.fotos[i],
                     numero: i + 1,
                     alAbrir: () =>
@@ -86,7 +84,9 @@ class GaleriaFotosTerreno extends StatelessWidget {
                     alReintentar: () => cubit.reintentar(estado.fotos[i].clave),
                   ),
                 if (!estado.lleno)
-                  _Agregar(alToque: () => _elegirOrigen(context, cubit)),
+                  CasillaAgregarFoto(
+                    alToque: () => _elegirOrigen(context, cubit),
+                  ),
               ],
             ),
             if (estado.mensaje != null) ...[
@@ -152,189 +152,6 @@ class GaleriaFotosTerreno extends StatelessWidget {
             const SizedBox(height: EspaciadoCampo.s),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _Agregar extends StatelessWidget {
-  const _Agregar({required this.alToque});
-
-  final VoidCallback alToque;
-
-  @override
-  Widget build(BuildContext context) {
-    final paleta = context.paleta;
-    return Semantics(
-      button: true,
-      label: 'Agregar una foto del terreno',
-      excludeSemantics: true,
-      child: Material(
-        color: paleta.superficie,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: BorderSide(color: paleta.bordeFuerte),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: InkWell(
-          key: const Key('fotos-terreno-agregar'),
-          onTap: alToque,
-          child: SizedBox.square(
-            dimension: _lado,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Padding(
-                padding: const EdgeInsets.all(EspaciadoCampo.s),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.add_a_photo_outlined, color: paleta.acentoTexto),
-                    const SizedBox(height: EspaciadoCampo.xs),
-                    Text(
-                      'Agregar',
-                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                        color: paleta.acentoTexto,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Miniatura extends StatelessWidget {
-  const _Miniatura({
-    required this.foto,
-    required this.numero,
-    required this.alQuitar,
-    required this.alReintentar,
-    this.alAbrir,
-  });
-
-  final FotoDeTerreno foto;
-  final int numero;
-  final VoidCallback? alAbrir;
-  final VoidCallback alQuitar;
-  final VoidCallback alReintentar;
-
-  @override
-  Widget build(BuildContext context) {
-    final paleta = context.paleta;
-    final fallida = foto.situacion == SituacionFoto.fallida;
-    final subiendo = foto.situacion == SituacionFoto.subiendo;
-    final estado = switch (foto.situacion) {
-      SituacionFoto.guardada => 'guardada',
-      SituacionFoto.subiendo => 'subiendo',
-      SituacionFoto.pendiente => 'se sube al publicar',
-      SituacionFoto.fallida => 'no se pudo subir',
-    };
-    return SizedBox.square(
-      dimension: _lado,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Semantics(
-              image: true,
-              button: alAbrir != null,
-              label: 'Foto $numero del terreno, $estado',
-              excludeSemantics: true,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(14),
-                child: InkWell(
-                  onTap: fallida ? alReintentar : alAbrir,
-                  child: ImagenTerreno(bytes: foto.bytes, url: foto.url),
-                ),
-              ),
-            ),
-          ),
-          if (subiendo || fallida)
-            Positioned.fill(
-              child: IgnorePointer(
-                ignoring: !fallida,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(14),
-                    color: paleta.fondo.withValues(alpha: 0.7),
-                    border: fallida
-                        ? Border.all(color: paleta.error, width: 2)
-                        : null,
-                  ),
-                  child: Center(
-                    child: subiendo
-                        ? SizedBox.square(
-                            dimension: 28,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 3,
-                              color: paleta.acentoTexto,
-                            ),
-                          )
-                        : InkWell(
-                            key: Key('fotos-terreno-reintentar-$numero'),
-                            onTap: alReintentar,
-                            child: Padding(
-                              padding: const EdgeInsets.all(EspaciadoCampo.s),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.refresh_rounded,
-                                    color: paleta.error,
-                                  ),
-                                  Text(
-                                    'Reintentar',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelMedium
-                                        ?.copyWith(color: paleta.texto),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                  ),
-                ),
-              ),
-            ),
-          if (!subiendo)
-            Positioned(
-              top: -EspaciadoCampo.s,
-              right: -EspaciadoCampo.s,
-              child: Semantics(
-                button: true,
-                label: 'Quitar la foto $numero',
-                excludeSemantics: true,
-                child: SizedBox.square(
-                  dimension: ObjetivoTactilCampo.minimo,
-                  child: Center(
-                    child: Material(
-                      color: paleta.superficie,
-                      shape: CircleBorder(
-                        side: BorderSide(color: paleta.bordeFuerte),
-                      ),
-                      child: InkWell(
-                        key: Key('fotos-terreno-quitar-$numero'),
-                        customBorder: const CircleBorder(),
-                        onTap: alQuitar,
-                        child: Padding(
-                          padding: const EdgeInsets.all(EspaciadoCampo.xs + 2),
-                          child: Icon(
-                            Icons.close_rounded,
-                            size: 18,
-                            color: paleta.texto,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
       ),
     );
   }
