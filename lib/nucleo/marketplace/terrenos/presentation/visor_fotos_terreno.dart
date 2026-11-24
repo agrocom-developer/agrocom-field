@@ -53,7 +53,7 @@ class VisorFotosTerreno extends StatelessWidget {
                     '${fotos[i].descripcion == null ? '' : ': ${fotos[i].descripcion}'}',
                 excludeSemantics: true,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(RadioCampo.media),
                   child: InkWell(
                     key: Key('visor-foto-$i'),
                     onTap: () => abrirVisorFotos(context, [

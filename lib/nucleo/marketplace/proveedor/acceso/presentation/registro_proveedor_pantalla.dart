@@ -216,7 +216,7 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
       label: '$etiqueta, ${valor == null ? 'sin elegir' : _texto(valor)}',
       child: InkWell(
         onTap: elegir,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(RadioCampo.media),
         child: IgnorePointer(
           child: CampoFormularioMarketplace(
             etiqueta: etiqueta,

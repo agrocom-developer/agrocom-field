@@ -174,7 +174,7 @@ class _Ficha extends StatelessWidget {
             ? paleta.acentoTexto.withValues(alpha: 0.12)
             : paleta.superficie,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(RadioCampo.media),
           side: BorderSide(
             color: usada ? paleta.acentoTexto : paleta.bordeFuerte,
           ),
