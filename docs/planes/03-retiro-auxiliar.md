@@ -1,6 +1,6 @@
 # Plan 03 · Retiro del flavor `auxiliar`
 
-**Estado: pendiente de confirmación del dueño.** La propuesta es quitar el flavor porque el sistema es más simple que el que lo motivó: el piloto sube sus propias fotos de avance y el cliente ve el resultado.
+**Estado: decidido (ADR 0021).** El flavor se retira; el esquema local no se toca en este cambio.
 
 **Qué cambia.** Quedan dos flavors, `cliente` y `piloto`. El piloto puede seguir registrando a su auxiliar como dato de su equipo (lo aprueba el admin), pero ese auxiliar no usa una app.
 
