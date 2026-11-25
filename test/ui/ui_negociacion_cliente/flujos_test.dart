@@ -263,12 +263,19 @@ void main() {
         variante: _alta,
       );
       await asentar(tester);
-      expect(find.text('Bs 104/ha'), findsOneWidget);
-      expect(find.text('Bs 110/ha'), findsOneWidget);
-      expect(find.text('Bs 121/ha'), findsOneWidget);
-      expect(find.text('Mejor precio'), findsOneWidget);
-      expect(find.text('Acepta tu precio'), findsOneWidget);
+      Finder precio(String oferta, String cifra) => find.descendant(
+        of: find.byKey(ValueKey('oferta-$oferta')),
+        matching: find.textContaining(cifra, findRichText: true),
+      );
+      expect(precio('of-4101-b', '104'), findsWidgets);
+      expect(precio('of-4101-a', '110'), findsWidgets);
+      expect(precio('of-4101-c', '121'), findsWidgets);
+      // La de menor precio queda marcada y su detalle dice cuánto se aparta.
+      expect(find.text('ELEGIDO'), findsOneWidget);
       expect(find.textContaining('menos que tu precio'), findsOneWidget);
+      expect(find.textContaining('Aceptó tu precio'), findsOneWidget);
+      await tester.tap(find.byKey(const ValueKey('oferta-of-4101-c')));
+      await asentar(tester);
       expect(find.textContaining('más que tu precio'), findsOneWidget);
       // La de menor precio va primera.
       final primera = tester.getTopLeft(
@@ -343,6 +350,8 @@ void main() {
           variante: _alta,
         );
         await asentar(tester);
+        await tester.tap(find.byKey(const ValueKey('oferta-of-4101-c')));
+        await asentar(tester);
         await tester.tap(find.byKey(const ValueKey('contraofertar-of-4101-c')));
         await asentar(tester);
         await tester.enterText(find.byKey(const ValueKey('hoja-precio')), '0');
@@ -382,6 +391,8 @@ void main() {
         dependencias: dependenciasDePrueba(almacen),
         variante: _alta,
       );
+      await asentar(tester);
+      await tester.tap(find.byKey(const ValueKey('oferta-of-4101-c')));
       await asentar(tester);
       await tester.tap(find.byKey(const ValueKey('rechazar-of-4101-c')));
       await asentar(tester, veces: 8);
@@ -448,6 +459,8 @@ void main() {
       );
       await asentar(tester);
       almacen.sinRed = true;
+      await tester.tap(find.byKey(const ValueKey('oferta-of-4101-c')));
+      await asentar(tester);
       await tester.tap(find.byKey(const ValueKey('rechazar-of-4101-c')));
       await asentar(tester, veces: 8);
       expect(find.textContaining('Sin conexión'), findsWidgets);
@@ -509,7 +522,10 @@ void main() {
       final almacen = almacenDePrueba();
       await abrir(tester, almacen, '4102');
       expect(find.text('61 %'), findsOneWidget);
-      expect(find.textContaining('52 ha de 85,5 ha'), findsWidgets);
+      expect(
+        find.textContaining('52 / 85,5 ha', findRichText: true),
+        findsWidgets,
+      );
       expect(
         find.textContaining('Última ubicación hace 1 min'),
         findsOneWidget,
