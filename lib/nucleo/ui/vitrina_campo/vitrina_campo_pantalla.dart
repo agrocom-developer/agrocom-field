@@ -12,6 +12,7 @@ import 'login_dispositivo_campo_vitrina.dart';
 import 'onboarding_campo_vitrina.dart';
 import 'orden_detalle_campo_vitrina.dart';
 import 'reporte_equipos_campo_vitrina.dart';
+import 'negociacion_campo_vitrina.dart';
 import 'sistema_visual_campo_vitrina.dart';
 
 /// Vista previa del modo "campo" (ADR 0008) — recrea las pantallas del
@@ -48,6 +49,7 @@ class _VitrinaCampoPantallaState extends State<VitrinaCampoPantalla> {
     (7, 'Orden'),
     (8, 'Sync'),
     (9, 'Sistema'),
+    (10, 'Negociar'),
   ];
 
   @override
@@ -95,6 +97,7 @@ class _VitrinaCampoPantallaState extends State<VitrinaCampoPantalla> {
                     OrdenDetalleCampoVitrina(),
                     ColaSyncCampoVitrina(),
                     SistemaVisualCampoVitrina(),
+                    NegociacionCampoVitrina(),
                   ],
                 ),
               ),

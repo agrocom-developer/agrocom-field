@@ -99,13 +99,13 @@ Archivos: `paleta_campo.dart` (roles por modo, `PaletaCampo`), `colores_campo.da
 - **Barra inferior:** 4 destinos por rol, con indicador tonal de 56×30 en el activo.
   - Cliente: Inicio, Lotes, Servicios, Perfil.
   - Piloto: Mapa, Ofertas, Servicios, Perfil.
-- **Hoja inferior:** radio 32, manija de 36×4, se arrastra. Es el patrón para todo lo que va sobre el mapa.
-- **Stepper ±1:** número en mono en el centro y botones de 56.
-- **Burbuja de negociación:** cliente a la izquierda (surface) y piloto a la derecha (primary). Etiqueta "R# · QUIÉN", Bs/ha y total. Barra de 5 segmentos: hecho, turno (ámbar) y pendiente.
-- **Ticket de pedido:** cabecera grafito con el número de pedido y el estado en ámbar, filas clave/valor y separador punteado. Se usa en comparar ofertas y en precio final.
-- **Post-it de oferta:** amarillo, esquina doblada, rotación de ±1° y badge "ELEGIDO". Recrearlo en código, nunca como imagen.
-- **Collage de fotos:** grid 2fr/1fr, gap 4, radio 18: foto grande, foto y bloque ámbar con dato. Las fotos llevan la hora en una etiqueta mono.
-- **Banner de red:** fondo ámbar y texto "Sin señal · …" en la parte superior.
+- **Hoja inferior** (`HojaInferiorCampo`, `mostrarHojaInferiorCampo`): radio 32, manija de 36×4, se arrastra. Es el patrón para todo lo que va sobre el mapa.
+- **Stepper ±1** (`StepperCampo`): número en mono en el centro y botones de 56.
+- **Burbuja de negociación** (`BurbujaNegociacionCampo`): cliente a la izquierda (surface) y piloto a la derecha (primary). Etiqueta "R# · QUIÉN", Bs/ha y total. Barra de 5 segmentos: hecho, turno (ámbar) y pendiente.
+- **Ticket de pedido** (`TicketPedidoCampo`, filas `FilaTicketCampo`): cabecera grafito con el número de pedido y el estado en ámbar, filas clave/valor y separador punteado. Se usa en comparar ofertas y en precio final.
+- **Post-it de oferta** (`PostItOfertaCampo`): amarillo, esquina doblada, rotación de ±1° y badge "ELEGIDO". Recrearlo en código, nunca como imagen.
+- **Collage de fotos** (`CollageFotosCampo`, fotos `FotoCollageCampo`): grid 2fr/1fr, gap 4, radio 18: foto grande, foto y bloque ámbar con dato. Las fotos llevan la hora en una etiqueta mono.
+- **Banner de red** (`BannerSinSenalCampo`): fondo ámbar y texto "Sin señal · …" en la parte superior.
 
 ## 7. Patrones
 - **Formularios:** pasos visibles (barra de 3 segmentos), etiqueta encima del campo, campo activo con borde primary de 2 px y el total calculado justo encima del CTA.
@@ -115,7 +115,7 @@ Archivos: `paleta_campo.dart` (roles por modo, `PaletaCampo`), `colores_campo.da
 - **Temas:** Claro, Oscuro o Campo AAA, elegido en Ajustes y persistido. El oscuro no es una inversión: usa fondo verde noche con superficies grafito.
 
 ## 8. Iconografía e imágenes
-- Una sola familia de iconos (sugerencia: Material Symbols Rounded, peso 500). No la mezcles con otras.
+- Una sola familia de iconos: hoy Material Icons redondeados (`Icons.*_rounded`), sin mezclar con otras. Pasar a Material Symbols Rounded de peso 500 requiere sumar la fuente variable; queda como deuda.
 - Fotos reales del servicio (avance, dron, lote). En la demo se usan fotos de Unsplash, y en producción vienen del backend.
 - Los mapas usan el SDK del proyecto; la captura satelital del handoff es solo de demo.
 
@@ -125,6 +125,8 @@ Archivos: `paleta_campo.dart` (roles por modo, `PaletaCampo`), `colores_campo.da
 - HEX sueltos, sombras exageradas, iconos de estilos mezclados.
 
 ## 10. Mantenimiento
+- Las cifras de negocio se escriben con `CifraCampo` o los estilos `cifra*`.
+- La vitrina (pestaña **Negociar** de `VitrinaCampoPantalla`, `negociacion_campo_vitrina.dart`) muestra los componentes nuevos; sus goldens están en `test/nucleo/ui/goldens/negociacion_*.png`.
 - Cada componente nuevo se agrega aquí con su nombre en código.
 - Si cambia un token, se actualizan `tokens.json`, `PaletaCampo` (o el archivo de `nucleo/ui` que lo lleve), el test de contraste y esta guía en el mismo cambio.
 - Registro de decisiones:
