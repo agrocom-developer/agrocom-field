@@ -639,4 +639,164 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get redSinSenalMensaje =>
       'lo que ya cargaste sigue a la vista. Pedir u ofertar necesita red.';
+
+  @override
+  String componentesCalificacion(int valor) {
+    return 'Calificación: $valor de 5';
+  }
+
+  @override
+  String componentesPorHectarea(String valor) {
+    return 'Bs $valor por hectárea';
+  }
+
+  @override
+  String componentesBs(String valor) {
+    return 'Bs $valor';
+  }
+
+  @override
+  String componentesRonda(int hechas, int total) {
+    return 'Ronda $hechas de $total';
+  }
+
+  @override
+  String componentesRonda2(int hechas, int total) {
+    return 'RONDA $hechas/$total';
+  }
+
+  @override
+  String get componentesVolver => 'Volver';
+
+  @override
+  String get componentesCargando => 'Cargando';
+
+  @override
+  String componentesSincronizacion(String texto) {
+    return 'Sincronización: $texto';
+  }
+
+  @override
+  String get componentesArrastraParaVerMas => 'Arrastra para ver más o menos';
+
+  @override
+  String get componentesAgrocom => 'Agrocom';
+
+  @override
+  String componentesOfertaServicioQuedanPara(
+    String titulo,
+    String monto,
+    String tiempo,
+  ) {
+    return 'Oferta de servicio: $titulo, $monto, quedan $tiempo para responder';
+  }
+
+  @override
+  String get componentesPago => 'PAGO';
+
+  @override
+  String get componentesDistancia => 'DISTANCIA';
+
+  @override
+  String get componentesSinConexionParaResponder =>
+      'Sin conexión. Para responder necesitas red.';
+
+  @override
+  String get componentesRechazar => 'Rechazar';
+
+  @override
+  String get componentesVerDetalleMapa => 'Ver detalle y mapa';
+
+  @override
+  String get componentesElegido => 'ELEGIDO';
+
+  @override
+  String componentesPedido(String numero, String estado) {
+    return 'Pedido $numero, $estado';
+  }
+
+  @override
+  String get uiPosicionDelDron => 'Posición del dron';
+
+  @override
+  String get uiOpenstreetmap => 'OpenStreetMap';
+
+  @override
+  String get versionActualizacionObligatoria => 'Actualización obligatoria';
+
+  @override
+  String versionEstaVersionAppEsta(String version) {
+    return 'Esta versión de la app ya no está autorizada. Instalá la versión $version o superior para seguir usándola.';
+  }
+
+  @override
+  String get versionDescargalaDesde => 'DESCÁRGALA DESDE';
+
+  @override
+  String componentesRondaSemantica(
+    Object ronda,
+    Object totalRondas,
+    String autor,
+    Object precio,
+    Object total,
+    String nota,
+    String turno,
+  ) {
+    return 'Ronda $ronda de $totalRondas, $autor: $precio bolivianos por hectárea, total $total bolivianos$nota$turno';
+  }
+
+  @override
+  String componentesNotaSufijo(String nota) {
+    return ', $nota';
+  }
+
+  @override
+  String get componentesTurnoSufijo => ', turno de responder';
+
+  @override
+  String get componentesPilotoMinuscula => 'piloto';
+
+  @override
+  String get componentesClienteMinuscula => 'cliente';
+
+  @override
+  String get componentesPilotoMayuscula => 'PILOTO';
+
+  @override
+  String get componentesClienteMayuscula => 'CLIENTE';
+
+  @override
+  String componentesOfertaSemantica(
+    String piloto,
+    Object precio,
+    Object total,
+    String elegida,
+  ) {
+    return 'Oferta de $piloto: $precio bolivianos por hectárea, total $total bolivianos$elegida';
+  }
+
+  @override
+  String get componentesElegidaSufijo => ', elegida';
+
+  @override
+  String componentesCalificacionPromedioSemantica(
+    String valor,
+    String detalle,
+  ) {
+    return 'Calificación $valor de 5$detalle';
+  }
+
+  @override
+  String componentesStepperSemantica(
+    String etiqueta,
+    Object valor,
+    String unidad,
+  ) {
+    return '$etiqueta: $valor$unidad';
+  }
+
+  @override
+  String componentesStepperUnidad(String unidad) {
+    return ' $unidad';
+  }
 }

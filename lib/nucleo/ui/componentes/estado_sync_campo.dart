@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Qué se le cuenta al piloto sobre la sincronización. No es
 /// el estado de una fila del outbox ni el del motor: es su traducción a lo
@@ -41,6 +42,7 @@ class EstadoSyncCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final (color, icono) = switch (estado) {
       EstadoSyncVisibleCampo.guardadoLocal => (
@@ -59,7 +61,7 @@ class EstadoSyncCampo extends StatelessWidget {
     };
     final texto = detalle ?? etiquetaDe(estado);
     return Semantics(
-      label: 'Sincronización: $texto',
+      label: l10n.componentesSincronizacion(texto),
       excludeSemantics: true,
       child: Container(
         padding: const EdgeInsets.symmetric(

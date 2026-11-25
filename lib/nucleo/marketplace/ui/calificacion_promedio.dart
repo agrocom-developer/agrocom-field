@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../ui/paleta_campo.dart';
 
 /// «★ 4,8 · 142 servicios» — estrella con ícono y número, para que no dependa
@@ -12,12 +13,14 @@ class CalificacionPromedio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     return Semantics(
-      label:
-          'Calificación ${valor.toStringAsFixed(1).replaceAll('.', ',')} de 5'
-          '${detalle != null ? ', $detalle' : ''}',
+      label: l10n.componentesCalificacionPromedioSemantica(
+        valor.toStringAsFixed(1).replaceAll('.', ','),
+        detalle != null ? l10n.componentesNotaSufijo(detalle!) : '',
+      ),
       child: ExcludeSemantics(
         child: Row(
           mainAxisSize: MainAxisSize.min,

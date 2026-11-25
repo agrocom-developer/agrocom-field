@@ -1,3 +1,4 @@
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -16,6 +17,8 @@ Future<void> _montar(
   addTearDown(tester.view.reset);
   await tester.pumpWidget(
     MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: AgrocomThemeCampo.construir(modo: modo),
       home: Scaffold(
         body: Padding(padding: const EdgeInsets.all(16), child: hijo),

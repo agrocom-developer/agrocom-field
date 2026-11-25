@@ -5,6 +5,7 @@ import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
 import 'cifra_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Una fila clave/valor de un [TicketPedidoCampo]. Con [esCifra] el valor va
 /// en mono (hectáreas, Bs/ha, totales).
@@ -49,10 +50,11 @@ class TicketPedidoCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Semantics(
       container: true,
-      label: 'Pedido $numero, $estado',
+      label: l10n.componentesPedido(numero, estado),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: paleta.superficie,

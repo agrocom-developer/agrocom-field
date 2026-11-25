@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Marcador de carga con la forma del contenido que viene — evita el salto
 /// de layout al llegar los datos. Brilla con un barrido suave; con
@@ -65,11 +66,12 @@ class _EsqueletoCampoState extends State<EsqueletoCampo>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final base = paleta.texto.withValues(alpha: 0.08);
     final brillo = paleta.texto.withValues(alpha: 0.16);
     return Semantics(
-      label: 'Cargando',
+      label: l10n.componentesCargando,
       excludeSemantics: true,
       child: AnimatedBuilder(
         animation: _controlador,

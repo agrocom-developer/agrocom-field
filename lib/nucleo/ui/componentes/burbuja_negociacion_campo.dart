@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
@@ -58,21 +59,33 @@ class BurbujaNegociacionCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final delPiloto = autor == AutorRonda.piloto;
     final fondo = delPiloto ? paleta.acento : paleta.superficie;
     final textoPrincipal = delPiloto ? paleta.sobreAcento : paleta.texto;
     final textoApoyo = delPiloto ? paleta.sobreAcento : paleta.textoSecundario;
-    final autorEtiqueta = quien ?? (delPiloto ? 'PILOTO' : 'CLIENTE');
+    final autorEtiqueta =
+        quien ??
+        (delPiloto
+            ? l10n.componentesPilotoMayuscula
+            : l10n.componentesClienteMayuscula);
     const radio = Radius.circular(RadioCampo.tarjeta);
     const esquina = Radius.circular(RadioCampo.xs);
     return Semantics(
       container: true,
-      label:
-          'Ronda $ronda de $totalRondas, ${quien?.toLowerCase() ?? (delPiloto ? 'piloto' : 'cliente')}: '
-          '$precioPorHectarea bolivianos por hectárea, total $total bolivianos'
-          '${nota == null ? '' : ', $nota'}'
-          '${esTurno ? ', turno de responder' : ''}',
+      label: l10n.componentesRondaSemantica(
+        ronda,
+        totalRondas,
+        quien?.toLowerCase() ??
+            (delPiloto
+                ? l10n.componentesPilotoMinuscula
+                : l10n.componentesClienteMinuscula),
+        precioPorHectarea,
+        total,
+        nota == null ? '' : l10n.componentesNotaSufijo(nota!),
+        esTurno ? l10n.componentesTurnoSufijo : '',
+      ),
       excludeSemantics: true,
       child: LayoutBuilder(
         builder: (context, caja) => Row(

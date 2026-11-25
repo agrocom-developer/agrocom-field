@@ -1167,6 +1167,237 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'lo que ya cargaste sigue a la vista. Pedir u ofertar necesita red.'**
   String get redSinSenalMensaje;
+
+  /// No description provided for @componentesCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificación: {valor} de 5'**
+  String componentesCalificacion(int valor);
+
+  /// No description provided for @componentesPorHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs {valor} por hectárea'**
+  String componentesPorHectarea(String valor);
+
+  /// No description provided for @componentesBs.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs {valor}'**
+  String componentesBs(String valor);
+
+  /// No description provided for @componentesRonda.
+  ///
+  /// In es, this message translates to:
+  /// **'Ronda {hechas} de {total}'**
+  String componentesRonda(int hechas, int total);
+
+  /// No description provided for @componentesRonda2.
+  ///
+  /// In es, this message translates to:
+  /// **'RONDA {hechas}/{total}'**
+  String componentesRonda2(int hechas, int total);
+
+  /// No description provided for @componentesVolver.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get componentesVolver;
+
+  /// No description provided for @componentesCargando.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando'**
+  String get componentesCargando;
+
+  /// No description provided for @componentesSincronizacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronización: {texto}'**
+  String componentesSincronizacion(String texto);
+
+  /// No description provided for @componentesArrastraParaVerMas.
+  ///
+  /// In es, this message translates to:
+  /// **'Arrastra para ver más o menos'**
+  String get componentesArrastraParaVerMas;
+
+  /// No description provided for @componentesAgrocom.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrocom'**
+  String get componentesAgrocom;
+
+  /// No description provided for @componentesOfertaServicioQuedanPara.
+  ///
+  /// In es, this message translates to:
+  /// **'Oferta de servicio: {titulo}, {monto}, quedan {tiempo} para responder'**
+  String componentesOfertaServicioQuedanPara(
+    String titulo,
+    String monto,
+    String tiempo,
+  );
+
+  /// No description provided for @componentesPago.
+  ///
+  /// In es, this message translates to:
+  /// **'PAGO'**
+  String get componentesPago;
+
+  /// No description provided for @componentesDistancia.
+  ///
+  /// In es, this message translates to:
+  /// **'DISTANCIA'**
+  String get componentesDistancia;
+
+  /// No description provided for @componentesSinConexionParaResponder.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Para responder necesitas red.'**
+  String get componentesSinConexionParaResponder;
+
+  /// No description provided for @componentesRechazar.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar'**
+  String get componentesRechazar;
+
+  /// No description provided for @componentesVerDetalleMapa.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver detalle y mapa'**
+  String get componentesVerDetalleMapa;
+
+  /// No description provided for @componentesElegido.
+  ///
+  /// In es, this message translates to:
+  /// **'ELEGIDO'**
+  String get componentesElegido;
+
+  /// No description provided for @componentesPedido.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedido {numero}, {estado}'**
+  String componentesPedido(String numero, String estado);
+
+  /// No description provided for @uiPosicionDelDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Posición del dron'**
+  String get uiPosicionDelDron;
+
+  /// No description provided for @uiOpenstreetmap.
+  ///
+  /// In es, this message translates to:
+  /// **'OpenStreetMap'**
+  String get uiOpenstreetmap;
+
+  /// No description provided for @versionActualizacionObligatoria.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualización obligatoria'**
+  String get versionActualizacionObligatoria;
+
+  /// No description provided for @versionEstaVersionAppEsta.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta versión de la app ya no está autorizada. Instalá la versión {version} o superior para seguir usándola.'**
+  String versionEstaVersionAppEsta(String version);
+
+  /// No description provided for @versionDescargalaDesde.
+  ///
+  /// In es, this message translates to:
+  /// **'DESCÁRGALA DESDE'**
+  String get versionDescargalaDesde;
+
+  /// No description provided for @componentesRondaSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Ronda {ronda} de {totalRondas}, {autor}: {precio} bolivianos por hectárea, total {total} bolivianos{nota}{turno}'**
+  String componentesRondaSemantica(
+    Object ronda,
+    Object totalRondas,
+    String autor,
+    Object precio,
+    Object total,
+    String nota,
+    String turno,
+  );
+
+  /// No description provided for @componentesNotaSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **', {nota}'**
+  String componentesNotaSufijo(String nota);
+
+  /// No description provided for @componentesTurnoSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **', turno de responder'**
+  String get componentesTurnoSufijo;
+
+  /// No description provided for @componentesPilotoMinuscula.
+  ///
+  /// In es, this message translates to:
+  /// **'piloto'**
+  String get componentesPilotoMinuscula;
+
+  /// No description provided for @componentesClienteMinuscula.
+  ///
+  /// In es, this message translates to:
+  /// **'cliente'**
+  String get componentesClienteMinuscula;
+
+  /// No description provided for @componentesPilotoMayuscula.
+  ///
+  /// In es, this message translates to:
+  /// **'PILOTO'**
+  String get componentesPilotoMayuscula;
+
+  /// No description provided for @componentesClienteMayuscula.
+  ///
+  /// In es, this message translates to:
+  /// **'CLIENTE'**
+  String get componentesClienteMayuscula;
+
+  /// No description provided for @componentesOfertaSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Oferta de {piloto}: {precio} bolivianos por hectárea, total {total} bolivianos{elegida}'**
+  String componentesOfertaSemantica(
+    String piloto,
+    Object precio,
+    Object total,
+    String elegida,
+  );
+
+  /// No description provided for @componentesElegidaSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **', elegida'**
+  String get componentesElegidaSufijo;
+
+  /// No description provided for @componentesCalificacionPromedioSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificación {valor} de 5{detalle}'**
+  String componentesCalificacionPromedioSemantica(String valor, String detalle);
+
+  /// No description provided for @componentesStepperSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{etiqueta}: {valor}{unidad}'**
+  String componentesStepperSemantica(
+    String etiqueta,
+    Object valor,
+    String unidad,
+  );
+
+  /// No description provided for @componentesStepperUnidad.
+  ///
+  /// In es, this message translates to:
+  /// **' {unidad}'**
+  String componentesStepperUnidad(String unidad);
 }
 
 class _AppLocalizationsDelegate

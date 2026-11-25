@@ -11,6 +11,7 @@ import 'dart:io' show Platform;
 import 'package:agrocom_field/nucleo/ui/paleta_campo.dart';
 import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:agrocom_field/nucleo/ui/vitrina_campo/sistema_visual_campo_vitrina.dart';
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -42,6 +43,8 @@ void main() {
     addTearDown(tester.view.reset);
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         debugShowCheckedModeBanner: false,
         theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.campo),
         home: const Scaffold(

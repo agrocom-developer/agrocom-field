@@ -4,6 +4,7 @@ import '../ui/colores_campo.dart';
 import '../ui/componentes/componentes_campo.dart';
 import '../ui/tipografia_campo.dart';
 import 'version_apk.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Pantalla de bloqueo de HU-20 — sin vía de escape: `PopScope` impide
 /// cerrarla con el botón/gesto "atrás" del sistema y no ofrece ninguna
@@ -22,6 +23,7 @@ class VersionBloqueadaPantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return PopScope(
       key: const Key('version_bloqueada_pantalla'),
       canPop: false,
@@ -41,16 +43,14 @@ class VersionBloqueadaPantalla extends StatelessWidget {
                     color: ColoresCampo.acentoAmbar,
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    'Actualización obligatoria',
+                  Text(
+                    l10n.versionActualizacionObligatoria,
                     style: TipografiaCampo.tituloPantalla,
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    'Esta versión de la app ya no está autorizada. '
-                    'Instalá la versión ${minima.version} o superior para '
-                    'seguir usándola.',
+                    l10n.versionEstaVersionAppEsta(minima.version),
                     style: TipografiaCampo.cuerpo,
                     textAlign: TextAlign.center,
                   ),
@@ -60,7 +60,7 @@ class VersionBloqueadaPantalla extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'DESCARGALA DESDE',
+                          l10n.versionDescargalaDesde,
                           style: TipografiaCampo.etiquetaMono,
                         ),
                         const SizedBox(height: 8),

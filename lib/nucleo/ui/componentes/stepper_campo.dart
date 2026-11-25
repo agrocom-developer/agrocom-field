@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
@@ -31,13 +32,18 @@ class StepperCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final lado = alturaCampo
         ? ObjetivoTactilCampo.campo
         : ObjetivoTactilCampo.guantes;
     return Semantics(
       container: true,
-      label: '$etiqueta: $valor${unidad == null ? '' : ' $unidad'}',
+      label: l10n.componentesStepperSemantica(
+        etiqueta,
+        valor,
+        unidad == null ? '' : l10n.componentesStepperUnidad(unidad!),
+      ),
       value: '$valor',
       increasedValue: valor < maximo ? '${valor + 1}' : null,
       decreasedValue: valor > minimo ? '${valor - 1}' : null,

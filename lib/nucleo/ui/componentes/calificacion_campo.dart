@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Calificación de 1 a 5 estrellas. Con [onCambio] es interactiva (la
 /// escribe el cliente sobre el proveedor); sin él es de solo lectura (el
@@ -21,11 +22,12 @@ class CalificacionCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final lado = onCambio == null ? tamano : ObjetivoTactilCampo.minimo;
     return Semantics(
       container: true,
-      label: 'Calificación: $valor de 5',
+      label: l10n.componentesCalificacion(valor),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

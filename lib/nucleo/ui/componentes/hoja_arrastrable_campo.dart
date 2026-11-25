@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Hoja inferior que vive sobre el mapa y se arrastra entre un tamaño
 /// mínimo (la manija y el encabezado) y uno máximo (la lista completa).
@@ -33,6 +34,7 @@ class HojaArrastrableCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return DraggableScrollableSheet(
       controller: controlador,
@@ -65,7 +67,7 @@ class HojaArrastrableCampo extends StatelessWidget {
           children: [
             Center(
               child: Semantics(
-                label: 'Arrastra para ver más o menos',
+                label: l10n.componentesArrastraParaVerMas,
                 child: Container(
                   width: 36,
                   height: 4,

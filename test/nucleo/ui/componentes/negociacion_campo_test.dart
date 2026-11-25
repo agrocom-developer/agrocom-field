@@ -11,6 +11,7 @@ import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
 import 'package:agrocom_field/nucleo/ui/paleta_campo.dart';
 import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:agrocom_field/nucleo/ui/vitrina_campo/negociacion_campo_vitrina.dart';
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -21,6 +22,8 @@ Future<void> _cargarFuente(String familia, String ruta) async {
 }
 
 Widget _envolver(Widget child) => MaterialApp(
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
   debugShowCheckedModeBanner: false,
   theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.claro),
   home: MediaQuery(
@@ -180,6 +183,8 @@ void main() {
           addTearDown(tester.view.reset);
           await tester.pumpWidget(
             MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
               debugShowCheckedModeBanner: false,
               theme: AgrocomThemeCampo.construir(modo: modo),
               home: MediaQuery(

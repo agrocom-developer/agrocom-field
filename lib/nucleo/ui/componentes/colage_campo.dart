@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Foto de un collage: recorta con el radio dado y deja pintar [child] encima
 /// (pastillas de precio, etiquetas). La foto es decorativa y no entra en la
@@ -125,11 +126,12 @@ class PastillaPrecioCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final color = destacada ? paleta.sobreAcento : paleta.texto;
     return Semantics(
       container: true,
-      label: 'Bs $valor por hectárea',
+      label: l10n.componentesPorHectarea(valor),
       excludeSemantics: true,
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -144,7 +146,7 @@ class PastillaPrecioCampo extends StatelessWidget {
           child: Text.rich(
             TextSpan(
               children: [
-                TextSpan(text: 'Bs $valor'),
+                TextSpan(text: l10n.componentesBs(valor)),
                 TextSpan(
                   text: unidad,
                   style: TipografiaCampo.cifraUnidad.copyWith(color: color),
@@ -177,14 +179,15 @@ class RondasColageCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Semantics(
-      label: 'Ronda $hechas de $total',
+      label: l10n.componentesRonda(hechas, total),
       excludeSemantics: true,
       child: Row(
         children: [
           Text(
-            'RONDA $hechas/$total',
+            l10n.componentesRonda2(hechas, total),
             style: TipografiaCampo.etiquetaMono.copyWith(
               color: colorTexto ?? paleta.texto,
             ),

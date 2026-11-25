@@ -3,6 +3,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Un bloque de [EsqueletoListaCampo]: la forma de lo que va a llegar.
 class BloqueEsqueleto {
@@ -28,6 +29,7 @@ class EsqueletoListaCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final base = paleta.texto.withValues(alpha: 0.08);
     final brillo = paleta.texto.withValues(alpha: 0.16);
@@ -44,7 +46,7 @@ class EsqueletoListaCampo extends StatelessWidget {
       );
     }
     return Semantics(
-      label: 'Cargando',
+      label: l10n.componentesCargando,
       excludeSemantics: true,
       child: Skeletonizer(
         effect: MovimientoCampo.reducido(context)

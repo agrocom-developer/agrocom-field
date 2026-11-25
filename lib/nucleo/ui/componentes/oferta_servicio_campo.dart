@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Oferta entrante de un servicio (proveedor): qué, dónde, cuánto y cuánto
 /// tiempo queda para decidir. Es el momento más sensible del producto, por
@@ -81,6 +82,7 @@ class OfertaServicioCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final progreso = total.inMilliseconds == 0
@@ -93,8 +95,7 @@ class OfertaServicioCampo extends StatelessWidget {
 
     return Semantics(
       container: true,
-      label:
-          'Oferta de servicio: $titulo, $monto, quedan $tiempo para responder',
+      label: l10n.componentesOfertaServicioQuedanPara(titulo, monto, tiempo),
       child: Container(
         padding: const EdgeInsets.all(EspaciadoCampo.xl),
         decoration: BoxDecoration(
@@ -149,11 +150,17 @@ class OfertaServicioCampo extends StatelessWidget {
                   children: [
                     ConstrainedBox(
                       constraints: BoxConstraints(minWidth: mitad),
-                      child: _Dato(etiqueta: 'PAGO', valor: monto),
+                      child: _Dato(
+                        etiqueta: l10n.componentesPago,
+                        valor: monto,
+                      ),
                     ),
                     ConstrainedBox(
                       constraints: BoxConstraints(minWidth: mitad),
-                      child: _Dato(etiqueta: 'DISTANCIA', valor: distancia),
+                      child: _Dato(
+                        etiqueta: l10n.componentesDistancia,
+                        valor: distancia,
+                      ),
                     ),
                   ],
                 );
@@ -168,7 +175,7 @@ class OfertaServicioCampo extends StatelessWidget {
                   const SizedBox(width: EspaciadoCampo.s),
                   Expanded(
                     child: Text(
-                      'Sin conexión. Para responder necesitás red.',
+                      l10n.componentesSinConexionParaResponder,
                       style: texto.bodyMedium?.copyWith(color: paleta.texto),
                     ),
                   ),
@@ -197,7 +204,7 @@ class OfertaServicioCampo extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 disabledForegroundColor: paleta.textoSecundario,
               ),
-              child: const Text('Rechazar'),
+              child: Text(l10n.componentesRechazar),
             ),
             if (onDetalle != null) ...[
               const SizedBox(height: EspaciadoCampo.xs),
@@ -209,7 +216,7 @@ class OfertaServicioCampo extends StatelessWidget {
                     ObjetivoTactilCampo.minimo,
                   ),
                 ),
-                child: const Text('Ver detalle y mapa'),
+                child: Text(l10n.componentesVerDetalleMapa),
               ),
             ],
           ],

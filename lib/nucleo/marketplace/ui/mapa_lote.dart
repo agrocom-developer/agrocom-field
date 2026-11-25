@@ -5,6 +5,7 @@ import 'package:latlong2/latlong.dart';
 import '../../ui/colores_campo.dart';
 import '../../ui/paleta_campo.dart';
 import '../dominio/dominio.dart';
+import '../../../l10n/app_localizations.dart';
 
 LatLng _ll(GeoPunto p) => LatLng(p.latitud, p.longitud);
 
@@ -61,6 +62,7 @@ class MapaLote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final teselas = conTeselas ?? ConfiguracionMapa.teselas;
     final puntos = [
@@ -144,7 +146,7 @@ class MapaLote extends StatelessWidget {
                     width: 44,
                     height: 44,
                     child: Semantics(
-                      label: 'Posición del dron',
+                      label: l10n.uiPosicionDelDron,
                       child: Container(
                         decoration: BoxDecoration(
                           color: paleta.acento,
@@ -174,8 +176,8 @@ class MapaLote extends StatelessWidget {
               // La atribución legal no escala con el texto del sistema: a
               // 200 % su fila se salía del mapa.
               MediaQuery.withNoTextScaling(
-                child: const SimpleAttributionWidget(
-                  source: Text('OpenStreetMap'),
+                child: SimpleAttributionWidget(
+                  source: Text(l10n.uiOpenstreetmap),
                   backgroundColor: ColoresCampo.atribucionMapa,
                 ),
               ),

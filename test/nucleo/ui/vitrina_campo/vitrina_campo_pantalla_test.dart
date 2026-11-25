@@ -5,6 +5,7 @@
 // no los hay: son constantes, igual que el mockup de origen.
 
 import 'package:agrocom_field/nucleo/ui/vitrina_campo/vitrina_campo_pantalla.dart';
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -29,7 +30,13 @@ Future<void> _verHasta(WidgetTester tester, Finder finder) async {
 
 void main() {
   testWidgets('monta la vitrina y alterna entre pantallas', (tester) async {
-    await tester.pumpWidget(const MaterialApp(home: VitrinaCampoPantalla()));
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: VitrinaCampoPantalla(),
+      ),
+    );
     await tester.pumpAndSettle();
 
     // 01 · Onboarding arranca seleccionado.
@@ -64,7 +71,13 @@ void main() {
   testWidgets(
     'las pantallas ajustadas al contrato muestran sus campos reales',
     (tester) async {
-      await tester.pumpWidget(const MaterialApp(home: VitrinaCampoPantalla()));
+      await tester.pumpWidget(
+        MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          home: VitrinaCampoPantalla(),
+        ),
+      );
       await tester.pumpAndSettle();
 
       // 06 · condiciones: fuera de rango exige observación y firma.
@@ -98,6 +111,8 @@ void main() {
   testWidgets('el botón cerrar vuelve a la pantalla anterior', (tester) async {
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Builder(
           builder: (context) => Scaffold(
             body: Center(
