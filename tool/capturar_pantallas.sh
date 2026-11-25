@@ -4,7 +4,7 @@
 # La prueba `integration_test/<flavor>_capturas_test.dart` deja un pedido por
 # pantalla y este script responde con `xcrun simctl io <id> screenshot`.
 #
-#   tool/capturar_pantallas.sh <cliente|piloto|auxiliar> <simulador> <dispositivo> <claro|oscuro|campo>
+#   tool/capturar_pantallas.sh <cliente|piloto> <simulador> <dispositivo> <claro|oscuro|campo>
 #
 # Resultado: docs/diseno/capturas/<flavor>/<dispositivo>/<nombre>_<modo>.jpg
 # (se reduce a 560 px de ancho en iPhone y 760 px en iPad, JPEG al 78 %, para

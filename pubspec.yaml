@@ -1,5 +1,5 @@
 name: agrocom_field
-description: "App de campo de Agrocom SRL — offline-first, flavors piloto/auxiliar"
+description: "App de campo de Agrocom SRL — offline-first, flavors cliente/piloto"
 publish_to: 'none'
 version: 0.1.0+1
 
