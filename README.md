@@ -1,12 +1,28 @@
 # agrocom-field
 
-App móvil de Agrocom, marketplace de servicio de fumigación con drones — Flutter, una sola base de código con tres flavors: `cliente` (solicita, sigue y califica servicios; online-first), `piloto` (control remoto del dron) y `auxiliar` (celular del lote), estos dos offline-first en el lote. Hermano de [`agrocom-api`](https://github.com/agrocom-developer/agrocom-api) (motor del marketplace y panel admin, Laravel), que publica el contrato de API.
+App móvil de Agrocom, marketplace de fumigación con drones donde el precio se negocia, al estilo de las apps de transporte por viaje: el cliente publica su lote con un precio por hectárea, los pilotos lo ven en un mapa y **aceptan o contraofertan** (hasta 5 rondas), el cliente elige, el piloto ejecuta con fotos de avance y ambos se califican. Los drones son los «vehículos». La app no cobra: el pago es directo entre las partes.
 
-Para orientarte en este repo: [`CLAUDE.md`](CLAUDE.md) (reglas de marketplace, invariantes del lote, UI, seguridad y entrega) y [`docs/vision.md`](docs/vision.md) (panorama completo del proyecto, sin tener que cruzar de repo). Decisiones técnicas propias de este repo (cliente API, tipo decimal, tema, configuración de entorno) en [`docs/decisiones/`](docs/decisiones/).
+Flutter, una sola base de código con tres flavors: `cliente` (publica, compara ofertas, sigue y califica; online-first), `piloto` (mapa de solicitudes, negociación y ejecución en el lote, offline-first) y `auxiliar` (en retiro, ver [plan 03](docs/planes/03-retiro-auxiliar.md)). Hermano de [`agrocom-api`](https://github.com/agrocom-developer/agrocom-api) (motor del marketplace y panel admin, Laravel), que publica el contrato de API.
+
+## Cómo funciona
+
+1. **Publicar.** El cliente marca su propiedad y sus lotes en el mapa y fija las hectáreas y su precio por hectárea (Bs/ha).
+2. **Ofertar.** El piloto ve las solicitudes abiertas, revisa el lote y acepta el precio o contraoferta con el dron que usará.
+3. **Negociar y elegir.** El cliente compara las ofertas y conversa ronda por ronda; al aceptar una, la solicitud queda adjudicada.
+4. **Ejecutar.** El piloto marca el inicio, sube fotos y avance (sin red si hace falta) y cierra con las hectáreas ejecutadas.
+5. **Cerrar.** El precio final es hectáreas ejecutadas por precio acordado; el cliente califica y el piloto califica al cliente en privado.
+
+## Para orientarte
+
+- [`CLAUDE.md`](CLAUDE.md): reglas de marketplace, invariantes del lote, UI, seguridad y entrega.
+- [`docs/vision.md`](docs/vision.md): panorama completo del producto.
+- [`docs/planes/`](docs/planes/): planes de trabajo (identidad visual, pantallas, retiro del auxiliar, panel admin, imágenes, backend).
+- [`docs/design_handoff_agrocom_movil/`](docs/design_handoff_agrocom_movil/): diseño de la interfaz (tokens, pantallas, capturas y prototipo).
+- [`docs/decisiones/`](docs/decisiones/): decisiones técnicas propias de este repo.
 
 ## Stack
 
-Flutter 3.41 / Dart 3.11, BLoC feature-first (ADR 0009), persistencia local con `drift`, cliente HTTP con `dio`, tipo decimal exacto con `decimal` (dinero/hectáreas nunca en `double`), Material 3 con la paleta del logo. Detalle de cada elección en `docs/decisiones/`.
+Flutter 3.41 / Dart 3.11, BLoC feature-first (ADR 0009), persistencia local con `drift`, cliente HTTP con `dio`, tipo decimal exacto con `decimal` (dinero/hectáreas nunca en `double`), Material 3 con la identidad Industrial AgTech (plan 01). Detalle de cada elección en `docs/decisiones/`.
 
 ## Requisitos
 
