@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -72,8 +73,8 @@ class PerfilVista extends StatelessWidget {
             PerfilCargando() => const _Cargando(key: ValueKey('cargando')),
             PerfilError() => EstadoErrorMarketplace(
               key: const ValueKey('error'),
-              titulo: 'No pudimos cargar tu perfil',
-              detalle: 'Revisá la conexión y volvé a intentar.',
+              titulo: AppLocalizations.of(context).perfilProveedorErrorTitulo,
+              detalle: AppLocalizations.of(context).perfilProveedorErrorDetalle,
               onReintentar: context.read<PerfilCubit>().cargar,
             ),
             PerfilListo() => _Contenido(
@@ -135,6 +136,7 @@ class _Contenido extends StatelessWidget {
   Widget build(BuildContext context) {
     final p = datos.proveedor;
     final texto = Theme.of(context).textTheme;
+    final t = AppLocalizations.of(context);
     final conAccion = p.documentosConAccion;
     return FotoPerfilProveedor(
       urlInicial: p.fotoUrl,
@@ -155,17 +157,22 @@ class _Contenido extends StatelessWidget {
                   children: [
                     Text(p.nombre, style: texto.titleLarge),
                     const SizedBox(height: EspaciadoCampo.xs),
-                    Text(p.tipo.etiqueta, style: texto.bodyMedium),
+                    Text(
+                      '${t.perfilProveedorRolPiloto} · ${p.tipo.etiqueta}',
+                      style: texto.bodyMedium,
+                    ),
                     const SizedBox(height: EspaciadoCampo.xs),
                     if (datos.calificaciones.total == 0)
                       Text(
-                        'Todavía sin calificaciones',
+                        t.perfilProveedorSinCalificaciones,
                         style: texto.bodyMedium,
                       )
                     else
                       CalificacionPromedio(
                         valor: p.calificacion,
-                        detalle: '${p.serviciosCompletados} servicios',
+                        detalle: t.perfilProveedorServicios(
+                          p.serviciosCompletados,
+                        ),
                       ),
                   ],
                 ),
@@ -182,14 +189,13 @@ class _Contenido extends StatelessWidget {
               key: const Key('perfil-documentos-accion'),
               tono: TonoAviso.alerta,
               mensaje: conAccion.length == 1
-                  ? '«${conAccion.first.nombre}» necesita tu atención. Un '
-                        'documento vencido suspende las ofertas.'
-                  : '${conAccion.length} documentos necesitan tu atención. Un '
-                        'documento vencido suspende las ofertas.',
+                  ? t.perfilProveedorDocumentoAtencion(conAccion.first.nombre)
+                  : t.perfilProveedorDocumentosAtencion(conAccion.length),
             ),
           ],
-          const _Titulo('Métricas'),
+          _Titulo(t.perfilProveedorMetricas),
           _Metricas(metricas: datos.metricas),
+          _Titulo(t.perfilProveedorAjustes),
           for (final e in extras) ...[
             const SizedBox(height: EspaciadoCampo.m),
             e,
@@ -212,9 +218,8 @@ class _Contenido extends StatelessWidget {
                     const SizedBox(width: EspaciadoCampo.m),
                     Expanded(
                       child: Text(
-                        p.drones.length == 1
-                            ? 'Mis drones · 1 dron'
-                            : 'Mis drones · ${p.drones.length} drones',
+                        '${t.perfilProveedorDronLicencia} · '
+                        '${p.drones.length == 1 ? t.perfilProveedorDronesUno : t.perfilProveedorDronesVarios(p.drones.length)}',
                         style: texto.titleLarge,
                       ),
                     ),
@@ -227,13 +232,9 @@ class _Contenido extends StatelessWidget {
               ),
             ),
           ],
-          const _Titulo('Hectáreas por mes'),
+          _Titulo(t.perfilProveedorHectareasMes),
           if (datos.hectareasPorMes.every((m) => m.hectareas.sign <= 0))
-            Text(
-              'Las hectáreas de cada mes aparecen acá después de tu primer '
-              'servicio.',
-              style: texto.bodyMedium,
-            )
+            Text(t.perfilProveedorHectareasMesVacio, style: texto.bodyMedium)
           else
             SuperficieMarketplace(
               child: SizedBox(
@@ -241,18 +242,14 @@ class _Contenido extends StatelessWidget {
                 child: _GraficoHectareas(meses: datos.hectareasPorMes),
               ),
             ),
-          const _Titulo('Documentos'),
+          _Titulo(t.perfilProveedorDocumentos),
           if (p.documentos.isEmpty)
-            Text(
-              'Todavía no cargaste documentos. Sin ellos no se puede aprobar '
-              'tu perfil.',
-              style: texto.bodyMedium,
-            ),
+            Text(t.perfilProveedorDocumentosVacio, style: texto.bodyMedium),
           for (final doc in p.documentos) ...[
             _FilaDocumento(documento: doc),
             const SizedBox(height: EspaciadoCampo.s),
           ],
-          const _Titulo('Zonas de cobertura'),
+          _Titulo(t.perfilProveedorZonas),
           Wrap(
             spacing: EspaciadoCampo.s,
             runSpacing: EspaciadoCampo.s,
@@ -260,21 +257,17 @@ class _Contenido extends StatelessWidget {
               for (final z in p.zonas)
                 ChipEstadoMarketplace(
                   etiqueta: z,
-                  etiquetaSemantica: 'Zona: $z',
+                  etiquetaSemantica: t.perfilProveedorZonaSemantica(z),
                   tono: TonoEstado.neutro,
                   icono: Icons.place_outlined,
                 ),
             ],
           ),
-          const _Titulo('Calificaciones recibidas'),
+          _Titulo(t.perfilProveedorCalificaciones),
           _ResumenCalificaciones(resumen: datos.calificaciones),
           const SizedBox(height: EspaciadoCampo.m),
           if (datos.calificaciones.recientes.isEmpty)
-            Text(
-              'Las reseñas de tus clientes aparecen acá después de cada '
-              'servicio.',
-              style: texto.bodyMedium,
-            ),
+            Text(t.perfilProveedorResenasVacio, style: texto.bodyMedium),
           for (final c in datos.calificaciones.recientes) ...[
             _Resena(calificacion: c, ahora: ahora),
             const SizedBox(height: EspaciadoCampo.s),

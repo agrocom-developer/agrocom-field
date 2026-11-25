@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
@@ -18,6 +19,7 @@ import '../../solicitudes/domain/solicitudes_repositorio.dart';
 import '../domain/oferta_recibida.dart';
 import '../domain/ofertas_repositorio.dart';
 import 'ofertas_cubit.dart';
+import 'perfil_proveedor_pantalla.dart';
 
 /// Las ofertas que los pilotos hicieron a una solicitud: el cliente las
 /// compara (precio, calificación, dron, distancia) y elige una. También
@@ -155,6 +157,21 @@ class _ListaState extends State<_Lista> {
       if (o.esperaAlCliente(ahora)) return o;
     }
     return vigentes.isEmpty ? null : vigentes.first;
+  }
+
+  /// Abre el perfil público del piloto; si toca «Elegir», sigue el mismo
+  /// camino de confirmación que el botón de la barra.
+  Future<void> _verPerfil(OfertaRecibida o, Solicitud s, DateTime ahora) async {
+    final elegir = await Navigator.of(context).push<bool>(
+      MaterialPageRoute<bool>(
+        builder: (_) => PerfilProveedorPantalla(
+          oferta: o,
+          nombreLote: s.lote.nombre,
+          puedeElegir: o.esperaAlCliente(ahora),
+        ),
+      ),
+    );
+    if ((elegir ?? false) && mounted) await _aceptar(o);
   }
 
   Future<void> _aceptar(OfertaRecibida o) async {
@@ -326,6 +343,18 @@ class _ListaState extends State<_Lista> {
                           ),
                         ),
                       ],
+                    if (elegida != null)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton.icon(
+                          key: ValueKey('ver-perfil-${elegida.id}'),
+                          onPressed: () => _verPerfil(elegida, s, ahora),
+                          icon: const Icon(Icons.person_outline_rounded),
+                          label: Text(
+                            AppLocalizations.of(context).perfilPublicoVerPerfil,
+                          ),
+                        ),
+                      ),
                     if (elegida != null)
                       _DetalleOferta(
                         key: ValueKey('detalle-${elegida.id}'),

@@ -8,6 +8,7 @@ export 'badge_estado_campo.dart';
 export 'banner_alerta_campo.dart';
 export 'banner_sin_senal_campo.dart';
 export 'barra_acciones_campo.dart';
+export 'barra_inferior_campo.dart';
 export 'barra_navegacion_campo.dart';
 export 'barra_progreso_campo.dart';
 export 'boton_agregar_punteado_campo.dart';

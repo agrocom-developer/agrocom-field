@@ -273,6 +273,450 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Hubo una falta de respeto o de cuidado.'**
   String get problemaMotivoTratoInadecuadoAyuda;
+
+  /// No description provided for @navInicio.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get navInicio;
+
+  /// No description provided for @navLotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Lotes'**
+  String get navLotes;
+
+  /// No description provided for @navServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicios'**
+  String get navServicios;
+
+  /// No description provided for @navPerfil.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get navPerfil;
+
+  /// No description provided for @navMapa.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa'**
+  String get navMapa;
+
+  /// No description provided for @navOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas'**
+  String get navOfertas;
+
+  /// Selector del tema visual en el perfil.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema'**
+  String get temaTitulo;
+
+  /// No description provided for @temaClaro.
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get temaClaro;
+
+  /// No description provided for @temaOscuro.
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get temaOscuro;
+
+  /// No description provided for @temaCampo.
+  ///
+  /// In es, this message translates to:
+  /// **'Campo AAA'**
+  String get temaCampo;
+
+  /// No description provided for @publicarLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar lote'**
+  String get publicarLote;
+
+  /// No description provided for @publicarLoteCerrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get publicarLoteCerrar;
+
+  /// No description provided for @solicitudPublicada.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicamos tu solicitud. Te avisamos cuando lleguen ofertas.'**
+  String get solicitudPublicada;
+
+  /// No description provided for @perfilClienteRol.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente'**
+  String get perfilClienteRol;
+
+  /// No description provided for @perfilClienteEstadLotes.
+  ///
+  /// In es, this message translates to:
+  /// **'lotes'**
+  String get perfilClienteEstadLotes;
+
+  /// No description provided for @perfilClienteEstadServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'servicios'**
+  String get perfilClienteEstadServicios;
+
+  /// No description provided for @perfilClienteEstadCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'como cliente'**
+  String get perfilClienteEstadCalificacion;
+
+  /// No description provided for @perfilMisCampos.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis campos'**
+  String get perfilMisCampos;
+
+  /// No description provided for @perfilAgregarCampo.
+  ///
+  /// In es, this message translates to:
+  /// **'+ Agregar'**
+  String get perfilAgregarCampo;
+
+  /// No description provided for @perfilMisCamposVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes lotes. Se guardan al publicar tu primera solicitud.'**
+  String get perfilMisCamposVacio;
+
+  /// No description provided for @perfilHectareasUnidad.
+  ///
+  /// In es, this message translates to:
+  /// **'{hectareas} ha'**
+  String perfilHectareasUnidad(String hectareas);
+
+  /// No description provided for @perfilLoDicen.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que dicen de ti'**
+  String get perfilLoDicen;
+
+  /// No description provided for @perfilCerrarSesion.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión'**
+  String get perfilCerrarSesion;
+
+  /// No description provided for @perfilDemoAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Modo demo: los datos son ficticios y no hay conexión con el servidor.'**
+  String get perfilDemoAviso;
+
+  /// No description provided for @perfilErrorCargaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tu perfil'**
+  String get perfilErrorCargaTitulo;
+
+  /// No description provided for @perfilErrorCargaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentar.'**
+  String get perfilErrorCargaDetalle;
+
+  /// No description provided for @lotesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Lotes'**
+  String get lotesTitulo;
+
+  /// No description provided for @lotesVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes lotes'**
+  String get lotesVacioTitulo;
+
+  /// No description provided for @lotesVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca tu primer lote en el mapa al publicar una solicitud. Queda guardado para la próxima vez.'**
+  String get lotesVacioDetalle;
+
+  /// No description provided for @lotesLoteDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'{zona} · {cultivo}'**
+  String lotesLoteDetalle(String zona, String cultivo);
+
+  /// No description provided for @lotesErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus lotes'**
+  String get lotesErrorTitulo;
+
+  /// No description provided for @lotesErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentar.'**
+  String get lotesErrorDetalle;
+
+  /// No description provided for @perfilProveedorRolPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Piloto'**
+  String get perfilProveedorRolPiloto;
+
+  /// No description provided for @perfilProveedorAjustes.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get perfilProveedorAjustes;
+
+  /// No description provided for @perfilProveedorEstadCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'calificación'**
+  String get perfilProveedorEstadCalificacion;
+
+  /// No description provided for @perfilProveedorEstadServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'servicios'**
+  String get perfilProveedorEstadServicios;
+
+  /// No description provided for @perfilProveedorEstadHectareas.
+  ///
+  /// In es, this message translates to:
+  /// **'ha fumigadas'**
+  String get perfilProveedorEstadHectareas;
+
+  /// No description provided for @perfilProveedorSinCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía sin calificaciones'**
+  String get perfilProveedorSinCalificaciones;
+
+  /// No description provided for @perfilProveedorServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'{n} servicios'**
+  String perfilProveedorServicios(int n);
+
+  /// No description provided for @perfilProveedorDocumentoAtencion.
+  ///
+  /// In es, this message translates to:
+  /// **'«{nombre}» necesita tu atención. Un documento vencido suspende las ofertas.'**
+  String perfilProveedorDocumentoAtencion(String nombre);
+
+  /// No description provided for @perfilProveedorDocumentosAtencion.
+  ///
+  /// In es, this message translates to:
+  /// **'{n} documentos necesitan tu atención. Un documento vencido suspende las ofertas.'**
+  String perfilProveedorDocumentosAtencion(int n);
+
+  /// No description provided for @perfilProveedorMetricas.
+  ///
+  /// In es, this message translates to:
+  /// **'Métricas'**
+  String get perfilProveedorMetricas;
+
+  /// No description provided for @perfilProveedorDronLicencia.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron y licencia'**
+  String get perfilProveedorDronLicencia;
+
+  /// No description provided for @perfilProveedorDronesUno.
+  ///
+  /// In es, this message translates to:
+  /// **'1 dron'**
+  String get perfilProveedorDronesUno;
+
+  /// No description provided for @perfilProveedorDronesVarios.
+  ///
+  /// In es, this message translates to:
+  /// **'{n} drones'**
+  String perfilProveedorDronesVarios(int n);
+
+  /// No description provided for @perfilProveedorZona.
+  ///
+  /// In es, this message translates to:
+  /// **'Zona de trabajo'**
+  String get perfilProveedorZona;
+
+  /// No description provided for @perfilProveedorHectareasMes.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas por mes'**
+  String get perfilProveedorHectareasMes;
+
+  /// No description provided for @perfilProveedorHectareasMesVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'Las hectáreas de cada mes aparecen aquí después de tu primer servicio.'**
+  String get perfilProveedorHectareasMesVacio;
+
+  /// No description provided for @perfilProveedorDocumentos.
+  ///
+  /// In es, this message translates to:
+  /// **'Documentos'**
+  String get perfilProveedorDocumentos;
+
+  /// No description provided for @perfilProveedorDocumentosVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no cargaste documentos. Sin ellos no se puede aprobar tu perfil.'**
+  String get perfilProveedorDocumentosVacio;
+
+  /// No description provided for @perfilProveedorZonas.
+  ///
+  /// In es, this message translates to:
+  /// **'Zonas de cobertura'**
+  String get perfilProveedorZonas;
+
+  /// No description provided for @perfilProveedorZonaSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Zona: {zona}'**
+  String perfilProveedorZonaSemantica(String zona);
+
+  /// No description provided for @perfilProveedorCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificaciones recibidas'**
+  String get perfilProveedorCalificaciones;
+
+  /// No description provided for @perfilProveedorResenasVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'Las reseñas de tus clientes aparecen aquí después de cada servicio.'**
+  String get perfilProveedorResenasVacio;
+
+  /// No description provided for @perfilProveedorErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tu perfil'**
+  String get perfilProveedorErrorTitulo;
+
+  /// No description provided for @perfilProveedorErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentar.'**
+  String get perfilProveedorErrorDetalle;
+
+  /// No description provided for @perfilProveedorAvisos.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos'**
+  String get perfilProveedorAvisos;
+
+  /// No description provided for @perfilProveedorAvisosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevas solicitudes en tus zonas, mensajes y ofertas'**
+  String get perfilProveedorAvisosDetalle;
+
+  /// No description provided for @perfilProveedorCerrarSesionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que aún no se subió se conserva en este celular'**
+  String get perfilProveedorCerrarSesionDetalle;
+
+  /// No description provided for @perfilPublicoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil del piloto'**
+  String get perfilPublicoTitulo;
+
+  /// No description provided for @perfilPublicoOfertaPara.
+  ///
+  /// In es, this message translates to:
+  /// **'Oferta para {lote}'**
+  String perfilPublicoOfertaPara(String lote);
+
+  /// No description provided for @perfilPublicoEstadCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'calificación'**
+  String get perfilPublicoEstadCalificacion;
+
+  /// No description provided for @perfilPublicoEstadResenas.
+  ///
+  /// In es, this message translates to:
+  /// **'calificaciones'**
+  String get perfilPublicoEstadResenas;
+
+  /// No description provided for @perfilPublicoEstadCumplimiento.
+  ///
+  /// In es, this message translates to:
+  /// **'cancelaciones'**
+  String get perfilPublicoEstadCumplimiento;
+
+  /// No description provided for @perfilPublicoSinCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún sin calificaciones'**
+  String get perfilPublicoSinCalificaciones;
+
+  /// No description provided for @perfilPublicoEquipo.
+  ///
+  /// In es, this message translates to:
+  /// **'EQUIPO'**
+  String get perfilPublicoEquipo;
+
+  /// No description provided for @perfilPublicoDron.
+  ///
+  /// In es, this message translates to:
+  /// **'{dron} · {litros} L'**
+  String perfilPublicoDron(String dron, String litros);
+
+  /// No description provided for @perfilPublicoDronAnio.
+  ///
+  /// In es, this message translates to:
+  /// **'Año {anio}'**
+  String perfilPublicoDronAnio(int anio);
+
+  /// No description provided for @perfilPublicoSinDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Este piloto aún no muestra su dron.'**
+  String get perfilPublicoSinDron;
+
+  /// No description provided for @perfilPublicoSuOferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Su oferta'**
+  String get perfilPublicoSuOferta;
+
+  /// No description provided for @perfilPublicoTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'total {monto}'**
+  String perfilPublicoTotal(String monto);
+
+  /// No description provided for @perfilPublicoElegir.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir'**
+  String get perfilPublicoElegir;
+
+  /// No description provided for @perfilPublicoVerPerfil.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver perfil'**
+  String get perfilPublicoVerPerfil;
+
+  /// No description provided for @perfilPublicoFotoDe.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto de {nombre}'**
+  String perfilPublicoFotoDe(String nombre);
 }
 
 class _AppLocalizationsDelegate

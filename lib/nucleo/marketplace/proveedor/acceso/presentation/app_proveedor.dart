@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../ui/tema_campo.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../ui/paleta_campo.dart';
+import '../../../../ui/tema_visual/tema_visual_app.dart';
 import '../../../../camara/selector_imagen.dart';
 import '../../di/dependencias_proveedor.dart';
 import '../domain/acceso_proveedor.dart';
@@ -45,18 +47,26 @@ class AppProveedor extends StatelessWidget {
         create: (_) =>
             AccesoCubit(acceso.acceso, sesionExpirada: acceso.sesionExpirada)
               ..iniciar(),
-        child: MaterialApp(
-          title: 'Agrocom',
-          debugShowCheckedModeBanner: false,
-          theme: AgrocomThemeCampo.construir(),
-          builder: (context, child) => proveedor.proveer(child: child!),
-          home: Builder(
-            builder: (context) => PuertaAcceso(
-              permiteRegistro: permiteRegistro,
-              nota: acceso.nota,
-              construir: (context, sesion) => construirShell(
-                context,
-                () => context.read<AccesoCubit>().salir(),
+        child: TemaVisualApp(
+          predeterminado: ModoVisualCampo.campo,
+          construir: (context, tema) => MaterialApp(
+            title: 'Agrocom',
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: const Locale('es'),
+            debugShowCheckedModeBanner: false,
+            theme: tema.claro,
+            darkTheme: tema.oscuro,
+            themeMode: tema.modo,
+            builder: (context, child) => proveedor.proveer(child: child!),
+            home: Builder(
+              builder: (context) => PuertaAcceso(
+                permiteRegistro: permiteRegistro,
+                nota: acceso.nota,
+                construir: (context, sesion) => construirShell(
+                  context,
+                  () => context.read<AccesoCubit>().salir(),
+                ),
               ),
             ),
           ),
