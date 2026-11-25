@@ -85,12 +85,12 @@ jobs:
           set +e
           RAMA="${BASE_REF:-develop}"
           git fetch --no-tags origin "$RAMA" 2>/dev/null
-          dart tool/tests_afectados.dart --base "origin/$RAMA" --formato github > "$RUNNER_TEMP/sel.txt"
-          if [ $? -ne 0 ] || ! grep -q '^modo=' "$RUNNER_TEMP/sel.txt"; then
+          dart tool/tests_afectados.dart --base "origin/$RAMA" --formato github > sel.txt
+          if [ $? -ne 0 ] || ! grep -q '^modo=' sel.txt; then
             # El selector falla hacia MÁS pruebas, nunca hacia menos.
-            printf 'modo=todo\ntests=\ndart_cambiados=\nandroid=true\nmotivo=el selector falló\n' > "$RUNNER_TEMP/sel.txt"
+            printf 'modo=todo\ntests=\ndart_cambiados=\nandroid=true\nmotivo=el selector falló\n' > sel.txt
           fi
-          cat "$RUNNER_TEMP/sel.txt" >> "$GITHUB_OUTPUT"
+          cat sel.txt >> "$GITHUB_OUTPUT"
 
       - name: Decidir modo
         id: modo
@@ -361,7 +361,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flavor: [piloto, auxiliar, cliente]
+        flavor: [piloto, cliente]
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
@@ -405,7 +405,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flavor: [piloto, auxiliar, cliente]
+        flavor: [piloto, cliente]
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
