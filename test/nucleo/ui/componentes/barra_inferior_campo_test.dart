@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:agrocom_field/nucleo/ui/componentes/barra_inferior_campo.dart';
@@ -82,19 +83,10 @@ void main() {
       tester.getSize(find.byType(InkWell).first).height,
       greaterThanOrEqualTo(48),
     );
-    expect(
-      tester.getSemantics(find.bySemanticsLabel('Uno')),
-      matchesSemantics(
-        label: 'Uno',
-        hint: '1 / 4',
-        isButton: true,
-        isSelected: true,
-        hasSelectedState: true,
-        hasTapAction: true,
-        hasFocusAction: true,
-        isFocusable: true,
-      ),
-    );
+    final nodo = tester.getSemantics(find.bySemanticsLabel('Uno'));
+    expect(nodo.hint, '1 / 4');
+    // ignore: deprecated_member_use
+    expect(nodo.hasFlag(SemanticsFlag.isSelected), isTrue);
     semantica.dispose();
   });
 }

@@ -126,6 +126,7 @@ class PerfilProveedorPantalla extends StatelessWidget {
               children: [
                 Expanded(
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -152,8 +153,8 @@ class PerfilProveedorPantalla extends StatelessWidget {
                 ),
                 if (puedeElegir) ...[
                   const SizedBox(width: EspaciadoCampo.l),
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(minWidth: 140),
+                  SizedBox(
+                    width: 160,
                     child: BotonPrincipalMarketplace(
                       key: const ValueKey('perfil-publico-elegir'),
                       texto: t.perfilPublicoElegir,
