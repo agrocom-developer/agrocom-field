@@ -15,6 +15,7 @@ import '../../../nucleo/ui/tokens_campo.dart';
 import 'opcion_solicitud.dart';
 import 'solicitar_cubit.dart';
 import 'solicitar_estado.dart';
+import 'textos_errores_solicitud.dart';
 
 const _margen = EdgeInsets.fromLTRB(
   EspaciadoCampo.l,
@@ -53,22 +54,23 @@ class PanelLote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<SolicitarCubit>();
     final guardado = estado.modoLote == ModoLote.guardado;
     return ListView(
       padding: _margen,
       children: [
-        const _Pregunta('¿Qué lote fumigamos?'),
+        _Pregunta(l10n.solicitarQueLoteFumigamos),
         const SizedBox(height: EspaciadoCampo.m),
         _SelectorModo(modo: estado.modoLote, alCambiar: cubit.cambiarModoLote),
         const SizedBox(height: EspaciadoCampo.m),
         if (!guardado)
           _GuiaDibujo(estado: estado)
         else if (estado.lotes.isEmpty)
-          const EstadoVacioMarketplace(
+          EstadoVacioMarketplace(
             icono: Icons.landscape_outlined,
-            titulo: 'Todavía no tienes lotes guardados',
-            detalle: 'Pasa a «Dibujar» y marca las esquinas en el mapa.',
+            titulo: l10n.solicitarTodaviaTienesLotesGuardados,
+            detalle: l10n.solicitarPasaDibujarMarcaLas,
           )
         else
           for (final lote in estado.lotes) ...[
@@ -99,6 +101,7 @@ class _SelectorModo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     Widget segmento(ModoLote valor, String etiqueta, IconData icono) {
       final activo = valor == modo;
@@ -176,9 +179,17 @@ class _SelectorModo extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            segmento(ModoLote.guardado, 'Mis lotes', Icons.layers_outlined),
+            segmento(
+              ModoLote.guardado,
+              l10n.solicitarMisLotes,
+              Icons.layers_outlined,
+            ),
             const SizedBox(width: EspaciadoCampo.xs),
-            segmento(ModoLote.dibujo, 'Dibujar', Icons.draw_outlined),
+            segmento(
+              ModoLote.dibujo,
+              l10n.solicitarDibujar,
+              Icons.draw_outlined,
+            ),
           ],
         ),
       ),
@@ -246,23 +257,16 @@ class _GuiaDibujo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<SolicitarCubit>();
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final marcadas = estado.vertices.length;
     final (icono, mensaje) = switch (marcadas) {
-      0 => (
-        Icons.touch_app_outlined,
-        'Toca el mapa en cada esquina del lote. Con tres esquinas ya se '
-            'calcula la superficie.',
-      ),
-      1 => (Icons.touch_app_outlined, 'Bien. Marca dos esquinas más.'),
-      2 => (Icons.touch_app_outlined, 'Falta una esquina para cerrar el lote.'),
-      _ => (
-        Icons.open_with_rounded,
-        'Contorno listo. Arrastra una esquina para ajustarla o sigue '
-            'agregando puntos.',
-      ),
+      0 => (Icons.touch_app_outlined, l10n.solicitarTocaMapaCadaEsquina),
+      1 => (Icons.touch_app_outlined, l10n.solicitarBienMarcaDosEsquinas),
+      2 => (Icons.touch_app_outlined, l10n.solicitarFaltaUnaEsquinaPara),
+      _ => (Icons.open_with_rounded, l10n.solicitarContornoListoArrastraUna),
     };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,7 +297,7 @@ class _GuiaDibujo extends StatelessWidget {
                 key: const ValueKey('dibujo-deshacer'),
                 onPressed: cubit.deshacerVertice,
                 icon: const Icon(Icons.undo_rounded),
-                label: const Text('Deshacer'),
+                label: Text(l10n.solicitarDeshacer),
               ),
               TextButton.icon(
                 key: const ValueKey('dibujo-borrar'),
@@ -303,7 +307,7 @@ class _GuiaDibujo extends StatelessWidget {
                   minimumSize: const Size(64, ObjetivoTactilCampo.minimo),
                 ),
                 icon: const Icon(Icons.delete_outline_rounded),
-                label: const Text('Borrar todo'),
+                label: Text(l10n.solicitarBorrarTodo),
               ),
             ],
           ),
@@ -344,6 +348,7 @@ class _PasoAplicacionState extends State<PasoAplicacion> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<SolicitarCubit>();
     final e = widget.estado;
     final paleta = context.paleta;
@@ -357,10 +362,10 @@ class _PasoAplicacionState extends State<PasoAplicacion> {
       padding: _margen,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       children: [
-        const _Pregunta('¿Qué vamos a aplicar?'),
-        const TituloGrupoSolicitud('Hectáreas a fumigar'),
+        _Pregunta(l10n.solicitarQueVamosAplicar),
+        TituloGrupoSolicitud(l10n.solicitarHectareasFumigar),
         Semantics(
-          label: 'Hectáreas a fumigar',
+          label: l10n.solicitarHectareasFumigar,
           child: TextField(
             key: const ValueKey('solicitar-hectareas'),
             controller: _hectareas,
@@ -380,20 +385,27 @@ class _PasoAplicacionState extends State<PasoAplicacion> {
               hintStyle: TipografiaCampo.cifraGrande.copyWith(
                 color: paleta.bordeFuerte,
               ),
-              suffixText: 'ha',
+              suffixText: l10n.solicitarHa,
               suffixStyle: texto.titleLarge?.copyWith(
                 color: paleta.textoSecundario,
               ),
               helperText: calculadas == null
                   ? null
-                  : '${e.modoLote == ModoLote.dibujo ? 'Del contorno salen' : 'El lote tiene'} '
-                        '${FormatoMarketplace.hectareas(calculadas)}. '
-                        'Ajústalas si vas a fumigar otra superficie.',
+                  : e.modoLote == ModoLote.dibujo
+                  ? l10n.solicitarHectareasDelContorno(
+                      FormatoMarketplace.hectareas(calculadas),
+                    )
+                  : l10n.solicitarHectareasDelLote(
+                      FormatoMarketplace.hectareas(calculadas),
+                    ),
               helperMaxLines: 4,
               helperStyle: texto.bodySmall?.copyWith(
                 color: paleta.textoSecundario,
               ),
-              errorText: e.errorHectareas,
+              errorText: e.errorHectareas?.texto(
+                l10n,
+                tope: e.loteGuardado?.hectareas.toString() ?? '',
+              ),
               errorMaxLines: 4,
               errorStyle: texto.bodySmall?.copyWith(color: paleta.error),
               contentPadding: const EdgeInsets.symmetric(
@@ -407,7 +419,7 @@ class _PasoAplicacionState extends State<PasoAplicacion> {
             ),
           ),
         ),
-        const TituloGrupoSolicitud('Cultivo'),
+        TituloGrupoSolicitud(l10n.solicitarCultivo),
         Wrap(
           spacing: EspaciadoCampo.s,
           runSpacing: EspaciadoCampo.s,
@@ -420,7 +432,7 @@ class _PasoAplicacionState extends State<PasoAplicacion> {
               ),
           ],
         ),
-        const TituloGrupoSolicitud('Producto'),
+        TituloGrupoSolicitud(l10n.solicitarProducto),
         Wrap(
           spacing: EspaciadoCampo.s,
           runSpacing: EspaciadoCampo.s,
@@ -466,6 +478,7 @@ class _PasoCuandoState extends State<PasoCuando> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<SolicitarCubit>();
     final estado = widget.estado;
     // Un terreno ya registrado trae sus accesos; solo uno nuevo los pide.
@@ -474,7 +487,7 @@ class _PasoCuandoState extends State<PasoCuando> {
       padding: _margen,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       children: [
-        const _Pregunta('¿Cuándo lo necesitas?'),
+        _Pregunta(l10n.solicitarCuandoNecesitas),
         const SizedBox(height: EspaciadoCampo.l),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -502,11 +515,7 @@ class _PasoCuandoState extends State<PasoCuando> {
         ],
         if (cubit.fechaUrgente) ...[
           const SizedBox(height: EspaciadoCampo.m),
-          const AvisoMarketplace(
-            mensaje:
-                'Pedirlo para mañana marca tu solicitud como urgente. Los '
-                'pilotos con el dron libre responden más rápido.',
-          ),
+          AvisoMarketplace(mensaje: l10n.solicitarPedirloParaMananaMarca),
         ],
         if (estado.contactos.isNotEmpty) ...[
           TituloGrupoSolicitud(
@@ -538,7 +547,7 @@ class _PasoCuandoState extends State<PasoCuando> {
             ),
           ),
         ],
-        const TituloGrupoSolicitud('Datos para los pilotos'),
+        TituloGrupoSolicitud(l10n.solicitarDatosParaLosPilotos),
         if (pideAccesos) ...[
           TextField(
             key: const ValueKey('solicitar-accesos'),
@@ -547,9 +556,9 @@ class _PasoCuandoState extends State<PasoCuando> {
             maxLength: 300,
             maxLines: 2,
             textCapitalization: TextCapitalization.sentences,
-            decoration: const InputDecoration(
-              labelText: 'Cómo se llega al lote (opcional)',
-              hintText: 'Camino, portón, referencias',
+            decoration: InputDecoration(
+              labelText: l10n.solicitarComoLlegaLoteOpcional,
+              hintText: l10n.solicitarCaminoPortonReferencias,
             ),
           ),
           const SizedBox(height: EspaciadoCampo.m),
@@ -561,9 +570,9 @@ class _PasoCuandoState extends State<PasoCuando> {
           maxLength: 500,
           maxLines: 3,
           textCapitalization: TextCapitalization.sentences,
-          decoration: const InputDecoration(
-            labelText: 'Observaciones (opcional)',
-            hintText: 'Cultivos vecinos, líneas eléctricas, estado del lote',
+          decoration: InputDecoration(
+            labelText: l10n.solicitarObservacionesOpcional,
+            hintText: l10n.solicitarCultivosVecinosLineasElectricas,
           ),
         ),
       ],
@@ -676,6 +685,7 @@ class _PasoPrecioState extends State<PasoPrecio> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<SolicitarCubit>();
     final e = widget.estado;
     final lote = e.lote;
@@ -689,11 +699,10 @@ class _PasoPrecioState extends State<PasoPrecio> {
       padding: _margen,
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       children: [
-        const _Pregunta('¿Cuánto pagas por hectárea?'),
+        _Pregunta(l10n.solicitarCuantoPagasPorHectarea),
         const SizedBox(height: EspaciadoCampo.s),
         Text(
-          'Los pilotos pueden aceptar tu precio o proponer el suyo. Tú '
-          'eliges la oferta que prefieras.',
+          l10n.solicitarLosPilotosPuedenAceptar,
           style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
         ),
         const SizedBox(height: EspaciadoCampo.l),
@@ -703,7 +712,7 @@ class _PasoPrecioState extends State<PasoPrecio> {
           child: Center(
             child: StepperCampo(
               valor: _precioEntero(e.precio),
-              etiqueta: 'Precio por hectárea',
+              etiqueta: l10n.solicitarPrecioPorHectarea,
               unidad: 'Bs/ha',
               minimo: 1,
               maximo: 99999,
@@ -720,7 +729,7 @@ class _PasoPrecioState extends State<PasoPrecio> {
         ),
         const SizedBox(height: EspaciadoCampo.m),
         Semantics(
-          label: 'Precio exacto por hectárea',
+          label: l10n.solicitarPrecioExactoPorHectarea,
           child: TextField(
             key: const ValueKey('solicitar-precio'),
             controller: _precio,
@@ -740,16 +749,16 @@ class _PasoPrecioState extends State<PasoPrecio> {
               hintStyle: TipografiaCampo.cifraMedia.copyWith(
                 color: paleta.bordeFuerte,
               ),
-              labelText: 'Precio exacto',
-              prefixText: 'Bs ',
+              labelText: l10n.solicitarPrecioExacto,
+              prefixText: l10n.solicitarBs,
               prefixStyle: TipografiaCampo.cifraMedia.copyWith(
                 color: paleta.textoSecundario,
               ),
-              suffixText: 'por ha',
+              suffixText: l10n.solicitarPor,
               suffixStyle: texto.titleMedium?.copyWith(
                 color: paleta.textoSecundario,
               ),
-              errorText: e.errorPrecio,
+              errorText: e.errorPrecio?.texto(l10n),
               errorMaxLines: 3,
               errorStyle: texto.bodySmall?.copyWith(color: paleta.error),
               contentPadding: const EdgeInsets.symmetric(
@@ -782,7 +791,7 @@ class _PasoPrecioState extends State<PasoPrecio> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Total estimado',
+                l10n.solicitarTotalEstimado,
                 style: texto.bodyMedium?.copyWith(
                   color: paleta.textoSecundario,
                 ),
@@ -792,7 +801,7 @@ class _PasoPrecioState extends State<PasoPrecio> {
                 alignment: Alignment.centerLeft,
                 child: total == null
                     ? Text(
-                        'Bs —',
+                        l10n.solicitarBs2,
                         key: const ValueKey('resumen-precio'),
                         style: TipografiaCampo.cifraGrande.copyWith(
                           color: paleta.textoSecundario,
@@ -807,16 +816,16 @@ class _PasoPrecioState extends State<PasoPrecio> {
               ),
               Text(
                 total == null
-                    ? 'Escribe un precio para ver cuánto sería.'
-                    : '${FormatoMarketplace.bs(e.precio!)}/ha × '
-                          '${FormatoMarketplace.hectareas(hectareas)}',
+                    ? l10n.solicitarEscribePrecioParaVer
+                    : l10n.solicitarHa2(
+                        FormatoMarketplace.bs(e.precio!),
+                        FormatoMarketplace.hectareas(hectareas),
+                      ),
                 style: texto.bodySmall?.copyWith(color: paleta.textoSecundario),
               ),
               Divider(height: EspaciadoCampo.xl, color: paleta.borde),
               Text(
-                'El precio final se calcula con las hectáreas realmente '
-                'ejecutadas. Le pagas al piloto al terminar, fuera de la '
-                'app.',
+                l10n.solicitarPrecioFinalCalculaCon,
                 style: texto.bodySmall?.copyWith(color: paleta.textoSecundario),
               ),
             ],
@@ -826,15 +835,18 @@ class _PasoPrecioState extends State<PasoPrecio> {
         SuperficieMarketplace(
           child: Column(
             children: [
-              _FilaResumen('Lote', '${lote.nombre}, ${lote.zona}'),
+              _FilaResumen(l10n.solicitarLote, '${lote.nombre}, ${lote.zona}'),
               _FilaResumen(
-                'Superficie',
+                l10n.solicitarSuperficie2,
                 FormatoMarketplace.hectareas(hectareas),
               ),
-              _FilaResumen('Cultivo', e.cultivo ?? ''),
-              _FilaResumen('Producto', e.producto ?? ''),
+              _FilaResumen(l10n.solicitarCultivo, e.cultivo ?? ''),
+              _FilaResumen(l10n.solicitarProducto, e.producto ?? ''),
               if (e.fecha != null)
-                _FilaResumen('Fecha', FormatoMarketplace.fechaConDia(e.fecha!)),
+                _FilaResumen(
+                  l10n.solicitarFecha,
+                  FormatoMarketplace.fechaConDia(e.fecha!),
+                ),
             ],
           ),
         ),

@@ -8,6 +8,7 @@ import '../../../nucleo/ui/tokens_campo.dart';
 import '../../comun/presentation/barra_avance.dart';
 import '../../comun/presentation/insignia_estado_solicitud.dart';
 import '../domain/solicitud.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Resumen de una solicitud para listas: lote, estado, cifras en mono
 /// (superficie, precio por hectárea y total) y, según el estado, el avance
@@ -37,6 +38,7 @@ class TarjetaSolicitud extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final s = solicitud;
     final conteoOfertas = s.estado == EstadoSolicitud.conOfertas
@@ -102,19 +104,19 @@ class TarjetaSolicitud extends StatelessWidget {
             GrupoStatsCampo(
               children: [
                 _Dato(
-                  etiqueta: 'Superficie',
+                  etiqueta: l10n.solicitudesSuperficie,
                   valor: FormatoMarketplace.hectareasNumero(s.hectareas),
                   unidad: 'ha',
                 ),
                 _Dato(
                   etiqueta: s.precioHaAcordado != null
-                      ? 'Precio acordado'
-                      : 'Tu precio',
+                      ? l10n.solicitudesPrecioAcordado
+                      : l10n.solicitudesPrecio,
                   valor: FormatoMarketplace.bsNumero(s.precioHaVigente),
                   unidad: 'Bs/ha',
                 ),
                 _Dato(
-                  etiqueta: 'Total',
+                  etiqueta: l10n.solicitudesTotal,
                   valor: FormatoMarketplace.bsNumero(s.totalAPagar),
                   unidad: 'Bs',
                 ),
@@ -148,7 +150,7 @@ class TarjetaSolicitud extends StatelessWidget {
                 Icon(Icons.star_rounded, size: 16, color: paleta.alerta),
                 const SizedBox(width: EspaciadoCampo.xs),
                 Text(
-                  'Calificaste con ${s.puntajeDelCliente}',
+                  l10n.solicitudesCalificasteCon(s.puntajeDelCliente!),
                   style: secundario,
                 ),
               ],

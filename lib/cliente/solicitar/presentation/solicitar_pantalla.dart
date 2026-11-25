@@ -18,6 +18,7 @@ import 'mapa_solicitud.dart';
 import 'pasos_solicitud.dart';
 import 'solicitar_cubit.dart';
 import 'solicitar_estado.dart';
+import 'textos_errores_solicitud.dart';
 
 /// Ancho del panel del formulario cuando la pantalla se divide en dos.
 const _anchoPanel = 420.0;
@@ -286,6 +287,7 @@ class _Encabezado extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final total = PasoSolicitud.values.length;
     final indice = estado.paso.index;
@@ -307,7 +309,7 @@ class _Encabezado extends StatelessWidget {
                   padding: const EdgeInsets.only(right: EspaciadoCampo.xs),
                   child: IconButton(
                     key: const ValueKey('solicitar-atras'),
-                    tooltip: 'Paso anterior',
+                    tooltip: l10n.solicitarPasoAnterior,
                     onPressed: puedeVolver
                         ? context.read<SolicitarCubit>().retroceder
                         : null,
@@ -319,7 +321,11 @@ class _Encabezado extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Paso ${indice + 1} de $total · ${estado.paso.etiqueta}',
+                      l10n.solicitarPaso(
+                        indice + 1,
+                        total,
+                        estado.paso.etiquetaL10n(l10n),
+                      ),
                       style: TipografiaCampo.cuerpoSecundario.copyWith(
                         color: paleta.textoSecundario,
                       ),
@@ -327,7 +333,7 @@ class _Encabezado extends StatelessWidget {
                     Semantics(
                       header: true,
                       child: Text(
-                        'Publicar lote',
+                        l10n.solicitarPublicarLote,
                         style: TipografiaCampo.tituloSeccion.copyWith(
                           color: paleta.texto,
                         ),
@@ -419,12 +425,15 @@ class _BarraAccion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final e = estado;
     final paleta = context.paleta;
     final etiqueta = switch (e.paso) {
       PasoSolicitud.precio =>
-        e.falloEnvio != null ? 'Reintentar publicación' : 'Publicar solicitud',
-      _ => 'Continuar',
+        e.falloEnvio != null
+            ? l10n.solicitarReintentarPublicacion
+            : l10n.solicitarPublicarSolicitud,
+      _ => l10n.solicitarContinuar,
     };
     return Padding(
       padding: const EdgeInsets.fromLTRB(
@@ -434,7 +443,7 @@ class _BarraAccion extends StatelessWidget {
         EspaciadoCampo.l,
       ),
       child: Semantics(
-        label: e.enviando ? 'Enviando la solicitud' : null,
+        label: e.enviando ? l10n.solicitarEnviandoSolicitud : null,
         child: FilledButton(
           key: const ValueKey('solicitar-continuar'),
           style: FilledButton.styleFrom(
@@ -508,23 +517,22 @@ class _ErrorDeCarga extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const EstadoVacioMarketplace(
+            EstadoVacioMarketplace(
               icono: Icons.cloud_off_rounded,
-              titulo: 'No pudimos cargar tus lotes',
-              detalle:
-                  'Publicar una solicitud necesita conexión. Revisa la señal '
-                  'y vuelve a intentar.',
+              titulo: l10n.solicitarPudimosCargarTusLotes,
+              detalle: l10n.solicitarPublicarUnaSolicitudNecesita,
             ),
             FilledButton.icon(
               key: const ValueKey('solicitar-reintentar-carga'),
               onPressed: alReintentar,
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Reintentar'),
+              label: Text(l10n.solicitarReintentar),
             ),
             const SizedBox(height: EspaciadoCampo.xl),
           ],

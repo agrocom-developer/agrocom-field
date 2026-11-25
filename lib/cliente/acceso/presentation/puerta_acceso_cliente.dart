@@ -47,8 +47,6 @@ class _PuertaAccesoClienteState extends State<PuertaAccesoCliente> {
   bool _vencida = false;
   StreamSubscription<void>? _expiracion;
 
-  static const _avisoVencida = 'Tu sesión venció. Entra de nuevo.';
-
   @override
   void initState() {
     super.initState();
@@ -119,7 +117,9 @@ class _PuertaAccesoClienteState extends State<PuertaAccesoCliente> {
               LoginClientePantalla(
                 alEntrar: _entrar,
                 alCrearCuenta: () => setState(() => _registro = true),
-                nota: _vencida ? _avisoVencida : widget.notaAcceso,
+                nota: _vencida
+                    ? AppLocalizations.of(context).accesoSesionVencioEntraNuevo
+                    : widget.notaAcceso,
               ),
             ),
             EtapaArranque.dentro => ('dentro', widget.dentro(context)),

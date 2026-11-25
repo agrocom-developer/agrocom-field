@@ -6,6 +6,7 @@ import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../solicitar/domain/reglas_solicitud.dart';
+import '../../solicitar/presentation/textos_errores_solicitud.dart';
 import 'boton_principal.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -92,7 +93,7 @@ class _HojaPrecioState extends State<HojaPrecio> {
     final valor = _valor;
     final error = _precio.text.trim().isEmpty
         ? null
-        : ReglasSolicitud.errorDePrecio(_precio.text);
+        : ReglasSolicitud.errorDePrecio(_precio.text)?.texto(l10n);
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SingleChildScrollView(
@@ -145,10 +146,11 @@ class _HojaPrecioState extends State<HojaPrecio> {
               liveRegion: true,
               child: Text(
                 valor == null
-                    ? 'Escribe un precio para ver el total.'
-                    : 'Total estimado: '
-                          '${FormatoMarketplace.bs(widget.hectareas * valor)} '
-                          'por ${FormatoMarketplace.hectareas(widget.hectareas)}',
+                    ? l10n.comunEscribePrecioParaVer
+                    : l10n.comunTotalEstimadoPor(
+                        FormatoMarketplace.bs(widget.hectareas * valor),
+                        FormatoMarketplace.hectareas(widget.hectareas),
+                      ),
                 style: texto.bodyMedium?.copyWith(
                   color: paleta.textoSecundario,
                 ),

@@ -133,7 +133,7 @@ void main() {
               'fallo',
               MotivoFalloAcceso.credencialesInvalidas,
             )
-            .having((e) => e.mensajeFallo, 'mensaje', isNotNull),
+            .having((e) => e.fallo, 'aviso general', isNotNull),
         const FormularioAccesoEstado(),
       ],
     );
@@ -181,7 +181,11 @@ void main() {
               'usuario',
               isNotNull,
             )
-            .having((e) => e.mensajeFallo, 'sin aviso general', isNull),
+            .having(
+              (e) => e.fallo,
+              'sin aviso general',
+              anyOf(isNull, MotivoFalloAcceso.validacion),
+            ),
         // Editar otro campo retira el motivo pero conserva el error.
         isA<FormularioAccesoEstado>().having(
           (e) => e.porCampo[CampoAcceso.usuario],

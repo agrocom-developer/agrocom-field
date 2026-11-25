@@ -24,28 +24,25 @@ const double _fraccionColage = 0.5;
 class _Portada {
   const _Portada(this.titulo, this.detalle, this.colage);
 
-  final String titulo;
-  final String detalle;
+  final String Function(AppLocalizations l10n) titulo;
+  final String Function(AppLocalizations l10n) detalle;
   final Widget Function(BuildContext context, double radio) colage;
 }
 
 final _portadas = <_Portada>[
   _Portada(
-    'Publica tu lote en el mapa',
-    'Marca el área, define tu precio por hectárea y recibe ofertas de '
-        'pilotos cercanos.',
+    (l10n) => l10n.accesoPortadaPublicaTitulo,
+    (l10n) => l10n.accesoPortadaPublicaDetalle,
     _colagePublica,
   ),
   _Portada(
-    'Negocia hasta 5 rondas',
-    'Cada piloto acepta tu precio o contraoferta. Tú eliges con quién '
-        'trabajar.',
+    (l10n) => l10n.accesoPortadaNegociaTitulo,
+    (l10n) => l10n.accesoPortadaNegociaDetalle,
     _colageNegocia,
   ),
   _Portada(
-    'Pagas lo que se fumigó',
-    'Precio final = hectáreas ejecutadas × precio acordado. El pago es '
-        'directo con el piloto.',
+    (l10n) => l10n.accesoPortadaPagasTitulo,
+    (l10n) => l10n.accesoPortadaPagasDetalle,
     _colagePrecioFinal,
   ),
 ];
@@ -291,6 +288,7 @@ class _Pagina extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     return LayoutBuilder(
@@ -345,10 +343,10 @@ class _Pagina extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(portada.titulo, style: texto.headlineMedium),
+                    Text(portada.titulo(l10n), style: texto.headlineMedium),
                     const SizedBox(height: EspaciadoCampo.m),
                     Text(
-                      portada.detalle,
+                      portada.detalle(l10n),
                       style: texto.bodyLarge?.copyWith(
                         color: paleta.textoSecundario,
                       ),
@@ -598,8 +596,8 @@ Widget _colagePrecioFinal(BuildContext context, double radio) {
                     fit: BoxFit.scaleDown,
                     child: PostItCampo(
                       etiqueta: l10n.accesoPrecioFinal,
-                      cuenta: '118 ha × 64',
-                      total: 'Bs 7.552',
+                      cuenta: l10n.acceso118,
+                      total: l10n.acceso552,
                     ),
                   ),
                 ),

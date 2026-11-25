@@ -24,6 +24,7 @@ import '../../seguimiento/presentation/seguimiento_pantalla.dart';
 import '../domain/solicitud.dart';
 import '../domain/solicitudes_repositorio.dart';
 import 'solicitud_detalle_cubit.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Detalle de una solicitud: en qué está, qué se pidió, el piloto elegido y
 /// la única acción que corresponde a su estado (ver las ofertas, seguir el
@@ -35,6 +36,7 @@ class SolicitudDetallePantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
       create: (context) => SolicitudDetalleCubit(
         solicitudes: context.read<SolicitudesRepositorio>(),
@@ -47,7 +49,7 @@ class SolicitudDetallePantalla extends StatelessWidget {
           // Listo: el mapa va a sangre y el botón de volver flota encima.
           appBar: estado.fase == FaseDetalle.listo
               ? null
-              : AppBar(title: const Text('Solicitud')),
+              : AppBar(title: Text(l10n.solicitudesSolicitud)),
           body: AnimatedSwitcher(
             duration: MovimientoCampo.duracion(context, MovimientoCampo.media),
             switchInCurve: MovimientoCampo.entrada,
@@ -56,14 +58,14 @@ class SolicitudDetallePantalla extends StatelessWidget {
               FaseDetalle.error => EstadoFalla(
                 key: const ValueKey('error'),
                 sinConexion: estado.sinConexion,
-                queNoCargo: 'la solicitud',
+                queNoCargo: l10n.solicitudesSolicitud2,
                 alReintentar: context.read<SolicitudDetalleCubit>().reintentar,
               ),
-              FaseDetalle.noEncontrado => const EstadoVacioMarketplace(
+              FaseDetalle.noEncontrado => EstadoVacioMarketplace(
                 key: ValueKey('no-encontrado'),
                 icono: Icons.search_off_rounded,
-                titulo: 'No encontramos esta solicitud',
-                detalle: 'Vuelve a «Solicitudes» y ábrela de nuevo.',
+                titulo: l10n.solicitudesEncontramosEstaSolicitud,
+                detalle: l10n.solicitudesVuelveSolicitudesAbrelaNuevo,
               ),
               FaseDetalle.listo => _Contenido(
                 key: const ValueKey('contenido'),
@@ -114,16 +116,15 @@ class _Contenido extends StatelessWidget {
   }
 
   Future<void> _cambiarPrecio(BuildContext context, Solicitud s) async {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<SolicitudDetalleCubit>();
     final escrito = await mostrarHojaPrecio(
       context,
-      titulo: 'Cambiar tu precio',
-      textoAccion: 'Guardar precio',
+      titulo: l10n.solicitudesCambiarPrecio,
+      textoAccion: l10n.solicitudesGuardarPrecio,
       hectareas: s.hectareas,
       inicial: s.precioHaPropuesto,
-      apoyo:
-          'Las ofertas que ya recibiste no cambian; los pilotos que '
-          'negocian contigo reciben el aviso.',
+      apoyo: l10n.solicitudesLasOfertasQueRecibiste,
     );
     if (escrito != null) await cubit.cambiarPrecio(escrito.precio);
   }
@@ -139,6 +140,7 @@ class _Contenido extends StatelessWidget {
 
   /// La acción principal que corresponde al estado, o nada.
   Widget? _accion(BuildContext context, Solicitud s) {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<SolicitudDetalleCubit>();
     switch (s.estado) {
       case EstadoSolicitud.conOfertas:
@@ -146,20 +148,20 @@ class _Contenido extends StatelessWidget {
         return BotonPrincipal(
           key: const ValueKey('ver-ofertas'),
           texto: n > 0
-              ? 'Ver ${n == 1 ? '1 oferta' : '$n ofertas'}'
-              : 'Ver las ofertas',
+              ? l10n.solicitudesVerOfertas(n)
+              : l10n.solicitudesVerLasOfertas,
           onPressed: () => _verOfertas(context, s),
         );
       case EstadoSolicitud.abierta:
         return BotonPrincipal(
           key: const ValueKey('ver-ofertas'),
-          texto: 'Ver las ofertas',
+          texto: l10n.solicitudesVerLasOfertas,
           onPressed: () => _verOfertas(context, s),
         );
       case EstadoSolicitud.adjudicada || EstadoSolicitud.enEjecucion:
         return BotonPrincipal(
           key: const ValueKey('ver-seguimiento'),
-          texto: 'Ver seguimiento y chat',
+          texto: l10n.solicitudesVerSeguimientoChat,
           icono: Icons.timeline_rounded,
           onPressed: () => _seguir(context, s),
         );
@@ -167,7 +169,7 @@ class _Contenido extends StatelessWidget {
         if (s.puntajeDelCliente == null && estado.problema == null) {
           return BotonPrincipal(
             key: const ValueKey('calificar'),
-            texto: 'Calificar al piloto',
+            texto: l10n.solicitudesCalificarPiloto,
             icono: Icons.star_rounded,
             onPressed: () => _calificar(context, s),
           );
@@ -176,7 +178,7 @@ class _Contenido extends StatelessWidget {
       case EstadoSolicitud.expirada:
         return BotonPrincipal(
           key: const ValueKey('renovar'),
-          texto: 'Volver a abrir la solicitud',
+          texto: l10n.solicitudesVolverAbrirSolicitud,
           icono: Icons.refresh_rounded,
           cargando: estado.enCurso,
           onPressed: cubit.renovar,
@@ -190,13 +192,14 @@ class _Contenido extends StatelessWidget {
   /// «Editar precio» a un lado y la acción principal al otro; en cualquier
   /// otro estado, solo la acción principal.
   Widget? _barra(BuildContext context, Solicitud s, double margen) {
+    final l10n = AppLocalizations.of(context);
     final accion = _accion(context, s);
     if (accion == null) return null;
     final editar = s.estado.negociando
         ? OutlinedButton(
             key: const ValueKey('cambiar-precio'),
             onPressed: estado.enCurso ? null : () => _cambiarPrecio(context, s),
-            child: const Text('Editar precio'),
+            child: Text(l10n.solicitudesEditarPrecio),
           )
         : null;
     return SafeArea(
@@ -239,6 +242,7 @@ class _Contenido extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final s = estado.solicitud!;
     final problema = estado.problema;
@@ -266,7 +270,7 @@ class _Contenido extends StatelessWidget {
             const SizedBox(width: EspaciadoCampo.m),
             Expanded(
               child: Text(
-                'Vence el ${FormatoMarketplace.fechaCorta(venceEn)}',
+                l10n.solicitudesVence(FormatoMarketplace.fechaCorta(venceEn)),
                 textAlign: TextAlign.end,
                 style: secundario,
               ),
@@ -285,22 +289,24 @@ class _Contenido extends StatelessWidget {
       Text(
         s.publicadaEn == null
             ? s.lote.zona
-            : '${s.lote.zona} · publicada el '
-                  '${FormatoMarketplace.fechaCorta(s.publicadaEn!)}',
+            : l10n.solicitudesPublicada(
+                s.lote.zona,
+                FormatoMarketplace.fechaCorta(s.publicadaEn!),
+              ),
         style: secundario,
       ),
       const SizedBox(height: EspaciadoCampo.l),
       GrupoStatsCampo(
         children: [
           _Celda(
-            etiqueta: 'Superficie',
+            etiqueta: l10n.solicitudesSuperficie,
             valor: FormatoMarketplace.hectareasNumero(s.hectareas),
             unidad: 'ha',
           ),
           _Celda(
             etiqueta: s.precioHaAcordado != null
-                ? 'Precio acordado'
-                : 'Tu precio',
+                ? l10n.solicitudesPrecioAcordado
+                : l10n.solicitudesPrecio,
             valor: FormatoMarketplace.bsNumero(s.precioHaVigente),
             unidad: 'Bs/ha',
             claveValor: const ValueKey('precio-propuesto'),
@@ -310,9 +316,9 @@ class _Contenido extends StatelessWidget {
       const SizedBox(height: EspaciadoCampo.s),
       GrupoStatsCampo(
         children: [
-          _Celda(etiqueta: 'Cultivo', texto: s.cultivo),
+          _Celda(etiqueta: l10n.solicitudesCultivo, texto: s.cultivo),
           _Celda(
-            etiqueta: 'Desde',
+            etiqueta: l10n.solicitudesDesde,
             texto: FormatoMarketplace.fechaCorta(s.ventanaDesde),
           ),
         ],
@@ -323,8 +329,7 @@ class _Contenido extends StatelessWidget {
           tono: TonoAviso.alerta,
           icono: Icons.local_offer_rounded,
           mensaje: (s.ofertasVigentes ?? 0) > 0
-              ? '${s.ofertasVigentes == 1 ? '1 piloto ofertó' : '${s.ofertasVigentes} pilotos ofertaron'}. '
-                    'Compáralas y elige la que prefieras.'
+              ? l10n.solicitudesPilotosOfertaron(s.ofertasVigentes!)
               : s.estado.apoyo,
         )
       else
@@ -340,9 +345,9 @@ class _Contenido extends StatelessWidget {
                 ? Icons.wifi_off_rounded
                 : null,
             mensaje: estado.fallo == FalloAccion.sinConexion
-                ? 'Sin conexión. No se guardó el cambio; '
-                      'inténtalo con señal.'
-                : (estado.mensajeFallo ?? 'No pudimos completar la operación.'),
+                ? l10n.solicitudesSinConexionGuardoCambio
+                : (estado.mensajeFallo ??
+                      l10n.solicitudesPudimosCompletarOperacion),
           ),
         ),
       ],
@@ -356,14 +361,13 @@ class _Contenido extends StatelessWidget {
           tono: TonoAviso.alerta,
           icono: estado.sinConexion ? Icons.wifi_off_rounded : null,
           mensaje: estado.sinConexion
-              ? 'Sin conexión. Faltan cargar tu calificación y el '
-                    'reclamo.'
-              : 'No pudimos cargar tu calificación y el reclamo.',
+              ? l10n.solicitudesSinConexionFaltanCargar
+              : l10n.solicitudesPudimosCargarCalificacionReclamo,
         ),
         Align(
           alignment: Alignment.centerLeft,
           child: BotonSecundario(
-            texto: 'Reintentar',
+            texto: l10n.solicitudesReintentar,
             icono: Icons.refresh_rounded,
             onPressed: context.read<SolicitudDetalleCubit>().reintentar,
           ),
@@ -375,21 +379,20 @@ class _Contenido extends StatelessWidget {
           tono: TonoAviso.alerta,
           icono: Icons.cancel_outlined,
           mensaje: s.motivoCancelacion == null || s.motivoCancelacion!.isEmpty
-              ? 'Cancelaste esta solicitud. Puedes publicar otra '
-                    'desde «Solicitar».'
-              : 'Cancelaste esta solicitud: '
-                    '${s.motivoCancelacion}. Puedes publicar otra '
-                    'desde «Solicitar».',
+              ? l10n.solicitudesCancelasteEstaSolicitudPuedes
+              : l10n.solicitudesCancelasteEstaSolicitudPuedes2(
+                  s.motivoCancelacion!,
+                ),
         ),
       ],
       if (problema != null) ...[
         const SizedBox(height: EspaciadoCampo.l),
         _ProblemaReportado(problema),
       ],
-      const TituloSeccion('Estado'),
+      TituloSeccion(l10n.solicitudesEstado),
       LineaTiempoSolicitud(hitos: estado.hitos),
       if (s.nombreProveedor != null && s.estado.conPiloto) ...[
-        const TituloSeccion('Quién fumiga'),
+        TituloSeccion(l10n.solicitudesQuienFumiga),
         SuperficieMarketplace(
           child: Row(
             children: [
@@ -407,21 +410,21 @@ class _Contenido extends StatelessWidget {
           ),
         ),
       ],
-      const TituloSeccion('Lo que pediste'),
+      TituloSeccion(l10n.solicitudesQuePediste),
       SuperficieMarketplace(
         child: ListaDatos([
-          FilaDato('Producto', s.producto),
+          FilaDato(l10n.solicitudesProducto, s.producto),
           FilaDato(
-            'Fecha deseada',
+            l10n.solicitudesFechaDeseada,
             FormatoMarketplace.fechaConDia(s.ventanaDesde),
           ),
-          if (s.accesos != null) FilaDato('Accesos', s.accesos!),
+          if (s.accesos != null) FilaDato(l10n.solicitudesAccesos, s.accesos!),
           if (s.observaciones != null)
-            FilaDato('Observaciones', s.observaciones!),
+            FilaDato(l10n.solicitudesObservaciones, s.observaciones!),
         ]),
       ),
       if (s.puntajeDelCliente != null) ...[
-        const TituloSeccion('Tu calificación'),
+        TituloSeccion(l10n.solicitudesCalificacion),
         SuperficieMarketplace(
           child: _Calificacion(
             puntaje: s.puntajeDelCliente!,
@@ -434,7 +437,7 @@ class _Contenido extends StatelessWidget {
         Center(
           child: BotonSecundario(
             key: const ValueKey('cancelar-solicitud'),
-            texto: 'Cancelar la solicitud',
+            texto: l10n.solicitudesCancelarSolicitud,
             icono: Icons.close_rounded,
             onPressed: estado.enCurso ? null : () => _cancelar(context),
           ),
@@ -444,7 +447,7 @@ class _Contenido extends StatelessWidget {
         const SizedBox(height: EspaciadoCampo.xl),
         Center(
           child: BotonSecundario(
-            texto: 'Reportar un problema',
+            texto: l10n.solicitudesReportarProblema,
             icono: Icons.flag_outlined,
             onPressed: () => _reportar(context, s),
           ),
@@ -504,7 +507,7 @@ class _Contenido extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(EspaciadoCampo.l),
                           child: IconButton.filled(
-                            tooltip: 'Volver',
+                            tooltip: l10n.solicitudesVolver,
                             style: IconButton.styleFrom(
                               backgroundColor: paleta.superficie,
                               foregroundColor: paleta.texto,
@@ -599,6 +602,7 @@ class _PrecioFinal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final s = solicitud;
     final ejecutadas = s.hectareasEjecutadas ?? s.hectareas;
@@ -613,7 +617,7 @@ class _PrecioFinal extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Precio final a pagar',
+            l10n.solicitudesPrecioFinalPagar,
             style: TipografiaCampo.cuerpoSecundario.copyWith(
               color: paleta.textoSecundario,
             ),
@@ -630,14 +634,15 @@ class _PrecioFinal extends StatelessWidget {
           ),
           const SizedBox(height: EspaciadoCampo.xs),
           Text(
-            '${FormatoMarketplace.hectareas(ejecutadas)} ejecutadas × '
-            '${FormatoMarketplace.bs(s.precioHaVigente)}/ha',
+            l10n.solicitudesEjecutadas(
+              FormatoMarketplace.hectareas(ejecutadas),
+              FormatoMarketplace.bs(s.precioHaVigente),
+            ),
             style: TipografiaCampo.datoMono.copyWith(color: paleta.texto),
           ),
           const SizedBox(height: EspaciadoCampo.s),
           Text(
-            'Le pagas al piloto directamente, fuera de la app. Agrocom no '
-            'cobra ni suma nada a este monto.',
+            l10n.solicitudesPagasPilotoDirectamenteFuera,
             style: TipografiaCampo.cuerpoSecundario.copyWith(
               color: paleta.textoSecundario,
             ),
@@ -656,6 +661,7 @@ class _Calificacion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final etiquetas = emitida?.etiquetas ?? const <EtiquetaCalificacion>{};
     final comentario = emitida?.comentario;
@@ -672,7 +678,10 @@ class _Calificacion extends StatelessWidget {
         ],
         if (comentario != null) ...[
           const SizedBox(height: EspaciadoCampo.xs),
-          Text('«$comentario»', style: texto.bodyMedium),
+          Text(
+            l10n.solicitudesComentarioEntreComillas(comentario),
+            style: texto.bodyMedium,
+          ),
         ],
       ],
     );
@@ -685,14 +694,18 @@ class _ProblemaReportado extends StatelessWidget {
   final ProblemaReportado problema;
 
   @override
-  Widget build(BuildContext context) => AvisoMarketplace(
-    tono: TonoAviso.alerta,
-    icono: Icons.flag_rounded,
-    mensaje:
-        'Reportaste un problema: ${problema.motivo.etiqueta}. Caso '
-        '${problema.numeroCaso}, ${problema.estado.etiqueta.toLowerCase()}. '
-        'Soporte te responde en 24 horas hábiles.',
-  );
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return AvisoMarketplace(
+      tono: TonoAviso.alerta,
+      icono: Icons.flag_rounded,
+      mensaje: l10n.solicitudesReportasteProblemaCasoSoporte(
+        problema.motivo.etiqueta,
+        problema.numeroCaso,
+        problema.estado.etiqueta.toLowerCase(),
+      ),
+    );
+  }
 }
 
 /// Pide el motivo de la cancelación. Es obligatorio: el servidor lo exige.
@@ -714,14 +727,15 @@ class _DialogoCancelarState extends State<_DialogoCancelar> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final valido = _motivo.text.trim().isNotEmpty;
     return AlertDialog(
-      title: const Text('¿Cancelar la solicitud?'),
+      title: Text(l10n.solicitudesCancelarSolicitud2),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Es gratis. Los pilotos con ofertas verán que se cerró.'),
+          Text(l10n.solicitudesGratisLosPilotosCon),
           const SizedBox(height: EspaciadoCampo.m),
           TextField(
             key: const ValueKey('motivo-cancelacion'),
@@ -730,21 +744,21 @@ class _DialogoCancelarState extends State<_DialogoCancelar> {
             maxLength: 200,
             textCapitalization: TextCapitalization.sentences,
             onChanged: (_) => setState(() {}),
-            decoration: const InputDecoration(labelText: 'Motivo'),
+            decoration: InputDecoration(labelText: l10n.solicitudesMotivo),
           ),
         ],
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: const Text('Volver'),
+          child: Text(l10n.solicitudesVolver),
         ),
         FilledButton(
           key: const ValueKey('confirmar-cancelar'),
           onPressed: valido
               ? () => Navigator.of(context).pop(_motivo.text.trim())
               : null,
-          child: const Text('Cancelar solicitud'),
+          child: Text(l10n.solicitudesCancelarSolicitud3),
         ),
       ],
     );

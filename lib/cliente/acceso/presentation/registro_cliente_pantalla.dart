@@ -116,7 +116,7 @@ class _FormularioState extends State<_Formulario> {
     final t = AppLocalizations.of(context);
     return BlocBuilder<RegistroClienteCubit, FormularioAccesoEstado>(
       builder: (context, estado) {
-        final mensaje = estado.mensajeFallo;
+        final mensaje = estado.mensajeFallo(t);
         Widget bloque(String titulo) => Padding(
           padding: const EdgeInsets.only(bottom: EspaciadoCampo.m),
           child: Semantics(
@@ -187,7 +187,7 @@ class _FormularioState extends State<_Formulario> {
                           ),
                         ),
                 ),
-                bloque('Tus datos'),
+                bloque(l10n.accesoTusDatos),
                 CampoFormularioMarketplace(
                   key: const Key('registro-nombre'),
                   etiqueta: l10n.accesoNombreCompleto,
@@ -267,7 +267,7 @@ class _FormularioState extends State<_Formulario> {
                   AvisoMarketplace(mensaje: t.registroEmpresaContactoNota),
                 ],
                 const SizedBox(height: EspaciadoCampo.xl),
-                bloque('Tu acceso'),
+                bloque(l10n.accesoAcceso),
                 CampoFormularioMarketplace(
                   key: const Key('registro-usuario'),
                   etiqueta: l10n.accesoUsuario,

@@ -89,7 +89,7 @@ class _FormularioState extends State<_Formulario> {
     final cubit = context.read<LoginClienteCubit>();
     return BlocBuilder<LoginClienteCubit, FormularioAccesoEstado>(
       builder: (context, estado) {
-        final mensaje = estado.mensajeFallo;
+        final mensaje = estado.mensajeFallo(AppLocalizations.of(context));
         return Form(
           key: _formulario,
           autovalidateMode: _intentado

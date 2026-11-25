@@ -148,9 +148,8 @@ class _Contenido extends StatelessWidget {
                 style: _estiloEnlace(context),
                 child: Text(
                   resumen.otrosActivos == 1
-                      ? 'Ver la otra solicitud activa'
-                      : 'Ver las otras ${resumen.otrosActivos} solicitudes '
-                            'activas',
+                      ? l10n.inicioVerOtraSolicitudActiva
+                      : l10n.inicioVerLasOtrasSolicitudes(resumen.otrosActivos),
                 ),
               ),
             ),
@@ -163,7 +162,7 @@ class _Contenido extends StatelessWidget {
         : Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const _Seccion('Por calificar'),
+              _Seccion(l10n.inicioPorCalificar),
               for (final s in resumen.porCalificar) ...[
                 TarjetaSolicitud(
                   solicitud: s,
@@ -188,7 +187,7 @@ class _Contenido extends StatelessWidget {
         : Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              _Seccion('Avisos', primera: primero),
+              _Seccion(l10n.inicioAvisos, primera: primero),
               for (final a in resumen.avisos) ...[
                 _TarjetaAviso(
                   key: ValueKey(a.id),
@@ -207,9 +206,9 @@ class _Contenido extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _Seccion(
-                'Historial reciente',
+                l10n.inicioHistorialReciente,
                 primera: primero,
-                accion: alVerServicios == null ? null : 'Ver todo',
+                accion: alVerServicios == null ? null : l10n.inicioVerTodo,
                 alAccionar: alVerServicios,
               ),
               _ListaRecientes(
@@ -699,12 +698,11 @@ class _Fallo extends StatelessWidget {
                   ? Icons.wifi_off_rounded
                   : Icons.error_outline_rounded,
               titulo: sinConexion
-                  ? 'Sin conexión'
-                  : 'No pudimos cargar tu inicio',
+                  ? l10n.inicioSinConexion
+                  : l10n.inicioPudimosCargarInicio,
               detalle: sinConexion
-                  ? 'Revisa tu señal e intenta de nuevo. Publicar una '
-                        'solicitud requiere conexión.'
-                  : 'Intenta de nuevo en un momento.',
+                  ? l10n.inicioRevisaSenalIntentaNuevo
+                  : l10n.inicioIntentaNuevoMomento,
             ),
             OutlinedButton.icon(
               key: const Key('inicio-reintentar'),

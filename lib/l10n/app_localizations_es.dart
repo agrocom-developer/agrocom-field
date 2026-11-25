@@ -1427,4 +1427,682 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get seguimientoDelServicio => 'del servicio';
+
+  @override
+  String get solicitarTodaviaTienesLotesGuardados =>
+      'Todavía no tienes lotes guardados';
+
+  @override
+  String get solicitarPasaDibujarMarcaLas =>
+      'Pasa a «Dibujar» y marca las esquinas en el mapa.';
+
+  @override
+  String get solicitarDeshacer => 'Deshacer';
+
+  @override
+  String get solicitarBorrarTodo => 'Borrar todo';
+
+  @override
+  String get solicitarHectareasFumigar => 'Hectáreas a fumigar';
+
+  @override
+  String get solicitarHa => 'ha';
+
+  @override
+  String get solicitarPedirloParaMananaMarca =>
+      'Pedirlo para mañana marca tu solicitud como urgente. Los pilotos con el dron libre responden más rápido.';
+
+  @override
+  String get solicitarComoLlegaLoteOpcional =>
+      'Cómo se llega al lote (opcional)';
+
+  @override
+  String get solicitarCaminoPortonReferencias => 'Camino, portón, referencias';
+
+  @override
+  String get solicitarObservacionesOpcional => 'Observaciones (opcional)';
+
+  @override
+  String get solicitarCultivosVecinosLineasElectricas =>
+      'Cultivos vecinos, líneas eléctricas, estado del lote';
+
+  @override
+  String get solicitarLosPilotosPuedenAceptar =>
+      'Los pilotos pueden aceptar tu precio o proponer el suyo. Tú eliges la oferta que prefieras.';
+
+  @override
+  String get solicitarPrecioPorHectarea => 'Precio por hectárea';
+
+  @override
+  String get solicitarPrecioExactoPorHectarea => 'Precio exacto por hectárea';
+
+  @override
+  String get solicitarPrecioExacto => 'Precio exacto';
+
+  @override
+  String get solicitarBs => 'Bs ';
+
+  @override
+  String get solicitarPor => 'por ha';
+
+  @override
+  String get solicitarTotalEstimado => 'Total estimado';
+
+  @override
+  String get solicitarBs2 => 'Bs —';
+
+  @override
+  String get solicitarPrecioFinalCalculaCon =>
+      'El precio final se calcula con las hectáreas realmente ejecutadas. Le pagas al piloto al terminar, fuera de la app.';
+
+  @override
+  String get solicitarPasoAnterior => 'Paso anterior';
+
+  @override
+  String solicitarPaso(int indice, int total, String etiqueta) {
+    return 'Paso $indice de $total · $etiqueta';
+  }
+
+  @override
+  String get solicitarPublicarLote => 'Publicar lote';
+
+  @override
+  String get solicitarPudimosCargarTusLotes => 'No pudimos cargar tus lotes';
+
+  @override
+  String get solicitarPublicarUnaSolicitudNecesita =>
+      'Publicar una solicitud necesita conexión. Revisa la señal y vuelve a intentar.';
+
+  @override
+  String get solicitarReintentar => 'Reintentar';
+
+  @override
+  String solicitarSuperficie(String texto) {
+    return 'Superficie: $texto';
+  }
+
+  @override
+  String solicitarEsquinaDelLote(int numero) {
+    return 'Esquina $numero del lote';
+  }
+
+  @override
+  String get solicitudesSuperficie => 'Superficie';
+
+  @override
+  String get solicitudesTotal => 'Total';
+
+  @override
+  String solicitudesCalificasteCon(int puntajeDelCliente) {
+    return 'Calificaste con $puntajeDelCliente';
+  }
+
+  @override
+  String get solicitudesSolicitud => 'Solicitud';
+
+  @override
+  String get solicitudesEncontramosEstaSolicitud =>
+      'No encontramos esta solicitud';
+
+  @override
+  String get solicitudesVuelveSolicitudesAbrelaNuevo =>
+      'Vuelve a «Solicitudes» y ábrela de nuevo.';
+
+  @override
+  String get solicitudesCambiarPrecio => 'Cambiar tu precio';
+
+  @override
+  String get solicitudesLasOfertasQueRecibiste =>
+      'Las ofertas que ya recibiste no cambian; los pilotos que negocian contigo reciben el aviso.';
+
+  @override
+  String get solicitudesVerLasOfertas => 'Ver las ofertas';
+
+  @override
+  String get solicitudesVerSeguimientoChat => 'Ver seguimiento y chat';
+
+  @override
+  String get solicitudesCalificarPiloto => 'Calificar al piloto';
+
+  @override
+  String get solicitudesVolverAbrirSolicitud => 'Volver a abrir la solicitud';
+
+  @override
+  String get solicitudesEditarPrecio => 'Editar precio';
+
+  @override
+  String solicitudesVence(String venceEn) {
+    return 'Vence el $venceEn';
+  }
+
+  @override
+  String get solicitudesCultivo => 'Cultivo';
+
+  @override
+  String get solicitudesDesde => 'Desde';
+
+  @override
+  String get solicitudesReintentar => 'Reintentar';
+
+  @override
+  String get solicitudesCancelarSolicitud => 'Cancelar la solicitud';
+
+  @override
+  String get solicitudesReportarProblema => 'Reportar un problema';
+
+  @override
+  String get solicitudesVolver => 'Volver';
+
+  @override
+  String get solicitudesPrecioFinalPagar => 'Precio final a pagar';
+
+  @override
+  String solicitudesEjecutadas(String ejecutadas, String precioHaVigente) {
+    return '$ejecutadas ejecutadas × $precioHaVigente/ha';
+  }
+
+  @override
+  String get solicitudesPagasPilotoDirectamenteFuera =>
+      'Le pagas al piloto directamente, fuera de la app. Agrocom no cobra ni suma nada a este monto.';
+
+  @override
+  String solicitudesReportasteProblemaCasoSoporte(
+    String etiqueta,
+    String numeroCaso,
+    String etiqueta2,
+  ) {
+    return 'Reportaste un problema: $etiqueta. Caso $numeroCaso, $etiqueta2. Soporte te responde en 24 horas hábiles.';
+  }
+
+  @override
+  String get solicitudesCancelarSolicitud2 => '¿Cancelar la solicitud?';
+
+  @override
+  String get solicitudesGratisLosPilotosCon =>
+      'Es gratis. Los pilotos con ofertas verán que se cerró.';
+
+  @override
+  String get solicitudesMotivo => 'Motivo';
+
+  @override
+  String get solicitudesCancelarSolicitud3 => 'Cancelar solicitud';
+
+  @override
+  String get solicitudesMisSolicitudes => 'Mis solicitudes';
+
+  @override
+  String get solicitudesSinConexionVesUltimo =>
+      'Sin conexión. Ves lo último que cargamos; puede estar desactualizado.';
+
+  @override
+  String get solicitudesTodos => 'Todos';
+
+  @override
+  String get solicitudesActivos => 'Activos';
+
+  @override
+  String get solicitudesListos => 'Listos';
+
+  @override
+  String get solicitudesFumigadoConAgrocom => 'Fumigado con Agrocom';
+
+  @override
+  String get solicitarQueLoteFumigamos => '¿Qué lote fumigamos?';
+
+  @override
+  String get solicitarTocaMapaCadaEsquina =>
+      'Toca el mapa en cada esquina del lote. Con tres esquinas ya se calcula la superficie.';
+
+  @override
+  String get solicitarBienMarcaDosEsquinas => 'Bien. Marca dos esquinas más.';
+
+  @override
+  String get solicitarFaltaUnaEsquinaPara =>
+      'Falta una esquina para cerrar el lote.';
+
+  @override
+  String get solicitarContornoListoArrastraUna =>
+      'Contorno listo. Arrastra una esquina para ajustarla o sigue agregando puntos.';
+
+  @override
+  String get solicitarQueVamosAplicar => '¿Qué vamos a aplicar?';
+
+  @override
+  String get solicitarCultivo => 'Cultivo';
+
+  @override
+  String get solicitarProducto => 'Producto';
+
+  @override
+  String get solicitarCuandoNecesitas => '¿Cuándo lo necesitas?';
+
+  @override
+  String get solicitarDatosParaLosPilotos => 'Datos para los pilotos';
+
+  @override
+  String get solicitarCuantoPagasPorHectarea => '¿Cuánto pagas por hectárea?';
+
+  @override
+  String get solicitarEscribePrecioParaVer =>
+      'Escribe un precio para ver cuánto sería.';
+
+  @override
+  String solicitarHa2(String precio, String hectareas) {
+    return '$precio/ha × $hectareas';
+  }
+
+  @override
+  String get solicitarLote => 'Lote';
+
+  @override
+  String get solicitarSuperficie2 => 'Superficie';
+
+  @override
+  String get solicitarFecha => 'Fecha';
+
+  @override
+  String get solicitarReintentarPublicacion => 'Reintentar publicación';
+
+  @override
+  String get solicitarPublicarSolicitud => 'Publicar solicitud';
+
+  @override
+  String get solicitarContinuar => 'Continuar';
+
+  @override
+  String solicitarMapaParaDibujarContorno(int vertices) {
+    return 'Mapa para dibujar el contorno del lote. $vertices esquinas marcadas.';
+  }
+
+  @override
+  String solicitarMapaLoteElegido(String nombre, String zona) {
+    return 'Mapa. Lote elegido: $nombre, $zona.';
+  }
+
+  @override
+  String get solicitarMapaTusLotesToca =>
+      'Mapa de tus lotes. Toca uno para elegirlo.';
+
+  @override
+  String get solicitarArrastraParaMoverla => 'Arrastra para moverla';
+
+  @override
+  String get calificarComoFueServicio => '¿Cómo fue el servicio?';
+
+  @override
+  String calificarComoFueServicio2(String primerNombre) {
+    return '¿Cómo fue el servicio de $primerNombre?';
+  }
+
+  @override
+  String get calificarSinConexionCalificacionEnvio =>
+      'Sin conexión. Tu calificación no se envió; prueba de nuevo cuando tengas señal.';
+
+  @override
+  String get calificarPudimosEnviarCalificacionPrueba =>
+      'No pudimos enviar tu calificación. Prueba de nuevo.';
+
+  @override
+  String get calificarReintentar => 'Reintentar';
+
+  @override
+  String get calificarEnviarCalificacion => 'Enviar calificación';
+
+  @override
+  String get calificarQueDestacas => '¿Qué destacas?';
+
+  @override
+  String get calificarQuePuedeMejorar => '¿Qué se puede mejorar?';
+
+  @override
+  String get accesoSesionVencioEntraNuevo =>
+      'Tu sesión venció. Entra de nuevo.';
+
+  @override
+  String get accesoTusDatos => 'Tus datos';
+
+  @override
+  String get accesoAcceso => 'Tu acceso';
+
+  @override
+  String get acceso118 => '118 ha × 64';
+
+  @override
+  String get acceso552 => 'Bs 7.552';
+
+  @override
+  String get inicioVerOtraSolicitudActiva => 'Ver la otra solicitud activa';
+
+  @override
+  String inicioVerLasOtrasSolicitudes(int otrosActivos) {
+    return 'Ver las otras $otrosActivos solicitudes activas';
+  }
+
+  @override
+  String get inicioPorCalificar => 'Por calificar';
+
+  @override
+  String get inicioAvisos => 'Avisos';
+
+  @override
+  String get inicioHistorialReciente => 'Historial reciente';
+
+  @override
+  String get inicioVerTodo => 'Ver todo';
+
+  @override
+  String get inicioSinConexion => 'Sin conexión';
+
+  @override
+  String get inicioPudimosCargarInicio => 'No pudimos cargar tu inicio';
+
+  @override
+  String get inicioRevisaSenalIntentaNuevo =>
+      'Revisa tu señal e intenta de nuevo. Publicar una solicitud requiere conexión.';
+
+  @override
+  String get inicioIntentaNuevoMomento => 'Intenta de nuevo en un momento.';
+
+  @override
+  String comunEnviando(String texto) {
+    return '$texto, enviando';
+  }
+
+  @override
+  String get comunFoto => 'Foto';
+
+  @override
+  String get comunEscribePrecioParaVer =>
+      'Escribe un precio para ver el total.';
+
+  @override
+  String comunTotalEstimadoPor(String valor, String hectareas) {
+    return 'Total estimado: $valor por $hectareas';
+  }
+
+  @override
+  String get solicitudesPrecioAcordado => 'Precio acordado';
+
+  @override
+  String get solicitudesPrecio => 'Tu precio';
+
+  @override
+  String get solicitudesSolicitud2 => 'la solicitud';
+
+  @override
+  String get solicitudesGuardarPrecio => 'Guardar precio';
+
+  @override
+  String solicitudesPublicada(String zona, String publicadaEn) {
+    return '$zona · publicada el $publicadaEn';
+  }
+
+  @override
+  String get solicitudesSinConexionGuardoCambio =>
+      'Sin conexión. No se guardó el cambio; inténtalo con señal.';
+
+  @override
+  String get solicitudesPudimosCompletarOperacion =>
+      'No pudimos completar la operación.';
+
+  @override
+  String get solicitudesSinConexionFaltanCargar =>
+      'Sin conexión. Faltan cargar tu calificación y el reclamo.';
+
+  @override
+  String get solicitudesPudimosCargarCalificacionReclamo =>
+      'No pudimos cargar tu calificación y el reclamo.';
+
+  @override
+  String get solicitudesCancelasteEstaSolicitudPuedes =>
+      'Cancelaste esta solicitud. Puedes publicar otra desde «Solicitar».';
+
+  @override
+  String solicitudesCancelasteEstaSolicitudPuedes2(String motivoCancelacion) {
+    return 'Cancelaste esta solicitud: $motivoCancelacion. Puedes publicar otra desde «Solicitar».';
+  }
+
+  @override
+  String get solicitudesEstado => 'Estado';
+
+  @override
+  String get solicitudesQuienFumiga => 'Quién fumiga';
+
+  @override
+  String get solicitudesQuePediste => 'Lo que pediste';
+
+  @override
+  String get solicitudesProducto => 'Producto';
+
+  @override
+  String get solicitudesFechaDeseada => 'Fecha deseada';
+
+  @override
+  String get solicitudesAccesos => 'Accesos';
+
+  @override
+  String get solicitudesObservaciones => 'Observaciones';
+
+  @override
+  String get solicitudesCalificacion => 'Tu calificación';
+
+  @override
+  String get solicitudesTusSolicitudes => 'tus solicitudes';
+
+  @override
+  String get solicitudesTodaviaPublicasteSolicitudes =>
+      'Todavía no publicaste solicitudes';
+
+  @override
+  String get solicitudesHaySolicitudesCurso => 'No hay solicitudes en curso';
+
+  @override
+  String get solicitudesTodaviaHayServiciosTerminados =>
+      'Todavía no hay servicios terminados';
+
+  @override
+  String get solicitudesCuandoPilotoTerminaQueda =>
+      'Cuando un piloto termina, queda guardado acá con sus fotos y el precio final.';
+
+  @override
+  String get solicitudesPublicaLoteComparaLas =>
+      'Publica un lote, compara las ofertas de los pilotos y elige.';
+
+  @override
+  String get solicitarErrorHectareasVacio =>
+      'Indica cuántas hectáreas quieres fumigar.';
+
+  @override
+  String get solicitarErrorNoEsNumeroHectareas =>
+      'Escribe un número, por ejemplo 85,5.';
+
+  @override
+  String get solicitarErrorHectareasNoPositivas =>
+      'La superficie tiene que ser mayor a 0.';
+
+  @override
+  String get solicitarErrorDosDecimales => 'Usa como máximo dos decimales.';
+
+  @override
+  String solicitarErrorHectareasMaximas(String maximo) {
+    return 'Una solicitud admite hasta $maximo ha.';
+  }
+
+  @override
+  String solicitarErrorHectareasSobreLote(String tope) {
+    return 'El lote tiene $tope ha: no puedes pedir más.';
+  }
+
+  @override
+  String get solicitarErrorPrecioVacio =>
+      'Propón cuánto pagarías por hectárea.';
+
+  @override
+  String get solicitarErrorNoEsNumeroPrecio =>
+      'Escribe un número, por ejemplo 120.';
+
+  @override
+  String get solicitarErrorPrecioNoPositivo =>
+      'El precio tiene que ser mayor a 0.';
+
+  @override
+  String solicitarHectareasDelContorno(String hectareas) {
+    return 'Del contorno salen $hectareas. Ajústalas si vas a fumigar otra superficie.';
+  }
+
+  @override
+  String solicitarHectareasDelLote(String hectareas) {
+    return 'El lote tiene $hectareas. Ajústalas si vas a fumigar otra superficie.';
+  }
+
+  @override
+  String get solicitarMisLotes => 'Mis lotes';
+
+  @override
+  String get solicitarDibujar => 'Dibujar';
+
+  @override
+  String get solicitarEnviandoSolicitud => 'Enviando la solicitud';
+
+  @override
+  String get solicitarPasoLote => 'Lote';
+
+  @override
+  String get solicitarPasoAplicacion => 'Aplicación';
+
+  @override
+  String get solicitarPasoCuando => 'Cuándo';
+
+  @override
+  String get solicitarPasoPrecio => 'Precio';
+
+  @override
+  String get accesoErrorCredenciales =>
+      'El usuario o la contraseña no coinciden. Revísalos e intenta de nuevo.';
+
+  @override
+  String get accesoErrorSinConexion =>
+      'Sin conexión. Lo que escribiste sigue aquí: intenta de nuevo cuando tengas señal.';
+
+  @override
+  String get accesoErrorDesconocido =>
+      'No pudimos completar la operación. Intenta de nuevo en un momento.';
+
+  @override
+  String get accesoPortadaPublicaTitulo => 'Publica tu lote en el mapa';
+
+  @override
+  String get accesoPortadaPublicaDetalle =>
+      'Marca el área, define tu precio por hectárea y recibe ofertas de pilotos cercanos.';
+
+  @override
+  String get accesoPortadaNegociaTitulo => 'Negocia hasta 5 rondas';
+
+  @override
+  String get accesoPortadaNegociaDetalle =>
+      'Cada piloto acepta tu precio o contraoferta. Tú eliges con quién trabajar.';
+
+  @override
+  String get accesoPortadaPagasTitulo => 'Pagas lo que se fumigó';
+
+  @override
+  String get accesoPortadaPagasDetalle =>
+      'Precio final = hectáreas ejecutadas × precio acordado. El pago es directo con el piloto.';
+
+  @override
+  String get historialMesEne => 'Ene';
+
+  @override
+  String get historialMesFeb => 'Feb';
+
+  @override
+  String get historialMesMar => 'Mar';
+
+  @override
+  String get historialMesAbr => 'Abr';
+
+  @override
+  String get historialMesMay => 'May';
+
+  @override
+  String get historialMesJun => 'Jun';
+
+  @override
+  String get historialMesJul => 'Jul';
+
+  @override
+  String get historialMesAgo => 'Ago';
+
+  @override
+  String get historialMesSep => 'Sep';
+
+  @override
+  String get historialMesOct => 'Oct';
+
+  @override
+  String get historialMesNov => 'Nov';
+
+  @override
+  String get historialMesDic => 'Dic';
+
+  @override
+  String solicitudesVerOfertas(int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad ofertas',
+      one: '1 oferta',
+    );
+    return 'Ver $_temp0';
+  }
+
+  @override
+  String solicitudesPilotosOfertaron(int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad pilotos ofertaron',
+      one: '1 piloto ofertó',
+    );
+    return '$_temp0. Compáralas y elige la que prefieras.';
+  }
+
+  @override
+  String solicitudesComentarioEntreComillas(String comentario) {
+    return '«$comentario»';
+  }
+
+  @override
+  String historialEnServicios(int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad servicios',
+      one: '1 servicio',
+    );
+    return 'en $_temp0';
+  }
+
+  @override
+  String historialSemanticaHectareasPorMes(String detalle) {
+    return 'Hectáreas fumigadas por mes: $detalle';
+  }
+
+  @override
+  String get calificarTocaEstrella => 'Toca una estrella';
+
+  @override
+  String get calificarMalo => 'Malo';
+
+  @override
+  String get calificarRegular => 'Regular';
+
+  @override
+  String get calificarBueno => 'Bueno';
+
+  @override
+  String get calificarMuyBueno => 'Muy bueno';
+
+  @override
+  String get calificarExcelente => 'Excelente';
 }

@@ -43,13 +43,13 @@ class CalificarPantalla extends StatelessWidget {
 
   final Solicitud servicio;
 
-  static const _palabras = [
-    'Toca una estrella',
-    'Malo',
-    'Regular',
-    'Bueno',
-    'Muy bueno',
-    'Excelente',
+  static List<String> _palabras(AppLocalizations l10n) => [
+    l10n.calificarTocaEstrella,
+    l10n.calificarMalo,
+    l10n.calificarRegular,
+    l10n.calificarBueno,
+    l10n.calificarMuyBueno,
+    l10n.calificarExcelente,
   ];
 
   @override
@@ -134,9 +134,10 @@ class CalificarPantalla extends StatelessWidget {
                               header: true,
                               child: Text(
                                 primerNombre == null
-                                    ? '¿Cómo fue el servicio?'
-                                    : '¿Cómo fue el servicio de '
-                                          '$primerNombre?',
+                                    ? l10n.calificarComoFueServicio
+                                    : l10n.calificarComoFueServicio2(
+                                        primerNombre,
+                                      ),
                                 style: TipografiaCampo.tituloBloque.copyWith(
                                   color: paleta.texto,
                                 ),
@@ -171,7 +172,7 @@ class CalificarPantalla extends StatelessWidget {
                                 MovimientoCampo.rapida,
                               ),
                               child: Text(
-                                _palabras[estado.puntaje],
+                                _palabras(l10n)[estado.puntaje],
                                 key: ValueKey(estado.puntaje),
                                 style: TipografiaCampo.tituloSeccion.copyWith(
                                   color: estado.puntaje == 0
@@ -203,11 +204,8 @@ class CalificarPantalla extends StatelessWidget {
                                       ? Icons.wifi_off_rounded
                                       : null,
                                   mensaje: estado.sinConexion
-                                      ? 'Sin conexión. Tu calificación no se '
-                                            'envió; prueba de nuevo cuando '
-                                            'tengas señal.'
-                                      : 'No pudimos enviar tu calificación. '
-                                            'Prueba de nuevo.',
+                                      ? l10n.calificarSinConexionCalificacionEnvio
+                                      : l10n.calificarPudimosEnviarCalificacionPrueba,
                                 ),
                               ),
                             ],
@@ -226,8 +224,8 @@ class CalificarPantalla extends StatelessWidget {
                       child: BotonPrincipal(
                         key: const ValueKey('enviar-calificacion'),
                         texto: estado.fase == FaseCalificar.error
-                            ? 'Reintentar'
-                            : 'Enviar calificación',
+                            ? l10n.calificarReintentar
+                            : l10n.calificarEnviarCalificacion,
                         cargando: enviando,
                         onPressed: estado.puedeEnviar ? cubit.enviar : null,
                       ),
@@ -283,7 +281,9 @@ class _OpcionalesState extends State<_Opcionales> {
       children: [
         const SizedBox(height: EspaciadoCampo.xl),
         Text(
-          estado.puntaje >= 4 ? '¿Qué destacas?' : '¿Qué se puede mejorar?',
+          estado.puntaje >= 4
+              ? l10n.calificarQueDestacas
+              : l10n.calificarQuePuedeMejorar,
           style: TipografiaCampo.etiqueta.copyWith(
             color: paleta.textoSecundario,
           ),
