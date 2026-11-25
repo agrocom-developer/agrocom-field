@@ -75,6 +75,9 @@ La interfaz es parte del producto, no un acabado. Una pantalla no está terminad
 - El selector (`bin/tests-afectados`, código en `tool/selector/`) falla hacia más pruebas: si el diff toca lockfiles, `config/`, `lib/nucleo/db`, `lib/nucleo/sync`, `.github/`, `bin/`, `tool/`, fixtures o helpers de prueba, o algo que no sabe clasificar, corre todo.
 - En CI, un PR a `develop` corre lo afectado; la suite completa en shards corre en el PR a `master` (release), con la etiqueta `full-ci`, por `workflow_dispatch` y de noche sobre `develop`. El check requerido sigue siendo `flutter-tests`.
 - El humo mínimo (replay del sync, contrato de API, reglas de importación, el selector) corre siempre. Detalle en `docs/gestion/ci-por-impacto.md` y en el skill `verificacion`.
+- **Cada cambio corre solo sus propias pruebas.** Antes de ejecutar, `bin/tests-afectados --listar` imprime la lista y se ejecuta esa lista por ruta de archivo, nunca una carpeta entera (`test/ui`, `test/nucleo/ui`, `test/cliente`). No se repite lo que ya cubre el humo del CI ni lo que verificó otro cambio. Un cambio sin pruebas propias no inventa pruebas para correr otras: corre el análisis y el humo, y el resto lo hace el CI. Los goldens se regeneran una sola vez, al final de cada pantalla.
+- **Un solo comando pesado a la vez en la máquina.** `flutter test`, `flutter analyze`, `build_runner` y los builds pasan por `bin/probar <comando>`, que toma turno en una cola con candado; así varios agentes no se pisan ni esperan en desorden.
+- **Tres roles por funcionalidad:** desarrollador, probador y corrector, en ese orden y cada uno como una tarea corta e independiente (`docs/gestion/agentes-por-funcionalidad.md`). Quien escribe el código verifica formato, análisis y lint; el probador solo prueba lo que cambió el desarrollador; el corrector solo aparece si el probador reporta fallos.
 
 ## Qué no delegar sin revisión línea por línea
 
