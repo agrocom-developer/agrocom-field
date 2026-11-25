@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
+import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
 import 'tema_visual_cubit.dart';
 
@@ -106,9 +107,7 @@ class _Segmento extends StatelessWidget {
           child: Text(
             etiqueta,
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Manrope',
-              fontSize: 14,
+            style: TipografiaCampo.cuerpoSecundario.copyWith(
               fontWeight: activo ? FontWeight.w800 : FontWeight.w600,
               color: activo ? paleta.texto : paleta.textoSecundario,
             ),

@@ -11,10 +11,13 @@ Un cambio está terminado cuando las etapas de `bin/verify` pasan (formato, aná
 
 ```
 bin/verify          # por defecto: solo lo afectado por el diff contra origin/develop
+bin/verify --listar # imprime qué correría (modo, motivo, pruebas) sin ejecutar
 bin/verify --todo   # suite completa (formato, análisis y tests de todo el repo)
 ```
 
-Nadie corre la suite entera por defecto, ni una persona ni un agente: `bin/verify` calcula con el selector (`bin/tests-afectados`) qué pruebas alcanza el cambio, formatea y analiza solo los `.dart` tocados y suma el humo mínimo (replay del motor de sync, contrato de API, reglas de importación y el propio selector). Si el diff toca una zona crítica (lockfiles, `config/`, `lib/nucleo/db`, `lib/nucleo/sync`, `.github/`, `bin/`, `tool/`, fixtures o helpers de prueba), el selector pide la suite completa y `bin/verify` la corre. El selector falla hacia más pruebas, nunca hacia menos.
+Primero `--listar`: si la selección cae a TODO o pasa de unos 30 archivos, se acota por ruta; nunca se corre una carpeta entera para esquivar al selector.
+
+Nadie corre la suite entera por defecto, ni una persona ni un agente: `bin/verify` calcula con el selector (`bin/tests-afectados`) qué pruebas alcanza el cambio, formatea y analiza solo los `.dart` tocados y suma el humo mínimo (replay del motor de sync, contrato de API, reglas de importación y el propio selector). Si el diff toca una zona crítica (lockfiles, `config/`, `lib/nucleo/db`, `lib/nucleo/sync`, `.github/`, `bin/`, `tool/`, fixtures o helpers de prueba), el selector pide la suite completa y `bin/verify` la corre. El selector falla hacia más pruebas, nunca hacia menos. Los goldens (`.png` bajo `test/**/goldens/`) seleccionan solo las pruebas que los referencian, las fotos de `assets/imagenes/` las del código que las nombra, y las imágenes de `docs/` y los `.arb` (con su código l10n regenerado) no corren pruebas propias: un cambio de UI trae solo sus pruebas.
 
 Usar `bin/verify --todo` solo antes de un release o al tocar algo transversal que el selector no puede razonar. No correr `flutter test` a secas como verificación de rutina. Detalle en `docs/gestion/ci-por-impacto.md`.
 

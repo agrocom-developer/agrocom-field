@@ -632,4 +632,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get listaVerLotesMapa => 'Ver lotes en el mapa';
+
+  @override
+  String get redSinSenalTitulo => 'Sin señal';
+
+  @override
+  String get redSinSenalMensaje =>
+      'lo que ya cargaste sigue a la vista. Pedir u ofertar necesita red.';
 }

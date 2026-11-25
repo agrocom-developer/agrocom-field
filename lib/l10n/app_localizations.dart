@@ -1155,6 +1155,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ver lotes en el mapa'**
   String get listaVerLotesMapa;
+
+  /// No description provided for @redSinSenalTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin señal'**
+  String get redSinSenalTitulo;
+
+  /// No description provided for @redSinSenalMensaje.
+  ///
+  /// In es, this message translates to:
+  /// **'lo que ya cargaste sigue a la vista. Pedir u ofertar necesita red.'**
+  String get redSinSenalMensaje;
 }
 
 class _AppLocalizationsDelegate

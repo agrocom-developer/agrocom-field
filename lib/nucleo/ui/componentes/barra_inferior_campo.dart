@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../paleta_campo.dart';
+import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
 import 'navegacion_adaptativa_campo.dart';
 
@@ -117,9 +118,7 @@ class _Destino extends StatelessWidget {
                   destino.etiqueta,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontFamily: 'Manrope',
-                    fontSize: 12,
+                  style: TipografiaCampo.etiqueta.copyWith(
                     fontWeight: activo ? FontWeight.w800 : FontWeight.w600,
                     color: activo ? paleta.texto : paleta.textoSecundario,
                   ),

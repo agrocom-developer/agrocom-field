@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../l10n/app_localizations.dart';
+import '../nucleo/conectividad/data/conectividad_falsa.dart';
+import '../nucleo/conectividad/domain/conectividad_servicio.dart';
+import '../nucleo/conectividad/presentation/con_banner_de_red.dart';
 import '../nucleo/ui/paleta_campo.dart';
 import '../nucleo/ui/componentes/componentes_campo.dart';
 import '../nucleo/ui/tema_visual/tema_visual_app.dart';
@@ -55,6 +58,7 @@ class AppCliente extends StatelessWidget {
           notaAcceso: dependencias.notaAcceso,
           sesionExpirada: dependencias.sesionExpirada,
           dentro: (context) => ShellCliente(
+            conectividad: dependencias.conectividad,
             alCerrarSesion: context.read<ArranqueCubit>().cerrarSesion,
           ),
         ),
@@ -68,7 +72,10 @@ class AppCliente extends StatelessWidget {
 /// «Publicar lote» no es un destino: es la acción principal del inicio y abre
 /// el flujo sobre la navegación.
 class ShellCliente extends StatefulWidget {
-  const ShellCliente({this.alCerrarSesion, super.key});
+  const ShellCliente({this.conectividad, this.alCerrarSesion, super.key});
+
+  /// Estado de la red para el banner «Sin señal»; sin él, siempre hay red.
+  final ConectividadServicio? conectividad;
 
   /// Cierra la sesión desde el perfil. Sin él, el perfil no ofrece la
   /// acción.
@@ -80,6 +87,8 @@ class ShellCliente extends StatefulWidget {
 
 class _ShellClienteState extends State<ShellCliente> {
   int _indice = 0;
+  late final ConectividadServicio _conectividad =
+      widget.conectividad ?? ConectividadFalsa();
 
   // El cubit del inicio vive con la navegación: volver a la pestaña Inicio
   // no repite la carga.
@@ -145,21 +154,24 @@ class _ShellClienteState extends State<ShellCliente> {
       ],
       indice: _indice,
       onSeleccionar: (i) => setState(() => _indice = i),
-      cuerpo: switch (_indice) {
-        0 => BlocProvider.value(
-          value: _inicio,
-          child: InicioClientePantalla(
-            alSolicitar: _publicarLote,
-            alVerServicios: () => setState(() => _indice = 2),
+      cuerpo: ConBannerDeRed(
+        servicio: _conectividad,
+        child: switch (_indice) {
+          0 => BlocProvider.value(
+            value: _inicio,
+            child: InicioClientePantalla(
+              alSolicitar: _publicarLote,
+              alVerServicios: () => setState(() => _indice = 2),
+            ),
           ),
-        ),
-        1 => LotesPantalla(alPublicar: _publicarLote),
-        2 => HistorialPantalla(alPublicar: _publicarLote),
-        _ => CuentaPantalla(
-          alCerrarSesion: widget.alCerrarSesion,
-          alPublicar: _publicarLote,
-        ),
-      },
+          1 => LotesPantalla(alPublicar: _publicarLote),
+          2 => HistorialPantalla(alPublicar: _publicarLote),
+          _ => CuentaPantalla(
+            alCerrarSesion: widget.alCerrarSesion,
+            alPublicar: _publicarLote,
+          ),
+        },
+      ),
     );
   }
 }

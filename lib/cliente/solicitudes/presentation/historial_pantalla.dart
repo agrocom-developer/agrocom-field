@@ -306,16 +306,13 @@ class _Cargando extends StatelessWidget {
   const _Cargando();
 
   @override
-  Widget build(BuildContext context) => const Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      EsqueletoCampo(alto: 180, radio: 18),
-      SizedBox(height: EspaciadoCampo.xl),
-      EsqueletoCampo(alto: ObjetivoTactilCampo.minimo, radio: 24),
-      SizedBox(height: EspaciadoCampo.l),
-      EsqueletoCampo(alto: 132, radio: 18),
-      SizedBox(height: EspaciadoCampo.m),
-      EsqueletoCampo(alto: 132, radio: 18),
+  Widget build(BuildContext context) => const EsqueletoListaCampo(
+    separacion: EspaciadoCampo.l,
+    bloques: [
+      BloqueEsqueleto(alto: 180, radio: 18),
+      BloqueEsqueleto(alto: ObjetivoTactilCampo.minimo, radio: 24),
+      BloqueEsqueleto(alto: 132, radio: 18),
+      BloqueEsqueleto(alto: 132, radio: 18),
     ],
   );
 }

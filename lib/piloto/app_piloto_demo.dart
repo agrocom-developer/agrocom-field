@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+import '../nucleo/conectividad/data/conectividad_falsa.dart';
+import '../nucleo/conectividad/domain/conectividad_servicio.dart';
+import '../nucleo/conectividad/presentation/con_banner_de_red.dart';
 import '../nucleo/marketplace/proveedor/dron/presentation/drones_pantalla.dart';
 import '../nucleo/marketplace/proveedor/ejecucion/presentation/servicios_lote_pantalla.dart';
 import '../nucleo/marketplace/proveedor/negociacion/presentation/mapa_solicitudes_pantalla.dart';
@@ -7,7 +11,6 @@ import '../nucleo/marketplace/proveedor/negociacion/presentation/mis_ofertas_pan
 import '../nucleo/marketplace/proveedor/perfil/presentation/extras_perfil.dart';
 import '../nucleo/marketplace/proveedor/perfil/presentation/perfil_pantalla.dart';
 import '../nucleo/ui/componentes/componentes_campo.dart';
-import '../l10n/app_localizations.dart';
 import '../nucleo/ui/paleta_campo.dart';
 import '../nucleo/ui/tema_visual/tema_visual_app.dart';
 import 'di/dependencias_piloto.dart';
@@ -37,7 +40,7 @@ class AppPilotoDemo extends StatelessWidget {
         // Los repositorios van por encima del `Navigator`: las rutas que se
         // apilan (detalle, seguimiento) los heredan.
         builder: (context, child) => dependencias.proveer(child: child!),
-        home: const ShellPiloto(),
+        home: ShellPiloto(conectividad: dependencias.conectividad),
       ),
     );
   }
@@ -46,7 +49,10 @@ class AppPilotoDemo extends StatelessWidget {
 /// Navegación del piloto: el mapa de solicitudes abiertas, sus ofertas, sus
 /// servicios adjudicados y el perfil (que lleva el dron y la licencia).
 class ShellPiloto extends StatefulWidget {
-  const ShellPiloto({this.alSalir, super.key});
+  const ShellPiloto({this.conectividad, this.alSalir, super.key});
+
+  /// Estado de la red para el banner «Sin señal»; sin él, siempre hay red.
+  final ConectividadServicio? conectividad;
 
   /// Cierra la sesión. Solo existe en la app real: la demo no tiene sesión.
   final VoidCallback? alSalir;
@@ -57,6 +63,8 @@ class ShellPiloto extends StatefulWidget {
 
 class _ShellPilotoState extends State<ShellPiloto> {
   int _indice = 0;
+  late final ConectividadServicio _conectividad =
+      widget.conectividad ?? ConectividadFalsa();
 
   void _verDrones() {
     Navigator.of(context).push(
@@ -101,21 +109,26 @@ class _ShellPilotoState extends State<ShellPiloto> {
       ],
       indice: _indice,
       onSeleccionar: (i) => setState(() => _indice = i),
-      cuerpo: switch (_indice) {
-        0 => const MapaSolicitudesPantalla(),
-        1 => MisOfertasPantalla(alIrAlMapa: () => setState(() => _indice = 0)),
-        2 => ServiciosLotePantalla(
-          alIrAlMapa: () => setState(() => _indice = 0),
-        ),
-        _ => PerfilPantalla(
-          onVerDrones: _verDrones,
-          extras: extrasDePerfil(
-            context,
-            conAvisos: true,
-            alSalir: widget.alSalir,
+      cuerpo: ConBannerDeRed(
+        servicio: _conectividad,
+        child: switch (_indice) {
+          0 => const MapaSolicitudesPantalla(),
+          1 => MisOfertasPantalla(
+            alIrAlMapa: () => setState(() => _indice = 0),
           ),
-        ),
-      },
+          2 => ServiciosLotePantalla(
+            alIrAlMapa: () => setState(() => _indice = 0),
+          ),
+          _ => PerfilPantalla(
+            onVerDrones: _verDrones,
+            extras: extrasDePerfil(
+              context,
+              conAvisos: true,
+              alSalir: widget.alSalir,
+            ),
+          ),
+        },
+      ),
     );
   }
 }

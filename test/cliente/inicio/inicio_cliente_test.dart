@@ -135,7 +135,7 @@ void main() {
     testWidgets('mientras carga muestra el esqueleto', (tester) async {
       prepararTelefono(tester);
       await _abrir(tester, InicioControlado.pendiente());
-      expect(find.byType(EsqueletoCampo), findsWidgets);
+      expect(find.byType(EsqueletoListaCampo), findsWidgets);
       expect(find.byKey(const Key('inicio-solicitar')), findsNothing);
     });
 

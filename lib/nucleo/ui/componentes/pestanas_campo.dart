@@ -71,20 +71,18 @@ class PestanasCampo<T> extends StatelessWidget {
                                 children: [
                                   TextSpan(
                                     text: etiqueta,
-                                    style: TipografiaCampo.tituloSeccion
-                                        .copyWith(
-                                          fontSize: 15,
-                                          color: valor == seleccionada
-                                              ? paleta.texto
-                                              : paleta.textoSecundario,
-                                        ),
+                                    style: TipografiaCampo.cuerpo.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      color: valor == seleccionada
+                                          ? paleta.texto
+                                          : paleta.textoSecundario,
+                                    ),
                                   ),
                                   if (cifra != null)
                                     TextSpan(
                                       text: ' $cifra',
                                       style: TipografiaCampo.cifraUnidad
                                           .copyWith(
-                                            fontSize: 14,
                                             color: valor == seleccionada
                                                 ? paleta.texto
                                                 : paleta.textoSecundario,

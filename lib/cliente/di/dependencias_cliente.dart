@@ -5,6 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../nucleo/api/api_client.dart';
+import '../../nucleo/conectividad/data/conectividad_falsa.dart';
+import '../../nucleo/conectividad/data/conectividad_real.dart';
+import '../../nucleo/conectividad/domain/conectividad_servicio.dart';
 import '../../nucleo/auth/dispositivo_store.dart';
 import '../../nucleo/api/marketplace_http.dart';
 import '../../nucleo/auth/token_store.dart';
@@ -63,7 +66,7 @@ import '../solicitudes/domain/solicitudes_repositorio.dart';
 /// y por eso este archivo no importa `nucleo/db` ni `nucleo/sync` (ADR 0009,
 /// regla 5; lo vigila `test/arquitectura/importaciones_test.dart`).
 class DependenciasCliente {
-  const DependenciasCliente({
+  DependenciasCliente({
     required this.solicitudes,
     required this.solicitud,
     required this.ofertas,
@@ -83,7 +86,8 @@ class DependenciasCliente {
     this.precioFinal,
     this.notaAcceso,
     this.sesionExpirada,
-  });
+    ConectividadServicio? conectividad,
+  }) : conectividad = conectividad ?? ConectividadFalsa();
 
   /// Repositorios en memoria con datos ficticios (`MODO_DEMO`, ADR 0010).
   ///
@@ -222,6 +226,7 @@ class DependenciasCliente {
       precioFinal: PrecioFinalRed(http),
       notaAcceso: notaAcceso,
       sesionExpirada: expiracion.stream,
+      conectividad: ConectividadReal(),
     );
   }
 
@@ -268,6 +273,10 @@ class DependenciasCliente {
   /// Avisa cuando la sesión venció o se revocó (`401`); solo lo define la
   /// implementación de red.
   final Stream<void>? sesionExpirada;
+
+  /// Estado de la red para el banner «Sin señal»: falsa en demo y pruebas,
+  /// real en la implementación de red.
+  final ConectividadServicio conectividad;
 
   /// Expone los repositorios al árbol de widgets.
   Widget proveer({required Widget child}) => MultiRepositoryProvider(

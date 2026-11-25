@@ -8,7 +8,14 @@ import '../tokens_campo.dart';
 /// «Sin señal · [mensaje]». Dice qué se guardó y qué espera a la red; el
 /// ícono y el texto portan el significado, no solo el color.
 class BannerSinSenalCampo extends StatelessWidget {
-  const BannerSinSenalCampo({required this.mensaje, super.key});
+  const BannerSinSenalCampo({
+    required this.mensaje,
+    this.titulo = 'Sin señal',
+    super.key,
+  });
+
+  /// Encabezado del aviso; quien lo localiza lo pasa traducido.
+  final String titulo;
 
   /// Lo que pasa sin red ("tus ofertas se guardan y se envían al volver").
   final String mensaje;
@@ -19,7 +26,7 @@ class BannerSinSenalCampo extends StatelessWidget {
     return Semantics(
       container: true,
       liveRegion: true,
-      label: 'Sin señal. $mensaje',
+      label: '$titulo. $mensaje',
       excludeSemantics: true,
       child: ColoredBox(
         color: paleta.ambar,
@@ -40,7 +47,7 @@ class BannerSinSenalCampo extends StatelessWidget {
                 const SizedBox(width: EspaciadoCampo.s),
                 Expanded(
                   child: Text(
-                    'Sin señal · $mensaje',
+                    '$titulo · $mensaje',
                     style: TipografiaCampo.etiqueta.copyWith(
                       color: paleta.sobreAmbar,
                     ),

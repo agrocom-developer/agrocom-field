@@ -425,7 +425,7 @@ void main() {
           await tester.ensureVisible(campo);
           await tester.tap(campo);
           await tester.pump(const Duration(milliseconds: 300));
-          await tester.tap(find.text('OK'));
+          await tester.tap(find.text('ACEPTAR'));
           await tester.pump(const Duration(milliseconds: 300));
         }
 

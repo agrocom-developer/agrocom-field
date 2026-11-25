@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'nucleo/conectividad/data/conectividad_real.dart';
 import 'nucleo/di/composicion_proveedor.dart';
 import 'nucleo/entorno/modo_demo.dart';
 import 'nucleo/flavor.dart';
@@ -29,7 +30,8 @@ Future<void> main() async {
       proveedor: c.proveedor,
       acceso: c.acceso,
       selectorImagen: c.selectorImagen,
-      construirShell: (context, alSalir) => ShellPiloto(alSalir: alSalir),
+      construirShell: (context, alSalir) =>
+          ShellPiloto(conectividad: ConectividadReal(), alSalir: alSalir),
     ),
   );
 }
