@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../tipografia_campo.dart';
 import 'boton_circular_campo.dart';
 
@@ -26,6 +27,7 @@ class EncabezadoCampo extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     // Alto mínimo, no fijo: título y subtítulo escalados al 200 % crecen
     // hacia abajo en vez de desbordar.
     return ConstrainedBox(
@@ -34,7 +36,7 @@ class EncabezadoCampo extends StatelessWidget implements PreferredSizeWidget {
         children: [
           BotonCircularCampo(
             icono: Icons.arrow_back,
-            tooltip: 'Volver',
+            tooltip: l10n.componentesVolver,
             onPressed: () => Navigator.of(context).maybePop(),
           ),
           const SizedBox(width: 14),

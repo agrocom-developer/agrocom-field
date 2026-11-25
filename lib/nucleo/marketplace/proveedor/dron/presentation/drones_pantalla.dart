@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -30,20 +31,21 @@ class DronesVista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     return BlocBuilder<DronesCubit, DronesEstado>(
       builder: (context, estado) {
         final subtitulo = switch (estado) {
           DronesListos(:final drones) when drones.isNotEmpty =>
             drones.length == 1
-                ? '1 dron registrado'
-                : '${drones.length} drones registrados',
+                ? l10n.proveedorDronDronRegistrado
+                : l10n.proveedorDronDronesRegistrados(drones.length),
           _ => null,
         };
         return ListView(
           padding: const EdgeInsets.all(EspaciadoCampo.l),
           children: [
-            Text('Mis drones', style: texto.headlineMedium),
+            Text(l10n.proveedorDronMisDrones, style: texto.headlineMedium),
             if (subtitulo != null) ...[
               const SizedBox(height: EspaciadoCampo.xs),
               Text(subtitulo, style: texto.bodyLarge),
@@ -72,18 +74,16 @@ class DronesVista extends StatelessWidget {
                 ),
                 DronesError() => EstadoErrorMarketplace(
                   key: const ValueKey('error'),
-                  titulo: 'No pudimos cargar tus drones',
-                  detalle: 'Revisá la conexión y volvé a intentar.',
+                  titulo: l10n.proveedorDronPudimosCargarTusDrones,
+                  detalle: l10n.proveedorDronRevisaConexionVolveIntentar,
                   onReintentar: context.read<DronesCubit>().iniciar,
                 ),
                 DronesListos(:final drones) when drones.isEmpty =>
-                  const EstadoVacioMarketplace(
+                  EstadoVacioMarketplace(
                     key: ValueKey('vacio'),
                     icono: Icons.flight_outlined,
-                    titulo: 'Todavía no registraste drones',
-                    detalle:
-                        'Sin un dron aprobado no llegan ofertas. Cada dron lo '
-                        'aprueba un administrador.',
+                    titulo: l10n.proveedorDronTodaviaRegistrasteDrones,
+                    detalle: l10n.proveedorDronSinDronAprobadoLlegan,
                   ),
                 DronesListos(:final drones) => Column(
                   key: const ValueKey('lista'),
@@ -113,6 +113,7 @@ class TarjetaDron extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final (tono, icono) = switch (dron.estado) {
@@ -174,10 +175,11 @@ class TarjetaDron extends StatelessWidget {
           const SizedBox(height: EspaciadoCampo.l),
           Semantics(
             container: true,
-            label:
-                'Batería: ${dron.ciclosBateria} de '
-                '${dron.cicloMaximoBateria} ciclos, $porcentaje por ciento '
-                'de la vida útil',
+            label: l10n.proveedorDronBateriaCiclosPorCiento(
+              dron.ciclosBateria,
+              dron.cicloMaximoBateria,
+              porcentaje,
+            ),
             excludeSemantics: true,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +191,10 @@ class TarjetaDron extends StatelessWidget {
                   crossAxisAlignment: WrapCrossAlignment.end,
                   spacing: EspaciadoCampo.m,
                   children: [
-                    Text('CICLOS DE BATERÍA', style: texto.labelSmall),
+                    Text(
+                      l10n.proveedorDronCiclosBateria,
+                      style: texto.labelSmall,
+                    ),
                     Text.rich(
                       TextSpan(
                         children: [
@@ -198,7 +203,7 @@ class TarjetaDron extends StatelessWidget {
                             style: texto.headlineSmall,
                           ),
                           TextSpan(
-                            text: ' de ${dron.cicloMaximoBateria}',
+                            text: l10n.proveedorDronDe(dron.cicloMaximoBateria),
                             style: texto.bodyMedium,
                           ),
                         ],
@@ -230,10 +235,10 @@ class TarjetaDron extends StatelessWidget {
                       Expanded(
                         child: Text(
                           dron.ciclosRestantes == 0
-                              ? 'La batería cumplió su vida útil. Hay que '
-                                    'cambiarla.'
-                              : 'Quedan ${dron.ciclosRestantes} ciclos. '
-                                    'Planificá el recambio.',
+                              ? l10n.proveedorDronBateriaCumplioVidaUtil
+                              : l10n.proveedorDronQuedanCiclosPlanificaRecambio(
+                                  dron.ciclosRestantes,
+                                ),
                           style: texto.bodyMedium?.copyWith(
                             color: paleta.texto,
                           ),
@@ -243,7 +248,9 @@ class TarjetaDron extends StatelessWidget {
                   )
                 else
                   Text(
-                    'Quedan ${dron.ciclosRestantes} ciclos de vida útil.',
+                    l10n.proveedorDronQuedanCiclosVidaUtil(
+                      dron.ciclosRestantes,
+                    ),
                     style: texto.bodyMedium,
                   ),
               ],
@@ -264,6 +271,7 @@ class _ResumenFotos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final partes = <String>[];
     for (final e in EstadoFotoDron.values) {
@@ -287,7 +295,10 @@ class _ResumenFotos extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Fotos: ${partes.join(' · ')}', style: texto.bodyMedium),
+        Text(
+          l10n.proveedorDronFotos(partes.join(' · ')),
+          style: texto.bodyMedium,
+        ),
         for (final r in rechazadas)
           Padding(
             padding: const EdgeInsets.only(top: EspaciadoCampo.xs),

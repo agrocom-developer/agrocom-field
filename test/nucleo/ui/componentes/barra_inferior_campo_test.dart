@@ -1,3 +1,4 @@
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -37,6 +38,8 @@ void main() {
       var tocado = -1;
       await tester.pumpWidget(
         MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.claro),
           home: Scaffold(
             bottomNavigationBar: BarraInferiorCampo(
@@ -69,6 +72,8 @@ void main() {
     final semantica = tester.ensureSemantics();
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.claro),
         home: Scaffold(
           bottomNavigationBar: BarraInferiorCampo(

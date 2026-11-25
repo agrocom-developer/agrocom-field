@@ -1,3 +1,4 @@
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -7,7 +8,9 @@ void main() {
     tester,
   ) async {
     await tester.pumpWidget(
-      const MaterialApp(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: SizedBox(
             width: 40,
@@ -24,7 +27,9 @@ void main() {
 
   testWidgets('EsqueletoListaCampo anuncia «Cargando»', (tester) async {
     await tester.pumpWidget(
-      const MaterialApp(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: Scaffold(
           body: EsqueletoListaCampo(
             bloques: [BloqueEsqueleto(alto: 20), BloqueEsqueleto(alto: 40)],

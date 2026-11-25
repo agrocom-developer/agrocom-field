@@ -1167,6 +1167,5169 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'lo que ya cargaste sigue a la vista. Pedir u ofertar necesita red.'**
   String get redSinSenalMensaje;
+
+  /// No description provided for @componentesCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificación: {valor} de 5'**
+  String componentesCalificacion(int valor);
+
+  /// No description provided for @componentesPorHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs {valor} por hectárea'**
+  String componentesPorHectarea(String valor);
+
+  /// No description provided for @componentesBs.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs {valor}'**
+  String componentesBs(String valor);
+
+  /// No description provided for @componentesRonda.
+  ///
+  /// In es, this message translates to:
+  /// **'Ronda {hechas} de {total}'**
+  String componentesRonda(int hechas, int total);
+
+  /// No description provided for @componentesRonda2.
+  ///
+  /// In es, this message translates to:
+  /// **'RONDA {hechas}/{total}'**
+  String componentesRonda2(int hechas, int total);
+
+  /// No description provided for @componentesVolver.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get componentesVolver;
+
+  /// No description provided for @componentesCargando.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando'**
+  String get componentesCargando;
+
+  /// No description provided for @componentesSincronizacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronización: {texto}'**
+  String componentesSincronizacion(String texto);
+
+  /// No description provided for @componentesArrastraParaVerMas.
+  ///
+  /// In es, this message translates to:
+  /// **'Arrastra para ver más o menos'**
+  String get componentesArrastraParaVerMas;
+
+  /// No description provided for @componentesAgrocom.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrocom'**
+  String get componentesAgrocom;
+
+  /// No description provided for @componentesOfertaServicioQuedanPara.
+  ///
+  /// In es, this message translates to:
+  /// **'Oferta de servicio: {titulo}, {monto}, quedan {tiempo} para responder'**
+  String componentesOfertaServicioQuedanPara(
+    String titulo,
+    String monto,
+    String tiempo,
+  );
+
+  /// No description provided for @componentesPago.
+  ///
+  /// In es, this message translates to:
+  /// **'PAGO'**
+  String get componentesPago;
+
+  /// No description provided for @componentesDistancia.
+  ///
+  /// In es, this message translates to:
+  /// **'DISTANCIA'**
+  String get componentesDistancia;
+
+  /// No description provided for @componentesSinConexionParaResponder.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Para responder necesitas red.'**
+  String get componentesSinConexionParaResponder;
+
+  /// No description provided for @componentesRechazar.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar'**
+  String get componentesRechazar;
+
+  /// No description provided for @componentesVerDetalleMapa.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver detalle y mapa'**
+  String get componentesVerDetalleMapa;
+
+  /// No description provided for @componentesElegido.
+  ///
+  /// In es, this message translates to:
+  /// **'ELEGIDO'**
+  String get componentesElegido;
+
+  /// No description provided for @componentesPedido.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedido {numero}, {estado}'**
+  String componentesPedido(String numero, String estado);
+
+  /// No description provided for @uiPosicionDelDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Posición del dron'**
+  String get uiPosicionDelDron;
+
+  /// No description provided for @uiOpenstreetmap.
+  ///
+  /// In es, this message translates to:
+  /// **'OpenStreetMap'**
+  String get uiOpenstreetmap;
+
+  /// No description provided for @versionActualizacionObligatoria.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualización obligatoria'**
+  String get versionActualizacionObligatoria;
+
+  /// No description provided for @versionEstaVersionAppEsta.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta versión de la app ya no está autorizada. Instalá la versión {version} o superior para seguir usándola.'**
+  String versionEstaVersionAppEsta(String version);
+
+  /// No description provided for @versionDescargalaDesde.
+  ///
+  /// In es, this message translates to:
+  /// **'DESCÁRGALA DESDE'**
+  String get versionDescargalaDesde;
+
+  /// No description provided for @componentesRondaSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Ronda {ronda} de {totalRondas}, {autor}: {precio} bolivianos por hectárea, total {total} bolivianos{nota}{turno}'**
+  String componentesRondaSemantica(
+    Object ronda,
+    Object totalRondas,
+    String autor,
+    Object precio,
+    Object total,
+    String nota,
+    String turno,
+  );
+
+  /// No description provided for @componentesNotaSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **', {nota}'**
+  String componentesNotaSufijo(String nota);
+
+  /// No description provided for @componentesTurnoSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **', turno de responder'**
+  String get componentesTurnoSufijo;
+
+  /// No description provided for @componentesPilotoMinuscula.
+  ///
+  /// In es, this message translates to:
+  /// **'piloto'**
+  String get componentesPilotoMinuscula;
+
+  /// No description provided for @componentesClienteMinuscula.
+  ///
+  /// In es, this message translates to:
+  /// **'cliente'**
+  String get componentesClienteMinuscula;
+
+  /// No description provided for @componentesPilotoMayuscula.
+  ///
+  /// In es, this message translates to:
+  /// **'PILOTO'**
+  String get componentesPilotoMayuscula;
+
+  /// No description provided for @componentesClienteMayuscula.
+  ///
+  /// In es, this message translates to:
+  /// **'CLIENTE'**
+  String get componentesClienteMayuscula;
+
+  /// No description provided for @componentesOfertaSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Oferta de {piloto}: {precio} bolivianos por hectárea, total {total} bolivianos{elegida}'**
+  String componentesOfertaSemantica(
+    String piloto,
+    Object precio,
+    Object total,
+    String elegida,
+  );
+
+  /// No description provided for @componentesElegidaSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **', elegida'**
+  String get componentesElegidaSufijo;
+
+  /// No description provided for @componentesCalificacionPromedioSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificación {valor} de 5{detalle}'**
+  String componentesCalificacionPromedioSemantica(String valor, String detalle);
+
+  /// No description provided for @componentesStepperSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{etiqueta}: {valor}{unidad}'**
+  String componentesStepperSemantica(
+    String etiqueta,
+    Object valor,
+    String unidad,
+  );
+
+  /// No description provided for @componentesStepperUnidad.
+  ///
+  /// In es, this message translates to:
+  /// **' {unidad}'**
+  String componentesStepperUnidad(String unidad);
+
+  /// No description provided for @accesoFumigacionConDronesPedido.
+  ///
+  /// In es, this message translates to:
+  /// **'Fumigación con drones, a pedido'**
+  String get accesoFumigacionConDronesPedido;
+
+  /// No description provided for @accesoSolicitaServicioSigueVuelo.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicita el servicio, sigue el vuelo en vivo y califica al piloto.'**
+  String get accesoSolicitaServicioSigueVuelo;
+
+  /// No description provided for @accesoIngresaCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa a tu cuenta'**
+  String get accesoIngresaCuenta;
+
+  /// No description provided for @accesoSolicitaServicioSigueloVivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicita un servicio y síguelo en vivo.'**
+  String get accesoSolicitaServicioSigueloVivo;
+
+  /// No description provided for @accesoUsuario.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario'**
+  String get accesoUsuario;
+
+  /// No description provided for @accesoContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña'**
+  String get accesoContrasena;
+
+  /// No description provided for @accesoIngresar.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresar'**
+  String get accesoIngresar;
+
+  /// No description provided for @accesoPrimeraVezAgrocom.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Primera vez en Agrocom?'**
+  String get accesoPrimeraVezAgrocom;
+
+  /// No description provided for @accesoCrearCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear cuenta'**
+  String get accesoCrearCuenta;
+
+  /// No description provided for @accesoComenzar.
+  ///
+  /// In es, this message translates to:
+  /// **'Comenzar'**
+  String get accesoComenzar;
+
+  /// No description provided for @accesoTengoCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tengo cuenta'**
+  String get accesoTengoCuenta;
+
+  /// No description provided for @accesoSaltar.
+  ///
+  /// In es, this message translates to:
+  /// **'Saltar'**
+  String get accesoSaltar;
+
+  /// No description provided for @accesoPortada.
+  ///
+  /// In es, this message translates to:
+  /// **'Portada {i} de {_portadas}'**
+  String accesoPortada(int i, int _portadas);
+
+  /// No description provided for @accesoHectareasPublicadas.
+  ///
+  /// In es, this message translates to:
+  /// **'hectáreas publicadas'**
+  String get accesoHectareasPublicadas;
+
+  /// No description provided for @accesoPrecioFinal.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio final'**
+  String get accesoPrecioFinal;
+
+  /// No description provided for @accesoPudimosAbrirSesion.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos abrir tu sesión'**
+  String get accesoPudimosAbrirSesion;
+
+  /// No description provided for @accesoIntentaNuevoMomento.
+  ///
+  /// In es, this message translates to:
+  /// **'Intenta de nuevo en un momento.'**
+  String get accesoIntentaNuevoMomento;
+
+  /// No description provided for @accesoReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get accesoReintentar;
+
+  /// No description provided for @accesoVolverIngreso.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver al ingreso'**
+  String get accesoVolverIngreso;
+
+  /// No description provided for @accesoCreaCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea tu cuenta'**
+  String get accesoCreaCuenta;
+
+  /// No description provided for @accesoTomaMenosMinuto.
+  ///
+  /// In es, this message translates to:
+  /// **'Toma menos de un minuto.'**
+  String get accesoTomaMenosMinuto;
+
+  /// No description provided for @accesoNombreCompleto.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre completo'**
+  String get accesoNombreCompleto;
+
+  /// No description provided for @accesoTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono'**
+  String get accesoTelefono;
+
+  /// No description provided for @accesoConQueVasEntrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Es con lo que vas a entrar. Sin espacios ni correo.'**
+  String get accesoConQueVasEntrar;
+
+  /// No description provided for @accesoMinimoCaracteresConLetras.
+  ///
+  /// In es, this message translates to:
+  /// **'Mínimo {largoMinimoContrasena} caracteres, con letras y números.'**
+  String accesoMinimoCaracteresConLetras(int largoMinimoContrasena);
+
+  /// No description provided for @calificarGraciasPorCalificarServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'Gracias por calificar el servicio'**
+  String get calificarGraciasPorCalificarServicio;
+
+  /// No description provided for @calificarOmitir.
+  ///
+  /// In es, this message translates to:
+  /// **'Omitir'**
+  String get calificarOmitir;
+
+  /// No description provided for @calificarComentarioOpcional.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario opcional'**
+  String get calificarComentarioOpcional;
+
+  /// No description provided for @comunAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Avance: {etiqueta}'**
+  String comunAvance(String etiqueta);
+
+  /// No description provided for @comunPrecioPorHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio por hectárea'**
+  String get comunPrecioPorHectarea;
+
+  /// No description provided for @comunBsHa.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs/ha'**
+  String get comunBsHa;
+
+  /// No description provided for @comunMensajeParaPilotoOpcional.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensaje para el piloto (opcional)'**
+  String get comunMensajeParaPilotoOpcional;
+
+  /// No description provided for @comunAvanceSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'Avance de la solicitud'**
+  String get comunAvanceSolicitud;
+
+  /// No description provided for @inicioSolicitudActiva.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud activa'**
+  String get inicioSolicitudActiva;
+
+  /// No description provided for @inicioCompararOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Comparar ofertas'**
+  String get inicioCompararOfertas;
+
+  /// No description provided for @inicioVerSeguimiento.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver seguimiento'**
+  String get inicioVerSeguimiento;
+
+  /// No description provided for @inicioCalificar.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificar'**
+  String get inicioCalificar;
+
+  /// No description provided for @inicioHola.
+  ///
+  /// In es, this message translates to:
+  /// **'Hola, {nombre}'**
+  String inicioHola(String nombre);
+
+  /// No description provided for @inicioPerfil.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu perfil'**
+  String get inicioPerfil;
+
+  /// No description provided for @inicioPublicarLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar lote'**
+  String get inicioPublicarLote;
+
+  /// No description provided for @inicioTienesSolicitudesCurso.
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes solicitudes en curso'**
+  String get inicioTienesSolicitudesCurso;
+
+  /// No description provided for @inicioTocaPublicarLoteMarca.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca «Publicar lote», marca tu lote y compara las ofertas de los pilotos.'**
+  String get inicioTocaPublicarLoteMarca;
+
+  /// No description provided for @inicioDescartarAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar aviso'**
+  String get inicioDescartarAviso;
+
+  /// No description provided for @inicioCalificasteCon.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificaste con {puntajeDelCliente} de 5'**
+  String inicioCalificasteCon(int puntajeDelCliente);
+
+  /// No description provided for @inicioReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get inicioReintentar;
+
+  /// No description provided for @ofertasCompararOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Comparar ofertas'**
+  String get ofertasCompararOfertas;
+
+  /// No description provided for @ofertasEncontramosEstaSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos esta solicitud'**
+  String get ofertasEncontramosEstaSolicitud;
+
+  /// No description provided for @ofertasVuelveSolicitudesAbrelaNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a «Solicitudes» y ábrela de nuevo.'**
+  String get ofertasVuelveSolicitudesAbrelaNuevo;
+
+  /// No description provided for @ofertasElegir.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Elegir a {nombre}?'**
+  String ofertasElegir(String nombre);
+
+  /// No description provided for @ofertasQuedanAcordadosPorHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'Quedan acordados {precioHa} por hectárea ({montoEstimado} estimados). Las demás ofertas se cierran y el piloto recibe tu contacto.'**
+  String ofertasQuedanAcordadosPorHectarea(
+    String precioHa,
+    String montoEstimado,
+  );
+
+  /// No description provided for @ofertasVolver.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get ofertasVolver;
+
+  /// No description provided for @ofertasElegirPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir piloto'**
+  String get ofertasElegirPiloto;
+
+  /// No description provided for @ofertasPideProponPrecioPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Pide {precioHa}/ha. Propón tu precio; el piloto puede aceptar o responder.'**
+  String ofertasPideProponPrecioPiloto(String precioHa);
+
+  /// No description provided for @ofertasSinConexionVesUltimo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Ves lo último que cargamos; puede estar desactualizado.'**
+  String get ofertasSinConexionVesUltimo;
+
+  /// No description provided for @ofertasOfertasOrden.
+  ///
+  /// In es, this message translates to:
+  /// **'OFERTAS · ORDEN: {etiqueta}'**
+  String ofertasOfertasOrden(String etiqueta);
+
+  /// No description provided for @ofertasElegir2.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir a {primerNombre} · {montoEstimado}'**
+  String ofertasElegir2(String primerNombre, String montoEstimado);
+
+  /// No description provided for @ofertasContraofertar.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraofertar'**
+  String get ofertasContraofertar;
+
+  /// No description provided for @ofertasRechazar.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar'**
+  String get ofertasRechazar;
+
+  /// No description provided for @ofertasUltimaRondaSoloPuedes.
+  ///
+  /// In es, this message translates to:
+  /// **'Última ronda: solo puedes elegirlo o rechazarlo.'**
+  String get ofertasUltimaRondaSoloPuedes;
+
+  /// No description provided for @ofertasEsperandoRespuesta.
+  ///
+  /// In es, this message translates to:
+  /// **'Esperando la respuesta de {primerNombre}'**
+  String ofertasEsperandoRespuesta(String primerNombre);
+
+  /// No description provided for @ofertasTodaviaHayOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay ofertas'**
+  String get ofertasTodaviaHayOfertas;
+
+  /// No description provided for @ofertasLosPilotosZonaVen.
+  ///
+  /// In es, this message translates to:
+  /// **'Los pilotos de la zona ya ven tu solicitud. Cuando alguno ofrezca, te avisamos. Si tarda, prueba subir tu precio.'**
+  String get ofertasLosPilotosZonaVen;
+
+  /// No description provided for @ofertasFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto de {nombre}'**
+  String ofertasFoto(String nombre);
+
+  /// No description provided for @ofertasFotoDelDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto del dron {dron}'**
+  String ofertasFotoDelDron(String dron);
+
+  /// No description provided for @ofertasRondas.
+  ///
+  /// In es, this message translates to:
+  /// **'RONDAS'**
+  String get ofertasRondas;
+
+  /// No description provided for @ofertasRonda.
+  ///
+  /// In es, this message translates to:
+  /// **'{precioHa}/ha · ronda {numero}'**
+  String ofertasRonda(String precioHa, int numero);
+
+  /// No description provided for @ofertasBsHa.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs {precioHa}/ha'**
+  String ofertasBsHa(String precioHa);
+
+  /// No description provided for @seguimientoEncontramosEsteServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos este servicio'**
+  String get seguimientoEncontramosEsteServicio;
+
+  /// No description provided for @seguimientoVuelveSolicitudesAbreloNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a «Solicitudes» y ábrelo de nuevo.'**
+  String get seguimientoVuelveSolicitudesAbreloNuevo;
+
+  /// No description provided for @seguimientoPrecioFinal.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio final'**
+  String get seguimientoPrecioFinal;
+
+  /// No description provided for @seguimientoSonMenosQueLas.
+  ///
+  /// In es, this message translates to:
+  /// **'Son {menos} menos que las publicadas ({hectareas}). El total sale de lo que el piloto ejecutó.'**
+  String seguimientoSonMenosQueLas(String menos, String hectareas);
+
+  /// No description provided for @seguimientoPagoDirectoPilotoAgrocom.
+  ///
+  /// In es, this message translates to:
+  /// **'El pago es directo al piloto. Agrocom no cobra dentro de la app.'**
+  String get seguimientoPagoDirectoPilotoAgrocom;
+
+  /// No description provided for @seguimientoReportasteProblemaCasoSoporte.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportaste un problema (caso {numeroCaso}). Soporte te responde en 24 horas hábiles.'**
+  String seguimientoReportasteProblemaCasoSoporte(String numeroCaso);
+
+  /// No description provided for @seguimientoCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu calificación'**
+  String get seguimientoCalificacion;
+
+  /// No description provided for @seguimientoCalificarPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificar al piloto'**
+  String get seguimientoCalificarPiloto;
+
+  /// No description provided for @seguimientoSinConexionVesUltimo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Ves lo último que cargamos; puede estar desactualizado.'**
+  String get seguimientoSinConexionVesUltimo;
+
+  /// No description provided for @seguimientoPilotoConfirmado.
+  ///
+  /// In es, this message translates to:
+  /// **'Piloto confirmado'**
+  String get seguimientoPilotoConfirmado;
+
+  /// No description provided for @seguimientoInicioVuelo.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio de vuelo'**
+  String get seguimientoInicioVuelo;
+
+  /// No description provided for @seguimientoAcuerdenFechaPorChat.
+  ///
+  /// In es, this message translates to:
+  /// **'Acuerden la fecha por el chat.'**
+  String get seguimientoAcuerdenFechaPorChat;
+
+  /// No description provided for @seguimientoCierrePrecioFinal.
+  ///
+  /// In es, this message translates to:
+  /// **'Cierre y precio final'**
+  String get seguimientoCierrePrecioFinal;
+
+  /// No description provided for @seguimientoTerminarLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Al terminar el lote'**
+  String get seguimientoTerminarLote;
+
+  /// No description provided for @seguimientoHa.
+  ///
+  /// In es, this message translates to:
+  /// **' / {total} ha'**
+  String seguimientoHa(String total);
+
+  /// No description provided for @seguimientoPilotoTodaviaEmpezoAcuerden.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto todavía no empezó. Acuerden la fecha por el chat.'**
+  String get seguimientoPilotoTodaviaEmpezoAcuerden;
+
+  /// No description provided for @seguimientoUltimaActualizacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Última actualización {ahora}'**
+  String seguimientoUltimaActualizacion(String ahora);
+
+  /// No description provided for @seguimientoPrecioFinalPagar.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio final a pagar'**
+  String get seguimientoPrecioFinalPagar;
+
+  /// No description provided for @seguimientoPagasPilotoFueraApp.
+  ///
+  /// In es, this message translates to:
+  /// **'Le pagas al piloto fuera de la app.'**
+  String get seguimientoPagasPilotoFueraApp;
+
+  /// No description provided for @seguimientoFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto de {nombre}'**
+  String seguimientoFoto(String nombre);
+
+  /// No description provided for @seguimientoPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu piloto'**
+  String get seguimientoPiloto;
+
+  /// No description provided for @seguimientoChat.
+  ///
+  /// In es, this message translates to:
+  /// **'Chat'**
+  String get seguimientoChat;
+
+  /// No description provided for @seguimientoTodaviaHayFotosPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay fotos. El piloto las sube a medida que avanza, y las verás acá.'**
+  String get seguimientoTodaviaHayFotosPiloto;
+
+  /// No description provided for @seguimientoFotoDelAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto del avance'**
+  String get seguimientoFotoDelAvance;
+
+  /// No description provided for @seguimientoCerrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get seguimientoCerrar;
+
+  /// No description provided for @seguimientoFotoDelAvance2.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto del avance, {subidaEn}'**
+  String seguimientoFotoDelAvance2(String subidaEn);
+
+  /// No description provided for @seguimientoUltimaFotoDelAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Última foto del avance'**
+  String get seguimientoUltimaFotoDelAvance;
+
+  /// No description provided for @seguimientoFotoAnteriorDelAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto anterior del avance'**
+  String get seguimientoFotoAnteriorDelAvance;
+
+  /// No description provided for @seguimientoFotoDelAvanceToca.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto del avance, {subidaEn} {subidaEn2}. Toca para ampliar'**
+  String seguimientoFotoDelAvanceToca(String subidaEn, String subidaEn2);
+
+  /// No description provided for @seguimientoHitoAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Avance {porcentaje} %'**
+  String seguimientoHitoAvance(String porcentaje);
+
+  /// No description provided for @seguimientoHitoFotos.
+  ///
+  /// In es, this message translates to:
+  /// **'{fotos, plural, =1{1 foto} other{{fotos} fotos}}{hace}'**
+  String seguimientoHitoFotos(int fotos, String hace);
+
+  /// No description provided for @seguimientoHitoHaceSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **' · {hace}'**
+  String seguimientoHitoHaceSufijo(String hace);
+
+  /// No description provided for @ofertasContraofertarA.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraofertar a {nombre}'**
+  String ofertasContraofertarA(String nombre);
+
+  /// No description provided for @ofertasOfertaRecibida.
+  ///
+  /// In es, this message translates to:
+  /// **'1 oferta recibida'**
+  String get ofertasOfertaRecibida;
+
+  /// No description provided for @ofertasOfertasRecibidas.
+  ///
+  /// In es, this message translates to:
+  /// **'{recibidas} ofertas recibidas'**
+  String ofertasOfertasRecibidas(int recibidas);
+
+  /// No description provided for @ofertasLasOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'las ofertas'**
+  String get ofertasLasOfertas;
+
+  /// No description provided for @ofertasEnviarContraoferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar contraoferta'**
+  String get ofertasEnviarContraoferta;
+
+  /// No description provided for @ofertasPedido.
+  ///
+  /// In es, this message translates to:
+  /// **'PEDIDO #{id}'**
+  String ofertasPedido(String id);
+
+  /// No description provided for @ofertasSolicitudExpiroAbrelaNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'La solicitud expiró. Ábrela de nuevo para recibir ofertas.'**
+  String get ofertasSolicitudExpiroAbrelaNuevo;
+
+  /// No description provided for @ofertasSolicitudCancelo.
+  ///
+  /// In es, this message translates to:
+  /// **'La solicitud se canceló.'**
+  String get ofertasSolicitudCancelo;
+
+  /// No description provided for @ofertasElegistePilotoParaEsta.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya elegiste a un piloto para esta solicitud.'**
+  String get ofertasElegistePilotoParaEsta;
+
+  /// No description provided for @ofertasOfertasCerradas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas cerradas'**
+  String get ofertasOfertasCerradas;
+
+  /// No description provided for @ofertasSinCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin calificaciones'**
+  String get ofertasSinCalificaciones;
+
+  /// No description provided for @ofertasAceptoPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptó tu precio'**
+  String get ofertasAceptoPrecio;
+
+  /// No description provided for @ofertasContraoferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu contraoferta · R{numero}/{maximo}'**
+  String ofertasContraoferta(int numero, int maximo);
+
+  /// No description provided for @ofertasEnviamosContraofertaPilotoTiene.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviamos tu contraoferta. El piloto tiene que responder.'**
+  String get ofertasEnviamosContraofertaPilotoTiene;
+
+  /// No description provided for @ofertasRechazasteOfertaLasDemas.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazaste la oferta. Las demás siguen abiertas.'**
+  String get ofertasRechazasteOfertaLasDemas;
+
+  /// No description provided for @ofertasSinConexionEnviamosRespuesta.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. No enviamos tu respuesta; inténtalo con señal.'**
+  String get ofertasSinConexionEnviamosRespuesta;
+
+  /// No description provided for @ofertasPudimosEnviarRespuesta.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar tu respuesta.'**
+  String get ofertasPudimosEnviarRespuesta;
+
+  /// No description provided for @ofertasContraofertaRonda.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu contraoferta · ronda {numero}'**
+  String ofertasContraofertaRonda(int numero);
+
+  /// No description provided for @ofertasAceptaPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Acepta tu precio'**
+  String get ofertasAceptaPrecio;
+
+  /// No description provided for @ofertasPideMasQuePrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Pide {dif}/ha más que tu precio'**
+  String ofertasPideMasQuePrecio(String dif);
+
+  /// No description provided for @ofertasIgualaPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Iguala tu precio'**
+  String get ofertasIgualaPrecio;
+
+  /// No description provided for @ofertasOfreceMenosQuePrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofrece {dif}/ha menos que tu precio'**
+  String ofertasOfreceMenosQuePrecio(String dif);
+
+  /// No description provided for @ofertasLote.
+  ///
+  /// In es, this message translates to:
+  /// **'A {distanciaKm} de tu lote'**
+  String ofertasLote(String distanciaKm);
+
+  /// No description provided for @ofertasCanceloSusServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'Canceló {porcentaje} % de sus servicios'**
+  String ofertasCanceloSusServicios(int porcentaje);
+
+  /// No description provided for @ofertasOfertaVencio.
+  ///
+  /// In es, this message translates to:
+  /// **'La oferta venció'**
+  String get ofertasOfertaVencio;
+
+  /// No description provided for @ofertasVence.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence en {inMinutes}'**
+  String ofertasVence(String inMinutes);
+
+  /// No description provided for @ofertasVencida.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencida'**
+  String get ofertasVencida;
+
+  /// No description provided for @seguimientoChat2.
+  ///
+  /// In es, this message translates to:
+  /// **'el chat'**
+  String get seguimientoChat2;
+
+  /// No description provided for @seguimientoMapaDelLoteSin.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa del lote {nombre}, sin ubicación del piloto'**
+  String seguimientoMapaDelLoteSin(String nombre);
+
+  /// No description provided for @seguimientoMapaDelLoteCon.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa del lote {nombre} con la última ubicación del piloto'**
+  String seguimientoMapaDelLoteCon(String nombre);
+
+  /// No description provided for @seguimientoServicioTerminado.
+  ///
+  /// In es, this message translates to:
+  /// **'{nombre} · servicio terminado'**
+  String seguimientoServicioTerminado(String nombre);
+
+  /// No description provided for @seguimientoPrecioFinal2.
+  ///
+  /// In es, this message translates to:
+  /// **'el precio final'**
+  String get seguimientoPrecioFinal2;
+
+  /// No description provided for @seguimientoPedido.
+  ///
+  /// In es, this message translates to:
+  /// **'PEDIDO #{id}'**
+  String seguimientoPedido(String id);
+
+  /// No description provided for @seguimientoTotalPagarPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Total a pagar al piloto'**
+  String get seguimientoTotalPagarPiloto;
+
+  /// No description provided for @seguimientoReportarProblema.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportar un problema'**
+  String get seguimientoReportarProblema;
+
+  /// No description provided for @seguimientoServicioTerminado2.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicio terminado'**
+  String get seguimientoServicioTerminado2;
+
+  /// No description provided for @seguimientoServicioCurso.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicio en curso'**
+  String get seguimientoServicioCurso;
+
+  /// No description provided for @seguimientoSeguimiento.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento'**
+  String get seguimientoSeguimiento;
+
+  /// No description provided for @seguimientoSeguimiento2.
+  ///
+  /// In es, this message translates to:
+  /// **'el seguimiento'**
+  String get seguimientoSeguimiento2;
+
+  /// No description provided for @seguimientoMasFotosDelAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Más fotos del avance'**
+  String get seguimientoMasFotosDelAvance;
+
+  /// No description provided for @seguimientoDondeEstaPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Dónde está el piloto'**
+  String get seguimientoDondeEstaPiloto;
+
+  /// No description provided for @seguimientoNotasDelPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas del piloto'**
+  String get seguimientoNotasDelPiloto;
+
+  /// No description provided for @seguimientoDeHa.
+  ///
+  /// In es, this message translates to:
+  /// **'{hechas} de {total} ha'**
+  String seguimientoDeHa(String hechas, String total);
+
+  /// No description provided for @seguimientoPropuesto.
+  ///
+  /// In es, this message translates to:
+  /// **'{precioHaPropuesto}/ha propuesto'**
+  String seguimientoPropuesto(String precioHaPropuesto);
+
+  /// No description provided for @seguimientoAcordado.
+  ///
+  /// In es, this message translates to:
+  /// **'{precioHaAcordado}/ha acordado'**
+  String seguimientoAcordado(String precioHaAcordado);
+
+  /// No description provided for @seguimientoPilotoComparteUbicacionCuando.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto comparte su ubicación cuando empieza el trabajo.'**
+  String get seguimientoPilotoComparteUbicacionCuando;
+
+  /// No description provided for @seguimientoSinUbicacionRecienteEscribele.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin ubicación reciente. Escríbele por el chat si necesitas saber dónde está.'**
+  String get seguimientoSinUbicacionRecienteEscribele;
+
+  /// No description provided for @seguimientoUltimaUbicacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Última ubicación {ahora}.'**
+  String seguimientoUltimaUbicacion(String ahora);
+
+  /// No description provided for @seguimientoSinUbicacionRecienteUltima.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin ubicación reciente. La última fue {ahora}.'**
+  String seguimientoSinUbicacionRecienteUltima(String ahora);
+
+  /// No description provided for @ofertasRondaCorta.
+  ///
+  /// In es, this message translates to:
+  /// **'R{numero}/{maximo}'**
+  String ofertasRondaCorta(int numero, int maximo);
+
+  /// No description provided for @ofertasNotaCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'{nota}/5 · {cantidad, plural, =1{1 calificación} other{{cantidad} calificaciones}}'**
+  String ofertasNotaCalificaciones(String nota, int cantidad);
+
+  /// No description provided for @ofertasOrdenPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Menor precio'**
+  String get ofertasOrdenPrecio;
+
+  /// No description provided for @ofertasOrdenCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejor calificación'**
+  String get ofertasOrdenCalificacion;
+
+  /// No description provided for @ofertasOrdenDistancia.
+  ///
+  /// In es, this message translates to:
+  /// **'Más cerca'**
+  String get ofertasOrdenDistancia;
+
+  /// No description provided for @ofertasOfertaCambio.
+  ///
+  /// In es, this message translates to:
+  /// **'La oferta cambió.'**
+  String get ofertasOfertaCambio;
+
+  /// No description provided for @ofertasActualizamosLista.
+  ///
+  /// In es, this message translates to:
+  /// **'{motivo} Actualizamos la lista.'**
+  String ofertasActualizamosLista(String motivo);
+
+  /// No description provided for @seguimientoElPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto'**
+  String get seguimientoElPiloto;
+
+  /// No description provided for @seguimientoHoraUltima.
+  ///
+  /// In es, this message translates to:
+  /// **'{hora} · ÚLTIMA'**
+  String seguimientoHoraUltima(String hora);
+
+  /// No description provided for @seguimientoFotosUnidad.
+  ///
+  /// In es, this message translates to:
+  /// **'fotos'**
+  String get seguimientoFotosUnidad;
+
+  /// No description provided for @seguimientoDelServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'del servicio'**
+  String get seguimientoDelServicio;
+
+  /// No description provided for @solicitarTodaviaTienesLotesGuardados.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes lotes guardados'**
+  String get solicitarTodaviaTienesLotesGuardados;
+
+  /// No description provided for @solicitarPasaDibujarMarcaLas.
+  ///
+  /// In es, this message translates to:
+  /// **'Pasa a «Dibujar» y marca las esquinas en el mapa.'**
+  String get solicitarPasaDibujarMarcaLas;
+
+  /// No description provided for @solicitarDeshacer.
+  ///
+  /// In es, this message translates to:
+  /// **'Deshacer'**
+  String get solicitarDeshacer;
+
+  /// No description provided for @solicitarBorrarTodo.
+  ///
+  /// In es, this message translates to:
+  /// **'Borrar todo'**
+  String get solicitarBorrarTodo;
+
+  /// No description provided for @solicitarHectareasFumigar.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas a fumigar'**
+  String get solicitarHectareasFumigar;
+
+  /// No description provided for @solicitarHa.
+  ///
+  /// In es, this message translates to:
+  /// **'ha'**
+  String get solicitarHa;
+
+  /// No description provided for @solicitarPedirloParaMananaMarca.
+  ///
+  /// In es, this message translates to:
+  /// **'Pedirlo para mañana marca tu solicitud como urgente. Los pilotos con el dron libre responden más rápido.'**
+  String get solicitarPedirloParaMananaMarca;
+
+  /// No description provided for @solicitarComoLlegaLoteOpcional.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo se llega al lote (opcional)'**
+  String get solicitarComoLlegaLoteOpcional;
+
+  /// No description provided for @solicitarCaminoPortonReferencias.
+  ///
+  /// In es, this message translates to:
+  /// **'Camino, portón, referencias'**
+  String get solicitarCaminoPortonReferencias;
+
+  /// No description provided for @solicitarObservacionesOpcional.
+  ///
+  /// In es, this message translates to:
+  /// **'Observaciones (opcional)'**
+  String get solicitarObservacionesOpcional;
+
+  /// No description provided for @solicitarCultivosVecinosLineasElectricas.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultivos vecinos, líneas eléctricas, estado del lote'**
+  String get solicitarCultivosVecinosLineasElectricas;
+
+  /// No description provided for @solicitarLosPilotosPuedenAceptar.
+  ///
+  /// In es, this message translates to:
+  /// **'Los pilotos pueden aceptar tu precio o proponer el suyo. Tú eliges la oferta que prefieras.'**
+  String get solicitarLosPilotosPuedenAceptar;
+
+  /// No description provided for @solicitarPrecioPorHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio por hectárea'**
+  String get solicitarPrecioPorHectarea;
+
+  /// No description provided for @solicitarPrecioExactoPorHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio exacto por hectárea'**
+  String get solicitarPrecioExactoPorHectarea;
+
+  /// No description provided for @solicitarPrecioExacto.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio exacto'**
+  String get solicitarPrecioExacto;
+
+  /// No description provided for @solicitarBs.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs '**
+  String get solicitarBs;
+
+  /// No description provided for @solicitarPor.
+  ///
+  /// In es, this message translates to:
+  /// **'por ha'**
+  String get solicitarPor;
+
+  /// No description provided for @solicitarTotalEstimado.
+  ///
+  /// In es, this message translates to:
+  /// **'Total estimado'**
+  String get solicitarTotalEstimado;
+
+  /// No description provided for @solicitarBs2.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs —'**
+  String get solicitarBs2;
+
+  /// No description provided for @solicitarPrecioFinalCalculaCon.
+  ///
+  /// In es, this message translates to:
+  /// **'El precio final se calcula con las hectáreas realmente ejecutadas. Le pagas al piloto al terminar, fuera de la app.'**
+  String get solicitarPrecioFinalCalculaCon;
+
+  /// No description provided for @solicitarPasoAnterior.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso anterior'**
+  String get solicitarPasoAnterior;
+
+  /// No description provided for @solicitarPaso.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso {indice} de {total} · {etiqueta}'**
+  String solicitarPaso(int indice, int total, String etiqueta);
+
+  /// No description provided for @solicitarPublicarLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar lote'**
+  String get solicitarPublicarLote;
+
+  /// No description provided for @solicitarPudimosCargarTusLotes.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus lotes'**
+  String get solicitarPudimosCargarTusLotes;
+
+  /// No description provided for @solicitarPublicarUnaSolicitudNecesita.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar una solicitud necesita conexión. Revisa la señal y vuelve a intentar.'**
+  String get solicitarPublicarUnaSolicitudNecesita;
+
+  /// No description provided for @solicitarReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get solicitarReintentar;
+
+  /// No description provided for @solicitarSuperficie.
+  ///
+  /// In es, this message translates to:
+  /// **'Superficie: {texto}'**
+  String solicitarSuperficie(String texto);
+
+  /// No description provided for @solicitarEsquinaDelLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Esquina {numero} del lote'**
+  String solicitarEsquinaDelLote(int numero);
+
+  /// No description provided for @solicitudesSuperficie.
+  ///
+  /// In es, this message translates to:
+  /// **'Superficie'**
+  String get solicitudesSuperficie;
+
+  /// No description provided for @solicitudesTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'Total'**
+  String get solicitudesTotal;
+
+  /// No description provided for @solicitudesCalificasteCon.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificaste con {puntajeDelCliente}'**
+  String solicitudesCalificasteCon(int puntajeDelCliente);
+
+  /// No description provided for @solicitudesSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud'**
+  String get solicitudesSolicitud;
+
+  /// No description provided for @solicitudesEncontramosEstaSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos esta solicitud'**
+  String get solicitudesEncontramosEstaSolicitud;
+
+  /// No description provided for @solicitudesVuelveSolicitudesAbrelaNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a «Solicitudes» y ábrela de nuevo.'**
+  String get solicitudesVuelveSolicitudesAbrelaNuevo;
+
+  /// No description provided for @solicitudesCambiarPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar tu precio'**
+  String get solicitudesCambiarPrecio;
+
+  /// No description provided for @solicitudesLasOfertasQueRecibiste.
+  ///
+  /// In es, this message translates to:
+  /// **'Las ofertas que ya recibiste no cambian; los pilotos que negocian contigo reciben el aviso.'**
+  String get solicitudesLasOfertasQueRecibiste;
+
+  /// No description provided for @solicitudesVerLasOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver las ofertas'**
+  String get solicitudesVerLasOfertas;
+
+  /// No description provided for @solicitudesVerSeguimientoChat.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver seguimiento y chat'**
+  String get solicitudesVerSeguimientoChat;
+
+  /// No description provided for @solicitudesCalificarPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificar al piloto'**
+  String get solicitudesCalificarPiloto;
+
+  /// No description provided for @solicitudesVolverAbrirSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a abrir la solicitud'**
+  String get solicitudesVolverAbrirSolicitud;
+
+  /// No description provided for @solicitudesEditarPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar precio'**
+  String get solicitudesEditarPrecio;
+
+  /// No description provided for @solicitudesVence.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence el {venceEn}'**
+  String solicitudesVence(String venceEn);
+
+  /// No description provided for @solicitudesCultivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultivo'**
+  String get solicitudesCultivo;
+
+  /// No description provided for @solicitudesDesde.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde'**
+  String get solicitudesDesde;
+
+  /// No description provided for @solicitudesReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get solicitudesReintentar;
+
+  /// No description provided for @solicitudesCancelarSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar la solicitud'**
+  String get solicitudesCancelarSolicitud;
+
+  /// No description provided for @solicitudesReportarProblema.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportar un problema'**
+  String get solicitudesReportarProblema;
+
+  /// No description provided for @solicitudesVolver.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get solicitudesVolver;
+
+  /// No description provided for @solicitudesPrecioFinalPagar.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio final a pagar'**
+  String get solicitudesPrecioFinalPagar;
+
+  /// No description provided for @solicitudesEjecutadas.
+  ///
+  /// In es, this message translates to:
+  /// **'{ejecutadas} ejecutadas × {precioHaVigente}/ha'**
+  String solicitudesEjecutadas(String ejecutadas, String precioHaVigente);
+
+  /// No description provided for @solicitudesPagasPilotoDirectamenteFuera.
+  ///
+  /// In es, this message translates to:
+  /// **'Le pagas al piloto directamente, fuera de la app. Agrocom no cobra ni suma nada a este monto.'**
+  String get solicitudesPagasPilotoDirectamenteFuera;
+
+  /// No description provided for @solicitudesReportasteProblemaCasoSoporte.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportaste un problema: {etiqueta}. Caso {numeroCaso}, {etiqueta2}. Soporte te responde en 24 horas hábiles.'**
+  String solicitudesReportasteProblemaCasoSoporte(
+    String etiqueta,
+    String numeroCaso,
+    String etiqueta2,
+  );
+
+  /// No description provided for @solicitudesCancelarSolicitud2.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cancelar la solicitud?'**
+  String get solicitudesCancelarSolicitud2;
+
+  /// No description provided for @solicitudesGratisLosPilotosCon.
+  ///
+  /// In es, this message translates to:
+  /// **'Es gratis. Los pilotos con ofertas verán que se cerró.'**
+  String get solicitudesGratisLosPilotosCon;
+
+  /// No description provided for @solicitudesMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Motivo'**
+  String get solicitudesMotivo;
+
+  /// No description provided for @solicitudesCancelarSolicitud3.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar solicitud'**
+  String get solicitudesCancelarSolicitud3;
+
+  /// No description provided for @solicitudesMisSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis solicitudes'**
+  String get solicitudesMisSolicitudes;
+
+  /// No description provided for @solicitudesSinConexionVesUltimo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Ves lo último que cargamos; puede estar desactualizado.'**
+  String get solicitudesSinConexionVesUltimo;
+
+  /// No description provided for @solicitudesTodos.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get solicitudesTodos;
+
+  /// No description provided for @solicitudesActivos.
+  ///
+  /// In es, this message translates to:
+  /// **'Activos'**
+  String get solicitudesActivos;
+
+  /// No description provided for @solicitudesListos.
+  ///
+  /// In es, this message translates to:
+  /// **'Listos'**
+  String get solicitudesListos;
+
+  /// No description provided for @solicitudesFumigadoConAgrocom.
+  ///
+  /// In es, this message translates to:
+  /// **'Fumigado con Agrocom'**
+  String get solicitudesFumigadoConAgrocom;
+
+  /// No description provided for @solicitarQueLoteFumigamos.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué lote fumigamos?'**
+  String get solicitarQueLoteFumigamos;
+
+  /// No description provided for @solicitarTocaMapaCadaEsquina.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca el mapa en cada esquina del lote. Con tres esquinas ya se calcula la superficie.'**
+  String get solicitarTocaMapaCadaEsquina;
+
+  /// No description provided for @solicitarBienMarcaDosEsquinas.
+  ///
+  /// In es, this message translates to:
+  /// **'Bien. Marca dos esquinas más.'**
+  String get solicitarBienMarcaDosEsquinas;
+
+  /// No description provided for @solicitarFaltaUnaEsquinaPara.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta una esquina para cerrar el lote.'**
+  String get solicitarFaltaUnaEsquinaPara;
+
+  /// No description provided for @solicitarContornoListoArrastraUna.
+  ///
+  /// In es, this message translates to:
+  /// **'Contorno listo. Arrastra una esquina para ajustarla o sigue agregando puntos.'**
+  String get solicitarContornoListoArrastraUna;
+
+  /// No description provided for @solicitarQueVamosAplicar.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué vamos a aplicar?'**
+  String get solicitarQueVamosAplicar;
+
+  /// No description provided for @solicitarCultivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultivo'**
+  String get solicitarCultivo;
+
+  /// No description provided for @solicitarProducto.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto'**
+  String get solicitarProducto;
+
+  /// No description provided for @solicitarCuandoNecesitas.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuándo lo necesitas?'**
+  String get solicitarCuandoNecesitas;
+
+  /// No description provided for @solicitarDatosParaLosPilotos.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos para los pilotos'**
+  String get solicitarDatosParaLosPilotos;
+
+  /// No description provided for @solicitarCuantoPagasPorHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuánto pagas por hectárea?'**
+  String get solicitarCuantoPagasPorHectarea;
+
+  /// No description provided for @solicitarEscribePrecioParaVer.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un precio para ver cuánto sería.'**
+  String get solicitarEscribePrecioParaVer;
+
+  /// No description provided for @solicitarHa2.
+  ///
+  /// In es, this message translates to:
+  /// **'{precio}/ha × {hectareas}'**
+  String solicitarHa2(String precio, String hectareas);
+
+  /// No description provided for @solicitarLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Lote'**
+  String get solicitarLote;
+
+  /// No description provided for @solicitarSuperficie2.
+  ///
+  /// In es, this message translates to:
+  /// **'Superficie'**
+  String get solicitarSuperficie2;
+
+  /// No description provided for @solicitarFecha.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get solicitarFecha;
+
+  /// No description provided for @solicitarReintentarPublicacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar publicación'**
+  String get solicitarReintentarPublicacion;
+
+  /// No description provided for @solicitarPublicarSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar solicitud'**
+  String get solicitarPublicarSolicitud;
+
+  /// No description provided for @solicitarContinuar.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get solicitarContinuar;
+
+  /// No description provided for @solicitarMapaParaDibujarContorno.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa para dibujar el contorno del lote. {vertices} esquinas marcadas.'**
+  String solicitarMapaParaDibujarContorno(int vertices);
+
+  /// No description provided for @solicitarMapaLoteElegido.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa. Lote elegido: {nombre}, {zona}.'**
+  String solicitarMapaLoteElegido(String nombre, String zona);
+
+  /// No description provided for @solicitarMapaTusLotesToca.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa de tus lotes. Toca uno para elegirlo.'**
+  String get solicitarMapaTusLotesToca;
+
+  /// No description provided for @solicitarArrastraParaMoverla.
+  ///
+  /// In es, this message translates to:
+  /// **'Arrastra para moverla'**
+  String get solicitarArrastraParaMoverla;
+
+  /// No description provided for @calificarComoFueServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo fue el servicio?'**
+  String get calificarComoFueServicio;
+
+  /// No description provided for @calificarComoFueServicio2.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo fue el servicio de {primerNombre}?'**
+  String calificarComoFueServicio2(String primerNombre);
+
+  /// No description provided for @calificarSinConexionCalificacionEnvio.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Tu calificación no se envió; prueba de nuevo cuando tengas señal.'**
+  String get calificarSinConexionCalificacionEnvio;
+
+  /// No description provided for @calificarPudimosEnviarCalificacionPrueba.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar tu calificación. Prueba de nuevo.'**
+  String get calificarPudimosEnviarCalificacionPrueba;
+
+  /// No description provided for @calificarReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get calificarReintentar;
+
+  /// No description provided for @calificarEnviarCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar calificación'**
+  String get calificarEnviarCalificacion;
+
+  /// No description provided for @calificarQueDestacas.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué destacas?'**
+  String get calificarQueDestacas;
+
+  /// No description provided for @calificarQuePuedeMejorar.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué se puede mejorar?'**
+  String get calificarQuePuedeMejorar;
+
+  /// No description provided for @accesoSesionVencioEntraNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión venció. Entra de nuevo.'**
+  String get accesoSesionVencioEntraNuevo;
+
+  /// No description provided for @accesoTusDatos.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus datos'**
+  String get accesoTusDatos;
+
+  /// No description provided for @accesoAcceso.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu acceso'**
+  String get accesoAcceso;
+
+  /// No description provided for @acceso118.
+  ///
+  /// In es, this message translates to:
+  /// **'118 ha × 64'**
+  String get acceso118;
+
+  /// No description provided for @acceso552.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs 7.552'**
+  String get acceso552;
+
+  /// No description provided for @inicioVerOtraSolicitudActiva.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver la otra solicitud activa'**
+  String get inicioVerOtraSolicitudActiva;
+
+  /// No description provided for @inicioVerLasOtrasSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver las otras {otrosActivos} solicitudes activas'**
+  String inicioVerLasOtrasSolicitudes(int otrosActivos);
+
+  /// No description provided for @inicioPorCalificar.
+  ///
+  /// In es, this message translates to:
+  /// **'Por calificar'**
+  String get inicioPorCalificar;
+
+  /// No description provided for @inicioAvisos.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos'**
+  String get inicioAvisos;
+
+  /// No description provided for @inicioHistorialReciente.
+  ///
+  /// In es, this message translates to:
+  /// **'Historial reciente'**
+  String get inicioHistorialReciente;
+
+  /// No description provided for @inicioVerTodo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver todo'**
+  String get inicioVerTodo;
+
+  /// No description provided for @inicioSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión'**
+  String get inicioSinConexion;
+
+  /// No description provided for @inicioPudimosCargarInicio.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tu inicio'**
+  String get inicioPudimosCargarInicio;
+
+  /// No description provided for @inicioRevisaSenalIntentaNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu señal e intenta de nuevo. Publicar una solicitud requiere conexión.'**
+  String get inicioRevisaSenalIntentaNuevo;
+
+  /// No description provided for @inicioIntentaNuevoMomento.
+  ///
+  /// In es, this message translates to:
+  /// **'Intenta de nuevo en un momento.'**
+  String get inicioIntentaNuevoMomento;
+
+  /// No description provided for @comunEnviando.
+  ///
+  /// In es, this message translates to:
+  /// **'{texto}, enviando'**
+  String comunEnviando(String texto);
+
+  /// No description provided for @comunFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto'**
+  String get comunFoto;
+
+  /// No description provided for @comunEscribePrecioParaVer.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un precio para ver el total.'**
+  String get comunEscribePrecioParaVer;
+
+  /// No description provided for @comunTotalEstimadoPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Total estimado: {valor} por {hectareas}'**
+  String comunTotalEstimadoPor(String valor, String hectareas);
+
+  /// No description provided for @solicitudesPrecioAcordado.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio acordado'**
+  String get solicitudesPrecioAcordado;
+
+  /// No description provided for @solicitudesPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu precio'**
+  String get solicitudesPrecio;
+
+  /// No description provided for @solicitudesSolicitud2.
+  ///
+  /// In es, this message translates to:
+  /// **'la solicitud'**
+  String get solicitudesSolicitud2;
+
+  /// No description provided for @solicitudesGuardarPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar precio'**
+  String get solicitudesGuardarPrecio;
+
+  /// No description provided for @solicitudesPublicada.
+  ///
+  /// In es, this message translates to:
+  /// **'{zona} · publicada el {publicadaEn}'**
+  String solicitudesPublicada(String zona, String publicadaEn);
+
+  /// No description provided for @solicitudesSinConexionGuardoCambio.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. No se guardó el cambio; inténtalo con señal.'**
+  String get solicitudesSinConexionGuardoCambio;
+
+  /// No description provided for @solicitudesPudimosCompletarOperacion.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos completar la operación.'**
+  String get solicitudesPudimosCompletarOperacion;
+
+  /// No description provided for @solicitudesSinConexionFaltanCargar.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Faltan cargar tu calificación y el reclamo.'**
+  String get solicitudesSinConexionFaltanCargar;
+
+  /// No description provided for @solicitudesPudimosCargarCalificacionReclamo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tu calificación y el reclamo.'**
+  String get solicitudesPudimosCargarCalificacionReclamo;
+
+  /// No description provided for @solicitudesCancelasteEstaSolicitudPuedes.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelaste esta solicitud. Puedes publicar otra desde «Solicitar».'**
+  String get solicitudesCancelasteEstaSolicitudPuedes;
+
+  /// No description provided for @solicitudesCancelasteEstaSolicitudPuedes2.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelaste esta solicitud: {motivoCancelacion}. Puedes publicar otra desde «Solicitar».'**
+  String solicitudesCancelasteEstaSolicitudPuedes2(String motivoCancelacion);
+
+  /// No description provided for @solicitudesEstado.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado'**
+  String get solicitudesEstado;
+
+  /// No description provided for @solicitudesQuienFumiga.
+  ///
+  /// In es, this message translates to:
+  /// **'Quién fumiga'**
+  String get solicitudesQuienFumiga;
+
+  /// No description provided for @solicitudesQuePediste.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que pediste'**
+  String get solicitudesQuePediste;
+
+  /// No description provided for @solicitudesProducto.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto'**
+  String get solicitudesProducto;
+
+  /// No description provided for @solicitudesFechaDeseada.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha deseada'**
+  String get solicitudesFechaDeseada;
+
+  /// No description provided for @solicitudesAccesos.
+  ///
+  /// In es, this message translates to:
+  /// **'Accesos'**
+  String get solicitudesAccesos;
+
+  /// No description provided for @solicitudesObservaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Observaciones'**
+  String get solicitudesObservaciones;
+
+  /// No description provided for @solicitudesCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu calificación'**
+  String get solicitudesCalificacion;
+
+  /// No description provided for @solicitudesTusSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'tus solicitudes'**
+  String get solicitudesTusSolicitudes;
+
+  /// No description provided for @solicitudesTodaviaPublicasteSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no publicaste solicitudes'**
+  String get solicitudesTodaviaPublicasteSolicitudes;
+
+  /// No description provided for @solicitudesHaySolicitudesCurso.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay solicitudes en curso'**
+  String get solicitudesHaySolicitudesCurso;
+
+  /// No description provided for @solicitudesTodaviaHayServiciosTerminados.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay servicios terminados'**
+  String get solicitudesTodaviaHayServiciosTerminados;
+
+  /// No description provided for @solicitudesCuandoPilotoTerminaQueda.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando un piloto termina, queda guardado acá con sus fotos y el precio final.'**
+  String get solicitudesCuandoPilotoTerminaQueda;
+
+  /// No description provided for @solicitudesPublicaLoteComparaLas.
+  ///
+  /// In es, this message translates to:
+  /// **'Publica un lote, compara las ofertas de los pilotos y elige.'**
+  String get solicitudesPublicaLoteComparaLas;
+
+  /// No description provided for @solicitarErrorHectareasVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'Indica cuántas hectáreas quieres fumigar.'**
+  String get solicitarErrorHectareasVacio;
+
+  /// No description provided for @solicitarErrorNoEsNumeroHectareas.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un número, por ejemplo 85,5.'**
+  String get solicitarErrorNoEsNumeroHectareas;
+
+  /// No description provided for @solicitarErrorHectareasNoPositivas.
+  ///
+  /// In es, this message translates to:
+  /// **'La superficie tiene que ser mayor a 0.'**
+  String get solicitarErrorHectareasNoPositivas;
+
+  /// No description provided for @solicitarErrorDosDecimales.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa como máximo dos decimales.'**
+  String get solicitarErrorDosDecimales;
+
+  /// No description provided for @solicitarErrorHectareasMaximas.
+  ///
+  /// In es, this message translates to:
+  /// **'Una solicitud admite hasta {maximo} ha.'**
+  String solicitarErrorHectareasMaximas(String maximo);
+
+  /// No description provided for @solicitarErrorHectareasSobreLote.
+  ///
+  /// In es, this message translates to:
+  /// **'El lote tiene {tope} ha: no puedes pedir más.'**
+  String solicitarErrorHectareasSobreLote(String tope);
+
+  /// No description provided for @solicitarErrorPrecioVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'Propón cuánto pagarías por hectárea.'**
+  String get solicitarErrorPrecioVacio;
+
+  /// No description provided for @solicitarErrorNoEsNumeroPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un número, por ejemplo 120.'**
+  String get solicitarErrorNoEsNumeroPrecio;
+
+  /// No description provided for @solicitarErrorPrecioNoPositivo.
+  ///
+  /// In es, this message translates to:
+  /// **'El precio tiene que ser mayor a 0.'**
+  String get solicitarErrorPrecioNoPositivo;
+
+  /// No description provided for @solicitarHectareasDelContorno.
+  ///
+  /// In es, this message translates to:
+  /// **'Del contorno salen {hectareas}. Ajústalas si vas a fumigar otra superficie.'**
+  String solicitarHectareasDelContorno(String hectareas);
+
+  /// No description provided for @solicitarHectareasDelLote.
+  ///
+  /// In es, this message translates to:
+  /// **'El lote tiene {hectareas}. Ajústalas si vas a fumigar otra superficie.'**
+  String solicitarHectareasDelLote(String hectareas);
+
+  /// No description provided for @solicitarMisLotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis lotes'**
+  String get solicitarMisLotes;
+
+  /// No description provided for @solicitarDibujar.
+  ///
+  /// In es, this message translates to:
+  /// **'Dibujar'**
+  String get solicitarDibujar;
+
+  /// No description provided for @solicitarEnviandoSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviando la solicitud'**
+  String get solicitarEnviandoSolicitud;
+
+  /// No description provided for @solicitarPasoLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Lote'**
+  String get solicitarPasoLote;
+
+  /// No description provided for @solicitarPasoAplicacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Aplicación'**
+  String get solicitarPasoAplicacion;
+
+  /// No description provided for @solicitarPasoCuando.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuándo'**
+  String get solicitarPasoCuando;
+
+  /// No description provided for @solicitarPasoPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio'**
+  String get solicitarPasoPrecio;
+
+  /// No description provided for @accesoErrorCredenciales.
+  ///
+  /// In es, this message translates to:
+  /// **'El usuario o la contraseña no coinciden. Revísalos e intenta de nuevo.'**
+  String get accesoErrorCredenciales;
+
+  /// No description provided for @accesoErrorSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Lo que escribiste sigue aquí: intenta de nuevo cuando tengas señal.'**
+  String get accesoErrorSinConexion;
+
+  /// No description provided for @accesoErrorDesconocido.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos completar la operación. Intenta de nuevo en un momento.'**
+  String get accesoErrorDesconocido;
+
+  /// No description provided for @accesoPortadaPublicaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Publica tu lote en el mapa'**
+  String get accesoPortadaPublicaTitulo;
+
+  /// No description provided for @accesoPortadaPublicaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca el área, define tu precio por hectárea y recibe ofertas de pilotos cercanos.'**
+  String get accesoPortadaPublicaDetalle;
+
+  /// No description provided for @accesoPortadaNegociaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Negocia hasta 5 rondas'**
+  String get accesoPortadaNegociaTitulo;
+
+  /// No description provided for @accesoPortadaNegociaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cada piloto acepta tu precio o contraoferta. Tú eliges con quién trabajar.'**
+  String get accesoPortadaNegociaDetalle;
+
+  /// No description provided for @accesoPortadaPagasTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Pagas lo que se fumigó'**
+  String get accesoPortadaPagasTitulo;
+
+  /// No description provided for @accesoPortadaPagasDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio final = hectáreas ejecutadas × precio acordado. El pago es directo con el piloto.'**
+  String get accesoPortadaPagasDetalle;
+
+  /// No description provided for @historialMesEne.
+  ///
+  /// In es, this message translates to:
+  /// **'Ene'**
+  String get historialMesEne;
+
+  /// No description provided for @historialMesFeb.
+  ///
+  /// In es, this message translates to:
+  /// **'Feb'**
+  String get historialMesFeb;
+
+  /// No description provided for @historialMesMar.
+  ///
+  /// In es, this message translates to:
+  /// **'Mar'**
+  String get historialMesMar;
+
+  /// No description provided for @historialMesAbr.
+  ///
+  /// In es, this message translates to:
+  /// **'Abr'**
+  String get historialMesAbr;
+
+  /// No description provided for @historialMesMay.
+  ///
+  /// In es, this message translates to:
+  /// **'May'**
+  String get historialMesMay;
+
+  /// No description provided for @historialMesJun.
+  ///
+  /// In es, this message translates to:
+  /// **'Jun'**
+  String get historialMesJun;
+
+  /// No description provided for @historialMesJul.
+  ///
+  /// In es, this message translates to:
+  /// **'Jul'**
+  String get historialMesJul;
+
+  /// No description provided for @historialMesAgo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ago'**
+  String get historialMesAgo;
+
+  /// No description provided for @historialMesSep.
+  ///
+  /// In es, this message translates to:
+  /// **'Sep'**
+  String get historialMesSep;
+
+  /// No description provided for @historialMesOct.
+  ///
+  /// In es, this message translates to:
+  /// **'Oct'**
+  String get historialMesOct;
+
+  /// No description provided for @historialMesNov.
+  ///
+  /// In es, this message translates to:
+  /// **'Nov'**
+  String get historialMesNov;
+
+  /// No description provided for @historialMesDic.
+  ///
+  /// In es, this message translates to:
+  /// **'Dic'**
+  String get historialMesDic;
+
+  /// No description provided for @solicitudesVerOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver {cantidad, plural, =1{1 oferta} other{{cantidad} ofertas}}'**
+  String solicitudesVerOfertas(int cantidad);
+
+  /// No description provided for @solicitudesPilotosOfertaron.
+  ///
+  /// In es, this message translates to:
+  /// **'{cantidad, plural, =1{1 piloto ofertó} other{{cantidad} pilotos ofertaron}}. Compáralas y elige la que prefieras.'**
+  String solicitudesPilotosOfertaron(int cantidad);
+
+  /// No description provided for @solicitudesComentarioEntreComillas.
+  ///
+  /// In es, this message translates to:
+  /// **'«{comentario}»'**
+  String solicitudesComentarioEntreComillas(String comentario);
+
+  /// No description provided for @historialEnServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'en {cantidad, plural, =1{1 servicio} other{{cantidad} servicios}}'**
+  String historialEnServicios(int cantidad);
+
+  /// No description provided for @historialSemanticaHectareasPorMes.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas fumigadas por mes: {detalle}'**
+  String historialSemanticaHectareasPorMes(String detalle);
+
+  /// No description provided for @calificarTocaEstrella.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca una estrella'**
+  String get calificarTocaEstrella;
+
+  /// No description provided for @calificarMalo.
+  ///
+  /// In es, this message translates to:
+  /// **'Malo'**
+  String get calificarMalo;
+
+  /// No description provided for @calificarRegular.
+  ///
+  /// In es, this message translates to:
+  /// **'Regular'**
+  String get calificarRegular;
+
+  /// No description provided for @calificarBueno.
+  ///
+  /// In es, this message translates to:
+  /// **'Bueno'**
+  String get calificarBueno;
+
+  /// No description provided for @calificarMuyBueno.
+  ///
+  /// In es, this message translates to:
+  /// **'Muy bueno'**
+  String get calificarMuyBueno;
+
+  /// No description provided for @calificarExcelente.
+  ///
+  /// In es, this message translates to:
+  /// **'Excelente'**
+  String get calificarExcelente;
+
+  /// No description provided for @terrenosSubePublicar.
+  ///
+  /// In es, this message translates to:
+  /// **'se sube al publicar'**
+  String get terrenosSubePublicar;
+
+  /// No description provided for @terrenosPudoSubir.
+  ///
+  /// In es, this message translates to:
+  /// **'no se pudo subir'**
+  String get terrenosPudoSubir;
+
+  /// No description provided for @terrenosFotosDelTerreno.
+  ///
+  /// In es, this message translates to:
+  /// **'Fotos del terreno'**
+  String get terrenosFotosDelTerreno;
+
+  /// No description provided for @terrenosClienteSubioFotosDel.
+  ///
+  /// In es, this message translates to:
+  /// **'El cliente no subió fotos del terreno. Pregúntale por el estado del lote en el chat si te eligen.'**
+  String get terrenosClienteSubioFotosDel;
+
+  /// No description provided for @terrenosFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto {_actual} de {fotos}'**
+  String terrenosFoto(int _actual, int fotos);
+
+  /// No description provided for @terrenosCerrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get terrenosCerrar;
+
+  /// No description provided for @terrenosFotos.
+  ///
+  /// In es, this message translates to:
+  /// **'{fotos} de {maximo} fotos'**
+  String terrenosFotos(int fotos, int maximo);
+
+  /// No description provided for @terrenosAgregaFotosDelEstado.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrega fotos del estado del terreno: el piloto las ve antes de ofertar y ajusta mejor su precio.'**
+  String get terrenosAgregaFotosDelEstado;
+
+  /// No description provided for @terrenosSubenCuandoPubliquesSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'Se suben cuando publiques la solicitud.'**
+  String get terrenosSubenCuandoPubliquesSolicitud;
+
+  /// No description provided for @terrenosPilotoLasAntesOfertar.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto las ve antes de ofertar.'**
+  String get terrenosPilotoLasAntesOfertar;
+
+  /// No description provided for @terrenosTomarUnaFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomar una foto'**
+  String get terrenosTomarUnaFoto;
+
+  /// No description provided for @terrenosElegirGaleria.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir de la galería'**
+  String get terrenosElegirGaleria;
+
+  /// No description provided for @terrenosAgregarUnaFotoDel.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar una foto del terreno'**
+  String get terrenosAgregarUnaFotoDel;
+
+  /// No description provided for @terrenosAgregar.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar'**
+  String get terrenosAgregar;
+
+  /// No description provided for @proveedorDronDronRegistrado.
+  ///
+  /// In es, this message translates to:
+  /// **'1 dron registrado'**
+  String get proveedorDronDronRegistrado;
+
+  /// No description provided for @proveedorDronDronesRegistrados.
+  ///
+  /// In es, this message translates to:
+  /// **'{drones} drones registrados'**
+  String proveedorDronDronesRegistrados(int drones);
+
+  /// No description provided for @proveedorDronMisDrones.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis drones'**
+  String get proveedorDronMisDrones;
+
+  /// No description provided for @proveedorDronPudimosCargarTusDrones.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus drones'**
+  String get proveedorDronPudimosCargarTusDrones;
+
+  /// No description provided for @proveedorDronRevisaConexionVolveIntentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisá la conexión y volvé a intentar.'**
+  String get proveedorDronRevisaConexionVolveIntentar;
+
+  /// No description provided for @proveedorDronTodaviaRegistrasteDrones.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no registraste drones'**
+  String get proveedorDronTodaviaRegistrasteDrones;
+
+  /// No description provided for @proveedorDronSinDronAprobadoLlegan.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin un dron aprobado no llegan ofertas. Cada dron lo aprueba un administrador.'**
+  String get proveedorDronSinDronAprobadoLlegan;
+
+  /// No description provided for @referenciasBuscandoPrecioReferencia.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscando el precio de referencia'**
+  String get referenciasBuscandoPrecioReferencia;
+
+  /// No description provided for @referenciasTodaviaHayPrecioReferencia.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay un precio de referencia para esta aplicación. Escribe el que te parezca justo.'**
+  String get referenciasTodaviaHayPrecioReferencia;
+
+  /// No description provided for @referenciasSinConexionParaTraer.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión para traer el precio de referencia.'**
+  String get referenciasSinConexionParaTraer;
+
+  /// No description provided for @referenciasPudimosTraerPrecioReferencia.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos traer el precio de referencia.'**
+  String get referenciasPudimosTraerPrecioReferencia;
+
+  /// No description provided for @referenciasReferenciaPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Referencia: {precio} por ha'**
+  String referenciasReferenciaPor(String precio);
+
+  /// No description provided for @referenciasEstasUsandoEstePrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Estás usando este precio'**
+  String get referenciasEstasUsandoEstePrecio;
+
+  /// No description provided for @referenciasUsar.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar'**
+  String get referenciasUsar;
+
+  /// No description provided for @referenciasReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get referenciasReintentar;
+
+  /// No description provided for @pagoPagoConfirmado.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago confirmado. {detalle}'**
+  String pagoPagoConfirmado(String detalle);
+
+  /// No description provided for @pagoPagoConfirmado2.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago confirmado'**
+  String get pagoPagoConfirmado2;
+
+  /// No description provided for @pagoQuedoRegistradoClienteHay.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya quedó registrado y el cliente lo ve. No hay nada más que hacer.'**
+  String get pagoQuedoRegistradoClienteHay;
+
+  /// No description provided for @pagoPilotoConfirmoQueRecibio.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto confirmó que recibió el pago. Gracias por usar Agrocom.'**
+  String get pagoPilotoConfirmoQueRecibio;
+
+  /// No description provided for @pagoPudimosRevisarPago.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos revisar el pago.'**
+  String get pagoPudimosRevisarPago;
+
+  /// No description provided for @pagoReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get pagoReintentar;
+
+  /// No description provided for @pagoPagoPendiente.
+  ///
+  /// In es, this message translates to:
+  /// **'Pago pendiente'**
+  String get pagoPagoPendiente;
+
+  /// No description provided for @pagoPagasPilotoDirectamenteCuando.
+  ///
+  /// In es, this message translates to:
+  /// **'Le pagas al piloto directamente. Cuando él confirme que lo recibió, lo verás aquí.'**
+  String get pagoPagasPilotoDirectamenteCuando;
+
+  /// No description provided for @pagoConfirmasQueRecibistePago.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Confirmas que recibiste el pago?'**
+  String get pagoConfirmasQueRecibistePago;
+
+  /// No description provided for @pagoSoloPuedeConfirmarUna.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo se puede confirmar una vez. El cliente verá que el pago quedó confirmado.'**
+  String get pagoSoloPuedeConfirmarUna;
+
+  /// No description provided for @pagoTodavia.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no'**
+  String get pagoTodavia;
+
+  /// No description provided for @pagoRecibi.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, lo recibí'**
+  String get pagoRecibi;
+
+  /// No description provided for @pagoPagaron.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Ya te pagaron?'**
+  String get pagoPagaron;
+
+  /// No description provided for @pagoClientePagaDirectamenteCuando.
+  ///
+  /// In es, this message translates to:
+  /// **'El cliente te paga directamente. Cuando lo recibas, confírmalo aquí: la app no cobra ni mueve dinero.'**
+  String get pagoClientePagaDirectamenteCuando;
+
+  /// No description provided for @pagoComoPagoOpcional.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo te pagó? (opcional)'**
+  String get pagoComoPagoOpcional;
+
+  /// No description provided for @pagoPudimosConfirmarPago.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos confirmar el pago.'**
+  String get pagoPudimosConfirmarPago;
+
+  /// No description provided for @pagoRecibiPago.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya recibí el pago'**
+  String get pagoRecibiPago;
+
+  /// No description provided for @marketplaceAccesoFumigacionConDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Fumigación con dron'**
+  String get marketplaceAccesoFumigacionConDron;
+
+  /// No description provided for @marketplaceAccesoFumigacionConDronPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Fumigación con dron, al precio que acuerdes'**
+  String get marketplaceAccesoFumigacionConDronPrecio;
+
+  /// No description provided for @marketplaceAccesoPublicaLoteRecibeOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Publica tu lote, recibe ofertas de pilotos y elige. El pago es directo con el piloto.'**
+  String get marketplaceAccesoPublicaLoteRecibeOfertas;
+
+  /// No description provided for @marketplaceAccesoComoVasUsarAgrocom.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo vas a usar Agrocom?'**
+  String get marketplaceAccesoComoVasUsarAgrocom;
+
+  /// No description provided for @marketplaceAccesoEligeRol.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige tu rol'**
+  String get marketplaceAccesoEligeRol;
+
+  /// No description provided for @marketplaceAccesoContinuarComo.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar como {enBoton}'**
+  String marketplaceAccesoContinuarComo(String enBoton);
+
+  /// No description provided for @marketplaceAccesoTengoCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tengo cuenta'**
+  String get marketplaceAccesoTengoCuenta;
+
+  /// No description provided for @fotoPerfilFotoPerfilTocaPara.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto de perfil de {nombre}. Toca para cambiarla'**
+  String fotoPerfilFotoPerfilTocaPara(String nombre);
+
+  /// No description provided for @fotoPerfilSinFotoPerfilToca.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin foto de perfil. Toca para agregar una'**
+  String get fotoPerfilSinFotoPerfilToca;
+
+  /// No description provided for @fotoPerfilSubiendoFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Subiendo foto…'**
+  String get fotoPerfilSubiendoFoto;
+
+  /// No description provided for @fotoPerfilCambiarFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar foto'**
+  String get fotoPerfilCambiarFoto;
+
+  /// No description provided for @fotoPerfilAgregarFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar foto'**
+  String get fotoPerfilAgregarFoto;
+
+  /// No description provided for @fotoPerfilQuitar.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar'**
+  String get fotoPerfilQuitar;
+
+  /// No description provided for @fotoPerfilConUnaFotoCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Con una foto, el cliente te reconoce al llegar al lote.'**
+  String get fotoPerfilConUnaFotoCliente;
+
+  /// No description provided for @fotoPerfilReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get fotoPerfilReintentar;
+
+  /// No description provided for @fotoPerfilTomarUnaFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomar una foto'**
+  String get fotoPerfilTomarUnaFoto;
+
+  /// No description provided for @fotoPerfilElegirGaleria.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir de la galería'**
+  String get fotoPerfilElegirGaleria;
+
+  /// No description provided for @fotoPerfilQuitarFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar la foto'**
+  String get fotoPerfilQuitarFoto;
+
+  /// No description provided for @fotoSinConexionReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Revisa tu señal y vuelve a intentar.'**
+  String get fotoSinConexionReintentar;
+
+  /// No description provided for @fotoPerfilNoPreparada.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos preparar la foto. Prueba con otra.'**
+  String get fotoPerfilNoPreparada;
+
+  /// No description provided for @fotoPerfilQuitada.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitamos tu foto. Verás tus iniciales.'**
+  String get fotoPerfilQuitada;
+
+  /// No description provided for @fotoPerfilNoQuitada.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos quitar la foto. Intenta de nuevo.'**
+  String get fotoPerfilNoQuitada;
+
+  /// No description provided for @fotoPerfilActualizada.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo: tu foto de perfil está actualizada.'**
+  String get fotoPerfilActualizada;
+
+  /// No description provided for @fotoPerfilNoSubida.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos subir la foto. Intenta de nuevo.'**
+  String get fotoPerfilNoSubida;
+
+  /// No description provided for @pagoNoPudimosRevisar.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos revisar el pago. Intenta de nuevo.'**
+  String get pagoNoPudimosRevisar;
+
+  /// No description provided for @pagoNoPudimosConfirmar.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos confirmar el pago. Tu confirmación no se perdió: intenta de nuevo.'**
+  String get pagoNoPudimosConfirmar;
+
+  /// No description provided for @pagoSoloTitular.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo el titular del proveedor puede confirmar el pago. Pídele que lo haga desde su cuenta.'**
+  String get pagoSoloTitular;
+
+  /// No description provided for @terrenosFotosMaximo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tienes {maximo} fotos, el máximo. Quita una para agregar otra.'**
+  String terrenosFotosMaximo(int maximo);
+
+  /// No description provided for @terrenosFotoNoPreparada.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos preparar la foto. Prueba con otra.'**
+  String get terrenosFotoNoPreparada;
+
+  /// No description provided for @terrenosFotoGuardada.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto guardada.'**
+  String get terrenosFotoGuardada;
+
+  /// No description provided for @terrenosFotoNoSubida.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos subir la foto. Intenta de nuevo.'**
+  String get terrenosFotoNoSubida;
+
+  /// No description provided for @terrenosFotoQuitada.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitamos la foto.'**
+  String get terrenosFotoQuitada;
+
+  /// No description provided for @terrenosFotoNoQuitada.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos quitar la foto. Intenta de nuevo.'**
+  String get terrenosFotoNoQuitada;
+
+  /// No description provided for @fotoMuyPesada.
+  ///
+  /// In es, this message translates to:
+  /// **'La foto es muy pesada. Elige otra o toma una nueva.'**
+  String get fotoMuyPesada;
+
+  /// No description provided for @componentesEnviando.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviando…'**
+  String get componentesEnviando;
+
+  /// No description provided for @componentesAceptarServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar servicio'**
+  String get componentesAceptarServicio;
+
+  /// No description provided for @uiMapaDelLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa del lote {nombre}, {zona}'**
+  String uiMapaDelLote(String nombre, String zona);
+
+  /// No description provided for @uiMapaLotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa de lotes'**
+  String get uiMapaLotes;
+
+  /// No description provided for @uiEstado.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado: {etiqueta}'**
+  String uiEstado(String etiqueta);
+
+  /// No description provided for @uiCurso.
+  ///
+  /// In es, this message translates to:
+  /// **'{texto}, en curso'**
+  String uiCurso(String texto);
+
+  /// No description provided for @uiMostrarContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Mostrar contraseña'**
+  String get uiMostrarContrasena;
+
+  /// No description provided for @uiOcultarContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocultar contraseña'**
+  String get uiOcultarContrasena;
+
+  /// No description provided for @proveedorDronBateriaCiclosPorCiento.
+  ///
+  /// In es, this message translates to:
+  /// **'Batería: {ciclosBateria} de {cicloMaximoBateria} ciclos, {porcentaje} por ciento de la vida útil'**
+  String proveedorDronBateriaCiclosPorCiento(
+    int ciclosBateria,
+    int cicloMaximoBateria,
+    int porcentaje,
+  );
+
+  /// No description provided for @proveedorDronCiclosBateria.
+  ///
+  /// In es, this message translates to:
+  /// **'CICLOS DE BATERÍA'**
+  String get proveedorDronCiclosBateria;
+
+  /// No description provided for @proveedorDronDe.
+  ///
+  /// In es, this message translates to:
+  /// **' de {cicloMaximoBateria}'**
+  String proveedorDronDe(int cicloMaximoBateria);
+
+  /// No description provided for @proveedorDronBateriaCumplioVidaUtil.
+  ///
+  /// In es, this message translates to:
+  /// **'La batería cumplió su vida útil. Hay que cambiarla.'**
+  String get proveedorDronBateriaCumplioVidaUtil;
+
+  /// No description provided for @proveedorDronQuedanCiclosPlanificaRecambio.
+  ///
+  /// In es, this message translates to:
+  /// **'Quedan {ciclosRestantes} ciclos. Planificá el recambio.'**
+  String proveedorDronQuedanCiclosPlanificaRecambio(int ciclosRestantes);
+
+  /// No description provided for @proveedorDronQuedanCiclosVidaUtil.
+  ///
+  /// In es, this message translates to:
+  /// **'Quedan {ciclosRestantes} ciclos de vida útil.'**
+  String proveedorDronQuedanCiclosVidaUtil(int ciclosRestantes);
+
+  /// No description provided for @proveedorPerfilEstasHabilitadoParaRecibir.
+  ///
+  /// In es, this message translates to:
+  /// **'Estás habilitado para recibir ofertas.'**
+  String get proveedorPerfilEstasHabilitadoParaRecibir;
+
+  /// No description provided for @proveedorPerfilAdministradorEstaRevisandoTus.
+  ///
+  /// In es, this message translates to:
+  /// **'Un administrador está revisando tus datos. Te avisamos cuando puedas recibir ofertas.'**
+  String get proveedorPerfilAdministradorEstaRevisandoTus;
+
+  /// No description provided for @proveedorPerfilRecibisOfertasMientrasDure.
+  ///
+  /// In es, this message translates to:
+  /// **'No recibís ofertas mientras dure la suspensión.'**
+  String get proveedorPerfilRecibisOfertasMientrasDure;
+
+  /// No description provided for @proveedorPerfilSolicitudAproboPodesCorregir.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu solicitud no se aprobó. Podés corregir los datos y reenviarla.'**
+  String get proveedorPerfilSolicitudAproboPodesCorregir;
+
+  /// No description provided for @proveedorPerfilMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Motivo: {motivo}'**
+  String proveedorPerfilMotivo(String motivo);
+
+  /// No description provided for @proveedorPerfilServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'SERVICIOS'**
+  String get proveedorPerfilServicios;
+
+  /// No description provided for @proveedorPerfilHectareas.
+  ///
+  /// In es, this message translates to:
+  /// **'HECTÁREAS'**
+  String get proveedorPerfilHectareas;
+
+  /// No description provided for @proveedorPerfilCancelacion.
+  ///
+  /// In es, this message translates to:
+  /// **'CANCELACIÓN'**
+  String get proveedorPerfilCancelacion;
+
+  /// No description provided for @proveedorPerfilVencio.
+  ///
+  /// In es, this message translates to:
+  /// **'Venció el {vence}'**
+  String proveedorPerfilVencio(String vence);
+
+  /// No description provided for @proveedorPerfilVence.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence el {vence}'**
+  String proveedorPerfilVence(String vence);
+
+  /// No description provided for @proveedorPerfilCalificacionPromedioSobreCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificación promedio {promedio} de 5, sobre {total} calificaciones'**
+  String proveedorPerfilCalificacionPromedioSobreCalificaciones(
+    String promedio,
+    int total,
+  );
+
+  /// No description provided for @proveedorPerfilCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'1 calificación'**
+  String get proveedorPerfilCalificacion;
+
+  /// No description provided for @proveedorPerfilCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'{total} calificaciones'**
+  String proveedorPerfilCalificaciones(int total);
+
+  /// No description provided for @terrenosFotoDelTerreno.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto {numero} del terreno, {estado}'**
+  String terrenosFotoDelTerreno(int numero, String estado);
+
+  /// No description provided for @terrenosReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get terrenosReintentar;
+
+  /// No description provided for @terrenosQuitarFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar la foto {numero}'**
+  String terrenosQuitarFoto(int numero);
+
+  /// No description provided for @proveedorAccesoEntraCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Entra a tu cuenta'**
+  String get proveedorAccesoEntraCuenta;
+
+  /// No description provided for @proveedorAccesoConUsuarioContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Con tu usuario y tu contraseña.'**
+  String get proveedorAccesoConUsuarioContrasena;
+
+  /// No description provided for @proveedorAccesoUsuario.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario'**
+  String get proveedorAccesoUsuario;
+
+  /// No description provided for @proveedorAccesoEscribeUsuario.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe tu usuario.'**
+  String get proveedorAccesoEscribeUsuario;
+
+  /// No description provided for @proveedorAccesoContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña'**
+  String get proveedorAccesoContrasena;
+
+  /// No description provided for @proveedorAccesoEscribeContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe tu contraseña.'**
+  String get proveedorAccesoEscribeContrasena;
+
+  /// No description provided for @proveedorAccesoEntrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Entrar'**
+  String get proveedorAccesoEntrar;
+
+  /// No description provided for @proveedorAccesoSoyPilotoQuieroRegistrarme.
+  ///
+  /// In es, this message translates to:
+  /// **'Soy piloto y quiero registrarme'**
+  String get proveedorAccesoSoyPilotoQuieroRegistrarme;
+
+  /// No description provided for @proveedorAccesoDatosPersonales.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos personales'**
+  String get proveedorAccesoDatosPersonales;
+
+  /// No description provided for @proveedorAccesoLicencia.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu licencia'**
+  String get proveedorAccesoLicencia;
+
+  /// No description provided for @proveedorAccesoEquipo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu equipo'**
+  String get proveedorAccesoEquipo;
+
+  /// No description provided for @proveedorAccesoFotosDelDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Fotos del dron'**
+  String get proveedorAccesoFotosDelDron;
+
+  /// No description provided for @proveedorAccesoAsiIdentificamosContactanLos.
+  ///
+  /// In es, this message translates to:
+  /// **'Así te identificamos y te contactan los clientes.'**
+  String get proveedorAccesoAsiIdentificamosContactanLos;
+
+  /// No description provided for @proveedorAccesoAdministradorRevisaAntesQue.
+  ///
+  /// In es, this message translates to:
+  /// **'Un administrador la revisa antes de que veas solicitudes.'**
+  String get proveedorAccesoAdministradorRevisaAntesQue;
+
+  /// No description provided for @proveedorAccesoDronVehiculoRevisamosAntes.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu dron es tu vehículo: lo revisamos antes de aprobarlo.'**
+  String get proveedorAccesoDronVehiculoRevisamosAntes;
+
+  /// No description provided for @proveedorAccesoFrontalLateralPlacaSerie.
+  ///
+  /// In es, this message translates to:
+  /// **'Frontal, lateral y placa de serie.'**
+  String get proveedorAccesoFrontalLateralPlacaSerie;
+
+  /// No description provided for @proveedorAccesoEligeFecha.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige la fecha'**
+  String get proveedorAccesoEligeFecha;
+
+  /// No description provided for @proveedorAccesoEligeUnaFecha.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige una fecha.'**
+  String get proveedorAccesoEligeUnaFecha;
+
+  /// No description provided for @proveedorAccesoCarnetIdentidad.
+  ///
+  /// In es, this message translates to:
+  /// **'Carnet de identidad'**
+  String get proveedorAccesoCarnetIdentidad;
+
+  /// No description provided for @proveedorAccesoFechaNacimiento.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha de nacimiento'**
+  String get proveedorAccesoFechaNacimiento;
+
+  /// No description provided for @proveedorAccesoTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono'**
+  String get proveedorAccesoTelefono;
+
+  /// No description provided for @proveedorAccesoConEsteUsuarioEntras.
+  ///
+  /// In es, this message translates to:
+  /// **'Con este usuario entras a la app. No usa correo.'**
+  String get proveedorAccesoConEsteUsuarioEntras;
+
+  /// No description provided for @proveedorAccesoUsaMenosCaracteres.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa al menos 8 caracteres.'**
+  String get proveedorAccesoUsaMenosCaracteres;
+
+  /// No description provided for @proveedorAccesoNumeroLicenciaPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Número de licencia de piloto'**
+  String get proveedorAccesoNumeroLicenciaPiloto;
+
+  /// No description provided for @proveedorAccesoVence.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence el'**
+  String get proveedorAccesoVence;
+
+  /// No description provided for @proveedorAccesoCategoriaHabilitacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Categoría de habilitación'**
+  String get proveedorAccesoCategoriaHabilitacion;
+
+  /// No description provided for @proveedorAccesoComoFiguraLicencia.
+  ///
+  /// In es, this message translates to:
+  /// **'Como figura en tu licencia.'**
+  String get proveedorAccesoComoFiguraLicencia;
+
+  /// No description provided for @proveedorAccesoRevisionTerminarRegistro.
+  ///
+  /// In es, this message translates to:
+  /// **'En revisión al terminar el registro'**
+  String get proveedorAccesoRevisionTerminarRegistro;
+
+  /// No description provided for @proveedorAccesoNumeroSerie.
+  ///
+  /// In es, this message translates to:
+  /// **'Número de serie'**
+  String get proveedorAccesoNumeroSerie;
+
+  /// No description provided for @proveedorAccesoAnoOpcional.
+  ///
+  /// In es, this message translates to:
+  /// **'Año (opcional)'**
+  String get proveedorAccesoAnoOpcional;
+
+  /// No description provided for @proveedorAccesoCapacidadDelTanqueLitros.
+  ///
+  /// In es, this message translates to:
+  /// **'Capacidad del tanque (litros)'**
+  String get proveedorAccesoCapacidadDelTanqueLitros;
+
+  /// No description provided for @proveedorAccesoAnchoPasadaMetros.
+  ///
+  /// In es, this message translates to:
+  /// **'Ancho de pasada (metros)'**
+  String get proveedorAccesoAnchoPasadaMetros;
+
+  /// No description provided for @proveedorAccesoRegistroPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Registro de piloto'**
+  String get proveedorAccesoRegistroPiloto;
+
+  /// No description provided for @proveedorAccesoPasoAnterior.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso anterior'**
+  String get proveedorAccesoPasoAnterior;
+
+  /// No description provided for @proveedorAccesoContinuar.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get proveedorAccesoContinuar;
+
+  /// No description provided for @proveedorAccesoCrearCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear mi cuenta'**
+  String get proveedorAccesoCrearCuenta;
+
+  /// No description provided for @proveedorAccesoReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get proveedorAccesoReintentar;
+
+  /// No description provided for @proveedorAccesoFaltanLasFotosObligatorias.
+  ///
+  /// In es, this message translates to:
+  /// **'Faltan las fotos obligatorias: frontal, lateral y placa de serie.'**
+  String get proveedorAccesoFaltanLasFotosObligatorias;
+
+  /// No description provided for @proveedorAccesoPaso.
+  ///
+  /// In es, this message translates to:
+  /// **'Paso {paso} de {total}, {titulo}'**
+  String proveedorAccesoPaso(int paso, int total, String titulo);
+
+  /// No description provided for @proveedorAccesoPaso2.
+  ///
+  /// In es, this message translates to:
+  /// **'PASO {paso} DE {total}'**
+  String proveedorAccesoPaso2(int paso, int total);
+
+  /// No description provided for @proveedorAccesoAdministradorLasRevisaAntes.
+  ///
+  /// In es, this message translates to:
+  /// **'Un administrador las revisa antes de aprobar tu dron. Cada foto se achica sola a menos de 300 KB.'**
+  String get proveedorAccesoAdministradorLasRevisaAntes;
+
+  /// No description provided for @proveedorAccesoFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto {etiqueta}'**
+  String proveedorAccesoFoto(String etiqueta);
+
+  /// No description provided for @proveedorAccesoLista.
+  ///
+  /// In es, this message translates to:
+  /// **'Lista'**
+  String get proveedorAccesoLista;
+
+  /// No description provided for @proveedorAccesoFalta.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta'**
+  String get proveedorAccesoFalta;
+
+  /// No description provided for @proveedorAccesoFotoDelDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto {etiqueta} del dron'**
+  String proveedorAccesoFotoDelDron(String etiqueta);
+
+  /// No description provided for @proveedorAccesoTomarOtra.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomar otra'**
+  String get proveedorAccesoTomarOtra;
+
+  /// No description provided for @proveedorAccesoCamara.
+  ///
+  /// In es, this message translates to:
+  /// **'Cámara'**
+  String get proveedorAccesoCamara;
+
+  /// No description provided for @proveedorAccesoGaleria.
+  ///
+  /// In es, this message translates to:
+  /// **'Galería'**
+  String get proveedorAccesoGaleria;
+
+  /// No description provided for @proveedorAccesoQuitar.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar'**
+  String get proveedorAccesoQuitar;
+
+  /// No description provided for @proveedorAccesoRegistroEstaRevision.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu registro está en revisión'**
+  String get proveedorAccesoRegistroEstaRevision;
+
+  /// No description provided for @proveedorAccesoAdministradorRevisaLicenciaDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Un administrador revisa tu licencia y tu dron. Mientras tanto no verás solicitudes; te avisamos cuando estés aprobado.'**
+  String get proveedorAccesoAdministradorRevisaLicenciaDron;
+
+  /// No description provided for @proveedorAccesoEntrarApp.
+  ///
+  /// In es, this message translates to:
+  /// **'Entrar a la app'**
+  String get proveedorAccesoEntrarApp;
+
+  /// No description provided for @proveedorNegociacionLasSolicitudesLasOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'las solicitudes y las ofertas necesitan red.'**
+  String get proveedorNegociacionLasSolicitudesLasOfertas;
+
+  /// No description provided for @proveedorNegociacionBuscarZonaLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Buscar zona o lote'**
+  String get proveedorNegociacionBuscarZonaLote;
+
+  /// No description provided for @proveedorNegociacionFiltrosHayFiltrosAplicados.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros, hay filtros aplicados'**
+  String get proveedorNegociacionFiltrosHayFiltrosAplicados;
+
+  /// No description provided for @proveedorNegociacionFiltros.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros'**
+  String get proveedorNegociacionFiltros;
+
+  /// No description provided for @proveedorNegociacionCerca.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerca de mí'**
+  String get proveedorNegociacionCerca;
+
+  /// No description provided for @proveedorNegociacion50Ha.
+  ///
+  /// In es, this message translates to:
+  /// **'+50 ha'**
+  String get proveedorNegociacion50Ha;
+
+  /// No description provided for @proveedorNegociacionVenceHoy.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence hoy'**
+  String get proveedorNegociacionVenceHoy;
+
+  /// No description provided for @proveedorNegociacionAbierta.
+  ///
+  /// In es, this message translates to:
+  /// **'Abierta'**
+  String get proveedorNegociacionAbierta;
+
+  /// No description provided for @proveedorNegociacionSolicitudAbierta.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud abierta'**
+  String get proveedorNegociacionSolicitudAbierta;
+
+  /// No description provided for @proveedorNegociacionLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Lote de {cultivo}'**
+  String proveedorNegociacionLote(String cultivo);
+
+  /// No description provided for @proveedorNegociacionAceptarNecesitaRedReintenta.
+  ///
+  /// In es, this message translates to:
+  /// **'aceptar necesita red. Reintenta con señal.'**
+  String get proveedorNegociacionAceptarNecesitaRedReintenta;
+
+  /// No description provided for @proveedorNegociacionOfertaEnviadaPorSigues.
+  ///
+  /// In es, this message translates to:
+  /// **'Oferta enviada a {precioHa} por ha. La sigues en «Ofertas».'**
+  String proveedorNegociacionOfertaEnviadaPorSigues(String precioHa);
+
+  /// No description provided for @proveedorNegociacionNegociacionEstaSolicitudCerro.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu negociación en esta solicitud ya se cerró. No puedes ofertar de nuevo.'**
+  String get proveedorNegociacionNegociacionEstaSolicitudCerro;
+
+  /// No description provided for @proveedorNegociacionOfertasteAquiSigueNegociacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya ofertaste aquí. Sigue la negociación en «Ofertas».'**
+  String get proveedorNegociacionOfertasteAquiSigueNegociacion;
+
+  /// No description provided for @proveedorNegociacionContraofertar.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraofertar'**
+  String get proveedorNegociacionContraofertar;
+
+  /// No description provided for @proveedorNegociacionAceptar.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar {precioHaPropuesto}'**
+  String proveedorNegociacionAceptar(String precioHaPropuesto);
+
+  /// No description provided for @proveedorNegociacionVerDetalleDelLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver detalle del lote'**
+  String get proveedorNegociacionVerDetalleDelLote;
+
+  /// No description provided for @proveedorNegociacionSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión'**
+  String get proveedorNegociacionSinConexion;
+
+  /// No description provided for @proveedorNegociacionMapaSolicitudesNecesitaSenal.
+  ///
+  /// In es, this message translates to:
+  /// **'El mapa de solicitudes necesita señal: es una competencia entre pilotos. Reintenta cuando la tengas.'**
+  String get proveedorNegociacionMapaSolicitudesNecesitaSenal;
+
+  /// No description provided for @proveedorNegociacionPudimosCargarLasSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar las solicitudes'**
+  String get proveedorNegociacionPudimosCargarLasSolicitudes;
+
+  /// No description provided for @proveedorNegociacionIntentaNuevoMomento.
+  ///
+  /// In es, this message translates to:
+  /// **'Intenta de nuevo en un momento.'**
+  String get proveedorNegociacionIntentaNuevoMomento;
+
+  /// No description provided for @proveedorNegociacionNingunaSolicitudConEstos.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguna solicitud con estos filtros'**
+  String get proveedorNegociacionNingunaSolicitudConEstos;
+
+  /// No description provided for @proveedorNegociacionHaySolicitudesAbiertasAhora.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay solicitudes abiertas ahora'**
+  String get proveedorNegociacionHaySolicitudesAbiertasAhora;
+
+  /// No description provided for @proveedorNegociacionQuitaAlgunFiltroPrueba.
+  ///
+  /// In es, this message translates to:
+  /// **'Quita algún filtro o prueba con otra zona.'**
+  String get proveedorNegociacionQuitaAlgunFiltroPrueba;
+
+  /// No description provided for @proveedorNegociacionActivaLosAvisosPerfil.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa los avisos en Perfil y te decimos cuando llegue una en tus zonas.'**
+  String get proveedorNegociacionActivaLosAvisosPerfil;
+
+  /// No description provided for @proveedorNegociacionCargando.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando…'**
+  String get proveedorNegociacionCargando;
+
+  /// No description provided for @proveedorNegociacionVerMasSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver más solicitudes'**
+  String get proveedorNegociacionVerMasSolicitudes;
+
+  /// No description provided for @proveedorNegociacionDondeHayTrabajo.
+  ///
+  /// In es, this message translates to:
+  /// **'Dónde hay trabajo'**
+  String get proveedorNegociacionDondeHayTrabajo;
+
+  /// No description provided for @proveedorNegociacionOtrasZonas.
+  ///
+  /// In es, this message translates to:
+  /// **'Otras zonas'**
+  String get proveedorNegociacionOtrasZonas;
+
+  /// No description provided for @proveedorNegociacionSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'{nombre}: {cuantas} solicitudes, {ha}'**
+  String proveedorNegociacionSolicitudes(String nombre, int cuantas, String ha);
+
+  /// No description provided for @proveedorNegociacionHa.
+  ///
+  /// In es, this message translates to:
+  /// **'{cuantas} · {ha} ha'**
+  String proveedorNegociacionHa(int cuantas, String ha);
+
+  /// No description provided for @proveedorNegociacionOfertaste.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertaste'**
+  String get proveedorNegociacionOfertaste;
+
+  /// No description provided for @proveedorNegociacionCerrada.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrada'**
+  String get proveedorNegociacionCerrada;
+
+  /// No description provided for @proveedorNegociacionTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'total {montoPropuesto}'**
+  String proveedorNegociacionTotal(String montoPropuesto);
+
+  /// No description provided for @proveedorNegociacionSinOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'sin ofertas'**
+  String get proveedorNegociacionSinOfertas;
+
+  /// No description provided for @proveedorNegociacionFiltrarSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtrar solicitudes'**
+  String get proveedorNegociacionFiltrarSolicitudes;
+
+  /// No description provided for @proveedorNegociacionHectareasDesde.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas desde'**
+  String get proveedorNegociacionHectareasDesde;
+
+  /// No description provided for @proveedorNegociacionHectareasHasta.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas hasta'**
+  String get proveedorNegociacionHectareasHasta;
+
+  /// No description provided for @proveedorNegociacionPorDesde.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs por ha desde'**
+  String get proveedorNegociacionPorDesde;
+
+  /// No description provided for @proveedorNegociacionPorHasta.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs por ha hasta'**
+  String get proveedorNegociacionPorHasta;
+
+  /// No description provided for @proveedorNegociacionCultivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultivo'**
+  String get proveedorNegociacionCultivo;
+
+  /// No description provided for @proveedorNegociacionOrdenarPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Ordenar por'**
+  String get proveedorNegociacionOrdenarPor;
+
+  /// No description provided for @proveedorNegociacionVerSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver solicitudes'**
+  String get proveedorNegociacionVerSolicitudes;
+
+  /// No description provided for @proveedorNegociacionQuitarFiltros.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar filtros'**
+  String get proveedorNegociacionQuitarFiltros;
+
+  /// No description provided for @proveedorNegociacionAvisos.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos'**
+  String get proveedorNegociacionAvisos;
+
+  /// No description provided for @proveedorNegociacionPudimosCargarTusAvisos.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus avisos'**
+  String get proveedorNegociacionPudimosCargarTusAvisos;
+
+  /// No description provided for @proveedorNegociacionEligeQueQuieresEnterarte.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige de qué quieres enterarte. Los avisos de adjudicación, cierre, cuenta y disputas no se pueden apagar.'**
+  String get proveedorNegociacionEligeQueQuieresEnterarte;
+
+  /// No description provided for @proveedorNegociacionNuevasSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevas solicitudes'**
+  String get proveedorNegociacionNuevasSolicitudes;
+
+  /// No description provided for @proveedorNegociacionAvisamosCuandoClientePublica.
+  ///
+  /// In es, this message translates to:
+  /// **'Te avisamos cuando un cliente publica una solicitud en tus zonas. Así ofertas antes que los demás.'**
+  String get proveedorNegociacionAvisamosCuandoClientePublica;
+
+  /// No description provided for @proveedorNegociacionZonas.
+  ///
+  /// In es, this message translates to:
+  /// **'Zonas'**
+  String get proveedorNegociacionZonas;
+
+  /// No description provided for @proveedorNegociacionTodasLasZonas.
+  ///
+  /// In es, this message translates to:
+  /// **'Todas las zonas'**
+  String get proveedorNegociacionTodasLasZonas;
+
+  /// No description provided for @proveedorNegociacionHectareasMinimas.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas mínimas'**
+  String get proveedorNegociacionHectareasMinimas;
+
+  /// No description provided for @proveedorNegociacionCualquiera.
+  ///
+  /// In es, this message translates to:
+  /// **'Cualquiera'**
+  String get proveedorNegociacionCualquiera;
+
+  /// No description provided for @proveedorNegociacionHa2.
+  ///
+  /// In es, this message translates to:
+  /// **'{ha} ha'**
+  String proveedorNegociacionHa2(String ha);
+
+  /// No description provided for @proveedorNegociacionOfertasContraofertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas y contraofertas'**
+  String get proveedorNegociacionOfertasContraofertas;
+
+  /// No description provided for @proveedorNegociacionCuandoClienteRespondeOferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando el cliente responde a tu oferta.'**
+  String get proveedorNegociacionCuandoClienteRespondeOferta;
+
+  /// No description provided for @proveedorNegociacionMensajes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes'**
+  String get proveedorNegociacionMensajes;
+
+  /// No description provided for @proveedorNegociacionCuandoClienteEscribeChat.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando el cliente te escribe en el chat.'**
+  String get proveedorNegociacionCuandoClienteEscribeChat;
+
+  /// No description provided for @proveedorNegociacionCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificaciones'**
+  String get proveedorNegociacionCalificaciones;
+
+  /// No description provided for @proveedorNegociacionCuandoClienteCalifica.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando un cliente te califica.'**
+  String get proveedorNegociacionCuandoClienteCalifica;
+
+  /// No description provided for @proveedorNegociacionSuperficie.
+  ///
+  /// In es, this message translates to:
+  /// **'Superficie'**
+  String get proveedorNegociacionSuperficie;
+
+  /// No description provided for @proveedorNegociacionPrecioOfrecido.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio ofrecido'**
+  String get proveedorNegociacionPrecioOfrecido;
+
+  /// No description provided for @proveedorNegociacionSinConexionVesLos.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Ves los mensajes que ya bajaron; los nuevos llegan cuando vuelva la señal.'**
+  String get proveedorNegociacionSinConexionVesLos;
+
+  /// No description provided for @proveedorNegociacionTodaviaHayMensajes.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay mensajes'**
+  String get proveedorNegociacionTodaviaHayMensajes;
+
+  /// No description provided for @proveedorNegociacionEscribeleClienteParaCoordinar.
+  ///
+  /// In es, this message translates to:
+  /// **'Escríbele al cliente para coordinar cómo llegar al lote y a qué hora.'**
+  String get proveedorNegociacionEscribeleClienteParaCoordinar;
+
+  /// No description provided for @proveedorNegociacionServicioCerroPuedesLeer.
+  ///
+  /// In es, this message translates to:
+  /// **'El servicio ya cerró: puedes leer la conversación pero no escribir.'**
+  String get proveedorNegociacionServicioCerroPuedesLeer;
+
+  /// No description provided for @proveedorNegociacionEscribeMensaje.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un mensaje'**
+  String get proveedorNegociacionEscribeMensaje;
+
+  /// No description provided for @proveedorNegociacionEnviarMensaje.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar mensaje'**
+  String get proveedorNegociacionEnviarMensaje;
+
+  /// No description provided for @proveedorNegociacionSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud'**
+  String get proveedorNegociacionSolicitud;
+
+  /// No description provided for @proveedorNegociacionPudimosAbrirSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos abrir la solicitud'**
+  String get proveedorNegociacionPudimosAbrirSolicitud;
+
+  /// No description provided for @proveedorNegociacionParaVerDetalleOfertar.
+  ///
+  /// In es, this message translates to:
+  /// **'Para ver el detalle y ofertar necesitas señal. Reintenta cuando la tengas.'**
+  String get proveedorNegociacionParaVerDetalleOfertar;
+
+  /// No description provided for @proveedorNegociacionClientePropone.
+  ///
+  /// In es, this message translates to:
+  /// **'El cliente propone'**
+  String get proveedorNegociacionClientePropone;
+
+  /// No description provided for @proveedorNegociacionPor.
+  ///
+  /// In es, this message translates to:
+  /// **'{precioHaPropuesto} por ha'**
+  String proveedorNegociacionPor(String precioHaPropuesto);
+
+  /// No description provided for @proveedorNegociacionTotalEstimado.
+  ///
+  /// In es, this message translates to:
+  /// **'Total estimado {montoPropuesto}'**
+  String proveedorNegociacionTotalEstimado(String montoPropuesto);
+
+  /// No description provided for @proveedorNegociacionTodaviaTieneOfertasPrimero.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tiene ofertas: sé el primero.'**
+  String get proveedorNegociacionTodaviaTieneOfertasPrimero;
+
+  /// No description provided for @proveedorNegociacionTieneOfertaVigente.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tiene 1 oferta vigente.'**
+  String get proveedorNegociacionTieneOfertaVigente;
+
+  /// No description provided for @proveedorNegociacionTieneOfertasVigentes.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tiene {ofertasVigentes} ofertas vigentes.'**
+  String proveedorNegociacionTieneOfertasVigentes(int ofertasVigentes);
+
+  /// No description provided for @proveedorNegociacionContactoConClienteLlega.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu contacto con el cliente llega solo si te eligen. Hasta entonces no ves su nombre, teléfono ni dirección.'**
+  String get proveedorNegociacionContactoConClienteLlega;
+
+  /// No description provided for @proveedorNegociacionOfertaEnviadaPorVes.
+  ///
+  /// In es, this message translates to:
+  /// **'Oferta enviada: {precioHa} por ha. La ves en «Mis ofertas».'**
+  String proveedorNegociacionOfertaEnviadaPorVes(String precioHa);
+
+  /// No description provided for @proveedorNegociacionFechaDeseada.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha deseada'**
+  String get proveedorNegociacionFechaDeseada;
+
+  /// No description provided for @proveedorNegociacionAl.
+  ///
+  /// In es, this message translates to:
+  /// **'{ventanaDesde} al {ventanaHasta}'**
+  String proveedorNegociacionAl(String ventanaDesde, String ventanaHasta);
+
+  /// No description provided for @proveedorNegociacionAplicacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Aplicación'**
+  String get proveedorNegociacionAplicacion;
+
+  /// No description provided for @proveedorNegociacionProducto.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto'**
+  String get proveedorNegociacionProducto;
+
+  /// No description provided for @proveedorNegociacionPoneProducto.
+  ///
+  /// In es, this message translates to:
+  /// **'Pone el producto'**
+  String get proveedorNegociacionPoneProducto;
+
+  /// No description provided for @proveedorNegociacionCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'El cliente'**
+  String get proveedorNegociacionCliente;
+
+  /// No description provided for @proveedorNegociacionTu.
+  ///
+  /// In es, this message translates to:
+  /// **'Tú'**
+  String get proveedorNegociacionTu;
+
+  /// No description provided for @proveedorNegociacionUrgencia.
+  ///
+  /// In es, this message translates to:
+  /// **'Urgencia'**
+  String get proveedorNegociacionUrgencia;
+
+  /// No description provided for @proveedorNegociacionPideAtencionPronta.
+  ///
+  /// In es, this message translates to:
+  /// **'Pide atención pronta'**
+  String get proveedorNegociacionPideAtencionPronta;
+
+  /// No description provided for @proveedorNegociacionEstadoDelTerreno.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado del terreno'**
+  String get proveedorNegociacionEstadoDelTerreno;
+
+  /// No description provided for @proveedorNegociacionAccesoDificil.
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso difícil'**
+  String get proveedorNegociacionAccesoDificil;
+
+  /// No description provided for @proveedorNegociacionAccesoNormal.
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso normal'**
+  String get proveedorNegociacionAccesoNormal;
+
+  /// No description provided for @proveedorNegociacionComoLlegar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo llegar'**
+  String get proveedorNegociacionComoLlegar;
+
+  /// No description provided for @proveedorNegociacionCuidar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuidar'**
+  String get proveedorNegociacionCuidar;
+
+  /// No description provided for @proveedorNegociacionObservaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Observaciones'**
+  String get proveedorNegociacionObservaciones;
+
+  /// No description provided for @proveedorNegociacionAbiertaHasta.
+  ///
+  /// In es, this message translates to:
+  /// **'Abierta hasta'**
+  String get proveedorNegociacionAbiertaHasta;
+
+  /// No description provided for @proveedorNegociacionAceptarPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar {precioHaPropuesto} por ha'**
+  String proveedorNegociacionAceptarPor(String precioHaPropuesto);
+
+  /// No description provided for @proveedorNegociacionContraofertarPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraofertar mi precio'**
+  String get proveedorNegociacionContraofertarPrecio;
+
+  /// No description provided for @proveedorNegociacionEscribePrecioMayorCero.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un precio mayor a cero.'**
+  String get proveedorNegociacionEscribePrecioMayorCero;
+
+  /// No description provided for @proveedorNegociacionMismoPrecioCambialoAcepta.
+  ///
+  /// In es, this message translates to:
+  /// **'Es el mismo precio. Cámbialo o acepta el actual.'**
+  String get proveedorNegociacionMismoPrecioCambialoAcepta;
+
+  /// No description provided for @proveedorNegociacionPor2.
+  ///
+  /// In es, this message translates to:
+  /// **'{etiquetaReferencia}: {precioReferencia} por ha'**
+  String proveedorNegociacionPor2(
+    String etiquetaReferencia,
+    String precioReferencia,
+  );
+
+  /// No description provided for @proveedorNegociacionPrecioPorHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu precio por hectárea (Bs)'**
+  String get proveedorNegociacionPrecioPorHectarea;
+
+  /// No description provided for @proveedorNegociacionTotalApareceCuandoEscribes.
+  ///
+  /// In es, this message translates to:
+  /// **'El total aparece cuando escribes el precio.'**
+  String get proveedorNegociacionTotalApareceCuandoEscribes;
+
+  /// No description provided for @proveedorNegociacionMensajeParaClienteOpcional.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensaje para el cliente (opcional)'**
+  String get proveedorNegociacionMensajeParaClienteOpcional;
+
+  /// No description provided for @proveedorNegociacionTusOfertasVenCon.
+  ///
+  /// In es, this message translates to:
+  /// **'tus ofertas se ven con red.'**
+  String get proveedorNegociacionTusOfertasVenCon;
+
+  /// No description provided for @proveedorNegociacionQueVesPuedeEstar.
+  ///
+  /// In es, this message translates to:
+  /// **'lo que ves puede estar viejo.'**
+  String get proveedorNegociacionQueVesPuedeEstar;
+
+  /// No description provided for @proveedorNegociacionMisOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis ofertas'**
+  String get proveedorNegociacionMisOfertas;
+
+  /// No description provided for @proveedorNegociacionActivas.
+  ///
+  /// In es, this message translates to:
+  /// **'Activas'**
+  String get proveedorNegociacionActivas;
+
+  /// No description provided for @proveedorNegociacionGanadas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ganadas'**
+  String get proveedorNegociacionGanadas;
+
+  /// No description provided for @proveedorNegociacionCerradas.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerradas'**
+  String get proveedorNegociacionCerradas;
+
+  /// No description provided for @proveedorNegociacionParaVerResponderTus.
+  ///
+  /// In es, this message translates to:
+  /// **'Para ver y responder tus ofertas necesitas señal. Reintenta cuando la tengas.'**
+  String get proveedorNegociacionParaVerResponderTus;
+
+  /// No description provided for @proveedorNegociacionPudimosCargarTusOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus ofertas'**
+  String get proveedorNegociacionPudimosCargarTusOfertas;
+
+  /// No description provided for @proveedorNegociacionTodaviaHicisteOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hiciste ofertas'**
+  String get proveedorNegociacionTodaviaHicisteOfertas;
+
+  /// No description provided for @proveedorNegociacionAbreUnaSolicitudMapa.
+  ///
+  /// In es, this message translates to:
+  /// **'Abre una solicitud en el mapa y acepta el precio del cliente o propón el tuyo.'**
+  String get proveedorNegociacionAbreUnaSolicitudMapa;
+
+  /// No description provided for @proveedorNegociacionTienesNegociacionesActivas.
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes negociaciones activas'**
+  String get proveedorNegociacionTienesNegociacionesActivas;
+
+  /// No description provided for @proveedorNegociacionCuandoOfertesMapaConversacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando ofertes en el mapa, la conversación aparece aquí.'**
+  String get proveedorNegociacionCuandoOfertesMapaConversacion;
+
+  /// No description provided for @proveedorNegociacionAunGanasteNinguna.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no ganaste ninguna'**
+  String get proveedorNegociacionAunGanasteNinguna;
+
+  /// No description provided for @proveedorNegociacionLasSolicitudesLasQue.
+  ///
+  /// In es, this message translates to:
+  /// **'Las solicitudes en las que el cliente te elige quedan aquí.'**
+  String get proveedorNegociacionLasSolicitudesLasQue;
+
+  /// No description provided for @proveedorNegociacionNadaCerradoTodavia.
+  ///
+  /// In es, this message translates to:
+  /// **'Nada cerrado todavía'**
+  String get proveedorNegociacionNadaCerradoTodavia;
+
+  /// No description provided for @proveedorNegociacionLasOfertasRechazadasRetiradas.
+  ///
+  /// In es, this message translates to:
+  /// **'Las ofertas rechazadas, retiradas o vencidas se guardan aquí.'**
+  String get proveedorNegociacionLasOfertasRechazadasRetiradas;
+
+  /// No description provided for @proveedorNegociacionTurno.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu turno · R{rondaQueSigue}/5'**
+  String proveedorNegociacionTurno(int rondaQueSigue);
+
+  /// No description provided for @proveedorNegociacionEsperando.
+  ///
+  /// In es, this message translates to:
+  /// **'Esperando · R{rondaQueSigue}/5'**
+  String proveedorNegociacionEsperando(int rondaQueSigue);
+
+  /// No description provided for @proveedorNegociacionAceptada.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptada'**
+  String get proveedorNegociacionAceptada;
+
+  /// No description provided for @proveedorNegociacionRechazada.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazada'**
+  String get proveedorNegociacionRechazada;
+
+  /// No description provided for @proveedorNegociacionSolicitud2.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud {solicitudId}'**
+  String proveedorNegociacionSolicitud2(int solicitudId);
+
+  /// No description provided for @proveedorNegociacionHa3.
+  ///
+  /// In es, this message translates to:
+  /// **'{hectareas} ha'**
+  String proveedorNegociacionHa3(String hectareas);
+
+  /// No description provided for @proveedorNegociacionCliente2.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente'**
+  String get proveedorNegociacionCliente2;
+
+  /// No description provided for @proveedorNegociacionVenceLas.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence {venceEn} a las {venceEn2}'**
+  String proveedorNegociacionVenceLas(String venceEn, String venceEn2);
+
+  /// No description provided for @proveedorNegociacionOfertarNecesitaRedPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'ofertar necesita red. Tu precio se conserva y no se envió nada.'**
+  String get proveedorNegociacionOfertarNecesitaRedPrecio;
+
+  /// No description provided for @proveedorNegociacionVolver.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get proveedorNegociacionVolver;
+
+  /// No description provided for @proveedorNegociacionNegociacionConCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Negociación con el cliente'**
+  String get proveedorNegociacionNegociacionConCliente;
+
+  /// No description provided for @proveedorNegociacionRonda.
+  ///
+  /// In es, this message translates to:
+  /// **'Ronda {ronda} de {total}'**
+  String proveedorNegociacionRonda(int ronda, int total);
+
+  /// No description provided for @proveedorNegociacionAbrirNegociacionNecesitaRed.
+  ///
+  /// In es, this message translates to:
+  /// **'abrir la negociación necesita red.'**
+  String get proveedorNegociacionAbrirNegociacionNecesitaRed;
+
+  /// No description provided for @proveedorNegociacionNegociarEntreDosPersonas.
+  ///
+  /// In es, this message translates to:
+  /// **'Negociar es entre dos personas y necesita señal. Nada se perdió: reintenta cuando la tengas.'**
+  String get proveedorNegociacionNegociarEntreDosPersonas;
+
+  /// No description provided for @proveedorNegociacionPudimosAbrirNegociacion.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos abrir la negociación'**
+  String get proveedorNegociacionPudimosAbrirNegociacion;
+
+  /// No description provided for @proveedorNegociacionTu2.
+  ///
+  /// In es, this message translates to:
+  /// **'TÚ'**
+  String get proveedorNegociacionTu2;
+
+  /// No description provided for @proveedorNegociacionPublicado.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicado'**
+  String get proveedorNegociacionPublicado;
+
+  /// No description provided for @proveedorNegociacionAceptasteSolicitudTuyaContacto.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptaste: la solicitud es tuya. El contacto del cliente llega a Servicio.'**
+  String get proveedorNegociacionAceptasteSolicitudTuyaContacto;
+
+  /// No description provided for @proveedorNegociacionRechazasteOfertaNegociacionCerro.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazaste la oferta. La negociación se cerró.'**
+  String get proveedorNegociacionRechazasteOfertaNegociacionCerro;
+
+  /// No description provided for @proveedorNegociacionRetirasteOfertaNegociacionCerro.
+  ///
+  /// In es, this message translates to:
+  /// **'Retiraste tu oferta. La negociación se cerró.'**
+  String get proveedorNegociacionRetirasteOfertaNegociacionCerro;
+
+  /// No description provided for @proveedorNegociacionEsperandoClienteAvisamosCuando.
+  ///
+  /// In es, this message translates to:
+  /// **'Esperando al cliente · te avisamos cuando responda'**
+  String get proveedorNegociacionEsperandoClienteAvisamosCuando;
+
+  /// No description provided for @proveedorNegociacionEstaNegociacionCerroPuede.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta negociación ya se cerró. No se puede ofertar de nuevo.'**
+  String get proveedorNegociacionEstaNegociacionCerroPuede;
+
+  /// No description provided for @proveedorNegociacionTurnoRondaFinalAceptas.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu turno · es la ronda final: aceptas o la negociación se cierra'**
+  String get proveedorNegociacionTurnoRondaFinalAceptas;
+
+  /// No description provided for @proveedorNegociacionTurnoDespuesSoloQueda.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu turno · después solo queda la ronda {rondasMaximas}'**
+  String proveedorNegociacionTurnoDespuesSoloQueda(int rondasMaximas);
+
+  /// No description provided for @proveedorNegociacionTurnoRonda.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu turno · ronda {ronda} de {rondasMaximas}'**
+  String proveedorNegociacionTurnoRonda(int ronda, int rondasMaximas);
+
+  /// No description provided for @proveedorNegociacionVerMisOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver mis ofertas'**
+  String get proveedorNegociacionVerMisOfertas;
+
+  /// No description provided for @proveedorNegociacionRetirarOferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Retirar mi oferta'**
+  String get proveedorNegociacionRetirarOferta;
+
+  /// No description provided for @proveedorNegociacionPrecioPorHectarea2.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu precio por hectárea'**
+  String get proveedorNegociacionPrecioPorHectarea2;
+
+  /// No description provided for @proveedorNegociacionTotal2.
+  ///
+  /// In es, this message translates to:
+  /// **'total {total}'**
+  String proveedorNegociacionTotal2(String total);
+
+  /// No description provided for @proveedorNegociacionAceptar2.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar'**
+  String get proveedorNegociacionAceptar2;
+
+  /// No description provided for @proveedorNegociacionAceptar3.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar {aceptable}'**
+  String proveedorNegociacionAceptar3(String aceptable);
+
+  /// No description provided for @proveedorNegociacionReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar {precio}'**
+  String proveedorNegociacionReintentar(int precio);
+
+  /// No description provided for @proveedorNegociacionEnviar.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar {precio}'**
+  String proveedorNegociacionEnviar(int precio);
+
+  /// No description provided for @proveedorNegociacionRechazar.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar'**
+  String get proveedorNegociacionRechazar;
+
+  /// No description provided for @proveedorEjecucionServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicio'**
+  String get proveedorEjecucionServicio;
+
+  /// No description provided for @proveedorEjecucionPudimosLeerTusServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos leer tus servicios'**
+  String get proveedorEjecucionPudimosLeerTusServicios;
+
+  /// No description provided for @proveedorEjecucionCierraAbreAppQue.
+  ///
+  /// In es, this message translates to:
+  /// **'Cierra y abre la app. Lo que guardaste sigue aquí.'**
+  String get proveedorEjecucionCierraAbreAppQue;
+
+  /// No description provided for @proveedorEjecucionTodaviaTienesServicioAdjudicado.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes un servicio adjudicado'**
+  String get proveedorEjecucionTodaviaTienesServicioAdjudicado;
+
+  /// No description provided for @proveedorEjecucionCuandoClienteElijaServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando un cliente te elija, el servicio aparece aquí con sus datos de contacto. Jala hacia abajo para actualizar.'**
+  String get proveedorEjecucionCuandoClienteElijaServicio;
+
+  /// No description provided for @proveedorEjecucionSinAvanceMarcado.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin avance marcado'**
+  String get proveedorEjecucionSinAvanceMarcado;
+
+  /// No description provided for @proveedorEjecucionRegistroRechazado.
+  ///
+  /// In es, this message translates to:
+  /// **'1 registro rechazado'**
+  String get proveedorEjecucionRegistroRechazado;
+
+  /// No description provided for @proveedorEjecucionRegistrosRechazados.
+  ///
+  /// In es, this message translates to:
+  /// **'{rechazos} registros rechazados'**
+  String proveedorEjecucionRegistrosRechazados(int rechazos);
+
+  /// No description provided for @proveedorEjecucionCosaPorSubir.
+  ///
+  /// In es, this message translates to:
+  /// **'1 cosa por subir'**
+  String get proveedorEjecucionCosaPorSubir;
+
+  /// No description provided for @proveedorEjecucionCosasPorSubir.
+  ///
+  /// In es, this message translates to:
+  /// **'{pendientes} cosas por subir'**
+  String proveedorEjecucionCosasPorSubir(int pendientes);
+
+  /// No description provided for @proveedorEjecucionChatConCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Chat con el cliente'**
+  String get proveedorEjecucionChatConCliente;
+
+  /// No description provided for @proveedorEjecucionEncontramosEsteServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos este servicio'**
+  String get proveedorEjecucionEncontramosEsteServicio;
+
+  /// No description provided for @proveedorEjecucionPuedeQueClienteHaya.
+  ///
+  /// In es, this message translates to:
+  /// **'Puede que el cliente lo haya cancelado. Vuelve a la lista y actualiza.'**
+  String get proveedorEjecucionPuedeQueClienteHaya;
+
+  /// No description provided for @proveedorEjecucionTusFotosAvancesQuedan.
+  ///
+  /// In es, this message translates to:
+  /// **'tus fotos y avances quedan guardados y se suben solos.'**
+  String get proveedorEjecucionTusFotosAvancesQuedan;
+
+  /// No description provided for @proveedorEjecucionServidorAceptoAlgoQue.
+  ///
+  /// In es, this message translates to:
+  /// **'El servidor no aceptó algo de lo que guardaste. Avisa a soporte desde el perfil.'**
+  String get proveedorEjecucionServidorAceptoAlgoQue;
+
+  /// No description provided for @proveedorEjecucionEstaGuardadoEsteCelular.
+  ///
+  /// In es, this message translates to:
+  /// **'Está guardado en este celular y se sube solo cuando vuelva la señal.'**
+  String get proveedorEjecucionEstaGuardadoEsteCelular;
+
+  /// No description provided for @proveedorEjecucionAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Avance'**
+  String get proveedorEjecucionAvance;
+
+  /// No description provided for @proveedorEjecucionAvancePorCiento.
+  ///
+  /// In es, this message translates to:
+  /// **'Avance {porcentaje} por ciento'**
+  String proveedorEjecucionAvancePorCiento(String porcentaje);
+
+  /// No description provided for @proveedorEjecucionTodaviaMarcasteAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no marcaste avance.'**
+  String get proveedorEjecucionTodaviaMarcasteAvance;
+
+  /// No description provided for @proveedorEjecucionSinFotosAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin fotos de avance'**
+  String get proveedorEjecucionSinFotosAvance;
+
+  /// No description provided for @proveedorEjecucionFotoAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'1 foto de avance'**
+  String get proveedorEjecucionFotoAvance;
+
+  /// No description provided for @proveedorEjecucionFotosAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'{fotosTotal} fotos de avance'**
+  String proveedorEjecucionFotosAvance(int fotosTotal);
+
+  /// No description provided for @proveedorEjecucionMarcarEjecucion.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar en ejecución'**
+  String get proveedorEjecucionMarcarEjecucion;
+
+  /// No description provided for @proveedorEjecucionMarcaloCuandoEmpiecesLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Márcalo cuando empieces en el lote. El cliente recibe el aviso.'**
+  String get proveedorEjecucionMarcaloCuandoEmpiecesLote;
+
+  /// No description provided for @proveedorEjecucionSubirFotoAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir foto de avance'**
+  String get proveedorEjecucionSubirFotoAvance;
+
+  /// No description provided for @proveedorEjecucionMarcarAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar avance'**
+  String get proveedorEjecucionMarcarAvance;
+
+  /// No description provided for @proveedorEjecucionFinalizarServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'Finalizar servicio'**
+  String get proveedorEjecucionFinalizarServicio;
+
+  /// No description provided for @proveedorEjecucionEscribeNumeroMayorCero.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un número mayor a cero.'**
+  String get proveedorEjecucionEscribeNumeroMayorCero;
+
+  /// No description provided for @proveedorEjecucionPuedePasarLasHectareas.
+  ///
+  /// In es, this message translates to:
+  /// **'No puede pasar de las hectáreas del servicio.'**
+  String get proveedorEjecucionPuedePasarLasHectareas;
+
+  /// No description provided for @proveedorEjecucionPuedePasar100.
+  ///
+  /// In es, this message translates to:
+  /// **'No puede pasar de 100 %.'**
+  String get proveedorEjecucionPuedePasar100;
+
+  /// No description provided for @proveedorEjecucionHectareas.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas'**
+  String get proveedorEjecucionHectareas;
+
+  /// No description provided for @proveedorEjecucionPorcentaje.
+  ///
+  /// In es, this message translates to:
+  /// **'Porcentaje'**
+  String get proveedorEjecucionPorcentaje;
+
+  /// No description provided for @proveedorEjecucionHectareasEjecutadasTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas ejecutadas en total'**
+  String get proveedorEjecucionHectareasEjecutadasTotal;
+
+  /// No description provided for @proveedorEjecucionPorcentajeEjecutadoTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'Porcentaje ejecutado en total'**
+  String get proveedorEjecucionPorcentajeEjecutadoTotal;
+
+  /// No description provided for @proveedorEjecucionMenosQueUltimoAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Es menos que tu último avance. Cuéntanos por qué lo corriges.'**
+  String get proveedorEjecucionMenosQueUltimoAvance;
+
+  /// No description provided for @proveedorEjecucionMotivoCorreccion.
+  ///
+  /// In es, this message translates to:
+  /// **'Motivo de la corrección'**
+  String get proveedorEjecucionMotivoCorreccion;
+
+  /// No description provided for @proveedorEjecucionMotivoObligatorio.
+  ///
+  /// In es, this message translates to:
+  /// **'El motivo es obligatorio.'**
+  String get proveedorEjecucionMotivoObligatorio;
+
+  /// No description provided for @proveedorEjecucionNotaOpcional.
+  ///
+  /// In es, this message translates to:
+  /// **'Nota (opcional)'**
+  String get proveedorEjecucionNotaOpcional;
+
+  /// No description provided for @proveedorEjecucionGuardarAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar avance'**
+  String get proveedorEjecucionGuardarAvance;
+
+  /// No description provided for @proveedorEjecucionEscribeLasHectareasRealmente.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe las hectáreas realmente ejecutadas.'**
+  String get proveedorEjecucionEscribeLasHectareasRealmente;
+
+  /// No description provided for @proveedorEjecucionFinalizarServicio2.
+  ///
+  /// In es, this message translates to:
+  /// **'Finalizar el servicio'**
+  String get proveedorEjecucionFinalizarServicio2;
+
+  /// No description provided for @proveedorEjecucionConfirmaLasHectareasQue.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma las hectáreas que realmente ejecutaste. El precio final es hectáreas ejecutadas por el precio acordado.'**
+  String get proveedorEjecucionConfirmaLasHectareasQue;
+
+  /// No description provided for @proveedorEjecucionHectareasEjecutadas.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas ejecutadas'**
+  String get proveedorEjecucionHectareasEjecutadas;
+
+  /// No description provided for @proveedorEjecucionPagar.
+  ///
+  /// In es, this message translates to:
+  /// **'A pagar: {monto} ({ha} × {precioHaAcordado})'**
+  String proveedorEjecucionPagar(
+    String monto,
+    String ha,
+    String precioHaAcordado,
+  );
+
+  /// No description provided for @proveedorEjecucionFinalizar.
+  ///
+  /// In es, this message translates to:
+  /// **'Finalizar'**
+  String get proveedorEjecucionFinalizar;
+
+  /// No description provided for @proveedorEjecucionPrecioFinalPagar.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio final a pagar'**
+  String get proveedorEjecucionPrecioFinalPagar;
+
+  /// No description provided for @proveedorEjecucionPrecioEstimado.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio estimado'**
+  String get proveedorEjecucionPrecioEstimado;
+
+  /// No description provided for @proveedorEjecucionCalculando.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculando…'**
+  String get proveedorEjecucionCalculando;
+
+  /// No description provided for @proveedorEjecucionHectareasEjecutadasPorPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas ejecutadas por el precio acordado.'**
+  String get proveedorEjecucionHectareasEjecutadasPorPrecio;
+
+  /// No description provided for @proveedorEjecucionClientePagaDirectamenteApp.
+  ///
+  /// In es, this message translates to:
+  /// **'El cliente te paga directamente: la app no cobra.'**
+  String get proveedorEjecucionClientePagaDirectamenteApp;
+
+  /// No description provided for @proveedorEjecucionUnaEstimacionHechaEste.
+  ///
+  /// In es, this message translates to:
+  /// **'Es una estimación hecha en este celular. El monto final lo confirma el servidor cuando haya señal.'**
+  String get proveedorEjecucionUnaEstimacionHechaEste;
+
+  /// No description provided for @proveedorEjecucionCompartiendoUbicacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartiendo tu ubicación'**
+  String get proveedorEjecucionCompartiendoUbicacion;
+
+  /// No description provided for @proveedorEjecucionSinSenalReanudaSola.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin señal: se reanuda sola. Nada se guarda en el celular.'**
+  String get proveedorEjecucionSinSenalReanudaSola;
+
+  /// No description provided for @proveedorEjecucionClienteUltimaPosicionMapa.
+  ///
+  /// In es, this message translates to:
+  /// **'El cliente ve tu última posición en un mapa mientras esta pantalla esté abierta.'**
+  String get proveedorEjecucionClienteUltimaPosicionMapa;
+
+  /// No description provided for @proveedorEjecucionUbicacionBloqueada.
+  ///
+  /// In es, this message translates to:
+  /// **'Ubicación bloqueada'**
+  String get proveedorEjecucionUbicacionBloqueada;
+
+  /// No description provided for @proveedorEjecucionActivalaDesdeLosAjustes.
+  ///
+  /// In es, this message translates to:
+  /// **'Actívala desde los ajustes del teléfono si quieres que el cliente vea dónde estás.'**
+  String get proveedorEjecucionActivalaDesdeLosAjustes;
+
+  /// No description provided for @proveedorEjecucionUbicacionDelTelefonoEsta.
+  ///
+  /// In es, this message translates to:
+  /// **'La ubicación del teléfono está apagada'**
+  String get proveedorEjecucionUbicacionDelTelefonoEsta;
+
+  /// No description provided for @proveedorEjecucionEnciendelaParaQueCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Enciéndela para que el cliente vea tu última posición.'**
+  String get proveedorEjecucionEnciendelaParaQueCliente;
+
+  /// No description provided for @proveedorEjecucionDileClienteDondeEstas.
+  ///
+  /// In es, this message translates to:
+  /// **'Dile al cliente dónde estás'**
+  String get proveedorEjecucionDileClienteDondeEstas;
+
+  /// No description provided for @proveedorEjecucionAceptasCompartimosUltimaPosicion.
+  ///
+  /// In es, this message translates to:
+  /// **'Si lo aceptas, compartimos tu última posición con el cliente mientras el servicio esté en ejecución y esta pantalla abierta. Se deja de compartir al cerrarla o al finalizar. No guardamos tu recorrido.'**
+  String get proveedorEjecucionAceptasCompartimosUltimaPosicion;
+
+  /// No description provided for @proveedorEjecucionCompartirUbicacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir mi ubicación'**
+  String get proveedorEjecucionCompartirUbicacion;
+
+  /// No description provided for @proveedorEjecucionUltimaVez.
+  ///
+  /// In es, this message translates to:
+  /// **'Última vez {ultimaEn}'**
+  String proveedorEjecucionUltimaVez(String ultimaEn);
+
+  /// No description provided for @proveedorEjecucionPrecioAcordado.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio acordado'**
+  String get proveedorEjecucionPrecioAcordado;
+
+  /// No description provided for @proveedorEjecucionPor.
+  ///
+  /// In es, this message translates to:
+  /// **'{precioHaAcordado} por ha'**
+  String proveedorEjecucionPor(String precioHaAcordado);
+
+  /// No description provided for @proveedorEjecucionFecha.
+  ///
+  /// In es, this message translates to:
+  /// **'Fecha'**
+  String get proveedorEjecucionFecha;
+
+  /// No description provided for @proveedorEjecucionAl.
+  ///
+  /// In es, this message translates to:
+  /// **'{ventanaDesde} al {ventanaHasta}'**
+  String proveedorEjecucionAl(String ventanaDesde, String ventanaHasta);
+
+  /// No description provided for @proveedorEjecucionProducto.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto'**
+  String get proveedorEjecucionProducto;
+
+  /// No description provided for @proveedorEjecucionPoneProducto.
+  ///
+  /// In es, this message translates to:
+  /// **'Pone el producto'**
+  String get proveedorEjecucionPoneProducto;
+
+  /// No description provided for @proveedorEjecucionCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'El cliente'**
+  String get proveedorEjecucionCliente;
+
+  /// No description provided for @proveedorEjecucionTu.
+  ///
+  /// In es, this message translates to:
+  /// **'Tú'**
+  String get proveedorEjecucionTu;
+
+  /// No description provided for @proveedorEjecucionEstadoDelTerreno.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado del terreno'**
+  String get proveedorEjecucionEstadoDelTerreno;
+
+  /// No description provided for @proveedorEjecucionAccesoDificil.
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso difícil'**
+  String get proveedorEjecucionAccesoDificil;
+
+  /// No description provided for @proveedorEjecucionAccesoNormal.
+  ///
+  /// In es, this message translates to:
+  /// **'Acceso normal'**
+  String get proveedorEjecucionAccesoNormal;
+
+  /// No description provided for @proveedorEjecucionComoLlegar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cómo llegar'**
+  String get proveedorEjecucionComoLlegar;
+
+  /// No description provided for @proveedorEjecucionCuidar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuidar'**
+  String get proveedorEjecucionCuidar;
+
+  /// No description provided for @proveedorEjecucionObservaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Observaciones'**
+  String get proveedorEjecucionObservaciones;
+
+  /// No description provided for @proveedorEjecucionMarcasteServicioEjecucion.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcaste el servicio en ejecución.'**
+  String get proveedorEjecucionMarcasteServicioEjecucion;
+
+  /// No description provided for @proveedorEjecucionAvanceGuardado.
+  ///
+  /// In es, this message translates to:
+  /// **'Avance guardado.'**
+  String get proveedorEjecucionAvanceGuardado;
+
+  /// No description provided for @proveedorEjecucionServicioFinalizadoPrecioPagar.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicio finalizado. El precio a pagar queda a la vista.'**
+  String get proveedorEjecucionServicioFinalizadoPrecioPagar;
+
+  /// No description provided for @proveedorEjecucionFotoGuardadaSubeSola.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto guardada. Se sube sola cuando haya señal.'**
+  String get proveedorEjecucionFotoGuardadaSubeSola;
+
+  /// No description provided for @proveedorEjecucionPudimosAchicarFotoSuficiente.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos achicar la foto lo suficiente. Toma otra con menos detalle.'**
+  String get proveedorEjecucionPudimosAchicarFotoSuficiente;
+
+  /// No description provided for @proveedorEjecucionPudimosGuardarloIntentaNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardarlo. Intenta de nuevo.'**
+  String get proveedorEjecucionPudimosGuardarloIntentaNuevo;
+
+  /// No description provided for @proveedorAccesoPudimosAchicarEsaFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos achicar esa foto. Prueba con otra o tómala de nuevo.'**
+  String get proveedorAccesoPudimosAchicarEsaFoto;
+
+  /// No description provided for @proveedorAccesoSinConexionQueEscribiste.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Lo que escribiste se conserva: reintenta con señal y seguimos donde quedó.'**
+  String get proveedorAccesoSinConexionQueEscribiste;
+
+  /// No description provided for @proveedorAccesoSinConexionQueEscribiste2.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Lo que escribiste se conserva: reintenta con señal.'**
+  String get proveedorAccesoSinConexionQueEscribiste2;
+
+  /// No description provided for @proveedorAccesoCuentaQuedoCreadaPero.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta quedó creada, pero no pudimos entrar. Vuelve al ingreso e inicia sesión.'**
+  String get proveedorAccesoCuentaQuedoCreadaPero;
+
+  /// No description provided for @proveedorAccesoRevisaLosDatosMarcados.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa los datos marcados e intenta de nuevo.'**
+  String get proveedorAccesoRevisaLosDatosMarcados;
+
+  /// No description provided for @proveedorAccesoPudimosCompletarRegistroIntenta.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos completar el registro. Intenta de nuevo.'**
+  String get proveedorAccesoPudimosCompletarRegistroIntenta;
+
+  /// No description provided for @proveedorAccesoSesionVencioEntraNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión venció. Entra de nuevo.'**
+  String get proveedorAccesoSesionVencioEntraNuevo;
+
+  /// No description provided for @proveedorAccesoUsuarioContrasenaIncorrectosRevisa.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario o contraseña incorrectos. Revisa e intenta de nuevo.'**
+  String get proveedorAccesoUsuarioContrasenaIncorrectosRevisa;
+
+  /// No description provided for @proveedorAccesoSinConexionNecesitasSenal.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Necesitas señal para entrar; lo que ya guardaste en el celular sigue ahí.'**
+  String get proveedorAccesoSinConexionNecesitasSenal;
+
+  /// No description provided for @proveedorAccesoEstaCuentaEstaApp.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta cuenta no es de esta app.'**
+  String get proveedorAccesoEstaCuentaEstaApp;
+
+  /// No description provided for @proveedorAccesoPudimosEntrarIntentaNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos entrar. Intenta de nuevo en un momento.'**
+  String get proveedorAccesoPudimosEntrarIntentaNuevo;
+
+  /// No description provided for @proveedorNegociacionSinConexionPuedeQue.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión: puede que lo que ves esté viejo.'**
+  String get proveedorNegociacionSinConexionPuedeQue;
+
+  /// No description provided for @proveedorNegociacionListoClienteEligioPuedes.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Listo! El cliente te eligió. Ya puedes escribirle desde Servicio.'**
+  String get proveedorNegociacionListoClienteEligioPuedes;
+
+  /// No description provided for @proveedorNegociacionRechazasteOfertaDelCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazaste la oferta del cliente.'**
+  String get proveedorNegociacionRechazasteOfertaDelCliente;
+
+  /// No description provided for @proveedorNegociacionRetirasteOferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Retiraste tu oferta.'**
+  String get proveedorNegociacionRetirasteOferta;
+
+  /// No description provided for @proveedorNegociacionEnviasteContraoferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviaste tu contraoferta.'**
+  String get proveedorNegociacionEnviasteContraoferta;
+
+  /// No description provided for @proveedorNegociacionHayConexionEnvioNada.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay conexión. No se envió nada: reintenta con señal.'**
+  String get proveedorNegociacionHayConexionEnvioNada;
+
+  /// No description provided for @proveedorNegociacionEsaOfertaEstaVigente.
+  ///
+  /// In es, this message translates to:
+  /// **'Esa oferta ya no está vigente: el cliente respondió o venció. Actualizamos tu lista.'**
+  String get proveedorNegociacionEsaOfertaEstaVigente;
+
+  /// No description provided for @proveedorNegociacionClienteEligioOtroPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'El cliente ya eligió a otro piloto para esta solicitud.'**
+  String get proveedorNegociacionClienteEligioOtroPiloto;
+
+  /// No description provided for @proveedorNegociacionEquipoEstaDisponiblePara.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu equipo no está disponible para esas fechas. Revisa tus drones.'**
+  String get proveedorNegociacionEquipoEstaDisponiblePara;
+
+  /// No description provided for @proveedorNegociacionSinConexionMensajeSigue.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Tu mensaje sigue aquí: reintenta.'**
+  String get proveedorNegociacionSinConexionMensajeSigue;
+
+  /// No description provided for @proveedorNegociacionRetiroReintentaCuandoTengas.
+  ///
+  /// In es, this message translates to:
+  /// **'No se retiró. Reintenta cuando tengas señal.'**
+  String get proveedorNegociacionRetiroReintentaCuandoTengas;
+
+  /// No description provided for @proveedorNegociacionEnvioPrecioSigueAqui.
+  ///
+  /// In es, this message translates to:
+  /// **'No se envió. Tu precio sigue aquí: reintenta cuando tengas señal.'**
+  String get proveedorNegociacionEnvioPrecioSigueAqui;
+
+  /// No description provided for @proveedorNegociacionEsaOfertaEstaVigente2.
+  ///
+  /// In es, this message translates to:
+  /// **'Esa oferta ya no está vigente: el cliente respondió o venció.'**
+  String get proveedorNegociacionEsaOfertaEstaVigente2;
+
+  /// No description provided for @proveedorNegociacionHayConexionQueEscribiste.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay conexión. Lo que escribiste se conserva: reintenta cuando tengas señal.'**
+  String get proveedorNegociacionHayConexionQueEscribiste;
+
+  /// No description provided for @proveedorDronFotos.
+  ///
+  /// In es, this message translates to:
+  /// **'Fotos: {detalle}'**
+  String proveedorDronFotos(String detalle);
+
+  /// No description provided for @proveedorEjecucionServicioSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{hectareas}{cultivo}, {estado}{pendientes}'**
+  String proveedorEjecucionServicioSemantica(
+    String hectareas,
+    String cultivo,
+    String estado,
+    String pendientes,
+  );
+
+  /// No description provided for @proveedorEjecucionDeCultivo.
+  ///
+  /// In es, this message translates to:
+  /// **' de {cultivo}'**
+  String proveedorEjecucionDeCultivo(String cultivo);
+
+  /// No description provided for @proveedorEjecucionPendientesSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **', {cantidad} por subir'**
+  String proveedorEjecucionPendientesSufijo(int cantidad);
+
+  /// No description provided for @proveedorEjecucionAvanceResumen.
+  ///
+  /// In es, this message translates to:
+  /// **'{ejecutadas} de {total} · {porcentaje} %'**
+  String proveedorEjecucionAvanceResumen(
+    String ejecutadas,
+    String total,
+    String porcentaje,
+  );
+
+  /// No description provided for @proveedorPerfilGraficoBarras.
+  ///
+  /// In es, this message translates to:
+  /// **'Gráfico de barras de hectáreas por mes: {detalle}'**
+  String proveedorPerfilGraficoBarras(String detalle);
+
+  /// No description provided for @proveedorNegociacionTotalPrecioCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Total al precio del cliente: {monto}{ofertas}'**
+  String proveedorNegociacionTotalPrecioCliente(String monto, String ofertas);
+
+  /// No description provided for @proveedorNegociacionOfertasSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **' · {cantidad, plural, =1{1 oferta} other{{cantidad} ofertas}}'**
+  String proveedorNegociacionOfertasSufijo(int cantidad);
+
+  /// No description provided for @proveedorNegociacionSolicitudSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud en {zona}, {hectareas}, {precio} por hectárea, {cantidad, plural, =1{1 oferta} other{{cantidad} ofertas}}{vence}'**
+  String proveedorNegociacionSolicitudSemantica(
+    String zona,
+    String hectareas,
+    String precio,
+    int cantidad,
+    String vence,
+  );
+
+  /// No description provided for @proveedorNegociacionZonaSinNombre.
+  ///
+  /// In es, this message translates to:
+  /// **'zona sin nombre'**
+  String get proveedorNegociacionZonaSinNombre;
+
+  /// No description provided for @proveedorNegociacionAvisosSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Los avisos se configuran con señal.'**
+  String get proveedorNegociacionAvisosSinConexion;
+
+  /// No description provided for @proveedorNegociacionAvisosNoGuardado.
+  ///
+  /// In es, this message translates to:
+  /// **'No se guardó: no hay conexión. Intenta con señal.'**
+  String get proveedorNegociacionAvisosNoGuardado;
+
+  /// No description provided for @proveedorNegociacionMapaSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa de solicitudes abiertas, {cantidad, plural, =1{1 solicitud} other{{cantidad} solicitudes}}'**
+  String proveedorNegociacionMapaSemantica(int cantidad);
+
+  /// No description provided for @proveedorNegociacionChatConCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Chat con el cliente'**
+  String get proveedorNegociacionChatConCliente;
+
+  /// No description provided for @proveedorNegociacionEnviarContraoferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar contraoferta'**
+  String get proveedorNegociacionEnviarContraoferta;
+
+  /// No description provided for @proveedorNegociacionOfertaSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{titulo}, {detalle}, {etiqueta}{cliente}{mia}'**
+  String proveedorNegociacionOfertaSemantica(
+    String titulo,
+    String detalle,
+    String etiqueta,
+    String cliente,
+    String mia,
+  );
+
+  /// No description provided for @proveedorNegociacionPrecioClienteSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **', cliente {precio} bolivianos por hectárea'**
+  String proveedorNegociacionPrecioClienteSufijo(String precio);
+
+  /// No description provided for @proveedorNegociacionPrecioMioSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **', tú {precio}'**
+  String proveedorNegociacionPrecioMioSufijo(String precio);
+
+  /// No description provided for @proveedorNegociacionRondaSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Ronda {ronda} de {total}{turno}'**
+  String proveedorNegociacionRondaSemantica(int ronda, int total, String turno);
+
+  /// No description provided for @proveedorNegociacionEsTuTurno.
+  ///
+  /// In es, this message translates to:
+  /// **', es tu turno'**
+  String get proveedorNegociacionEsTuTurno;
+
+  /// No description provided for @terrenosFotoSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto {numero} de {total} del terreno{descripcion}'**
+  String terrenosFotoSemantica(int numero, int total, String descripcion);
+
+  /// No description provided for @terrenosFotoDescripcionSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **': {descripcion}'**
+  String terrenosFotoDescripcionSufijo(String descripcion);
+
+  /// No description provided for @referenciasPrecioZona.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio habitual en tu zona'**
+  String get referenciasPrecioZona;
+
+  /// No description provided for @referenciasPrecioRegion.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio habitual en tu región'**
+  String get referenciasPrecioRegion;
+
+  /// No description provided for @referenciasPrecioPais.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio habitual en el país'**
+  String get referenciasPrecioPais;
+
+  /// No description provided for @referenciasSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio de referencia: {precio} por hectárea. {origen}. {uso}'**
+  String referenciasSemantica(String precio, String origen, String uso);
+
+  /// No description provided for @referenciasYaLoUsas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya lo estás usando.'**
+  String get referenciasYaLoUsas;
+
+  /// No description provided for @referenciasTocaParaUsarlo.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca para usarlo.'**
+  String get referenciasTocaParaUsarlo;
+
+  /// No description provided for @accesoRolCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente'**
+  String get accesoRolCliente;
+
+  /// No description provided for @accesoRolClienteDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Publico lotes y elijo piloto'**
+  String get accesoRolClienteDetalle;
+
+  /// No description provided for @accesoRolClienteBoton.
+  ///
+  /// In es, this message translates to:
+  /// **'cliente'**
+  String get accesoRolClienteBoton;
+
+  /// No description provided for @accesoRolPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Piloto'**
+  String get accesoRolPiloto;
+
+  /// No description provided for @accesoRolPilotoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Busco lotes y negocio el precio'**
+  String get accesoRolPilotoDetalle;
+
+  /// No description provided for @accesoRolPilotoBoton.
+  ///
+  /// In es, this message translates to:
+  /// **'piloto'**
+  String get accesoRolPilotoBoton;
+
+  /// No description provided for @proveedorNegociacionVenceHoySufijo.
+  ///
+  /// In es, this message translates to:
+  /// **', vence hoy'**
+  String get proveedorNegociacionVenceHoySufijo;
+
+  /// No description provided for @proveedorAccesoDatoObligatorio.
+  ///
+  /// In es, this message translates to:
+  /// **'Este dato es obligatorio.'**
+  String get proveedorAccesoDatoObligatorio;
+
+  /// No description provided for @proveedorAccesoNumeroMayorCero.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un número mayor a cero.'**
+  String get proveedorAccesoNumeroMayorCero;
+
+  /// No description provided for @componentesSinSenal.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin señal'**
+  String get componentesSinSenal;
+
+  /// No description provided for @componentesNuevoServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'NUEVO SERVICIO'**
+  String get componentesNuevoServicio;
+
+  /// No description provided for @componentesTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'Total'**
+  String get componentesTotal;
+
+  /// No description provided for @componentesSyncEnDispositivo.
+  ///
+  /// In es, this message translates to:
+  /// **'En el dispositivo'**
+  String get componentesSyncEnDispositivo;
+
+  /// No description provided for @componentesSyncSincronizando.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizando'**
+  String get componentesSyncSincronizando;
+
+  /// No description provided for @componentesSyncSincronizado.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizado'**
+  String get componentesSyncSincronizado;
+
+  /// No description provided for @componentesSyncSinSincronizar.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin sincronizar'**
+  String get componentesSyncSinSincronizar;
+
+  /// No description provided for @solicitudesAvanceHectareas.
+  ///
+  /// In es, this message translates to:
+  /// **'{ejecutadas} / {total} ha'**
+  String solicitudesAvanceHectareas(String ejecutadas, String total);
+
+  /// No description provided for @proveedorEjecucionDeTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'{ejecutadas} de {total}'**
+  String proveedorEjecucionDeTotal(String ejecutadas, String total);
+
+  /// No description provided for @proveedorEjecucionHectareasPorPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'{hectareas} × {precio} por ha'**
+  String proveedorEjecucionHectareasPorPrecio(String hectareas, String precio);
 }
 
 class _AppLocalizationsDelegate

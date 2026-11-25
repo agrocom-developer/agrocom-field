@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../foto_preparador.dart';
 import '../foto_perfil_repositorio.dart';
 
@@ -63,18 +64,23 @@ const _igual = Object();
 /// va en línea: la foto sale comprimida a menos de 300 KB y un fallo deja
 /// la foto anterior y ofrece reintentar lo mismo.
 class FotoPerfilCubit extends Cubit<FotoPerfilEstado> {
-  FotoPerfilCubit(this._repositorio, this._preparador, {String? urlInicial})
-    : super(
-        FotoPerfilEstado(
-          fase: urlInicial == null
-              ? FaseFotoPerfil.cargando
-              : FaseFotoPerfil.lista,
-          url: urlInicial,
-        ),
-      );
+  FotoPerfilCubit(
+    this._repositorio,
+    this._preparador,
+    this._l10n, {
+    String? urlInicial,
+  }) : super(
+         FotoPerfilEstado(
+           fase: urlInicial == null
+               ? FaseFotoPerfil.cargando
+               : FaseFotoPerfil.lista,
+           url: urlInicial,
+         ),
+       );
 
   final FotoPerfilRepositorio _repositorio;
   final PreparadorFoto _preparador;
+  final AppLocalizations _l10n;
 
   Uint8List? _porSubir;
   _Intento? _ultimo;
@@ -105,7 +111,7 @@ class FotoPerfilCubit extends Cubit<FotoPerfilEstado> {
       _porSubir = bytes;
       await _subir();
     } on Object catch (e) {
-      _fallo(e, 'No pudimos preparar la foto. Prueba con otra.', null);
+      _fallo(e, _l10n.fotoPerfilNoPreparada, null);
     }
   }
 
@@ -122,17 +128,13 @@ class FotoPerfilCubit extends Cubit<FotoPerfilEstado> {
           fase: FaseFotoPerfil.lista,
           url: null,
           bytes: null,
-          mensaje: 'Quitamos tu foto. Verás tus iniciales.',
+          mensaje: _l10n.fotoPerfilQuitada,
           esError: false,
           puedeReintentar: false,
         ),
       );
     } on Object catch (e) {
-      _fallo(
-        e,
-        'No pudimos quitar la foto. Intenta de nuevo.',
-        _Intento.quitar,
-      );
+      _fallo(e, _l10n.fotoPerfilNoQuitada, _Intento.quitar);
     }
   }
 
@@ -163,20 +165,20 @@ class FotoPerfilCubit extends Cubit<FotoPerfilEstado> {
           fase: FaseFotoPerfil.lista,
           url: url,
           bytes: bytes,
-          mensaje: 'Listo: tu foto de perfil está actualizada.',
+          mensaje: _l10n.fotoPerfilActualizada,
           esError: false,
           sinRed: false,
           puedeReintentar: false,
         ),
       );
     } on Object catch (e) {
-      _fallo(e, 'No pudimos subir la foto. Intenta de nuevo.', _Intento.subir);
+      _fallo(e, _l10n.fotoPerfilNoSubida, _Intento.subir);
     }
   }
 
   void _fallo(Object error, String porDefecto, _Intento? reintento) {
     if (isClosed) return;
-    final f = describirFalla(error, porDefecto: porDefecto);
+    final f = describirFalla(error, l10n: _l10n, porDefecto: porDefecto);
     _ultimo = reintento;
     emit(
       state.copiarCon(

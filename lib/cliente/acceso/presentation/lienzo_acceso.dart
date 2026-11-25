@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/imagenes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
@@ -60,6 +61,7 @@ class PanelMarcaAcceso extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     const sobreFoto = PaletaCampo.campo;
     return FondoFotoCampo(
@@ -72,13 +74,12 @@ class PanelMarcaAcceso extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                'Fumigación con drones, a pedido',
+                l10n.accesoFumigacionConDronesPedido,
                 style: texto.displaySmall?.copyWith(color: sobreFoto.texto),
               ),
               const SizedBox(height: EspaciadoCampo.m),
               Text(
-                'Solicita el servicio, sigue el vuelo en vivo y califica al '
-                'piloto.',
+                l10n.accesoSolicitaServicioSigueVuelo,
                 style: texto.bodyLarge?.copyWith(
                   color: sobreFoto.textoSecundario,
                 ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
@@ -161,6 +162,7 @@ class _MapaSolicitudState extends State<MapaSolicitud>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final dibujo = widget.modo == ModoLote.dibujo;
     final teselas = ConfiguracionMapa.teselas;
@@ -179,11 +181,10 @@ class _MapaSolicitudState extends State<MapaSolicitud>
     return Semantics(
       container: true,
       label: dibujo
-          ? 'Mapa para dibujar el contorno del lote. '
-                '${widget.vertices.length} esquinas marcadas.'
+          ? l10n.solicitarMapaParaDibujarContorno(widget.vertices.length)
           : elegido != null
-          ? 'Mapa. Lote elegido: ${elegido.nombre}, ${elegido.zona}.'
-          : 'Mapa de tus lotes. Toca uno para elegirlo.',
+          ? l10n.solicitarMapaLoteElegido(elegido.nombre, elegido.zona)
+          : l10n.solicitarMapaTusLotesToca,
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -309,10 +310,11 @@ class _InsigniaSuperficie extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Semantics(
       liveRegion: true,
-      label: 'Superficie: $texto',
+      label: l10n.solicitarSuperficie(texto),
       child: ExcludeSemantics(
         child: AnimatedSwitcher(
           duration: MovimientoCampo.duracion(context, MovimientoCampo.rapida),
@@ -364,6 +366,7 @@ class _Vertice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final punto = Center(
       child: Container(
@@ -378,8 +381,8 @@ class _Vertice extends StatelessWidget {
       ),
     );
     return Semantics(
-      label: 'Esquina $numero del lote',
-      hint: arrastrable ? 'Arrastra para moverla' : null,
+      label: l10n.solicitarEsquinaDelLote(numero),
+      hint: arrastrable ? l10n.solicitarArrastraParaMoverla : null,
       child: !arrastrable
           ? punto
           : RawGestureDetector(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../ui/marketplace_ui.dart';
@@ -10,23 +11,24 @@ import 'chat_cubit.dart';
 
 /// Chat de mensajes con el cliente de una solicitud adjudicada.
 class ChatPantalla extends StatelessWidget {
-  const ChatPantalla({
-    required this.solicitudId,
-    this.titulo = 'Chat con el cliente',
-    super.key,
-  });
+  const ChatPantalla({required this.solicitudId, this.titulo, super.key});
 
   final int solicitudId;
-  final String titulo;
+
+  /// Título de la barra; por omisión, «Chat con el cliente».
+  final String? titulo;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
       create: (context) =>
-          ChatCubit(context.read<MensajesRepositorio>(), solicitudId)
+          ChatCubit(context.read<MensajesRepositorio>(), solicitudId, l10n)
             ..iniciar(),
       child: Scaffold(
-        appBar: AppBar(title: Text(titulo)),
+        appBar: AppBar(
+          title: Text(titulo ?? l10n.proveedorNegociacionChatConCliente),
+        ),
         body: const ChatVista(),
       ),
     );
@@ -56,17 +58,16 @@ class _ChatVistaState extends State<ChatVista> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocBuilder<ChatCubit, ChatEstado>(
       builder: (context, estado) {
         return Column(
           children: [
             if (estado.sinRed)
-              const Padding(
+              Padding(
                 padding: EdgeInsets.all(EspaciadoCampo.m),
                 child: AvisoMarketplace(
-                  mensaje:
-                      'Sin conexión. Ves los mensajes que ya bajaron; los '
-                      'nuevos llegan cuando vuelva la señal.',
+                  mensaje: l10n.proveedorNegociacionSinConexionVesLos,
                   tono: TonoAviso.alerta,
                   icono: Icons.wifi_off_rounded,
                 ),
@@ -75,12 +76,11 @@ class _ChatVistaState extends State<ChatVista> {
               child: estado.cargando
                   ? const Center(child: CircularProgressIndicator())
                   : estado.mensajes.isEmpty
-                  ? const EstadoVacioMarketplace(
+                  ? EstadoVacioMarketplace(
                       icono: Icons.chat_bubble_outline_rounded,
-                      titulo: 'Todavía no hay mensajes',
-                      detalle:
-                          'Escríbele al cliente para coordinar cómo llegar al '
-                          'lote y a qué hora.',
+                      titulo: l10n.proveedorNegociacionTodaviaHayMensajes,
+                      detalle: l10n
+                          .proveedorNegociacionEscribeleClienteParaCoordinar,
                     )
                   : ListView.builder(
                       reverse: true,
@@ -112,12 +112,10 @@ class _ChatVistaState extends State<ChatVista> {
                 ),
               ),
             if (estado.soloLectura)
-              const Padding(
+              Padding(
                 padding: EdgeInsets.all(EspaciadoCampo.l),
                 child: AvisoMarketplace(
-                  mensaje:
-                      'El servicio ya cerró: puedes leer la conversación pero '
-                      'no escribir.',
+                  mensaje: l10n.proveedorNegociacionServicioCerroPuedesLeer,
                 ),
               )
             else
@@ -134,15 +132,15 @@ class _ChatVistaState extends State<ChatVista> {
                           maxLines: 4,
                           maxLength: 1000,
                           textCapitalization: TextCapitalization.sentences,
-                          decoration: const InputDecoration(
-                            hintText: 'Escribe un mensaje',
+                          decoration: InputDecoration(
+                            hintText: l10n.proveedorNegociacionEscribeMensaje,
                             counterText: '',
                           ),
                         ),
                       ),
                       const SizedBox(width: EspaciadoCampo.s),
                       IconButton.filled(
-                        tooltip: 'Enviar mensaje',
+                        tooltip: l10n.proveedorNegociacionEnviarMensaje,
                         constraints: const BoxConstraints.tightFor(
                           width: ObjetivoTactilCampo.guantes,
                           height: ObjetivoTactilCampo.guantes,

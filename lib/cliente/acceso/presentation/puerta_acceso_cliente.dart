@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/estado_vacio_marketplace.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../domain/acceso_repositorio.dart';
@@ -45,8 +46,6 @@ class _PuertaAccesoClienteState extends State<PuertaAccesoCliente> {
   bool _registro = false;
   bool _vencida = false;
   StreamSubscription<void>? _expiracion;
-
-  static const _avisoVencida = 'Tu sesión venció. Entra de nuevo.';
 
   @override
   void initState() {
@@ -118,7 +117,9 @@ class _PuertaAccesoClienteState extends State<PuertaAccesoCliente> {
               LoginClientePantalla(
                 alEntrar: _entrar,
                 alCrearCuenta: () => setState(() => _registro = true),
-                nota: _vencida ? _avisoVencida : widget.notaAcceso,
+                nota: _vencida
+                    ? AppLocalizations.of(context).accesoSesionVencioEntraNuevo
+                    : widget.notaAcceso,
               ),
             ),
             EtapaArranque.dentro => ('dentro', widget.dentro(context)),
@@ -144,6 +145,7 @@ class _ErrorArranque extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -151,15 +153,15 @@ class _ErrorArranque extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const EstadoVacioMarketplace(
+                EstadoVacioMarketplace(
                   icono: Icons.error_outline_rounded,
-                  titulo: 'No pudimos abrir tu sesión',
-                  detalle: 'Intenta de nuevo en un momento.',
+                  titulo: l10n.accesoPudimosAbrirSesion,
+                  detalle: l10n.accesoIntentaNuevoMomento,
                 ),
                 OutlinedButton.icon(
                   onPressed: alReintentar,
                   icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('Reintentar'),
+                  label: Text(l10n.accesoReintentar),
                 ),
               ],
             ),

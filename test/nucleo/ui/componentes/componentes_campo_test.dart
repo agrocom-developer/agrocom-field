@@ -2,6 +2,7 @@
 // widget montado bajo `AgrocomThemeCampo.construir()`, más el comportamiento
 // interactivo de los que lo tienen (selector segmentado, grid de evidencias).
 
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
 import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
 import 'package:agrocom_field/nucleo/ui/imagenes_campo.dart';
@@ -11,6 +12,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 Widget _envolver(Widget child) {
   return MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     theme: AgrocomThemeCampo.construir(),
     home: Scaffold(body: Center(child: child)),
   );
@@ -215,6 +218,8 @@ void main() {
   ) async {
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         theme: AgrocomThemeCampo.construir(),
         home: Scaffold(
           appBar: const EncabezadoCampo(

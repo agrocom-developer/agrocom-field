@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../ui/paleta_campo.dart';
 import '../../ui/tokens_campo.dart';
 
@@ -47,11 +48,12 @@ class _BotonPrincipalMarketplaceState extends State<BotonPrincipalMarketplace> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final activo = widget.onPressed != null && !widget.cargando;
     final reducido = MovimientoCampo.reducido(context);
     return Semantics(
-      label: widget.cargando ? '${widget.texto}, en curso' : null,
+      label: widget.cargando ? l10n.uiCurso(widget.texto) : null,
       child: Listener(
         onPointerDown: (_) => _presionar(activo),
         onPointerUp: (_) => _presionar(false),

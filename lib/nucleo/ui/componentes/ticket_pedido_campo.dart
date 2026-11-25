@@ -1,6 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
@@ -31,7 +32,7 @@ class TicketPedidoCampo extends StatelessWidget {
     required this.estado,
     required this.filas,
     this.total,
-    this.etiquetaTotal = 'Total',
+    this.etiquetaTotal,
     super.key,
   });
 
@@ -45,14 +46,15 @@ class TicketPedidoCampo extends StatelessWidget {
 
   /// Total con formato, sin moneda; se muestra grande en mono.
   final String? total;
-  final String etiquetaTotal;
+  final String? etiquetaTotal;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Semantics(
       container: true,
-      label: 'Pedido $numero, $estado',
+      label: l10n.componentesPedido(numero, estado),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: paleta.superficie,
@@ -109,7 +111,7 @@ class TicketPedidoCampo extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              etiquetaTotal,
+                              etiquetaTotal ?? l10n.componentesTotal,
                               style: TipografiaCampo.etiqueta.copyWith(
                                 color: paleta.textoSecundario,
                               ),

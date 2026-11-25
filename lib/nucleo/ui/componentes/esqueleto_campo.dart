@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
 
@@ -65,11 +66,12 @@ class _EsqueletoCampoState extends State<EsqueletoCampo>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final base = paleta.texto.withValues(alpha: 0.08);
     final brillo = paleta.texto.withValues(alpha: 0.16);
     return Semantics(
-      label: 'Cargando',
+      label: l10n.componentesCargando,
       excludeSemantics: true,
       child: AnimatedBuilder(
         animation: _controlador,

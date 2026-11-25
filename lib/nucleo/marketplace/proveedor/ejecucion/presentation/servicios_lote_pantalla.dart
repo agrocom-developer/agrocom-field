@@ -37,6 +37,7 @@ class ServiciosLoteVista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     return BlocBuilder<ServiciosLoteCubit, ServiciosLoteEstado>(
       builder: (context, estado) {
@@ -46,7 +47,10 @@ class ServiciosLoteVista extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.all(EspaciadoCampo.l),
             children: [
-              Text('Servicio', style: texto.headlineMedium),
+              Text(
+                l10n.proveedorEjecucionServicio,
+                style: texto.headlineMedium,
+              ),
               const SizedBox(height: EspaciadoCampo.l),
               switch (estado) {
                 ServiciosLoteCargando() => const Column(
@@ -57,8 +61,8 @@ class ServiciosLoteVista extends StatelessWidget {
                   ],
                 ),
                 ServiciosLoteError() => EstadoErrorMarketplace(
-                  titulo: 'No pudimos leer tus servicios',
-                  detalle: 'Cierra y abre la app. Lo que guardaste sigue aquí.',
+                  titulo: l10n.proveedorEjecucionPudimosLeerTusServicios,
+                  detalle: l10n.proveedorEjecucionCierraAbreAppQue,
                   onReintentar: cubit.iniciar,
                 ),
                 ServiciosLoteListos(:final servicios) when servicios.isEmpty =>
@@ -68,11 +72,9 @@ class ServiciosLoteVista extends StatelessWidget {
                         : AppLocalizations.of(context).listaVerLotesMapa,
                     alAccion: alIrAlMapa,
                     icono: Icons.flight_takeoff_outlined,
-                    titulo: 'Todavía no tienes un servicio adjudicado',
-                    detalle:
-                        'Cuando un cliente te elija, el servicio aparece aquí '
-                        'con sus datos de contacto. Jala hacia abajo para '
-                        'actualizar.',
+                    titulo:
+                        l10n.proveedorEjecucionTodaviaTienesServicioAdjudicado,
+                    detalle: l10n.proveedorEjecucionCuandoClienteElijaServicio,
                   ),
                 ServiciosLoteListos(:final servicios) => Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -115,16 +117,21 @@ class TarjetaServicioLote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = servicio;
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
     final (tono, icono) = estiloEstado(s.estado);
     return Semantics(
       button: true,
-      label:
-          '${FormatoMarketplace.hectareas(s.hectareas)}'
-          '${s.cultivo == null ? '' : ' de ${s.cultivo}'}, ${s.estado.etiqueta}'
-          '${s.pendientes > 0 ? ', ${s.pendientes} por subir' : ''}',
+      label: l10n.proveedorEjecucionServicioSemantica(
+        FormatoMarketplace.hectareas(s.hectareas),
+        s.cultivo == null ? '' : l10n.proveedorEjecucionDeCultivo(s.cultivo!),
+        s.estado.etiqueta,
+        s.pendientes > 0
+            ? l10n.proveedorEjecucionPendientesSufijo(s.pendientes)
+            : '',
+      ),
       excludeSemantics: true,
       child: SuperficieMarketplace(
         resaltada: s.estado == EstadoServicioLote.enEjecucion,
@@ -160,9 +167,11 @@ class TarjetaServicioLote extends StatelessWidget {
               const SizedBox(height: EspaciadoCampo.xs),
               Text(
                 s.hectareasEjecutadas == null
-                    ? 'Sin avance marcado'
-                    : '${FormatoMarketplace.hectareas(s.hectareasEjecutadas!)} '
-                          'de ${FormatoMarketplace.hectareas(s.hectareas)}',
+                    ? l10n.proveedorEjecucionSinAvanceMarcado
+                    : l10n.proveedorEjecucionDeTotal(
+                        FormatoMarketplace.hectareas(s.hectareasEjecutadas!),
+                        FormatoMarketplace.hectareas(s.hectareas),
+                      ),
                 style: texto.bodyMedium,
               ),
             ] else if (s.estado == EstadoServicioLote.finalizada &&
@@ -194,20 +203,21 @@ class ChipPendientes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = servicio;
     if (s.rechazos > 0) {
       return ChipEstadoMarketplace(
         etiqueta: s.rechazos == 1
-            ? '1 registro rechazado'
-            : '${s.rechazos} registros rechazados',
+            ? l10n.proveedorEjecucionRegistroRechazado
+            : l10n.proveedorEjecucionRegistrosRechazados(s.rechazos),
         tono: TonoEstado.error,
         icono: Icons.error_outline_rounded,
       );
     }
     return ChipEstadoMarketplace(
       etiqueta: s.pendientes == 1
-          ? '1 cosa por subir'
-          : '${s.pendientes} cosas por subir',
+          ? l10n.proveedorEjecucionCosaPorSubir
+          : l10n.proveedorEjecucionCosasPorSubir(s.pendientes),
       tono: TonoEstado.info,
       icono: Icons.cloud_upload_outlined,
     );

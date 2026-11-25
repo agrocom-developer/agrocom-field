@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
@@ -15,6 +16,7 @@ import 'calificar_cubit.dart';
 /// Abre la pantalla para calificar al proveedor de [servicio]. Devuelve
 /// `true` si la calificación quedó registrada.
 Future<bool> abrirCalificar(BuildContext context, Solicitud servicio) async {
+  final l10n = AppLocalizations.of(context);
   final mensajero = ScaffoldMessenger.of(context);
   final enviada = await Navigator.of(context).push<bool>(
     MaterialPageRoute<bool>(
@@ -27,7 +29,7 @@ Future<bool> abrirCalificar(BuildContext context, Solicitud servicio) async {
   );
   if (enviada ?? false) {
     mensajero.showSnackBar(
-      const SnackBar(content: Text('Gracias por calificar el servicio')),
+      SnackBar(content: Text(l10n.calificarGraciasPorCalificarServicio)),
     );
   }
   return enviada ?? false;
@@ -41,17 +43,18 @@ class CalificarPantalla extends StatelessWidget {
 
   final Solicitud servicio;
 
-  static const _palabras = [
-    'Toca una estrella',
-    'Malo',
-    'Regular',
-    'Bueno',
-    'Muy bueno',
-    'Excelente',
+  static List<String> _palabras(AppLocalizations l10n) => [
+    l10n.calificarTocaEstrella,
+    l10n.calificarMalo,
+    l10n.calificarRegular,
+    l10n.calificarBueno,
+    l10n.calificarMuyBueno,
+    l10n.calificarExcelente,
   ];
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final nombre = servicio.nombreProveedor;
     final primerNombre = nombre?.split(' ').first;
@@ -106,7 +109,7 @@ class CalificarPantalla extends StatelessWidget {
                               ObjetivoTactilCampo.minimo,
                             ),
                           ),
-                          child: const Text('Omitir'),
+                          child: Text(l10n.calificarOmitir),
                         ),
                       ),
                     ),
@@ -131,9 +134,10 @@ class CalificarPantalla extends StatelessWidget {
                               header: true,
                               child: Text(
                                 primerNombre == null
-                                    ? '¿Cómo fue el servicio?'
-                                    : '¿Cómo fue el servicio de '
-                                          '$primerNombre?',
+                                    ? l10n.calificarComoFueServicio
+                                    : l10n.calificarComoFueServicio2(
+                                        primerNombre,
+                                      ),
                                 style: TipografiaCampo.tituloBloque.copyWith(
                                   color: paleta.texto,
                                 ),
@@ -168,7 +172,7 @@ class CalificarPantalla extends StatelessWidget {
                                 MovimientoCampo.rapida,
                               ),
                               child: Text(
-                                _palabras[estado.puntaje],
+                                _palabras(l10n)[estado.puntaje],
                                 key: ValueKey(estado.puntaje),
                                 style: TipografiaCampo.tituloSeccion.copyWith(
                                   color: estado.puntaje == 0
@@ -200,11 +204,8 @@ class CalificarPantalla extends StatelessWidget {
                                       ? Icons.wifi_off_rounded
                                       : null,
                                   mensaje: estado.sinConexion
-                                      ? 'Sin conexión. Tu calificación no se '
-                                            'envió; prueba de nuevo cuando '
-                                            'tengas señal.'
-                                      : 'No pudimos enviar tu calificación. '
-                                            'Prueba de nuevo.',
+                                      ? l10n.calificarSinConexionCalificacionEnvio
+                                      : l10n.calificarPudimosEnviarCalificacionPrueba,
                                 ),
                               ),
                             ],
@@ -223,8 +224,8 @@ class CalificarPantalla extends StatelessWidget {
                       child: BotonPrincipal(
                         key: const ValueKey('enviar-calificacion'),
                         texto: estado.fase == FaseCalificar.error
-                            ? 'Reintentar'
-                            : 'Enviar calificación',
+                            ? l10n.calificarReintentar
+                            : l10n.calificarEnviarCalificacion,
                         cargando: enviando,
                         onPressed: estado.puedeEnviar ? cubit.enviar : null,
                       ),
@@ -271,6 +272,7 @@ class _OpcionalesState extends State<_Opcionales> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final cubit = context.read<CalificarCubit>();
     final estado = widget.estado;
@@ -279,7 +281,9 @@ class _OpcionalesState extends State<_Opcionales> {
       children: [
         const SizedBox(height: EspaciadoCampo.xl),
         Text(
-          estado.puntaje >= 4 ? '¿Qué destacas?' : '¿Qué se puede mejorar?',
+          estado.puntaje >= 4
+              ? l10n.calificarQueDestacas
+              : l10n.calificarQuePuedeMejorar,
           style: TipografiaCampo.etiqueta.copyWith(
             color: paleta.textoSecundario,
           ),
@@ -316,7 +320,7 @@ class _OpcionalesState extends State<_Opcionales> {
           textCapitalization: TextCapitalization.sentences,
           onChanged: cubit.cambiarComentario,
           decoration: InputDecoration(
-            hintText: 'Comentario opcional',
+            hintText: l10n.calificarComentarioOpcional,
             alignLabelWithHint: true,
             filled: true,
             fillColor: paleta.superficie,

@@ -46,6 +46,7 @@ class _Vista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final margen = EspaciadoCampo.margenLateral(
       MediaQuery.sizeOf(context).width,
     );
@@ -55,7 +56,7 @@ class _Vista extends StatelessWidget {
         if (estado.fase == FaseHistorial.error) {
           return EstadoFalla(
             sinConexion: estado.sinConexion,
-            queNoCargo: 'tus solicitudes',
+            queNoCargo: l10n.solicitudesTusSolicitudes,
             alReintentar: cubit.reintentar,
           );
         }
@@ -75,7 +76,7 @@ class _Vista extends StatelessWidget {
                 Semantics(
                   header: true,
                   child: Text(
-                    'Mis solicitudes',
+                    l10n.solicitudesMisSolicitudes,
                     style: Theme.of(context).textTheme.headlineMedium,
                   ),
                 ),
@@ -84,12 +85,10 @@ class _Vista extends StatelessWidget {
                   const _Cargando()
                 else ...[
                   if (estado.sinConexion) ...[
-                    const AvisoMarketplace(
+                    AvisoMarketplace(
                       tono: TonoAviso.alerta,
                       icono: Icons.wifi_off_rounded,
-                      mensaje:
-                          'Sin conexión. Ves lo último que cargamos; puede '
-                          'estar desactualizado.',
+                      mensaje: l10n.solicitudesSinConexionVesUltimo,
                     ),
                     const SizedBox(height: EspaciadoCampo.l),
                   ],
@@ -106,18 +105,18 @@ class _Vista extends StatelessWidget {
                       direction: MediaQuery.textScalerOf(context).scale(1) > 1.3
                           ? Axis.vertical
                           : Axis.horizontal,
-                      segments: const [
+                      segments: [
                         ButtonSegment(
                           value: FiltroHistorial.todos,
-                          label: Text('Todos'),
+                          label: Text(l10n.solicitudesTodos),
                         ),
                         ButtonSegment(
                           value: FiltroHistorial.activos,
-                          label: Text('Activos'),
+                          label: Text(l10n.solicitudesActivos),
                         ),
                         ButtonSegment(
                           value: FiltroHistorial.completados,
-                          label: Text('Listos'),
+                          label: Text(l10n.solicitudesListos),
                         ),
                       ],
                       selected: {estado.filtro},
@@ -133,19 +132,16 @@ class _Vista extends StatelessWidget {
                       icono: Icons.inbox_outlined,
                       titulo: switch (estado.filtro) {
                         FiltroHistorial.todos =>
-                          'Todavía no publicaste solicitudes',
+                          l10n.solicitudesTodaviaPublicasteSolicitudes,
                         FiltroHistorial.activos =>
-                          'No hay solicitudes en curso',
+                          l10n.solicitudesHaySolicitudesCurso,
                         FiltroHistorial.completados =>
-                          'Todavía no hay servicios terminados',
+                          l10n.solicitudesTodaviaHayServiciosTerminados,
                       },
                       detalle: switch (estado.filtro) {
                         FiltroHistorial.completados =>
-                          'Cuando un piloto termina, queda guardado acá con '
-                              'sus fotos y el precio final.',
-                        _ =>
-                          'Publica un lote, compara las ofertas de los '
-                              'pilotos y elige.',
+                          l10n.solicitudesCuandoPilotoTerminaQueda,
+                        _ => l10n.solicitudesPublicaLoteComparaLas,
                       },
                       etiquetaAccion:
                           estado.filtro == FiltroHistorial.completados ||
@@ -187,26 +183,28 @@ class _Resumen extends StatelessWidget {
   final HistorialEstado estado;
   final DateTime hasta;
 
-  static const _meses = [
-    'Ene',
-    'Feb',
-    'Mar',
-    'Abr',
-    'May',
-    'Jun',
-    'Jul',
-    'Ago',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dic',
+  static List<String> _meses(AppLocalizations l10n) => [
+    l10n.historialMesEne,
+    l10n.historialMesFeb,
+    l10n.historialMesMar,
+    l10n.historialMesAbr,
+    l10n.historialMesMay,
+    l10n.historialMesJun,
+    l10n.historialMesJul,
+    l10n.historialMesAgo,
+    l10n.historialMesSep,
+    l10n.historialMesOct,
+    l10n.historialMesNov,
+    l10n.historialMesDic,
   ];
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final meses = estado.hectareasPorMes(hasta: hasta);
+    final nombresMes = _meses(l10n);
     // La proporción exacta se convierte a `double` solo para dibujar.
     final altos = [for (final m in meses) m.hectareas.toDouble()];
     final maximo = altos.fold<double>(0, (a, b) => a > b ? a : b);
@@ -218,7 +216,7 @@ class _Resumen extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Fumigado con Agrocom',
+            l10n.solicitudesFumigadoConAgrocom,
             style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
           ),
           Text(
@@ -226,7 +224,7 @@ class _Resumen extends StatelessWidget {
             style: texto.headlineMedium?.copyWith(color: paleta.acentoTexto),
           ),
           Text(
-            'en $servicios ${servicios == 1 ? 'servicio' : 'servicios'}',
+            l10n.historialEnServicios(servicios),
             style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
           ),
           if (maximo > 0) ...[
@@ -234,9 +232,12 @@ class _Resumen extends StatelessWidget {
             SizedBox(
               height: 120,
               child: Semantics(
-                label:
-                    'Hectáreas fumigadas por mes: '
-                    '${[for (final m in meses) '${_meses[m.mes.month - 1]} ${FormatoMarketplace.hectareas(m.hectareas)}'].join(', ')}',
+                label: l10n.historialSemanticaHectareasPorMes(
+                  [
+                    for (final m in meses)
+                      '${nombresMes[m.mes.month - 1]} ${FormatoMarketplace.hectareas(m.hectareas)}',
+                  ].join(', '),
+                ),
                 child: ExcludeSemantics(
                   child: BarChart(
                     duration: MovimientoCampo.duracion(
@@ -262,7 +263,7 @@ class _Resumen extends StatelessWidget {
                                 top: EspaciadoCampo.xs,
                               ),
                               child: Text(
-                                _meses[meses[v.toInt()].mes.month - 1],
+                                nombresMes[meses[v.toInt()].mes.month - 1],
                                 // El eje es decorativo: el dato va en la
                                 // etiqueta accesible y en el total.
                                 textScaler: TextScaler.noScaling,

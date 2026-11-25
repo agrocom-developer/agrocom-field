@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/componentes/esqueleto_campo.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
@@ -25,9 +26,11 @@ class TarjetaConfirmarPago extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
       create: (context) =>
-          PagoCubit(context.read<PagosRepositorio>(), solicitudId)..cargar(),
+          PagoCubit(context.read<PagosRepositorio>(), solicitudId, l10n)
+            ..cargar(),
       child: const _VistaConfirmar(),
     );
   }
@@ -37,22 +40,20 @@ class _VistaConfirmar extends StatelessWidget {
   const _VistaConfirmar();
 
   Future<void> _preguntar(BuildContext context) async {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<PagoCubit>();
     final ok = await showDialog<bool>(
       context: context,
       builder: (dialogo) => AlertDialog(
-        title: const Text('¿Confirmas que recibiste el pago?'),
-        content: const Text(
-          'Solo se puede confirmar una vez. El cliente verá que el pago '
-          'quedó confirmado.',
-        ),
+        title: Text(l10n.pagoConfirmasQueRecibistePago),
+        content: Text(l10n.pagoSoloPuedeConfirmarUna),
         actions: [
           TextButton(
             style: TextButton.styleFrom(
               minimumSize: const Size(64, ObjetivoTactilCampo.guantes),
             ),
             onPressed: () => Navigator.pop(dialogo, false),
-            child: const Text('Todavía no'),
+            child: Text(l10n.pagoTodavia),
           ),
           FilledButton(
             key: const Key('pago-confirmar-si'),
@@ -60,7 +61,7 @@ class _VistaConfirmar extends StatelessWidget {
               minimumSize: const Size(64, ObjetivoTactilCampo.guantes),
             ),
             onPressed: () => Navigator.pop(dialogo, true),
-            child: const Text('Sí, lo recibí'),
+            child: Text(l10n.pagoRecibi),
           ),
         ],
       ),
@@ -70,6 +71,7 @@ class _VistaConfirmar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
     return BlocBuilder<PagoCubit, PagoEstado>(
@@ -94,19 +96,18 @@ class _VistaConfirmar extends StatelessWidget {
             children: [
               Semantics(
                 header: true,
-                child: Text('¿Ya te pagaron?', style: texto.titleLarge),
+                child: Text(l10n.pagoPagaron, style: texto.titleLarge),
               ),
               const SizedBox(height: EspaciadoCampo.xs),
               Text(
-                'El cliente te paga directamente. Cuando lo recibas, '
-                'confírmalo aquí: la app no cobra ni mueve dinero.',
+                l10n.pagoClientePagaDirectamenteCuando,
                 style: texto.bodyMedium?.copyWith(
                   color: paleta.textoSecundario,
                 ),
               ),
               if (!falloDeLectura) ...[
                 const SizedBox(height: EspaciadoCampo.m),
-                Text('¿Cómo te pagó? (opcional)', style: texto.labelLarge),
+                Text(l10n.pagoComoPagoOpcional, style: texto.labelLarge),
                 const SizedBox(height: EspaciadoCampo.s),
                 Wrap(
                   spacing: EspaciadoCampo.s,
@@ -131,7 +132,7 @@ class _VistaConfirmar extends StatelessWidget {
                   liveRegion: true,
                   child: AvisoMarketplace(
                     key: const Key('pago-aviso'),
-                    mensaje: estado.mensaje ?? 'No pudimos confirmar el pago.',
+                    mensaje: estado.mensaje ?? l10n.pagoPudimosConfirmarPago,
                     tono: estado.fallo == FalloPago.sinRed
                         ? TonoAviso.alerta
                         : TonoAviso.error,
@@ -149,8 +150,8 @@ class _VistaConfirmar extends StatelessWidget {
                   key: const Key('pago-confirmar'),
                   alto: ObjetivoTactilCampo.guantes,
                   texto: estado.fase == FasePago.error
-                      ? 'Reintentar'
-                      : 'Ya recibí el pago',
+                      ? l10n.pagoReintentar
+                      : l10n.pagoRecibiPago,
                   icono: estado.fase == FasePago.error
                       ? Icons.refresh_rounded
                       : Icons.payments_outlined,

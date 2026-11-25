@@ -1,3 +1,4 @@
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 // Acceso y alta del proveedor, compresión de fotos y ubicación del piloto.
 
 import 'dart:async';
@@ -331,7 +332,7 @@ void main() {
 
   group('puerta de acceso', () {
     test('sin sesión guardada muestra el ingreso', () async {
-      final cubit = AccesoCubit(_AccesoFalso());
+      final cubit = AccesoCubit(_AccesoFalso(), AppLocalizationsEs());
       await cubit.iniciar();
       expect(cubit.state, isA<AccesoSinSesion>());
       await cubit.close();
@@ -344,7 +345,7 @@ void main() {
           usuario: 'rodrigo',
           rol: 'piloto',
         );
-      final cubit = AccesoCubit(acceso);
+      final cubit = AccesoCubit(acceso, AppLocalizationsEs());
       await cubit.iniciar();
       expect(cubit.state, isA<AccesoDentro>());
       await cubit.close();
@@ -355,7 +356,7 @@ void main() {
         ..falla = const AccesoProveedorExcepcion(
           MotivoFalloAcceso.credencialesInvalidas,
         );
-      final cubit = AccesoCubit(acceso);
+      final cubit = AccesoCubit(acceso, AppLocalizationsEs());
       await cubit.ingresar('x', 'y');
       expect((cubit.state as AccesoSinSesion).mensaje, contains('incorrectos'));
       await cubit.ingresar('x', 'y');
@@ -371,7 +372,11 @@ void main() {
           usuario: 'r',
           rol: 'piloto',
         );
-      final cubit = AccesoCubit(acceso, sesionExpirada: vencida.stream);
+      final cubit = AccesoCubit(
+        acceso,
+        AppLocalizationsEs(),
+        sesionExpirada: vencida.stream,
+      );
       await cubit.iniciar();
       vencida.add(null);
       await Future<void>.delayed(Duration.zero);
@@ -382,7 +387,7 @@ void main() {
 
     test('salir cierra la sesión', () async {
       final acceso = _AccesoFalso();
-      final cubit = AccesoCubit(acceso);
+      final cubit = AccesoCubit(acceso, AppLocalizationsEs());
       await cubit.ingresar('x', 'y');
       await cubit.salir();
       expect(acceso.sesion, isNull);
@@ -397,6 +402,7 @@ void main() {
       drones: d,
       selector: _SelectorFalso(),
       compresor: _CompresorIdentidad(),
+      l10n: AppLocalizationsEs(),
     );
 
     Future<void> conTresFotos(RegistroCubit c) async {
@@ -560,7 +566,12 @@ void main() {
 
   test('las fotos de avance usan la cámara y se guardan comprimidas', () async {
     final repo = EjecucionDemo();
-    final cubit = ServicioLoteCubit(repo, 10, selector: _SelectorFoto());
+    final cubit = ServicioLoteCubit(
+      repo,
+      10,
+      AppLocalizationsEs(),
+      selector: _SelectorFoto(),
+    );
     cubit.iniciar();
     await Future<void>.delayed(Duration.zero);
     await cubit.tomarFotoDeAvance();

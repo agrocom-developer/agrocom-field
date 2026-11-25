@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
 
@@ -21,11 +22,12 @@ class CalificacionCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final lado = onCambio == null ? tamano : ObjetivoTactilCampo.minimo;
     return Semantics(
       container: true,
-      label: 'Calificación: $valor de 5',
+      label: l10n.componentesCalificacion(valor),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

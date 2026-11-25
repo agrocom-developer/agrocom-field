@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../camara/selector_imagen.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tema_visual/tema_visual_app.dart';
-import '../../../../camara/selector_imagen.dart';
 import '../../di/dependencias_proveedor.dart';
 import '../domain/acceso_proveedor.dart';
 import 'acceso_cubit.dart';
@@ -44,9 +44,11 @@ class AppProveedor extends StatelessWidget {
         RepositoryProvider<SelectorImagen>.value(value: selectorImagen),
       ],
       child: BlocProvider(
-        create: (_) =>
-            AccesoCubit(acceso.acceso, sesionExpirada: acceso.sesionExpirada)
-              ..iniciar(),
+        create: (_) => AccesoCubit(
+          acceso.acceso,
+          AppLocalizations.of(context),
+          sesionExpirada: acceso.sesionExpirada,
+        )..iniciar(),
         child: TemaVisualApp(
           predeterminado: ModoVisualCampo.campo,
           construir: (context, tema) => MaterialApp(

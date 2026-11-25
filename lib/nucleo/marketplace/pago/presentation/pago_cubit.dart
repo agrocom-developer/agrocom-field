@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../dominio/falla.dart';
 import '../../foto_preparador.dart';
 import '../pago_confirmado.dart';
@@ -60,12 +61,17 @@ const _igual = Object();
 /// reintento, de modo que repetir no duplica el pago. La app no cobra: solo
 /// deja constancia de un pago hecho fuera.
 class PagoCubit extends Cubit<PagoEstado> {
-  PagoCubit(this._repositorio, this.solicitudId, {String? uuidCliente})
-    : _uuid = uuidCliente ?? const Uuid().v4(),
-      super(const PagoEstado());
+  PagoCubit(
+    this._repositorio,
+    this.solicitudId,
+    this._l10n, {
+    String? uuidCliente,
+  }) : _uuid = uuidCliente ?? const Uuid().v4(),
+       super(const PagoEstado());
 
   final PagosRepositorio _repositorio;
   final int solicitudId;
+  final AppLocalizations _l10n;
   final String _uuid;
 
   /// Lee si el pago ya está confirmado.
@@ -123,10 +129,10 @@ class PagoCubit extends Cubit<PagoEstado> {
     if (isClosed) return;
     final f = describirFalla(
       error,
+      l10n: _l10n,
       porDefecto: cargando
-          ? 'No pudimos revisar el pago. Intenta de nuevo.'
-          : 'No pudimos confirmar el pago. Tu confirmación no se perdió: '
-                'intenta de nuevo.',
+          ? _l10n.pagoNoPudimosRevisar
+          : _l10n.pagoNoPudimosConfirmar,
     );
     final fallo = f.sinRed
         ? FalloPago.sinRed
@@ -141,8 +147,7 @@ class PagoCubit extends Cubit<PagoEstado> {
         fallaAlLeer: cargando,
         fallo: fallo,
         mensaje: fallo == FalloPago.soloTitular
-            ? 'Solo el titular del proveedor puede confirmar el pago. '
-                  'Pídele que lo haga desde su cuenta.'
+            ? _l10n.pagoSoloTitular
             : f.mensaje,
       ),
     );

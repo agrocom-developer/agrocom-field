@@ -30,6 +30,7 @@ class PerfilProveedorPantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final t = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
@@ -136,7 +137,9 @@ class PerfilProveedorPantalla extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        'Bs ${FormatoMarketplace.bsNumero(oferta.precioHa)}/ha',
+                        l10n.ofertasBsHa(
+                          FormatoMarketplace.bsNumero(oferta.precioHa),
+                        ),
                         key: const ValueKey('perfil-publico-precio'),
                         style: TipografiaCampo.cifraMedia.copyWith(
                           color: paleta.texto,

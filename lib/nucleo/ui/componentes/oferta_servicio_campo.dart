@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
 
@@ -23,7 +24,7 @@ class OfertaServicioCampo extends StatelessWidget {
     required this.total,
     required this.onAceptar,
     required this.onRechazar,
-    this.etiqueta = 'NUEVO SERVICIO',
+    this.etiqueta,
     this.mapa,
     this.onDetalle,
     this.respondiendo = false,
@@ -49,7 +50,7 @@ class OfertaServicioCampo extends StatelessWidget {
   final VoidCallback onRechazar;
 
   /// Rótulo en mono sobre el título ("PRIORITARIA · FLOTA DE AGROCOM").
-  final String etiqueta;
+  final String? etiqueta;
 
   /// Mapa del lote, entre el detalle y los datos. Sin él la tarjeta es solo
   /// texto.
@@ -81,6 +82,7 @@ class OfertaServicioCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final progreso = total.inMilliseconds == 0
@@ -93,8 +95,7 @@ class OfertaServicioCampo extends StatelessWidget {
 
     return Semantics(
       container: true,
-      label:
-          'Oferta de servicio: $titulo, $monto, quedan $tiempo para responder',
+      label: l10n.componentesOfertaServicioQuedanPara(titulo, monto, tiempo),
       child: Container(
         padding: const EdgeInsets.all(EspaciadoCampo.xl),
         decoration: BoxDecoration(
@@ -111,7 +112,7 @@ class OfertaServicioCampo extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    etiqueta,
+                    etiqueta ?? l10n.componentesNuevoServicio,
                     style: texto.labelSmall?.copyWith(
                       color: paleta.acentoTexto,
                     ),
@@ -149,11 +150,17 @@ class OfertaServicioCampo extends StatelessWidget {
                   children: [
                     ConstrainedBox(
                       constraints: BoxConstraints(minWidth: mitad),
-                      child: _Dato(etiqueta: 'PAGO', valor: monto),
+                      child: _Dato(
+                        etiqueta: l10n.componentesPago,
+                        valor: monto,
+                      ),
                     ),
                     ConstrainedBox(
                       constraints: BoxConstraints(minWidth: mitad),
-                      child: _Dato(etiqueta: 'DISTANCIA', valor: distancia),
+                      child: _Dato(
+                        etiqueta: l10n.componentesDistancia,
+                        valor: distancia,
+                      ),
                     ),
                   ],
                 );
@@ -168,7 +175,7 @@ class OfertaServicioCampo extends StatelessWidget {
                   const SizedBox(width: EspaciadoCampo.s),
                   Expanded(
                     child: Text(
-                      'Sin conexión. Para responder necesitás red.',
+                      l10n.componentesSinConexionParaResponder,
                       style: texto.bodyMedium?.copyWith(color: paleta.texto),
                     ),
                   ),
@@ -188,7 +195,11 @@ class OfertaServicioCampo extends StatelessWidget {
                 disabledBackgroundColor: paleta.borde,
                 disabledForegroundColor: paleta.textoSecundario,
               ),
-              child: Text(respondiendo ? 'Enviando…' : 'Aceptar servicio'),
+              child: Text(
+                respondiendo
+                    ? l10n.componentesEnviando
+                    : l10n.componentesAceptarServicio,
+              ),
             ),
             const SizedBox(height: EspaciadoCampo.s),
             // El alto lo pone el tema: 48 en claro y oscuro, 56 en modo campo.
@@ -197,7 +208,7 @@ class OfertaServicioCampo extends StatelessWidget {
               style: OutlinedButton.styleFrom(
                 disabledForegroundColor: paleta.textoSecundario,
               ),
-              child: const Text('Rechazar'),
+              child: Text(l10n.componentesRechazar),
             ),
             if (onDetalle != null) ...[
               const SizedBox(height: EspaciadoCampo.xs),
@@ -209,7 +220,7 @@ class OfertaServicioCampo extends StatelessWidget {
                     ObjetivoTactilCampo.minimo,
                   ),
                 ),
-                child: const Text('Ver detalle y mapa'),
+                child: Text(l10n.componentesVerDetalleMapa),
               ),
             ],
           ],

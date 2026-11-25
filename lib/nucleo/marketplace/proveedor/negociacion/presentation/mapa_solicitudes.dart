@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/colores_campo.dart';
 import '../../../../ui/componentes/cifra_campo.dart';
 import '../../../../ui/paleta_campo.dart';
@@ -58,6 +59,7 @@ class MapaSolicitudes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final teselas = conTeselas ?? ConfiguracionMapa.teselas;
     final hoy = ahora ?? DateTime.now();
@@ -70,9 +72,7 @@ class MapaSolicitudes extends StatelessWidget {
         LatLng(s.ubicacion!.latitud, s.ubicacion!.longitud),
     ];
     return Semantics(
-      label:
-          'Mapa de solicitudes abiertas, ${ubicadas.length} '
-          '${ubicadas.length == 1 ? 'solicitud' : 'solicitudes'}',
+      label: l10n.proveedorNegociacionMapaSemantica(ubicadas.length),
       child: ClipRect(
         child: FlutterMap(
           options: MapOptions(
@@ -311,6 +311,7 @@ class MosaicosSolicitud extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = solicitud;
     return IntrinsicHeight(
       child: Row(
@@ -318,7 +319,7 @@ class MosaicosSolicitud extends StatelessWidget {
         children: [
           Expanded(
             child: _Mosaico(
-              etiqueta: 'Superficie',
+              etiqueta: l10n.proveedorNegociacionSuperficie,
               valor: CifrasNegociacion.ha(s.hectareas),
               unidad: 'ha',
             ),
@@ -326,7 +327,7 @@ class MosaicosSolicitud extends StatelessWidget {
           const SizedBox(width: EspaciadoCampo.m),
           Expanded(
             child: _Mosaico(
-              etiqueta: 'Precio ofrecido',
+              etiqueta: l10n.proveedorNegociacionPrecioOfrecido,
               valor: CifrasNegociacion.bsHa(s.precioHaPropuesto),
               unidad: 'Bs/ha',
             ),

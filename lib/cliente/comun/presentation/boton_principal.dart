@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 
@@ -23,11 +24,12 @@ class BotonPrincipal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Semantics(
       button: true,
       enabled: onPressed != null && !cargando,
-      label: cargando ? '$texto, enviando' : texto,
+      label: cargando ? l10n.comunEnviando(texto) : texto,
       excludeSemantics: true,
       child: SizedBox(
         width: double.infinity,

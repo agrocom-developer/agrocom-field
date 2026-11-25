@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:agrocom_field/nucleo/version/estado_version.dart';
 import 'package:agrocom_field/nucleo/version/version_apk.dart';
 import 'package:agrocom_field/nucleo/version/version_bloqueo_overlay.dart';
@@ -22,6 +23,8 @@ void main() {
   ) async {
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: VersionBloqueoOverlay(
           estadoVersion: const Stream<EstadoVersion>.empty(),
           child: const Text('contenido'),
@@ -39,6 +42,8 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: VersionBloqueoOverlay(
           estadoVersion: controlador.stream,
           child: const Text('contenido'),
@@ -61,6 +66,8 @@ void main() {
 
       await tester.pumpWidget(
         MaterialApp(
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
           home: VersionBloqueoOverlay(
             estadoVersion: controlador.stream,
             child: const Text('contenido'),

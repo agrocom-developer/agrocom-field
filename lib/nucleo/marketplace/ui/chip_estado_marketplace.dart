@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../ui/paleta_campo.dart';
 import '../../ui/tokens_campo.dart';
 
@@ -27,6 +28,7 @@ class ChipEstadoMarketplace extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final (fondo, color) = switch (tono) {
       TonoEstado.exito => (
@@ -43,7 +45,7 @@ class ChipEstadoMarketplace extends StatelessWidget {
     };
     return Semantics(
       container: true,
-      label: etiquetaSemantica ?? 'Estado: $etiqueta',
+      label: etiquetaSemantica ?? l10n.uiEstado(etiqueta),
       excludeSemantics: true,
       child: Container(
         padding: const EdgeInsets.symmetric(

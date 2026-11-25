@@ -109,13 +109,14 @@ class _FormularioState extends State<_Formulario> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final cubit = context.read<RegistroClienteCubit>();
     final t = AppLocalizations.of(context);
     return BlocBuilder<RegistroClienteCubit, FormularioAccesoEstado>(
       builder: (context, estado) {
-        final mensaje = estado.mensajeFallo;
+        final mensaje = estado.mensajeFallo(t);
         Widget bloque(String titulo) => Padding(
           padding: const EdgeInsets.only(bottom: EspaciadoCampo.m),
           child: Semantics(
@@ -142,17 +143,17 @@ class _FormularioState extends State<_Formulario> {
                   offset: const Offset(-EspaciadoCampo.m, 0),
                   child: IconButton(
                     key: const Key('registro-volver'),
-                    tooltip: 'Volver al ingreso',
+                    tooltip: l10n.accesoVolverIngreso,
                     onPressed: estado.enviando ? null : widget.alVolver,
                     icon: const Icon(Icons.arrow_back_rounded),
                     color: paleta.texto,
                   ),
                 ),
                 const SizedBox(height: EspaciadoCampo.s),
-                Text('Crea tu cuenta', style: texto.headlineMedium),
+                Text(l10n.accesoCreaCuenta, style: texto.headlineMedium),
                 const SizedBox(height: EspaciadoCampo.s),
                 Text(
-                  'Toma menos de un minuto.',
+                  l10n.accesoTomaMenosMinuto,
                   style: texto.bodyLarge?.copyWith(
                     color: paleta.textoSecundario,
                   ),
@@ -186,10 +187,10 @@ class _FormularioState extends State<_Formulario> {
                           ),
                         ),
                 ),
-                bloque('Tus datos'),
+                bloque(l10n.accesoTusDatos),
                 CampoFormularioMarketplace(
                   key: const Key('registro-nombre'),
-                  etiqueta: 'Nombre completo',
+                  etiqueta: l10n.accesoNombreCompleto,
                   controller: _nombre,
                   enabled: !estado.enviando,
                   keyboardType: TextInputType.name,
@@ -203,7 +204,7 @@ class _FormularioState extends State<_Formulario> {
                 const SizedBox(height: EspaciadoCampo.l),
                 CampoFormularioMarketplace(
                   key: const Key('registro-telefono'),
-                  etiqueta: 'Teléfono',
+                  etiqueta: l10n.accesoTelefono,
                   controller: _telefono,
                   enabled: !estado.enviando,
                   keyboardType: TextInputType.phone,
@@ -266,16 +267,16 @@ class _FormularioState extends State<_Formulario> {
                   AvisoMarketplace(mensaje: t.registroEmpresaContactoNota),
                 ],
                 const SizedBox(height: EspaciadoCampo.xl),
-                bloque('Tu acceso'),
+                bloque(l10n.accesoAcceso),
                 CampoFormularioMarketplace(
                   key: const Key('registro-usuario'),
-                  etiqueta: 'Usuario',
+                  etiqueta: l10n.accesoUsuario,
                   controller: _usuario,
                   enabled: !estado.enviando,
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
                   autofillHints: const [AutofillHints.newUsername],
-                  ayuda: 'Es con lo que vas a entrar. Sin espacios ni correo.',
+                  ayuda: l10n.accesoConQueVasEntrar,
                   validator: ReglasAcceso.usuario,
                   errorServidor: estado.porCampo[CampoAcceso.usuario],
                   onChanged: (_) => cubit.campoEditado(CampoAcceso.usuario),
@@ -283,16 +284,16 @@ class _FormularioState extends State<_Formulario> {
                 const SizedBox(height: EspaciadoCampo.l),
                 CampoFormularioMarketplace(
                   key: const Key('registro-contrasena'),
-                  etiqueta: 'Contraseña',
+                  etiqueta: l10n.accesoContrasena,
                   controller: _contrasena,
                   enabled: !estado.enviando,
                   obscureText: true,
                   keyboardType: TextInputType.visiblePassword,
                   textInputAction: TextInputAction.done,
                   autofillHints: const [AutofillHints.newPassword],
-                  ayuda:
-                      'Mínimo ${ReglasAcceso.largoMinimoContrasena} '
-                      'caracteres, con letras y números.',
+                  ayuda: l10n.accesoMinimoCaracteresConLetras(
+                    ReglasAcceso.largoMinimoContrasena,
+                  ),
                   validator: ReglasAcceso.contrasenaNueva,
                   errorServidor: estado.porCampo[CampoAcceso.contrasena],
                   onChanged: (_) => cubit.campoEditado(CampoAcceso.contrasena),
@@ -301,7 +302,7 @@ class _FormularioState extends State<_Formulario> {
                 const SizedBox(height: EspaciadoCampo.xl),
                 BotonPrincipalMarketplace(
                   key: const Key('registro-crear'),
-                  texto: 'Crear cuenta',
+                  texto: l10n.accesoCrearCuenta,
                   cargando: estado.enviando,
                   onPressed: _enviar,
                 ),

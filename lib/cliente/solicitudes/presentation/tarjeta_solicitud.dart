@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
@@ -37,6 +38,7 @@ class TarjetaSolicitud extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final s = solicitud;
     final conteoOfertas = s.estado == EstadoSolicitud.conOfertas
@@ -102,19 +104,19 @@ class TarjetaSolicitud extends StatelessWidget {
             GrupoStatsCampo(
               children: [
                 _Dato(
-                  etiqueta: 'Superficie',
+                  etiqueta: l10n.solicitudesSuperficie,
                   valor: FormatoMarketplace.hectareasNumero(s.hectareas),
                   unidad: 'ha',
                 ),
                 _Dato(
                   etiqueta: s.precioHaAcordado != null
-                      ? 'Precio acordado'
-                      : 'Tu precio',
+                      ? l10n.solicitudesPrecioAcordado
+                      : l10n.solicitudesPrecio,
                   valor: FormatoMarketplace.bsNumero(s.precioHaVigente),
                   unidad: 'Bs/ha',
                 ),
                 _Dato(
-                  etiqueta: 'Total',
+                  etiqueta: l10n.solicitudesTotal,
                   valor: FormatoMarketplace.bsNumero(s.totalAPagar),
                   unidad: 'Bs',
                 ),
@@ -148,7 +150,7 @@ class TarjetaSolicitud extends StatelessWidget {
                 Icon(Icons.star_rounded, size: 16, color: paleta.alerta),
                 const SizedBox(width: EspaciadoCampo.xs),
                 Text(
-                  'Calificaste con ${s.puntajeDelCliente}',
+                  l10n.solicitudesCalificasteCon(s.puntajeDelCliente!),
                   style: secundario,
                 ),
               ],
@@ -205,13 +207,15 @@ class _Avance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final s = solicitud;
     final ejecutadas = s.hectareasEjecutadas;
     final porcentaje = s.porcentajeAvance?.toStringAsFixed(0) ?? '0';
-    final etiqueta =
-        '${ejecutadas == null ? 0 : FormatoMarketplace.hectareasNumero(ejecutadas)}'
-        ' / ${FormatoMarketplace.hectareasNumero(s.hectareas)} ha';
+    final etiqueta = l10n.solicitudesAvanceHectareas(
+      ejecutadas == null ? '0' : FormatoMarketplace.hectareasNumero(ejecutadas),
+      FormatoMarketplace.hectareasNumero(s.hectareas),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

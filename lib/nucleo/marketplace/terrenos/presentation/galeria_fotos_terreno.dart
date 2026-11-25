@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../foto_preparador.dart';
@@ -27,6 +28,7 @@ class GaleriaFotosTerreno extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
     return BlocBuilder<FotosTerrenoCubit, FotosTerrenoEstado>(
@@ -41,13 +43,17 @@ class GaleriaFotosTerreno extends StatelessWidget {
                 Expanded(
                   child: Semantics(
                     header: true,
-                    child: Text('Fotos del terreno', style: texto.titleMedium),
+                    child: Text(
+                      l10n.terrenosFotosDelTerreno,
+                      style: texto.titleMedium,
+                    ),
                   ),
                 ),
                 Semantics(
-                  label:
-                      '${estado.fotos.length} de '
-                      '${FotosTerrenoRepositorio.maximo} fotos',
+                  label: l10n.terrenosFotos(
+                    estado.fotos.length,
+                    FotosTerrenoRepositorio.maximo,
+                  ),
                   child: ExcludeSemantics(
                     child: Text(
                       '${estado.fotos.length}/${FotosTerrenoRepositorio.maximo}',
@@ -62,11 +68,10 @@ class GaleriaFotosTerreno extends StatelessWidget {
             const SizedBox(height: EspaciadoCampo.xs),
             Text(
               estado.fotos.isEmpty
-                  ? 'Agrega fotos del estado del terreno: el piloto las ve '
-                        'antes de ofertar y ajusta mejor su precio.'
+                  ? l10n.terrenosAgregaFotosDelEstado
                   : nuevo
-                  ? 'Se suben cuando publiques la solicitud.'
-                  : 'El piloto las ve antes de ofertar.',
+                  ? l10n.terrenosSubenCuandoPubliquesSolicitud
+                  : l10n.terrenosPilotoLasAntesOfertar,
               style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
             ),
             const SizedBox(height: EspaciadoCampo.m),
@@ -116,6 +121,7 @@ class GaleriaFotosTerreno extends StatelessWidget {
   }
 
   Future<void> _elegirOrigen(BuildContext context, FotosTerrenoCubit cubit) {
+    final l10n = AppLocalizations.of(context);
     return showModalBottomSheet<void>(
       context: context,
       showDragHandle: true,
@@ -130,7 +136,7 @@ class GaleriaFotosTerreno extends StatelessWidget {
                 Icons.photo_camera_outlined,
                 color: context.paleta.acentoTexto,
               ),
-              title: const Text('Tomar una foto'),
+              title: Text(l10n.terrenosTomarUnaFoto),
               onTap: () {
                 Navigator.pop(hoja);
                 cubit.agregar(OrigenFoto.camara);
@@ -143,7 +149,7 @@ class GaleriaFotosTerreno extends StatelessWidget {
                 Icons.photo_library_outlined,
                 color: context.paleta.acentoTexto,
               ),
-              title: const Text('Elegir de la galería'),
+              title: Text(l10n.terrenosElegirGaleria),
               onTap: () {
                 Navigator.pop(hoja);
                 cubit.agregar(OrigenFoto.galeria);

@@ -7,15 +7,7 @@ import '../../solicitudes/domain/solicitud.dart';
 import '../domain/reglas_solicitud.dart';
 
 /// Pasos del flujo, uno por pantalla.
-enum PasoSolicitud {
-  lote('Lote'),
-  aplicacion('Aplicación'),
-  cuando('Cuándo'),
-  precio('Precio');
-
-  const PasoSolicitud(this.etiqueta);
-  final String etiqueta;
-}
+enum PasoSolicitud { lote, aplicacion, cuando, precio }
 
 /// Cómo indica el cliente el terreno: uno ya registrado o un contorno nuevo.
 enum ModoLote { guardado, dibujo }
@@ -114,14 +106,14 @@ class SolicitarEstado {
     ModoLote.dibujo => contornoCerrado ? hectareasDePoligono(vertices) : null,
   };
 
-  String? get errorHectareas {
+  ErrorHectareas? get errorHectareas {
     final base = ReglasSolicitud.errorDeHectareas(hectareasTexto);
     if (base != null) return base;
     // Un terreno ya registrado limita la superficie que se puede pedir.
     final tope = modoLote == ModoLote.guardado ? loteGuardado?.hectareas : null;
     final pedidas = ReglasSolicitud.parsearHectareas(hectareasTexto);
     if (tope != null && pedidas != null && pedidas > tope) {
-      return 'El lote tiene $tope ha: no puedes pedir más.';
+      return ErrorHectareas.sobreLote;
     }
     return null;
   }
@@ -154,7 +146,7 @@ class SolicitarEstado {
 
   /// El precio escrito dice algo incorrecto; `null` mientras el campo está
   /// vacío (no se regaña antes de escribir).
-  String? get errorPrecio => precioTexto.trim().isEmpty
+  ErrorPrecio? get errorPrecio => precioTexto.trim().isEmpty
       ? null
       : ReglasSolicitud.errorDePrecio(precioTexto);
 

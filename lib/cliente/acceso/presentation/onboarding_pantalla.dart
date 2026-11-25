@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/imagenes_campo.dart';
@@ -23,28 +24,25 @@ const double _fraccionColage = 0.5;
 class _Portada {
   const _Portada(this.titulo, this.detalle, this.colage);
 
-  final String titulo;
-  final String detalle;
+  final String Function(AppLocalizations l10n) titulo;
+  final String Function(AppLocalizations l10n) detalle;
   final Widget Function(BuildContext context, double radio) colage;
 }
 
 final _portadas = <_Portada>[
   _Portada(
-    'Publica tu lote en el mapa',
-    'Marca el área, define tu precio por hectárea y recibe ofertas de '
-        'pilotos cercanos.',
+    (l10n) => l10n.accesoPortadaPublicaTitulo,
+    (l10n) => l10n.accesoPortadaPublicaDetalle,
     _colagePublica,
   ),
   _Portada(
-    'Negocia hasta 5 rondas',
-    'Cada piloto acepta tu precio o contraoferta. Tú eliges con quién '
-        'trabajar.',
+    (l10n) => l10n.accesoPortadaNegociaTitulo,
+    (l10n) => l10n.accesoPortadaNegociaDetalle,
     _colageNegocia,
   ),
   _Portada(
-    'Pagas lo que se fumigó',
-    'Precio final = hectáreas ejecutadas × precio acordado. El pago es '
-        'directo con el piloto.',
+    (l10n) => l10n.accesoPortadaPagasTitulo,
+    (l10n) => l10n.accesoPortadaPagasDetalle,
     _colagePrecioFinal,
   ),
 ];
@@ -182,6 +180,7 @@ class _VistaState extends State<_Vista> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<OnboardingCubit>();
     final paleta = context.paleta;
     return Scaffold(
@@ -224,7 +223,7 @@ class _VistaState extends State<_Vista> {
                 const SizedBox(height: EspaciadoCampo.s),
                 BotonPrincipalMarketplace(
                   key: const Key('onboarding-continuar'),
-                  texto: 'Comenzar',
+                  texto: l10n.accesoComenzar,
                   onPressed: widget.alComenzar,
                 ),
                 const SizedBox(height: EspaciadoCampo.xs),
@@ -238,7 +237,7 @@ class _VistaState extends State<_Vista> {
                     foregroundColor: paleta.acentoTexto,
                     textStyle: Theme.of(context).textTheme.titleMedium,
                   ),
-                  child: const Text('Ya tengo cuenta'),
+                  child: Text(l10n.accesoTengoCuenta),
                 ),
               ],
             ),
@@ -289,6 +288,7 @@ class _Pagina extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     return LayoutBuilder(
@@ -343,10 +343,10 @@ class _Pagina extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(portada.titulo, style: texto.headlineMedium),
+                    Text(portada.titulo(l10n), style: texto.headlineMedium),
                     const SizedBox(height: EspaciadoCampo.m),
                     Text(
-                      portada.detalle,
+                      portada.detalle(l10n),
                       style: texto.bodyLarge?.copyWith(
                         color: paleta.textoSecundario,
                       ),
@@ -399,6 +399,7 @@ class _PastillaSaltar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Material(
       color: paleta.superficie,
@@ -417,7 +418,7 @@ class _PastillaSaltar extends StatelessWidget {
             child: Center(
               widthFactor: 1,
               child: Text(
-                'Saltar',
+                l10n.accesoSaltar,
                 style: Theme.of(
                   context,
                 ).textTheme.titleMedium?.copyWith(color: paleta.texto),
@@ -440,6 +441,7 @@ class _Puntos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -448,7 +450,7 @@ class _Puntos extends StatelessWidget {
           Semantics(
             button: true,
             selected: i == paso,
-            label: 'Portada ${i + 1} de ${_portadas.length}',
+            label: l10n.accesoPortada(i + 1, _portadas.length),
             excludeSemantics: true,
             child: InkResponse(
               key: Key('onboarding-punto-$i'),
@@ -487,6 +489,7 @@ const double _separacion = EspaciadoCampo.xs;
 
 /// 1 · Foto grande con precios sobre ella, foto del dron y bloque ámbar.
 Widget _colagePublica(BuildContext context, double radio) {
+  final l10n = AppLocalizations.of(context);
   return Row(
     children: [
       Expanded(
@@ -519,10 +522,10 @@ Widget _colagePublica(BuildContext context, double radio) {
               ),
             ),
             const SizedBox(height: _separacion),
-            const Expanded(
+            Expanded(
               child: BloqueAmbarCampo(
                 titulo: '120',
-                etiqueta: 'hectáreas publicadas',
+                etiqueta: l10n.accesoHectareasPublicadas,
                 radio: 0,
               ),
             ),
@@ -568,6 +571,7 @@ Widget _colageNegocia(BuildContext context, double radio) {
 
 /// 3 · Foto, post-it con el precio final y foto del dron en tierra.
 Widget _colagePrecioFinal(BuildContext context, double radio) {
+  final l10n = AppLocalizations.of(context);
   final paleta = context.paleta;
   return Column(
     children: [
@@ -586,14 +590,14 @@ Widget _colagePrecioFinal(BuildContext context, double radio) {
             Expanded(
               child: ColoredBox(
                 color: paleta.ambarContenedor,
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.all(EspaciadoCampo.m),
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: PostItCampo(
-                      etiqueta: 'Precio final',
-                      cuenta: '118 ha × 64',
-                      total: 'Bs 7.552',
+                      etiqueta: l10n.accesoPrecioFinal,
+                      cuenta: l10n.acceso118,
+                      total: l10n.acceso552,
                     ),
                   ),
                 ),

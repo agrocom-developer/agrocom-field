@@ -3,9 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
-import '../../seguimiento/domain/seguimiento_repositorio.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
+import '../../seguimiento/domain/seguimiento_repositorio.dart';
 
 /// Foto de avance o del dron. Una ruta `assets/…` es un recurso empaquetado
 /// (la demo); cualquier otra se descarga con la sesión del cliente, porque
@@ -35,10 +36,11 @@ class FotoRemota extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     Widget marco(Widget hijo) => Semantics(
       image: true,
-      label: etiqueta ?? 'Foto',
+      label: etiqueta ?? l10n.comunFoto,
       child: ExcludeSemantics(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(RadioCampo.chip),

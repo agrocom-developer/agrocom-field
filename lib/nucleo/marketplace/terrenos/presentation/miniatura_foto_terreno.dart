@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import 'fotos_terreno_estado.dart';
@@ -28,14 +29,15 @@ class MiniaturaFotoTerreno extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final fallida = foto.situacion == SituacionFoto.fallida;
     final subiendo = foto.situacion == SituacionFoto.subiendo;
     final estado = switch (foto.situacion) {
       SituacionFoto.guardada => 'guardada',
       SituacionFoto.subiendo => 'subiendo',
-      SituacionFoto.pendiente => 'se sube al publicar',
-      SituacionFoto.fallida => 'no se pudo subir',
+      SituacionFoto.pendiente => l10n.terrenosSubePublicar,
+      SituacionFoto.fallida => l10n.terrenosPudoSubir,
     };
     return SizedBox.square(
       dimension: ladoMiniaturaFoto,
@@ -45,7 +47,7 @@ class MiniaturaFotoTerreno extends StatelessWidget {
             child: Semantics(
               image: true,
               button: alAbrir != null,
-              label: 'Foto $numero del terreno, $estado',
+              label: l10n.terrenosFotoDelTerreno(numero, estado),
               excludeSemantics: true,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(RadioCampo.media),
@@ -90,7 +92,7 @@ class MiniaturaFotoTerreno extends StatelessWidget {
                                     color: paleta.error,
                                   ),
                                   Text(
-                                    'Reintentar',
+                                    l10n.terrenosReintentar,
                                     style: Theme.of(context)
                                         .textTheme
                                         .labelMedium
@@ -110,7 +112,7 @@ class MiniaturaFotoTerreno extends StatelessWidget {
               right: -EspaciadoCampo.s,
               child: Semantics(
                 button: true,
-                label: 'Quitar la foto $numero',
+                label: l10n.terrenosQuitarFoto(numero),
                 excludeSemantics: true,
                 child: SizedBox.square(
                   dimension: ObjetivoTactilCampo.minimo,

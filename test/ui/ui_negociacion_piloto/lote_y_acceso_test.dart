@@ -1,3 +1,4 @@
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 // Servicio adjudicado en el lote (offline-first), ingreso y registro del
 // piloto, en modo campo: comportamiento, estados, texto al 200 % y goldens.
 
@@ -311,7 +312,8 @@ void main() {
         RepositoryProvider<SelectorImagen>.value(value: _Imagenes()),
       ],
       child: BlocProvider(
-        create: (_) => AccesoCubit(_AccesoFalso())..iniciar(),
+        create: (_) =>
+            AccesoCubit(_AccesoFalso(), AppLocalizationsEs())..iniciar(),
         child: hijo,
       ),
     );
@@ -374,6 +376,7 @@ void main() {
             acceso: _AccesoFalso(),
             drones: _DronesFalso(),
             selector: _Imagenes(),
+            l10n: AppLocalizationsEs(),
           ),
           child: RegistroProveedorPantalla(alTerminar: () {}),
         ),

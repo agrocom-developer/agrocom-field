@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../colores_campo.dart';
 import '../imagenes_campo.dart';
 
@@ -34,12 +35,13 @@ class LogoAgrocomCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final logo = Image.asset(
       ImagenesCampo.logo,
       width: ancho,
       height: _alto,
       fit: BoxFit.contain,
-      semanticLabel: 'Agrocom',
+      semanticLabel: l10n.componentesAgrocom,
     );
     if (!sombra) return logo;
     return Stack(

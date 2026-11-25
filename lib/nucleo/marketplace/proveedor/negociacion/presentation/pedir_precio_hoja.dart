@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../referencias/precio_referencia.dart';
@@ -36,7 +37,7 @@ Future<PrecioPropuesto?> pedirPrecio(
   required Decimal hectareas,
   required Decimal precioReferencia,
   required String etiquetaReferencia,
-  String textoBoton = 'Enviar contraoferta',
+  String? textoBoton,
   String? tipoAplicacion,
   int? zonaId,
   String? macrorregion,
@@ -57,7 +58,9 @@ Future<PrecioPropuesto?> pedirPrecio(
         hectareas: hectareas,
         precioReferencia: precioReferencia,
         etiquetaReferencia: etiquetaReferencia,
-        textoBoton: textoBoton,
+        textoBoton:
+            textoBoton ??
+            AppLocalizations.of(context).proveedorNegociacionEnviarContraoferta,
         tipoAplicacion: tipoAplicacion,
         zonaId: zonaId,
         macrorregion: macrorregion,
@@ -123,10 +126,11 @@ class _HojaPrecioState extends State<_HojaPrecio> {
   Decimal? get _valor => leerPrecio(_precio.text);
 
   String? _validar(String? texto) {
+    final l10n = AppLocalizations.of(context);
     final valor = leerPrecio(texto ?? '');
-    if (valor == null) return 'Escribe un precio mayor a cero.';
+    if (valor == null) return l10n.proveedorNegociacionEscribePrecioMayorCero;
     if (valor == widget.precioReferencia) {
-      return 'Es el mismo precio. Cámbialo o acepta el actual.';
+      return l10n.proveedorNegociacionMismoPrecioCambialoAcepta;
     }
     return null;
   }
@@ -142,6 +146,7 @@ class _HojaPrecioState extends State<_HojaPrecio> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
     final total = _valor == null ? null : widget.hectareas * _valor!;
@@ -162,8 +167,10 @@ class _HojaPrecioState extends State<_HojaPrecio> {
               Text(widget.titulo, style: texto.titleLarge),
               const SizedBox(height: EspaciadoCampo.xs),
               Text(
-                '${widget.etiquetaReferencia}: '
-                '${FormatoMarketplace.bs(widget.precioReferencia)} por ha',
+                l10n.proveedorNegociacionPor2(
+                  widget.etiquetaReferencia,
+                  FormatoMarketplace.bs(widget.precioReferencia),
+                ),
                 style: texto.bodyMedium?.copyWith(
                   color: paleta.textoSecundario,
                 ),
@@ -180,7 +187,7 @@ class _HojaPrecioState extends State<_HojaPrecio> {
               ],
               const SizedBox(height: EspaciadoCampo.l),
               CampoFormularioMarketplace(
-                etiqueta: 'Tu precio por hectárea (Bs)',
+                etiqueta: l10n.proveedorNegociacionPrecioPorHectarea,
                 controller: _precio,
                 validator: _validar,
                 keyboardType: const TextInputType.numberWithOptions(
@@ -197,7 +204,7 @@ class _HojaPrecioState extends State<_HojaPrecio> {
                 liveRegion: true,
                 child: Text(
                   total == null
-                      ? 'El total aparece cuando escribes el precio.'
+                      ? l10n.proveedorNegociacionTotalApareceCuandoEscribes
                       : '${FormatoMarketplace.hectareas(widget.hectareas)} × '
                             '${FormatoMarketplace.bs(_valor!)} = '
                             '${FormatoMarketplace.bs(total)}',
@@ -206,7 +213,7 @@ class _HojaPrecioState extends State<_HojaPrecio> {
               ),
               const SizedBox(height: EspaciadoCampo.m),
               CampoFormularioMarketplace(
-                etiqueta: 'Mensaje para el cliente (opcional)',
+                etiqueta: l10n.proveedorNegociacionMensajeParaClienteOpcional,
                 controller: _nota,
                 textCapitalization: TextCapitalization.sentences,
                 textInputAction: TextInputAction.done,

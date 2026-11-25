@@ -1,6 +1,7 @@
 // Fotos del terreno: la galería del cliente (hasta 8, compresión, subida con
 // reintento) y la tira que ve el piloto en la solicitud abierta.
 
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:agrocom_field/nucleo/marketplace/foto_preparador.dart';
 import 'package:agrocom_field/nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
@@ -45,7 +46,7 @@ class _Inestable extends FotosTerrenoDemo {
 }
 
 FotosTerrenoCubit _cubit(FotosTerrenoRepositorio repo) =>
-    FotosTerrenoCubit(repo, preparadorDePrueba());
+    FotosTerrenoCubit(repo, preparadorDePrueba(), AppLocalizationsEs());
 
 const _fotosDelServidor = [
   FotoTerreno(id: 1, url: 'assets/imagenes/fondo_dron_pulverizando.jpg'),

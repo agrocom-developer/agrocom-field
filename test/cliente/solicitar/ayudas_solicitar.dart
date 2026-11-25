@@ -3,6 +3,7 @@ import 'package:agrocom_field/cliente/solicitar/data/solicitud_demo.dart';
 import 'package:agrocom_field/cliente/solicitar/domain/solicitud_repositorio.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_cubit.dart';
 import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:agrocom_field/nucleo/marketplace/demo/datos_demo.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:agrocom_field/nucleo/marketplace/referencias/precio_referencia.dart';
@@ -134,8 +135,11 @@ Widget envolver({
       ),
     ],
     child: BlocProvider(
-      create: (_) =>
-          FotosTerrenoCubit(FotosTerrenoDemo(), preparadorDePrueba()),
+      create: (_) => FotosTerrenoCubit(
+        FotosTerrenoDemo(),
+        preparadorDePrueba(),
+        AppLocalizationsEs(),
+      ),
       child: MaterialApp(
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,

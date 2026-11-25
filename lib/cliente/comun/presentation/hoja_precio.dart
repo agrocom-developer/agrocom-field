@@ -2,10 +2,12 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../solicitar/domain/reglas_solicitud.dart';
+import '../../solicitar/presentation/textos_errores_solicitud.dart';
 import 'boton_principal.dart';
 
 /// Precio por hectárea que el cliente escribió en la hoja, con una nota
@@ -85,12 +87,13 @@ class _HojaPrecioState extends State<HojaPrecio> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final valor = _valor;
     final error = _precio.text.trim().isEmpty
         ? null
-        : ReglasSolicitud.errorDePrecio(_precio.text);
+        : ReglasSolicitud.errorDePrecio(_precio.text)?.texto(l10n);
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: SingleChildScrollView(
@@ -132,8 +135,8 @@ class _HojaPrecioState extends State<HojaPrecio> {
               ],
               style: texto.headlineSmall,
               decoration: InputDecoration(
-                labelText: 'Precio por hectárea',
-                suffixText: 'Bs/ha',
+                labelText: l10n.comunPrecioPorHectarea,
+                suffixText: l10n.comunBsHa,
                 errorText: error,
                 errorMaxLines: 3,
               ),
@@ -143,10 +146,11 @@ class _HojaPrecioState extends State<HojaPrecio> {
               liveRegion: true,
               child: Text(
                 valor == null
-                    ? 'Escribe un precio para ver el total.'
-                    : 'Total estimado: '
-                          '${FormatoMarketplace.bs(widget.hectareas * valor)} '
-                          'por ${FormatoMarketplace.hectareas(widget.hectareas)}',
+                    ? l10n.comunEscribePrecioParaVer
+                    : l10n.comunTotalEstimadoPor(
+                        FormatoMarketplace.bs(widget.hectareas * valor),
+                        FormatoMarketplace.hectareas(widget.hectareas),
+                      ),
                 style: texto.bodyMedium?.copyWith(
                   color: paleta.textoSecundario,
                 ),
@@ -160,8 +164,8 @@ class _HojaPrecioState extends State<HojaPrecio> {
                 maxLength: 200,
                 maxLines: 2,
                 textCapitalization: TextCapitalization.sentences,
-                decoration: const InputDecoration(
-                  labelText: 'Mensaje para el piloto (opcional)',
+                decoration: InputDecoration(
+                  labelText: l10n.comunMensajeParaPilotoOpcional,
                 ),
               ),
             ],

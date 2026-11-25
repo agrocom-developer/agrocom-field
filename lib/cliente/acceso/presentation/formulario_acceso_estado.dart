@@ -1,3 +1,4 @@
+import '../../../l10n/app_localizations.dart';
 import '../domain/acceso_repositorio.dart';
 
 /// Estado compartido por los formularios de ingreso y de registro.
@@ -22,15 +23,11 @@ class FormularioAccesoEstado {
   final SesionCliente? sesion;
 
   /// Mensaje para el aviso general, o `null` si no corresponde mostrarlo.
-  String? get mensajeFallo => switch (fallo) {
+  String? mensajeFallo(AppLocalizations l10n) => switch (fallo) {
     null || MotivoFalloAcceso.validacion => null,
-    MotivoFalloAcceso.credencialesInvalidas =>
-      'El usuario o la contraseña no coinciden. Revísalos e intenta de nuevo.',
-    MotivoFalloAcceso.sinConexion =>
-      'Sin conexión. Lo que escribiste sigue aquí: intenta de nuevo cuando '
-          'tengas señal.',
-    MotivoFalloAcceso.desconocido =>
-      'No pudimos completar la operación. Intenta de nuevo en un momento.',
+    MotivoFalloAcceso.credencialesInvalidas => l10n.accesoErrorCredenciales,
+    MotivoFalloAcceso.sinConexion => l10n.accesoErrorSinConexion,
+    MotivoFalloAcceso.desconocido => l10n.accesoErrorDesconocido,
   };
 
   bool get sinConexion => fallo == MotivoFalloAcceso.sinConexion;

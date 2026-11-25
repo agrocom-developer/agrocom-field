@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
@@ -44,15 +45,19 @@ class PostItOfertaCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final giro = MovimientoCampo.reducido(context) ? 0.0 : math.pi / 180;
     return Semantics(
       container: true,
       button: onTap != null,
       selected: elegido,
-      label:
-          'Oferta de $piloto: $precioPorHectarea bolivianos por hectárea, '
-          'total $total bolivianos${elegido ? ', elegida' : ''}',
+      label: l10n.componentesOfertaSemantica(
+        piloto,
+        precioPorHectarea,
+        total,
+        elegido ? l10n.componentesElegidaSufijo : '',
+      ),
       excludeSemantics: true,
       child: Transform.rotate(
         angle: giro,
@@ -118,7 +123,7 @@ class PostItOfertaCampo extends StatelessWidget {
                       vertical: EspaciadoCampo.xs,
                     ),
                     child: Text(
-                      'ELEGIDO',
+                      l10n.componentesElegido,
                       style: TipografiaCampo.etiquetaMono.copyWith(
                         color: paleta.sobreGrafito,
                       ),

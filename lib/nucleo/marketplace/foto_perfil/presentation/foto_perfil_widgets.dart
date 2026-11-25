@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../foto_preparador.dart';
@@ -20,11 +21,13 @@ class FotoPerfilProveedor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
       create: (context) {
         final cubit = FotoPerfilCubit(
           context.read<FotoPerfilRepositorio>(),
           context.read<PreparadorFoto>(),
+          l10n,
           urlInicial: urlInicial,
         );
         if (urlInicial == null) cubit.cargar();
@@ -50,14 +53,15 @@ class AvatarFotoPerfil extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return BlocBuilder<FotoPerfilCubit, FotoPerfilEstado>(
       builder: (context, estado) {
         return Semantics(
           button: true,
           label: estado.tieneFoto
-              ? 'Foto de perfil de $nombre. Toca para cambiarla'
-              : 'Sin foto de perfil. Toca para agregar una',
+              ? l10n.fotoPerfilFotoPerfilTocaPara(nombre)
+              : l10n.fotoPerfilSinFotoPerfilToca,
           excludeSemantics: true,
           child: InkResponse(
             key: const Key('foto-perfil-avatar'),
@@ -130,6 +134,7 @@ class AccionesFotoPerfil extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     return BlocBuilder<FotoPerfilCubit, FotoPerfilEstado>(
       builder: (context, estado) {
@@ -154,10 +159,10 @@ class AccionesFotoPerfil extends StatelessWidget {
                   icon: const Icon(Icons.photo_camera_outlined),
                   label: Text(
                     estado.trabajando
-                        ? 'Subiendo foto…'
+                        ? l10n.fotoPerfilSubiendoFoto
                         : estado.tieneFoto
-                        ? 'Cambiar foto'
-                        : 'Agregar foto',
+                        ? l10n.fotoPerfilCambiarFoto
+                        : l10n.fotoPerfilAgregarFoto,
                   ),
                 ),
                 if (estado.tieneFoto && !estado.trabajando)
@@ -171,13 +176,13 @@ class AccionesFotoPerfil extends StatelessWidget {
                     ),
                     onPressed: cubit.quitar,
                     icon: const Icon(Icons.delete_outline_rounded),
-                    label: const Text('Quitar'),
+                    label: Text(l10n.fotoPerfilQuitar),
                   ),
               ],
             ),
             if (!estado.tieneFoto && estado.mensaje == null)
               Text(
-                'Con una foto, el cliente te reconoce al llegar al lote.',
+                l10n.fotoPerfilConUnaFotoCliente,
                 style: texto.bodySmall?.copyWith(
                   color: context.paleta.textoSecundario,
                 ),
@@ -214,7 +219,7 @@ class AccionesFotoPerfil extends StatelessWidget {
                     ),
                     onPressed: cubit.reintentar,
                     icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('Reintentar'),
+                    label: Text(l10n.fotoPerfilReintentar),
                   ),
                 ),
             ],
@@ -227,6 +232,7 @@ class AccionesFotoPerfil extends StatelessWidget {
 
 /// Hoja con las opciones: tomar una foto, elegir de la galería o quitarla.
 Future<void> mostrarOpcionesFotoPerfil(BuildContext context) {
+  final l10n = AppLocalizations.of(context);
   final cubit = context.read<FotoPerfilCubit>();
   return showModalBottomSheet<void>(
     context: context,
@@ -238,7 +244,7 @@ Future<void> mostrarOpcionesFotoPerfil(BuildContext context) {
           _OpcionHoja(
             clave: const Key('foto-perfil-camara'),
             icono: Icons.photo_camera_outlined,
-            texto: 'Tomar una foto',
+            texto: l10n.fotoPerfilTomarUnaFoto,
             alToque: () {
               Navigator.pop(hoja);
               cubit.elegir(OrigenFoto.camara);
@@ -247,7 +253,7 @@ Future<void> mostrarOpcionesFotoPerfil(BuildContext context) {
           _OpcionHoja(
             clave: const Key('foto-perfil-galeria'),
             icono: Icons.photo_library_outlined,
-            texto: 'Elegir de la galería',
+            texto: l10n.fotoPerfilElegirGaleria,
             alToque: () {
               Navigator.pop(hoja);
               cubit.elegir(OrigenFoto.galeria);
@@ -257,7 +263,7 @@ Future<void> mostrarOpcionesFotoPerfil(BuildContext context) {
             _OpcionHoja(
               clave: const Key('foto-perfil-quitar-hoja'),
               icono: Icons.delete_outline_rounded,
-              texto: 'Quitar la foto',
+              texto: l10n.fotoPerfilQuitarFoto,
               alToque: () {
                 Navigator.pop(hoja);
                 cubit.quitar();

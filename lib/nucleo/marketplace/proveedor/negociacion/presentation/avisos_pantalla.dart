@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../notificaciones/notificador_local.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -48,11 +49,12 @@ class AvisosEstado {
 /// permiso de notificaciones del sistema, con el motivo a la vista; cada
 /// cambio se guarda al momento y, si falla, se revierte y se dice por qué.
 class AvisosCubit extends Cubit<AvisosEstado> {
-  AvisosCubit(this._repositorio, {NotificadorLocal? notificador})
+  AvisosCubit(this._repositorio, this._l10n, {NotificadorLocal? notificador})
     : _notificador = notificador,
       super(const AvisosEstado());
 
   final AvisosRepositorio _repositorio;
+  final AppLocalizations _l10n;
   final NotificadorLocal? _notificador;
 
   Future<void> cargar() async {
@@ -72,7 +74,7 @@ class AvisosCubit extends Cubit<AvisosEstado> {
             error: true,
             aviso: () => e is OperacionRechazada
                 ? e.mensaje
-                : 'Sin conexión. Los avisos se configuran con señal.',
+                : _l10n.proveedorNegociacionAvisosSinConexion,
           ),
         );
       }
@@ -107,7 +109,7 @@ class AvisosCubit extends Cubit<AvisosEstado> {
             error: true,
             aviso: () => e is OperacionRechazada
                 ? e.mensaje
-                : 'No se guardó: no hay conexión. Intenta con señal.',
+                : _l10n.proveedorNegociacionAvisosNoGuardado,
           ),
         );
       }
@@ -122,13 +124,15 @@ class AvisosPantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
       create: (context) => AvisosCubit(
         context.read<AvisosRepositorio>(),
+        l10n,
         notificador: context.read<DependenciasNegociacion>().notificador,
       )..cargar(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Avisos')),
+        appBar: AppBar(title: Text(l10n.proveedorNegociacionAvisos)),
         body: const AvisosVista(),
       ),
     );
@@ -140,6 +144,7 @@ class AvisosVista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     return BlocBuilder<AvisosCubit, AvisosEstado>(
       builder: (context, estado) {
@@ -152,7 +157,7 @@ class AvisosVista extends StatelessWidget {
             estado.aviso != null &&
             p == const PreferenciasAviso()) {
           return EstadoErrorMarketplace(
-            titulo: 'No pudimos cargar tus avisos',
+            titulo: l10n.proveedorNegociacionPudimosCargarTusAvisos,
             detalle: estado.aviso,
             onReintentar: cubit.cargar,
           );
@@ -161,8 +166,7 @@ class AvisosVista extends StatelessWidget {
           padding: const EdgeInsets.all(EspaciadoCampo.l),
           children: [
             Text(
-              'Elige de qué quieres enterarte. Los avisos de adjudicación, '
-              'cierre, cuenta y disputas no se pueden apagar.',
+              l10n.proveedorNegociacionEligeQueQuieresEnterarte,
               style: texto.bodyLarge,
             ),
             const SizedBox(height: EspaciadoCampo.l),
@@ -181,21 +185,23 @@ class AvisosVista extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _Interruptor(
-                    titulo: 'Nuevas solicitudes',
+                    titulo: l10n.proveedorNegociacionNuevasSolicitudes,
                     detalle:
-                        'Te avisamos cuando un cliente publica una solicitud '
-                        'en tus zonas. Así ofertas antes que los demás.',
+                        l10n.proveedorNegociacionAvisamosCuandoClientePublica,
                     valor: p.nuevasSolicitudes,
                     alCambiar: (v) =>
                         cubit.cambiar(p.copiarCon(nuevasSolicitudes: v)),
                   ),
                   if (p.nuevasSolicitudes) ...[
                     const Divider(height: EspaciadoCampo.xl),
-                    Text('Zonas', style: texto.titleMedium),
+                    Text(
+                      l10n.proveedorNegociacionZonas,
+                      style: texto.titleMedium,
+                    ),
                     const SizedBox(height: EspaciadoCampo.xs),
                     Text(
                       p.macrorregiones.isEmpty
-                          ? 'Todas las zonas'
+                          ? l10n.proveedorNegociacionTodasLasZonas
                           : p.macrorregiones.map((m) => m.etiqueta).join(', '),
                       style: texto.bodyMedium,
                     ),
@@ -222,14 +228,21 @@ class AvisosVista extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: EspaciadoCampo.l),
-                    Text('Hectáreas mínimas', style: texto.titleMedium),
+                    Text(
+                      l10n.proveedorNegociacionHectareasMinimas,
+                      style: texto.titleMedium,
+                    ),
                     const SizedBox(height: EspaciadoCampo.s),
                     Wrap(
                       spacing: EspaciadoCampo.s,
                       children: [
                         for (final ha in [null, '20', '50', '100'])
                           ChoiceChip(
-                            label: Text(ha == null ? 'Cualquiera' : '$ha ha'),
+                            label: Text(
+                              ha == null
+                                  ? l10n.proveedorNegociacionCualquiera
+                                  : l10n.proveedorNegociacionHa2(ha),
+                            ),
                             selected:
                                 p.hectareasMinimas ==
                                 (ha == null ? null : leerPrecio(ha)),
@@ -251,22 +264,23 @@ class AvisosVista extends StatelessWidget {
               child: Column(
                 children: [
                   _Interruptor(
-                    titulo: 'Ofertas y contraofertas',
-                    detalle: 'Cuando el cliente responde a tu oferta.',
+                    titulo: l10n.proveedorNegociacionOfertasContraofertas,
+                    detalle:
+                        l10n.proveedorNegociacionCuandoClienteRespondeOferta,
                     valor: p.ofertas,
                     alCambiar: (v) => cubit.cambiar(p.copiarCon(ofertas: v)),
                   ),
                   const Divider(height: EspaciadoCampo.xl),
                   _Interruptor(
-                    titulo: 'Mensajes',
-                    detalle: 'Cuando el cliente te escribe en el chat.',
+                    titulo: l10n.proveedorNegociacionMensajes,
+                    detalle: l10n.proveedorNegociacionCuandoClienteEscribeChat,
                     valor: p.mensajes,
                     alCambiar: (v) => cubit.cambiar(p.copiarCon(mensajes: v)),
                   ),
                   const Divider(height: EspaciadoCampo.xl),
                   _Interruptor(
-                    titulo: 'Calificaciones',
-                    detalle: 'Cuando un cliente te califica.',
+                    titulo: l10n.proveedorNegociacionCalificaciones,
+                    detalle: l10n.proveedorNegociacionCuandoClienteCalifica,
                     valor: p.calificaciones,
                     alCambiar: (v) =>
                         cubit.cambiar(p.copiarCon(calificaciones: v)),

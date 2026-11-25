@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import '../camara/selector_imagen.dart';
 import '../evidencias/compresor_adaptativo.dart' show FotoDemasiadoPesada;
+import '../../l10n/app_localizations.dart';
 import '../evidencias/compresor_evidencia.dart';
 import 'dominio/falla.dart';
 
@@ -28,24 +29,28 @@ class PreparadorFoto {
     try {
       return await _compresor.comprimir(original);
     } on FotoDemasiadoPesada {
-      throw const OperacionRechazada(
-        'La foto es muy pesada. Elige otra o toma una nueva.',
-      );
+      throw const FotoMuyPesada();
     }
   }
+}
+
+/// La foto no baja del tope de 300 KB ni con la compresión más fuerte.
+class FotoMuyPesada implements Exception {
+  const FotoMuyPesada();
 }
 
 /// El texto para la persona y si el fallo fue falta de red, para cualquier
 /// error de una operación en línea.
 ({String mensaje, bool sinRed}) describirFalla(
   Object error, {
+  required AppLocalizations l10n,
   required String porDefecto,
 }) {
   if (error is SinConexion) {
-    return (
-      mensaje: 'Sin conexión. Revisa tu señal y vuelve a intentar.',
-      sinRed: true,
-    );
+    return (mensaje: l10n.fotoSinConexionReintentar, sinRed: true);
+  }
+  if (error is FotoMuyPesada) {
+    return (mensaje: l10n.fotoMuyPesada, sinRed: false);
   }
   if (error is OperacionRechazada) {
     return (mensaje: error.mensaje, sinRed: false);

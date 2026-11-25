@@ -1,4 +1,5 @@
 import 'package:agrocom_field/cliente/contactos/data/contactos_demo.dart';
+import 'package:agrocom_field/cliente/solicitar/domain/reglas_solicitud.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_cubit.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_estado.dart';
 import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
@@ -120,7 +121,7 @@ void main() {
       cubit
         ..elegirLote(cubit.state.lotes[1])
         ..cambiarHectareas('90');
-      expect(cubit.state.errorHectareas, contains('85.5'));
+      expect(cubit.state.errorHectareas, ErrorHectareas.sobreLote);
       expect(cubit.state.hectareas, isNull);
       cubit.cambiarHectareas('85,5');
       expect(cubit.state.errorHectareas, isNull);
@@ -166,9 +167,9 @@ void main() {
     expect(cubit.state.errorPrecio, isNotNull);
     expect(cubit.state.puedeAvanzar, isFalse);
     cubit.cambiarPrecio('0');
-    expect(cubit.state.errorPrecio, contains('mayor a 0'));
+    expect(cubit.state.errorPrecio, ErrorPrecio.noPositivo);
     cubit.cambiarPrecio('10,555');
-    expect(cubit.state.errorPrecio, contains('dos decimales'));
+    expect(cubit.state.errorPrecio, ErrorPrecio.decimales);
   });
 
   test('volver atrás conserva lo elegido', () async {

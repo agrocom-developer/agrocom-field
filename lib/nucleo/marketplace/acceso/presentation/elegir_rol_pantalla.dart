@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/componentes/componentes_campo.dart';
 import '../../../ui/imagenes_campo.dart';
 import '../../../ui/paleta_campo.dart';
@@ -8,17 +9,26 @@ import '../../ui/boton_principal_marketplace.dart';
 
 /// Rol que la persona dice tener al abrir Agrocom. Solo hay dos: el
 /// auxiliar dejó de ser un usuario de la app (ADR 0021).
-enum RolElegido {
-  cliente('Cliente', 'Publico lotes y elijo piloto', 'cliente'),
-  piloto('Piloto', 'Busco lotes y negocio el precio', 'piloto');
+enum RolElegido { cliente, piloto }
 
-  const RolElegido(this.titulo, this.detalle, this.enBoton);
+/// Los textos de cada rol. El `switch` es exhaustivo: un rol nuevo no compila
+/// hasta tener sus textos (ADR 0022).
+extension TextosRolElegido on RolElegido {
+  String titulo(AppLocalizations l10n) => switch (this) {
+    RolElegido.cliente => l10n.accesoRolCliente,
+    RolElegido.piloto => l10n.accesoRolPiloto,
+  };
 
-  final String titulo;
-  final String detalle;
+  String detalle(AppLocalizations l10n) => switch (this) {
+    RolElegido.cliente => l10n.accesoRolClienteDetalle,
+    RolElegido.piloto => l10n.accesoRolPilotoDetalle,
+  };
 
   /// Cómo se nombra en «Continuar como …».
-  final String enBoton;
+  String enBoton(AppLocalizations l10n) => switch (this) {
+    RolElegido.cliente => l10n.accesoRolClienteBoton,
+    RolElegido.piloto => l10n.accesoRolPilotoBoton,
+  };
 }
 
 /// «Elige tu rol»: collage de marca, propuesta y dos opciones (Cliente y
@@ -49,6 +59,7 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     return Scaffold(
@@ -88,10 +99,10 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
                           ),
                         ),
                         const SizedBox(height: EspaciadoCampo.xs),
-                        const Expanded(
+                        Expanded(
                           child: BloqueAmbarCampo(
                             titulo: 'Agrocom',
-                            etiqueta: 'Fumigación con dron',
+                            etiqueta: l10n.marketplaceAccesoFumigacionConDron,
                             cifra: false,
                             radio: 0,
                           ),
@@ -119,26 +130,25 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Fumigación con dron, al precio que acuerdes',
+                        l10n.marketplaceAccesoFumigacionConDronPrecio,
                         style: texto.headlineMedium,
                       ),
                       const SizedBox(height: EspaciadoCampo.s),
                       Text(
-                        'Publica tu lote, recibe ofertas de pilotos y elige. '
-                        'El pago es directo con el piloto.',
+                        l10n.marketplaceAccesoPublicaLoteRecibeOfertas,
                         style: texto.bodyLarge?.copyWith(
                           color: paleta.textoSecundario,
                         ),
                       ),
                       const SizedBox(height: EspaciadoCampo.xl),
                       Text(
-                        '¿Cómo vas a usar Agrocom?',
+                        l10n.marketplaceAccesoComoVasUsarAgrocom,
                         style: texto.titleMedium,
                       ),
                       const SizedBox(height: EspaciadoCampo.m),
                       Semantics(
                         container: true,
-                        label: 'Elige tu rol',
+                        label: l10n.marketplaceAccesoEligeRol,
                         child: Column(
                           children: [
                             for (final rol in RolElegido.values) ...[
@@ -172,7 +182,9 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
                     children: [
                       BotonPrincipalMarketplace(
                         key: const Key('rol-continuar'),
-                        texto: 'Continuar como ${_rol.enBoton}',
+                        texto: l10n.marketplaceAccesoContinuarComo(
+                          _rol.enBoton(l10n),
+                        ),
                         cargando: widget.cargando,
                         onPressed: () => widget.alContinuar(_rol),
                       ),
@@ -189,7 +201,7 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
                           foregroundColor: paleta.acentoTexto,
                           textStyle: texto.titleMedium,
                         ),
-                        child: const Text('Ya tengo cuenta'),
+                        child: Text(l10n.marketplaceAccesoTengoCuenta),
                       ),
                     ],
                   ),
@@ -223,6 +235,7 @@ class _OpcionRol extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final colorTexto = elegido ? paleta.sobreAcentoContenedor : paleta.texto;
@@ -230,7 +243,7 @@ class _OpcionRol extends StatelessWidget {
       button: true,
       inMutuallyExclusiveGroup: true,
       checked: elegido,
-      label: '${rol.titulo}. ${rol.detalle}',
+      label: '${rol.titulo(l10n)}. ${rol.detalle(l10n)}',
       excludeSemantics: true,
       onTap: alElegir,
       child: AnimatedContainer(
@@ -265,13 +278,13 @@ class _OpcionRol extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            rol.titulo,
+                            rol.titulo(l10n),
                             style: texto.titleMedium?.copyWith(
                               color: colorTexto,
                             ),
                           ),
                           Text(
-                            rol.detalle,
+                            rol.detalle(l10n),
                             style: texto.bodyMedium?.copyWith(
                               color: elegido
                                   ? paleta.sobreAcentoContenedor

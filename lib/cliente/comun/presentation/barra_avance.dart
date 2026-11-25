@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 
@@ -22,10 +23,11 @@ class BarraAvance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final objetivo = valor.clamp(0.0, 1.0);
     return Semantics(
-      label: 'Avance: $etiqueta',
+      label: l10n.comunAvance(etiqueta),
       value: '${(objetivo * 100).round()} %',
       child: ExcludeSemantics(
         child: ClipRRect(

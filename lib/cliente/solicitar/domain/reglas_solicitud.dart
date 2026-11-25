@@ -55,18 +55,16 @@ abstract final class ReglasSolicitud {
     return Decimal.tryParse(limpio);
   }
 
-  /// Mensaje si el texto de hectáreas no sirve; `null` si es válido.
-  static String? errorDeHectareas(String texto) {
+  /// Qué falla del texto de hectáreas; `null` si es válido.
+  static ErrorHectareas? errorDeHectareas(String texto) {
     if (texto.trim().isEmpty) {
-      return 'Indica cuántas hectáreas quieres fumigar.';
+      return ErrorHectareas.vacio;
     }
     final valor = parsearHectareas(texto);
-    if (valor == null) return 'Escribe un número, por ejemplo 85,5.';
-    if (valor <= Decimal.zero) return 'La superficie tiene que ser mayor a 0.';
-    if (valor.scale > 2) return 'Usa como máximo dos decimales.';
-    if (valor > hectareasMaximas) {
-      return 'Una solicitud admite hasta $hectareasMaximas ha.';
-    }
+    if (valor == null) return ErrorHectareas.noEsNumero;
+    if (valor <= Decimal.zero) return ErrorHectareas.noPositivo;
+    if (valor.scale > 2) return ErrorHectareas.decimales;
+    if (valor > hectareasMaximas) return ErrorHectareas.sobreMaximo;
     return null;
   }
 
@@ -74,16 +72,31 @@ abstract final class ReglasSolicitud {
   /// o «118,50»). Nunca pasa por `double`.
   static Decimal? parsearPrecio(String texto) => parsearHectareas(texto);
 
-  /// Mensaje si el precio por hectárea no sirve; `null` si es válido. El
+  /// Qué falla del precio por hectárea; `null` si es válido. El
   /// servidor vuelve a validar el máximo de sanidad.
-  static String? errorDePrecio(String texto) {
+  static ErrorPrecio? errorDePrecio(String texto) {
     if (texto.trim().isEmpty) {
-      return 'Propón cuánto pagarías por hectárea.';
+      return ErrorPrecio.vacio;
     }
     final valor = parsearPrecio(texto);
-    if (valor == null) return 'Escribe un número, por ejemplo 120.';
-    if (valor <= Decimal.zero) return 'El precio tiene que ser mayor a 0.';
-    if (valor.scale > 2) return 'Usa como máximo dos decimales.';
+    if (valor == null) return ErrorPrecio.noEsNumero;
+    if (valor <= Decimal.zero) return ErrorPrecio.noPositivo;
+    if (valor.scale > 2) return ErrorPrecio.decimales;
     return null;
   }
 }
+
+/// Por qué no sirve el texto de hectáreas. La pantalla lo traduce a texto.
+enum ErrorHectareas {
+  vacio,
+  noEsNumero,
+  noPositivo,
+  decimales,
+  sobreMaximo,
+
+  /// Pide más hectáreas de las que tiene el lote guardado.
+  sobreLote,
+}
+
+/// Por qué no sirve el precio por hectárea. La pantalla lo traduce a texto.
+enum ErrorPrecio { vacio, noEsNumero, noPositivo, decimales }

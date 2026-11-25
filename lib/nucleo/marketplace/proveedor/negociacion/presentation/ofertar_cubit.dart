@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../dominio/dominio.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
@@ -29,10 +30,11 @@ class OfertarEstado {
 /// hasta que el servidor responde: si la respuesta se pierde, reenviar no
 /// crea una segunda oferta (ADR 0016).
 class OfertarCubit extends Cubit<OfertarEstado> {
-  OfertarCubit(this._mercado, {Uuid? uuid})
+  OfertarCubit(this._mercado, this._l10n, {Uuid? uuid})
     : _uuid = uuid ?? const Uuid(),
       super(const OfertarEstado());
 
+  final AppLocalizations _l10n;
   final MercadoRepositorio _mercado;
   final Uuid _uuid;
   String? _clave;
@@ -59,12 +61,10 @@ class OfertarCubit extends Cubit<OfertarEstado> {
     } on SinConexion {
       // La clave se conserva: el reintento devuelve la misma oferta.
       emit(
-        const OfertarEstado(
+        OfertarEstado(
           estado: FaseOferta.fallo,
           sinRed: true,
-          mensaje:
-              'No hay conexión. Lo que escribiste se conserva: reintenta '
-              'cuando tengas señal.',
+          mensaje: _l10n.proveedorNegociacionHayConexionQueEscribiste,
         ),
       );
     } on OperacionRechazada catch (e) {

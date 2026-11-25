@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/aviso_marketplace.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/marketplace/ui/campo_formulario_marketplace.dart';
@@ -82,12 +83,13 @@ class _FormularioState extends State<_Formulario> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final cubit = context.read<LoginClienteCubit>();
     return BlocBuilder<LoginClienteCubit, FormularioAccesoEstado>(
       builder: (context, estado) {
-        final mensaje = estado.mensajeFallo;
+        final mensaje = estado.mensajeFallo(AppLocalizations.of(context));
         return Form(
           key: _formulario,
           autovalidateMode: _intentado
@@ -100,10 +102,10 @@ class _FormularioState extends State<_Formulario> {
               children: [
                 const LogoAgrocomCampo(ancho: 104, sombra: false),
                 const SizedBox(height: EspaciadoCampo.xl),
-                Text('Ingresa a tu cuenta', style: texto.headlineMedium),
+                Text(l10n.accesoIngresaCuenta, style: texto.headlineMedium),
                 const SizedBox(height: EspaciadoCampo.s),
                 Text(
-                  'Solicita un servicio y síguelo en vivo.',
+                  l10n.accesoSolicitaServicioSigueloVivo,
                   style: texto.bodyLarge?.copyWith(
                     color: paleta.textoSecundario,
                   ),
@@ -139,7 +141,7 @@ class _FormularioState extends State<_Formulario> {
                 ),
                 CampoFormularioMarketplace(
                   key: const Key('login-usuario'),
-                  etiqueta: 'Usuario',
+                  etiqueta: l10n.accesoUsuario,
                   controller: _usuario,
                   enabled: !estado.enviando,
                   keyboardType: TextInputType.text,
@@ -152,7 +154,7 @@ class _FormularioState extends State<_Formulario> {
                 const SizedBox(height: EspaciadoCampo.l),
                 CampoFormularioMarketplace(
                   key: const Key('login-contrasena'),
-                  etiqueta: 'Contraseña',
+                  etiqueta: l10n.accesoContrasena,
                   controller: _contrasena,
                   enabled: !estado.enviando,
                   obscureText: true,
@@ -167,7 +169,7 @@ class _FormularioState extends State<_Formulario> {
                 const SizedBox(height: EspaciadoCampo.xl),
                 BotonPrincipalMarketplace(
                   key: const Key('login-ingresar'),
-                  texto: 'Ingresar',
+                  texto: l10n.accesoIngresar,
                   cargando: estado.enviando,
                   onPressed: _enviar,
                 ),
@@ -178,7 +180,7 @@ class _FormularioState extends State<_Formulario> {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text(
-                        '¿Primera vez en Agrocom?',
+                        l10n.accesoPrimeraVezAgrocom,
                         style: texto.bodyMedium?.copyWith(
                           color: paleta.textoSecundario,
                         ),
@@ -195,7 +197,7 @@ class _FormularioState extends State<_Formulario> {
                           ),
                           foregroundColor: paleta.acentoTexto,
                         ),
-                        child: const Text('Crear cuenta'),
+                        child: Text(l10n.accesoCrearCuenta),
                       ),
                     ],
                   ),
