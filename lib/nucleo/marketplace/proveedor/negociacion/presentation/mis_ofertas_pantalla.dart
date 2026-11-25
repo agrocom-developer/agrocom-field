@@ -20,10 +20,8 @@ class MisOfertasPantalla extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => MisOfertasCubit(
-        context.read<NegociacionRepositorio>(),
-        mercado: context.read<MercadoRepositorio>(),
-      )..cargar(),
+      create: (context) =>
+          MisOfertasCubit(context.read<NegociacionRepositorio>())..cargar(),
       child: const MisOfertasVista(),
     );
   }
@@ -94,7 +92,6 @@ class MisOfertasVista extends StatelessWidget {
                     for (final o in estado.ordenadas) ...[
                       TarjetaMiOferta(
                         oferta: o,
-                        zona: estado.zonas[o.solicitudId],
                         ocupada: estado.enCurso == o.id,
                         bloqueada: estado.enCurso != null,
                       ),
@@ -116,7 +113,6 @@ class MisOfertasVista extends StatelessWidget {
 class TarjetaMiOferta extends StatelessWidget {
   const TarjetaMiOferta({
     required this.oferta,
-    this.zona,
     this.ocupada = false,
     this.bloqueada = false,
     super.key,
@@ -124,8 +120,6 @@ class TarjetaMiOferta extends StatelessWidget {
 
   final OfertaNegociada oferta;
 
-  /// Zona de la solicitud; sin ella el título usa el número.
-  final String? zona;
   final bool ocupada;
   final bool bloqueada;
 
@@ -178,9 +172,16 @@ class TarjetaMiOferta extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            zona == null ? 'Solicitud ${o.solicitudId}' : 'Solicitud en $zona',
+            o.zona == null
+                ? 'Solicitud ${o.solicitudId}'
+                : 'Solicitud en ${o.zona}',
             style: texto.titleLarge,
           ),
+          if (o.lote != null)
+            Text(
+              o.lote!,
+              style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
+            ),
           const SizedBox(height: EspaciadoCampo.s),
           ChipEstadoMarketplace(etiqueta: etiqueta, tono: tono, icono: icono),
           const SizedBox(height: EspaciadoCampo.s),

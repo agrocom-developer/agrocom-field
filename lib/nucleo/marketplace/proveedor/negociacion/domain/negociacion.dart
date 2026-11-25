@@ -272,6 +272,8 @@ class OfertaNegociada {
     this.distanciaKm,
     this.creadaEn,
     this.respondidaEn,
+    this.zona,
+    this.lote,
   });
 
   final int id;
@@ -293,6 +295,13 @@ class OfertaNegociada {
   final Decimal? distanciaKm;
   final DateTime? creadaEn;
   final DateTime? respondidaEn;
+
+  /// Zona de la solicitud, tal como la devuelve el servidor.
+  final String? zona;
+
+  /// Nombre del lote del cliente. El servidor solo lo envía cuando la
+  /// solicitud quedó adjudicada a este proveedor; antes es nulo.
+  final String? lote;
 
   /// Hectáreas de la solicitud, derivadas del monto estimado del servidor
   /// (hectáreas × precio por hectárea).

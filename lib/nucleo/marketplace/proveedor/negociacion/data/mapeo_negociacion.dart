@@ -131,6 +131,8 @@ abstract final class MapeoNegociacion {
     distanciaKm: decimalOpcional(j['distancia_km']),
     creadaEn: fecha(j['creada_en']),
     respondidaEn: fecha(j['respondida_en']),
+    zona: j['zona'] as String?,
+    lote: j['lote'] as String?,
   );
 
   static MensajeChat mensaje(Map<String, dynamic> j) => MensajeChat(
