@@ -29,9 +29,9 @@ void main() {
 
   testWidgets('abre en el mapa de solicitudes abiertas', (tester) async {
     await montar(tester);
-    expect(find.text('Solicitudes abiertas'), findsOneWidget);
+    expect(find.text('Buscar zona o lote'), findsOneWidget);
     expect(find.text('Mapa'), findsOneWidget);
-    expect(find.widgetWithText(ChoiceChip, 'Valles'), findsOneWidget);
+    expect(find.text('Valles'), findsOneWidget);
   });
 
   testWidgets('ofertas, servicio, drones y perfil cargan con datos', (
@@ -43,7 +43,7 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Mis ofertas'), findsOneWidget);
-    expect(find.text('Te toca responder'), findsOneWidget);
+    expect(find.text('Tu turno · R4/5'), findsOneWidget);
 
     await tester.tap(find.text('Servicio').last);
     await tester.pump();

@@ -93,7 +93,22 @@ class ServicioLoteVista extends StatelessWidget {
                       'Puede que el cliente lo haya cancelado. Vuelve a la '
                       'lista y actualiza.',
                 )
-              : _Contenido(servicio: s, estado: estado),
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Lo posterior a la adjudicación es offline-first: con
+                    // algo por subir, el banner lo dice y no se pierde nada.
+                    if (s.pendientes > 0 && s.rechazos == 0)
+                      const BannerSinSenalCampo(
+                        mensaje:
+                            'tus fotos y avances quedan guardados y se '
+                            'suben solos.',
+                      ),
+                    Expanded(
+                      child: _Contenido(servicio: s, estado: estado),
+                    ),
+                  ],
+                ),
         );
       },
     );

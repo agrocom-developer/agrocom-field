@@ -13,6 +13,7 @@ class SuperficieMarketplace extends StatelessWidget {
     this.padding = const EdgeInsets.all(EspaciadoCampo.l),
     this.radio = RadioCampo.tarjetaCompacta,
     this.resaltada = false,
+    this.colorBorde,
     super.key,
   });
 
@@ -24,6 +25,9 @@ class SuperficieMarketplace extends StatelessWidget {
   /// Borde de acento para el elemento protagonista de la pantalla.
   final bool resaltada;
 
+  /// Borde de otro color (ámbar para «es tu turno»); gana sobre [resaltada].
+  final Color? colorBorde;
+
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
@@ -33,8 +37,8 @@ class SuperficieMarketplace extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: forma,
         side: BorderSide(
-          color: resaltada ? paleta.acentoTexto : paleta.borde,
-          width: resaltada ? 1.5 : 1,
+          color: colorBorde ?? (resaltada ? paleta.acentoTexto : paleta.borde),
+          width: colorBorde != null ? 2 : (resaltada ? 1.5 : 1),
         ),
       ),
       clipBehavior: Clip.antiAlias,

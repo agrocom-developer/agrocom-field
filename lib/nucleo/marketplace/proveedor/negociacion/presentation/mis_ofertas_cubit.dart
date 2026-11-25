@@ -8,6 +8,34 @@ import '../domain/negociacion_repositorios.dart';
 
 enum EstadoMisOfertas { cargando, listo, sinRed, error }
 
+/// Todas las rondas de una solicitud, de la más vieja a la más nueva. La
+/// pantalla muestra una tarjeta por negociación, no una por oferta.
+class ResumenNegociacion {
+  const ResumenNegociacion(this.filas);
+
+  final List<OfertaNegociada> filas;
+
+  int get solicitudId => filas.last.solicitudId;
+  OfertaNegociada get ultima => filas.last;
+  String? get zona => filas.map((o) => o.zona).whereType<String>().lastOrNull;
+
+  /// Lo último que pidió el cliente y lo último que ofreció el piloto.
+  OfertaNegociada? get ultimaDelCliente =>
+      filas.where((o) => o.autor == AutorOferta.cliente).lastOrNull;
+  OfertaNegociada? get ultimaMia =>
+      filas.where((o) => o.autor == AutorOferta.proveedor).lastOrNull;
+
+  bool get esMiTurno => ultima.esperaMiRespuesta;
+  bool get esperaAlCliente => ultima.esperaAlCliente;
+  bool get activa => ultima.estado == EstadoOferta.vigente;
+  bool get ganada => ultima.estado == EstadoOferta.aceptada;
+
+  /// La ronda que sigue, como la ve la persona: la R1 es la solicitud
+  /// publicada, así que la ronda del servidor `n` es la `n + 1` y sigue la
+  /// `n + 2` (máximo 5).
+  int get rondaQueSigue => (ultima.numero + 2).clamp(1, 5);
+}
+
 class MisOfertasEstado {
   const MisOfertasEstado({
     this.estado = EstadoMisOfertas.cargando,
@@ -40,6 +68,46 @@ class MisOfertasEstado {
       return p != 0 ? p : indices[a.id]!.compareTo(indices[b.id]!);
     });
   }
+
+  /// Una entrada por solicitud: primero las que piden tu respuesta, luego
+  /// las que esperan al cliente, luego el resto, de lo nuevo a lo viejo.
+  List<ResumenNegociacion> get negociaciones {
+    final porSolicitud = <int, List<OfertaNegociada>>{};
+    for (final o in ofertas) {
+      porSolicitud.putIfAbsent(o.solicitudId, () => []).add(o);
+    }
+    final lista = [
+      for (final filas in porSolicitud.values)
+        ResumenNegociacion(
+          [...filas]..sort((a, b) => a.numero.compareTo(b.numero)),
+        ),
+    ];
+    int peso(ResumenNegociacion r) => r.esMiTurno
+        ? 0
+        : r.esperaAlCliente
+        ? 1
+        : r.ganada
+        ? 2
+        : 3;
+    final orden = {for (var i = 0; i < lista.length; i++) lista[i]: i};
+    return lista..sort((a, b) {
+      final p = peso(a).compareTo(peso(b));
+      return p != 0 ? p : orden[a]!.compareTo(orden[b]!);
+    });
+  }
+
+  List<ResumenNegociacion> get activas => [
+    for (final n in negociaciones)
+      if (n.activa) n,
+  ];
+  List<ResumenNegociacion> get ganadas => [
+    for (final n in negociaciones)
+      if (n.ganada) n,
+  ];
+  List<ResumenNegociacion> get cerradas => [
+    for (final n in negociaciones)
+      if (!n.activa && !n.ganada) n,
+  ];
 
   MisOfertasEstado copiarCon({
     EstadoMisOfertas? estado,
