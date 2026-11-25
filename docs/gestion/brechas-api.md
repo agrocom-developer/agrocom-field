@@ -15,6 +15,7 @@ Lo que una pantalla necesita y el contrato (`agrocom-api`, `docs/api/openapi.yam
 | Dosis, producto y tipo de aplicación como campos. Solo hay `producto_indicado` (texto) y `tipo_aplicacion`. | El producto viaja como texto escrito o elegido; el tipo de aplicación se deduce del producto. |
 | Fecha de creación de la solicitud en la lista. | Usa el historial (detalle) o `publicada_en`. |
 | Contorno del terreno cuando `geometria` es nula. | Dibuja un cuadrado de reserva centrado en la zona, con la superficie del terreno, solo para ubicarlo en el mapa. |
+| Contactos de referencia de una empresa (nombre, celular, cargo; al menos uno). `POST /api/clientes/registro` y `Cliente` solo traen `tipo`, `razon_social`, `documento_fiscal` y un `telefono`. | El registro permite elegir Persona o Empresa y envía razón social y NIT; la cuenta tiene un solo contacto (quien la usa) y la pantalla lo avisa. Cuando el contrato ofrezca contactos, se agrega el bloque «Contactos de referencia» detrás de la selección Empresa. |
 | Catálogo de productos y cultivos sugeridos. | Listas fijas en la app. |
 | Calificaciones que el proveedor da al cliente (son privadas por diseño). | Solo se muestra el promedio y el conteo de la ficha del cliente. |
 | Marcar un aviso del inicio como leído desde la tarjeta. | Descartar un aviso solo lo oculta en la sesión. |

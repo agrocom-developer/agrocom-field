@@ -15,6 +15,18 @@ abstract final class ReglasAcceso {
     return null;
   }
 
+  static String? razonSocial(String? valor) {
+    final v = (valor ?? '').trim();
+    if (v.isEmpty) return 'Escribe la razón social de la empresa';
+    return null;
+  }
+
+  static String? documentoFiscal(String? valor) {
+    final v = (valor ?? '').trim();
+    if (v.isEmpty) return 'Escribe el NIT de la empresa';
+    return null;
+  }
+
   static String? telefono(String? valor) {
     final digitos = (valor ?? '').replaceAll(RegExp(r'\D'), '');
     if (digitos.isEmpty) return 'Escribe tu teléfono';

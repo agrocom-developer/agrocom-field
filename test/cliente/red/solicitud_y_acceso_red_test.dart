@@ -501,6 +501,39 @@ void main() {
       expect(cuerpo['password'], 'clave1234');
     });
 
+    test('registrar una empresa envía razón social y NIT', () async {
+      red.servidor
+        ..responder(
+          'POST',
+          '/api/clientes/registro',
+          codigo: 201,
+          cuerpo: {'cliente': {}},
+        )
+        ..responder(
+          'POST',
+          '/api/auth/token',
+          codigo: 201,
+          cuerpo: cuerpoToken,
+        );
+      await acceso.registrar(
+        const DatosRegistroCliente(
+          nombre: 'Rosa Condori',
+          telefono: '+591 76543210',
+          usuario: 'rosa.condori',
+          contrasena: 'clave1234',
+          tipo: TipoCliente.empresa,
+          razonSocial: ' Agropecuaria San Rafael SRL ',
+          documentoFiscal: '1029384027',
+        ),
+      );
+      final cuerpo =
+          red.servidor.de('POST', '/api/clientes/registro').single.cuerpo!
+              as Map;
+      expect(cuerpo['tipo'], 'empresa');
+      expect(cuerpo['razon_social'], 'Agropecuaria San Rafael SRL');
+      expect(cuerpo['documento_fiscal'], '1029384027');
+    });
+
     test('registrar con un usuario ocupado marca el campo', () async {
       red.servidor.responder(
         'POST',

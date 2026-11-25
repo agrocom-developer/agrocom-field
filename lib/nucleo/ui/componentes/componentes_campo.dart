@@ -16,6 +16,7 @@ export 'boton_primario_campo.dart';
 export 'boton_secundario_campo.dart';
 export 'burbuja_negociacion_campo.dart';
 export 'calificacion_campo.dart';
+export 'colage_campo.dart';
 export 'campo_texto_campo.dart';
 export 'cifra_campo.dart';
 export 'collage_fotos_campo.dart';

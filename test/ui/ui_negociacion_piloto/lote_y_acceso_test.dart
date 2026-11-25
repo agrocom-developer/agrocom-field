@@ -372,7 +372,7 @@ void main() {
         tester,
       ) async {
         await abrirRegistro(tester, tamano: tamano, escala: escala);
-        expect(find.textContaining('Paso 1 de 4'), findsOneWidget);
+        expect(find.text('PASO 1 DE 4'), findsOneWidget);
         expect(tester.takeException(), isNull);
         await golden(tester, 'registro_paso1_${sufijo(tamano, escala)}');
       });
@@ -382,10 +382,11 @@ void main() {
       tester,
     ) async {
       await abrirRegistro(tester);
+      await irA(tester, find.text('Continuar'));
       await tester.tap(find.text('Continuar'));
       await tester.pump();
       expect(find.text('Este dato es obligatorio.'), findsWidgets);
-      expect(find.textContaining('Paso 1 de 4'), findsOneWidget);
+      expect(find.text('PASO 1 DE 4'), findsOneWidget);
       await golden(tester, 'registro_errores_412x915_x1');
     });
   });

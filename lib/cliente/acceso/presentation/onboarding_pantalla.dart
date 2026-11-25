@@ -1,291 +1,390 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
+import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/imagenes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
-import '../../../nucleo/ui/tema_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../domain/acceso_repositorio.dart';
 import 'onboarding_cubit.dart';
 
-class _Paso {
-  const _Paso(this.etiqueta, this.titulo, this.detalle, this.imagen);
+/// Tiempo que se queda cada portada antes de avanzar sola.
+const Duration _intervaloAutoavance = Duration(milliseconds: 3500);
 
-  final String etiqueta;
+/// Alto máximo del collage en teléfono; en pantallas bajas toma casi la
+/// mitad del alto disponible.
+const double _altoColageMaximo = 400;
+const double _fraccionColage = 0.5;
+
+class _Portada {
+  const _Portada(this.titulo, this.detalle, this.colage);
+
   final String titulo;
   final String detalle;
-  final String imagen;
+  final Widget Function(BuildContext context, double radio) colage;
 }
 
-const _pasos = [
-  _Paso(
-    'Solicita',
-    'Pide tu fumigación en minutos',
-    'Marca el lote, elige el producto y la fecha. Ves el precio estimado '
-        'antes de confirmar.',
-    ImagenesCampo.dronPulverizandoVertical,
+final _portadas = <_Portada>[
+  _Portada(
+    'Publica tu lote en el mapa',
+    'Marca el área, define tu precio por hectárea y recibe ofertas de '
+        'pilotos cercanos.',
+    _colagePublica,
   ),
-  _Paso(
-    'Asignamos',
-    'Un piloto verificado lo toma',
-    'Ofrecemos tu servicio primero a la flota de Agrocom y después a '
-        'pilotos verificados de tu zona.',
-    ImagenesCampo.equipoDron,
+  _Portada(
+    'Negocia hasta 5 rondas',
+    'Cada piloto acepta tu precio o contraoferta. Tú eliges con quién '
+        'trabajar.',
+    _colageNegocia,
   ),
-  _Paso(
-    'Sigue y califica',
-    'Mira el vuelo en vivo',
-    'Sigue el avance en el mapa, hectárea por hectárea, y califica el '
-        'servicio al terminar.',
-    ImagenesCampo.dronAgrasT50,
+  _Portada(
+    'Pagas lo que se fumigó',
+    'Precio final = hectáreas ejecutadas × precio acordado. El pago es '
+        'directo con el piloto.',
+    _colagePrecioFinal,
   ),
 ];
 
-/// Presentación de tres pasos del primer uso. Una idea por paso, una sola
-/// acción principal («Continuar», «Empezar» en el último) y «Saltar» como
-/// salida secundaria. Se avanza también deslizando.
-class OnboardingPantalla extends StatelessWidget {
-  const OnboardingPantalla({required this.alTerminar, super.key});
+/// Portadas del primer uso: carrusel de tres pantallas que avanza solo cada
+/// 3,5 s. Se pausa mientras la persona toca o arrastra, se puede deslizar o
+/// tocar un punto, y con «reducir movimiento» no avanza solo.
+///
+/// «Comenzar» lleva al registro ([alComenzar]; si es nulo, a [alTerminar]);
+/// «Ya tengo cuenta» y «Saltar» llevan al ingreso ([alTerminar]).
+class OnboardingPantalla extends StatefulWidget {
+  const OnboardingPantalla({
+    required this.alTerminar,
+    this.alComenzar,
+    super.key,
+  });
 
   final VoidCallback alTerminar;
+  final VoidCallback? alComenzar;
+
+  @override
+  State<OnboardingPantalla> createState() => _OnboardingPantallaState();
+}
+
+class _OnboardingPantallaState extends State<OnboardingPantalla> {
+  bool _haciaRegistro = false;
+
+  void _terminar(OnboardingCubit cubit, {required bool registro}) {
+    _haciaRegistro = registro;
+    cubit.terminar();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => OnboardingCubit(context.read<AccesoRepositorio>()),
-      child: BlocConsumer<OnboardingCubit, OnboardingEstado>(
+      child: BlocListener<OnboardingCubit, OnboardingEstado>(
         listenWhen: (antes, ahora) => !antes.terminado && ahora.terminado,
-        listener: (context, estado) => alTerminar(),
-        builder: (context, estado) => _Vista(paso: estado.paso),
+        listener: (context, estado) {
+          final comenzar = widget.alComenzar;
+          if (_haciaRegistro && comenzar != null) {
+            comenzar();
+          } else {
+            widget.alTerminar();
+          }
+        },
+        child: Builder(
+          builder: (context) => _Vista(
+            alComenzar: () =>
+                _terminar(context.read<OnboardingCubit>(), registro: true),
+            alTenerCuenta: () =>
+                _terminar(context.read<OnboardingCubit>(), registro: false),
+          ),
+        ),
       ),
     );
   }
 }
 
-class _Vista extends StatelessWidget {
-  const _Vista({required this.paso});
+class _Vista extends StatefulWidget {
+  const _Vista({required this.alComenzar, required this.alTenerCuenta});
 
-  final int paso;
+  final VoidCallback alComenzar;
+  final VoidCallback alTenerCuenta;
+
+  @override
+  State<_Vista> createState() => _VistaState();
+}
+
+class _VistaState extends State<_Vista> {
+  final _controlador = PageController();
+  Timer? _reloj;
+  bool _pausado = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Con «reducir movimiento» el carrusel solo cambia por la persona.
+    if (MovimientoCampo.reducido(context)) {
+      _reloj?.cancel();
+      _reloj = null;
+    } else {
+      _reloj ??= Timer.periodic(_intervaloAutoavance, (_) => _avanzar());
+    }
+  }
+
+  @override
+  void dispose() {
+    _reloj?.cancel();
+    _controlador.dispose();
+    super.dispose();
+  }
+
+  void _avanzar() {
+    if (!mounted || _pausado || !_controlador.hasClients) return;
+    final siguiente =
+        (context.read<OnboardingCubit>().state.paso + 1) %
+        OnboardingCubit.pasos;
+    _ir(siguiente);
+  }
+
+  void _ir(int indice) {
+    if (!_controlador.hasClients) return;
+    final duracion = MovimientoCampo.duracion(
+      context,
+      MovimientoCampo.lenta * 2,
+    );
+    if (duracion == Duration.zero) {
+      _controlador.jumpToPage(indice);
+    } else {
+      _controlador.animateToPage(
+        indice,
+        duration: duracion,
+        curve: MovimientoCampo.entrada,
+      );
+    }
+  }
+
+  /// Tocar un punto salta a esa portada y reinicia la cuenta de 3,5 s.
+  void _irPorPunto(int indice) {
+    _reiniciarReloj();
+    _ir(indice);
+  }
+
+  void _reiniciarReloj() {
+    if (_reloj == null) return;
+    _reloj!.cancel();
+    _reloj = Timer.periodic(_intervaloAutoavance, (_) => _avanzar());
+  }
+
+  void _pausar(bool valor) {
+    _pausado = valor;
+    if (!valor) _reiniciarReloj();
+  }
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<OnboardingCubit>();
-    final ultimo = paso == _pasos.length - 1;
-
-    final saltar = Align(
-      alignment: Alignment.centerRight,
-      child: Visibility(
-        visible: !ultimo,
-        maintainSize: true,
-        maintainAnimation: true,
-        maintainState: true,
-        child: TextButton(
-          key: const Key('onboarding-saltar'),
-          onPressed: cubit.terminar,
-          style: TextButton.styleFrom(
-            minimumSize: const Size(
-              ObjetivoTactilCampo.minimo,
-              ObjetivoTactilCampo.minimo,
-            ),
-            foregroundColor: context.paleta.textoSecundario,
-          ),
-          child: const Text('Saltar'),
-        ),
-      ),
-    );
-
-    final controles = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _Puntos(paso: paso),
-        const SizedBox(height: EspaciadoCampo.xl),
-        BotonPrincipalMarketplace(
-          key: const Key('onboarding-continuar'),
-          texto: ultimo ? 'Empezar' : 'Continuar',
-          onPressed: cubit.siguiente,
-        ),
-      ],
-    );
-
+    final paleta = context.paleta;
     return Scaffold(
-      body: SafeArea(
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onHorizontalDragEnd: (d) {
-            final v = d.primaryVelocity ?? 0;
-            if (v < -200) cubit.siguiente();
-            if (v > 200) cubit.anterior();
-          },
-          child: LayoutBuilder(
-            builder: (context, c) {
-              final margen = EspaciadoCampo.margenLateral(c.maxWidth);
-              if (ClasePantallaCampo.deAncho(c.maxWidth) ==
-                  ClasePantallaCampo.expandido) {
-                return Padding(
-                  padding: const EdgeInsets.all(EspaciadoCampo.xl),
-                  child: Row(
-                    children: [
-                      Expanded(child: _Foto(paso: paso)),
-                      const SizedBox(width: EspaciadoCampo.xxxl),
-                      Expanded(
-                        child: Center(
-                          child: ConstrainedBox(
-                            constraints: const BoxConstraints(maxWidth: 440),
-                            child: Column(
-                              children: [
-                                saltar,
-                                Expanded(
-                                  child: Center(
-                                    child: SingleChildScrollView(
-                                      child: _Texto(paso: paso),
-                                    ),
-                                  ),
-                                ),
-                                controles,
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 560),
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(
-                      margen,
-                      EspaciadoCampo.s,
-                      margen,
-                      EspaciadoCampo.xl,
-                    ),
-                    child: Column(
-                      children: [
-                        saltar,
-                        Expanded(
-                          child: LayoutBuilder(
-                            builder: (context, area) => SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: (area.maxHeight * 0.56).clamp(
-                                      140.0,
-                                      460.0,
-                                    ),
-                                    child: _Foto(paso: paso),
-                                  ),
-                                  const SizedBox(height: EspaciadoCampo.xl),
-                                  _Texto(paso: paso),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: EspaciadoCampo.l),
-                        controles,
-                      ],
-                    ),
+      body: LayoutBuilder(
+        builder: (context, c) {
+          final ancho = ClasePantallaCampo.deAncho(c.maxWidth);
+          final amplia = ancho != ClasePantallaCampo.compacto;
+          final margen = EspaciadoCampo.margenLateral(c.maxWidth);
+          final carrusel = Listener(
+            onPointerDown: (_) => _pausar(true),
+            onPointerUp: (_) => _pausar(false),
+            onPointerCancel: (_) => _pausar(false),
+            child: PageView.builder(
+              controller: _controlador,
+              itemCount: _portadas.length,
+              onPageChanged: cubit.irA,
+              itemBuilder: (context, i) =>
+                  _Pagina(portada: _portadas[i], amplia: amplia),
+            ),
+          );
+          final controles = Padding(
+            padding: EdgeInsets.fromLTRB(
+              margen,
+              EspaciadoCampo.s,
+              margen,
+              EspaciadoCampo.s,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: BlocBuilder<OnboardingCubit, OnboardingEstado>(
+                    buildWhen: (a, b) => a.paso != b.paso,
+                    builder: (context, estado) =>
+                        _Puntos(paso: estado.paso, alElegir: _irPorPunto),
                   ),
                 ),
-              );
-            },
-          ),
-        ),
+                const SizedBox(height: EspaciadoCampo.s),
+                BotonPrincipalMarketplace(
+                  key: const Key('onboarding-continuar'),
+                  texto: 'Comenzar',
+                  onPressed: widget.alComenzar,
+                ),
+                const SizedBox(height: EspaciadoCampo.xs),
+                TextButton(
+                  key: const Key('onboarding-tengo-cuenta'),
+                  onPressed: widget.alTenerCuenta,
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size.fromHeight(
+                      ObjetivoTactilCampo.minimo,
+                    ),
+                    foregroundColor: paleta.acentoTexto,
+                    textStyle: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  child: const Text('Ya tengo cuenta'),
+                ),
+              ],
+            ),
+          );
+          final saltar = Positioned(
+            top: 0,
+            right: 0,
+            child: SafeArea(
+              child: Padding(
+                padding: EdgeInsets.all(margen),
+                child: _PastillaSaltar(
+                  alTocar: () => context.read<OnboardingCubit>().terminar(),
+                ),
+              ),
+            ),
+          );
+          final contenido = Stack(
+            children: [
+              Column(
+                children: [
+                  Expanded(child: carrusel),
+                  SafeArea(top: false, child: controles),
+                ],
+              ),
+              saltar,
+            ],
+          );
+          if (!amplia) return contenido;
+          return Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 560),
+              child: contenido,
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-/// Foto del paso, con fundido cruzado al cambiar.
-class _Foto extends StatelessWidget {
-  const _Foto({required this.paso});
+/// Una portada: collage arriba (con la marca) y, debajo, título y texto. Si
+/// el texto no cabe (letra grande), esa parte se desplaza.
+class _Pagina extends StatelessWidget {
+  const _Pagina({required this.portada, required this.amplia});
 
-  final int paso;
-
-  @override
-  Widget build(BuildContext context) {
-    final radio =
-        Theme.of(context).extension<TemaCampo>()?.radioTarjetaGrande ?? 24;
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(radio),
-      child: AnimatedSwitcher(
-        duration: MovimientoCampo.duracion(context, MovimientoCampo.media),
-        switchInCurve: MovimientoCampo.entrada,
-        switchOutCurve: MovimientoCampo.salida,
-        layoutBuilder: (actual, anteriores) =>
-            Stack(fit: StackFit.expand, children: [...anteriores, ?actual]),
-        child: Image.asset(
-          _pasos[paso].imagen,
-          key: ValueKey(paso),
-          fit: BoxFit.cover,
-          width: double.infinity,
-          height: double.infinity,
-          excludeFromSemantics: true,
-        ),
-      ),
-    );
-  }
-}
-
-/// Etiqueta, título y detalle del paso. Al cambiar, el texto nuevo entra
-/// con opacidad y un desplazamiento corto.
-class _Texto extends StatelessWidget {
-  const _Texto({required this.paso});
-
-  final int paso;
+  final _Portada portada;
+  final bool amplia;
 
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
-    final p = _pasos[paso];
-    final reducido = MovimientoCampo.reducido(context);
-    return AnimatedSwitcher(
-      duration: MovimientoCampo.duracion(context, MovimientoCampo.media),
-      switchInCurve: MovimientoCampo.entrada,
-      switchOutCurve: MovimientoCampo.salida,
-      transitionBuilder: (child, animacion) => FadeTransition(
-        opacity: animacion,
-        child: reducido
-            ? child
-            : SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(0.04, 0),
-                  end: Offset.zero,
-                ).animate(animacion),
-                child: child,
+    return LayoutBuilder(
+      builder: (context, c) {
+        final margen = EspaciadoCampo.margenLateral(c.maxWidth);
+        final alto = (c.maxHeight * _fraccionColage).clamp(
+          0.0,
+          _altoColageMaximo,
+        );
+        final radio = RadioCampo.hoja;
+        final colage = ClipRRect(
+          borderRadius: amplia
+              ? BorderRadius.circular(radio)
+              : BorderRadius.vertical(bottom: Radius.circular(radio)),
+          child: SizedBox(
+            height: alto,
+            width: double.infinity,
+            child: portada.colage(context, RadioCampo.tarjetaCompacta),
+          ),
+        );
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: amplia
+                  ? const EdgeInsets.only(top: EspaciadoCampo.xl)
+                  : EdgeInsets.zero,
+              child: Stack(
+                children: [
+                  colage,
+                  Positioned(
+                    top: 0,
+                    left: 0,
+                    child: SafeArea(
+                      child: Padding(
+                        padding: EdgeInsets.all(margen),
+                        child: const _SelloAgrocom(),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-      ),
-      layoutBuilder: (actual, anteriores) => Stack(
-        alignment: Alignment.topLeft,
-        children: [...anteriores, ?actual],
-      ),
-      child: Semantics(
-        key: ValueKey(paso),
-        container: true,
-        liveRegion: true,
-        child: SizedBox(
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Paso ${paso + 1} de ${_pasos.length} · ${p.etiqueta}'
-                    .toUpperCase(),
-                style: texto.labelSmall?.copyWith(color: paleta.acentoTexto),
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.fromLTRB(
+                  margen,
+                  EspaciadoCampo.xl,
+                  margen,
+                  EspaciadoCampo.l,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(portada.titulo, style: texto.headlineMedium),
+                    const SizedBox(height: EspaciadoCampo.m),
+                    Text(
+                      portada.detalle,
+                      style: texto.bodyLarge?.copyWith(
+                        color: paleta.textoSecundario,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: EspaciadoCampo.m),
-              Text(p.titulo, style: texto.headlineMedium),
-              const SizedBox(height: EspaciadoCampo.m),
-              Text(
-                p.detalle,
-                style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
-              ),
-            ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+/// «AGROCOM» en mono sobre píldora clara: la marca sobre la foto.
+class _SelloAgrocom extends StatelessWidget {
+  const _SelloAgrocom();
+
+  @override
+  Widget build(BuildContext context) {
+    final paleta = context.paleta;
+    return Semantics(
+      label: 'Agrocom',
+      excludeSemantics: true,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: paleta.superficie,
+          borderRadius: BorderRadius.circular(RadioCampo.media),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: EspaciadoCampo.m,
+            vertical: EspaciadoCampo.s,
+          ),
+          child: Text(
+            'AGROCOM',
+            style: TipografiaCampo.etiquetaMono.copyWith(color: paleta.texto),
           ),
         ),
       ),
@@ -293,42 +392,223 @@ class _Texto extends StatelessWidget {
   }
 }
 
-/// Indicador de avance: el paso activo es una pastilla más ancha, así no
-/// depende solo del color.
-class _Puntos extends StatelessWidget {
-  const _Puntos({required this.paso});
+class _PastillaSaltar extends StatelessWidget {
+  const _PastillaSaltar({required this.alTocar});
 
-  final int paso;
+  final VoidCallback alTocar;
 
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    return Semantics(
-      label: 'Paso ${paso + 1} de ${_pasos.length}',
-      child: ExcludeSemantics(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            for (var i = 0; i < _pasos.length; i++)
-              AnimatedContainer(
-                duration: MovimientoCampo.duracion(
+    return Material(
+      color: paleta.superficie,
+      shape: const StadiumBorder(),
+      child: InkWell(
+        key: const Key('onboarding-saltar'),
+        customBorder: const StadiumBorder(),
+        onTap: alTocar,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            minWidth: ObjetivoTactilCampo.minimo,
+            minHeight: ObjetivoTactilCampo.minimo,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: EspaciadoCampo.l),
+            child: Center(
+              widthFactor: 1,
+              child: Text(
+                'Saltar',
+                style: Theme.of(
                   context,
-                  MovimientoCampo.rapida,
-                ),
-                curve: MovimientoCampo.movimiento,
-                margin: const EdgeInsets.symmetric(
-                  horizontal: EspaciadoCampo.xs,
-                ),
-                width: i == paso ? EspaciadoCampo.xl : EspaciadoCampo.s,
-                height: EspaciadoCampo.s,
-                decoration: BoxDecoration(
-                  color: i == paso ? paleta.acentoTexto : paleta.bordeFuerte,
-                  borderRadius: BorderRadius.circular(EspaciadoCampo.s),
-                ),
+                ).textTheme.titleMedium?.copyWith(color: paleta.texto),
               ),
-          ],
+            ),
+          ),
         ),
       ),
     );
   }
+}
+
+/// Puntos del carrusel: el activo es una píldora más ancha (no depende solo
+/// del color) y cada uno se puede tocar con un objetivo de 48 dp.
+class _Puntos extends StatelessWidget {
+  const _Puntos({required this.paso, required this.alElegir});
+
+  final int paso;
+  final ValueChanged<int> alElegir;
+
+  @override
+  Widget build(BuildContext context) {
+    final paleta = context.paleta;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        for (var i = 0; i < _portadas.length; i++)
+          Semantics(
+            button: true,
+            selected: i == paso,
+            label: 'Portada ${i + 1} de ${_portadas.length}',
+            excludeSemantics: true,
+            child: InkResponse(
+              key: Key('onboarding-punto-$i'),
+              onTap: () => alElegir(i),
+              radius: ObjetivoTactilCampo.minimo / 2,
+              child: SizedBox(
+                width: ObjetivoTactilCampo.minimo / 1.5,
+                height: ObjetivoTactilCampo.minimo,
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: AnimatedContainer(
+                    duration: MovimientoCampo.duracion(
+                      context,
+                      MovimientoCampo.rapida,
+                    ),
+                    curve: MovimientoCampo.movimiento,
+                    width: i == paso ? EspaciadoCampo.xl : EspaciadoCampo.s,
+                    height: EspaciadoCampo.s,
+                    decoration: BoxDecoration(
+                      color: i == paso ? paleta.acento : paleta.borde,
+                      borderRadius: BorderRadius.circular(EspaciadoCampo.s),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+// --- Collages ---------------------------------------------------------------
+
+const double _separacion = EspaciadoCampo.xs;
+
+/// 1 · Foto grande con precios sobre ella, foto del dron y bloque ámbar.
+Widget _colagePublica(BuildContext context, double radio) {
+  return Row(
+    children: [
+      Expanded(
+        flex: 2,
+        child: FotoColageCampo(
+          imagen: ImagenesCampo.dronAgrasT50,
+          radio: 0,
+          child: const Stack(
+            children: [
+              Align(
+                alignment: Alignment(-0.1, 0.1),
+                child: PastillaPrecioCampo(valor: '62', destacada: true),
+              ),
+              Align(
+                alignment: Alignment(0.3, 0.75),
+                child: PastillaPrecioCampo(valor: '55'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      const SizedBox(width: _separacion),
+      Expanded(
+        child: Column(
+          children: [
+            Expanded(
+              child: FotoColageCampo(
+                imagen: ImagenesCampo.dronPulverizandoVertical,
+                radio: 0,
+              ),
+            ),
+            const SizedBox(height: _separacion),
+            const Expanded(
+              child: BloqueAmbarCampo(
+                titulo: '120',
+                etiqueta: 'hectáreas publicadas',
+                radio: 0,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
+}
+
+/// 2 · Foto a sangre con las ofertas y la barra de rondas.
+Widget _colageNegocia(BuildContext context, double radio) {
+  const sobreFoto = PaletaCampo.campo;
+  return FondoFotoCampo(
+    imagen: ImagenesCampo.dronPulverizandoVertical,
+    alineacion: Alignment.topCenter,
+    child: Padding(
+      padding: const EdgeInsets.all(EspaciadoCampo.l),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: PastillaPrecioCampo(valor: '62'),
+          ),
+          const SizedBox(height: EspaciadoCampo.s),
+          const Align(
+            alignment: Alignment.centerRight,
+            child: PastillaPrecioCampo(valor: '68', destacada: true),
+          ),
+          const SizedBox(height: EspaciadoCampo.s),
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: PastillaPrecioCampo(valor: '65'),
+          ),
+          const SizedBox(height: EspaciadoCampo.l),
+          RondasColageCampo(hechas: 3, total: 5, colorTexto: sobreFoto.texto),
+        ],
+      ),
+    ),
+  );
+}
+
+/// 3 · Foto, post-it con el precio final y foto del dron en tierra.
+Widget _colagePrecioFinal(BuildContext context, double radio) {
+  final paleta = context.paleta;
+  return Column(
+    children: [
+      Expanded(
+        flex: 5,
+        child: FotoColageCampo(
+          imagen: ImagenesCampo.dronPulverizando,
+          radio: 0,
+        ),
+      ),
+      const SizedBox(height: _separacion),
+      Expanded(
+        flex: 4,
+        child: Row(
+          children: [
+            Expanded(
+              child: ColoredBox(
+                color: paleta.ambarContenedor,
+                child: const Padding(
+                  padding: EdgeInsets.all(EspaciadoCampo.m),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: PostItCampo(
+                      etiqueta: 'Precio final',
+                      cuenta: '118 ha × 64',
+                      total: 'Bs 7.552',
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: _separacion),
+            Expanded(
+              child: FotoColageCampo(
+                imagen: ImagenesCampo.equipoDron,
+                radio: 0,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 }

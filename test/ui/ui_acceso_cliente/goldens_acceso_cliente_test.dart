@@ -34,6 +34,7 @@ Future<void> _cargarFuente(String familia, String ruta) async {
 
 const _imagenes = [
   ImagenesCampo.logo,
+  ImagenesCampo.dronPulverizando,
   ImagenesCampo.dronPulverizandoVertical,
   ImagenesCampo.equipoDron,
   ImagenesCampo.dronAgrasT50,
@@ -135,11 +136,11 @@ void main() {
       testWidgets('presentación, los tres pasos', skip: saltar, (tester) async {
         await _abrir(tester, primerUso(), oscuro: oscuro);
         await _comparar(tester, 'onboarding_1_$modo');
-        await _tocar(tester, find.byKey(const Key('onboarding-continuar')));
-        // Los pasos 2 y 3 solo cambian foto y texto: con el modo claro
-        // alcanza y el repositorio no carga cuatro fotos más.
+        await _tocar(tester, find.byKey(const Key('onboarding-punto-1')));
+        // Las portadas 2 y 3 solo cambian collage y texto: con el modo claro
+        // alcanza y el repositorio no carga más fotos.
         if (!oscuro) await _comparar(tester, 'onboarding_2_$modo');
-        await _tocar(tester, find.byKey(const Key('onboarding-continuar')));
+        await _tocar(tester, find.byKey(const Key('onboarding-punto-2')));
         if (!oscuro) await _comparar(tester, 'onboarding_3_$modo');
       });
 

@@ -54,10 +54,16 @@ class RegistroProveedorPantalla extends StatefulWidget {
 
 class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
   static const _titulos = [
-    'Tus datos',
+    'Datos personales',
     'Tu licencia',
-    'Tu dron',
+    'Tu equipo',
     'Fotos del dron',
+  ];
+  static const _apoyos = [
+    'Así te identificamos y te contactan los clientes.',
+    'Un administrador la revisa antes de que veas solicitudes.',
+    'Tu dron es tu vehículo: lo revisamos antes de aprobarlo.',
+    'Frontal, lateral y placa de serie.',
   ];
   final _claves = List.generate(3, (_) => GlobalKey<FormState>());
   int _paso = 0;
@@ -340,6 +346,17 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
     key: _claves[2],
     child: Column(
       children: [
+        const Padding(
+          padding: EdgeInsets.only(bottom: EspaciadoCampo.m),
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: ChipEstadoMarketplace(
+              etiqueta: 'En revisión al terminar el registro',
+              tono: TonoEstado.info,
+              icono: Icons.hourglass_top_rounded,
+            ),
+          ),
+        ),
         _campo('Marca', _marca),
         _campo('Modelo', _modelo),
         _campo(
@@ -401,15 +418,12 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
                   child: ListView(
                     padding: const EdgeInsets.all(EspaciadoCampo.l),
                     children: [
-                      Semantics(
-                        liveRegion: true,
-                        child: Text(
-                          'Paso ${_paso + 1} de 4 · ${_titulos[_paso]}',
-                          style: texto.titleLarge,
-                        ),
+                      _Encabezado(
+                        paso: _paso,
+                        total: _titulos.length,
+                        titulo: _titulos[_paso],
+                        apoyo: _apoyos[_paso],
                       ),
-                      const SizedBox(height: EspaciadoCampo.s),
-                      LinearProgressIndicator(value: (_paso + 1) / 4),
                       const SizedBox(height: EspaciadoCampo.l),
                       if (estado.mensaje != null) ...[
                         AvisoMarketplace(
@@ -449,6 +463,73 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
                 ),
         );
       },
+    );
+  }
+}
+
+/// Cabecera de cada paso: «PASO 1 DE 4» en mono, título, una línea de apoyo y
+/// una barra de segmentos (hechos en acento). El texto del paso se anuncia al
+/// cambiar.
+class _Encabezado extends StatelessWidget {
+  const _Encabezado({
+    required this.paso,
+    required this.total,
+    required this.titulo,
+    required this.apoyo,
+  });
+
+  final int paso;
+  final int total;
+  final String titulo;
+  final String apoyo;
+
+  @override
+  Widget build(BuildContext context) {
+    final paleta = context.paleta;
+    final texto = Theme.of(context).textTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Semantics(
+          liveRegion: true,
+          label: 'Paso ${paso + 1} de $total, $titulo',
+          excludeSemantics: true,
+          child: Text(
+            'PASO ${paso + 1} DE $total',
+            style: texto.labelSmall?.copyWith(color: paleta.acentoTexto),
+          ),
+        ),
+        const SizedBox(height: EspaciadoCampo.xs),
+        Text(titulo, style: texto.headlineMedium),
+        const SizedBox(height: EspaciadoCampo.xs),
+        Text(
+          apoyo,
+          style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
+        ),
+        const SizedBox(height: EspaciadoCampo.m),
+        ExcludeSemantics(
+          child: Row(
+            children: [
+              for (var i = 0; i < total; i++) ...[
+                if (i > 0) const SizedBox(width: EspaciadoCampo.xs),
+                Expanded(
+                  child: AnimatedContainer(
+                    duration: MovimientoCampo.duracion(
+                      context,
+                      MovimientoCampo.rapida,
+                    ),
+                    height: EspaciadoCampo.s,
+                    decoration: BoxDecoration(
+                      color: i <= paso ? paleta.acento : paleta.superficie2,
+                      borderRadius: BorderRadius.circular(RadioCampo.capsula),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

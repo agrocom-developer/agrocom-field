@@ -64,6 +64,9 @@ class _FormularioState extends State<_Formulario> {
   final _telefono = TextEditingController();
   final _usuario = TextEditingController();
   final _contrasena = TextEditingController();
+  final _razonSocial = TextEditingController();
+  final _documentoFiscal = TextEditingController();
+  TipoCliente _tipo = TipoCliente.persona;
   bool _intentado = false;
 
   @override
@@ -72,6 +75,8 @@ class _FormularioState extends State<_Formulario> {
     _telefono.dispose();
     _usuario.dispose();
     _contrasena.dispose();
+    _razonSocial.dispose();
+    _documentoFiscal.dispose();
     super.dispose();
   }
 
@@ -85,6 +90,11 @@ class _FormularioState extends State<_Formulario> {
         telefono: _telefono.text.trim(),
         usuario: _usuario.text.trim(),
         contrasena: _contrasena.text,
+        tipo: _tipo,
+        razonSocial: _tipo == TipoCliente.empresa ? _razonSocial.text : null,
+        documentoFiscal: _tipo == TipoCliente.empresa
+            ? _documentoFiscal.text
+            : null,
       ),
     );
   }
@@ -167,7 +177,69 @@ class _FormularioState extends State<_Formulario> {
                           ),
                         ),
                 ),
-                bloque('Tus datos'),
+                bloque('Tipo de cliente'),
+                SegmentedButton<TipoCliente>(
+                  key: const Key('registro-tipo'),
+                  showSelectedIcon: false,
+                  segments: const [
+                    ButtonSegment(
+                      value: TipoCliente.persona,
+                      label: Text('Persona'),
+                      icon: Icon(Icons.person_outline_rounded),
+                    ),
+                    ButtonSegment(
+                      value: TipoCliente.empresa,
+                      label: Text('Empresa'),
+                      icon: Icon(Icons.business_outlined),
+                    ),
+                  ],
+                  selected: {_tipo},
+                  onSelectionChanged: estado.enviando
+                      ? null
+                      : (v) => setState(() => _tipo = v.first),
+                ),
+                const SizedBox(height: EspaciadoCampo.xl),
+                if (_tipo == TipoCliente.empresa) ...[
+                  bloque('Tu empresa'),
+                  CampoFormularioMarketplace(
+                    key: const Key('registro-razon-social'),
+                    etiqueta: 'Razón social',
+                    controller: _razonSocial,
+                    enabled: !estado.enviando,
+                    textCapitalization: TextCapitalization.words,
+                    textInputAction: TextInputAction.next,
+                    validator: ReglasAcceso.razonSocial,
+                    errorServidor: estado.porCampo[CampoAcceso.razonSocial],
+                    onChanged: (_) =>
+                        cubit.campoEditado(CampoAcceso.razonSocial),
+                  ),
+                  const SizedBox(height: EspaciadoCampo.l),
+                  CampoFormularioMarketplace(
+                    key: const Key('registro-documento-fiscal'),
+                    etiqueta: 'NIT',
+                    controller: _documentoFiscal,
+                    enabled: !estado.enviando,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.next,
+                    validator: ReglasAcceso.documentoFiscal,
+                    errorServidor: estado.porCampo[CampoAcceso.documentoFiscal],
+                    onChanged: (_) =>
+                        cubit.campoEditado(CampoAcceso.documentoFiscal),
+                  ),
+                  const SizedBox(height: EspaciadoCampo.m),
+                  const AvisoMarketplace(
+                    mensaje:
+                        'Por ahora la cuenta tiene un solo contacto: la '
+                        'persona que la usa. Los contactos de referencia de '
+                        'la empresa se podrán agregar más adelante.',
+                  ),
+                  const SizedBox(height: EspaciadoCampo.xl),
+                ],
+                bloque(
+                  _tipo == TipoCliente.empresa
+                      ? 'Quién usa la cuenta'
+                      : 'Tus datos',
+                ),
                 CampoFormularioMarketplace(
                   key: const Key('registro-nombre'),
                   etiqueta: 'Nombre completo',
