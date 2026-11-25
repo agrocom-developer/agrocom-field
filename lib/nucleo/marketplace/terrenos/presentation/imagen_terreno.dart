@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 import '../../../ui/paleta_campo.dart';
-import '../../ui/imagen_ref.dart';
+import '../../../ui/componentes/imagen_red_campo.dart';
 
 /// La imagen de una foto de terreno: la elegida en este celular o la del
 /// servidor por URL; mientras carga, un fondo tenue, y si no carga, un
@@ -38,12 +38,6 @@ class ImagenTerreno extends StatelessWidget {
       );
     }
     if (url == null || url!.isEmpty) return vacio;
-    return Image(
-      image: imagenDeRef(url!),
-      fit: fit,
-      loadingBuilder: (_, hijo, avance) =>
-          avance == null ? hijo : ColoredBox(color: paleta.borde),
-      errorBuilder: (_, _, _) => vacio,
-    );
+    return ImagenRedCampo(referencia: url!, fit: fit, respaldo: vacio);
   }
 }

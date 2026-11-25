@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/tema_campo.dart';
 import '../../../../camara/selector_imagen.dart';
 import '../../di/dependencias_proveedor.dart';
@@ -47,6 +48,9 @@ class AppProveedor extends StatelessWidget {
               ..iniciar(),
         child: MaterialApp(
           title: 'Agrocom',
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale: const Locale('es'),
           debugShowCheckedModeBanner: false,
           theme: AgrocomThemeCampo.construir(),
           builder: (context, child) => proveedor.proveer(child: child!),

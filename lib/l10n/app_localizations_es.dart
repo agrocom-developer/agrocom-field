@@ -112,4 +112,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get problemaMotivoTratoInadecuadoAyuda =>
       'Hubo una falta de respeto o de cuidado.';
+
+  @override
+  String get redSinSenalTitulo => 'Sin señal';
+
+  @override
+  String get redSinSenalMensaje =>
+      'lo que ya cargaste sigue a la vista. Pedir u ofertar necesita red.';
 }

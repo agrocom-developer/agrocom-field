@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../l10n/app_localizations.dart';
+import '../nucleo/conectividad/data/conectividad_falsa.dart';
+import '../nucleo/conectividad/domain/conectividad_servicio.dart';
+import '../nucleo/conectividad/presentation/con_banner_de_red.dart';
 import '../nucleo/ui/paleta_campo.dart';
 import '../nucleo/ui/componentes/componentes_campo.dart';
 import '../nucleo/ui/tema_campo.dart';
@@ -42,6 +45,7 @@ class AppCliente extends StatelessWidget {
         notaAcceso: dependencias.notaAcceso,
         sesionExpirada: dependencias.sesionExpirada,
         dentro: (context) => ShellCliente(
+          conectividad: dependencias.conectividad,
           alCerrarSesion: context.read<ArranqueCubit>().cerrarSesion,
         ),
       ),
@@ -52,7 +56,10 @@ class AppCliente extends StatelessWidget {
 /// Navegación raíz del cliente: Inicio, Solicitar, Solicitudes y Cuenta. Barra
 /// inferior en teléfono y riel lateral en iPad (`NavegacionAdaptativaCampo`).
 class ShellCliente extends StatefulWidget {
-  const ShellCliente({this.alCerrarSesion, super.key});
+  const ShellCliente({this.conectividad, this.alCerrarSesion, super.key});
+
+  /// Estado de la red para el banner «Sin señal»; sin él, siempre hay red.
+  final ConectividadServicio? conectividad;
 
   /// Cierra la sesión desde la pestaña Cuenta. Sin él, la cuenta no ofrece
   /// la acción.
@@ -64,6 +71,8 @@ class ShellCliente extends StatefulWidget {
 
 class _ShellClienteState extends State<ShellCliente> {
   int _indice = 0;
+  late final ConectividadServicio _conectividad =
+      widget.conectividad ?? ConectividadFalsa();
 
   static const _destinos = [
     DestinoCampo(
@@ -127,18 +136,21 @@ class _ShellClienteState extends State<ShellCliente> {
       onSeleccionar: (i) => setState(() => _indice = i),
       // Solicitar divide la pantalla en mapa y formulario en iPad.
       anchoCompleto: _indice == 1,
-      cuerpo: switch (_indice) {
-        0 => BlocProvider.value(
-          value: _inicio,
-          child: InicioClientePantalla(
-            alSolicitar: () => setState(() => _indice = 1),
-            alVerServicios: () => setState(() => _indice = 2),
+      cuerpo: ConBannerDeRed(
+        servicio: _conectividad,
+        child: switch (_indice) {
+          0 => BlocProvider.value(
+            value: _inicio,
+            child: InicioClientePantalla(
+              alSolicitar: () => setState(() => _indice = 1),
+              alVerServicios: () => setState(() => _indice = 2),
+            ),
           ),
-        ),
-        1 => SolicitarPantalla(alSolicitado: _alSolicitado),
-        2 => const HistorialPantalla(),
-        _ => CuentaPantalla(alCerrarSesion: widget.alCerrarSesion),
-      },
+          1 => SolicitarPantalla(alSolicitado: _alSolicitado),
+          2 => const HistorialPantalla(),
+          _ => CuentaPantalla(alCerrarSesion: widget.alCerrarSesion),
+        },
+      ),
     );
   }
 }

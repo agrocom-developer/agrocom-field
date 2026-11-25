@@ -654,18 +654,14 @@ class _Cargando extends StatelessWidget {
       builder: (context, c) => SingleChildScrollView(
         physics: const NeverScrollableScrollPhysics(),
         padding: _margen(c.maxWidth),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            EsqueletoCampo(alto: 32, ancho: 180),
-            SizedBox(height: EspaciadoCampo.s),
-            EsqueletoCampo(alto: 18, ancho: 220),
-            SizedBox(height: EspaciadoCampo.xl),
-            EsqueletoCampo(alto: 240, radio: RadioCampo.tarjeta),
-            SizedBox(height: EspaciadoCampo.xxl),
-            EsqueletoCampo(alto: 22, ancho: 110),
-            SizedBox(height: EspaciadoCampo.l),
-            EsqueletoCampo(alto: 88, radio: RadioCampo.tarjetaCompacta),
+        child: const EsqueletoListaCampo(
+          separacion: EspaciadoCampo.l,
+          bloques: [
+            BloqueEsqueleto(alto: 32, ancho: 180),
+            BloqueEsqueleto(alto: 18, ancho: 220),
+            BloqueEsqueleto(alto: 240, radio: RadioCampo.tarjeta),
+            BloqueEsqueleto(alto: 22, ancho: 110),
+            BloqueEsqueleto(alto: 88, radio: RadioCampo.tarjetaCompacta),
           ],
         ),
       ),

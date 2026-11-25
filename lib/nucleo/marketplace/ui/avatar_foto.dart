@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 import '../../ui/paleta_campo.dart';
-import 'imagen_ref.dart';
+import '../../ui/componentes/imagen_red_campo.dart';
 
 /// Retrato redondo: la foto si hay (en memoria o por URL) y, debajo, las
 /// iniciales sobre el acento, que quedan a la vista mientras la foto carga o
@@ -54,12 +54,11 @@ class AvatarFoto extends StatelessWidget {
         errorBuilder: (_, _, _) => const SizedBox.shrink(),
       );
     } else if (url != null && url!.isNotEmpty) {
-      foto = Image(
-        image: imagenDeRef(url!),
-        width: tamano,
-        height: tamano,
-        fit: BoxFit.cover,
-        errorBuilder: (_, _, _) => const SizedBox.shrink(),
+      foto = ImagenRedCampo(
+        referencia: url!,
+        ancho: tamano,
+        alto: tamano,
+        respaldo: const SizedBox.shrink(),
       );
     }
     return Semantics(

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+import '../nucleo/conectividad/data/conectividad_falsa.dart';
+import '../nucleo/conectividad/domain/conectividad_servicio.dart';
+import '../nucleo/conectividad/presentation/con_banner_de_red.dart';
 import '../nucleo/marketplace/proveedor/dron/presentation/drones_pantalla.dart';
 import '../nucleo/marketplace/proveedor/ejecucion/presentation/servicios_lote_pantalla.dart';
 import '../nucleo/marketplace/proveedor/negociacion/presentation/mapa_solicitudes_pantalla.dart';
@@ -23,12 +27,15 @@ class AppPilotoDemo extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Agrocom',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('es'),
       debugShowCheckedModeBanner: false,
       theme: AgrocomThemeCampo.construir(),
       // Los repositorios van por encima del `Navigator`: las rutas que se
       // apilan (detalle, seguimiento) los heredan.
       builder: (context, child) => dependencias.proveer(child: child!),
-      home: const ShellPiloto(),
+      home: ShellPiloto(conectividad: dependencias.conectividad),
     );
   }
 }
@@ -36,7 +43,10 @@ class AppPilotoDemo extends StatelessWidget {
 /// Navegación del piloto: el mapa de solicitudes abiertas, sus ofertas, el
 /// servicio adjudicado, sus drones y el perfil.
 class ShellPiloto extends StatefulWidget {
-  const ShellPiloto({this.alSalir, super.key});
+  const ShellPiloto({this.conectividad, this.alSalir, super.key});
+
+  /// Estado de la red para el banner «Sin señal»; sin él, siempre hay red.
+  final ConectividadServicio? conectividad;
 
   /// Cierra la sesión. Solo existe en la app real: la demo no tiene sesión.
   final VoidCallback? alSalir;
@@ -47,6 +57,8 @@ class ShellPiloto extends StatefulWidget {
 
 class _ShellPilotoState extends State<ShellPiloto> {
   int _indice = 0;
+  late final ConectividadServicio _conectividad =
+      widget.conectividad ?? ConectividadFalsa();
 
   static const _destinos = [
     DestinoCampo(
@@ -82,19 +94,24 @@ class _ShellPilotoState extends State<ShellPiloto> {
       destinos: _destinos,
       indice: _indice,
       onSeleccionar: (i) => setState(() => _indice = i),
-      cuerpo: switch (_indice) {
-        0 => const MapaSolicitudesPantalla(),
-        1 => MisOfertasPantalla(alIrAlMapa: () => setState(() => _indice = 0)),
-        2 => const ServiciosLotePantalla(),
-        3 => const DronesPantalla(),
-        _ => PerfilPantalla(
-          extras: extrasDePerfil(
-            context,
-            conAvisos: true,
-            alSalir: widget.alSalir,
+      cuerpo: ConBannerDeRed(
+        servicio: _conectividad,
+        child: switch (_indice) {
+          0 => const MapaSolicitudesPantalla(),
+          1 => MisOfertasPantalla(
+            alIrAlMapa: () => setState(() => _indice = 0),
           ),
-        ),
-      },
+          2 => const ServiciosLotePantalla(),
+          3 => const DronesPantalla(),
+          _ => PerfilPantalla(
+            extras: extrasDePerfil(
+              context,
+              conAvisos: true,
+              alSalir: widget.alSalir,
+            ),
+          ),
+        },
+      ),
     );
   }
 }

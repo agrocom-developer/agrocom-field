@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
 import '../colores_campo.dart';
@@ -96,29 +97,38 @@ class _CeldaPendiente extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          color: color.withValues(alpha: 0.07),
-          border: Border.all(color: color.withValues(alpha: 0.45)),
+      child: DottedBorder(
+        ignoring: false,
+        options: RoundedRectDottedBorderOptions(
+          radius: const Radius.circular(18),
+          padding: EdgeInsets.zero,
+          strokeWidth: 1.5,
+          dashPattern: const [6, 4],
+          color: color.withValues(alpha: 0.45),
         ),
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(Icons.add, color: color, size: 19),
-            const SizedBox(height: 6),
-            Text(
-              celda.etiqueta,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'JetBrains Mono',
-                fontSize: 11,
-                fontWeight: FontWeight.w600,
-                color: color,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            color: color.withValues(alpha: 0.07),
+          ),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.add, color: color, size: 19),
+              const SizedBox(height: 6),
+              Text(
+                celda.etiqueta,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'JetBrains Mono',
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
