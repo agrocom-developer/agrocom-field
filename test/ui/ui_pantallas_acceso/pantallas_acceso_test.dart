@@ -1,3 +1,4 @@
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 // Pantallas 01 a 05 del plan 02 (portadas, elegir rol, datos personales y
 // equipo): comportamiento y goldens en claro y oscuro (cliente) y en modo
 // campo (piloto), a ancho de teléfono chico y grande, con la fuente real.
@@ -142,6 +143,7 @@ Widget _registro() => BlocProvider(
     acceso: _AccesoFalso(),
     drones: _DronesFalso(),
     selector: _Imagenes(),
+    l10n: AppLocalizationsEs(),
   ),
   child: RegistroProveedorPantalla(alTerminar: () {}),
 );

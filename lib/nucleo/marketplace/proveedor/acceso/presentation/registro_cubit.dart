@@ -7,6 +7,7 @@ import '../../../../evidencias/compresor_adaptativo.dart';
 import '../../../../evidencias/compresor_evidencia.dart';
 import '../../../dominio/falla.dart';
 import '../domain/acceso_proveedor.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 /// En qué paso del alta se quedó el envío.
 enum PasoRegistro { cuenta, sesion, dron, fotos, listo }
@@ -65,16 +66,19 @@ class RegistroEstado {
 /// Termina con el proveedor `pendiente` de aprobación de un administrador.
 class RegistroCubit extends Cubit<RegistroEstado> {
   RegistroCubit({
+    required AppLocalizations l10n,
     required AccesoProveedorRepositorio acceso,
     required RegistroDronesRepositorio drones,
     required SelectorImagen selector,
     CompresorEvidencia? compresor,
-  }) : _acceso = acceso,
+  }) : _l10n = l10n,
+       _acceso = acceso,
        _drones = drones,
        _selector = selector,
        _compresor = compresor ?? CompresorEvidenciaAdaptativo(),
        super(const RegistroEstado());
 
+  final AppLocalizations _l10n;
   final AccesoProveedorRepositorio _acceso;
   final RegistroDronesRepositorio _drones;
   final SelectorImagen _selector;
@@ -103,9 +107,7 @@ class RegistroCubit extends Cubit<RegistroEstado> {
       emit(
         state.copiarCon(
           fotoCargando: () => null,
-          fotoError: () =>
-              'No pudimos achicar esa foto. Prueba con otra o tómala de '
-              'nuevo.',
+          fotoError: () => _l10n.proveedorAccesoPudimosAchicarEsaFoto,
         ),
       );
     }
@@ -162,9 +164,7 @@ class RegistroCubit extends Cubit<RegistroEstado> {
       emit(
         state.copiarCon(
           enviando: false,
-          mensaje: () =>
-              'Sin conexión. Lo que escribiste se conserva: reintenta con '
-              'señal y seguimos donde quedó.',
+          mensaje: () => _l10n.proveedorAccesoSinConexionQueEscribiste,
         ),
       );
     } on OperacionRechazada catch (e) {
@@ -172,15 +172,13 @@ class RegistroCubit extends Cubit<RegistroEstado> {
     }
   }
 
-  static String _mensajeAcceso(AccesoProveedorExcepcion e) =>
-      switch (e.motivo) {
-        MotivoFalloAcceso.sinConexion =>
-          'Sin conexión. Lo que escribiste se conserva: reintenta con señal.',
-        MotivoFalloAcceso.credencialesInvalidas =>
-          'Tu cuenta quedó creada, pero no pudimos entrar. Vuelve al ingreso '
-              'e inicia sesión.',
-        MotivoFalloAcceso.validacion =>
-          e.mensaje ?? 'Revisa los datos marcados e intenta de nuevo.',
-        _ => e.mensaje ?? 'No pudimos completar el registro. Intenta de nuevo.',
-      };
+  String _mensajeAcceso(AccesoProveedorExcepcion e) => switch (e.motivo) {
+    MotivoFalloAcceso.sinConexion =>
+      _l10n.proveedorAccesoSinConexionQueEscribiste2,
+    MotivoFalloAcceso.credencialesInvalidas =>
+      _l10n.proveedorAccesoCuentaQuedoCreadaPero,
+    MotivoFalloAcceso.validacion =>
+      e.mensaje ?? _l10n.proveedorAccesoRevisaLosDatosMarcados,
+    _ => e.mensaje ?? _l10n.proveedorAccesoPudimosCompletarRegistroIntenta,
+  };
 }

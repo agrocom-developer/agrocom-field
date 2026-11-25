@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../../../dominio/dominio.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 /// Quién dijo qué en una ronda, ya con el número que ve la persona.
 class RondaVista {
@@ -144,13 +145,15 @@ class NegociacionEstado {
 class NegociacionCubit extends Cubit<NegociacionEstado> {
   NegociacionCubit(
     this._mercado,
-    this._negociacion, {
+    this._negociacion,
+    this._l10n, {
     required this.solicitudId,
     SolicitudAbierta? solicitud,
     Uuid? uuid,
   }) : _uuid = uuid ?? const Uuid(),
        super(NegociacionEstado(solicitud: solicitud));
 
+  final AppLocalizations _l10n;
   final MercadoRepositorio _mercado;
   final NegociacionRepositorio _negociacion;
   final int solicitudId;
@@ -256,7 +259,7 @@ class NegociacionCubit extends Cubit<NegociacionEstado> {
         state.copiarCon(
           enviando: false,
           sinRed: true,
-          mensaje: () => 'No se retiró. Reintenta cuando tengas señal.',
+          mensaje: () => _l10n.proveedorNegociacionRetiroReintentaCuandoTengas,
         ),
       );
     } on OperacionRechazada catch (e) {
@@ -312,9 +315,7 @@ class NegociacionCubit extends Cubit<NegociacionEstado> {
         state.copiarCon(
           enviando: false,
           sinRed: true,
-          mensaje: () =>
-              'No se envió. Tu precio sigue aquí: reintenta cuando tengas '
-              'señal.',
+          mensaje: () => _l10n.proveedorNegociacionEnvioPrecioSigueAqui,
         ),
       );
     } on OperacionRechazada catch (e) {
@@ -333,13 +334,12 @@ class NegociacionCubit extends Cubit<NegociacionEstado> {
     emit(state.copiarCon(enviado: () => enviado, precio: precio));
   }
 
-  static String _explicar(OperacionRechazada e) => switch (e.motivo) {
-    'oferta_no_vigente' =>
-      'Esa oferta ya no está vigente: el cliente respondió o venció.',
+  String _explicar(OperacionRechazada e) => switch (e.motivo) {
+    'oferta_no_vigente' => _l10n.proveedorNegociacionEsaOfertaEstaVigente2,
     'solicitud_ya_adjudicada' =>
-      'El cliente ya eligió a otro piloto para esta solicitud.',
+      _l10n.proveedorNegociacionClienteEligioOtroPiloto,
     'equipo_no_disponible' =>
-      'Tu equipo no está disponible para esas fechas. Revisa tus drones.',
+      _l10n.proveedorNegociacionEquipoEstaDisponiblePara,
     _ => e.mensaje,
   };
 }

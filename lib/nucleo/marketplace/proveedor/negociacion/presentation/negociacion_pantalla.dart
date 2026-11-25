@@ -36,10 +36,12 @@ class NegociacionPantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
       create: (context) => NegociacionCubit(
         context.read<MercadoRepositorio>(),
         context.read<NegociacionRepositorio>(),
+        l10n,
         solicitudId: solicitudId,
         solicitud: solicitud,
       )..cargar(),

@@ -5877,6 +5877,192 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Observaciones'**
   String get proveedorEjecucionObservaciones;
+
+  /// No description provided for @proveedorEjecucionMarcasteServicioEjecucion.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcaste el servicio en ejecución.'**
+  String get proveedorEjecucionMarcasteServicioEjecucion;
+
+  /// No description provided for @proveedorEjecucionAvanceGuardado.
+  ///
+  /// In es, this message translates to:
+  /// **'Avance guardado.'**
+  String get proveedorEjecucionAvanceGuardado;
+
+  /// No description provided for @proveedorEjecucionServicioFinalizadoPrecioPagar.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicio finalizado. El precio a pagar queda a la vista.'**
+  String get proveedorEjecucionServicioFinalizadoPrecioPagar;
+
+  /// No description provided for @proveedorEjecucionFotoGuardadaSubeSola.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto guardada. Se sube sola cuando haya señal.'**
+  String get proveedorEjecucionFotoGuardadaSubeSola;
+
+  /// No description provided for @proveedorEjecucionPudimosAchicarFotoSuficiente.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos achicar la foto lo suficiente. Toma otra con menos detalle.'**
+  String get proveedorEjecucionPudimosAchicarFotoSuficiente;
+
+  /// No description provided for @proveedorEjecucionPudimosGuardarloIntentaNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardarlo. Intenta de nuevo.'**
+  String get proveedorEjecucionPudimosGuardarloIntentaNuevo;
+
+  /// No description provided for @proveedorAccesoPudimosAchicarEsaFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos achicar esa foto. Prueba con otra o tómala de nuevo.'**
+  String get proveedorAccesoPudimosAchicarEsaFoto;
+
+  /// No description provided for @proveedorAccesoSinConexionQueEscribiste.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Lo que escribiste se conserva: reintenta con señal y seguimos donde quedó.'**
+  String get proveedorAccesoSinConexionQueEscribiste;
+
+  /// No description provided for @proveedorAccesoSinConexionQueEscribiste2.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Lo que escribiste se conserva: reintenta con señal.'**
+  String get proveedorAccesoSinConexionQueEscribiste2;
+
+  /// No description provided for @proveedorAccesoCuentaQuedoCreadaPero.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta quedó creada, pero no pudimos entrar. Vuelve al ingreso e inicia sesión.'**
+  String get proveedorAccesoCuentaQuedoCreadaPero;
+
+  /// No description provided for @proveedorAccesoRevisaLosDatosMarcados.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa los datos marcados e intenta de nuevo.'**
+  String get proveedorAccesoRevisaLosDatosMarcados;
+
+  /// No description provided for @proveedorAccesoPudimosCompletarRegistroIntenta.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos completar el registro. Intenta de nuevo.'**
+  String get proveedorAccesoPudimosCompletarRegistroIntenta;
+
+  /// No description provided for @proveedorAccesoSesionVencioEntraNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión venció. Entra de nuevo.'**
+  String get proveedorAccesoSesionVencioEntraNuevo;
+
+  /// No description provided for @proveedorAccesoUsuarioContrasenaIncorrectosRevisa.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario o contraseña incorrectos. Revisa e intenta de nuevo.'**
+  String get proveedorAccesoUsuarioContrasenaIncorrectosRevisa;
+
+  /// No description provided for @proveedorAccesoSinConexionNecesitasSenal.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Necesitas señal para entrar; lo que ya guardaste en el celular sigue ahí.'**
+  String get proveedorAccesoSinConexionNecesitasSenal;
+
+  /// No description provided for @proveedorAccesoEstaCuentaEstaApp.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta cuenta no es de esta app.'**
+  String get proveedorAccesoEstaCuentaEstaApp;
+
+  /// No description provided for @proveedorAccesoPudimosEntrarIntentaNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos entrar. Intenta de nuevo en un momento.'**
+  String get proveedorAccesoPudimosEntrarIntentaNuevo;
+
+  /// No description provided for @proveedorNegociacionSinConexionPuedeQue.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión: puede que lo que ves esté viejo.'**
+  String get proveedorNegociacionSinConexionPuedeQue;
+
+  /// No description provided for @proveedorNegociacionListoClienteEligioPuedes.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Listo! El cliente te eligió. Ya puedes escribirle desde Servicio.'**
+  String get proveedorNegociacionListoClienteEligioPuedes;
+
+  /// No description provided for @proveedorNegociacionRechazasteOfertaDelCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazaste la oferta del cliente.'**
+  String get proveedorNegociacionRechazasteOfertaDelCliente;
+
+  /// No description provided for @proveedorNegociacionRetirasteOferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Retiraste tu oferta.'**
+  String get proveedorNegociacionRetirasteOferta;
+
+  /// No description provided for @proveedorNegociacionEnviasteContraoferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviaste tu contraoferta.'**
+  String get proveedorNegociacionEnviasteContraoferta;
+
+  /// No description provided for @proveedorNegociacionHayConexionEnvioNada.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay conexión. No se envió nada: reintenta con señal.'**
+  String get proveedorNegociacionHayConexionEnvioNada;
+
+  /// No description provided for @proveedorNegociacionEsaOfertaEstaVigente.
+  ///
+  /// In es, this message translates to:
+  /// **'Esa oferta ya no está vigente: el cliente respondió o venció. Actualizamos tu lista.'**
+  String get proveedorNegociacionEsaOfertaEstaVigente;
+
+  /// No description provided for @proveedorNegociacionClienteEligioOtroPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'El cliente ya eligió a otro piloto para esta solicitud.'**
+  String get proveedorNegociacionClienteEligioOtroPiloto;
+
+  /// No description provided for @proveedorNegociacionEquipoEstaDisponiblePara.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu equipo no está disponible para esas fechas. Revisa tus drones.'**
+  String get proveedorNegociacionEquipoEstaDisponiblePara;
+
+  /// No description provided for @proveedorNegociacionSinConexionMensajeSigue.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Tu mensaje sigue aquí: reintenta.'**
+  String get proveedorNegociacionSinConexionMensajeSigue;
+
+  /// No description provided for @proveedorNegociacionRetiroReintentaCuandoTengas.
+  ///
+  /// In es, this message translates to:
+  /// **'No se retiró. Reintenta cuando tengas señal.'**
+  String get proveedorNegociacionRetiroReintentaCuandoTengas;
+
+  /// No description provided for @proveedorNegociacionEnvioPrecioSigueAqui.
+  ///
+  /// In es, this message translates to:
+  /// **'No se envió. Tu precio sigue aquí: reintenta cuando tengas señal.'**
+  String get proveedorNegociacionEnvioPrecioSigueAqui;
+
+  /// No description provided for @proveedorNegociacionEsaOfertaEstaVigente2.
+  ///
+  /// In es, this message translates to:
+  /// **'Esa oferta ya no está vigente: el cliente respondió o venció.'**
+  String get proveedorNegociacionEsaOfertaEstaVigente2;
+
+  /// No description provided for @proveedorNegociacionHayConexionQueEscribiste.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay conexión. Lo que escribiste se conserva: reintenta cuando tengas señal.'**
+  String get proveedorNegociacionHayConexionQueEscribiste;
 }
 
 class _AppLocalizationsDelegate

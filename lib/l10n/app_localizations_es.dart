@@ -3561,4 +3561,126 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorEjecucionObservaciones => 'Observaciones';
+
+  @override
+  String get proveedorEjecucionMarcasteServicioEjecucion =>
+      'Marcaste el servicio en ejecución.';
+
+  @override
+  String get proveedorEjecucionAvanceGuardado => 'Avance guardado.';
+
+  @override
+  String get proveedorEjecucionServicioFinalizadoPrecioPagar =>
+      'Servicio finalizado. El precio a pagar queda a la vista.';
+
+  @override
+  String get proveedorEjecucionFotoGuardadaSubeSola =>
+      'Foto guardada. Se sube sola cuando haya señal.';
+
+  @override
+  String get proveedorEjecucionPudimosAchicarFotoSuficiente =>
+      'No pudimos achicar la foto lo suficiente. Toma otra con menos detalle.';
+
+  @override
+  String get proveedorEjecucionPudimosGuardarloIntentaNuevo =>
+      'No pudimos guardarlo. Intenta de nuevo.';
+
+  @override
+  String get proveedorAccesoPudimosAchicarEsaFoto =>
+      'No pudimos achicar esa foto. Prueba con otra o tómala de nuevo.';
+
+  @override
+  String get proveedorAccesoSinConexionQueEscribiste =>
+      'Sin conexión. Lo que escribiste se conserva: reintenta con señal y seguimos donde quedó.';
+
+  @override
+  String get proveedorAccesoSinConexionQueEscribiste2 =>
+      'Sin conexión. Lo que escribiste se conserva: reintenta con señal.';
+
+  @override
+  String get proveedorAccesoCuentaQuedoCreadaPero =>
+      'Tu cuenta quedó creada, pero no pudimos entrar. Vuelve al ingreso e inicia sesión.';
+
+  @override
+  String get proveedorAccesoRevisaLosDatosMarcados =>
+      'Revisa los datos marcados e intenta de nuevo.';
+
+  @override
+  String get proveedorAccesoPudimosCompletarRegistroIntenta =>
+      'No pudimos completar el registro. Intenta de nuevo.';
+
+  @override
+  String get proveedorAccesoSesionVencioEntraNuevo =>
+      'Tu sesión venció. Entra de nuevo.';
+
+  @override
+  String get proveedorAccesoUsuarioContrasenaIncorrectosRevisa =>
+      'Usuario o contraseña incorrectos. Revisa e intenta de nuevo.';
+
+  @override
+  String get proveedorAccesoSinConexionNecesitasSenal =>
+      'Sin conexión. Necesitas señal para entrar; lo que ya guardaste en el celular sigue ahí.';
+
+  @override
+  String get proveedorAccesoEstaCuentaEstaApp =>
+      'Esta cuenta no es de esta app.';
+
+  @override
+  String get proveedorAccesoPudimosEntrarIntentaNuevo =>
+      'No pudimos entrar. Intenta de nuevo en un momento.';
+
+  @override
+  String get proveedorNegociacionSinConexionPuedeQue =>
+      'Sin conexión: puede que lo que ves esté viejo.';
+
+  @override
+  String get proveedorNegociacionListoClienteEligioPuedes =>
+      '¡Listo! El cliente te eligió. Ya puedes escribirle desde Servicio.';
+
+  @override
+  String get proveedorNegociacionRechazasteOfertaDelCliente =>
+      'Rechazaste la oferta del cliente.';
+
+  @override
+  String get proveedorNegociacionRetirasteOferta => 'Retiraste tu oferta.';
+
+  @override
+  String get proveedorNegociacionEnviasteContraoferta =>
+      'Enviaste tu contraoferta.';
+
+  @override
+  String get proveedorNegociacionHayConexionEnvioNada =>
+      'No hay conexión. No se envió nada: reintenta con señal.';
+
+  @override
+  String get proveedorNegociacionEsaOfertaEstaVigente =>
+      'Esa oferta ya no está vigente: el cliente respondió o venció. Actualizamos tu lista.';
+
+  @override
+  String get proveedorNegociacionClienteEligioOtroPiloto =>
+      'El cliente ya eligió a otro piloto para esta solicitud.';
+
+  @override
+  String get proveedorNegociacionEquipoEstaDisponiblePara =>
+      'Tu equipo no está disponible para esas fechas. Revisa tus drones.';
+
+  @override
+  String get proveedorNegociacionSinConexionMensajeSigue =>
+      'Sin conexión. Tu mensaje sigue aquí: reintenta.';
+
+  @override
+  String get proveedorNegociacionRetiroReintentaCuandoTengas =>
+      'No se retiró. Reintenta cuando tengas señal.';
+
+  @override
+  String get proveedorNegociacionEnvioPrecioSigueAqui =>
+      'No se envió. Tu precio sigue aquí: reintenta cuando tengas señal.';
+
+  @override
+  String get proveedorNegociacionEsaOfertaEstaVigente2 =>
+      'Esa oferta ya no está vigente: el cliente respondió o venció.';
+
+  @override
+  String get proveedorNegociacionHayConexionQueEscribiste =>
+      'No hay conexión. Lo que escribiste se conserva: reintenta cuando tengas señal.';
 }

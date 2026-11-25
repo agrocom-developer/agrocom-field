@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../domain/acceso_proveedor.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 sealed class AccesoEstado {
   const AccesoEstado();
@@ -35,20 +36,21 @@ final class AccesoDentro extends AccesoEstado {
 /// La puerta de la app real: decide entre el ingreso y la superficie del
 /// proveedor según haya o no una sesión válida.
 class AccesoCubit extends Cubit<AccesoEstado> {
-  AccesoCubit(this._acceso, {Stream<void>? sesionExpirada})
+  AccesoCubit(this._acceso, this._l10n, {Stream<void>? sesionExpirada})
     : super(const AccesoVerificando()) {
     _sub = sesionExpirada?.listen((_) {
       if (state is AccesoDentro) {
         emit(
-          const AccesoSinSesion(
+          AccesoSinSesion(
             sesionVencida: true,
-            mensaje: 'Tu sesión venció. Entra de nuevo.',
+            mensaje: _l10n.proveedorAccesoSesionVencioEntraNuevo,
           ),
         );
       }
     });
   }
 
+  final AppLocalizations _l10n;
   final AccesoProveedorRepositorio _acceso;
   StreamSubscription<void>? _sub;
 
@@ -85,15 +87,14 @@ class AccesoCubit extends Cubit<AccesoEstado> {
     if (!isClosed) emit(const AccesoSinSesion());
   }
 
-  static String _mensaje(AccesoProveedorExcepcion e) => switch (e.motivo) {
+  String _mensaje(AccesoProveedorExcepcion e) => switch (e.motivo) {
     MotivoFalloAcceso.credencialesInvalidas =>
-      'Usuario o contraseña incorrectos. Revisa e intenta de nuevo.',
+      _l10n.proveedorAccesoUsuarioContrasenaIncorrectosRevisa,
     MotivoFalloAcceso.sinConexion =>
-      'Sin conexión. Necesitas señal para entrar; lo que ya guardaste en el '
-          'celular sigue ahí.',
+      _l10n.proveedorAccesoSinConexionNecesitasSenal,
     MotivoFalloAcceso.cuentaAjena =>
-      e.mensaje ?? 'Esta cuenta no es de esta app.',
-    _ => e.mensaje ?? 'No pudimos entrar. Intenta de nuevo en un momento.',
+      e.mensaje ?? _l10n.proveedorAccesoEstaCuentaEstaApp,
+    _ => e.mensaje ?? _l10n.proveedorAccesoPudimosEntrarIntentaNuevo,
   };
 
   @override

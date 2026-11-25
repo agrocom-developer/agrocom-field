@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../../../dominio/dominio.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 class ChatEstado {
   const ChatEstado({
@@ -48,12 +49,14 @@ class ChatEstado {
 class ChatCubit extends Cubit<ChatEstado> {
   ChatCubit(
     this._repositorio,
-    this.solicitudId, {
+    this.solicitudId,
+    this._l10n, {
     Uuid? uuid,
     this.intervalo = const Duration(seconds: 8),
   }) : _uuid = uuid ?? const Uuid(),
        super(const ChatEstado());
 
+  final AppLocalizations _l10n;
   final MensajesRepositorio _repositorio;
   final int solicitudId;
   final Uuid _uuid;
@@ -122,7 +125,7 @@ class ChatCubit extends Cubit<ChatEstado> {
         emit(
           state.copiarCon(
             enviando: false,
-            aviso: () => 'Sin conexión. Tu mensaje sigue aquí: reintenta.',
+            aviso: () => _l10n.proveedorNegociacionSinConexionMensajeSigue,
           ),
         );
       }

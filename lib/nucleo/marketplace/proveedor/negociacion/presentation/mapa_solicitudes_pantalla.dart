@@ -494,8 +494,10 @@ class _SeleccionSolicitud extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
-      create: (context) => OfertarCubit(context.read<MercadoRepositorio>()),
+      create: (context) =>
+          OfertarCubit(context.read<MercadoRepositorio>(), l10n),
       child: BlocConsumer<OfertarCubit, OfertarEstado>(
         listenWhen: (a, b) =>
             a.estado != b.estado && b.estado == FaseOferta.enviada,

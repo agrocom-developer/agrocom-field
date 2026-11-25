@@ -44,9 +44,11 @@ class AppProveedor extends StatelessWidget {
         RepositoryProvider<SelectorImagen>.value(value: selectorImagen),
       ],
       child: BlocProvider(
-        create: (_) =>
-            AccesoCubit(acceso.acceso, sesionExpirada: acceso.sesionExpirada)
-              ..iniciar(),
+        create: (_) => AccesoCubit(
+          acceso.acceso,
+          AppLocalizations.of(context),
+          sesionExpirada: acceso.sesionExpirada,
+        )..iniciar(),
         child: TemaVisualApp(
           predeterminado: ModoVisualCampo.campo,
           construir: (context, tema) => MaterialApp(

@@ -30,12 +30,14 @@ class ServicioLotePantalla extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final deps = context.read<DependenciasEjecucion>();
+    final l10n = AppLocalizations.of(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider(
           create: (context) => ServicioLoteCubit(
             deps.repositorio,
             servicioId,
+            l10n,
             selector: deps.selectorFoto,
           )..iniciar(),
         ),

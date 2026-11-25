@@ -1,3 +1,4 @@
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 // Cubits de la negociación del piloto: mapa, primera oferta, mis ofertas,
 // chat y avisos. La negociación no usa outbox (ADR 0016): los reintentos son
 // seguros porque cada intento conserva su `uuid_cliente`.
@@ -154,7 +155,11 @@ void main() {
 
   group('primera oferta', () {
     test('aceptar el precio propuesto envía una oferta vigente', () async {
-      final cubit = OfertarCubit(MercadoDemo(_almacen()), uuid: _Contador());
+      final cubit = OfertarCubit(
+        MercadoDemo(_almacen()),
+        AppLocalizationsEs(),
+        uuid: _Contador(),
+      );
       await cubit.ofertar(solicitudId: 1, tipo: TipoOferta.aceptaPropuesta);
       expect(cubit.state.estado, FaseOferta.enviada);
       expect(cubit.state.oferta!.precioHa, Decimal.parse('121'));
@@ -167,7 +172,11 @@ void main() {
       () async {
         final mercado = _MercadoQueFalla(_almacen())
           ..falla = const SinConexion();
-        final cubit = OfertarCubit(mercado, uuid: _Contador());
+        final cubit = OfertarCubit(
+          mercado,
+          AppLocalizationsEs(),
+          uuid: _Contador(),
+        );
         await cubit.ofertar(
           solicitudId: 1,
           tipo: TipoOferta.contraoferta,
@@ -191,7 +200,11 @@ void main() {
         final mercado = _MercadoQueFalla(
           _almacen(),
         )..falla = const OperacionRechazada('La solicitud ya no está abierta.');
-        final cubit = OfertarCubit(mercado, uuid: _Contador());
+        final cubit = OfertarCubit(
+          mercado,
+          AppLocalizationsEs(),
+          uuid: _Contador(),
+        );
         await cubit.ofertar(solicitudId: 1, tipo: TipoOferta.aceptaPropuesta);
         expect(cubit.state.mensaje, 'La solicitud ya no está abierta.');
         await cubit.ofertar(solicitudId: 1, tipo: TipoOferta.aceptaPropuesta);
@@ -205,7 +218,10 @@ void main() {
     test(
       'primero las que piden respuesta, luego las que espera el cliente',
       () async {
-        final cubit = MisOfertasCubit(NegociacionDemo(_almacen()));
+        final cubit = MisOfertasCubit(
+          NegociacionDemo(_almacen()),
+          AppLocalizationsEs(),
+        );
         await cubit.cargar();
         final ids = cubit.state.ordenadas.map((o) => o.id).toList();
         expect(ids, [501, 502, 503]);
@@ -215,7 +231,10 @@ void main() {
     );
 
     test('aceptar la contraoferta del cliente la adjudica y recarga', () async {
-      final cubit = MisOfertasCubit(NegociacionDemo(_almacen()));
+      final cubit = MisOfertasCubit(
+        NegociacionDemo(_almacen()),
+        AppLocalizationsEs(),
+      );
       await cubit.cargar();
       await cubit.aceptar(cubit.state.ofertas.firstWhere((o) => o.id == 501));
       expect(
@@ -230,7 +249,11 @@ void main() {
     test('contraofertar de vuelta conserva la clave si no hay red', () async {
       final negociacion = _NegociacionQueFalla(_almacen())
         ..falla = const SinConexion();
-      final cubit = MisOfertasCubit(negociacion, uuid: _Contador());
+      final cubit = MisOfertasCubit(
+        negociacion,
+        AppLocalizationsEs(),
+        uuid: _Contador(),
+      );
       await cubit.cargar();
       final oferta = cubit.state.ofertas.firstWhere((o) => o.id == 501);
       await cubit.contraofertar(oferta, precioHa: Decimal.parse('125'));
@@ -249,7 +272,7 @@ void main() {
           codigo: 409,
           motivo: 'solicitud_ya_adjudicada',
         );
-      final cubit = MisOfertasCubit(negociacion);
+      final cubit = MisOfertasCubit(negociacion, AppLocalizationsEs());
       await cubit.cargar();
       await cubit.aceptar(cubit.state.ofertas.firstWhere((o) => o.id == 501));
       expect(cubit.state.aviso, contains('eligió a otro piloto'));
@@ -259,7 +282,10 @@ void main() {
     });
 
     test('retirar una oferta propia la cierra', () async {
-      final cubit = MisOfertasCubit(NegociacionDemo(_almacen()));
+      final cubit = MisOfertasCubit(
+        NegociacionDemo(_almacen()),
+        AppLocalizationsEs(),
+      );
       await cubit.cargar();
       await cubit.retirar(cubit.state.ofertas.firstWhere((o) => o.id == 502));
       expect(
@@ -273,7 +299,10 @@ void main() {
       'sin conexión y sin nada cargado, muestra el estado sin red',
       () async {
         final almacen = _almacen()..enLinea = false;
-        final cubit = MisOfertasCubit(NegociacionDemo(almacen));
+        final cubit = MisOfertasCubit(
+          NegociacionDemo(almacen),
+          AppLocalizationsEs(),
+        );
         await cubit.cargar();
         expect(cubit.state.estado, EstadoMisOfertas.sinRed);
         await cubit.close();
@@ -286,6 +315,7 @@ void main() {
       final cubit = ChatCubit(
         MensajesDemo(_almacen()),
         10,
+        AppLocalizationsEs(),
         intervalo: const Duration(hours: 1),
       );
       await cubit.iniciar();
@@ -299,6 +329,7 @@ void main() {
       final cubit = ChatCubit(
         MensajesDemo(_almacen()),
         10,
+        AppLocalizationsEs(),
         intervalo: const Duration(hours: 1),
       );
       await cubit.iniciar();
@@ -311,6 +342,7 @@ void main() {
       final cubit = ChatCubit(
         MensajesDemo(_almacen()),
         10,
+        AppLocalizationsEs(),
         intervalo: const Duration(hours: 1),
       );
       await cubit.iniciar();
@@ -323,6 +355,7 @@ void main() {
       final cubit = ChatCubit(
         MensajesDemo(almacen),
         10,
+        AppLocalizationsEs(),
         uuid: _Contador(),
         intervalo: const Duration(hours: 1),
       );

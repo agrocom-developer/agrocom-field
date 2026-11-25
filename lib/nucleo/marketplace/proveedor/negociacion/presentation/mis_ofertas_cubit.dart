@@ -5,6 +5,7 @@ import 'package:uuid/uuid.dart';
 import '../../../dominio/dominio.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 enum EstadoMisOfertas { cargando, listo, sinRed, error }
 
@@ -128,10 +129,11 @@ class MisOfertasEstado {
 /// son llamadas directas, sin outbox (ADR 0016). El servidor decide quién
 /// tiene el turno; la app solo habilita lo que cada oferta permite.
 class MisOfertasCubit extends Cubit<MisOfertasEstado> {
-  MisOfertasCubit(this._repositorio, {Uuid? uuid})
+  MisOfertasCubit(this._repositorio, this._l10n, {Uuid? uuid})
     : _uuid = uuid ?? const Uuid(),
       super(const MisOfertasEstado());
 
+  final AppLocalizations _l10n;
   final NegociacionRepositorio _repositorio;
   final Uuid _uuid;
 
@@ -156,7 +158,7 @@ class MisOfertasCubit extends Cubit<MisOfertasEstado> {
         state.ofertas.isEmpty
             ? state.copiarCon(estado: EstadoMisOfertas.sinRed)
             : state.copiarCon(
-                aviso: () => 'Sin conexión: puede que lo que ves esté viejo.',
+                aviso: () => _l10n.proveedorNegociacionSinConexionPuedeQue,
                 avisoEsError: true,
               ),
       );
@@ -175,19 +177,19 @@ class MisOfertasCubit extends Cubit<MisOfertasEstado> {
   Future<void> aceptar(OfertaNegociada o) => _ejecutar(
     o,
     () => _repositorio.aceptar(o.id),
-    exito: '¡Listo! El cliente te eligió. Ya puedes escribirle desde Servicio.',
+    exito: _l10n.proveedorNegociacionListoClienteEligioPuedes,
   );
 
   Future<void> rechazar(OfertaNegociada o) => _ejecutar(
     o,
     () => _repositorio.rechazar(o.id),
-    exito: 'Rechazaste la oferta del cliente.',
+    exito: _l10n.proveedorNegociacionRechazasteOfertaDelCliente,
   );
 
   Future<void> retirar(OfertaNegociada o) => _ejecutar(
     o,
     () => _repositorio.retirar(o.id),
-    exito: 'Retiraste tu oferta.',
+    exito: _l10n.proveedorNegociacionRetirasteOferta,
   );
 
   Future<void> contraofertar(
@@ -204,7 +206,7 @@ class MisOfertasCubit extends Cubit<MisOfertasEstado> {
         uuidCliente: clave,
         nota: nota,
       ),
-      exito: 'Enviaste tu contraoferta.',
+      exito: _l10n.proveedorNegociacionEnviasteContraoferta,
       alTerminar: () => _claves.remove(o.id),
     );
   }
@@ -235,8 +237,7 @@ class MisOfertasCubit extends Cubit<MisOfertasEstado> {
       emit(
         state.copiarCon(
           enCurso: () => null,
-          aviso: () =>
-              'No hay conexión. No se envió nada: reintenta con señal.',
+          aviso: () => _l10n.proveedorNegociacionHayConexionEnvioNada,
           avisoEsError: true,
         ),
       );
@@ -255,14 +256,12 @@ class MisOfertasCubit extends Cubit<MisOfertasEstado> {
     }
   }
 
-  static String _explicar(OperacionRechazada e) => switch (e.motivo) {
-    'oferta_no_vigente' =>
-      'Esa oferta ya no está vigente: el cliente respondió o venció. '
-          'Actualizamos tu lista.',
+  String _explicar(OperacionRechazada e) => switch (e.motivo) {
+    'oferta_no_vigente' => _l10n.proveedorNegociacionEsaOfertaEstaVigente,
     'solicitud_ya_adjudicada' =>
-      'El cliente ya eligió a otro piloto para esta solicitud.',
+      _l10n.proveedorNegociacionClienteEligioOtroPiloto,
     'equipo_no_disponible' =>
-      'Tu equipo no está disponible para esas fechas. Revisa tus drones.',
+      _l10n.proveedorNegociacionEquipoEstaDisponiblePara,
     _ => e.mensaje,
   };
 }

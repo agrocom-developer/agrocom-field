@@ -22,9 +22,10 @@ class ChatPantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
       create: (context) =>
-          ChatCubit(context.read<MensajesRepositorio>(), solicitudId)
+          ChatCubit(context.read<MensajesRepositorio>(), solicitudId, l10n)
             ..iniciar(),
       child: Scaffold(
         appBar: AppBar(title: Text(titulo)),

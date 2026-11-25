@@ -12,6 +12,7 @@ import '../../../ui/marketplace_ui.dart';
 import '../domain/acceso_proveedor.dart';
 import 'acceso_cubit.dart';
 import 'registro_cubit.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 /// Abre el alta del piloto independiente sobre el ingreso. Al terminar, la
 /// sesión ya quedó iniciada y la puerta de acceso muestra la app.
@@ -20,6 +21,7 @@ Future<void> abrirRegistro(BuildContext context) {
   final repoAcceso = context.read<AccesoProveedorRepositorio>();
   final drones = context.read<RegistroDronesRepositorio>();
   final selector = context.read<SelectorImagen>();
+  final l10n = AppLocalizations.of(context);
   return Navigator.of(context).push(
     MaterialPageRoute<void>(
       builder: (_) => BlocProvider(
@@ -27,6 +29,7 @@ Future<void> abrirRegistro(BuildContext context) {
           acceso: repoAcceso,
           drones: drones,
           selector: selector,
+          l10n: l10n,
         ),
         child: RegistroProveedorPantalla(
           alTerminar: () {

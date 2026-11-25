@@ -7,6 +7,7 @@ import '../../../../camara/selector_foto.dart';
 import '../../../../evidencias/compresor_adaptativo.dart';
 import '../../../dominio/dominio.dart';
 import '../domain/ejecucion.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 // ---------------------------------------------------------------- la lista
 
@@ -93,10 +94,15 @@ class ServicioLoteEstado {
 /// Un servicio adjudicado en el lote: todo lo que el piloto hace se guarda
 /// en el dispositivo y se sube cuando hay señal.
 class ServicioLoteCubit extends Cubit<ServicioLoteEstado> {
-  ServicioLoteCubit(this._repositorio, this.id, {SelectorFoto? selector})
-    : _selector = selector,
-      super(const ServicioLoteEstado());
+  ServicioLoteCubit(
+    this._repositorio,
+    this.id,
+    this._l10n, {
+    SelectorFoto? selector,
+  }) : _selector = selector,
+       super(const ServicioLoteEstado());
 
+  final AppLocalizations _l10n;
   final EjecucionRepositorio _repositorio;
   final int id;
   final SelectorFoto? _selector;
@@ -111,7 +117,7 @@ class ServicioLoteCubit extends Cubit<ServicioLoteEstado> {
 
   Future<void> iniciarServicio() => _guardar(
     () => _repositorio.iniciar(id),
-    exito: 'Marcaste el servicio en ejecución.',
+    exito: _l10n.proveedorEjecucionMarcasteServicioEjecucion,
   );
 
   Future<void> marcarAvance({
@@ -127,7 +133,7 @@ class ServicioLoteCubit extends Cubit<ServicioLoteEstado> {
       nota: nota,
       motivoCorreccion: motivoCorreccion,
     ),
-    exito: 'Avance guardado.',
+    exito: _l10n.proveedorEjecucionAvanceGuardado,
   );
 
   Future<void> finalizar({
@@ -139,7 +145,7 @@ class ServicioLoteCubit extends Cubit<ServicioLoteEstado> {
       hectareasEjecutadas: hectareasEjecutadas,
       nota: nota,
     ),
-    exito: 'Servicio finalizado. El precio a pagar queda a la vista.',
+    exito: _l10n.proveedorEjecucionServicioFinalizadoPrecioPagar,
   );
 
   /// Abre la cámara, comprime la foto a menos de 300 KB y la encola.
@@ -152,7 +158,7 @@ class ServicioLoteCubit extends Cubit<ServicioLoteEstado> {
     if (bytes == null) return;
     await _guardar(
       () => _repositorio.adjuntarFoto(id, bytes, tipo: tipo),
-      exito: 'Foto guardada. Se sube sola cuando haya señal.',
+      exito: _l10n.proveedorEjecucionFotoGuardadaSubeSola,
     );
   }
 
@@ -177,9 +183,7 @@ class ServicioLoteCubit extends Cubit<ServicioLoteEstado> {
       emit(
         state.copiarCon(
           ocupado: false,
-          aviso: () =>
-              'No pudimos achicar la foto lo suficiente. Toma otra con '
-              'menos detalle.',
+          aviso: () => _l10n.proveedorEjecucionPudimosAchicarFotoSuficiente,
           avisoEsError: true,
         ),
       );
@@ -188,7 +192,7 @@ class ServicioLoteCubit extends Cubit<ServicioLoteEstado> {
       emit(
         state.copiarCon(
           ocupado: false,
-          aviso: () => 'No pudimos guardarlo. Intenta de nuevo.',
+          aviso: () => _l10n.proveedorEjecucionPudimosGuardarloIntentaNuevo,
           avisoEsError: true,
         ),
       );

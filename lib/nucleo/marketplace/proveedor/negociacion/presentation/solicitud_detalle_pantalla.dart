@@ -25,8 +25,10 @@ class SolicitudDetallePantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
-      create: (context) => OfertarCubit(context.read<MercadoRepositorio>()),
+      create: (context) =>
+          OfertarCubit(context.read<MercadoRepositorio>(), l10n),
       child: _Vista(solicitud: solicitud),
     );
   }
