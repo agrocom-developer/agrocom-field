@@ -28,14 +28,25 @@ class SesionCliente {
   int get hashCode => Object.hash(nombre, usuario, empresa, telefono);
 }
 
-/// Datos del formulario de registro del cliente.
+/// Quién es el cliente ante Agrocom (`tipo` del contrato).
+enum TipoCliente { persona, empresa }
+
+/// Datos del formulario de registro del cliente. Una empresa envía además
+/// razón social y documento fiscal (NIT); `nombre` es quien usa la cuenta.
 class DatosRegistroCliente {
   const DatosRegistroCliente({
     required this.nombre,
     required this.telefono,
     required this.usuario,
     required this.contrasena,
+    this.tipo = TipoCliente.persona,
+    this.razonSocial,
+    this.documentoFiscal,
   });
+
+  final TipoCliente tipo;
+  final String? razonSocial;
+  final String? documentoFiscal;
 
   final String nombre;
   final String telefono;
@@ -45,7 +56,14 @@ class DatosRegistroCliente {
 
 /// Campos del acceso; sirven de clave para los errores que el servidor
 /// devuelve por campo (`422`).
-enum CampoAcceso { nombre, telefono, usuario, contrasena }
+enum CampoAcceso {
+  nombre,
+  telefono,
+  usuario,
+  contrasena,
+  razonSocial,
+  documentoFiscal,
+}
 
 enum MotivoFalloAcceso {
   /// Usuario o contraseña incorrectos.

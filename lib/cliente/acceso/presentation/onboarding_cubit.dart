@@ -36,6 +36,14 @@ class OnboardingCubit extends Cubit<OnboardingEstado> {
     emit(OnboardingEstado(paso: state.paso + 1));
   }
 
+  /// Salta a la pantalla [indice] (los puntos del carrusel, el deslizar y el
+  /// autoavance). Fuera de rango no hace nada.
+  void irA(int indice) {
+    if (state.terminado || indice < 0 || indice >= pasos) return;
+    if (indice == state.paso) return;
+    emit(OnboardingEstado(paso: indice));
+  }
+
   void anterior() {
     if (state.terminado || state.paso == 0) return;
     emit(OnboardingEstado(paso: state.paso - 1));

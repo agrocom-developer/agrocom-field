@@ -191,11 +191,15 @@ class AccesoRed implements AccesoRepositorio {
       await _api.post(
         '/api/clientes/registro',
         data: {
-          'tipo': 'persona',
+          'tipo': datos.tipo.name,
           'nombre': datos.nombre.trim(),
           'username': datos.usuario.trim(),
           'password': datos.contrasena,
           'telefono': datos.telefono.trim(),
+          if (datos.tipo == TipoCliente.empresa) ...{
+            'razon_social': datos.razonSocial?.trim(),
+            'documento_fiscal': datos.documentoFiscal?.trim(),
+          },
         },
       );
     } on ApiExcepcionRed {
@@ -222,6 +226,8 @@ class AccesoRed implements AccesoRepositorio {
     'password' => CampoAcceso.contrasena,
     'telefono' => CampoAcceso.telefono,
     'nombre' => CampoAcceso.nombre,
+    'razon_social' => CampoAcceso.razonSocial,
+    'documento_fiscal' => CampoAcceso.documentoFiscal,
     _ => null,
   };
 

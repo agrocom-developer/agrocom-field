@@ -97,7 +97,14 @@ class _PuertaAccesoClienteState extends State<PuertaAccesoCliente> {
             ),
             EtapaArranque.onboarding => (
               'onboarding',
-              OnboardingPantalla(alTerminar: _arranque.onboardingTerminado),
+              OnboardingPantalla(
+                alTerminar: _arranque.onboardingTerminado,
+                // «Comenzar» abre el registro; «Ya tengo cuenta», el ingreso.
+                alComenzar: () {
+                  setState(() => _registro = true);
+                  _arranque.onboardingTerminado();
+                },
+              ),
             ),
             EtapaArranque.acceso when _registro => (
               'registro',

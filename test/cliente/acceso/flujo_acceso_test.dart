@@ -42,7 +42,7 @@ void main() {
     expect(find.byType(LogoAgrocomCampo), findsOneWidget);
     await tester.pumpAndSettle();
     expect(find.byType(SplashPantalla), findsNothing);
-    expect(find.text('Pide tu fumigación en minutos'), findsOneWidget);
+    expect(find.text('Publica tu lote en el mapa'), findsOneWidget);
   });
 
   testWidgets('con movimiento reducido la splash no espera la animación', (
@@ -56,34 +56,40 @@ void main() {
     await tester.pump();
     await tester.pump();
     expect(find.byType(SplashPantalla), findsNothing);
-    expect(find.text('Pide tu fumigación en minutos'), findsOneWidget);
+    expect(find.text('Publica tu lote en el mapa'), findsOneWidget);
   });
 
-  testWidgets('la presentación recorre tres pasos y termina en el ingreso', (
-    tester,
-  ) async {
+  testWidgets(
+    'las portadas recorren tres pantallas y Comenzar abre el registro',
+    (tester) async {
+      prepararTelefono(tester);
+      await _abrir(tester);
+      await tester.pumpAndSettle();
+
+      expect(find.text('Publica tu lote en el mapa'), findsOneWidget);
+      await tester.tap(find.byKey(const Key('onboarding-punto-1')));
+      await tester.pumpAndSettle();
+      expect(find.text('Negocia hasta 5 rondas'), findsOneWidget);
+
+      // También se avanza y se retrocede deslizando.
+      await tester.fling(find.byType(PageView), const Offset(-300, 0), 1000);
+      await tester.pumpAndSettle();
+      expect(find.text('Pagas lo que se fumigó'), findsOneWidget);
+      await tester.fling(find.byType(PageView), const Offset(300, 0), 1000);
+      await tester.pumpAndSettle();
+      expect(find.text('Negocia hasta 5 rondas'), findsOneWidget);
+
+      await tester.tap(find.byKey(const Key('onboarding-continuar')));
+      await tester.pumpAndSettle();
+      expect(find.text('Crea tu cuenta'), findsOneWidget);
+    },
+  );
+
+  testWidgets('Ya tengo cuenta abre el ingreso', (tester) async {
     prepararTelefono(tester);
     await _abrir(tester);
     await tester.pumpAndSettle();
-
-    expect(find.bySemanticsLabel('Paso 1 de 3'), findsOneWidget);
-    await tester.tap(find.text('Continuar'));
-    await tester.pumpAndSettle();
-    expect(find.text('Un piloto verificado lo toma'), findsOneWidget);
-
-    // También se avanza y se retrocede deslizando.
-    await tester.fling(find.byType(Scaffold), const Offset(300, 0), 1000);
-    await tester.pumpAndSettle();
-    expect(find.text('Pide tu fumigación en minutos'), findsOneWidget);
-    await tester.fling(find.byType(Scaffold), const Offset(-300, 0), 1000);
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Continuar'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('Mira el vuelo en vivo'), findsOneWidget);
-    // En el último paso «Saltar» conserva su lugar pero ya no se ofrece.
-    expect(find.text('Saltar').hitTestable(), findsNothing);
-    await tester.tap(find.text('Empezar'));
+    await tester.tap(find.byKey(const Key('onboarding-tengo-cuenta')));
     await tester.pumpAndSettle();
     expect(find.text('Ingresa a tu cuenta'), findsOneWidget);
   });
