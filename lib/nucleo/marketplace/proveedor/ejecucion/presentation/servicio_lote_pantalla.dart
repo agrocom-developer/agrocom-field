@@ -252,9 +252,14 @@ class _Avance extends StatelessWidget {
           Text(
             s.hectareasEjecutadas == null
                 ? l10n.proveedorEjecucionTodaviaMarcasteAvance
-                : '${FormatoMarketplace.hectareas(s.hectareasEjecutadas!)} de '
-                      '${FormatoMarketplace.hectareas(s.hectareas)} · '
-                      '${FormatoMarketplace.numero(s.porcentaje ?? Decimal.zero, decimales: 0)} %',
+                : l10n.proveedorEjecucionAvanceResumen(
+                    FormatoMarketplace.hectareas(s.hectareasEjecutadas!),
+                    FormatoMarketplace.hectareas(s.hectareas),
+                    FormatoMarketplace.numero(
+                      s.porcentaje ?? Decimal.zero,
+                      decimales: 0,
+                    ),
+                  ),
             style: texto.bodyLarge,
           ),
           const SizedBox(height: EspaciadoCampo.xs),
@@ -673,8 +678,10 @@ class _PrecioFinal extends StatelessWidget {
           Text(
             s.hectareasEjecutadas == null || s.precioHaAcordado == null
                 ? l10n.proveedorEjecucionHectareasEjecutadasPorPrecio
-                : '${FormatoMarketplace.hectareas(s.hectareasEjecutadas!)} × '
-                      '${FormatoMarketplace.bs(s.precioHaAcordado!)} por ha',
+                : l10n.proveedorEjecucionHectareasPorPrecio(
+                    FormatoMarketplace.hectareas(s.hectareasEjecutadas!),
+                    FormatoMarketplace.bs(s.precioHaAcordado!),
+                  ),
             style: texto.bodyLarge,
           ),
           const SizedBox(height: EspaciadoCampo.s),

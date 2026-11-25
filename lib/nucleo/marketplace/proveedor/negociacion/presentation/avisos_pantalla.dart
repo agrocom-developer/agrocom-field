@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../notificaciones/notificador_local.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -10,7 +11,6 @@ import '../../../ui/marketplace_ui.dart';
 import '../di/dependencias_negociacion.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
-import '../../../../../l10n/app_localizations.dart';
 import 'pedir_precio_hoja.dart' show leerPrecio;
 
 // ------------------------------------------------------------------- cubit
@@ -49,11 +49,12 @@ class AvisosEstado {
 /// permiso de notificaciones del sistema, con el motivo a la vista; cada
 /// cambio se guarda al momento y, si falla, se revierte y se dice por qué.
 class AvisosCubit extends Cubit<AvisosEstado> {
-  AvisosCubit(this._repositorio, {NotificadorLocal? notificador})
+  AvisosCubit(this._repositorio, this._l10n, {NotificadorLocal? notificador})
     : _notificador = notificador,
       super(const AvisosEstado());
 
   final AvisosRepositorio _repositorio;
+  final AppLocalizations _l10n;
   final NotificadorLocal? _notificador;
 
   Future<void> cargar() async {
@@ -73,7 +74,7 @@ class AvisosCubit extends Cubit<AvisosEstado> {
             error: true,
             aviso: () => e is OperacionRechazada
                 ? e.mensaje
-                : 'Sin conexión. Los avisos se configuran con señal.',
+                : _l10n.proveedorNegociacionAvisosSinConexion,
           ),
         );
       }
@@ -108,7 +109,7 @@ class AvisosCubit extends Cubit<AvisosEstado> {
             error: true,
             aviso: () => e is OperacionRechazada
                 ? e.mensaje
-                : 'No se guardó: no hay conexión. Intenta con señal.',
+                : _l10n.proveedorNegociacionAvisosNoGuardado,
           ),
         );
       }
@@ -127,6 +128,7 @@ class AvisosPantalla extends StatelessWidget {
     return BlocProvider(
       create: (context) => AvisosCubit(
         context.read<AvisosRepositorio>(),
+        l10n,
         notificador: context.read<DependenciasNegociacion>().notificador,
       )..cargar(),
       child: Scaffold(

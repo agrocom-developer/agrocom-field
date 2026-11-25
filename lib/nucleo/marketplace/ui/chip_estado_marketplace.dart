@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../ui/paleta_campo.dart';
 import '../../ui/tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Tono semántico de un [ChipEstadoMarketplace].
 enum TonoEstado { exito, info, alerta, error, neutro }

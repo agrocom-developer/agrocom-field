@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/mapa_lote.dart';
 import '../../../nucleo/ui/colores_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 LatLng _ll(GeoPunto p) => LatLng(p.latitud, p.longitud);
 

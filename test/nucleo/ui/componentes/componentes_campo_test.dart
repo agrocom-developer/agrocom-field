@@ -2,11 +2,11 @@
 // widget montado bajo `AgrocomThemeCampo.construir()`, más el comportamiento
 // interactivo de los que lo tienen (selector segmentado, grid de evidencias).
 
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:agrocom_field/nucleo/flavor.dart';
 import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
 import 'package:agrocom_field/nucleo/ui/imagenes_campo.dart';
 import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
-import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

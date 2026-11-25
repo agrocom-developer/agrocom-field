@@ -2,13 +2,13 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/componentes/esqueleto_campo.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../dominio/falla.dart';
 import '../../ui/formato_marketplace.dart';
 import '../precio_referencia.dart';
-import '../../../../l10n/app_localizations.dart';
 
 /// Los valores de `tipo_aplicacion` del contrato para un texto de producto o
 /// de aplicación escrito por una persona. Sin coincidencia, `otro`.
@@ -153,10 +153,10 @@ class _Ficha extends StatelessWidget {
   final bool usada;
   final VoidCallback alToque;
 
-  String get _origen => switch (referencia.nivel) {
-    NivelPrecio.zona => 'Precio habitual en tu zona',
-    NivelPrecio.macrorregion => 'Precio habitual en tu región',
-    _ => 'Precio habitual en el país',
+  String _origen(AppLocalizations l10n) => switch (referencia.nivel) {
+    NivelPrecio.zona => l10n.referenciasPrecioZona,
+    NivelPrecio.macrorregion => l10n.referenciasPrecioRegion,
+    _ => l10n.referenciasPrecioPais,
   };
 
   @override
@@ -167,9 +167,11 @@ class _Ficha extends StatelessWidget {
     final precio = FormatoMarketplace.bs(referencia.precioHa!);
     return Semantics(
       button: true,
-      label:
-          'Precio de referencia: $precio por hectárea. $_origen. '
-          '${usada ? 'Ya lo estás usando.' : 'Toca para usarlo.'}',
+      label: l10n.referenciasSemantica(
+        precio,
+        _origen(l10n),
+        usada ? l10n.referenciasYaLoUsas : l10n.referenciasTocaParaUsarlo,
+      ),
       excludeSemantics: true,
       child: Material(
         color: usada
@@ -213,7 +215,7 @@ class _Ficha extends StatelessWidget {
                         Text(
                           usada
                               ? l10n.referenciasEstasUsandoEstePrecio
-                              : _origen,
+                              : _origen(l10n),
                           style: texto.bodySmall?.copyWith(
                             color: paleta.textoSecundario,
                           ),

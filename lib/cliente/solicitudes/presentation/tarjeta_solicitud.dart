@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
@@ -8,7 +9,6 @@ import '../../../nucleo/ui/tokens_campo.dart';
 import '../../comun/presentation/barra_avance.dart';
 import '../../comun/presentation/insignia_estado_solicitud.dart';
 import '../domain/solicitud.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Resumen de una solicitud para listas: lote, estado, cifras en mono
 /// (superficie, precio por hectárea y total) y, según el estado, el avance
@@ -207,13 +207,15 @@ class _Avance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final s = solicitud;
     final ejecutadas = s.hectareasEjecutadas;
     final porcentaje = s.porcentajeAvance?.toStringAsFixed(0) ?? '0';
-    final etiqueta =
-        '${ejecutadas == null ? 0 : FormatoMarketplace.hectareasNumero(ejecutadas)}'
-        ' / ${FormatoMarketplace.hectareasNumero(s.hectareas)} ha';
+    final etiqueta = l10n.solicitudesAvanceHectareas(
+      ejecutadas == null ? '0' : FormatoMarketplace.hectareasNumero(ejecutadas),
+      FormatoMarketplace.hectareasNumero(s.hectareas),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [

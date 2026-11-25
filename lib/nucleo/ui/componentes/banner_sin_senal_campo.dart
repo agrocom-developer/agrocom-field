@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
@@ -8,20 +9,18 @@ import '../tokens_campo.dart';
 /// «Sin señal · [mensaje]». Dice qué se guardó y qué espera a la red; el
 /// ícono y el texto portan el significado, no solo el color.
 class BannerSinSenalCampo extends StatelessWidget {
-  const BannerSinSenalCampo({
-    required this.mensaje,
-    this.titulo = 'Sin señal',
-    super.key,
-  });
+  const BannerSinSenalCampo({required this.mensaje, this.titulo, super.key});
 
-  /// Encabezado del aviso; quien lo localiza lo pasa traducido.
-  final String titulo;
+  /// Encabezado del aviso; por omisión, «Sin señal».
+  final String? titulo;
 
   /// Lo que pasa sin red ("tus ofertas se guardan y se envían al volver").
   final String mensaje;
 
   @override
   Widget build(BuildContext context) {
+    final titulo =
+        this.titulo ?? AppLocalizations.of(context).componentesSinSenal;
     final paleta = context.paleta;
     return Semantics(
       container: true,

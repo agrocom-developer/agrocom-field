@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../dominio/falla.dart';
 import '../../foto_preparador.dart';
 import '../pago_confirmado.dart';
 import '../pagos_repositorio.dart';
-import '../../../../l10n/app_localizations.dart';
 
 enum FasePago { cargando, pendiente, confirmando, confirmado, error }
 

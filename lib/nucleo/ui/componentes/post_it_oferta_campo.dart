@@ -2,11 +2,11 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
 import 'cifra_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Oferta de un piloto como post-it: papel amarillo en degradado, esquina
 /// doblada, giro de 1° (sin giro con movimiento reducido) y la insignia

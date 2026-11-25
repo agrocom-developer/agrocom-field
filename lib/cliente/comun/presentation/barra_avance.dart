@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Barra de avance de 0 a 1 que se desliza hasta el valor nuevo en lugar de
 /// saltar. Con «reducir movimiento» salta.

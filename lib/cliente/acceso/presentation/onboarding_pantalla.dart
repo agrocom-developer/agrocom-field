@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/imagenes_campo.dart';
@@ -11,7 +12,6 @@ import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../domain/acceso_repositorio.dart';
 import 'onboarding_cubit.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Tiempo que se queda cada portada antes de avanzar sola.
 const Duration _intervaloAutoavance = Duration(milliseconds: 3500);

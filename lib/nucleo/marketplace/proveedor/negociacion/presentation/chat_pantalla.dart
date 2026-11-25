@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
 import 'chat_cubit.dart';
-import '../../../../../l10n/app_localizations.dart';
 
 /// Chat de mensajes con el cliente de una solicitud adjudicada.
 class ChatPantalla extends StatelessWidget {
-  const ChatPantalla({
-    required this.solicitudId,
-    this.titulo = 'Chat con el cliente',
-    super.key,
-  });
+  const ChatPantalla({required this.solicitudId, this.titulo, super.key});
 
   final int solicitudId;
-  final String titulo;
+
+  /// Título de la barra; por omisión, «Chat con el cliente».
+  final String? titulo;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +26,9 @@ class ChatPantalla extends StatelessWidget {
           ChatCubit(context.read<MensajesRepositorio>(), solicitudId, l10n)
             ..iniciar(),
       child: Scaffold(
-        appBar: AppBar(title: Text(titulo)),
+        appBar: AppBar(
+          title: Text(titulo ?? l10n.proveedorNegociacionChatConCliente),
+        ),
         body: const ChatVista(),
       ),
     );

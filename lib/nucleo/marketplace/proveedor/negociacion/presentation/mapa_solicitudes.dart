@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/colores_campo.dart';
 import '../../../../ui/componentes/cifra_campo.dart';
 import '../../../../ui/paleta_campo.dart';
@@ -14,7 +15,6 @@ import '../../../ui/formato_marketplace.dart';
 import '../../../ui/mapa_lote.dart';
 import '../domain/negociacion.dart';
 import 'cifras_negociacion.dart';
-import '../../../../../l10n/app_localizations.dart';
 
 /// Centro de Santa Cruz de la Sierra, para cuando todavía no hay solicitudes.
 const _centroSantaCruz = LatLng(-17.7833, -63.1821);
@@ -59,6 +59,7 @@ class MapaSolicitudes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final teselas = conTeselas ?? ConfiguracionMapa.teselas;
     final hoy = ahora ?? DateTime.now();
@@ -71,9 +72,7 @@ class MapaSolicitudes extends StatelessWidget {
         LatLng(s.ubicacion!.latitud, s.ubicacion!.longitud),
     ];
     return Semantics(
-      label:
-          'Mapa de solicitudes abiertas, ${ubicadas.length} '
-          '${ubicadas.length == 1 ? 'solicitud' : 'solicitudes'}',
+      label: l10n.proveedorNegociacionMapaSemantica(ubicadas.length),
       child: ClipRect(
         child: FlutterMap(
           options: MapOptions(

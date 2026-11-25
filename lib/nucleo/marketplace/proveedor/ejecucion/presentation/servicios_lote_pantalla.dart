@@ -124,10 +124,14 @@ class TarjetaServicioLote extends StatelessWidget {
     final (tono, icono) = estiloEstado(s.estado);
     return Semantics(
       button: true,
-      label:
-          '${FormatoMarketplace.hectareas(s.hectareas)}'
-          '${s.cultivo == null ? '' : ' de ${s.cultivo}'}, ${s.estado.etiqueta}'
-          '${s.pendientes > 0 ? ', ${s.pendientes} por subir' : ''}',
+      label: l10n.proveedorEjecucionServicioSemantica(
+        FormatoMarketplace.hectareas(s.hectareas),
+        s.cultivo == null ? '' : l10n.proveedorEjecucionDeCultivo(s.cultivo!),
+        s.estado.etiqueta,
+        s.pendientes > 0
+            ? l10n.proveedorEjecucionPendientesSufijo(s.pendientes)
+            : '',
+      ),
       excludeSemantics: true,
       child: SuperficieMarketplace(
         resaltada: s.estado == EstadoServicioLote.enEjecucion,
@@ -164,8 +168,10 @@ class TarjetaServicioLote extends StatelessWidget {
               Text(
                 s.hectareasEjecutadas == null
                     ? l10n.proveedorEjecucionSinAvanceMarcado
-                    : '${FormatoMarketplace.hectareas(s.hectareasEjecutadas!)} '
-                          'de ${FormatoMarketplace.hectareas(s.hectareas)}',
+                    : l10n.proveedorEjecucionDeTotal(
+                        FormatoMarketplace.hectareas(s.hectareasEjecutadas!),
+                        FormatoMarketplace.hectareas(s.hectareas),
+                      ),
                 style: texto.bodyMedium,
               ),
             ] else if (s.estado == EstadoServicioLote.finalizada &&

@@ -3,10 +3,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../nucleo/ui/paleta_campo.dart';
-import '../../seguimiento/domain/seguimiento_repositorio.dart';
-import '../../../nucleo/ui/tokens_campo.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../nucleo/ui/paleta_campo.dart';
+import '../../../nucleo/ui/tokens_campo.dart';
+import '../../seguimiento/domain/seguimiento_repositorio.dart';
 
 /// Foto de avance o del dron. Una ruta `assets/…` es un recurso empaquetado
 /// (la demo); cualquier otra se descarga con la sesión del cliente, porque

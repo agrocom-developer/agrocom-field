@@ -2,8 +2,8 @@ import 'dart:typed_data';
 
 import '../camara/selector_imagen.dart';
 import '../evidencias/compresor_adaptativo.dart' show FotoDemasiadoPesada;
-import '../evidencias/compresor_evidencia.dart';
 import '../../l10n/app_localizations.dart';
+import '../evidencias/compresor_evidencia.dart';
 import 'dominio/falla.dart';
 
 /// De dónde sale la foto que la persona va a subir.

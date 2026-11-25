@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../ui/formato_marketplace.dart';
 import '../../ui/superficie_marketplace.dart';
 import '../pago_confirmado.dart';
-import '../../../../l10n/app_localizations.dart';
 
 /// «Pago confirmado»: el sello que ven el proveedor y el cliente. El monto
 /// es el que fijó el servidor.

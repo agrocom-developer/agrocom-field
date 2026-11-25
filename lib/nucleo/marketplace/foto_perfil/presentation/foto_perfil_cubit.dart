@@ -2,9 +2,9 @@ import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../foto_preparador.dart';
 import '../foto_perfil_repositorio.dart';
-import '../../../../l10n/app_localizations.dart';
 
 enum FaseFotoPerfil { cargando, lista, trabajando }
 

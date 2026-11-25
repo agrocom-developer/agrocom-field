@@ -19,8 +19,8 @@ import '../../solicitudes/domain/solicitudes_repositorio.dart';
 import '../domain/oferta_recibida.dart';
 import '../domain/ofertas_repositorio.dart';
 import 'ofertas_cubit.dart';
-import 'textos_orden.dart';
 import 'perfil_proveedor_pantalla.dart';
+import 'textos_orden.dart';
 
 /// Las ofertas que los pilotos hicieron a una solicitud: el cliente las
 /// compara (precio, calificación, dron, distancia) y elige una. También

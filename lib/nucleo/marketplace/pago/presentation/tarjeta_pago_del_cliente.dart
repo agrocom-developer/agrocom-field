@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/componentes/esqueleto_campo.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
@@ -9,7 +10,6 @@ import '../../ui/superficie_marketplace.dart';
 import '../pagos_repositorio.dart';
 import 'pago_cubit.dart';
 import 'sello_pago_confirmado.dart';
-import '../../../../l10n/app_localizations.dart';
 
 /// Lo que el cliente ve del pago en el seguimiento: «Pago confirmado» o que
 /// todavía falta. Es de solo lectura.

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Marcador de carga con la forma del contenido que viene — evita el salto
 /// de layout al llegar los datos. Brilla con un barrido suave; con

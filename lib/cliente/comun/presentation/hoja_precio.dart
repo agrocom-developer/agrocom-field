@@ -2,13 +2,13 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../solicitar/domain/reglas_solicitud.dart';
 import '../../solicitar/presentation/textos_errores_solicitud.dart';
 import 'boton_principal.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Precio por hectárea que el cliente escribió en la hoja, con una nota
 /// opcional para el piloto.

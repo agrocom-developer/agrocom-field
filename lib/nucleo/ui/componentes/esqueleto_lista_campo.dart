@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Un bloque de [EsqueletoListaCampo]: la forma de lo que va a llegar.
 class BloqueEsqueleto {

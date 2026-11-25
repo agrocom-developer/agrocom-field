@@ -28,6 +28,13 @@ void main() {
         revisarTodoLiteral: _esPantalla(ruta),
       )) {
         if (_literalesPermitidos.contains(h.cuerpo)) continue;
+        if (_literalesExentos.keys.any(
+          (k) =>
+              k == '${ruta.split('/lib/').last}::${h.cuerpo}' ||
+              ruta.endsWith(k.split('::').first) && k.endsWith('::${h.cuerpo}'),
+        )) {
+          continue;
+        }
         hallazgos.add('$ruta:${h.linea}: ${h.fragmento}');
       }
     }
@@ -93,8 +100,25 @@ final tipo = 'cliente';
 /// Literales que no son texto de pantalla: la marca y atribuciones propias.
 const _literalesPermitidos = {'Agrocom', 'AGROCOM', 'OpenStreetMap', 'Bs'};
 
+/// Literales exentos (`archivo::literal`), con su motivo.
+const _literalesExentos = <String, String>{
+  'lib/cliente/solicitar/presentation/solicitar_estado.dart::Lote nuevo':
+      'Nombre del terreno que se envía al servidor al dibujar un contorno; '
+      'no es texto de pantalla.',
+  'lib/cliente/solicitar/presentation/solicitar_estado.dart::Contorno dibujado':
+      'Zona del terreno dibujado que se envía al servidor; no es texto de '
+      'pantalla.',
+  'lib/nucleo/marketplace/ui/estado_error_marketplace.dart::La etiqueta y la acción secundaria van juntas':
+      'Mensaje de un assert (solo desarrollo).',
+  'lib/nucleo/marketplace/ui/estado_vacio_marketplace.dart::La etiqueta y la acción van juntas':
+      'Mensaje de un assert (solo desarrollo).',
+};
+
 /// Archivos exentos, con su motivo.
 const _archivosExentos = <String, String>{
+  'lib/nucleo/marketplace/ui/formato_marketplace.dart':
+      'Formateador de cifras, unidades y fechas relativas (es-BO) sin '
+      'contexto; pasa a intl cuando se agregue una segunda lengua.',
   'lib/main_cliente.dart': 'Arranque: el título de marca «Agrocom».',
   'lib/main_piloto.dart': 'Arranque: el título de marca «Agrocom».',
 };
@@ -107,8 +131,13 @@ const _carpetasExentas = <String, String>{
       'y capturas, no en el producto.',
   'lib/cliente/demo/':
       'Almacén de demostración: simula las respuestas del servidor.',
-  '/data/': 'Capa de datos: respuestas simuladas y mensajes del servidor.',
-  '/domain/': 'Dominio: valores y enums; la pantalla los traduce.',
+  '/demo/': 'Datos de demostración: simulan lo que responde el servidor.',
+  '/data/':
+      'Capa de datos: respuestas simuladas y mensajes de error que llegan '
+      'del servidor dentro de OperacionRechazada.',
+  '/domain/':
+      'Dominio: enums con su etiqueta y reglas de validación. Migran a '
+      'extensiones de presentación con `switch` exhaustivo (ADR 0022).',
 };
 
 bool _esPantalla(String ruta) =>
@@ -159,7 +188,8 @@ List<Hallazgo> buscarTextosEnDuro(
   void agregar(int inicio, bool exigirFrase) {
     final fin = _finLiteral(fuente, inicio);
     if (fin < 0) return;
-    final cuerpo = fuente.substring(inicio, fin).replaceFirst('r', '');
+    final literal = fuente.substring(inicio, fin);
+    final cuerpo = literal.startsWith('r') ? literal.substring(1) : literal;
     final texto = cuerpo.substring(1, cuerpo.length - 1);
     if (!_conLetras(texto)) return;
     if (exigirFrase && !_pareceFrase(texto)) return;

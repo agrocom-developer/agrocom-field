@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/esqueleto_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -10,9 +11,8 @@ import '../../../ui/boton_principal_marketplace.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
-import 'ofertar_cubit.dart';
 import 'negociacion_pantalla.dart';
-import '../../../../../l10n/app_localizations.dart';
+import 'ofertar_cubit.dart';
 
 /// El detalle de una solicitud abierta antes de ofertar: los lotes en el
 /// mapa, el estado de la propiedad, lo que pide el cliente y las dos

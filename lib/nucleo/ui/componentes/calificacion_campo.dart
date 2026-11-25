@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Calificación de 1 a 5 estrellas. Con [onCambio] es interactiva (la
 /// escribe el cliente sobre el proveedor); sin él es de solo lectura (el

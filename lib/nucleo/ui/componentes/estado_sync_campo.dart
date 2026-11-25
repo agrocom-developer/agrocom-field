@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Qué se le cuenta al piloto sobre la sincronización. No es
 /// el estado de una fila del outbox ni el del motor: es su traducción a lo
@@ -33,11 +33,14 @@ class EstadoSyncCampo extends StatelessWidget {
   /// Reemplaza el texto por defecto del estado (p. ej. «3 pendientes»).
   final String? detalle;
 
-  static String etiquetaDe(EstadoSyncVisibleCampo estado) => switch (estado) {
-    EstadoSyncVisibleCampo.guardadoLocal => 'En el dispositivo',
-    EstadoSyncVisibleCampo.sincronizando => 'Sincronizando',
-    EstadoSyncVisibleCampo.sincronizado => 'Sincronizado',
-    EstadoSyncVisibleCampo.sinSincronizar => 'Sin sincronizar',
+  static String etiquetaDe(
+    EstadoSyncVisibleCampo estado,
+    AppLocalizations l10n,
+  ) => switch (estado) {
+    EstadoSyncVisibleCampo.guardadoLocal => l10n.componentesSyncEnDispositivo,
+    EstadoSyncVisibleCampo.sincronizando => l10n.componentesSyncSincronizando,
+    EstadoSyncVisibleCampo.sincronizado => l10n.componentesSyncSincronizado,
+    EstadoSyncVisibleCampo.sinSincronizar => l10n.componentesSyncSinSincronizar,
   };
 
   @override
@@ -59,7 +62,7 @@ class EstadoSyncCampo extends StatelessWidget {
         Icons.cloud_off_rounded,
       ),
     };
-    final texto = detalle ?? etiquetaDe(estado);
+    final texto = detalle ?? etiquetaDe(estado, l10n);
     return Semantics(
       label: l10n.componentesSincronizacion(texto),
       excludeSemantics: true,

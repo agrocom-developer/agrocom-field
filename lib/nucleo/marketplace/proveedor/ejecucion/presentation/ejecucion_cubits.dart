@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../camara/selector_foto.dart';
 import '../../../../evidencias/compresor_adaptativo.dart';
 import '../../../dominio/dominio.dart';
 import '../domain/ejecucion.dart';
-import '../../../../../l10n/app_localizations.dart';
 
 // ---------------------------------------------------------------- la lista
 

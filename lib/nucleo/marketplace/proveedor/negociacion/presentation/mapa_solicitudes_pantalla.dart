@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tipografia_campo.dart';
@@ -19,7 +20,6 @@ import 'negociacion_pantalla.dart';
 import 'ofertar_cubit.dart';
 import 'pedir_precio_hoja.dart';
 import 'solicitud_detalle_pantalla.dart';
-import '../../../../../l10n/app_localizations.dart';
 
 /// La pestaña «Mapa» del piloto (pantalla 14): un mapa a sangre con un lote y
 /// un pin de precio por solicitud abierta (verde = abierta, ámbar = vence
@@ -560,8 +560,12 @@ class _SeleccionSolicitud extends StatelessWidget {
         MosaicosSolicitud(solicitud: s),
         const SizedBox(height: EspaciadoCampo.m),
         Text(
-          'Total al precio del cliente: ${FormatoMarketplace.bs(s.montoPropuesto)}'
-          '${s.ofertasVigentes == 0 ? '' : ' · ${s.ofertasVigentes} ${s.ofertasVigentes == 1 ? 'oferta' : 'ofertas'}'}',
+          l10n.proveedorNegociacionTotalPrecioCliente(
+            FormatoMarketplace.bs(s.montoPropuesto),
+            s.ofertasVigentes == 0
+                ? ''
+                : l10n.proveedorNegociacionOfertasSufijo(s.ofertasVigentes),
+          ),
           style: TipografiaCampo.datoMono.copyWith(
             fontSize: 13,
             color: paleta.textoSecundario,
@@ -842,11 +846,13 @@ class _TarjetaSolicitud extends StatelessWidget {
     return Semantics(
       button: true,
       selected: resaltada,
-      label:
-          'Solicitud en ${s.zona ?? 'zona sin nombre'}, '
-          '${FormatoMarketplace.hectareas(s.hectareas)}, '
-          '${FormatoMarketplace.bs(s.precioHaPropuesto)} por hectárea, '
-          '${s.ofertasVigentes} ofertas${hoy ? ', vence hoy' : ''}',
+      label: l10n.proveedorNegociacionSolicitudSemantica(
+        s.zona ?? l10n.proveedorNegociacionZonaSinNombre,
+        FormatoMarketplace.hectareas(s.hectareas),
+        FormatoMarketplace.bs(s.precioHaPropuesto),
+        s.ofertasVigentes,
+        hoy ? l10n.proveedorNegociacionVenceHoySufijo : '',
+      ),
       excludeSemantics: true,
       child: SuperficieMarketplace(
         onTap: alToque,

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../ui/paleta_campo.dart';
 import '../../ui/tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Campo de formulario del marketplace: etiqueta visible arriba, borde de la
 /// paleta activa y error en línea. A diferencia de `CampoTextoCampo` (modo

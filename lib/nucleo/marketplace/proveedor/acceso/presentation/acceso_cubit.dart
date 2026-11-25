@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../domain/acceso_proveedor.dart';
 import '../../../../../l10n/app_localizations.dart';
+import '../domain/acceso_proveedor.dart';
 
 sealed class AccesoEstado {
   const AccesoEstado();

@@ -1,13 +1,13 @@
 // Foto de perfil: elegir, cambiar y quitar, con sus estados de carga, éxito,
 // error y sin red; el avatar con iniciales de respaldo y los goldens.
 
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/falla.dart';
 import 'package:agrocom_field/nucleo/marketplace/foto_perfil/foto_perfil_repositorio.dart';
 import 'package:agrocom_field/nucleo/marketplace/foto_perfil/presentation/foto_perfil_cubit.dart';
 import 'package:agrocom_field/nucleo/marketplace/foto_perfil/presentation/foto_perfil_widgets.dart';
 import 'package:agrocom_field/nucleo/marketplace/foto_preparador.dart';
 import 'package:agrocom_field/nucleo/marketplace/ui/avatar_foto.dart';
-import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';

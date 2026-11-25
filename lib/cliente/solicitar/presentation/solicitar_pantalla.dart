@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart' show Lote;
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/foto_preparador.dart';
 import '../../../nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
 import '../../../nucleo/marketplace/terrenos/presentation/fotos_terreno_cubit.dart';
@@ -10,7 +11,6 @@ import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 import '../../contactos/domain/contactos_repositorio.dart';
 import '../../solicitudes/domain/solicitud.dart';
 import '../domain/solicitud_repositorio.dart';

@@ -1,10 +1,10 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../dominio/dominio.dart';
 import '../../foto_preparador.dart';
 import '../fotos_terreno_repositorio.dart';
 import 'fotos_terreno_estado.dart';
-import '../../../../l10n/app_localizations.dart';
 
 export 'fotos_terreno_estado.dart';
 

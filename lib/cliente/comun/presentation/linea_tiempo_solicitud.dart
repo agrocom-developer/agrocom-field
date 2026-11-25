@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../solicitudes/domain/solicitud.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
+import '../../solicitudes/domain/solicitud.dart';
 
 /// Línea de tiempo de la solicitud: qué pasó, qué pasa ahora y qué sigue.
 ///

@@ -2,12 +2,12 @@ import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../camara/selector_imagen.dart';
 import '../../../../evidencias/compresor_adaptativo.dart';
 import '../../../../evidencias/compresor_evidencia.dart';
 import '../../../dominio/falla.dart';
 import '../domain/acceso_proveedor.dart';
-import '../../../../../l10n/app_localizations.dart';
 
 /// En qué paso del alta se quedó el envío.
 enum PasoRegistro { cuenta, sesion, dron, fotos, listo }

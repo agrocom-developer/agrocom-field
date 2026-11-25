@@ -377,7 +377,7 @@ void main() {
     test('activar las nuevas solicitudes se guarda', () async {
       final almacen = _almacen()
         ..preferencias = const PreferenciasAviso(nuevasSolicitudes: false);
-      final cubit = AvisosCubit(AvisosDemo(almacen));
+      final cubit = AvisosCubit(AvisosDemo(almacen), AppLocalizationsEs());
       await cubit.cargar();
       expect(cubit.state.preferencias.nuevasSolicitudes, isFalse);
       await cubit.cambiar(
@@ -389,7 +389,7 @@ void main() {
 
     test('si no se puede guardar, vuelve atrás y dice por qué', () async {
       final almacen = _almacen();
-      final cubit = AvisosCubit(AvisosDemo(almacen));
+      final cubit = AvisosCubit(AvisosDemo(almacen), AppLocalizationsEs());
       await cubit.cargar();
       almacen.enLinea = false;
       await cubit.cambiar(

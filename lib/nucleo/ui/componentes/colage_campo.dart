@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Foto de un collage: recorta con el radio dado y deja pintar [child] encima
 /// (pastillas de precio, etiquetas). La foto es decorativa y no entra en la

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/imagenes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Marco de las pantallas de ingreso y registro. En teléfono y iPad vertical
 /// es una columna centrada de lectura corta; en iPad horizontal (ancho

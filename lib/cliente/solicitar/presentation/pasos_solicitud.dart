@@ -5,8 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
-import '../../../nucleo/marketplace/terrenos/presentation/galeria_fotos_terreno.dart';
 import '../../../nucleo/marketplace/referencias/presentation/sugerencia_precio_referencia.dart';
+import '../../../nucleo/marketplace/terrenos/presentation/galeria_fotos_terreno.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';

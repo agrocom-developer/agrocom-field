@@ -647,6 +647,7 @@ class _GraficoHectareas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final estilo = Theme.of(context).textTheme.labelSmall;
     // Conversión a `double` solo para dibujar la barra: el valor mostrado
@@ -654,8 +655,12 @@ class _GraficoHectareas extends StatelessWidget {
     final altos = [for (final m in meses) m.hectareas.toDouble()];
     return Semantics(
       container: true,
-      label:
-          'Gráfico de barras de hectáreas por mes: ${[for (final m in meses) '${m.etiqueta} ${FormatoMarketplace.hectareas(m.hectareas)}'].join(', ')}',
+      label: l10n.proveedorPerfilGraficoBarras(
+        [
+          for (final m in meses)
+            '${m.etiqueta} ${FormatoMarketplace.hectareas(m.hectareas)}',
+        ].join(', '),
+      ),
       child: ExcludeSemantics(
         child: BarChart(
           BarChartData(

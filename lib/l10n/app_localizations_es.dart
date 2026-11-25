@@ -912,20 +912,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get comunAvanceSolicitud => 'Avance de la solicitud';
 
   @override
-  String get inicioBuenClimaParaAplicar => 'Buen clima para aplicar mañana';
-
-  @override
-  String get inicioVientoSinLluviaHasta =>
-      'Viento de 8 km/h y sin lluvia hasta el mediodía en Cuatro Cañadas.';
-
-  @override
-  String get inicioBuenPrecioAtraeMas => 'Un buen precio atrae más ofertas';
-
-  @override
-  String get inicioLosPilotosComparanPrecio =>
-      'Los pilotos comparan el precio por hectárea: si tardan en ofertar, puedes subirlo.';
-
-  @override
   String get inicioSolicitudActiva => 'Solicitud activa';
 
   @override
@@ -2581,13 +2567,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'Frontal, lateral y placa de serie.';
 
   @override
-  String get proveedorAccesoEsteDatoObligatorio => 'Este dato es obligatorio.';
-
-  @override
-  String get proveedorAccesoEscribeNumeroMayorCero =>
-      'Escribe un número mayor a cero.';
-
-  @override
   String get proveedorAccesoEligeFecha => 'Elige la fecha';
 
   @override
@@ -2660,12 +2639,12 @@ class AppLocalizationsEs extends AppLocalizations {
       'Faltan las fotos obligatorias: frontal, lateral y placa de serie.';
 
   @override
-  String proveedorAccesoPaso(String paso, String total, String titulo) {
+  String proveedorAccesoPaso(int paso, int total, String titulo) {
     return 'Paso $paso de $total, $titulo';
   }
 
   @override
-  String proveedorAccesoPaso2(String paso, String total) {
+  String proveedorAccesoPaso2(int paso, int total) {
     return 'PASO $paso DE $total';
   }
 
@@ -3683,4 +3662,231 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get proveedorNegociacionHayConexionQueEscribiste =>
       'No hay conexión. Lo que escribiste se conserva: reintenta cuando tengas señal.';
+
+  @override
+  String proveedorDronFotos(String detalle) {
+    return 'Fotos: $detalle';
+  }
+
+  @override
+  String proveedorEjecucionServicioSemantica(
+    String hectareas,
+    String cultivo,
+    String estado,
+    String pendientes,
+  ) {
+    return '$hectareas$cultivo, $estado$pendientes';
+  }
+
+  @override
+  String proveedorEjecucionDeCultivo(String cultivo) {
+    return ' de $cultivo';
+  }
+
+  @override
+  String proveedorEjecucionPendientesSufijo(int cantidad) {
+    return ', $cantidad por subir';
+  }
+
+  @override
+  String proveedorEjecucionAvanceResumen(
+    String ejecutadas,
+    String total,
+    String porcentaje,
+  ) {
+    return '$ejecutadas de $total · $porcentaje %';
+  }
+
+  @override
+  String proveedorPerfilGraficoBarras(String detalle) {
+    return 'Gráfico de barras de hectáreas por mes: $detalle';
+  }
+
+  @override
+  String proveedorNegociacionTotalPrecioCliente(String monto, String ofertas) {
+    return 'Total al precio del cliente: $monto$ofertas';
+  }
+
+  @override
+  String proveedorNegociacionOfertasSufijo(int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad ofertas',
+      one: '1 oferta',
+    );
+    return ' · $_temp0';
+  }
+
+  @override
+  String proveedorNegociacionSolicitudSemantica(
+    String zona,
+    String hectareas,
+    String precio,
+    int cantidad,
+    String vence,
+  ) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad ofertas',
+      one: '1 oferta',
+    );
+    return 'Solicitud en $zona, $hectareas, $precio por hectárea, $_temp0$vence';
+  }
+
+  @override
+  String get proveedorNegociacionZonaSinNombre => 'zona sin nombre';
+
+  @override
+  String get proveedorNegociacionAvisosSinConexion =>
+      'Sin conexión. Los avisos se configuran con señal.';
+
+  @override
+  String get proveedorNegociacionAvisosNoGuardado =>
+      'No se guardó: no hay conexión. Intenta con señal.';
+
+  @override
+  String proveedorNegociacionMapaSemantica(int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad solicitudes',
+      one: '1 solicitud',
+    );
+    return 'Mapa de solicitudes abiertas, $_temp0';
+  }
+
+  @override
+  String get proveedorNegociacionChatConCliente => 'Chat con el cliente';
+
+  @override
+  String get proveedorNegociacionEnviarContraoferta => 'Enviar contraoferta';
+
+  @override
+  String proveedorNegociacionOfertaSemantica(
+    String titulo,
+    String detalle,
+    String etiqueta,
+    String cliente,
+    String mia,
+  ) {
+    return '$titulo, $detalle, $etiqueta$cliente$mia';
+  }
+
+  @override
+  String proveedorNegociacionPrecioClienteSufijo(String precio) {
+    return ', cliente $precio bolivianos por hectárea';
+  }
+
+  @override
+  String proveedorNegociacionPrecioMioSufijo(String precio) {
+    return ', tú $precio';
+  }
+
+  @override
+  String proveedorNegociacionRondaSemantica(
+    int ronda,
+    int total,
+    String turno,
+  ) {
+    return 'Ronda $ronda de $total$turno';
+  }
+
+  @override
+  String get proveedorNegociacionEsTuTurno => ', es tu turno';
+
+  @override
+  String terrenosFotoSemantica(int numero, int total, String descripcion) {
+    return 'Foto $numero de $total del terreno$descripcion';
+  }
+
+  @override
+  String terrenosFotoDescripcionSufijo(String descripcion) {
+    return ': $descripcion';
+  }
+
+  @override
+  String get referenciasPrecioZona => 'Precio habitual en tu zona';
+
+  @override
+  String get referenciasPrecioRegion => 'Precio habitual en tu región';
+
+  @override
+  String get referenciasPrecioPais => 'Precio habitual en el país';
+
+  @override
+  String referenciasSemantica(String precio, String origen, String uso) {
+    return 'Precio de referencia: $precio por hectárea. $origen. $uso';
+  }
+
+  @override
+  String get referenciasYaLoUsas => 'Ya lo estás usando.';
+
+  @override
+  String get referenciasTocaParaUsarlo => 'Toca para usarlo.';
+
+  @override
+  String get accesoRolCliente => 'Cliente';
+
+  @override
+  String get accesoRolClienteDetalle => 'Publico lotes y elijo piloto';
+
+  @override
+  String get accesoRolClienteBoton => 'cliente';
+
+  @override
+  String get accesoRolPiloto => 'Piloto';
+
+  @override
+  String get accesoRolPilotoDetalle => 'Busco lotes y negocio el precio';
+
+  @override
+  String get accesoRolPilotoBoton => 'piloto';
+
+  @override
+  String get proveedorNegociacionVenceHoySufijo => ', vence hoy';
+
+  @override
+  String get proveedorAccesoDatoObligatorio => 'Este dato es obligatorio.';
+
+  @override
+  String get proveedorAccesoNumeroMayorCero =>
+      'Escribe un número mayor a cero.';
+
+  @override
+  String get componentesSinSenal => 'Sin señal';
+
+  @override
+  String get componentesNuevoServicio => 'NUEVO SERVICIO';
+
+  @override
+  String get componentesTotal => 'Total';
+
+  @override
+  String get componentesSyncEnDispositivo => 'En el dispositivo';
+
+  @override
+  String get componentesSyncSincronizando => 'Sincronizando';
+
+  @override
+  String get componentesSyncSincronizado => 'Sincronizado';
+
+  @override
+  String get componentesSyncSinSincronizar => 'Sin sincronizar';
+
+  @override
+  String solicitudesAvanceHectareas(String ejecutadas, String total) {
+    return '$ejecutadas / $total ha';
+  }
+
+  @override
+  String proveedorEjecucionDeTotal(String ejecutadas, String total) {
+    return '$ejecutadas de $total';
+  }
+
+  @override
+  String proveedorEjecucionHectareasPorPrecio(String hectareas, String precio) {
+    return '$hectareas × $precio por ha';
+  }
 }

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import 'miniatura_foto_terreno.dart';
-import '../../../../l10n/app_localizations.dart';
 
 /// El botón cuadrado que agrega otra foto al terreno.
 class CasillaAgregarFoto extends StatelessWidget {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// La acción principal de una pantalla del cliente: una sola por pantalla,
 /// a todo el ancho. Crece en alto con el texto ampliado en lugar de cortarlo.

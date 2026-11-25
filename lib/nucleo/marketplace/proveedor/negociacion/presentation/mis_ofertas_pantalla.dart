@@ -286,10 +286,21 @@ class TarjetaNegociacion extends StatelessWidget {
     ].join(' · ');
     return Semantics(
       button: true,
-      label:
-          '$titulo, $detalle, $etiqueta'
-          '${cliente == null ? '' : ', cliente ${CifrasNegociacion.bsHa(cliente.precioHa)} bolivianos por hectárea'}'
-          '${mia == null ? '' : ', tú ${CifrasNegociacion.bsHa(mia.precioHa)}'}',
+      label: l10n.proveedorNegociacionOfertaSemantica(
+        titulo,
+        detalle,
+        etiqueta,
+        cliente == null
+            ? ''
+            : l10n.proveedorNegociacionPrecioClienteSufijo(
+                CifrasNegociacion.bsHa(cliente.precioHa),
+              ),
+        mia == null
+            ? ''
+            : l10n.proveedorNegociacionPrecioMioSufijo(
+                CifrasNegociacion.bsHa(mia.precioHa),
+              ),
+      ),
       excludeSemantics: true,
       child: SuperficieMarketplace(
         onTap: alToque,

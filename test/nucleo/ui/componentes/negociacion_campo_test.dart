@@ -7,11 +7,11 @@
 
 import 'dart:io' show Platform;
 
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
 import 'package:agrocom_field/nucleo/ui/paleta_campo.dart';
 import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:agrocom_field/nucleo/ui/vitrina_campo/negociacion_campo_vitrina.dart';
-import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';

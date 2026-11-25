@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../foto_preparador.dart';
@@ -8,7 +9,6 @@ import '../../ui/avatar_foto.dart';
 import '../../ui/aviso_marketplace.dart';
 import '../foto_perfil_repositorio.dart';
 import 'foto_perfil_cubit.dart';
-import '../../../../l10n/app_localizations.dart';
 
 /// Provee el [FotoPerfilCubit] a [child] (el avatar y las acciones de la
 /// foto de perfil). Lee [FotoPerfilRepositorio] y [PreparadorFoto] del

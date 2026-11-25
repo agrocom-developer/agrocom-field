@@ -4,10 +4,10 @@
 
 import 'dart:async';
 
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:agrocom_field/nucleo/version/estado_version.dart';
 import 'package:agrocom_field/nucleo/version/version_apk.dart';
 import 'package:agrocom_field/nucleo/version/version_bloqueo_overlay.dart';
-import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

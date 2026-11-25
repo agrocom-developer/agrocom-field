@@ -2,9 +2,9 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Oferta entrante de un servicio (proveedor): qué, dónde, cuánto y cuánto
 /// tiempo queda para decidir. Es el momento más sensible del producto, por
@@ -24,7 +24,7 @@ class OfertaServicioCampo extends StatelessWidget {
     required this.total,
     required this.onAceptar,
     required this.onRechazar,
-    this.etiqueta = 'NUEVO SERVICIO',
+    this.etiqueta,
     this.mapa,
     this.onDetalle,
     this.respondiendo = false,
@@ -50,7 +50,7 @@ class OfertaServicioCampo extends StatelessWidget {
   final VoidCallback onRechazar;
 
   /// Rótulo en mono sobre el título ("PRIORITARIA · FLOTA DE AGROCOM").
-  final String etiqueta;
+  final String? etiqueta;
 
   /// Mapa del lote, entre el detalle y los datos. Sin él la tarjeta es solo
   /// texto.
@@ -112,7 +112,7 @@ class OfertaServicioCampo extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    etiqueta,
+                    etiqueta ?? l10n.componentesNuevoServicio,
                     style: texto.labelSmall?.copyWith(
                       color: paleta.acentoTexto,
                     ),

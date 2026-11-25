@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/estado_vacio_marketplace.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../domain/acceso_repositorio.dart';
@@ -11,7 +12,6 @@ import 'login_cliente_pantalla.dart';
 import 'onboarding_pantalla.dart';
 import 'registro_cliente_pantalla.dart';
 import 'splash_pantalla.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Raíz del flavor cliente: decide entre splash, presentación, acceso y la
 /// navegación principal según `ArranqueCubit`, y funde una etapa con la

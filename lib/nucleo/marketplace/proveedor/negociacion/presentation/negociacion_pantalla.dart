@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tipografia_campo.dart';
@@ -13,7 +14,6 @@ import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
 import 'cifras_negociacion.dart';
 import 'negociacion_cubit.dart';
-import '../../../../../l10n/app_localizations.dart';
 
 /// La negociación con el cliente como conversación (pantalla 15): cada ronda
 /// es una burbuja, arriba va la barra de rondas y abajo el panel con el
@@ -183,7 +183,11 @@ class _BarraRondas extends StatelessWidget {
     final paleta = context.paleta;
     return Semantics(
       container: true,
-      label: 'Ronda $ronda de $total${esTurno ? ', es tu turno' : ''}',
+      label: l10n.proveedorNegociacionRondaSemantica(
+        ronda,
+        total,
+        esTurno ? l10n.proveedorNegociacionEsTuTurno : '',
+      ),
       excludeSemantics: true,
       child: Row(
         children: [

@@ -2,10 +2,11 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/pago/presentation/tarjetas_pago.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
-import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/colores_campo.dart';
+import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
@@ -22,7 +23,6 @@ import 'chat_pantalla.dart';
 import 'mapa_ubicacion_piloto.dart';
 import 'precio_final_pantalla.dart';
 import 'seguimiento_cubit.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Seguimiento simple de un servicio adjudicado: cuánto lleva el piloto, las
 /// fotos que subió, su última ubicación (un punto, sin ruta ni tiempo

@@ -2,11 +2,11 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../dominio/dominio.dart';
 import 'imagen_terreno.dart';
-import '../../../../l10n/app_localizations.dart';
 
 /// Una foto para mostrar: la elegida en el celular o la del servidor.
 typedef ImagenParaVer = ({Uint8List? bytes, String? url});
@@ -49,9 +49,15 @@ class VisorFotosTerreno extends StatelessWidget {
               itemBuilder: (context, i) => Semantics(
                 image: true,
                 button: true,
-                label:
-                    'Foto ${i + 1} de ${fotos.length} del terreno'
-                    '${fotos[i].descripcion == null ? '' : ': ${fotos[i].descripcion}'}',
+                label: l10n.terrenosFotoSemantica(
+                  i + 1,
+                  fotos.length,
+                  fotos[i].descripcion == null
+                      ? ''
+                      : l10n.terrenosFotoDescripcionSufijo(
+                          fotos[i].descripcion!,
+                        ),
+                ),
                 excludeSemantics: true,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(RadioCampo.media),

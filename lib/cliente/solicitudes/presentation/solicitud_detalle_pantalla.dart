@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
-import '../../seguimiento/presentation/precio_final_pantalla.dart';
 import '../../calificar/domain/calificacion_repositorio.dart';
 import '../../calificar/presentation/calificar_pantalla.dart';
 import '../../comun/presentation/boton_principal.dart';
@@ -20,11 +20,11 @@ import '../../comun/presentation/linea_tiempo_solicitud.dart';
 import '../../ofertas/presentation/ofertas_pantalla.dart';
 import '../../problema/domain/problema_repositorio.dart';
 import '../../problema/presentation/reportar_problema_pantalla.dart';
+import '../../seguimiento/presentation/precio_final_pantalla.dart';
 import '../../seguimiento/presentation/seguimiento_pantalla.dart';
 import '../domain/solicitud.dart';
 import '../domain/solicitudes_repositorio.dart';
 import 'solicitud_detalle_cubit.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Detalle de una solicitud: en qué está, qué se pidió, el piloto elegido y
 /// la única acción que corresponde a su estado (ver las ofertas, seguir el

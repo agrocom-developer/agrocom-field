@@ -3,6 +3,7 @@ import 'package:agrocom_field/cliente/solicitar/data/solicitud_demo.dart';
 import 'package:agrocom_field/cliente/solicitar/domain/solicitud_repositorio.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_cubit.dart';
 import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:agrocom_field/nucleo/marketplace/demo/datos_demo.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:agrocom_field/nucleo/marketplace/referencias/precio_referencia.dart';
@@ -11,7 +12,6 @@ import 'package:agrocom_field/nucleo/marketplace/terrenos/presentation/fotos_ter
 import 'package:agrocom_field/nucleo/marketplace/ui/mapa_lote.dart';
 import 'package:agrocom_field/nucleo/ui/paleta_campo.dart';
 import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
-import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

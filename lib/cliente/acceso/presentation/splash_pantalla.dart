@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Pantalla de arranque: el logo entra (opacidad y escala desde 0,95), una
 /// línea verde se extiende debajo y aparece la propuesta en una frase. La

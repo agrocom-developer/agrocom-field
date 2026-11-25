@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/aviso_marketplace.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/marketplace/ui/campo_formulario_marketplace.dart';
@@ -12,7 +13,6 @@ import '../domain/reglas_acceso.dart';
 import 'formulario_acceso_estado.dart';
 import 'lienzo_acceso.dart';
 import 'login_cliente_cubit.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Ingreso del cliente: usuario, contraseña y una sola acción. Requiere red;
 /// si falla, el aviso explica por qué y lo escrito se conserva.

@@ -1,13 +1,13 @@
 // Fotos del terreno: la galería del cliente (hasta 8, compresión, subida con
 // reintento) y la tira que ve el piloto en la solicitud abierta.
 
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:agrocom_field/nucleo/marketplace/foto_preparador.dart';
 import 'package:agrocom_field/nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
 import 'package:agrocom_field/nucleo/marketplace/terrenos/presentation/fotos_terreno_cubit.dart';
 import 'package:agrocom_field/nucleo/marketplace/terrenos/presentation/galeria_fotos_terreno.dart';
 import 'package:agrocom_field/nucleo/marketplace/terrenos/presentation/visor_fotos_terreno.dart';
-import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../foto_preparador.dart';
@@ -10,7 +11,6 @@ import 'casilla_agregar_foto.dart';
 import 'fotos_terreno_cubit.dart';
 import 'miniatura_foto_terreno.dart';
 import 'visor_fotos_terreno.dart';
-import '../../../../l10n/app_localizations.dart';
 
 /// Galería editable de las fotos del terreno (hasta 8): agregar desde la
 /// cámara o la galería, ver el avance de cada subida, reintentar una que

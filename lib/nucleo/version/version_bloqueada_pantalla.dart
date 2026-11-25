@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../l10n/app_localizations.dart';
 import '../ui/colores_campo.dart';
 import '../ui/componentes/componentes_campo.dart';
 import '../ui/tipografia_campo.dart';
 import 'version_apk.dart';
-import '../../l10n/app_localizations.dart';
 
 /// Pantalla de bloqueo de HU-20 — sin vía de escape: `PopScope` impide
 /// cerrarla con el botón/gesto "atrás" del sistema y no ofrece ninguna

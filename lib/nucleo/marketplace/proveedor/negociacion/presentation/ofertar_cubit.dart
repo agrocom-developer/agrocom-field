@@ -2,10 +2,10 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../dominio/dominio.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
-import '../../../../../l10n/app_localizations.dart';
 
 enum FaseOferta { libre, enviando, enviada, fallo }
 

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../camara/selector_imagen.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -12,7 +13,6 @@ import '../../../ui/marketplace_ui.dart';
 import '../domain/acceso_proveedor.dart';
 import 'acceso_cubit.dart';
 import 'registro_cubit.dart';
-import '../../../../../l10n/app_localizations.dart';
 
 /// Abre el alta del piloto independiente sobre el ingreso. Al terminar, la
 /// sesión ya quedó iniciada y la puerta de acceso muestra la app.
@@ -56,17 +56,19 @@ class RegistroProveedorPantalla extends StatefulWidget {
 }
 
 class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
-  static const _titulos = [
-    'Datos personales',
-    'Tu licencia',
-    'Tu equipo',
-    'Fotos del dron',
+  AppLocalizations get l10n => AppLocalizations.of(context);
+
+  List<String> _titulos(BuildContext context) => [
+    l10n.proveedorAccesoDatosPersonales,
+    l10n.proveedorAccesoLicencia,
+    l10n.proveedorAccesoEquipo,
+    l10n.proveedorAccesoFotosDelDron,
   ];
-  static const _apoyos = [
-    'Así te identificamos y te contactan los clientes.',
-    'Un administrador la revisa antes de que veas solicitudes.',
-    'Tu dron es tu vehículo: lo revisamos antes de aprobarlo.',
-    'Frontal, lateral y placa de serie.',
+  List<String> _apoyos(BuildContext context) => [
+    l10n.proveedorAccesoAsiIdentificamosContactanLos,
+    l10n.proveedorAccesoAdministradorRevisaAntesQue,
+    l10n.proveedorAccesoDronVehiculoRevisamosAntes,
+    l10n.proveedorAccesoFrontalLateralPlacaSerie,
   ];
   final _claves = List.generate(3, (_) => GlobalKey<FormState>());
   int _paso = 0;
@@ -116,13 +118,14 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
     super.dispose();
   }
 
-  String? _obligatorio(String? v) =>
-      (v ?? '').trim().isEmpty ? 'Este dato es obligatorio.' : null;
+  String? _obligatorio(String? v) => (v ?? '').trim().isEmpty
+      ? AppLocalizations.of(context).proveedorAccesoDatoObligatorio
+      : null;
 
   String? _decimal(String? v) {
     final d = Decimal.tryParse((v ?? '').trim().replaceAll(',', '.'));
     return d == null || d <= Decimal.zero
-        ? 'Escribe un número mayor a cero.'
+        ? AppLocalizations.of(context).proveedorAccesoNumeroMayorCero
         : null;
   }
 
@@ -135,7 +138,7 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
     initialDate: inicial,
     firstDate: primera,
     lastDate: ultima,
-    helpText: 'Elige la fecha',
+    helpText: AppLocalizations.of(context).proveedorAccesoEligeFecha,
   );
 
   String _texto(DateTime f) =>
@@ -230,7 +233,8 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
           child: CampoFormularioMarketplace(
             etiqueta: etiqueta,
             controller: c,
-            validator: (_) => valor == null ? 'Elige una fecha.' : null,
+            validator: (_) =>
+                valor == null ? l10n.proveedorAccesoEligeUnaFecha : null,
           ),
         ),
       ),
@@ -266,46 +270,52 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
         _campo('Nombres', _nombres),
         _campo('Apellidos', _apellidos),
         _campo(
-          'Carnet de identidad',
+          l10n.proveedorAccesoCarnetIdentidad,
           _documento,
           teclado: TextInputType.text,
           errorServidor: errores['documento_identidad'],
           mayusculas: TextCapitalization.characters,
         ),
-        _fecha('Fecha de nacimiento', _nacimiento, _fechaNacimiento, () async {
-          final f = await _elegirFecha(
-            inicial: DateTime(1990),
-            primera: DateTime(1940),
-            ultima: DateTime.now().subtract(const Duration(days: 365 * 18)),
-          );
-          if (f != null) {
-            setState(() {
-              _fechaNacimiento = f;
-              _nacimiento.text = _texto(f);
-            });
-          }
-        }),
+        _fecha(
+          l10n.proveedorAccesoFechaNacimiento,
+          _nacimiento,
+          _fechaNacimiento,
+          () async {
+            final f = await _elegirFecha(
+              inicial: DateTime(1990),
+              primera: DateTime(1940),
+              ultima: DateTime.now().subtract(const Duration(days: 365 * 18)),
+            );
+            if (f != null) {
+              setState(() {
+                _fechaNacimiento = f;
+                _nacimiento.text = _texto(f);
+              });
+            }
+          },
+        ),
         _campo(
-          'Teléfono',
+          l10n.proveedorAccesoTelefono,
           _telefono,
           teclado: TextInputType.phone,
           errorServidor: errores['telefono'],
         ),
         _campo(
-          'Usuario',
+          l10n.proveedorAccesoUsuario,
           _usuario,
           errorServidor: errores['username'],
           mayusculas: TextCapitalization.none,
-          ayuda: 'Con este usuario entras a la app. No usa correo.',
+          ayuda: l10n.proveedorAccesoConEsteUsuarioEntras,
         ),
         _campo(
-          'Contraseña',
+          l10n.proveedorAccesoContrasena,
           _contrasena,
           oculto: true,
           errorServidor: errores['password'],
           mayusculas: TextCapitalization.none,
-          validator: (v) =>
-              (v ?? '').length < 8 ? 'Usa al menos 8 caracteres.' : null,
+          validator: (v) => (v ?? '').length < 8
+              ? l10n.proveedorAccesoUsaMenosCaracteres
+              : null,
         ),
       ],
     ),
@@ -316,29 +326,34 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
     child: Column(
       children: [
         _campo(
-          'Número de licencia de piloto',
+          l10n.proveedorAccesoNumeroLicenciaPiloto,
           _licencia,
           errorServidor: errores['licencia_numero'],
           mayusculas: TextCapitalization.characters,
         ),
-        _fecha('Vence el', _licenciaVence, _fechaVence, () async {
-          final f = await _elegirFecha(
-            inicial: DateTime.now().add(const Duration(days: 365)),
-            primera: DateTime.now(),
-            ultima: DateTime.now().add(const Duration(days: 365 * 10)),
-          );
-          if (f != null) {
-            setState(() {
-              _fechaVence = f;
-              _licenciaVence.text = _texto(f);
-            });
-          }
-        }),
+        _fecha(
+          l10n.proveedorAccesoVence,
+          _licenciaVence,
+          _fechaVence,
+          () async {
+            final f = await _elegirFecha(
+              inicial: DateTime.now().add(const Duration(days: 365)),
+              primera: DateTime.now(),
+              ultima: DateTime.now().add(const Duration(days: 365 * 10)),
+            );
+            if (f != null) {
+              setState(() {
+                _fechaVence = f;
+                _licenciaVence.text = _texto(f);
+              });
+            }
+          },
+        ),
         _campo(
-          'Categoría de habilitación',
+          l10n.proveedorAccesoCategoriaHabilitacion,
           _categoria,
           errorServidor: errores['categoria_habilitacion'],
-          ayuda: 'Como figura en tu licencia.',
+          ayuda: l10n.proveedorAccesoComoFiguraLicencia,
           mayusculas: TextCapitalization.characters,
         ),
       ],
@@ -349,12 +364,12 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
     key: _claves[2],
     child: Column(
       children: [
-        const Padding(
+        Padding(
           padding: EdgeInsets.only(bottom: EspaciadoCampo.m),
           child: Align(
             alignment: Alignment.centerLeft,
             child: ChipEstadoMarketplace(
-              etiqueta: 'En revisión al terminar el registro',
+              etiqueta: l10n.proveedorAccesoRevisionTerminarRegistro,
               tono: TonoEstado.info,
               icono: Icons.hourglass_top_rounded,
             ),
@@ -363,25 +378,25 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
         _campo('Marca', _marca),
         _campo('Modelo', _modelo),
         _campo(
-          'Número de serie',
+          l10n.proveedorAccesoNumeroSerie,
           _serie,
           errorServidor: errores['numero_serie'],
           mayusculas: TextCapitalization.characters,
         ),
         _campo(
-          'Año (opcional)',
+          l10n.proveedorAccesoAnoOpcional,
           _anio,
           teclado: TextInputType.number,
           validator: (_) => null,
         ),
         _campo(
-          'Capacidad del tanque (litros)',
+          l10n.proveedorAccesoCapacidadDelTanqueLitros,
           _capacidad,
           validator: _decimal,
           teclado: const TextInputType.numberWithOptions(decimal: true),
         ),
         _campo(
-          'Ancho de pasada (metros)',
+          l10n.proveedorAccesoAnchoPasadaMetros,
           _pasada,
           validator: _decimal,
           teclado: const TextInputType.numberWithOptions(decimal: true),
@@ -392,6 +407,7 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     return BlocConsumer<RegistroCubit, RegistroEstado>(
       // Un error por campo devuelve al paso donde está el campo.
@@ -404,12 +420,12 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
         final errores = estado.erroresPorCampo;
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Registro de piloto'),
+            title: Text(l10n.proveedorAccesoRegistroPiloto),
             leading: estado.enviando
                 ? const SizedBox.shrink()
                 : _paso > 0 && !estado.terminado
                 ? IconButton(
-                    tooltip: 'Paso anterior',
+                    tooltip: l10n.proveedorAccesoPasoAnterior,
                     icon: const Icon(Icons.arrow_back_rounded),
                     onPressed: () => setState(() => _paso--),
                   )
@@ -423,9 +439,9 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
                     children: [
                       _Encabezado(
                         paso: _paso,
-                        total: _titulos.length,
-                        titulo: _titulos[_paso],
-                        apoyo: _apoyos[_paso],
+                        total: _titulos(context).length,
+                        titulo: _titulos(context)[_paso],
+                        apoyo: _apoyos(context)[_paso],
                       ),
                       const SizedBox(height: EspaciadoCampo.l),
                       if (estado.mensaje != null) ...[
@@ -444,10 +460,10 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
                       const SizedBox(height: EspaciadoCampo.l),
                       BotonPrincipalMarketplace(
                         texto: _paso < 3
-                            ? 'Continuar'
+                            ? l10n.proveedorAccesoContinuar
                             : estado.paso == PasoRegistro.cuenta
-                            ? 'Crear mi cuenta'
-                            : 'Reintentar',
+                            ? l10n.proveedorAccesoCrearCuenta
+                            : l10n.proveedorAccesoReintentar,
                         cargando: estado.enviando,
                         onPressed: _paso == 3 && !estado.fotosObligatoriasListas
                             ? null
@@ -456,8 +472,7 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
                       if (_paso == 3 && !estado.fotosObligatoriasListas) ...[
                         const SizedBox(height: EspaciadoCampo.s),
                         Text(
-                          'Faltan las fotos obligatorias: frontal, lateral y '
-                          'placa de serie.',
+                          l10n.proveedorAccesoFaltanLasFotosObligatorias,
                           style: texto.bodyMedium,
                         ),
                       ],
@@ -488,6 +503,7 @@ class _Encabezado extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     return Column(
@@ -495,10 +511,10 @@ class _Encabezado extends StatelessWidget {
       children: [
         Semantics(
           liveRegion: true,
-          label: 'Paso ${paso + 1} de $total, $titulo',
+          label: l10n.proveedorAccesoPaso(paso + 1, total, titulo),
           excludeSemantics: true,
           child: Text(
-            'PASO ${paso + 1} DE $total',
+            l10n.proveedorAccesoPaso2(paso + 1, total),
             style: texto.labelSmall?.copyWith(color: paleta.acentoTexto),
           ),
         ),
@@ -544,14 +560,14 @@ class _PasoFotos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final cubit = context.read<RegistroCubit>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          'Un administrador las revisa antes de aprobar tu dron. Cada foto se '
-          'achica sola a menos de 300 KB.',
+          l10n.proveedorAccesoAdministradorLasRevisaAntes,
           style: texto.bodyLarge,
         ),
         const SizedBox(height: EspaciadoCampo.l),
@@ -594,6 +610,7 @@ class _TarjetaFoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final lista = bytes != null;
     return SuperficieMarketplace(
@@ -604,19 +621,19 @@ class _TarjetaFoto extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Foto ${tipo.etiqueta.toLowerCase()}',
+                  l10n.proveedorAccesoFoto(tipo.etiqueta.toLowerCase()),
                   style: texto.titleMedium,
                 ),
               ),
               if (lista)
-                const ChipEstadoMarketplace(
-                  etiqueta: 'Lista',
+                ChipEstadoMarketplace(
+                  etiqueta: l10n.proveedorAccesoLista,
                   tono: TonoEstado.exito,
                   icono: Icons.check_circle_rounded,
                 )
               else
-                const ChipEstadoMarketplace(
-                  etiqueta: 'Falta',
+                ChipEstadoMarketplace(
+                  etiqueta: l10n.proveedorAccesoFalta,
                   tono: TonoEstado.alerta,
                   icono: Icons.add_a_photo_outlined,
                 ),
@@ -631,7 +648,9 @@ class _TarjetaFoto extends StatelessWidget {
                 height: 120,
                 width: double.infinity,
                 fit: BoxFit.cover,
-                semanticLabel: 'Foto ${tipo.etiqueta.toLowerCase()} del dron',
+                semanticLabel: l10n.proveedorAccesoFotoDelDron(
+                  tipo.etiqueta.toLowerCase(),
+                ),
               ),
             ),
           ],
@@ -642,15 +661,22 @@ class _TarjetaFoto extends StatelessWidget {
               OutlinedButton.icon(
                 onPressed: cargando ? null : alCamara,
                 icon: const Icon(Icons.photo_camera_outlined),
-                label: Text(lista ? 'Tomar otra' : 'Cámara'),
+                label: Text(
+                  lista
+                      ? l10n.proveedorAccesoTomarOtra
+                      : l10n.proveedorAccesoCamara,
+                ),
               ),
               OutlinedButton.icon(
                 onPressed: cargando ? null : alGaleria,
                 icon: const Icon(Icons.photo_library_outlined),
-                label: const Text('Galería'),
+                label: Text(l10n.proveedorAccesoGaleria),
               ),
               if (lista)
-                TextButton(onPressed: alQuitar, child: const Text('Quitar')),
+                TextButton(
+                  onPressed: alQuitar,
+                  child: Text(l10n.proveedorAccesoQuitar),
+                ),
             ],
           ),
           if (cargando)
@@ -671,6 +697,7 @@ class _Listo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     return SafeArea(
       child: Padding(
@@ -686,20 +713,19 @@ class _Listo extends StatelessWidget {
             ),
             const SizedBox(height: EspaciadoCampo.l),
             Text(
-              'Tu registro está en revisión',
+              l10n.proveedorAccesoRegistroEstaRevision,
               style: texto.headlineMedium,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: EspaciadoCampo.s),
             Text(
-              'Un administrador revisa tu licencia y tu dron. Mientras tanto '
-              'no verás solicitudes; te avisamos cuando estés aprobado.',
+              l10n.proveedorAccesoAdministradorRevisaLicenciaDron,
               style: texto.bodyLarge,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: EspaciadoCampo.xl),
             BotonPrincipalMarketplace(
-              texto: 'Entrar a la app',
+              texto: l10n.proveedorAccesoEntrarApp,
               onPressed: alTerminar,
             ),
           ],

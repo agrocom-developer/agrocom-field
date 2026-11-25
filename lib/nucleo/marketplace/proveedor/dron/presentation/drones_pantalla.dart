@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -8,7 +9,6 @@ import '../../../dominio/dominio.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../domain/drones_repositorio.dart';
 import 'drones_cubit.dart';
-import '../../../../../l10n/app_localizations.dart';
 
 /// Los drones del proveedor: el «vehículo» del marketplace, con su estado,
 /// su aprobación y los ciclos de batería.
@@ -271,6 +271,7 @@ class _ResumenFotos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final partes = <String>[];
     for (final e in EstadoFotoDron.values) {
@@ -294,7 +295,10 @@ class _ResumenFotos extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Fotos: ${partes.join(' · ')}', style: texto.bodyMedium),
+        Text(
+          l10n.proveedorDronFotos(partes.join(' · ')),
+          style: texto.bodyMedium,
+        ),
         for (final r in rechazadas)
           Padding(
             padding: const EdgeInsets.only(top: EspaciadoCampo.xs),

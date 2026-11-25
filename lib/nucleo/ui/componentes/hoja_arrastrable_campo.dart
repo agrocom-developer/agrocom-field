@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Hoja inferior que vive sobre el mapa y se arrastra entre un tamaño
 /// mínimo (la manija y el encabezado) y uno máximo (la lista completa).

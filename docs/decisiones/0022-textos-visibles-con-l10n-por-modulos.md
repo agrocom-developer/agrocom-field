@@ -26,7 +26,13 @@ Los textos del flavor `cliente` están escritos en los widgets. Eso dispersa la 
 
 ## Estado
 
-Migrado: `problema` (reportar un problema). Pendiente: `calificar`, `ofertas`, `cuenta`, `inicio`, `acceso`, `solicitudes`, `seguimiento`, `solicitar` y `comun`, en ese orden de tamaño aproximado. Los flavors `piloto` y `auxiliar` quedan fuera hasta decidirlo aparte.
+Todos los textos visibles de las pantallas, componentes, etiquetas semánticas, ayudas, tooltips y avisos de los cubits están en `lib/l10n/app_es.arb` (módulos `cliente/*`, `nucleo/ui`, `nucleo/marketplace/*` y `piloto`). La prueba `test/nucleo/l10n/sin_textos_en_duro_test.dart` falla si aparece un literal visible en `lib/`; sus excepciones están escritas y justificadas en la propia prueba.
+
+Reglas que salieron de la migración:
+
+- Los cubits que construyen un aviso propio reciben `AppLocalizations` por constructor (se obtiene en el `build` que los crea, no dentro de `create:`). Los mensajes que llegan del servidor dentro de `OperacionRechazada` se muestran tal cual.
+- Los enums y fallos de dominio traducen en una extensión de `presentation/` con `switch` exhaustivo (`TextosOrdenOfertas`, `TextosErrorHectareas`, `TextosRolElegido`).
+- Quedan fuera, por decisión: las capas `data/` y `domain/` (respuestas simuladas, etiquetas de enums y reglas de validación que migran con su módulo cuando el último lector pase a la extensión), `demo/` (datos de demostración), el catálogo de diseño `vitrina_campo/` y `FormatoMarketplace` (unidades y fechas relativas es-BO sin contexto; pasa a `intl` con la segunda lengua).
 
 ## Consecuencias
 

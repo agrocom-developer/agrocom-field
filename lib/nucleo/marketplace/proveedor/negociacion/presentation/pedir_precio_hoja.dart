@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../referencias/precio_referencia.dart';
@@ -10,7 +11,6 @@ import '../../../referencias/presentation/sugerencia_precio_referencia.dart';
 import '../../../ui/boton_principal_marketplace.dart';
 import '../../../ui/campo_formulario_marketplace.dart';
 import '../../../ui/formato_marketplace.dart';
-import '../../../../../l10n/app_localizations.dart';
 
 /// Lo que el piloto escribió al contraofertar.
 class PrecioPropuesto {
@@ -37,7 +37,7 @@ Future<PrecioPropuesto?> pedirPrecio(
   required Decimal hectareas,
   required Decimal precioReferencia,
   required String etiquetaReferencia,
-  String textoBoton = 'Enviar contraoferta',
+  String? textoBoton,
   String? tipoAplicacion,
   int? zonaId,
   String? macrorregion,
@@ -58,7 +58,9 @@ Future<PrecioPropuesto?> pedirPrecio(
         hectareas: hectareas,
         precioReferencia: precioReferencia,
         etiquetaReferencia: etiquetaReferencia,
-        textoBoton: textoBoton,
+        textoBoton:
+            textoBoton ??
+            AppLocalizations.of(context).proveedorNegociacionEnviarContraoferta,
         tipoAplicacion: tipoAplicacion,
         zonaId: zonaId,
         macrorregion: macrorregion,

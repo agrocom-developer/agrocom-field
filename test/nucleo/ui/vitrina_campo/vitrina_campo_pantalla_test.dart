@@ -4,8 +4,8 @@
 // contrato de `agrocom-api` muestran sus campos reales. No prueba datos —
 // no los hay: son constantes, igual que el mockup de origen.
 
-import 'package:agrocom_field/nucleo/ui/vitrina_campo/vitrina_campo_pantalla.dart';
 import 'package:agrocom_field/l10n/app_localizations.dart';
+import 'package:agrocom_field/nucleo/ui/vitrina_campo/vitrina_campo_pantalla.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 

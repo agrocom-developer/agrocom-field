@@ -1,25 +1,34 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/componentes/componentes_campo.dart';
 import '../../../ui/imagenes_campo.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../ui/boton_principal_marketplace.dart';
-import '../../../../l10n/app_localizations.dart';
 
 /// Rol que la persona dice tener al abrir Agrocom. Solo hay dos: el
 /// auxiliar dejó de ser un usuario de la app (ADR 0021).
-enum RolElegido {
-  cliente('Cliente', 'Publico lotes y elijo piloto', 'cliente'),
-  piloto('Piloto', 'Busco lotes y negocio el precio', 'piloto');
+enum RolElegido { cliente, piloto }
 
-  const RolElegido(this.titulo, this.detalle, this.enBoton);
+/// Los textos de cada rol. El `switch` es exhaustivo: un rol nuevo no compila
+/// hasta tener sus textos (ADR 0022).
+extension TextosRolElegido on RolElegido {
+  String titulo(AppLocalizations l10n) => switch (this) {
+    RolElegido.cliente => l10n.accesoRolCliente,
+    RolElegido.piloto => l10n.accesoRolPiloto,
+  };
 
-  final String titulo;
-  final String detalle;
+  String detalle(AppLocalizations l10n) => switch (this) {
+    RolElegido.cliente => l10n.accesoRolClienteDetalle,
+    RolElegido.piloto => l10n.accesoRolPilotoDetalle,
+  };
 
   /// Cómo se nombra en «Continuar como …».
-  final String enBoton;
+  String enBoton(AppLocalizations l10n) => switch (this) {
+    RolElegido.cliente => l10n.accesoRolClienteBoton,
+    RolElegido.piloto => l10n.accesoRolPilotoBoton,
+  };
 }
 
 /// «Elige tu rol»: collage de marca, propuesta y dos opciones (Cliente y
@@ -174,7 +183,7 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
                       BotonPrincipalMarketplace(
                         key: const Key('rol-continuar'),
                         texto: l10n.marketplaceAccesoContinuarComo(
-                          _rol.enBoton,
+                          _rol.enBoton(l10n),
                         ),
                         cargando: widget.cargando,
                         onPressed: () => widget.alContinuar(_rol),
@@ -226,6 +235,7 @@ class _OpcionRol extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final colorTexto = elegido ? paleta.sobreAcentoContenedor : paleta.texto;
@@ -233,7 +243,7 @@ class _OpcionRol extends StatelessWidget {
       button: true,
       inMutuallyExclusiveGroup: true,
       checked: elegido,
-      label: '${rol.titulo}. ${rol.detalle}',
+      label: '${rol.titulo(l10n)}. ${rol.detalle(l10n)}',
       excludeSemantics: true,
       onTap: alElegir,
       child: AnimatedContainer(
@@ -268,13 +278,13 @@ class _OpcionRol extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            rol.titulo,
+                            rol.titulo(l10n),
                             style: texto.titleMedium?.copyWith(
                               color: colorTexto,
                             ),
                           ),
                           Text(
-                            rol.detalle,
+                            rol.detalle(l10n),
                             style: texto.bodyMedium?.copyWith(
                               color: elegido
                                   ? paleta.sobreAcentoContenedor

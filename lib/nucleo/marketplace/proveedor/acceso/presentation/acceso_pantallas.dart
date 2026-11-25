@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/logo_agrocom_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -10,7 +11,6 @@ import '../../../ui/marketplace_ui.dart';
 import '../domain/acceso_proveedor.dart';
 import 'acceso_cubit.dart';
 import 'registro_proveedor_pantalla.dart';
-import '../../../../../l10n/app_localizations.dart';
 
 /// La puerta de la app real del piloto: mientras no hay
 /// sesión muestra el ingreso; con sesión, [construir] arma la superficie.

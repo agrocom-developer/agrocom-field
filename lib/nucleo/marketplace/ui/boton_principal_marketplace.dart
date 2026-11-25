@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../ui/paleta_campo.dart';
 import '../../ui/tokens_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// Acción principal de una pantalla del marketplace: botón verde del tema a
 /// ancho completo, con estado de envío. Mientras [cargando] no acepta toques

@@ -2,9 +2,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../colores_campo.dart';
 import '../imagenes_campo.dart';
-import '../../../l10n/app_localizations.dart';
 
 /// El logo de Agrocom (isotipo + wordmark) tal como va sobre una foto o
 /// sobre `fondoProfundo`. Es lo que nombra a la app en pantalla: ninguna

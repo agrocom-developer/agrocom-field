@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import 'fotos_terreno_estado.dart';
 import 'imagen_terreno.dart';
-import '../../../../l10n/app_localizations.dart';
 
 /// Lado de una miniatura: cabe tres por fila en un teléfono chico.
 const double ladoMiniaturaFoto = 96;

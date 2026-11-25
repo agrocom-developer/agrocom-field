@@ -1,13 +1,13 @@
 // Pago confirmado: «Ya recibí el pago» del proveedor titular (en línea, con
 // reintento idempotente) y el sello que ve el cliente en el seguimiento.
 
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/falla.dart';
 import 'package:agrocom_field/nucleo/marketplace/pago/pago_confirmado.dart';
 import 'package:agrocom_field/nucleo/marketplace/pago/pagos_repositorio.dart';
 import 'package:agrocom_field/nucleo/marketplace/pago/presentation/pago_cubit.dart';
 import 'package:agrocom_field/nucleo/marketplace/pago/presentation/tarjetas_pago.dart';
 import 'package:decimal/decimal.dart';
-import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
