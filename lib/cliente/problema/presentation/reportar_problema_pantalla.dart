@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
@@ -10,6 +11,7 @@ import '../../comun/presentation/boton_principal.dart';
 import '../../solicitudes/domain/solicitud.dart';
 import '../domain/problema_repositorio.dart';
 import 'reportar_problema_cubit.dart';
+import 'textos_motivo.dart';
 
 /// El cliente reporta un problema con un servicio: elige un motivo, cuenta
 /// qué vio y envía. Devuelve `true` al cerrarse si el reporte quedó
@@ -39,6 +41,7 @@ class _Vista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocBuilder<ReportarProblemaCubit, ReportarProblemaEstado>(
       builder: (context, estado) {
         final enviado = estado.fase == FaseReporte.enviado;
@@ -48,7 +51,7 @@ class _Vista extends StatelessWidget {
             if (!salio) Navigator.of(context).pop(true);
           },
           child: Scaffold(
-            appBar: AppBar(title: const Text('Reportar un problema')),
+            appBar: AppBar(title: Text(l10n.problemaTitulo)),
             body: AnimatedSwitcher(
               duration: MovimientoCampo.duracion(
                 context,
@@ -67,14 +70,14 @@ class _Vista extends StatelessWidget {
               minimum: const EdgeInsets.all(EspaciadoCampo.l),
               child: enviado
                   ? BotonPrincipal(
-                      texto: 'Volver al servicio',
+                      texto: l10n.problemaBotonVolver,
                       onPressed: () => Navigator.of(context).pop(true),
                     )
                   : BotonPrincipal(
                       key: const ValueKey('enviar-reporte'),
                       texto: estado.fase == FaseReporte.error
-                          ? 'Reintentar'
-                          : 'Enviar reporte',
+                          ? l10n.problemaBotonReintentar
+                          : l10n.problemaBotonEnviar,
                       cargando: estado.fase == FaseReporte.enviando,
                       onPressed: estado.puedeEnviar
                           ? context.read<ReportarProblemaCubit>().enviar
@@ -96,6 +99,7 @@ class _Formulario extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final cubit = context.read<ReportarProblemaCubit>();
@@ -122,12 +126,12 @@ class _Formulario extends StatelessWidget {
             const SizedBox(height: EspaciadoCampo.xs),
             Semantics(
               header: true,
-              child: Text('¿Qué pasó?', style: texto.headlineSmall),
+              child: Text(l10n.problemaPregunta, style: texto.headlineSmall),
             ),
             const SizedBox(height: EspaciadoCampo.l),
             Semantics(
               container: true,
-              label: 'Motivo del problema',
+              label: l10n.problemaMotivoSemantica,
               child: Column(
                 children: [
                   for (final m in MotivoProblema.values) ...[
@@ -150,9 +154,9 @@ class _Formulario extends StatelessWidget {
               maxLength: ReportarProblemaCubit.largoMaximoDetalle,
               textCapitalization: TextCapitalization.sentences,
               onChanged: cubit.cambiarDetalle,
-              decoration: const InputDecoration(
-                labelText: 'Cuéntanos qué viste',
-                helperText: 'Al menos una oración: dónde, cuándo y qué.',
+              decoration: InputDecoration(
+                labelText: l10n.problemaDetalleEtiqueta,
+                helperText: l10n.problemaDetalleAyuda,
                 helperMaxLines: 3,
                 alignLabelWithHint: true,
                 border: OutlineInputBorder(),
@@ -166,17 +170,12 @@ class _Formulario extends StatelessWidget {
                   tono: TonoAviso.error,
                   icono: estado.sinConexion ? Icons.wifi_off_rounded : null,
                   mensaje: estado.sinConexion
-                      ? 'Sin conexión. El reporte no se envió; prueba de '
-                            'nuevo cuando tengas señal.'
-                      : 'No pudimos enviar el reporte. Prueba de nuevo.',
+                      ? l10n.problemaSinConexion
+                      : l10n.problemaErrorEnvio,
                 ),
               )
             else
-              const AvisoMarketplace(
-                mensaje:
-                    'Soporte te responde en 24 horas hábiles. El proveedor '
-                    'también ve el reporte y puede responder.',
-              ),
+              AvisoMarketplace(mensaje: l10n.problemaAvisoSoporte),
           ],
         ),
       ),
@@ -197,6 +196,7 @@ class _OpcionMotivo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final forma = BorderRadius.circular(EspaciadoCampo.l);
@@ -205,7 +205,7 @@ class _OpcionMotivo extends StatelessWidget {
       checked: elegido,
       button: true,
       enabled: alElegir != null,
-      label: '${motivo.etiqueta}. ${motivo.ayuda}',
+      label: '${motivo.etiquetaL10n(l10n)}. ${motivo.ayudaL10n(l10n)}',
       excludeSemantics: true,
       child: Material(
         color: paleta.superficie,
@@ -247,9 +247,12 @@ class _OpcionMotivo extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(motivo.etiqueta, style: texto.titleSmall),
                         Text(
-                          motivo.ayuda,
+                          motivo.etiquetaL10n(l10n),
+                          style: texto.titleSmall,
+                        ),
+                        Text(
+                          motivo.ayudaL10n(l10n),
                           style: texto.bodySmall?.copyWith(
                             color: paleta.textoSecundario,
                           ),
@@ -274,6 +277,7 @@ class _Enviado extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     return Center(
@@ -291,20 +295,22 @@ class _Enviado extends StatelessWidget {
               ),
               const SizedBox(height: EspaciadoCampo.l),
               Text(
-                'Recibimos tu reporte',
+                l10n.problemaEnviadoTitulo,
                 style: texto.headlineSmall,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: EspaciadoCampo.s),
               Text(
-                'Caso ${caso.numeroCaso} · ${caso.motivo.etiqueta}',
+                l10n.problemaEnviadoCaso(
+                  caso.numeroCaso,
+                  caso.motivo.etiquetaL10n(l10n),
+                ),
                 style: texto.titleMedium,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: EspaciadoCampo.s),
               Text(
-                'Soporte te responde en 24 horas hábiles. Mientras tanto, el '
-                'servicio queda en revisión.',
+                l10n.problemaEnviadoMensaje,
                 style: texto.bodyMedium?.copyWith(
                   color: paleta.textoSecundario,
                 ),

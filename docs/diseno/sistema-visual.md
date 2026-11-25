@@ -82,6 +82,7 @@ Los colores que no son de la paleta (sombra de marcadores, atribución y fondo d
 
 - El verde hoja es el único acento de marca; el verde pasto (`apoyo`) acompaña en íconos, marcadores y gráficos, nunca como texto. Un color semántico (éxito, alerta, error, info) nunca es el único portador del estado: lleva ícono o texto.
 - En claro el relleno de la acción es el verde hoja con texto blanco; en oscuro y campo es un verde hoja claro con texto casi negro.
+- El botón «Ya recibí el pago» del piloto es la acción principal de su pantalla y usa `paleta.acento` (`acentoHoja` `#9AE06E` en modo campo): es el verde hoja claro del sistema, no un color propio. Que parezca lima sobre fondo oscuro es intencional (ADR 0008, contraste 12,60:1); no se cambia hasta que el plan 01 (identidad visual) redefina la paleta.
 - Un color nuevo no entra al sistema sin ratio medido y test.
 
 ## 3. Tipografía

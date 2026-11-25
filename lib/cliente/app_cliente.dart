@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../l10n/app_localizations.dart';
 import '../nucleo/ui/paleta_campo.dart';
 import '../nucleo/ui/componentes/componentes_campo.dart';
 import '../nucleo/ui/tema_campo.dart';
@@ -27,6 +28,9 @@ class AppCliente extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Agrocom',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('es'),
       debugShowCheckedModeBanner: false,
       theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.claro),
       darkTheme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.oscuro),

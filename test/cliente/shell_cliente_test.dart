@@ -85,7 +85,7 @@ void main() {
     expect(find.text('Bs 120/ha'), findsOneWidget);
     expect(find.text('Maíz La Curva'), findsWidgets);
 
-    await tester.pageBack();
+    await tester.tap(find.byTooltip('Atrás'));
     await tester.pumpAndSettle();
     expect(find.text('Hola, Hugo'), findsOneWidget);
   });

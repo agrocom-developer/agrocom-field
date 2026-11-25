@@ -20,6 +20,7 @@ import 'package:agrocom_field/cliente/solicitudes/data/solicitudes_demo.dart';
 import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
 import 'package:agrocom_field/cliente/solicitudes/domain/solicitudes_repositorio.dart';
 import 'package:agrocom_field/cliente/solicitar/data/solicitud_demo.dart';
+import 'package:agrocom_field/l10n/app_localizations.dart';
 import 'package:agrocom_field/nucleo/marketplace/foto_perfil/foto_perfil_repositorio.dart';
 import 'package:agrocom_field/nucleo/marketplace/pago/pagos_repositorio.dart';
 import 'package:agrocom_field/nucleo/marketplace/referencias/precio_referencia.dart';
@@ -137,6 +138,9 @@ Future<void> montar(
   await tester.pumpWidget(
     MaterialApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('es'),
       theme: AgrocomThemeCampo.construir(modo: variante.modo),
       builder: (context, child) => dependencias.proveer(child: child!),
       home: pantalla,
