@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+#
+# Ejecuta UN comando pesado de Flutter a la vez en toda la máquina.
+#
+# Varios agentes y personas comparten el mismo equipo: dos `flutter test`,
+# `build_runner` o `flutter analyze` en paralelo se pisan y tardan más que
+# en fila. Este envoltorio toma un turno (cola con candado) antes de
+# ejecutar y lo suelta al terminar, aunque el comando falle o se interrumpa.
+#
+#   bin/probar flutter test test/ruta/a_prueba_test.dart
+#   bin/probar dart run build_runner build --delete-conflicting-outputs
+#   bin/probar bin/tests-afectados --listar     # barato: no necesita turno
+#
+# Las consultas baratas (`--listar`, `dart format`, `git`) no necesitan turno.
+# Variables: PROBAR_ESPERA_MAX (segundos, por defecto 1800), PROBAR_DIR.
+#
+set -uo pipefail
+
+if [ $# -eq 0 ]; then
+    sed -n '2,16p' "$0"
+    exit 64
+fi
+
+DIR="${PROBAR_DIR:-${TMPDIR:-/tmp}/agrocom-probar}"
+CANDADO="$DIR/turno"
+ESPERA_MAX="${PROBAR_ESPERA_MAX:-1800}"
+mkdir -p "$DIR"
+
+# Un candado es un directorio (mkdir es atómico). Guarda el PID de quien lo
+# tiene: si ese proceso ya no existe, el candado es huérfano y se rompe.
+huerfano() {
+    local pid
+    pid="$(cat "$CANDADO/pid" 2>/dev/null || true)"
+    [ -z "$pid" ] || ! kill -0 "$pid" 2>/dev/null
+}
+
+esperado=0
+avisado=0
+until mkdir "$CANDADO" 2>/dev/null; do
+    if huerfano; then
+        rm -rf "$CANDADO"
+        continue
+    fi
+    if [ "$avisado" -eq 0 ]; then
+        echo "bin/probar: esperando turno (lo tiene: $(cat "$CANDADO/cmd" 2>/dev/null || echo desconocido))" >&2
+        avisado=1
+    fi
+    if [ "$esperado" -ge "$ESPERA_MAX" ]; then
+        echo "bin/probar: se agotó la espera de ${ESPERA_MAX}s por el turno" >&2
+        exit 75
+    fi
+    sleep 3
+    esperado=$((esperado + 3))
+done
+
+echo "$$" > "$CANDADO/pid"
+echo "$*" > "$CANDADO/cmd"
+liberar() { rm -rf "$CANDADO"; }
+trap liberar EXIT
+trap 'exit 130' INT TERM
+
+"$@"
