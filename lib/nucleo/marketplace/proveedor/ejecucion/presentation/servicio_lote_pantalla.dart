@@ -117,7 +117,7 @@ class _Contenido extends StatelessWidget {
       children: [
         if (s.terreno != null) ...[
           ClipRRect(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(RadioCampo.tarjetaCompacta),
             child: SizedBox(
               height: 190,
               child: MapaLote(

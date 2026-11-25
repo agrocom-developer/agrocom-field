@@ -324,7 +324,7 @@ class _InsigniaSuperficie extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: paleta.superficie,
-              borderRadius: BorderRadius.circular(999),
+              borderRadius: BorderRadius.circular(RadioCampo.capsula),
               border: Border.all(color: paleta.borde),
               boxShadow: ElevacionCampo.sombras(paleta, 2),
             ),

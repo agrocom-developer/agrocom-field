@@ -541,7 +541,7 @@ class _TarjetaFoto extends StatelessWidget {
           if (lista) ...[
             const SizedBox(height: EspaciadoCampo.s),
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(RadioCampo.chip),
               child: Image.memory(
                 bytes!,
                 height: 120,

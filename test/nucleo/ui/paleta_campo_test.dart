@@ -41,7 +41,7 @@ void main() {
           ContrasteWcag.ratio(p.sobreAcento, p.acento),
           greaterThanOrEqualTo(ContrasteWcag.aaTexto),
         );
-        for (final base in [p.fondo, p.superficie]) {
+        for (final base in [p.fondo, p.superficie, p.superficieElevada]) {
           expect(
             ContrasteWcag.ratio(p.acentoTexto, base),
             greaterThanOrEqualTo(ContrasteWcag.aaTexto),
@@ -60,6 +60,50 @@ void main() {
         }
       });
 
+      test('texto y texto secundario cumplen AA sobre superficie2', () {
+        expect(
+          ContrasteWcag.ratio(p.texto, p.superficie2),
+          greaterThanOrEqualTo(ContrasteWcag.aaTexto),
+        );
+        expect(
+          ContrasteWcag.ratio(p.textoSecundario, p.superficie2),
+          greaterThanOrEqualTo(ContrasteWcag.aaTexto),
+        );
+      });
+
+      test('cada relleno de marca y contenedor lleva texto AA', () {
+        final pares = {
+          'grafito': (p.sobreGrafito, p.grafito),
+          'ámbar': (p.sobreAmbar, p.ambar),
+          'contenedor del acento': (
+            p.sobreAcentoContenedor,
+            p.acentoContenedor,
+          ),
+          'contenedor ámbar': (p.sobreAmbarContenedor, p.ambarContenedor),
+          'contenedor info': (p.sobreInfoContenedor, p.infoContenedor),
+          'contenedor error': (p.sobreErrorContenedor, p.errorContenedor),
+          'post-it': (p.sobrePapel, p.papel),
+          'post-it 2': (p.sobrePapel, p.papel2),
+        };
+        pares.forEach((nombre, par) {
+          expect(
+            ContrasteWcag.ratio(par.$1, par.$2),
+            greaterThanOrEqualTo(ContrasteWcag.aaTexto),
+            reason: nombre,
+          );
+        });
+      });
+
+      test('los rellenos vivos se distinguen del fondo (3:1)', () {
+        for (final relleno in [p.rellenoInfo, p.rellenoError]) {
+          expect(
+            ContrasteWcag.ratio(relleno, p.fondo),
+            greaterThanOrEqualTo(ContrasteWcag.aaComponente),
+            reason: '$relleno',
+          );
+        }
+      });
+
       test('el borde de controles cumple 3:1 contra fondo y superficie', () {
         for (final base in [p.fondo, p.superficie]) {
           expect(
@@ -73,7 +117,12 @@ void main() {
 
   test('el modo campo cumple AAA en todo texto y acento', () {
     final p = PaletaCampo.campo;
-    for (final base in [p.fondo, p.superficie, p.superficieElevada]) {
+    for (final base in [
+      p.fondo,
+      p.superficie,
+      p.superficieElevada,
+      p.superficie2,
+    ]) {
       for (final color in [
         p.texto,
         p.textoSecundario,
@@ -82,6 +131,7 @@ void main() {
         p.alerta,
         p.error,
         p.info,
+        p.ambar,
       ]) {
         expect(
           ContrasteWcag.ratio(color, base),
@@ -94,6 +144,20 @@ void main() {
       greaterThanOrEqualTo(ContrasteWcag.aaaTexto),
     );
   });
+
+  test(
+    'el texto secundario del claro cumple AA sobre el fondo del handoff',
+    () {
+      // Pendiente conocido: text2 #68756D medía 4,4:1 sobre #F3F5F1.
+      expect(
+        ContrasteWcag.ratio(
+          PaletaCampo.claro.textoSecundario,
+          const Color(0xFFF3F5F1),
+        ),
+        greaterThanOrEqualTo(ContrasteWcag.aaTexto),
+      );
+    },
+  );
 
   test('el verde pasto de apoyo cumple 3:1 contra fondo y superficie', () {
     for (final modo in ModoVisualCampo.values) {

@@ -208,7 +208,7 @@ class TarjetaDron extends StatelessWidget {
                 ),
                 const SizedBox(height: EspaciadoCampo.s),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(RadioCampo.capsula),
                   child: LinearProgressIndicator(
                     value: dron.desgasteBateria,
                     minHeight: 10,

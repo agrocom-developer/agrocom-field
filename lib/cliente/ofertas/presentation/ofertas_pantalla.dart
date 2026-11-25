@@ -608,7 +608,7 @@ class _Etiqueta extends StatelessWidget {
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
     decoration: BoxDecoration(
       color: color.withValues(alpha: 0.14),
-      borderRadius: BorderRadius.circular(999),
+      borderRadius: BorderRadius.circular(RadioCampo.capsula),
     ),
     child: Row(
       mainAxisSize: MainAxisSize.min,

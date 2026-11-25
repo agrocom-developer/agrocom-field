@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../seguimiento/domain/seguimiento_repositorio.dart';
+import '../../../nucleo/ui/tokens_campo.dart';
 
 /// Foto de avance o del dron. Una ruta `assets/…` es un recurso empaquetado
 /// (la demo); cualquier otra se descarga con la sesión del cliente, porque
@@ -40,7 +41,7 @@ class FotoRemota extends StatelessWidget {
       label: etiqueta ?? 'Foto',
       child: ExcludeSemantics(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(RadioCampo.chip),
           child: SizedBox(width: ancho, height: alto, child: hijo),
         ),
       ),

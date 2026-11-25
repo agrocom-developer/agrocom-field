@@ -34,16 +34,16 @@ abstract final class TipografiaCampo {
     fontFamily: _humano,
     fontWeight: FontWeight.w800,
     fontSize: 28,
-    height: 1.15,
-    letterSpacing: -0.4,
+    height: 1.1,
+    letterSpacing: -0.56,
     color: ColoresCampo.textoPrincipal,
   );
 
   /// Título de sección o de encabezado ("Nueva aplicación", "Hola, Rubén").
   static const TextStyle tituloSeccion = TextStyle(
     fontFamily: _humano,
-    fontWeight: FontWeight.w700,
-    fontSize: 18,
+    fontWeight: FontWeight.w800,
+    fontSize: 17,
     color: ColoresCampo.textoPrincipal,
   );
 
@@ -53,7 +53,7 @@ abstract final class TipografiaCampo {
     fontWeight: FontWeight.w800,
     fontSize: 24,
     height: 1.15,
-    letterSpacing: -0.2,
+    letterSpacing: -0.48,
     color: ColoresCampo.textoPrincipal,
   );
 
@@ -68,6 +68,7 @@ abstract final class TipografiaCampo {
   /// Párrafo de lectura (subtítulo de bienvenida, explicación corta).
   static final TextStyle cuerpo = TextStyle(
     fontFamily: _humano,
+    fontWeight: FontWeight.w500,
     fontSize: 15,
     height: 1.5,
     color: ColoresCampo.textoPrincipal.withValues(alpha: OpacidadesCampo.alta),
@@ -76,9 +77,69 @@ abstract final class TipografiaCampo {
   /// Texto de apoyo bajo un título ("Soja · Glifosato + 24D · líquido").
   static final TextStyle cuerpoSecundario = TextStyle(
     fontFamily: _humano,
+    fontWeight: FontWeight.w500,
     fontSize: 14,
-    height: 1.4,
+    height: 1.45,
     color: ColoresCampo.textoPrincipal.withValues(alpha: OpacidadesCampo.media),
+  );
+
+  /// Título de bloque grande (22/800).
+  static const TextStyle tituloBloque = TextStyle(
+    fontFamily: _humano,
+    fontWeight: FontWeight.w800,
+    fontSize: 22,
+    height: 1.15,
+    color: ColoresCampo.textoPrincipal,
+  );
+
+  /// Etiqueta de chip, campo o botón pequeño (12/700).
+  static const TextStyle etiqueta = TextStyle(
+    fontFamily: _humano,
+    fontWeight: FontWeight.w700,
+    fontSize: 12,
+    color: ColoresCampo.textoPrincipal,
+  );
+
+  // --- Cifras (JetBrains Mono) ---
+  //
+  // Toda cifra de negocio (hectáreas, Bs/ha, totales, rondas, calificación)
+  // se escribe en mono: columnas que se alinean y números que se leen de un
+  // vistazo. La unidad ("ha", "Bs/ha") va en [cifraUnidad].
+
+  /// Número protagonista de una pantalla (56/700, mono).
+  static const TextStyle cifraDisplay = TextStyle(
+    fontFamily: _mono,
+    fontWeight: FontWeight.w700,
+    fontSize: 56,
+    height: 1.0,
+    letterSpacing: -2.24,
+    color: ColoresCampo.textoPrincipal,
+  );
+
+  /// Número grande dentro de una tarjeta (26/700, mono).
+  static const TextStyle cifraGrande = TextStyle(
+    fontFamily: _mono,
+    fontWeight: FontWeight.w700,
+    fontSize: 26,
+    height: 1.1,
+    color: ColoresCampo.textoPrincipal,
+  );
+
+  /// Número mediano en filas y burbujas (20/700, mono).
+  static const TextStyle cifraMedia = TextStyle(
+    fontFamily: _mono,
+    fontWeight: FontWeight.w700,
+    fontSize: 20,
+    height: 1.15,
+    color: ColoresCampo.textoPrincipal,
+  );
+
+  /// Unidad junto a una cifra ("ha", "Bs/ha"), 12/700 mono.
+  static const TextStyle cifraUnidad = TextStyle(
+    fontFamily: _mono,
+    fontWeight: FontWeight.w700,
+    fontSize: 12,
+    color: ColoresCampo.textoPrincipal,
   );
 
   // --- Dato técnico (JetBrains Mono) ---
@@ -87,9 +148,9 @@ abstract final class TipografiaCampo {
   /// usa aplica `toUpperCase()` — el estilo no transforma el texto.
   static final TextStyle etiquetaMono = TextStyle(
     fontFamily: _mono,
-    fontSize: 10,
-    fontWeight: FontWeight.w500,
-    letterSpacing: 1.2,
+    fontSize: 11,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.88,
     color: ColoresCampo.textoPrincipal.withValues(
       alpha: OpacidadesCampo.secundaria,
     ),

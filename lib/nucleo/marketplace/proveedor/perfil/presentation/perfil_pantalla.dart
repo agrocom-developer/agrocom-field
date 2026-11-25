@@ -573,7 +573,7 @@ class _BarraPuntaje extends StatelessWidget {
             const SizedBox(width: EspaciadoCampo.s),
             Expanded(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(999),
+                borderRadius: BorderRadius.circular(RadioCampo.capsula),
                 child: LinearProgressIndicator(
                   value: cantidad / mayor,
                   minHeight: 8,
@@ -687,7 +687,7 @@ class _GraficoHectareas extends StatelessWidget {
                           ? paleta.acentoTexto
                           : paleta.acentoTexto.withValues(alpha: 0.45),
                       borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(6),
+                        top: Radius.circular(RadioCampo.xs),
                       ),
                     ),
                   ],

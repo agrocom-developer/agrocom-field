@@ -12,9 +12,9 @@ import 'tokens_campo.dart';
 @immutable
 class TemaCampo extends ThemeExtension<TemaCampo> {
   const TemaCampo({
-    this.radioPill = 999,
-    this.radioTarjetaGrande = 24,
-    this.radioTarjetaChica = 18,
+    this.radioPill = RadioCampo.capsula,
+    this.radioTarjetaGrande = RadioCampo.tarjeta,
+    this.radioTarjetaChica = RadioCampo.tarjetaCompacta,
     this.radioBadge = 8,
     this.familiaMonoespaciada = 'JetBrains Mono',
   });
@@ -77,10 +77,21 @@ abstract final class AgrocomThemeCampo {
       error: paleta.error,
       outline: paleta.bordeFuerte,
       outlineVariant: paleta.borde,
+      primaryContainer: paleta.acentoContenedor,
+      onPrimaryContainer: paleta.sobreAcentoContenedor,
+      secondary: paleta.grafito,
+      onSecondary: paleta.sobreGrafito,
+      tertiary: paleta.ambar,
+      onTertiary: paleta.sobreAmbar,
+      tertiaryContainer: paleta.ambarContenedor,
+      onTertiaryContainer: paleta.sobreAmbarContenedor,
+      errorContainer: paleta.errorContenedor,
+      onErrorContainer: paleta.sobreErrorContenedor,
+      surfaceContainerHighest: paleta.superficie2,
     );
 
     final forma = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(guantes ? 16 : 14),
+      borderRadius: BorderRadius.circular(RadioCampo.pildora),
     );
     const estiloBoton = TextStyle(
       fontFamily: 'Manrope',
@@ -96,6 +107,14 @@ abstract final class AgrocomThemeCampo {
       materialTapTargetSize: MaterialTapTargetSize.padded,
       fontFamily: 'Manrope',
       textTheme: _textTheme(paleta),
+      cardTheme: CardThemeData(
+        color: paleta.superficie,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(RadioCampo.tarjeta),
+          side: BorderSide(color: paleta.borde),
+        ),
+      ),
       dividerColor: paleta.borde,
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
@@ -117,11 +136,11 @@ abstract final class AgrocomThemeCampo {
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor: paleta.superficie,
-        indicatorColor: paleta.acento,
+        indicatorColor: paleta.acentoContenedor,
         iconTheme: WidgetStateProperty.resolveWith(
           (estados) => IconThemeData(
             color: estados.contains(WidgetState.selected)
-                ? paleta.sobreAcento
+                ? paleta.sobreAcentoContenedor
                 : paleta.textoSecundario,
           ),
         ),
@@ -140,8 +159,8 @@ abstract final class AgrocomThemeCampo {
       ),
       navigationRailTheme: NavigationRailThemeData(
         backgroundColor: paleta.superficie,
-        indicatorColor: paleta.acento,
-        selectedIconTheme: IconThemeData(color: paleta.sobreAcento),
+        indicatorColor: paleta.acentoContenedor,
+        selectedIconTheme: IconThemeData(color: paleta.sobreAcentoContenedor),
         unselectedIconTheme: IconThemeData(color: paleta.textoSecundario),
         selectedLabelTextStyle: TextStyle(
           fontFamily: 'Manrope',
@@ -168,6 +187,7 @@ abstract final class AgrocomThemeCampo {
       displaySmall: con(TipografiaCampo.tituloHero),
       headlineMedium: con(TipografiaCampo.tituloPantalla),
       headlineSmall: con(TipografiaCampo.valorDestacado),
+      titleSmall: con(TipografiaCampo.etiqueta, secundario: true),
       titleLarge: con(TipografiaCampo.tituloSeccion),
       titleMedium: con(TipografiaCampo.tituloTarjeta),
       bodyLarge: con(TipografiaCampo.cuerpo.copyWith(fontSize: 16)),

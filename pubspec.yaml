@@ -86,6 +86,8 @@ flutter:
           weight: 500
         - asset: assets/fonts/JetBrainsMono.ttf
           weight: 600
+        - asset: assets/fonts/JetBrainsMono.ttf
+          weight: 700
 
 # Ícono del launcher (ambos flavors comparten marca, se genera una sola vez
 # en android/app/src/main/res — ninguno de los dos flavors tiene res propio

@@ -4,6 +4,7 @@ import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../comun/presentation/insignia_estado_solicitud.dart';
 import '../domain/solicitud.dart';
+import '../../../nucleo/ui/tokens_campo.dart';
 
 /// Resumen de una solicitud para listas: lote, estado, precio por hectárea,
 /// ofertas o avance, y el piloto elegido.
@@ -74,7 +75,7 @@ class TarjetaSolicitud extends StatelessWidget {
           if (s.estado == EstadoSolicitud.enEjecucion) ...[
             const SizedBox(height: 12),
             ClipRRect(
-              borderRadius: BorderRadius.circular(999),
+              borderRadius: BorderRadius.circular(RadioCampo.capsula),
               child: LinearProgressIndicator(
                 value: s.progreso,
                 minHeight: 8,

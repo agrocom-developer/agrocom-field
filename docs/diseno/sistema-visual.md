@@ -15,103 +15,85 @@ Este documento fija el lenguaje visual común. El código vive en `lib/nucleo/ui
 
 ## 2. Modos y paleta
 
-Tres modos (`ModoVisualCampo`): **claro**, **oscuro** y **campo** (alto contraste para sol directo y guantes, modo por defecto del flavor piloto). Cada pantalla lee roles de `PaletaCampo` (`context.paleta.texto`), nunca valores hexadecimales.
+Paleta Industrial AgTech: verde agrícola `#347A36` para la acción, grafito `#29343A` para la estructura y ámbar `#F5A623` solo para lo que pide atención (regla 60 / 30 / 10). La fuente de los valores es `docs/diseno/tokens/tokens.json`; el código los lleva a `PaletaCampo` y `ColoresCampo`. Tres modos (`ModoVisualCampo`): **claro**, **oscuro** y **campo** (alto contraste AAA para sol directo y guantes, modo por defecto del flavor piloto). Cada pantalla lee roles de `PaletaCampo` (`context.paleta.texto`), nunca valores hexadecimales.
 
 Ratios medidos con la fórmula WCAG 2.x de luminancia relativa (`ContrasteWcag`, vigilados en `test/nucleo/ui/paleta_campo_test.dart`).
 
-### Modo claro
+### Roles
 
-Fondo crema, superficie casi blanca y un verde hoja profundo como primario.
-
-| Rol | Valor | Uso | Contraste |
-|---|---|---|---|
-| `fondo` | `#F6F2E4` | Fondo de pantalla (crema) | — |
-| `superficie` | `#FFFDF7` | Tarjetas, hojas | — |
-| `texto` | `#15210F` | Texto principal | 14,92:1 sobre fondo, 16,43:1 sobre superficie (AAA) |
-| `textoSecundario` | `#4A5240` | Apoyo | 7,29:1 sobre fondo, 8,03:1 sobre superficie (AAA) |
-| `acento` (verde hoja) | `#1F5F2E` | Relleno de la acción principal | — |
-| `sobreAcento` | `#FFFFFF` | Texto sobre el acento | 7,68:1 (AAA) |
-| `acentoTexto` / `exito` | `#1F5F2E` | Acento y éxito como texto o ícono | 6,85:1 sobre fondo, 7,55:1 sobre superficie (AA) |
-| `apoyo` (verde pasto) | `#4C8C3A` | Íconos, marcadores y gráficos; nunca texto | 3,66:1 sobre fondo, 4,03:1 sobre superficie (componente, mínimo 3:1) |
-| `alerta` | `#8A5300` | Pendiente, advertencia | 5,65:1 (AA) |
-| `error` | `#B42318` | Error | 5,87:1 (AA) |
-| `info` | `#0B5E8A` | Información | 6,28:1 (AA) |
-| `bordeFuerte` | `#7A7F68` | Borde de campos y controles | 3,70:1 sobre fondo, 4,08:1 sobre superficie (componente, mínimo 3:1) |
-| `borde` | `#D9D3BC` | Divisor decorativo | no porta información |
-
-### Modo oscuro
-
-Verde casi negro; el primario es un verde hoja claro para que el relleno se lea.
-
-| Rol | Valor | Contraste sobre `fondo` `#0A110B` |
-|---|---|---|
-| `superficie` / `superficieElevada` | `#111B13` / `#19261B` | — |
-| `texto` | `#EEF5EA` | 17,20:1 (AAA); 15,87:1 sobre superficie |
-| `textoSecundario` | `#A9B8A5` | 9,19:1 (AAA); 8,48:1 sobre superficie |
-| `acento` / `acentoTexto` / `exito` | `#7DBE5A` | 8,55:1 (AAA) |
-| `sobreAcento` | `#0A110B` | 8,55:1 sobre el acento (AAA) |
-| `apoyo` (verde pasto) | `#4C8C3A` | 4,66:1 sobre fondo, 4,30:1 sobre superficie (componente) |
-| `alerta` | `#FBBF24` | 11,46:1 (AAA) |
-| `error` | `#FF8A80` | 8,38:1 (AAA); 7,73:1 sobre superficie |
-| `info` | `#7DD3FC` | 11,47:1 (AAA) |
-| `bordeFuerte` | `#7F9186` | 5,74:1 (componente) |
-
-La elevación en oscuro se expresa subiendo la claridad de la superficie (`superficie` `#111B13` → `superficieElevada` `#19261B`), no con sombra.
-
-### Modo campo (alto contraste AAA, flavor piloto bajo sol)
-
-Fondo `#050A06`, superficie `#0A130B`, superficie elevada `#12220F`. Todo texto, acento y color semántico cumple AAA (7:1) sobre las tres superficies; lo vigila `test/nucleo/ui/paleta_campo_test.dart`.
-
-| Rol | Valor | Sobre fondo | Sobre superficie | Sobre elevada |
+| Rol | Claro | Oscuro | Campo | Uso |
 |---|---|---|---|---|
-| `texto` | `#F4FBF0` | 18,91:1 | 17,92:1 | 15,78:1 |
-| `textoSecundario` | `#C9D8CD` | 13,48:1 | 12,77:1 | 11,25:1 |
-| `acento` / `acentoTexto` / `exito` (verde hoja claro) | `#9AE06E` | 12,60:1 | 11,94:1 | — |
-| `sobreAcento` | `#050A06` | 12,60:1 sobre el acento | | |
-| `alerta` | `#FDE68A` | 16,02:1 | 15,18:1 | 13,37:1 |
-| `error` | `#FF9A92` | 9,78:1 | 9,26:1 | 8,16:1 |
-| `info` | `#7DD3FC` | 11,97:1 | 11,34:1 | 9,98:1 |
-| `bordeFuerte` | `#8FA68F` | 7,62:1 | 7,22:1 | — |
-| `apoyo` (verde pasto) | `#4C8C3A` | 4,86:1 | 4,61:1 | — |
+| `fondo` | `#F3F5F1` | `#17251C` | `#000000` | Fondo de pantalla |
+| `superficie` | `#FFFFFF` | `#293832` | `#0F1A13` | Tarjetas, hojas |
+| `superficieElevada` | `#FFFFFF` | `#34443B` | `#1B2A20` | Modal, oferta entrante, menú |
+| `superficie2` | `#E9EEE7` | `#34443B` | `#1B2A20` | Chips, filtros inactivos, bloques internos |
+| `texto` | `#202A2E` | `#EDF3EC` | `#FFFFFF` | Texto principal (AAA) |
+| `textoSecundario` | `#5F6C65` | `#AAB8AC` | `#D7E2D9` | Apoyo (AA en las tres superficies; AAA en campo) |
+| `acento` | `#347A36` | `#62B66A` | `#8EE08F` | Relleno de la acción principal |
+| `sobreAcento` | `#FFFFFF` | `#0F1F12` | `#000000` | Texto sobre el acento |
+| `acentoTexto` / `exito` | `#347A36` | `#6BBE73` | `#8EE08F` | Acento y éxito como texto o ícono |
+| `grafito` / `sobreGrafito` | `#29343A` / `#FFFFFF` | `#34443B` / `#EDF3EC` | `#1B2A20` / `#FFFFFF` | Cabecera de ticket, filtro activo, FAB secundario |
+| `ambar` / `sobreAmbar` | `#F5A623` / `#29343A` | `#FFB52E` / `#17251C` | `#FFC547` / `#000000` | Relleno de atención (banner sin señal, turno); no es color de texto |
+| `alerta` | `#7A4B00` | `#FFB52E` | `#FFC547` | Advertencia como texto o ícono |
+| `error` | `#A12727` | `#FF8080` | `#FF9494` | Error como texto o ícono |
+| `info` | `#14577F` | `#5BADDF` | `#8CCBF2` | Información como texto o ícono |
+| `rellenoError`, `rellenoInfo` | `#DC4545`, `#2785C7` | `#FF6868`, `#50A5D8` | `#FF9494`, `#8CCBF2` | Relleno vivo (pin, botón destructivo); no es color de texto |
+| `borde` | `#DDE4DC` | `#405247` | `#2C4034` | Divisor decorativo |
+| `bordeFuerte` | `#7A877D` | `#8A9C90` | `#6B8272` | Borde de campos y controles (3:1) |
+| `apoyo` | `#4C8C3A` | `#62B66A` | `#8EE08F` | Íconos, marcadores y gráficos; nunca texto |
 
-El rojo de insignias (`acentoRojo` `#F87171`) mide 7,21:1 sobre el fondo. El texto secundario del modo campo es siempre más contrastado que el del modo oscuro (lo vigila un test). Las reglas de campo: objetivos táctiles de 56 px, sin texto por debajo de 12 px, sin información expresada solo por color y sin gris sobre gris.
+Cada acento tiene su par tonal para chips y avisos (`acentoContenedor`, `ambarContenedor`, `infoContenedor`, `errorContenedor`, cada uno con su `sobre*Contenedor`); `PaletaCampo.contenedorDe(rol)` devuelve el par de un rol. El post-it de oferta usa `papel`, `papel2`, `papelDoblez` y `sobrePapel`.
 
-Los colores que no son de la paleta (sombra de marcadores, atribución y fondo del mapa sin teselas, visor de fotos) son tokens de `ColoresCampo`; una pantalla no declara colores propios.
+Medidas que sostienen la tabla:
+
+- `texto` sobre `fondo` claro: 13,37:1; `textoSecundario` claro: 5,01:1 sobre `fondo`, 5,50:1 sobre `superficie` y 4,67:1 sobre `superficie2`. El valor del handoff `#68756D` medía 4,40:1 sobre `#F3F5F1`; se oscureció a `#5F6C65` y no se limita a superficies blancas.
+- En claro, el verde de acento mide 4,81:1 sobre `fondo` y 5,27:1 sobre `superficie`; el texto blanco sobre el acento, 5,27:1.
+- Los colores de texto semánticos de claro son las variantes oscuras del handoff (`onErrorContainer`, `onInfoContainer`, `onAmberContainer`): 6,75:1 o más sobre `fondo`. Los tonos vivos del handoff miden menos de 4,5:1 como texto y solo se usan como relleno.
+- En oscuro, el verde de texto (`#6BBE73`) llega a 4,54:1 incluso sobre `superficieElevada`; el relleno `#62B66A` no.
+- En campo todo texto, acento y color semántico cumple AAA (7:1) sobre fondo, superficie, superficie elevada y `superficie2`.
+- El modo campo supera el contraste del oscuro en texto secundario (lo vigila un test).
+
+La elevación en oscuro y campo se expresa subiendo la claridad de la superficie. Los colores que no son de la paleta (sombra de marcadores, atribución y fondo del mapa sin teselas, visor de fotos) son tokens de `ColoresCampo`; una pantalla no declara colores propios (lo vigila `test/nucleo/ui/tokens_sin_sueltos_test.dart`).
 
 ### Reglas de color
 
-- El verde hoja es el único acento de marca; el verde pasto (`apoyo`) acompaña en íconos, marcadores y gráficos, nunca como texto. Un color semántico (éxito, alerta, error, info) nunca es el único portador del estado: lleva ícono o texto.
-- En claro el relleno de la acción es el verde hoja con texto blanco; en oscuro y campo es un verde hoja claro con texto casi negro.
-- El botón «Ya recibí el pago» del piloto es la acción principal de su pantalla y usa `paleta.acento` (`acentoHoja` `#9AE06E` en modo campo): es el verde hoja claro del sistema, no un color propio. Que parezca lima sobre fondo oscuro es intencional (ADR 0008, contraste 12,60:1); no se cambia hasta que el plan 01 (identidad visual) redefina la paleta.
+- El verde agrícola es el único acento de marca; el verde pasto (`apoyo`) acompaña en íconos, marcadores y gráficos, nunca como texto. Un color semántico nunca es el único portador del estado: lleva ícono o texto.
+- En claro el relleno de la acción es el verde con texto blanco; en oscuro y campo, un verde claro con texto casi negro.
+- El texto sobre un acento usa su `sobre*` a opacidad completa; no se apaga con alpha.
+- Sin fondos completamente verdes, neón ni degradados decorativos. En mapas: verde para lote abierto o sano, ámbar para lo que requiere atención.
 - Un color nuevo no entra al sistema sin ratio medido y test.
 
 ## 3. Tipografía
 
-Dos familias empaquetadas (SIL OFL 1.1, ver `assets/fonts/FUENTES.md`): **Manrope** para texto humano y **JetBrains Mono** para dato técnico (etiquetas, cronómetros, estados de sincronización). Sin dependencia de red para fuentes: en el lote no hay conexión.
+Dos familias empaquetadas (SIL OFL 1.1, ver `assets/fonts/FUENTES.md`): **Manrope** para texto humano y **JetBrains Mono** para toda cifra (hectáreas, Bs/ha, totales, rondas, calificación) y para el dato técnico. Sin dependencia de red para fuentes: en el lote no hay conexión. Los estilos viven en `TipografiaCampo`.
 
 | Rol Material | Estilo del dominio | Tamaño / peso |
 |---|---|---|
 | `displaySmall` | `tituloHero` | 38 / 800 |
-| `headlineMedium` | `tituloPantalla` | 28 / 800 |
-| `headlineSmall` | `valorDestacado` | 24 / 800 |
-| `titleLarge` | `tituloSeccion` | 18 / 700 |
+| `headlineMedium` | `tituloPantalla` (h1) | 28 / 800, interlineado 1,1, −0,02 em |
+| `headlineSmall` | `valorDestacado` (h2) | 24 / 800, −0,02 em |
+| — | `tituloBloque` (h3) | 22 / 800 |
+| `titleLarge` | `tituloSeccion` (título de barra) | 17 / 800 |
 | `titleMedium` | `tituloTarjeta` | 14 / 700 |
-| `bodyLarge` | `cuerpo` | 16 / 400 |
-| `bodyMedium` | `cuerpoSecundario` | 14 / 400 |
-| `labelSmall` | `etiquetaMono` | 10 / 500, en mayúscula, espaciado 1,2 |
+| `bodyLarge` | `cuerpo` | 15 / 500, interlineado 1,5 |
+| `bodyMedium` | `cuerpoSecundario` | 14 / 500, interlineado 1,45 |
+| `titleSmall` | `etiqueta` | 12 / 700 |
+| `labelSmall` | `etiquetaMono` (overline) | mono 11 / 700, +0,08 em, mayúscula |
+| — | `cifraDisplay` | mono 56 / 700, −0,04 em |
+| — | `cifraGrande`, `cifraMedia`, `cifraUnidad` | mono 26, 20 y 12 / 700 |
 
-El texto respeta el factor de escala del sistema operativo. Ninguna pantalla fija alturas que corten texto escalado al 200 %.
+Formato numérico: miles con punto (Bs 7.680) y decimal con coma (4,9). El texto respeta el factor de escala del sistema operativo; ninguna pantalla fija alturas que corten texto escalado al 200 %.
 
 ## 4. Espaciado y forma
 
 - Escala de 4 px: `xs` 4, `s` 8, `m` 12, `l` 16, `xl` 24, `xxl` 32, `xxxl` 48 (`EspaciadoCampo`).
 - Margen lateral: 16 px en teléfono, 24 px en tableta.
-- Radios: botón 14 (16 en modo campo), tarjeta chica 18, tarjeta grande 24, oferta entrante 28, pill 999.
-- Objetivo táctil mínimo: 48 px; 56 px en flavors de campo (`ObjetivoTactilCampo`).
+- Radios (`RadioCampo`): `xs` 6, `chip` 12, `media` 14, `campo` 16, `tarjetaCompacta` 18, `tarjeta` 24, `pildora` 28 (botones), `hoja` 32 (hoja inferior), `capsula` 999 (insignias). Ninguna pantalla declara un radio propio.
+- Objetivo táctil (`ObjetivoTactilCampo`): 48 px mínimo, 56 px de alto de botón en campo y 72 px para los controles propios del modo campo.
 
 ## 5. Elevación
 
-Cuatro niveles (`ElevacionCampo`): 0 plano, 1 tarjeta, 2 oferta y menú, 3 modal. En claro, sombra suave de baja opacidad (6 %, 10 %, 16 %); en oscuro y campo, superficie más clara. Un borde de 1 px (`borde`) acompaña siempre a una tarjeta para que no dependa de la sombra.
+Una sola sombra sutil (`ElevacionCampo`): en claro `0 1 2 / 6 %` más `0 4 14 / 7 %`; en oscuro la misma geometría con 30 % y 25 %; en campo ninguna, el borde de 1 px (`borde`) separa las superficies. Los niveles 2 (oferta, menú) y 3 (modal) escalan esa misma sombra. Un borde de 1 px acompaña a una tarjeta para que no dependa de la sombra.
 
 ## 6. Iconografía
 
@@ -205,7 +187,7 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 - [ ] Lee roles de `PaletaCampo`; no hay hexadecimales ni `Colors.*` sueltos.
 - [ ] Todo texto cumple AA (4,5:1); el texto de apoyo no baja de ese umbral.
 - [ ] Bordes e íconos funcionales cumplen 3:1.
-- [ ] Objetivos táctiles de 48 px (56 px en piloto).
+- [ ] Objetivos táctiles de 48 px (56 px de alto de botón en piloto; 72 px en controles de campo).
 - [ ] Verificada en claro, oscuro y campo.
 - [ ] Verificada con texto al 200 % sin cortes ni desbordes.
 - [ ] Verificada en iPhone, Android compacto e iPad vertical y horizontal.
