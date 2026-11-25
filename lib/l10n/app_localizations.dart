@@ -1692,6 +1692,693 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Reintentar'**
   String get inicioReintentar;
+
+  /// No description provided for @ofertasCompararOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Comparar ofertas'**
+  String get ofertasCompararOfertas;
+
+  /// No description provided for @ofertasEncontramosEstaSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos esta solicitud'**
+  String get ofertasEncontramosEstaSolicitud;
+
+  /// No description provided for @ofertasVuelveSolicitudesAbrelaNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a «Solicitudes» y ábrela de nuevo.'**
+  String get ofertasVuelveSolicitudesAbrelaNuevo;
+
+  /// No description provided for @ofertasElegir.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Elegir a {nombre}?'**
+  String ofertasElegir(String nombre);
+
+  /// No description provided for @ofertasQuedanAcordadosPorHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'Quedan acordados {precioHa} por hectárea ({montoEstimado} estimados). Las demás ofertas se cierran y el piloto recibe tu contacto.'**
+  String ofertasQuedanAcordadosPorHectarea(
+    String precioHa,
+    String montoEstimado,
+  );
+
+  /// No description provided for @ofertasVolver.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get ofertasVolver;
+
+  /// No description provided for @ofertasElegirPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir piloto'**
+  String get ofertasElegirPiloto;
+
+  /// No description provided for @ofertasPideProponPrecioPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Pide {precioHa}/ha. Propón tu precio; el piloto puede aceptar o responder.'**
+  String ofertasPideProponPrecioPiloto(String precioHa);
+
+  /// No description provided for @ofertasSinConexionVesUltimo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Ves lo último que cargamos; puede estar desactualizado.'**
+  String get ofertasSinConexionVesUltimo;
+
+  /// No description provided for @ofertasOfertasOrden.
+  ///
+  /// In es, this message translates to:
+  /// **'OFERTAS · ORDEN: {etiqueta}'**
+  String ofertasOfertasOrden(String etiqueta);
+
+  /// No description provided for @ofertasElegir2.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir a {primerNombre} · {montoEstimado}'**
+  String ofertasElegir2(String primerNombre, String montoEstimado);
+
+  /// No description provided for @ofertasContraofertar.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraofertar'**
+  String get ofertasContraofertar;
+
+  /// No description provided for @ofertasRechazar.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar'**
+  String get ofertasRechazar;
+
+  /// No description provided for @ofertasUltimaRondaSoloPuedes.
+  ///
+  /// In es, this message translates to:
+  /// **'Última ronda: solo puedes elegirlo o rechazarlo.'**
+  String get ofertasUltimaRondaSoloPuedes;
+
+  /// No description provided for @ofertasEsperandoRespuesta.
+  ///
+  /// In es, this message translates to:
+  /// **'Esperando la respuesta de {primerNombre}'**
+  String ofertasEsperandoRespuesta(String primerNombre);
+
+  /// No description provided for @ofertasTodaviaHayOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay ofertas'**
+  String get ofertasTodaviaHayOfertas;
+
+  /// No description provided for @ofertasLosPilotosZonaVen.
+  ///
+  /// In es, this message translates to:
+  /// **'Los pilotos de la zona ya ven tu solicitud. Cuando alguno ofrezca, te avisamos. Si tarda, prueba subir tu precio.'**
+  String get ofertasLosPilotosZonaVen;
+
+  /// No description provided for @ofertasFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto de {nombre}'**
+  String ofertasFoto(String nombre);
+
+  /// No description provided for @ofertasFotoDelDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto del dron {dron}'**
+  String ofertasFotoDelDron(String dron);
+
+  /// No description provided for @ofertasRondas.
+  ///
+  /// In es, this message translates to:
+  /// **'RONDAS'**
+  String get ofertasRondas;
+
+  /// No description provided for @ofertasRonda.
+  ///
+  /// In es, this message translates to:
+  /// **'{precioHa}/ha · ronda {numero}'**
+  String ofertasRonda(String precioHa, int numero);
+
+  /// No description provided for @ofertasBsHa.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs {precioHa}/ha'**
+  String ofertasBsHa(String precioHa);
+
+  /// No description provided for @seguimientoEncontramosEsteServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'No encontramos este servicio'**
+  String get seguimientoEncontramosEsteServicio;
+
+  /// No description provided for @seguimientoVuelveSolicitudesAbreloNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a «Solicitudes» y ábrelo de nuevo.'**
+  String get seguimientoVuelveSolicitudesAbreloNuevo;
+
+  /// No description provided for @seguimientoPrecioFinal.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio final'**
+  String get seguimientoPrecioFinal;
+
+  /// No description provided for @seguimientoSonMenosQueLas.
+  ///
+  /// In es, this message translates to:
+  /// **'Son {menos} menos que las publicadas ({hectareas}). El total sale de lo que el piloto ejecutó.'**
+  String seguimientoSonMenosQueLas(String menos, String hectareas);
+
+  /// No description provided for @seguimientoPagoDirectoPilotoAgrocom.
+  ///
+  /// In es, this message translates to:
+  /// **'El pago es directo al piloto. Agrocom no cobra dentro de la app.'**
+  String get seguimientoPagoDirectoPilotoAgrocom;
+
+  /// No description provided for @seguimientoReportasteProblemaCasoSoporte.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportaste un problema (caso {numeroCaso}). Soporte te responde en 24 horas hábiles.'**
+  String seguimientoReportasteProblemaCasoSoporte(String numeroCaso);
+
+  /// No description provided for @seguimientoCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu calificación'**
+  String get seguimientoCalificacion;
+
+  /// No description provided for @seguimientoCalificarPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificar al piloto'**
+  String get seguimientoCalificarPiloto;
+
+  /// No description provided for @seguimientoSinConexionVesUltimo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Ves lo último que cargamos; puede estar desactualizado.'**
+  String get seguimientoSinConexionVesUltimo;
+
+  /// No description provided for @seguimientoPilotoConfirmado.
+  ///
+  /// In es, this message translates to:
+  /// **'Piloto confirmado'**
+  String get seguimientoPilotoConfirmado;
+
+  /// No description provided for @seguimientoInicioVuelo.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio de vuelo'**
+  String get seguimientoInicioVuelo;
+
+  /// No description provided for @seguimientoAcuerdenFechaPorChat.
+  ///
+  /// In es, this message translates to:
+  /// **'Acuerden la fecha por el chat.'**
+  String get seguimientoAcuerdenFechaPorChat;
+
+  /// No description provided for @seguimientoCierrePrecioFinal.
+  ///
+  /// In es, this message translates to:
+  /// **'Cierre y precio final'**
+  String get seguimientoCierrePrecioFinal;
+
+  /// No description provided for @seguimientoTerminarLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Al terminar el lote'**
+  String get seguimientoTerminarLote;
+
+  /// No description provided for @seguimientoHa.
+  ///
+  /// In es, this message translates to:
+  /// **' / {total} ha'**
+  String seguimientoHa(String total);
+
+  /// No description provided for @seguimientoPilotoTodaviaEmpezoAcuerden.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto todavía no empezó. Acuerden la fecha por el chat.'**
+  String get seguimientoPilotoTodaviaEmpezoAcuerden;
+
+  /// No description provided for @seguimientoUltimaActualizacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Última actualización {ahora}'**
+  String seguimientoUltimaActualizacion(String ahora);
+
+  /// No description provided for @seguimientoPrecioFinalPagar.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio final a pagar'**
+  String get seguimientoPrecioFinalPagar;
+
+  /// No description provided for @seguimientoPagasPilotoFueraApp.
+  ///
+  /// In es, this message translates to:
+  /// **'Le pagas al piloto fuera de la app.'**
+  String get seguimientoPagasPilotoFueraApp;
+
+  /// No description provided for @seguimientoFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto de {nombre}'**
+  String seguimientoFoto(String nombre);
+
+  /// No description provided for @seguimientoPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu piloto'**
+  String get seguimientoPiloto;
+
+  /// No description provided for @seguimientoChat.
+  ///
+  /// In es, this message translates to:
+  /// **'Chat'**
+  String get seguimientoChat;
+
+  /// No description provided for @seguimientoTodaviaHayFotosPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay fotos. El piloto las sube a medida que avanza, y las verás acá.'**
+  String get seguimientoTodaviaHayFotosPiloto;
+
+  /// No description provided for @seguimientoFotoDelAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto del avance'**
+  String get seguimientoFotoDelAvance;
+
+  /// No description provided for @seguimientoCerrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get seguimientoCerrar;
+
+  /// No description provided for @seguimientoFotoDelAvance2.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto del avance, {subidaEn}'**
+  String seguimientoFotoDelAvance2(String subidaEn);
+
+  /// No description provided for @seguimientoUltimaFotoDelAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Última foto del avance'**
+  String get seguimientoUltimaFotoDelAvance;
+
+  /// No description provided for @seguimientoFotoAnteriorDelAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto anterior del avance'**
+  String get seguimientoFotoAnteriorDelAvance;
+
+  /// No description provided for @seguimientoFotoDelAvanceToca.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto del avance, {subidaEn} {subidaEn2}. Toca para ampliar'**
+  String seguimientoFotoDelAvanceToca(String subidaEn, String subidaEn2);
+
+  /// No description provided for @seguimientoHitoAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Avance {porcentaje} %'**
+  String seguimientoHitoAvance(String porcentaje);
+
+  /// No description provided for @seguimientoHitoFotos.
+  ///
+  /// In es, this message translates to:
+  /// **'{fotos, plural, =1{1 foto} other{{fotos} fotos}}{hace}'**
+  String seguimientoHitoFotos(int fotos, String hace);
+
+  /// No description provided for @seguimientoHitoHaceSufijo.
+  ///
+  /// In es, this message translates to:
+  /// **' · {hace}'**
+  String seguimientoHitoHaceSufijo(String hace);
+
+  /// No description provided for @ofertasContraofertarA.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraofertar a {nombre}'**
+  String ofertasContraofertarA(String nombre);
+
+  /// No description provided for @ofertasOfertaRecibida.
+  ///
+  /// In es, this message translates to:
+  /// **'1 oferta recibida'**
+  String get ofertasOfertaRecibida;
+
+  /// No description provided for @ofertasOfertasRecibidas.
+  ///
+  /// In es, this message translates to:
+  /// **'{recibidas} ofertas recibidas'**
+  String ofertasOfertasRecibidas(int recibidas);
+
+  /// No description provided for @ofertasLasOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'las ofertas'**
+  String get ofertasLasOfertas;
+
+  /// No description provided for @ofertasEnviarContraoferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar contraoferta'**
+  String get ofertasEnviarContraoferta;
+
+  /// No description provided for @ofertasPedido.
+  ///
+  /// In es, this message translates to:
+  /// **'PEDIDO #{id}'**
+  String ofertasPedido(String id);
+
+  /// No description provided for @ofertasSolicitudExpiroAbrelaNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'La solicitud expiró. Ábrela de nuevo para recibir ofertas.'**
+  String get ofertasSolicitudExpiroAbrelaNuevo;
+
+  /// No description provided for @ofertasSolicitudCancelo.
+  ///
+  /// In es, this message translates to:
+  /// **'La solicitud se canceló.'**
+  String get ofertasSolicitudCancelo;
+
+  /// No description provided for @ofertasElegistePilotoParaEsta.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya elegiste a un piloto para esta solicitud.'**
+  String get ofertasElegistePilotoParaEsta;
+
+  /// No description provided for @ofertasOfertasCerradas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas cerradas'**
+  String get ofertasOfertasCerradas;
+
+  /// No description provided for @ofertasSinCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin calificaciones'**
+  String get ofertasSinCalificaciones;
+
+  /// No description provided for @ofertasAceptoPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptó tu precio'**
+  String get ofertasAceptoPrecio;
+
+  /// No description provided for @ofertasContraoferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu contraoferta · R{numero}/{maximo}'**
+  String ofertasContraoferta(int numero, int maximo);
+
+  /// No description provided for @ofertasEnviamosContraofertaPilotoTiene.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviamos tu contraoferta. El piloto tiene que responder.'**
+  String get ofertasEnviamosContraofertaPilotoTiene;
+
+  /// No description provided for @ofertasRechazasteOfertaLasDemas.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazaste la oferta. Las demás siguen abiertas.'**
+  String get ofertasRechazasteOfertaLasDemas;
+
+  /// No description provided for @ofertasSinConexionEnviamosRespuesta.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. No enviamos tu respuesta; inténtalo con señal.'**
+  String get ofertasSinConexionEnviamosRespuesta;
+
+  /// No description provided for @ofertasPudimosEnviarRespuesta.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar tu respuesta.'**
+  String get ofertasPudimosEnviarRespuesta;
+
+  /// No description provided for @ofertasContraofertaRonda.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu contraoferta · ronda {numero}'**
+  String ofertasContraofertaRonda(int numero);
+
+  /// No description provided for @ofertasAceptaPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Acepta tu precio'**
+  String get ofertasAceptaPrecio;
+
+  /// No description provided for @ofertasPideMasQuePrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Pide {dif}/ha más que tu precio'**
+  String ofertasPideMasQuePrecio(String dif);
+
+  /// No description provided for @ofertasIgualaPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Iguala tu precio'**
+  String get ofertasIgualaPrecio;
+
+  /// No description provided for @ofertasOfreceMenosQuePrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofrece {dif}/ha menos que tu precio'**
+  String ofertasOfreceMenosQuePrecio(String dif);
+
+  /// No description provided for @ofertasLote.
+  ///
+  /// In es, this message translates to:
+  /// **'A {distanciaKm} de tu lote'**
+  String ofertasLote(String distanciaKm);
+
+  /// No description provided for @ofertasCanceloSusServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'Canceló {porcentaje} % de sus servicios'**
+  String ofertasCanceloSusServicios(int porcentaje);
+
+  /// No description provided for @ofertasOfertaVencio.
+  ///
+  /// In es, this message translates to:
+  /// **'La oferta venció'**
+  String get ofertasOfertaVencio;
+
+  /// No description provided for @ofertasVence.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence en {inMinutes}'**
+  String ofertasVence(String inMinutes);
+
+  /// No description provided for @ofertasVencida.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencida'**
+  String get ofertasVencida;
+
+  /// No description provided for @seguimientoChat2.
+  ///
+  /// In es, this message translates to:
+  /// **'el chat'**
+  String get seguimientoChat2;
+
+  /// No description provided for @seguimientoMapaDelLoteSin.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa del lote {nombre}, sin ubicación del piloto'**
+  String seguimientoMapaDelLoteSin(String nombre);
+
+  /// No description provided for @seguimientoMapaDelLoteCon.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa del lote {nombre} con la última ubicación del piloto'**
+  String seguimientoMapaDelLoteCon(String nombre);
+
+  /// No description provided for @seguimientoServicioTerminado.
+  ///
+  /// In es, this message translates to:
+  /// **'{nombre} · servicio terminado'**
+  String seguimientoServicioTerminado(String nombre);
+
+  /// No description provided for @seguimientoPrecioFinal2.
+  ///
+  /// In es, this message translates to:
+  /// **'el precio final'**
+  String get seguimientoPrecioFinal2;
+
+  /// No description provided for @seguimientoPedido.
+  ///
+  /// In es, this message translates to:
+  /// **'PEDIDO #{id}'**
+  String seguimientoPedido(String id);
+
+  /// No description provided for @seguimientoTotalPagarPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Total a pagar al piloto'**
+  String get seguimientoTotalPagarPiloto;
+
+  /// No description provided for @seguimientoReportarProblema.
+  ///
+  /// In es, this message translates to:
+  /// **'Reportar un problema'**
+  String get seguimientoReportarProblema;
+
+  /// No description provided for @seguimientoServicioTerminado2.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicio terminado'**
+  String get seguimientoServicioTerminado2;
+
+  /// No description provided for @seguimientoServicioCurso.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicio en curso'**
+  String get seguimientoServicioCurso;
+
+  /// No description provided for @seguimientoSeguimiento.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguimiento'**
+  String get seguimientoSeguimiento;
+
+  /// No description provided for @seguimientoSeguimiento2.
+  ///
+  /// In es, this message translates to:
+  /// **'el seguimiento'**
+  String get seguimientoSeguimiento2;
+
+  /// No description provided for @seguimientoMasFotosDelAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Más fotos del avance'**
+  String get seguimientoMasFotosDelAvance;
+
+  /// No description provided for @seguimientoDondeEstaPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Dónde está el piloto'**
+  String get seguimientoDondeEstaPiloto;
+
+  /// No description provided for @seguimientoNotasDelPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Notas del piloto'**
+  String get seguimientoNotasDelPiloto;
+
+  /// No description provided for @seguimientoDeHa.
+  ///
+  /// In es, this message translates to:
+  /// **'{hechas} de {total} ha'**
+  String seguimientoDeHa(String hechas, String total);
+
+  /// No description provided for @seguimientoPropuesto.
+  ///
+  /// In es, this message translates to:
+  /// **'{precioHaPropuesto}/ha propuesto'**
+  String seguimientoPropuesto(String precioHaPropuesto);
+
+  /// No description provided for @seguimientoAcordado.
+  ///
+  /// In es, this message translates to:
+  /// **'{precioHaAcordado}/ha acordado'**
+  String seguimientoAcordado(String precioHaAcordado);
+
+  /// No description provided for @seguimientoPilotoComparteUbicacionCuando.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto comparte su ubicación cuando empieza el trabajo.'**
+  String get seguimientoPilotoComparteUbicacionCuando;
+
+  /// No description provided for @seguimientoSinUbicacionRecienteEscribele.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin ubicación reciente. Escríbele por el chat si necesitas saber dónde está.'**
+  String get seguimientoSinUbicacionRecienteEscribele;
+
+  /// No description provided for @seguimientoUltimaUbicacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Última ubicación {ahora}.'**
+  String seguimientoUltimaUbicacion(String ahora);
+
+  /// No description provided for @seguimientoSinUbicacionRecienteUltima.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin ubicación reciente. La última fue {ahora}.'**
+  String seguimientoSinUbicacionRecienteUltima(String ahora);
+
+  /// No description provided for @ofertasRondaCorta.
+  ///
+  /// In es, this message translates to:
+  /// **'R{numero}/{maximo}'**
+  String ofertasRondaCorta(int numero, int maximo);
+
+  /// No description provided for @ofertasNotaCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'{nota}/5 · {cantidad, plural, =1{1 calificación} other{{cantidad} calificaciones}}'**
+  String ofertasNotaCalificaciones(String nota, int cantidad);
+
+  /// No description provided for @ofertasOrdenPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Menor precio'**
+  String get ofertasOrdenPrecio;
+
+  /// No description provided for @ofertasOrdenCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Mejor calificación'**
+  String get ofertasOrdenCalificacion;
+
+  /// No description provided for @ofertasOrdenDistancia.
+  ///
+  /// In es, this message translates to:
+  /// **'Más cerca'**
+  String get ofertasOrdenDistancia;
+
+  /// No description provided for @ofertasOfertaCambio.
+  ///
+  /// In es, this message translates to:
+  /// **'La oferta cambió.'**
+  String get ofertasOfertaCambio;
+
+  /// No description provided for @ofertasActualizamosLista.
+  ///
+  /// In es, this message translates to:
+  /// **'{motivo} Actualizamos la lista.'**
+  String ofertasActualizamosLista(String motivo);
+
+  /// No description provided for @seguimientoElPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto'**
+  String get seguimientoElPiloto;
+
+  /// No description provided for @seguimientoHoraUltima.
+  ///
+  /// In es, this message translates to:
+  /// **'{hora} · ÚLTIMA'**
+  String seguimientoHoraUltima(String hora);
+
+  /// No description provided for @seguimientoFotosUnidad.
+  ///
+  /// In es, this message translates to:
+  /// **'fotos'**
+  String get seguimientoFotosUnidad;
+
+  /// No description provided for @seguimientoDelServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'del servicio'**
+  String get seguimientoDelServicio;
 }
 
 class _AppLocalizationsDelegate

@@ -22,6 +22,7 @@ import 'chat_pantalla.dart';
 import 'mapa_ubicacion_piloto.dart';
 import 'precio_final_pantalla.dart';
 import 'seguimiento_cubit.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Seguimiento simple de un servicio adjudicado: cuánto lleva el piloto, las
 /// fotos que subió, su última ubicación (un punto, sin ruta ni tiempo
@@ -45,6 +46,7 @@ class SeguimientoPantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
       create: (context) => SeguimientoCubit(
         seguimiento: context.read<SeguimientoRepositorio>(),
@@ -57,9 +59,10 @@ class SeguimientoPantalla extends StatelessWidget {
           appBar: AppBar(
             title: _Titulo(
               apoyo: estado.solicitud?.estado.terminada ?? false
-                  ? 'Servicio terminado'
-                  : 'Servicio en curso',
-              titulo: estado.solicitud?.lote.nombre ?? 'Seguimiento',
+                  ? l10n.seguimientoServicioTerminado2
+                  : l10n.seguimientoServicioCurso,
+              titulo:
+                  estado.solicitud?.lote.nombre ?? l10n.seguimientoSeguimiento,
             ),
           ),
           body: AnimatedSwitcher(
@@ -72,14 +75,14 @@ class SeguimientoPantalla extends StatelessWidget {
               FaseSeguimiento.error => EstadoFalla(
                 key: const ValueKey('error'),
                 sinConexion: estado.sinConexion,
-                queNoCargo: 'el seguimiento',
+                queNoCargo: l10n.seguimientoSeguimiento2,
                 alReintentar: context.read<SeguimientoCubit>().cargar,
               ),
-              FaseSeguimiento.noEncontrado => const EstadoVacioMarketplace(
+              FaseSeguimiento.noEncontrado => EstadoVacioMarketplace(
                 key: ValueKey('no-encontrado'),
                 icono: Icons.search_off_rounded,
-                titulo: 'No encontramos este servicio',
-                detalle: 'Vuelve a «Solicitudes» y ábrelo de nuevo.',
+                titulo: l10n.seguimientoEncontramosEsteServicio,
+                detalle: l10n.seguimientoVuelveSolicitudesAbreloNuevo,
               ),
               FaseSeguimiento.listo => _Contenido(
                 key: const ValueKey('contenido'),
@@ -130,6 +133,7 @@ class _Contenido extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = estado.solicitud!;
     final a = estado.avance ?? AvanceServicio.vacio(s.hectareas);
     final ahora = reloj();
@@ -171,12 +175,10 @@ class _Contenido extends StatelessWidget {
                   ),
                   children: [
                     if (estado.sinConexion) ...[
-                      const AvisoMarketplace(
+                      AvisoMarketplace(
                         tono: TonoAviso.alerta,
                         icono: Icons.wifi_off_rounded,
-                        mensaje:
-                            'Sin conexión. Ves lo último que cargamos; puede '
-                            'estar desactualizado.',
+                        mensaje: l10n.seguimientoSinConexionVesUltimo,
                       ),
                       const SizedBox(height: EspaciadoCampo.l),
                     ],
@@ -192,12 +194,12 @@ class _Contenido extends StatelessWidget {
                     else
                       _Mosaico(fotos: fotos, ahora: ahora),
                     if (fotos.length > 2) ...[
-                      const TituloSeccion('Más fotos del avance'),
+                      TituloSeccion(l10n.seguimientoMasFotosDelAvance),
                       _Galeria(fotos: fotos.skip(2).toList(), ahora: ahora),
                     ],
                     const SizedBox(height: EspaciadoCampo.xl),
                     LineaTiempoSolicitud(
-                      hitos: _hitos(s, a, fotos.length, ahora),
+                      hitos: _hitos(l10n, s, a, fotos.length, ahora),
                     ),
                     if (s.estado.terminada) ...[
                       const SizedBox(height: EspaciadoCampo.l),
@@ -209,7 +211,7 @@ class _Contenido extends StatelessWidget {
                     ],
                     if (enEjecucion ||
                         s.estado == EstadoSolicitud.adjudicada) ...[
-                      const TituloSeccion('Dónde está el piloto'),
+                      TituloSeccion(l10n.seguimientoDondeEstaPiloto),
                       _Ubicacion(
                         solicitud: s,
                         ubicacion: estado.ubicacion,
@@ -217,7 +219,7 @@ class _Contenido extends StatelessWidget {
                       ),
                     ],
                     if (notas.isNotEmpty) ...[
-                      const TituloSeccion('Notas del piloto'),
+                      TituloSeccion(l10n.seguimientoNotasDelPiloto),
                       SuperficieMarketplace(
                         child: ListaDatos([
                           for (final r in notas.take(5))
@@ -244,6 +246,7 @@ class _Contenido extends StatelessWidget {
   /// Los cuatro pasos del servicio: piloto confirmado, inicio de vuelo,
   /// avance y cierre con precio final.
   static List<HitoSolicitud> _hitos(
+    AppLocalizations l10n,
     Solicitud s,
     AvanceServicio a,
     int fotos,
@@ -258,15 +261,15 @@ class _Contenido extends StatelessWidget {
       HitoSolicitud(
         clave: 'piloto',
         estado: EstadoHito.hecho,
-        titulo: 'Piloto confirmado',
-        detalle: s.nombreProveedor ?? 'El piloto',
+        titulo: l10n.seguimientoPilotoConfirmado,
+        detalle: s.nombreProveedor ?? l10n.seguimientoElPiloto,
         momento: s.momentoDe(EstadoSolicitud.adjudicada),
       ),
       HitoSolicitud(
         clave: 'inicio',
         estado: enEjecucion || terminada ? EstadoHito.hecho : EstadoHito.actual,
-        titulo: 'Inicio de vuelo',
-        detalle: 'Acuerden la fecha por el chat.',
+        titulo: l10n.seguimientoInicioVuelo,
+        detalle: l10n.seguimientoAcuerdenFechaPorChat,
         momento: inicio,
       ),
       HitoSolicitud(
@@ -276,16 +279,21 @@ class _Contenido extends StatelessWidget {
             : enEjecucion
             ? EstadoHito.actual
             : EstadoHito.pendiente,
-        titulo: 'Avance ${porcentaje ?? '0'} %',
-        detalle:
-            '$fotos ${fotos == 1 ? 'foto' : 'fotos'}'
-            '${ultima == null ? '' : ' · ${FormatoMarketplace.hace(ultima, ahora)}'}',
+        titulo: l10n.seguimientoHitoAvance(porcentaje ?? '0'),
+        detalle: l10n.seguimientoHitoFotos(
+          fotos,
+          ultima == null
+              ? ''
+              : l10n.seguimientoHitoHaceSufijo(
+                  FormatoMarketplace.hace(ultima, ahora),
+                ),
+        ),
       ),
       HitoSolicitud(
         clave: 'cierre',
         estado: terminada ? EstadoHito.hecho : EstadoHito.pendiente,
-        titulo: 'Cierre y precio final',
-        detalle: 'Al terminar el lote',
+        titulo: l10n.seguimientoCierrePrecioFinal,
+        detalle: l10n.seguimientoTerminarLote,
       ),
     ];
   }
@@ -308,6 +316,7 @@ class _Avance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final s = solicitud;
     final iniciado =
@@ -317,7 +326,7 @@ class _Avance extends StatelessWidget {
         ? '0'
         : FormatoMarketplace.hectareasNumero(ejecutadas!);
     final total = FormatoMarketplace.hectareasNumero(s.hectareas);
-    final etiqueta = '$hechas de $total ha';
+    final etiqueta = l10n.seguimientoDeHa(hechas, total);
     final secundario = TipografiaCampo.datoMono.copyWith(
       color: paleta.textoSecundario,
     );
@@ -337,7 +346,7 @@ class _Avance extends StatelessWidget {
                   ),
                 ),
                 TextSpan(
-                  text: ' / $total ha',
+                  text: l10n.seguimientoHa(total),
                   style: TipografiaCampo.cifraGrande.copyWith(
                     color: paleta.textoSecundario,
                   ),
@@ -364,8 +373,12 @@ class _Avance extends StatelessWidget {
             ),
             Text(
               s.precioHaAcordado == null
-                  ? '${FormatoMarketplace.bs(s.precioHaPropuesto)}/ha propuesto'
-                  : '${FormatoMarketplace.bs(s.precioHaAcordado!)}/ha acordado',
+                  ? l10n.seguimientoPropuesto(
+                      FormatoMarketplace.bs(s.precioHaPropuesto),
+                    )
+                  : l10n.seguimientoAcordado(
+                      FormatoMarketplace.bs(s.precioHaAcordado!),
+                    ),
               style: secundario,
             ),
           ],
@@ -373,14 +386,15 @@ class _Avance extends StatelessWidget {
         if (!iniciado) ...[
           const SizedBox(height: EspaciadoCampo.s),
           Text(
-            'El piloto todavía no empezó. Acuerden la fecha por el chat.',
+            l10n.seguimientoPilotoTodaviaEmpezoAcuerden,
             style: TipografiaCampo.cuerpo.copyWith(color: paleta.texto),
           ),
         ] else if (avance.ultimoAvanceEn != null) ...[
           const SizedBox(height: EspaciadoCampo.xs),
           Text(
-            'Última actualización '
-            '${FormatoMarketplace.hace(avance.ultimoAvanceEn!, ahora)}',
+            l10n.seguimientoUltimaActualizacion(
+              FormatoMarketplace.hace(avance.ultimoAvanceEn!, ahora),
+            ),
             style: TipografiaCampo.cuerpoSecundario.copyWith(
               color: paleta.textoSecundario,
             ),
@@ -399,6 +413,7 @@ class _PrecioFinal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final s = solicitud;
     return SuperficieMarketplace(
@@ -415,7 +430,7 @@ class _PrecioFinal extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Precio final a pagar',
+                  l10n.seguimientoPrecioFinalPagar,
                   style: TipografiaCampo.cuerpoSecundario.copyWith(
                     color: paleta.textoSecundario,
                   ),
@@ -426,7 +441,7 @@ class _PrecioFinal extends StatelessWidget {
                   unidad: 'Bs',
                 ),
                 Text(
-                  'Le pagas al piloto fuera de la app.',
+                  l10n.seguimientoPagasPilotoFueraApp,
                   style: TipografiaCampo.cuerpoSecundario.copyWith(
                     color: paleta.textoSecundario,
                   ),
@@ -450,6 +465,7 @@ class _TarjetaPiloto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final nombre = solicitud.nombreProveedor!;
     final iniciales = nombre
@@ -477,7 +493,7 @@ class _TarjetaPiloto extends StatelessWidget {
               child: _FilaPiloto(
                 avatar: AvatarFoto(
                   iniciales: iniciales,
-                  etiqueta: 'Foto de $nombre',
+                  etiqueta: l10n.seguimientoFoto(nombre),
                   tamano: ObjetivoTactilCampo.guantes - EspaciadoCampo.s,
                 ),
                 datos: Column(
@@ -490,7 +506,7 @@ class _TarjetaPiloto extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Tu piloto',
+                      l10n.seguimientoPiloto,
                       style: TipografiaCampo.cuerpoSecundario.copyWith(
                         color: paleta.textoSecundario,
                       ),
@@ -505,7 +521,7 @@ class _TarjetaPiloto extends StatelessWidget {
                     ),
                   ),
                   icon: const Icon(Icons.chat_bubble_outline_rounded),
-                  label: const Text('Chat'),
+                  label: Text(l10n.seguimientoChat),
                 ),
               ),
             ),
@@ -529,19 +545,22 @@ class _Ubicacion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final u = ubicacion;
     final vigente = u != null && u.vigente;
     final mensaje = solicitud.estado != EstadoSolicitud.enEjecucion
-        ? 'El piloto comparte su ubicación cuando empieza el trabajo.'
+        ? l10n.seguimientoPilotoComparteUbicacionCuando
         : u == null
-        ? 'Sin ubicación reciente. Escríbele por el chat si necesitas '
-              'saber dónde está.'
+        ? l10n.seguimientoSinUbicacionRecienteEscribele
         : vigente
-        ? 'Última ubicación ${FormatoMarketplace.hace(u.capturadaEn, ahora)}.'
-        : 'Sin ubicación reciente. La última fue '
-              '${FormatoMarketplace.hace(u.capturadaEn, ahora)}.';
+        ? l10n.seguimientoUltimaUbicacion(
+            FormatoMarketplace.hace(u.capturadaEn, ahora),
+          )
+        : l10n.seguimientoSinUbicacionRecienteUltima(
+            FormatoMarketplace.hace(u.capturadaEn, ahora),
+          );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -571,15 +590,15 @@ class _SinFotos extends StatelessWidget {
   const _SinFotos();
 
   @override
-  Widget build(BuildContext context) => const AvisoMarketplace(
-    mensaje:
-        'Todavía no hay fotos. El piloto las sube a medida que avanza, y '
-        'las verás acá.',
-  );
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return AvisoMarketplace(mensaje: l10n.seguimientoTodaviaHayFotosPiloto);
+  }
 }
 
 /// Abre la foto a pantalla completa.
 void _abrirFoto(BuildContext context, FotoAvance f) {
+  final l10n = AppLocalizations.of(context);
   showDialog<void>(
     context: context,
     builder: (_) => Dialog.fullscreen(
@@ -588,14 +607,17 @@ void _abrirFoto(BuildContext context, FotoAvance f) {
         children: [
           Positioned.fill(
             child: InteractiveViewer(
-              child: FotoRemota(ruta: f.ruta, etiqueta: 'Foto del avance'),
+              child: FotoRemota(
+                ruta: f.ruta,
+                etiqueta: l10n.seguimientoFotoDelAvance,
+              ),
             ),
           ),
           SafeArea(
             child: Align(
               alignment: Alignment.topRight,
               child: IconButton.filled(
-                tooltip: 'Cerrar',
+                tooltip: l10n.seguimientoCerrar,
                 onPressed: () => Navigator.of(context).pop(),
                 icon: const Icon(Icons.close_rounded),
               ),
@@ -627,13 +649,16 @@ class _Mosaico extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final ultima = fotos.first;
     if (fotos.length == 1) {
       return SizedBox(
         height: 240,
         child: Semantics(
           image: true,
-          label: 'Foto del avance, ${FormatoMarketplace.hora(ultima.subidaEn)}',
+          label: l10n.seguimientoFotoDelAvance2(
+            FormatoMarketplace.hora(ultima.subidaEn),
+          ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(RadioCampo.tarjetaCompacta),
             child: _tocable(context, ultima),
@@ -645,17 +670,19 @@ class _Mosaico extends StatelessWidget {
     return CollageFotosCampo(
       principal: FotoCollageCampo(
         imagen: _tocable(context, ultima),
-        hora: '${FormatoMarketplace.hora(ultima.subidaEn)} · ÚLTIMA',
-        descripcion: 'Última foto del avance',
+        hora: l10n.seguimientoHoraUltima(
+          FormatoMarketplace.hora(ultima.subidaEn),
+        ),
+        descripcion: l10n.seguimientoUltimaFotoDelAvance,
       ),
       secundaria: FotoCollageCampo(
         imagen: _tocable(context, anterior),
         hora: FormatoMarketplace.hora(anterior.subidaEn),
-        descripcion: 'Foto anterior del avance',
+        descripcion: l10n.seguimientoFotoAnteriorDelAvance,
       ),
       valorDato: '${fotos.length}',
-      unidadDato: 'fotos',
-      etiquetaDato: 'del servicio',
+      unidadDato: l10n.seguimientoFotosUnidad,
+      etiquetaDato: l10n.seguimientoDelServicio,
     );
   }
 }
@@ -668,6 +695,7 @@ class _Galeria extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return SizedBox(
       height: 152,
@@ -679,10 +707,10 @@ class _Galeria extends StatelessWidget {
           final f = fotos[i];
           return Semantics(
             button: true,
-            label:
-                'Foto del avance, '
-                '${FormatoMarketplace.fechaCorta(f.subidaEn)} '
-                '${FormatoMarketplace.hora(f.subidaEn)}. Toca para ampliar',
+            label: l10n.seguimientoFotoDelAvanceToca(
+              FormatoMarketplace.fechaCorta(f.subidaEn),
+              FormatoMarketplace.hora(f.subidaEn),
+            ),
             excludeSemantics: true,
             child: InkWell(
               key: ValueKey('foto-${f.id}'),

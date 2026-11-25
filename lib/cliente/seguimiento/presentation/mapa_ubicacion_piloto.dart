@@ -7,6 +7,7 @@ import '../../../nucleo/marketplace/ui/mapa_lote.dart';
 import '../../../nucleo/ui/colores_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 LatLng _ll(GeoPunto p) => LatLng(p.latitud, p.longitud);
 
@@ -32,6 +33,7 @@ class MapaUbicacionPiloto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final teselas = conTeselas ?? ConfiguracionMapa.teselas;
     final puntos = [
@@ -41,8 +43,8 @@ class MapaUbicacionPiloto extends StatelessWidget {
     final color = vigente ? paleta.acento : paleta.textoSecundario;
     return Semantics(
       label: punto == null
-          ? 'Mapa del lote ${lote.nombre}, sin ubicación del piloto'
-          : 'Mapa del lote ${lote.nombre} con la última ubicación del piloto',
+          ? l10n.seguimientoMapaDelLoteSin(lote.nombre)
+          : l10n.seguimientoMapaDelLoteCon(lote.nombre),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(RadioCampo.tarjetaCompacta),
         child: FlutterMap(

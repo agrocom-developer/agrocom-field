@@ -218,6 +218,7 @@ class _CuerpoState extends State<_Cuerpo> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocConsumer<ChatCubit, ChatEstado>(
       listenWhen: (a, b) => a.mensajes.length != b.mensajes.length,
       listener: (context, _) =>
@@ -228,7 +229,7 @@ class _CuerpoState extends State<_Cuerpo> {
         if (estado.fase == FaseChat.error) {
           return EstadoFalla(
             sinConexion: estado.sinConexion,
-            queNoCargo: 'el chat',
+            queNoCargo: l10n.seguimientoChat2,
             alReintentar: cubit.cargar,
           );
         }

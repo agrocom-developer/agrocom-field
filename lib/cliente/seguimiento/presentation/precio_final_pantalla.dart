@@ -43,6 +43,7 @@ class PrecioFinalPantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -66,7 +67,7 @@ class PrecioFinalPantalla extends StatelessWidget {
               title: _Titulo(
                 apoyo: s == null
                     ? null
-                    : '${s.lote.nombre} · servicio terminado',
+                    : l10n.seguimientoServicioTerminado(s.lote.nombre),
               ),
             ),
             body: AnimatedSwitcher(
@@ -80,16 +81,16 @@ class PrecioFinalPantalla extends StatelessWidget {
                 FaseDetalle.error => EstadoFalla(
                   key: const ValueKey('error'),
                   sinConexion: estado.sinConexion,
-                  queNoCargo: 'el precio final',
+                  queNoCargo: l10n.seguimientoPrecioFinal2,
                   alReintentar: context
                       .read<SolicitudDetalleCubit>()
                       .reintentar,
                 ),
-                FaseDetalle.noEncontrado => const EstadoVacioMarketplace(
+                FaseDetalle.noEncontrado => EstadoVacioMarketplace(
                   key: ValueKey('no-encontrado'),
                   icono: Icons.search_off_rounded,
-                  titulo: 'No encontramos este servicio',
-                  detalle: 'Vuelve a «Solicitudes» y ábrelo de nuevo.',
+                  titulo: l10n.seguimientoEncontramosEsteServicio,
+                  detalle: l10n.seguimientoVuelveSolicitudesAbreloNuevo,
                 ),
                 FaseDetalle.listo => _Contenido(
                   key: const ValueKey('contenido'),
@@ -111,6 +112,7 @@ class _Titulo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,7 +126,7 @@ class _Titulo extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
           ),
         Text(
-          'Precio final',
+          l10n.seguimientoPrecioFinal,
           style: TipografiaCampo.tituloSeccion.copyWith(color: paleta.texto),
         ),
       ],
@@ -152,6 +154,7 @@ class _Contenido extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final s = estado.solicitud!;
     final margen = EspaciadoCampo.margenLateral(
@@ -192,7 +195,7 @@ class _Contenido extends StatelessWidget {
                 ),
                 children: [
                   TicketPedidoCampo(
-                    numero: 'PEDIDO #${s.id}',
+                    numero: l10n.seguimientoPedido(s.id),
                     estado: cierre == null
                         ? s.estado.etiqueta
                         : (cierre.confirmado
@@ -213,7 +216,7 @@ class _Contenido extends StatelessWidget {
                         esCifra: true,
                       ),
                     ],
-                    etiquetaTotal: 'Total a pagar al piloto',
+                    etiquetaTotal: l10n.seguimientoTotalPagarPiloto,
                     total: FormatoMarketplace.bsNumero(
                       cierre?.montoFinal ?? s.totalAPagar,
                     ),
@@ -224,20 +227,17 @@ class _Contenido extends StatelessWidget {
                       key: const ValueKey('aviso-diferencia'),
                       tono: TonoAviso.alerta,
                       icono: Icons.straighten_rounded,
-                      mensaje:
-                          'Son ${FormatoMarketplace.hectareas(menos)} menos '
-                          'que las publicadas '
-                          '(${FormatoMarketplace.hectareas(s.hectareas)}). '
-                          'El total sale de lo que el piloto ejecutó.',
+                      mensaje: l10n.seguimientoSonMenosQueLas(
+                        FormatoMarketplace.hectareas(menos),
+                        FormatoMarketplace.hectareas(s.hectareas),
+                      ),
                     ),
                   ],
                   const SizedBox(height: EspaciadoCampo.m),
-                  const AvisoMarketplace(
+                  AvisoMarketplace(
                     key: ValueKey('aviso-pago-directo'),
                     icono: Icons.handshake_outlined,
-                    mensaje:
-                        'El pago es directo al piloto. Agrocom no cobra '
-                        'dentro de la app.',
+                    mensaje: l10n.seguimientoPagoDirectoPilotoAgrocom,
                   ),
                   if (cierre?.confirmado ?? false) ...[
                     const SizedBox(height: EspaciadoCampo.m),
@@ -268,10 +268,9 @@ class _Contenido extends StatelessWidget {
                     AvisoMarketplace(
                       tono: TonoAviso.alerta,
                       icono: Icons.flag_rounded,
-                      mensaje:
-                          'Reportaste un problema (caso '
-                          '${estado.problema!.numeroCaso}). Soporte te '
-                          'responde en 24 horas hábiles.',
+                      mensaje: l10n.seguimientoReportasteProblemaCasoSoporte(
+                        estado.problema!.numeroCaso,
+                      ),
                     ),
                   ],
                   if (s.puntajeDelCliente != null) ...[
@@ -279,7 +278,7 @@ class _Contenido extends StatelessWidget {
                     Row(
                       children: [
                         Text(
-                          'Tu calificación',
+                          l10n.seguimientoCalificacion,
                           style: TipografiaCampo.cuerpoSecundario.copyWith(
                             color: paleta.textoSecundario,
                           ),
@@ -324,7 +323,7 @@ class _Contenido extends StatelessWidget {
                       if (puedeCalificar)
                         BotonPrincipal(
                           key: const ValueKey('calificar-desde-precio'),
-                          texto: 'Calificar al piloto',
+                          texto: l10n.seguimientoCalificarPiloto,
                           icono: Icons.star_rounded,
                           onPressed: () => _calificar(context, s),
                         ),
@@ -342,7 +341,7 @@ class _Contenido extends StatelessWidget {
                           child: Text(
                             puedeConfirmar
                                 ? t.precioFinalAbrirDisputa
-                                : 'Reportar un problema',
+                                : l10n.seguimientoReportarProblema,
                           ),
                         ),
                     ],

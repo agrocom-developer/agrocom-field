@@ -965,4 +965,466 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get inicioReintentar => 'Reintentar';
+
+  @override
+  String get ofertasCompararOfertas => 'Comparar ofertas';
+
+  @override
+  String get ofertasEncontramosEstaSolicitud => 'No encontramos esta solicitud';
+
+  @override
+  String get ofertasVuelveSolicitudesAbrelaNuevo =>
+      'Vuelve a «Solicitudes» y ábrela de nuevo.';
+
+  @override
+  String ofertasElegir(String nombre) {
+    return '¿Elegir a $nombre?';
+  }
+
+  @override
+  String ofertasQuedanAcordadosPorHectarea(
+    String precioHa,
+    String montoEstimado,
+  ) {
+    return 'Quedan acordados $precioHa por hectárea ($montoEstimado estimados). Las demás ofertas se cierran y el piloto recibe tu contacto.';
+  }
+
+  @override
+  String get ofertasVolver => 'Volver';
+
+  @override
+  String get ofertasElegirPiloto => 'Elegir piloto';
+
+  @override
+  String ofertasPideProponPrecioPiloto(String precioHa) {
+    return 'Pide $precioHa/ha. Propón tu precio; el piloto puede aceptar o responder.';
+  }
+
+  @override
+  String get ofertasSinConexionVesUltimo =>
+      'Sin conexión. Ves lo último que cargamos; puede estar desactualizado.';
+
+  @override
+  String ofertasOfertasOrden(String etiqueta) {
+    return 'OFERTAS · ORDEN: $etiqueta';
+  }
+
+  @override
+  String ofertasElegir2(String primerNombre, String montoEstimado) {
+    return 'Elegir a $primerNombre · $montoEstimado';
+  }
+
+  @override
+  String get ofertasContraofertar => 'Contraofertar';
+
+  @override
+  String get ofertasRechazar => 'Rechazar';
+
+  @override
+  String get ofertasUltimaRondaSoloPuedes =>
+      'Última ronda: solo puedes elegirlo o rechazarlo.';
+
+  @override
+  String ofertasEsperandoRespuesta(String primerNombre) {
+    return 'Esperando la respuesta de $primerNombre';
+  }
+
+  @override
+  String get ofertasTodaviaHayOfertas => 'Todavía no hay ofertas';
+
+  @override
+  String get ofertasLosPilotosZonaVen =>
+      'Los pilotos de la zona ya ven tu solicitud. Cuando alguno ofrezca, te avisamos. Si tarda, prueba subir tu precio.';
+
+  @override
+  String ofertasFoto(String nombre) {
+    return 'Foto de $nombre';
+  }
+
+  @override
+  String ofertasFotoDelDron(String dron) {
+    return 'Foto del dron $dron';
+  }
+
+  @override
+  String get ofertasRondas => 'RONDAS';
+
+  @override
+  String ofertasRonda(String precioHa, int numero) {
+    return '$precioHa/ha · ronda $numero';
+  }
+
+  @override
+  String ofertasBsHa(String precioHa) {
+    return 'Bs $precioHa/ha';
+  }
+
+  @override
+  String get seguimientoEncontramosEsteServicio =>
+      'No encontramos este servicio';
+
+  @override
+  String get seguimientoVuelveSolicitudesAbreloNuevo =>
+      'Vuelve a «Solicitudes» y ábrelo de nuevo.';
+
+  @override
+  String get seguimientoPrecioFinal => 'Precio final';
+
+  @override
+  String seguimientoSonMenosQueLas(String menos, String hectareas) {
+    return 'Son $menos menos que las publicadas ($hectareas). El total sale de lo que el piloto ejecutó.';
+  }
+
+  @override
+  String get seguimientoPagoDirectoPilotoAgrocom =>
+      'El pago es directo al piloto. Agrocom no cobra dentro de la app.';
+
+  @override
+  String seguimientoReportasteProblemaCasoSoporte(String numeroCaso) {
+    return 'Reportaste un problema (caso $numeroCaso). Soporte te responde en 24 horas hábiles.';
+  }
+
+  @override
+  String get seguimientoCalificacion => 'Tu calificación';
+
+  @override
+  String get seguimientoCalificarPiloto => 'Calificar al piloto';
+
+  @override
+  String get seguimientoSinConexionVesUltimo =>
+      'Sin conexión. Ves lo último que cargamos; puede estar desactualizado.';
+
+  @override
+  String get seguimientoPilotoConfirmado => 'Piloto confirmado';
+
+  @override
+  String get seguimientoInicioVuelo => 'Inicio de vuelo';
+
+  @override
+  String get seguimientoAcuerdenFechaPorChat =>
+      'Acuerden la fecha por el chat.';
+
+  @override
+  String get seguimientoCierrePrecioFinal => 'Cierre y precio final';
+
+  @override
+  String get seguimientoTerminarLote => 'Al terminar el lote';
+
+  @override
+  String seguimientoHa(String total) {
+    return ' / $total ha';
+  }
+
+  @override
+  String get seguimientoPilotoTodaviaEmpezoAcuerden =>
+      'El piloto todavía no empezó. Acuerden la fecha por el chat.';
+
+  @override
+  String seguimientoUltimaActualizacion(String ahora) {
+    return 'Última actualización $ahora';
+  }
+
+  @override
+  String get seguimientoPrecioFinalPagar => 'Precio final a pagar';
+
+  @override
+  String get seguimientoPagasPilotoFueraApp =>
+      'Le pagas al piloto fuera de la app.';
+
+  @override
+  String seguimientoFoto(String nombre) {
+    return 'Foto de $nombre';
+  }
+
+  @override
+  String get seguimientoPiloto => 'Tu piloto';
+
+  @override
+  String get seguimientoChat => 'Chat';
+
+  @override
+  String get seguimientoTodaviaHayFotosPiloto =>
+      'Todavía no hay fotos. El piloto las sube a medida que avanza, y las verás acá.';
+
+  @override
+  String get seguimientoFotoDelAvance => 'Foto del avance';
+
+  @override
+  String get seguimientoCerrar => 'Cerrar';
+
+  @override
+  String seguimientoFotoDelAvance2(String subidaEn) {
+    return 'Foto del avance, $subidaEn';
+  }
+
+  @override
+  String get seguimientoUltimaFotoDelAvance => 'Última foto del avance';
+
+  @override
+  String get seguimientoFotoAnteriorDelAvance => 'Foto anterior del avance';
+
+  @override
+  String seguimientoFotoDelAvanceToca(String subidaEn, String subidaEn2) {
+    return 'Foto del avance, $subidaEn $subidaEn2. Toca para ampliar';
+  }
+
+  @override
+  String seguimientoHitoAvance(String porcentaje) {
+    return 'Avance $porcentaje %';
+  }
+
+  @override
+  String seguimientoHitoFotos(int fotos, String hace) {
+    String _temp0 = intl.Intl.pluralLogic(
+      fotos,
+      locale: localeName,
+      other: '$fotos fotos',
+      one: '1 foto',
+    );
+    return '$_temp0$hace';
+  }
+
+  @override
+  String seguimientoHitoHaceSufijo(String hace) {
+    return ' · $hace';
+  }
+
+  @override
+  String ofertasContraofertarA(String nombre) {
+    return 'Contraofertar a $nombre';
+  }
+
+  @override
+  String get ofertasOfertaRecibida => '1 oferta recibida';
+
+  @override
+  String ofertasOfertasRecibidas(int recibidas) {
+    return '$recibidas ofertas recibidas';
+  }
+
+  @override
+  String get ofertasLasOfertas => 'las ofertas';
+
+  @override
+  String get ofertasEnviarContraoferta => 'Enviar contraoferta';
+
+  @override
+  String ofertasPedido(String id) {
+    return 'PEDIDO #$id';
+  }
+
+  @override
+  String get ofertasSolicitudExpiroAbrelaNuevo =>
+      'La solicitud expiró. Ábrela de nuevo para recibir ofertas.';
+
+  @override
+  String get ofertasSolicitudCancelo => 'La solicitud se canceló.';
+
+  @override
+  String get ofertasElegistePilotoParaEsta =>
+      'Ya elegiste a un piloto para esta solicitud.';
+
+  @override
+  String get ofertasOfertasCerradas => 'Ofertas cerradas';
+
+  @override
+  String get ofertasSinCalificaciones => 'Sin calificaciones';
+
+  @override
+  String get ofertasAceptoPrecio => 'Aceptó tu precio';
+
+  @override
+  String ofertasContraoferta(int numero, int maximo) {
+    return 'Tu contraoferta · R$numero/$maximo';
+  }
+
+  @override
+  String get ofertasEnviamosContraofertaPilotoTiene =>
+      'Enviamos tu contraoferta. El piloto tiene que responder.';
+
+  @override
+  String get ofertasRechazasteOfertaLasDemas =>
+      'Rechazaste la oferta. Las demás siguen abiertas.';
+
+  @override
+  String get ofertasSinConexionEnviamosRespuesta =>
+      'Sin conexión. No enviamos tu respuesta; inténtalo con señal.';
+
+  @override
+  String get ofertasPudimosEnviarRespuesta => 'No pudimos enviar tu respuesta.';
+
+  @override
+  String ofertasContraofertaRonda(int numero) {
+    return 'Tu contraoferta · ronda $numero';
+  }
+
+  @override
+  String get ofertasAceptaPrecio => 'Acepta tu precio';
+
+  @override
+  String ofertasPideMasQuePrecio(String dif) {
+    return 'Pide $dif/ha más que tu precio';
+  }
+
+  @override
+  String get ofertasIgualaPrecio => 'Iguala tu precio';
+
+  @override
+  String ofertasOfreceMenosQuePrecio(String dif) {
+    return 'Ofrece $dif/ha menos que tu precio';
+  }
+
+  @override
+  String ofertasLote(String distanciaKm) {
+    return 'A $distanciaKm de tu lote';
+  }
+
+  @override
+  String ofertasCanceloSusServicios(int porcentaje) {
+    return 'Canceló $porcentaje % de sus servicios';
+  }
+
+  @override
+  String get ofertasOfertaVencio => 'La oferta venció';
+
+  @override
+  String ofertasVence(String inMinutes) {
+    return 'Vence en $inMinutes';
+  }
+
+  @override
+  String get ofertasVencida => 'Vencida';
+
+  @override
+  String get seguimientoChat2 => 'el chat';
+
+  @override
+  String seguimientoMapaDelLoteSin(String nombre) {
+    return 'Mapa del lote $nombre, sin ubicación del piloto';
+  }
+
+  @override
+  String seguimientoMapaDelLoteCon(String nombre) {
+    return 'Mapa del lote $nombre con la última ubicación del piloto';
+  }
+
+  @override
+  String seguimientoServicioTerminado(String nombre) {
+    return '$nombre · servicio terminado';
+  }
+
+  @override
+  String get seguimientoPrecioFinal2 => 'el precio final';
+
+  @override
+  String seguimientoPedido(String id) {
+    return 'PEDIDO #$id';
+  }
+
+  @override
+  String get seguimientoTotalPagarPiloto => 'Total a pagar al piloto';
+
+  @override
+  String get seguimientoReportarProblema => 'Reportar un problema';
+
+  @override
+  String get seguimientoServicioTerminado2 => 'Servicio terminado';
+
+  @override
+  String get seguimientoServicioCurso => 'Servicio en curso';
+
+  @override
+  String get seguimientoSeguimiento => 'Seguimiento';
+
+  @override
+  String get seguimientoSeguimiento2 => 'el seguimiento';
+
+  @override
+  String get seguimientoMasFotosDelAvance => 'Más fotos del avance';
+
+  @override
+  String get seguimientoDondeEstaPiloto => 'Dónde está el piloto';
+
+  @override
+  String get seguimientoNotasDelPiloto => 'Notas del piloto';
+
+  @override
+  String seguimientoDeHa(String hechas, String total) {
+    return '$hechas de $total ha';
+  }
+
+  @override
+  String seguimientoPropuesto(String precioHaPropuesto) {
+    return '$precioHaPropuesto/ha propuesto';
+  }
+
+  @override
+  String seguimientoAcordado(String precioHaAcordado) {
+    return '$precioHaAcordado/ha acordado';
+  }
+
+  @override
+  String get seguimientoPilotoComparteUbicacionCuando =>
+      'El piloto comparte su ubicación cuando empieza el trabajo.';
+
+  @override
+  String get seguimientoSinUbicacionRecienteEscribele =>
+      'Sin ubicación reciente. Escríbele por el chat si necesitas saber dónde está.';
+
+  @override
+  String seguimientoUltimaUbicacion(String ahora) {
+    return 'Última ubicación $ahora.';
+  }
+
+  @override
+  String seguimientoSinUbicacionRecienteUltima(String ahora) {
+    return 'Sin ubicación reciente. La última fue $ahora.';
+  }
+
+  @override
+  String ofertasRondaCorta(int numero, int maximo) {
+    return 'R$numero/$maximo';
+  }
+
+  @override
+  String ofertasNotaCalificaciones(String nota, int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad calificaciones',
+      one: '1 calificación',
+    );
+    return '$nota/5 · $_temp0';
+  }
+
+  @override
+  String get ofertasOrdenPrecio => 'Menor precio';
+
+  @override
+  String get ofertasOrdenCalificacion => 'Mejor calificación';
+
+  @override
+  String get ofertasOrdenDistancia => 'Más cerca';
+
+  @override
+  String get ofertasOfertaCambio => 'La oferta cambió.';
+
+  @override
+  String ofertasActualizamosLista(String motivo) {
+    return '$motivo Actualizamos la lista.';
+  }
+
+  @override
+  String get seguimientoElPiloto => 'El piloto';
+
+  @override
+  String seguimientoHoraUltima(String hora) {
+    return '$hora · ÚLTIMA';
+  }
+
+  @override
+  String get seguimientoFotosUnidad => 'fotos';
+
+  @override
+  String get seguimientoDelServicio => 'del servicio';
 }

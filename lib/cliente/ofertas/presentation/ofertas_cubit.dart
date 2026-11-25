@@ -13,14 +13,7 @@ import '../domain/ofertas_repositorio.dart';
 enum FaseOfertas { cargando, lista, noEncontrada, error }
 
 /// Cómo se ordenan las ofertas vigentes para compararlas.
-enum OrdenOfertas {
-  precio('Menor precio'),
-  calificacion('Mejor calificación'),
-  distancia('Más cerca');
-
-  const OrdenOfertas(this.etiqueta);
-  final String etiqueta;
-}
+enum OrdenOfertas { precio, calificacion, distancia }
 
 /// Qué pasó con la última respuesta, para que la pantalla lo diga.
 enum AvisoOfertas { contraofertaEnviada, rechazada, cambio, sinConexion, error }

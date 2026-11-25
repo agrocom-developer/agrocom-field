@@ -19,6 +19,7 @@ import '../../solicitudes/domain/solicitudes_repositorio.dart';
 import '../domain/oferta_recibida.dart';
 import '../domain/ofertas_repositorio.dart';
 import 'ofertas_cubit.dart';
+import 'textos_orden.dart';
 import 'perfil_proveedor_pantalla.dart';
 
 /// Las ofertas que los pilotos hicieron a una solicitud: el cliente las
@@ -62,6 +63,7 @@ class _Vista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocConsumer<OfertasCubit, OfertasEstado>(
       listenWhen: (a, b) => !a.adjudicada && b.adjudicada,
       listener: (context, estado) {
@@ -87,14 +89,14 @@ class _Vista extends StatelessWidget {
                 if (recibidas != null)
                   Text(
                     recibidas == 1
-                        ? '1 oferta recibida'
-                        : '$recibidas ofertas recibidas',
+                        ? l10n.ofertasOfertaRecibida
+                        : l10n.ofertasOfertasRecibidas(recibidas),
                     style: TipografiaCampo.cuerpoSecundario.copyWith(
                       color: context.paleta.textoSecundario,
                     ),
                   ),
                 Text(
-                  'Comparar ofertas',
+                  l10n.ofertasCompararOfertas,
                   style: TipografiaCampo.tituloSeccion.copyWith(
                     color: context.paleta.texto,
                   ),
@@ -106,13 +108,13 @@ class _Vista extends StatelessWidget {
             FaseOfertas.cargando => const _Cargando(),
             FaseOfertas.error => EstadoFalla(
               sinConexion: estado.sinConexion,
-              queNoCargo: 'las ofertas',
+              queNoCargo: l10n.ofertasLasOfertas,
               alReintentar: cubit.cargar,
             ),
-            FaseOfertas.noEncontrada => const EstadoVacioMarketplace(
+            FaseOfertas.noEncontrada => EstadoVacioMarketplace(
               icono: Icons.search_off_rounded,
-              titulo: 'No encontramos esta solicitud',
-              detalle: 'Vuelve a «Solicitudes» y ábrela de nuevo.',
+              titulo: l10n.ofertasEncontramosEstaSolicitud,
+              detalle: l10n.ofertasVuelveSolicitudesAbrelaNuevo,
             ),
             FaseOfertas.lista => _Lista(estado: estado, reloj: reloj),
           },
@@ -175,25 +177,27 @@ class _ListaState extends State<_Lista> {
   }
 
   Future<void> _aceptar(OfertaRecibida o) async {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<OfertasCubit>();
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('¿Elegir a ${o.proveedor.nombre}?'),
+        title: Text(l10n.ofertasElegir(o.proveedor.nombre)),
         content: Text(
-          'Quedan acordados ${FormatoMarketplace.bs(o.precioHa)} por '
-          'hectárea (${FormatoMarketplace.bs(o.montoEstimado)} estimados). '
-          'Las demás ofertas se cierran y el piloto recibe tu contacto.',
+          l10n.ofertasQuedanAcordadosPorHectarea(
+            FormatoMarketplace.bs(o.precioHa),
+            FormatoMarketplace.bs(o.montoEstimado),
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Volver'),
+            child: Text(l10n.ofertasVolver),
           ),
           FilledButton(
             key: const ValueKey('confirmar-aceptar'),
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Elegir piloto'),
+            child: Text(l10n.ofertasElegirPiloto),
           ),
         ],
       ),
@@ -202,17 +206,18 @@ class _ListaState extends State<_Lista> {
   }
 
   Future<void> _contraofertar(OfertaRecibida o, Solicitud solicitud) async {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<OfertasCubit>();
     final escrito = await mostrarHojaPrecio(
       context,
-      titulo: 'Contraofertar a ${o.proveedor.nombre.split(' ').first}',
-      textoAccion: 'Enviar contraoferta',
+      titulo: l10n.ofertasContraofertarA(o.proveedor.nombre.split(' ').first),
+      textoAccion: l10n.ofertasEnviarContraoferta,
       hectareas: solicitud.hectareas,
       inicial: o.precioHa,
       conNota: true,
-      apoyo:
-          'Pide ${FormatoMarketplace.bs(o.precioHa)}/ha. Propón tu precio; '
-          'el piloto puede aceptar o responder.',
+      apoyo: l10n.ofertasPideProponPrecioPiloto(
+        FormatoMarketplace.bs(o.precioHa),
+      ),
     );
     if (escrito != null) {
       await cubit.contraofertar(o, escrito.precio, nota: escrito.nota);
@@ -221,6 +226,7 @@ class _ListaState extends State<_Lista> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final estado = widget.estado;
     final cubit = context.read<OfertasCubit>();
     final paleta = context.paleta;
@@ -253,7 +259,7 @@ class _ListaState extends State<_Lista> {
                   ),
                   children: [
                     TicketPedidoCampo(
-                      numero: 'PEDIDO #${s.id}',
+                      numero: l10n.ofertasPedido(s.id),
                       estado: s.estado.etiqueta,
                       filas: [
                         FilaTicketCampo(clave: 'Lote', valor: s.lote.nombre),
@@ -277,12 +283,10 @@ class _ListaState extends State<_Lista> {
                     ),
                     if (estado.sinConexion) ...[
                       const SizedBox(height: EspaciadoCampo.l),
-                      const AvisoMarketplace(
+                      AvisoMarketplace(
                         tono: TonoAviso.alerta,
                         icono: Icons.wifi_off_rounded,
-                        mensaje:
-                            'Sin conexión. Ves lo último que cargamos; puede '
-                            'estar desactualizado.',
+                        mensaje: l10n.ofertasSinConexionVesUltimo,
                       ),
                     ],
                     if (estado.aviso != null) ...[
@@ -295,18 +299,19 @@ class _ListaState extends State<_Lista> {
                         key: const ValueKey('solicitud-cerrada'),
                         mensaje: switch (s.estado) {
                           EstadoSolicitud.expirada =>
-                            'La solicitud expiró. Ábrela de nuevo para '
-                                'recibir ofertas.',
+                            l10n.ofertasSolicitudExpiroAbrelaNuevo,
                           EstadoSolicitud.cancelada =>
-                            'La solicitud se canceló.',
-                          _ => 'Ya elegiste a un piloto para esta solicitud.',
+                            l10n.ofertasSolicitudCancelo,
+                          _ => l10n.ofertasElegistePilotoParaEsta,
                         },
                       ),
                     ],
                     if (vigentes.isNotEmpty && !cerradaLaSolicitud) ...[
                       const SizedBox(height: EspaciadoCampo.l),
                       Text(
-                        'OFERTAS · ORDEN: ${estado.orden.etiqueta.toUpperCase()}',
+                        l10n.ofertasOfertasOrden(
+                          estado.orden.etiquetaL10n(l10n).toUpperCase(),
+                        ),
                         style: TipografiaCampo.etiquetaMono.copyWith(
                           color: paleta.textoSecundario,
                         ),
@@ -330,7 +335,7 @@ class _ListaState extends State<_Lista> {
                               o.precioHa,
                             ),
                             total: FormatoMarketplace.bsNumero(o.montoEstimado),
-                            detalle: _detallePostIt(o),
+                            detalle: _detallePostIt(l10n, o),
                             iniciales: o.proveedor.iniciales,
                             elegido: o.id == elegida?.id,
                             onTap: () {
@@ -363,7 +368,7 @@ class _ListaState extends State<_Lista> {
                         ahora: ahora,
                       ),
                     if (cerradas.isNotEmpty) ...[
-                      const TituloSeccionOfertas('Ofertas cerradas'),
+                      TituloSeccionOfertas(l10n.ofertasOfertasCerradas),
                       for (final o in cerradas) _FilaCerrada(oferta: o),
                     ],
                   ],
@@ -388,18 +393,19 @@ class _ListaState extends State<_Lista> {
   }
 
   /// «4,9/5 · 86 calificaciones · R3/5» (o «Aceptó tu precio»).
-  static String _detallePostIt(OfertaRecibida o) {
+  static String _detallePostIt(AppLocalizations l10n, OfertaRecibida o) {
     final p = o.proveedor;
     final nota = p.calificaciones == 0
-        ? 'Sin calificaciones'
-        : '${p.calificacion.toStringAsFixed(1).replaceAll('.', ',')}/5 · '
-              '${p.calificaciones} '
-              '${p.calificaciones == 1 ? 'calificación' : 'calificaciones'}';
+        ? l10n.ofertasSinCalificaciones
+        : l10n.ofertasNotaCalificaciones(
+            p.calificacion.toStringAsFixed(1).replaceAll('.', ','),
+            p.calificaciones,
+          );
     final estado = o.aceptaPropuesta
-        ? 'Aceptó tu precio'
+        ? l10n.ofertasAceptoPrecio
         : o.autor == AutorOferta.cliente
-        ? 'Tu contraoferta · R${o.numero}/$_rondasMaximas'
-        : 'R${o.numero}/$_rondasMaximas';
+        ? l10n.ofertasContraoferta(o.numero, _rondasMaximas)
+        : l10n.ofertasRondaCorta(o.numero, _rondasMaximas);
     return '$nota · $estado';
   }
 }
@@ -430,6 +436,7 @@ class _BarraAcciones extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final o = oferta;
     final primerNombre = o.proveedor.nombre.split(' ').first;
@@ -459,9 +466,10 @@ class _BarraAcciones extends StatelessWidget {
                       children: [
                         BotonPrincipal(
                           key: ValueKey('aceptar-${o.id}'),
-                          texto:
-                              'Elegir a $primerNombre · '
-                              '${FormatoMarketplace.bs(o.montoEstimado)}',
+                          texto: l10n.ofertasElegir2(
+                            primerNombre,
+                            FormatoMarketplace.bs(o.montoEstimado),
+                          ),
                           cargando: respondiendoEsta,
                           onPressed: ocupada ? null : alElegir,
                         ),
@@ -471,7 +479,7 @@ class _BarraAcciones extends StatelessWidget {
                               Expanded(
                                 child: BotonSecundario(
                                   key: ValueKey('contraofertar-${o.id}'),
-                                  texto: 'Contraofertar',
+                                  texto: l10n.ofertasContraofertar,
                                   icono: Icons.swap_vert_rounded,
                                   onPressed: ocupada ? null : alContraofertar,
                                 ),
@@ -479,7 +487,7 @@ class _BarraAcciones extends StatelessWidget {
                             Expanded(
                               child: BotonSecundario(
                                 key: ValueKey('rechazar-${o.id}'),
-                                texto: 'Rechazar',
+                                texto: l10n.ofertasRechazar,
                                 icono: Icons.close_rounded,
                                 onPressed: ocupada ? null : alRechazar,
                               ),
@@ -492,8 +500,7 @@ class _BarraAcciones extends StatelessWidget {
                               bottom: EspaciadoCampo.xs,
                             ),
                             child: Text(
-                              'Última ronda: solo puedes elegirlo o '
-                              'rechazarlo.',
+                              l10n.ofertasUltimaRondaSoloPuedes,
                               textAlign: TextAlign.center,
                               style: TipografiaCampo.cuerpoSecundario.copyWith(
                                 color: paleta.textoSecundario,
@@ -507,7 +514,7 @@ class _BarraAcciones extends StatelessWidget {
                       child: Semantics(
                         liveRegion: true,
                         child: _Etiqueta(
-                          texto: 'Esperando la respuesta de $primerNombre',
+                          texto: l10n.ofertasEsperandoRespuesta(primerNombre),
                           icono: Icons.hourglass_top_rounded,
                           rol: paleta.info,
                         ),
@@ -549,6 +556,7 @@ class _Orden extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return SizedBox(
       width: double.infinity,
       child: SegmentedButton<OrdenOfertas>(
@@ -558,7 +566,7 @@ class _Orden extends StatelessWidget {
             : Axis.horizontal,
         segments: [
           for (final o in OrdenOfertas.values)
-            ButtonSegment(value: o, label: Text(o.etiqueta)),
+            ButtonSegment(value: o, label: Text(o.etiquetaL10n(l10n))),
         ],
         selected: {orden},
         onSelectionChanged: (v) {
@@ -577,32 +585,34 @@ class _AvisoRespuesta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final (tono, icono, mensaje) = switch (estado.aviso!) {
       AvisoOfertas.contraofertaEnviada => (
         TonoAviso.info,
         Icons.send_rounded,
-        'Enviamos tu contraoferta. El piloto tiene que responder.',
+        l10n.ofertasEnviamosContraofertaPilotoTiene,
       ),
       AvisoOfertas.rechazada => (
         TonoAviso.info,
         Icons.block_rounded,
-        'Rechazaste la oferta. Las demás siguen abiertas.',
+        l10n.ofertasRechazasteOfertaLasDemas,
       ),
       AvisoOfertas.cambio => (
         TonoAviso.alerta,
         Icons.update_rounded,
-        '${estado.mensajeAviso ?? 'La oferta cambió.'} Actualizamos la '
-            'lista.',
+        l10n.ofertasActualizamosLista(
+          estado.mensajeAviso ?? l10n.ofertasOfertaCambio,
+        ),
       ),
       AvisoOfertas.sinConexion => (
         TonoAviso.error,
         Icons.wifi_off_rounded,
-        'Sin conexión. No enviamos tu respuesta; inténtalo con señal.',
+        l10n.ofertasSinConexionEnviamosRespuesta,
       ),
       AvisoOfertas.error => (
         TonoAviso.error,
         Icons.error_outline_rounded,
-        estado.mensajeAviso ?? 'No pudimos enviar tu respuesta.',
+        estado.mensajeAviso ?? l10n.ofertasPudimosEnviarRespuesta,
       ),
     };
     return Semantics(
@@ -621,13 +631,14 @@ class _SinOfertas extends StatelessWidget {
   const _SinOfertas();
 
   @override
-  Widget build(BuildContext context) => const EstadoVacioMarketplace(
-    icono: Icons.hourglass_empty_rounded,
-    titulo: 'Todavía no hay ofertas',
-    detalle:
-        'Los pilotos de la zona ya ven tu solicitud. Cuando alguno ofrezca, '
-        'te avisamos. Si tarda, prueba subir tu precio.',
-  );
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    return EstadoVacioMarketplace(
+      icono: Icons.hourglass_empty_rounded,
+      titulo: l10n.ofertasTodaviaHayOfertas,
+      detalle: l10n.ofertasLosPilotosZonaVen,
+    );
+  }
 }
 
 /// El detalle de la oferta marcada: cuánto se aparta de tu precio, la nota
@@ -647,6 +658,7 @@ class _DetalleOferta extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final o = oferta;
     final p = o.proveedor;
@@ -661,7 +673,7 @@ class _DetalleOferta extends StatelessWidget {
             children: [
               AvatarFoto(
                 iniciales: p.iniciales,
-                etiqueta: 'Foto de ${p.nombre}',
+                etiqueta: l10n.ofertasFoto(p.nombre),
                 url: p.fotoUrl,
                 tamano: ObjetivoTactilCampo.guantes - EspaciadoCampo.s,
               ),
@@ -669,16 +681,16 @@ class _DetalleOferta extends StatelessWidget {
               Expanded(
                 child: Text(
                   o.autor == AutorOferta.cliente
-                      ? 'Tu contraoferta · ronda ${o.numero}'
+                      ? l10n.ofertasContraofertaRonda(o.numero)
                       : o.aceptaPropuesta
-                      ? 'Acepta tu precio'
+                      ? l10n.ofertasAceptaPrecio
                       : dif > Decimal.zero
-                      ? 'Pide ${FormatoMarketplace.bs(dif)}/ha más que tu '
-                            'precio'
+                      ? l10n.ofertasPideMasQuePrecio(FormatoMarketplace.bs(dif))
                       : dif == Decimal.zero
-                      ? 'Iguala tu precio'
-                      : 'Ofrece ${FormatoMarketplace.bs(-dif)}/ha menos que '
-                            'tu precio',
+                      ? l10n.ofertasIgualaPrecio
+                      : l10n.ofertasOfreceMenosQuePrecio(
+                          FormatoMarketplace.bs(-dif),
+                        ),
                   style: TipografiaCampo.tituloTarjeta.copyWith(
                     color: paleta.texto,
                   ),
@@ -707,7 +719,7 @@ class _DetalleOferta extends StatelessWidget {
                       ruta: f.ruta,
                       ancho: 96,
                       alto: 72,
-                      etiqueta: 'Foto del dron ${p.dron}',
+                      etiqueta: l10n.ofertasFotoDelDron(p.dron),
                     ),
                     const SizedBox(width: EspaciadoCampo.s),
                   ],
@@ -718,7 +730,7 @@ class _DetalleOferta extends StatelessWidget {
           if (o.ronda.isNotEmpty) ...[
             const SizedBox(height: EspaciadoCampo.l),
             Text(
-              'RONDAS',
+              l10n.ofertasRondas,
               style: TipografiaCampo.etiquetaMono.copyWith(
                 color: paleta.textoSecundario,
               ),
@@ -752,6 +764,7 @@ class _Detalles extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final p = oferta.proveedor;
@@ -764,19 +777,21 @@ class _Detalles extends StatelessWidget {
       if (oferta.distanciaKm != null)
         (
           Icons.place_outlined,
-          'A ${FormatoMarketplace.kilometros(oferta.distanciaKm!)} de tu lote',
+          l10n.ofertasLote(FormatoMarketplace.kilometros(oferta.distanciaKm!)),
         ),
       if (p.tasaCancelacion > 0)
         (
           Icons.event_busy_outlined,
-          'Canceló ${(p.tasaCancelacion * 100).round()} % de sus servicios',
+          l10n.ofertasCanceloSusServicios((p.tasaCancelacion * 100).round()),
         ),
       if (restante != null)
         (
           Icons.timer_outlined,
           restante == Duration.zero
-              ? 'La oferta venció'
-              : 'Vence en ${FormatoMarketplace.duracionMinutos(restante!.inMinutes)}',
+              ? l10n.ofertasOfertaVencio
+              : l10n.ofertasVence(
+                  FormatoMarketplace.duracionMinutos(restante!.inMinutes),
+                ),
         ),
     ];
     return Column(
@@ -847,6 +862,7 @@ class _FilaCerrada extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     return Padding(
@@ -864,8 +880,10 @@ class _FilaCerrada extends StatelessWidget {
                 children: [
                   Text(oferta.proveedor.nombre, style: texto.titleSmall),
                   Text(
-                    '${FormatoMarketplace.bs(oferta.precioHa)}/ha · '
-                    'ronda ${oferta.numero}',
+                    l10n.ofertasRonda(
+                      FormatoMarketplace.bs(oferta.precioHa),
+                      oferta.numero,
+                    ),
                     style: texto.bodySmall?.copyWith(
                       color: paleta.textoSecundario,
                     ),
@@ -876,7 +894,7 @@ class _FilaCerrada extends StatelessWidget {
             const SizedBox(width: EspaciadoCampo.s),
             Text(
               oferta.estado == EstadoOferta.vigente
-                  ? 'Vencida'
+                  ? l10n.ofertasVencida
                   : oferta.estado.etiqueta,
               style: texto.labelMedium?.copyWith(color: paleta.textoSecundario),
             ),
