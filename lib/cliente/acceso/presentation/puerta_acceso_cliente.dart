@@ -11,6 +11,7 @@ import 'login_cliente_pantalla.dart';
 import 'onboarding_pantalla.dart';
 import 'registro_cliente_pantalla.dart';
 import 'splash_pantalla.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Raíz del flavor cliente: decide entre splash, presentación, acceso y la
 /// navegación principal según `ArranqueCubit`, y funde una etapa con la
@@ -144,6 +145,7 @@ class _ErrorArranque extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -151,15 +153,15 @@ class _ErrorArranque extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const EstadoVacioMarketplace(
+                EstadoVacioMarketplace(
                   icono: Icons.error_outline_rounded,
-                  titulo: 'No pudimos abrir tu sesión',
-                  detalle: 'Intenta de nuevo en un momento.',
+                  titulo: l10n.accesoPudimosAbrirSesion,
+                  detalle: l10n.accesoIntentaNuevoMomento,
                 ),
                 OutlinedButton.icon(
                   onPressed: alReintentar,
                   icon: const Icon(Icons.refresh_rounded),
-                  label: const Text('Reintentar'),
+                  label: Text(l10n.accesoReintentar),
                 ),
               ],
             ),

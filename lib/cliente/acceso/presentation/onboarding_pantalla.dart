@@ -11,6 +11,7 @@ import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../domain/acceso_repositorio.dart';
 import 'onboarding_cubit.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Tiempo que se queda cada portada antes de avanzar sola.
 const Duration _intervaloAutoavance = Duration(milliseconds: 3500);
@@ -182,6 +183,7 @@ class _VistaState extends State<_Vista> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<OnboardingCubit>();
     final paleta = context.paleta;
     return Scaffold(
@@ -224,7 +226,7 @@ class _VistaState extends State<_Vista> {
                 const SizedBox(height: EspaciadoCampo.s),
                 BotonPrincipalMarketplace(
                   key: const Key('onboarding-continuar'),
-                  texto: 'Comenzar',
+                  texto: l10n.accesoComenzar,
                   onPressed: widget.alComenzar,
                 ),
                 const SizedBox(height: EspaciadoCampo.xs),
@@ -238,7 +240,7 @@ class _VistaState extends State<_Vista> {
                     foregroundColor: paleta.acentoTexto,
                     textStyle: Theme.of(context).textTheme.titleMedium,
                   ),
-                  child: const Text('Ya tengo cuenta'),
+                  child: Text(l10n.accesoTengoCuenta),
                 ),
               ],
             ),
@@ -399,6 +401,7 @@ class _PastillaSaltar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Material(
       color: paleta.superficie,
@@ -417,7 +420,7 @@ class _PastillaSaltar extends StatelessWidget {
             child: Center(
               widthFactor: 1,
               child: Text(
-                'Saltar',
+                l10n.accesoSaltar,
                 style: Theme.of(
                   context,
                 ).textTheme.titleMedium?.copyWith(color: paleta.texto),
@@ -440,6 +443,7 @@ class _Puntos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -448,7 +452,7 @@ class _Puntos extends StatelessWidget {
           Semantics(
             button: true,
             selected: i == paso,
-            label: 'Portada ${i + 1} de ${_portadas.length}',
+            label: l10n.accesoPortada(i + 1, _portadas.length),
             excludeSemantics: true,
             child: InkResponse(
               key: Key('onboarding-punto-$i'),
@@ -487,6 +491,7 @@ const double _separacion = EspaciadoCampo.xs;
 
 /// 1 · Foto grande con precios sobre ella, foto del dron y bloque ámbar.
 Widget _colagePublica(BuildContext context, double radio) {
+  final l10n = AppLocalizations.of(context);
   return Row(
     children: [
       Expanded(
@@ -519,10 +524,10 @@ Widget _colagePublica(BuildContext context, double radio) {
               ),
             ),
             const SizedBox(height: _separacion),
-            const Expanded(
+            Expanded(
               child: BloqueAmbarCampo(
                 titulo: '120',
-                etiqueta: 'hectáreas publicadas',
+                etiqueta: l10n.accesoHectareasPublicadas,
                 radio: 0,
               ),
             ),
@@ -568,6 +573,7 @@ Widget _colageNegocia(BuildContext context, double radio) {
 
 /// 3 · Foto, post-it con el precio final y foto del dron en tierra.
 Widget _colagePrecioFinal(BuildContext context, double radio) {
+  final l10n = AppLocalizations.of(context);
   final paleta = context.paleta;
   return Column(
     children: [
@@ -586,12 +592,12 @@ Widget _colagePrecioFinal(BuildContext context, double radio) {
             Expanded(
               child: ColoredBox(
                 color: paleta.ambarContenedor,
-                child: const Padding(
+                child: Padding(
                   padding: EdgeInsets.all(EspaciadoCampo.m),
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
                     child: PostItCampo(
-                      etiqueta: 'Precio final',
+                      etiqueta: l10n.accesoPrecioFinal,
                       cuenta: '118 ha × 64',
                       total: 'Bs 7.552',
                     ),

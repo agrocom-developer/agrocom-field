@@ -1398,6 +1398,156 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **' {unidad}'**
   String componentesStepperUnidad(String unidad);
+
+  /// No description provided for @accesoFumigacionConDronesPedido.
+  ///
+  /// In es, this message translates to:
+  /// **'Fumigación con drones, a pedido'**
+  String get accesoFumigacionConDronesPedido;
+
+  /// No description provided for @accesoSolicitaServicioSigueVuelo.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicita el servicio, sigue el vuelo en vivo y califica al piloto.'**
+  String get accesoSolicitaServicioSigueVuelo;
+
+  /// No description provided for @accesoIngresaCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa a tu cuenta'**
+  String get accesoIngresaCuenta;
+
+  /// No description provided for @accesoSolicitaServicioSigueloVivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicita un servicio y síguelo en vivo.'**
+  String get accesoSolicitaServicioSigueloVivo;
+
+  /// No description provided for @accesoUsuario.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario'**
+  String get accesoUsuario;
+
+  /// No description provided for @accesoContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña'**
+  String get accesoContrasena;
+
+  /// No description provided for @accesoIngresar.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresar'**
+  String get accesoIngresar;
+
+  /// No description provided for @accesoPrimeraVezAgrocom.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Primera vez en Agrocom?'**
+  String get accesoPrimeraVezAgrocom;
+
+  /// No description provided for @accesoCrearCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Crear cuenta'**
+  String get accesoCrearCuenta;
+
+  /// No description provided for @accesoComenzar.
+  ///
+  /// In es, this message translates to:
+  /// **'Comenzar'**
+  String get accesoComenzar;
+
+  /// No description provided for @accesoTengoCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tengo cuenta'**
+  String get accesoTengoCuenta;
+
+  /// No description provided for @accesoSaltar.
+  ///
+  /// In es, this message translates to:
+  /// **'Saltar'**
+  String get accesoSaltar;
+
+  /// No description provided for @accesoPortada.
+  ///
+  /// In es, this message translates to:
+  /// **'Portada {i} de {_portadas}'**
+  String accesoPortada(int i, int _portadas);
+
+  /// No description provided for @accesoHectareasPublicadas.
+  ///
+  /// In es, this message translates to:
+  /// **'hectáreas publicadas'**
+  String get accesoHectareasPublicadas;
+
+  /// No description provided for @accesoPrecioFinal.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio final'**
+  String get accesoPrecioFinal;
+
+  /// No description provided for @accesoPudimosAbrirSesion.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos abrir tu sesión'**
+  String get accesoPudimosAbrirSesion;
+
+  /// No description provided for @accesoIntentaNuevoMomento.
+  ///
+  /// In es, this message translates to:
+  /// **'Intenta de nuevo en un momento.'**
+  String get accesoIntentaNuevoMomento;
+
+  /// No description provided for @accesoReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get accesoReintentar;
+
+  /// No description provided for @accesoVolverIngreso.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver al ingreso'**
+  String get accesoVolverIngreso;
+
+  /// No description provided for @accesoCreaCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea tu cuenta'**
+  String get accesoCreaCuenta;
+
+  /// No description provided for @accesoTomaMenosMinuto.
+  ///
+  /// In es, this message translates to:
+  /// **'Toma menos de un minuto.'**
+  String get accesoTomaMenosMinuto;
+
+  /// No description provided for @accesoNombreCompleto.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre completo'**
+  String get accesoNombreCompleto;
+
+  /// No description provided for @accesoTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono'**
+  String get accesoTelefono;
+
+  /// No description provided for @accesoConQueVasEntrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Es con lo que vas a entrar. Sin espacios ni correo.'**
+  String get accesoConQueVasEntrar;
+
+  /// No description provided for @accesoMinimoCaracteresConLetras.
+  ///
+  /// In es, this message translates to:
+  /// **'Mínimo {largoMinimoContrasena} caracteres, con letras y números.'**
+  String accesoMinimoCaracteresConLetras(int largoMinimoContrasena);
 }
 
 class _AppLocalizationsDelegate

@@ -799,4 +799,87 @@ class AppLocalizationsEs extends AppLocalizations {
   String componentesStepperUnidad(String unidad) {
     return ' $unidad';
   }
+
+  @override
+  String get accesoFumigacionConDronesPedido =>
+      'Fumigación con drones, a pedido';
+
+  @override
+  String get accesoSolicitaServicioSigueVuelo =>
+      'Solicita el servicio, sigue el vuelo en vivo y califica al piloto.';
+
+  @override
+  String get accesoIngresaCuenta => 'Ingresa a tu cuenta';
+
+  @override
+  String get accesoSolicitaServicioSigueloVivo =>
+      'Solicita un servicio y síguelo en vivo.';
+
+  @override
+  String get accesoUsuario => 'Usuario';
+
+  @override
+  String get accesoContrasena => 'Contraseña';
+
+  @override
+  String get accesoIngresar => 'Ingresar';
+
+  @override
+  String get accesoPrimeraVezAgrocom => '¿Primera vez en Agrocom?';
+
+  @override
+  String get accesoCrearCuenta => 'Crear cuenta';
+
+  @override
+  String get accesoComenzar => 'Comenzar';
+
+  @override
+  String get accesoTengoCuenta => 'Ya tengo cuenta';
+
+  @override
+  String get accesoSaltar => 'Saltar';
+
+  @override
+  String accesoPortada(int i, int _portadas) {
+    return 'Portada $i de $_portadas';
+  }
+
+  @override
+  String get accesoHectareasPublicadas => 'hectáreas publicadas';
+
+  @override
+  String get accesoPrecioFinal => 'Precio final';
+
+  @override
+  String get accesoPudimosAbrirSesion => 'No pudimos abrir tu sesión';
+
+  @override
+  String get accesoIntentaNuevoMomento => 'Intenta de nuevo en un momento.';
+
+  @override
+  String get accesoReintentar => 'Reintentar';
+
+  @override
+  String get accesoVolverIngreso => 'Volver al ingreso';
+
+  @override
+  String get accesoCreaCuenta => 'Crea tu cuenta';
+
+  @override
+  String get accesoTomaMenosMinuto => 'Toma menos de un minuto.';
+
+  @override
+  String get accesoNombreCompleto => 'Nombre completo';
+
+  @override
+  String get accesoTelefono => 'Teléfono';
+
+  @override
+  String get accesoConQueVasEntrar =>
+      'Es con lo que vas a entrar. Sin espacios ni correo.';
+
+  @override
+  String accesoMinimoCaracteresConLetras(int largoMinimoContrasena) {
+    return 'Mínimo $largoMinimoContrasena caracteres, con letras y números.';
+  }
 }

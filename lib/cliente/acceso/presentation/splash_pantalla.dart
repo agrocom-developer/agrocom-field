@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Pantalla de arranque: el logo entra (opacidad y escala desde 0,95), una
 /// línea verde se extiende debajo y aparece la propuesta en una frase. La
@@ -70,6 +71,7 @@ class _SplashPantallaState extends State<SplashPantalla>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     return Scaffold(
@@ -103,7 +105,7 @@ class _SplashPantallaState extends State<SplashPantalla>
                 FadeTransition(
                   opacity: _frase,
                   child: Text(
-                    'Fumigación con drones, a pedido',
+                    l10n.accesoFumigacionConDronesPedido,
                     textAlign: TextAlign.center,
                     style: texto.bodyLarge?.copyWith(
                       color: paleta.textoSecundario,
