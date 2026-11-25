@@ -696,36 +696,6 @@ class _PasoPrecioState extends State<PasoPrecio> {
           'eliges la oferta que prefieras.',
           style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
         ),
-        if (e.falloEnvio != null) ...[
-          const SizedBox(height: EspaciadoCampo.m),
-          Semantics(
-            liveRegion: true,
-            child: switch (e.falloEnvio!) {
-              FalloEnvio.sinConexion => const AvisoMarketplace(
-                key: ValueKey('aviso-sin-conexion'),
-                tono: TonoAviso.alerta,
-                icono: Icons.wifi_off_rounded,
-                mensaje:
-                    'Sin conexión. Tu solicitud sigue aquí, completa: cuando '
-                    'vuelva la señal, reintenta la publicación.',
-              ),
-              FalloEnvio.rechazado => AvisoMarketplace(
-                key: const ValueKey('aviso-rechazo'),
-                tono: TonoAviso.error,
-                mensaje:
-                    e.mensajeRechazo ??
-                    'No pudimos publicar la solicitud. Revisa los datos.',
-              ),
-              FalloEnvio.desconocido => const AvisoMarketplace(
-                key: ValueKey('aviso-fallo-envio'),
-                tono: TonoAviso.error,
-                mensaje:
-                    'No pudimos publicar la solicitud. Tus datos siguen aquí; '
-                    'prueba de nuevo.',
-              ),
-            },
-          ),
-        ],
         const SizedBox(height: EspaciadoCampo.l),
         // Con ±1 se ajusta de a un boliviano; el campo de abajo admite el
         // precio exacto (con decimales) y es el que valida el cubit.

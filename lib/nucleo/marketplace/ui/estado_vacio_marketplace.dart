@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../ui/componentes/boton_primario_campo.dart';
 import '../../ui/paleta_campo.dart';
 import '../../ui/tokens_campo.dart';
 
@@ -74,7 +73,11 @@ class EstadoVacioMarketplace extends StatelessWidget {
             ],
             if (etiquetaAccion != null) ...[
               const SizedBox(height: EspaciadoCampo.xl),
-              BotonPrimarioCampo(texto: etiquetaAccion!, onPressed: alAccion),
+              FilledButton(
+                key: const ValueKey('estado-vacio-accion'),
+                onPressed: alAccion,
+                child: Text(etiquetaAccion!),
+              ),
             ],
           ],
         ),

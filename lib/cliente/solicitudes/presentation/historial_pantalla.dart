@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
@@ -15,7 +16,14 @@ import 'tarjeta_solicitud.dart';
 /// Todos los servicios del cliente: cuánto lleva fumigado, un filtro simple
 /// y la lista.
 class HistorialPantalla extends StatelessWidget {
-  const HistorialPantalla({this.reloj = DateTime.now, super.key});
+  const HistorialPantalla({
+    this.reloj = DateTime.now,
+    this.alPublicar,
+    super.key,
+  });
+
+  /// Abre «Publicar lote»: la salida de la lista vacía.
+  final VoidCallback? alPublicar;
 
   /// Fija el mes final del gráfico; las pruebas lo reemplazan.
   final DateTime Function() reloj;
@@ -25,15 +33,16 @@ class HistorialPantalla extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           HistorialCubit(context.read<SolicitudesRepositorio>()),
-      child: _Vista(reloj: reloj),
+      child: _Vista(reloj: reloj, alPublicar: alPublicar),
     );
   }
 }
 
 class _Vista extends StatelessWidget {
-  const _Vista({required this.reloj});
+  const _Vista({required this.reloj, this.alPublicar});
 
   final DateTime Function() reloj;
+  final VoidCallback? alPublicar;
 
   @override
   Widget build(BuildContext context) {
@@ -135,9 +144,17 @@ class _Vista extends StatelessWidget {
                           'Cuando un piloto termina, queda guardado acá con '
                               'sus fotos y el precio final.',
                         _ =>
-                          'Publica una desde «Solicitar», compara las ofertas '
-                              'de los pilotos y elige.',
+                          'Publica un lote, compara las ofertas de los '
+                              'pilotos y elige.',
                       },
+                      etiquetaAccion:
+                          estado.filtro == FiltroHistorial.completados ||
+                              alPublicar == null
+                          ? null
+                          : AppLocalizations.of(context).publicarLote,
+                      alAccion: estado.filtro == FiltroHistorial.completados
+                          ? null
+                          : alPublicar,
                     )
                   else
                     for (final s in visibles) ...[

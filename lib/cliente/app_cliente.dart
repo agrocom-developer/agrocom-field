@@ -154,7 +154,7 @@ class _ShellClienteState extends State<ShellCliente> {
           ),
         ),
         1 => LotesPantalla(alPublicar: _publicarLote),
-        2 => const HistorialPantalla(),
+        2 => HistorialPantalla(alPublicar: _publicarLote),
         _ => CuentaPantalla(
           alCerrarSesion: widget.alCerrarSesion,
           alPublicar: _publicarLote,

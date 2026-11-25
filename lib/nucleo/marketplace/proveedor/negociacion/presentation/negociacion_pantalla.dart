@@ -239,6 +239,8 @@ class _Cuerpo extends StatelessWidget {
               mensaje: 'abrir la negociación necesita red.',
             ),
             EstadoErrorMarketplace(
+              sinConexion: true,
+              tablaSinRed: true,
               titulo: 'Sin conexión',
               detalle:
                   'Negociar es entre dos personas y necesita señal. Nada se '

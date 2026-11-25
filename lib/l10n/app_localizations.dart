@@ -1119,6 +1119,126 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Persona de contacto'**
   String get contactoPilotoTitulo;
+
+  /// No description provided for @estadoReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get estadoReintentar;
+
+  /// No description provided for @estadoReintentarAhora.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar ahora'**
+  String get estadoReintentarAhora;
+
+  /// No description provided for @estadoSinSenalBanner.
+  ///
+  /// In es, this message translates to:
+  /// **'reintentando'**
+  String get estadoSinSenalBanner;
+
+  /// No description provided for @estadoSinConexionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión'**
+  String get estadoSinConexionTitulo;
+
+  /// No description provided for @estadoSinConexionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitamos señal para cargar {queNoCargo}. Revisa tu conexión y prueba de nuevo.'**
+  String estadoSinConexionDetalle(String queNoCargo);
+
+  /// No description provided for @estadoErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Algo salió mal'**
+  String get estadoErrorTitulo;
+
+  /// No description provided for @estadoErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar {queNoCargo}. Prueba de nuevo en un momento.'**
+  String estadoErrorDetalle(String queNoCargo);
+
+  /// No description provided for @estadoTablaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué funciona sin red'**
+  String get estadoTablaTitulo;
+
+  /// No description provided for @estadoTablaFotos.
+  ///
+  /// In es, this message translates to:
+  /// **'Fotos y avance'**
+  String get estadoTablaFotos;
+
+  /// No description provided for @estadoTablaFuncionan.
+  ///
+  /// In es, this message translates to:
+  /// **'Funcionan sin red'**
+  String get estadoTablaFuncionan;
+
+  /// No description provided for @estadoTablaOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas y chat'**
+  String get estadoTablaOfertas;
+
+  /// No description provided for @estadoTablaRequieren.
+  ///
+  /// In es, this message translates to:
+  /// **'Requieren red'**
+  String get estadoTablaRequieren;
+
+  /// No description provided for @estadoErrorEstaPantalla.
+  ///
+  /// In es, this message translates to:
+  /// **'esta pantalla'**
+  String get estadoErrorEstaPantalla;
+
+  /// No description provided for @envioErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No se envió tu solicitud'**
+  String get envioErrorTitulo;
+
+  /// No description provided for @envioErrorDetalleSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que escribiste sigue aquí. Cuando vuelva la señal, toca «Reintentar ahora»: no se publica dos veces.'**
+  String get envioErrorDetalleSinRed;
+
+  /// No description provided for @envioErrorDetalleRechazo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos publicarla. Lo que escribiste sigue aquí.'**
+  String get envioErrorDetalleRechazo;
+
+  /// No description provided for @envioErrorVolver.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver al formulario'**
+  String get envioErrorVolver;
+
+  /// No description provided for @listaVerLotesMapa.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver lotes en el mapa'**
+  String get listaVerLotesMapa;
+
+  /// No description provided for @listaMisOfertasVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no enviaste ofertas'**
+  String get listaMisOfertasVacioTitulo;
+
+  /// No description provided for @listaServiciosVacioAccion.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar lote'**
+  String get listaServiciosVacioAccion;
 }
 
 class _AppLocalizationsDelegate

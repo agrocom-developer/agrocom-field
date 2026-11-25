@@ -104,7 +104,9 @@ class _ShellPilotoState extends State<ShellPiloto> {
       cuerpo: switch (_indice) {
         0 => const MapaSolicitudesPantalla(),
         1 => MisOfertasPantalla(alIrAlMapa: () => setState(() => _indice = 0)),
-        2 => const ServiciosLotePantalla(),
+        2 => ServiciosLotePantalla(
+          alIrAlMapa: () => setState(() => _indice = 0),
+        ),
         _ => PerfilPantalla(
           onVerDrones: _verDrones,
           extras: extrasDePerfil(

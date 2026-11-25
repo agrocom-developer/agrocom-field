@@ -82,6 +82,10 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
     return lista.isEmpty ? null : lista.first.id;
   }
 
+  /// Vuelve al formulario tras un envío fallido, con todo lo escrito.
+  void descartarFallo() =>
+      emit(state.copiarCon(falloEnvio: null, mensajeRechazo: null));
+
   void elegirContacto(int id) => emit(state.copiarCon(contactoId: id));
 
   // ── Paso 1: lote ─────────────────────────────────────────────────────

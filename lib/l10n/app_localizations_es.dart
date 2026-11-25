@@ -610,4 +610,70 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get contactoPilotoTitulo => 'Persona de contacto';
+
+  @override
+  String get estadoReintentar => 'Reintentar';
+
+  @override
+  String get estadoReintentarAhora => 'Reintentar ahora';
+
+  @override
+  String get estadoSinSenalBanner => 'reintentando';
+
+  @override
+  String get estadoSinConexionTitulo => 'Sin conexión';
+
+  @override
+  String estadoSinConexionDetalle(String queNoCargo) {
+    return 'Necesitamos señal para cargar $queNoCargo. Revisa tu conexión y prueba de nuevo.';
+  }
+
+  @override
+  String get estadoErrorTitulo => 'Algo salió mal';
+
+  @override
+  String estadoErrorDetalle(String queNoCargo) {
+    return 'No pudimos cargar $queNoCargo. Prueba de nuevo en un momento.';
+  }
+
+  @override
+  String get estadoTablaTitulo => 'Qué funciona sin red';
+
+  @override
+  String get estadoTablaFotos => 'Fotos y avance';
+
+  @override
+  String get estadoTablaFuncionan => 'Funcionan sin red';
+
+  @override
+  String get estadoTablaOfertas => 'Ofertas y chat';
+
+  @override
+  String get estadoTablaRequieren => 'Requieren red';
+
+  @override
+  String get estadoErrorEstaPantalla => 'esta pantalla';
+
+  @override
+  String get envioErrorTitulo => 'No se envió tu solicitud';
+
+  @override
+  String get envioErrorDetalleSinRed =>
+      'Lo que escribiste sigue aquí. Cuando vuelva la señal, toca «Reintentar ahora»: no se publica dos veces.';
+
+  @override
+  String get envioErrorDetalleRechazo =>
+      'No pudimos publicarla. Lo que escribiste sigue aquí.';
+
+  @override
+  String get envioErrorVolver => 'Volver al formulario';
+
+  @override
+  String get listaVerLotesMapa => 'Ver lotes en el mapa';
+
+  @override
+  String get listaMisOfertasVacioTitulo => 'Todavía no enviaste ofertas';
+
+  @override
+  String get listaServiciosVacioAccion => 'Publicar lote';
 }

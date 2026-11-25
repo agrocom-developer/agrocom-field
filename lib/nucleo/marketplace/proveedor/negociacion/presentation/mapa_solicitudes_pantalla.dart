@@ -661,6 +661,8 @@ class _Cuerpo extends StatelessWidget {
         );
       case EstadoMapa.sinRed:
         return EstadoErrorMarketplace(
+          sinConexion: true,
+          tablaSinRed: true,
           titulo: 'Sin conexión',
           detalle:
               'El mapa de solicitudes necesita señal: es una competencia '

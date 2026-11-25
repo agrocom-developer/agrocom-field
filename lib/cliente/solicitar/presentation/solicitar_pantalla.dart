@@ -10,6 +10,7 @@ import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 import '../../contactos/domain/contactos_repositorio.dart';
 import '../../solicitudes/domain/solicitud.dart';
 import '../domain/solicitud_repositorio.dart';
@@ -115,29 +116,52 @@ class _VistaSolicitar extends StatelessWidget {
         }
         alSolicitado(solicitud);
       },
-      builder: (context, estado) => LayoutBuilder(
-        builder: (context, limites) {
-          final dividido =
-              ClasePantallaCampo.deAncho(limites.maxWidth) ==
-              ClasePantallaCampo.expandido;
-          return switch (estado.carga) {
-            CargaSolicitud.cargando => _Cargando(dividido: dividido),
-            CargaSolicitud.error => _ErrorDeCarga(
-              alReintentar: context.read<SolicitarCubit>().cargar,
-            ),
-            CargaSolicitud.lista =>
-              dividido
-                  ? _Dividido(estado: estado)
-                  : Align(
-                      alignment: Alignment.topCenter,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 720),
-                        child: _Columna(estado: estado, conMapa: true),
+      builder: (context, estado) {
+        // Un envío que falla es una pantalla propia (patrón del estado 21):
+        // dice qué quedó guardado y deja reintentar o volver a editar.
+        final fallo = estado.falloEnvio;
+        if (fallo != null && !estado.enviando) {
+          final t = AppLocalizations.of(context);
+          final cubit = context.read<SolicitarCubit>();
+          return EstadoErrorMarketplace(
+            key: const ValueKey('solicitar-error-envio'),
+            sinConexion: fallo == FalloEnvio.sinConexion,
+            titulo: t.envioErrorTitulo,
+            detalle: switch (fallo) {
+              FalloEnvio.sinConexion => t.envioErrorDetalleSinRed,
+              FalloEnvio.rechazado =>
+                estado.mensajeRechazo ?? t.envioErrorDetalleRechazo,
+              FalloEnvio.desconocido => t.envioErrorDetalleRechazo,
+            },
+            onReintentar: cubit.publicar,
+            etiquetaSecundaria: t.envioErrorVolver,
+            onSecundaria: cubit.descartarFallo,
+          );
+        }
+        return LayoutBuilder(
+          builder: (context, limites) {
+            final dividido =
+                ClasePantallaCampo.deAncho(limites.maxWidth) ==
+                ClasePantallaCampo.expandido;
+            return switch (estado.carga) {
+              CargaSolicitud.cargando => _Cargando(dividido: dividido),
+              CargaSolicitud.error => _ErrorDeCarga(
+                alReintentar: context.read<SolicitarCubit>().cargar,
+              ),
+              CargaSolicitud.lista =>
+                dividido
+                    ? _Dividido(estado: estado)
+                    : Align(
+                        alignment: Alignment.topCenter,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 720),
+                          child: _Columna(estado: estado, conMapa: true),
+                        ),
                       ),
-                    ),
-          };
-        },
-      ),
+            };
+          },
+        );
+      },
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tipografia_campo.dart';
@@ -128,6 +129,8 @@ class _MisOfertasVistaState extends State<MisOfertasVista> {
                         ],
                       ),
                       EstadoMisOfertas.sinRed => EstadoErrorMarketplace(
+                        sinConexion: true,
+                        tablaSinRed: true,
                         titulo: 'Sin conexión',
                         detalle:
                             'Para ver y responder tus ofertas necesitas señal. '
@@ -212,16 +215,14 @@ class _Vacio extends StatelessWidget {
               'Las ofertas rechazadas, retiradas o vencidas se guardan aquí.',
             ),
           };
-    return Column(
-      children: [
-        EstadoVacioMarketplace(icono: icono, titulo: titulo, detalle: detalle),
-        if (alIrAlMapa != null)
-          OutlinedButton.icon(
-            onPressed: alIrAlMapa,
-            icon: const Icon(Icons.map_outlined),
-            label: const Text('Ver solicitudes en el mapa'),
-          ),
-      ],
+    return EstadoVacioMarketplace(
+      icono: icono,
+      titulo: titulo,
+      detalle: detalle,
+      etiquetaAccion: alIrAlMapa == null
+          ? null
+          : AppLocalizations.of(context).listaVerLotesMapa,
+      alAccion: alIrAlMapa,
     );
   }
 }
