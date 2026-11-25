@@ -2,7 +2,7 @@
 
 App móvil de Agrocom, marketplace de fumigación con drones donde el precio se negocia, al estilo de las apps de transporte por viaje: el cliente publica su lote con un precio por hectárea, los pilotos lo ven en un mapa y **aceptan o contraofertan** (hasta 5 rondas), el cliente elige, el piloto ejecuta con fotos de avance y ambos se califican. Los drones son los «vehículos». La app no cobra: el pago es directo entre las partes.
 
-Flutter, una sola base de código con tres flavors: `cliente` (publica, compara ofertas, sigue y califica; online-first), `piloto` (mapa de solicitudes, negociación y ejecución en el lote, offline-first) y `auxiliar` (en retiro, ver [plan 03](docs/planes/03-retiro-auxiliar.md)). Hermano de [`agrocom-api`](https://github.com/agrocom-developer/agrocom-api) (motor del marketplace y panel admin, Laravel), que publica el contrato de API.
+Flutter, una sola base de código con dos flavors: `cliente` (publica, compara ofertas, sigue y califica; online-first), `piloto` (mapa de solicitudes, negociación y ejecución en el lote, offline-first). Hermano de [`agrocom-api`](https://github.com/agrocom-developer/agrocom-api) (motor del marketplace y panel admin, Laravel), que publica el contrato de API.
 
 ## Cómo funciona
 
@@ -28,7 +28,7 @@ Flutter 3.41 / Dart 3.11, BLoC feature-first (ADR 0009), persistencia local con 
 
 - Flutter 3.41+ / Dart 3.11+ (`flutter --version`)
 - Android SDK con platform 29+ (el RC del dron corre Android 10)
-- Un emulador Android 10+ para `piloto`, uno más nuevo para `auxiliar` y `cliente`; el simulador de iOS sirve para revisar la UI de `cliente`
+- Un emulador Android 10+ para `piloto`, uno más nuevo para `cliente`; el simulador de iOS sirve para revisar la UI de `cliente`
 
 ## Configuración de entorno
 
@@ -44,7 +44,6 @@ En el simulador de iOS la API local se alcanza por `http://localhost:8000`; en e
 
 ```
 flutter run --flavor piloto   -t lib/main_piloto.dart   --dart-define-from-file=config/env.local.json
-flutter run --flavor auxiliar -t lib/main_auxiliar.dart --dart-define-from-file=config/env.local.json
 flutter run --flavor cliente  -t lib/main_cliente.dart  --dart-define-from-file=config/env.local.json
 ```
 
@@ -55,10 +54,9 @@ Con `config/env.demo.json` cada flavor corre completo con datos ficticios de la 
 ```
 flutter run --flavor cliente  -t lib/main_cliente.dart  --dart-define-from-file=config/env.demo.json
 flutter run --flavor piloto   -t lib/main_piloto.dart   --dart-define-from-file=config/env.demo.json
-flutter run --flavor auxiliar -t lib/main_auxiliar.dart --dart-define-from-file=config/env.demo.json
 ```
 
-En iOS, el esquema de Xcode lleva el nombre del flavor (`piloto`, `auxiliar`, `cliente`): `flutter run --flavor cliente -d <simulador>`.
+En iOS, el esquema de Xcode lleva el nombre del flavor (`piloto`, `cliente`): `flutter run --flavor cliente -d <simulador>`.
 
 ## Comandos de desarrollo
 

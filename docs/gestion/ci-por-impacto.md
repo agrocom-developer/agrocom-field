@@ -29,7 +29,7 @@ Un cambio en un archivo de prueba corre esa prueba. Un cambio solo en documentac
 
 - `test/nucleo/sync/sync_engine_replay_test.dart`: replay del motor de sync (invariante 10).
 - `test/nucleo/catalogo/catalogo_contrato_test.dart`: contrato de API contra el fixture.
-- `test/arquitectura/importaciones_test.dart`: reglas de importación (`nucleo/` no depende de `features/` y `piloto/` no se mezcla con `auxiliar/`).
+- `test/arquitectura/importaciones_test.dart`: reglas de importación (`nucleo/` no depende de `features/` y `cliente/` no se mezcla con `piloto/`).
 - `test/tool/selector_test.dart`: el propio selector.
 
 La lista está en `pruebasHumo` de `tool/selector/selector.dart`. Si falta alguna de esas pruebas en disco, el selector devuelve la suite completa.

@@ -12,7 +12,7 @@ description: Cómo se publica el contrato de API (openapi.yaml, generado en agro
 
 ## Regla de dependencia
 
-Solo los repositorios de `nucleo/` y de cada feature usan `ApiClient`. Un bloc o un widget que llama a `dio` es un error de arquitectura. En `piloto` y `auxiliar` la UI lee de `drift`; en `cliente` el repositorio resuelve red con caché local.
+Solo los repositorios de `nucleo/` y de cada feature usan `ApiClient`. Un bloc o un widget que llama a `dio` es un error de arquitectura. En `piloto` la UI lee de `drift`; en `cliente` el repositorio resuelve red con caché local.
 
 ## Agregar o usar un endpoint
 
@@ -20,7 +20,7 @@ Solo los repositorios de `nucleo/` y de cada feature usan `ApiClient`. Un bloc o
 2. Creá el DTO con los nombres del dominio tal como viajan (`hectareas_declaradas`, `uuid_cliente`). Dinero y hectáreas se parsean a decimal exacto, nunca a `double`.
 3. Agregá el método al repositorio de la feature; no al bloc.
 4. Escribí el test con un `dio` falso, incluyendo 401, 403, 404, 422 y corte de red.
-5. En `piloto` y `auxiliar`, si el dato lo escribe el usuario en el lote, va por outbox (skill `protocolo-sync`) y no se llama directo. Negociar una oferta (ofertar, contraofertar, aceptar, rechazar, retirar) es la excepción: llamada en línea con confirmación del servidor.
+5. En `piloto`, si el dato lo escribe el usuario en el lote, va por outbox (skill `protocolo-sync`) y no se llama directo. Negociar una oferta (ofertar, contraofertar, aceptar, rechazar, retirar) es la excepción: llamada en línea con confirmación del servidor.
 
 ## Cuando el contrato cambia
 

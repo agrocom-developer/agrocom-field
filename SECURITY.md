@@ -19,7 +19,7 @@ corrección.
 
 ## Alcance
 
-La app móvil Agrocom (flavors cliente, piloto y auxiliar): almacenamiento
+La app móvil Agrocom (flavors cliente y piloto): almacenamiento
 local, sesión, sincronización, evidencias y configuración de compilación.
 La API y el panel web se reportan en `agrocom-api`.
 

@@ -16,7 +16,7 @@ automatizado no tiene. El dueño los activa en la web.
      dueño es único; activa **Require review from Code Owners** cuando haya
      más personas).
    - **Require status checks to pass** → agrega `flutter-tests`. Opcional:
-     `build-android (piloto)` y `build-android (auxiliar)` cuando estén
+     `build-android (piloto)` y `build-android (cliente)` cuando estén
      estables.
    - **Require branches to be up to date before merging**.
 4. **Bypass list**: vacía (o solo el rol Admin del dueño para emergencias).

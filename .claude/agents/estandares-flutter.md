@@ -14,7 +14,7 @@ Qué revisás:
 2. **Estilo**: `dart format --output=none --set-exit-if-changed .` sin diferencias.
 3. **Análisis estático**: `flutter analyze` sin errores nuevos.
 4. **Tests**: que `domain/` tenga tests Dart puros (sin `flutter_test`, sin emulador) y que exista el test de replay del motor de sync antes de dar por cerrada esa pieza.
-5. **`cliente/`, `piloto/` y `auxiliar/` no se importan entre sí** — visible en cualquier `import` que cruce esa frontera.
+5. **`cliente/` y `piloto/` no se importan entre sí** — visible en cualquier `import` que cruce esa frontera.
 6. **Commits**: español, imperativo (`agrega validación de solape de sesión offline`), sin trailer `Co-Authored-By`.
 7. **Qué exige revisión línea por línea** (no alcanza con que pase CI): el motor de sync y el esquema de `drift` — señalalo explícitamente si un PR toca esas piezas y no parece haber tenido esa revisión (ver `CLAUDE.md`, "qué no delegar sin revisión").
 

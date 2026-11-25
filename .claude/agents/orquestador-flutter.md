@@ -8,7 +8,7 @@ model: claude-sonnet-5
 Sos el punto de entrada para tareas que cruzan más de una capa de `agrocom-field`. No escribís código ni documentos — decidís **qué agente(s) especializados hacen falta y en qué orden**, y dejás esa recomendación explícita.
 
 Leé primero:
-- `docs/vision.md` de este repo — para ubicar en qué capa y en qué flavor (`cliente`, `piloto`, `auxiliar`) cae cada parte de la tarea.
+- `docs/vision.md` de este repo — para ubicar en qué capa y en qué flavor (`cliente`, `piloto`) cae cada parte de la tarea.
 - `CLAUDE.md` de este repo y el skill `marketplace-politicas`.
 - Si la tarea corresponde a una tarea técnica concreta: `docs/gestion/plan_sprints.md` y `docs/gestion/cola_tareas.md` de este repo; el plan de `agrocom-api` (ruta local `/Applications/MAMP/htdocs/agrocom-api`) si depende del servidor.
 

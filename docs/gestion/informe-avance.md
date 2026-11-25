@@ -6,13 +6,13 @@ Estado de `agrocom-field` sobre `develop`: qué hay construido en cada flavor, q
 
 - El marketplace es por negociación: el cliente publica una solicitud con un precio por hectárea, los pilotos aceptan o contraofertan por rondas, el cliente elige y, una vez adjudicado, se ejecuta el servicio. La app no asigna ni calcula comisión; el precio final lo calcula el servidor y el pago ocurre fuera de ella.
 - **Cliente** (online-first, sin outbox, ADR 0013 a 0017): arranque, presentación, ingreso, registro, inicio, solicitar (lote, aplicación, cuándo y precio), ofertas recibidas con aceptar, contraofertar y rechazar, seguimiento del servicio (avance con fotos, chat y última ubicación del piloto), precio final, calificación, reporte de un problema y cuenta.
-- **Piloto** y **auxiliar** (modo campo, ADR 0012 y 0018): mapa de solicitudes abiertas con filtros, oferta y contraoferta, mis ofertas, chat y avisos de solicitudes nuevas, alta del piloto independiente, drones con fotos, perfil y la ejecución en el lote sobre `drift` (inicio, avance con fotos y cierre, con cola propia y prueba de replay).
-- El sistema visual es común a los tres (`docs/diseno/sistema-visual.md`): claro y oscuro en el cliente, modo campo de alto contraste en piloto y auxiliar.
-- Los tres flavors corren contra la API y también en modo demo con repositorios en memoria (ADR 0010).
+- **Piloto** (modo campo, ADR 0012 y 0018): mapa de solicitudes abiertas con filtros, oferta y contraoferta, mis ofertas, chat y avisos de solicitudes nuevas, alta del piloto independiente, drones con fotos, perfil y la ejecución en el lote sobre `drift` (inicio, avance con fotos y cierre, con cola propia y prueba de replay).
+- El sistema visual es común a los tres (`docs/diseno/sistema-visual.md`): claro y oscuro en el cliente, modo campo de alto contraste en piloto.
+- Los dos flavors corren contra la API y también en modo demo con repositorios en memoria (ADR 0010).
 
 ## Auditoría de accesibilidad
 
-`test/ui/ui_qa_accesibilidad` aplica las guías de accesibilidad de Flutter a las pestañas raíz de cada flavor, en 360x640 y 412x915, con texto al 100 % y al 200 %, en claro y oscuro (cliente) o modo campo (piloto y auxiliar).
+`test/ui/ui_qa_accesibilidad` aplica las guías de accesibilidad de Flutter a las pestañas raíz de cada flavor, en 360x640 y 412x915, con texto al 100 % y al 200 %, en claro y oscuro (cliente) o modo campo (piloto).
 
 | Aspecto | Criterio |
 |---|---|
@@ -25,14 +25,13 @@ Estado de `agrocom-field` sobre `develop`: qué hay construido en cada flavor, q
 
 ## Capturas
 
-Las capturas del simulador de iOS (iPhone 17 Pro e iPad Pro 11 pulgadas) están en `docs/diseno/capturas/`. Las de piloto y auxiliar se retiraron porque mostraban pantallas que ya no existen; los recorridos de `integration_test/piloto_capturas_test.dart` y `auxiliar_capturas_test.dart` se reescriben para las pantallas vigentes antes de regenerarlas con `tool/capturar_pantallas.sh`. No hay emulador de Android en esta máquina.
+Las capturas del simulador de iOS (iPhone 17 Pro e iPad Pro 11 pulgadas) están en `docs/diseno/capturas/`. Las de piloto se retiraron porque mostraban pantallas que ya no existen; los recorridos de `integration_test/piloto_capturas_test.dart` y `auxiliar_capturas_test.dart` se reescriben para las pantallas vigentes antes de regenerarlas con `tool/capturar_pantallas.sh`. No hay emulador de Android en esta máquina.
 
 ```bash
 xcrun simctl boot <id-del-simulador>
 tool/capturar_pantallas.sh cliente  <id> iphone17pro claro
 tool/capturar_pantallas.sh cliente  <id> iphone17pro oscuro
 tool/capturar_pantallas.sh piloto   <id> iphone17pro campo
-tool/capturar_pantallas.sh auxiliar <id> iphone17pro campo
 ```
 
 El script usa `flutter drive` con `integration_test/<flavor>_capturas_test.dart` y el perfil demo.
@@ -43,12 +42,12 @@ El script usa `flutter drive` con `integration_test/<flavor>_capturas_test.dart`
 
 ## Qué falta
 
-1. **Perfil del proveedor**: documentos y hectáreas por mes; agregar un dron después del alta y registrar al auxiliar desde la app (ADR 0018).
+1. **Perfil del proveedor**: documentos y hectáreas por mes; agregar un dron después del alta (ADR 0018).
 2. **Android**: no hay emulador ni `adb` en esta máquina; las capturas y la auditoría visual de Android quedan pendientes.
 3. **Rendimiento en dispositivo real**: fotogramas en perfil, en el control remoto del piloto y en un teléfono de gama baja.
-4. **Suite `ui_pase_transversal`** de la tarea 47: goldens de estados y escalas de texto por pantalla de piloto y auxiliar.
+4. **Suite `ui_pase_transversal`** de la tarea 47: goldens de estados y escalas de texto por pantalla de piloto.
 5. **Canal en tiempo real del chat** (hoy consulta periódica) y proveedor de teselas propio para producción.
-6. **Modo claro y oscuro en piloto y auxiliar**: la demo solo monta el modo campo; si el dueño quiere que sigan el sistema, es una decisión de producto.
+6. **Modo claro y oscuro en piloto**: la demo solo monta el modo campo; si el dueño quiere que sigan el sistema, es una decisión de producto.
 
 ## Riesgos
 
