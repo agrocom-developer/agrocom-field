@@ -1,6 +1,6 @@
 # ADR 0005 — Selector de rol activo en el flavor `auxiliar`
 
-**Estado:** Aceptada · **Serie:** ADR propios de `agrocom-field` (ver nota de numeración en ADR 0001).
+**Estado:** Reemplazada por ADR 0021 · **Serie:** ADR propios de `agrocom-field` (ver nota de numeración en ADR 0001).
 
 ## Contexto
 
