@@ -28,12 +28,18 @@ class ChipEstadoMarketplace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final color = switch (tono) {
-      TonoEstado.exito => paleta.exito,
-      TonoEstado.info => paleta.info,
-      TonoEstado.alerta => paleta.alerta,
-      TonoEstado.error => paleta.error,
-      TonoEstado.neutro => paleta.textoSecundario,
+    final (fondo, color) = switch (tono) {
+      TonoEstado.exito => (
+        paleta.acentoContenedor,
+        paleta.sobreAcentoContenedor,
+      ),
+      TonoEstado.info => (paleta.infoContenedor, paleta.sobreInfoContenedor),
+      TonoEstado.alerta => (
+        paleta.ambarContenedor,
+        paleta.sobreAmbarContenedor,
+      ),
+      TonoEstado.error => (paleta.errorContenedor, paleta.sobreErrorContenedor),
+      TonoEstado.neutro => (paleta.superficie2, paleta.textoSecundario),
     };
     return Semantics(
       container: true,
@@ -45,8 +51,8 @@ class ChipEstadoMarketplace extends StatelessWidget {
           vertical: EspaciadoCampo.xs + 2,
         ),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.14),
-          borderRadius: BorderRadius.circular(999),
+          color: fondo,
+          borderRadius: BorderRadius.circular(RadioCampo.capsula),
           border: Border.all(color: color.withValues(alpha: 0.5)),
         ),
         child: Row(

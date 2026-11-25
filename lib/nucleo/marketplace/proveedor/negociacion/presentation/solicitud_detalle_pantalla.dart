@@ -102,7 +102,7 @@ class _Contenido extends StatelessWidget {
           children: [
             if (s.terreno != null)
               ClipRRect(
-                borderRadius: BorderRadius.circular(18),
+                borderRadius: BorderRadius.circular(RadioCampo.tarjetaCompacta),
                 child: SizedBox(
                   height: 200,
                   child: MapaLote(
@@ -205,7 +205,7 @@ class _HuecoMapa extends StatelessWidget {
       height: 200,
       decoration: BoxDecoration(
         color: context.paleta.superficie,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(RadioCampo.tarjetaCompacta),
         border: Border.all(color: context.paleta.borde),
       ),
       alignment: Alignment.center,

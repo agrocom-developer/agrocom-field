@@ -423,7 +423,7 @@ class _Galeria extends StatelessWidget {
             excludeSemantics: true,
             child: InkWell(
               key: ValueKey('foto-${f.id}'),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(RadioCampo.chip),
               onTap: () => _abrir(context, f),
               child: SizedBox(
                 width: 128,

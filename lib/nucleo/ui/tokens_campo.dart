@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'colores_campo.dart';
 import 'paleta_campo.dart';
 
 /// Escala de espaciado en múltiplos de 4. Ninguna pantalla usa un número
@@ -18,49 +19,75 @@ abstract final class EspaciadoCampo {
   static double margenLateral(double ancho) => ancho >= 600 ? xl : l;
 }
 
-/// Radios de esquina compartidos por tarjetas, avisos y miniaturas.
+/// Radios de esquina (tokens.json: radius). Ninguna pantalla declara un radio
+/// propio; un test lo vigila (`test/nucleo/ui/tokens_sin_sueltos_test.dart`).
 abstract final class RadioCampo {
+  /// Marcas pequeñas: esquina de una pastilla de precio, borde de un tab.
+  static const double xs = 6;
+
+  /// Chips y filtros.
+  static const double chip = 12;
+
   /// Superficies medianas: avisos, banners, miniaturas y bloques de contenido.
   static const double media = 14;
+
+  /// Campos de texto y burbujas de chat.
+  static const double campo = 16;
+
+  /// Tarjetas compactas (miniaturas, collage de fotos).
+  static const double tarjetaCompacta = 18;
+
+  /// Tarjetas.
+  static const double tarjeta = 24;
+
+  /// Botones principales.
+  static const double pildora = 28;
+
+  /// Hoja inferior.
+  static const double hoja = 32;
+
+  /// Cápsula completa (insignias, indicadores de estado).
+  static const double capsula = 999;
 }
 
 /// Tamaño mínimo de un objetivo táctil: 48 en la app general (Material),
-/// 56 con guantes (flavor piloto).
+/// 56 de alto de botón con guantes y 72 para los controles propios del modo
+/// campo (stepper, acciones del lote).
 abstract final class ObjetivoTactilCampo {
   static const double minimo = 48;
   static const double guantes = 56;
+  static const double campo = 72;
 }
 
-/// Elevación: en claro se expresa con sombra suave; en oscuro, con una
-/// superficie más clara (la sombra no se ve sobre fondo oscuro).
+/// Elevación: una sola sombra sutil en claro y oscuro (tokens.json: shadow);
+/// el modo campo no lleva sombra (se apoya en el borde). Los niveles 2 y 3
+/// (oferta, modal) escalan la misma sombra.
 abstract final class ElevacionCampo {
   /// Niveles 0 (plano), 1 (tarjeta), 2 (oferta/menú), 3 (modal).
   static List<BoxShadow> sombras(PaletaCampo paleta, int nivel) {
-    if (paleta.brillo == Brightness.dark || nivel <= 0) return const [];
-    const colorBase = Color(0xFF15210F);
-    return switch (nivel) {
-      1 => [
-        BoxShadow(
-          color: colorBase.withValues(alpha: 0.06),
-          blurRadius: 8,
-          offset: const Offset(0, 2),
-        ),
-      ],
-      2 => [
-        BoxShadow(
-          color: colorBase.withValues(alpha: 0.10),
-          blurRadius: 20,
-          offset: const Offset(0, 8),
-        ),
-      ],
-      _ => [
-        BoxShadow(
-          color: colorBase.withValues(alpha: 0.16),
-          blurRadius: 40,
-          offset: const Offset(0, 16),
-        ),
-      ],
+    if (nivel <= 0 || paleta.fondo == ColoresCampo.fondoProfundo) {
+      return const [];
+    }
+    final oscuro = paleta.brillo == Brightness.dark;
+    final base = oscuro ? const Color(0xFF000000) : const Color(0xFF202A2E);
+    final (a1, a2) = oscuro ? (0.30, 0.25) : (0.06, 0.07);
+    final escala = switch (nivel) {
+      1 => 1.0,
+      2 => 1.6,
+      _ => 2.4,
     };
+    return [
+      BoxShadow(
+        color: base.withValues(alpha: a1),
+        blurRadius: 2 * escala,
+        offset: Offset(0, 1 * escala),
+      ),
+      BoxShadow(
+        color: base.withValues(alpha: (a2 * escala).clamp(0, 0.5)),
+        blurRadius: 14 * escala,
+        offset: Offset(0, 4 * escala),
+      ),
+    ];
   }
 
   /// Superficie correspondiente al nivel (en oscuro sube de claridad).

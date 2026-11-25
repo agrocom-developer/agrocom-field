@@ -6,6 +6,7 @@ import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/mapa_lote.dart';
 import '../../../nucleo/ui/colores_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
+import '../../../nucleo/ui/tokens_campo.dart';
 
 LatLng _ll(GeoPunto p) => LatLng(p.latitud, p.longitud);
 
@@ -43,7 +44,7 @@ class MapaUbicacionPiloto extends StatelessWidget {
           ? 'Mapa del lote ${lote.nombre}, sin ubicación del piloto'
           : 'Mapa del lote ${lote.nombre} con la última ubicación del piloto',
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(RadioCampo.tarjetaCompacta),
         child: FlutterMap(
           options: MapOptions(
             backgroundColor: ConfiguracionMapa.fondo(paleta),

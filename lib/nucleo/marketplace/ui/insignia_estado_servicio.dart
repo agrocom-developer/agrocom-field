@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../ui/paleta_campo.dart';
 import '../dominio/dominio.dart';
+import '../../ui/tokens_campo.dart';
 
 /// Estado de un servicio: ícono + texto sobre un fondo tenue. El color nunca
 /// es el único portador del estado (sistema visual, §2).
@@ -13,7 +14,7 @@ class InsigniaEstadoServicio extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final (color, icono) = switch (estado) {
+    final (rol, icono) = switch (estado) {
       EstadoServicio.buscandoProveedor => (paleta.alerta, Icons.radar_rounded),
       EstadoServicio.asignado => (paleta.info, Icons.how_to_reg_rounded),
       EstadoServicio.enEjecucion => (paleta.acentoTexto, Icons.flight_rounded),
@@ -22,6 +23,7 @@ class InsigniaEstadoServicio extends StatelessWidget {
     };
     // Con texto grande la etiqueta baja de renglón en vez de desbordar: el
     // ancho máximo da un límite al `Row` aunque el padre no lo dé.
+    final (:fondo, texto: color) = paleta.contenedorDe(rol);
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.sizeOf(context).width * 0.6,
@@ -29,8 +31,8 @@ class InsigniaEstadoServicio extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.14),
-          borderRadius: BorderRadius.circular(999),
+          color: fondo,
+          borderRadius: BorderRadius.circular(RadioCampo.capsula),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

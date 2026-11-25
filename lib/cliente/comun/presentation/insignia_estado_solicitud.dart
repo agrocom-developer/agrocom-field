@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../solicitudes/domain/solicitud.dart';
+import '../../../nucleo/ui/tokens_campo.dart';
 
 /// Estado de una solicitud: ícono + texto sobre un fondo tenue. El color
 /// nunca es el único portador del estado (sistema visual, §2).
@@ -17,7 +18,7 @@ class InsigniaEstadoSolicitud extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final (color, icono) = switch (estado) {
+    final (rol, icono) = switch (estado) {
       EstadoSolicitud.borrador => (
         paleta.textoSecundario,
         Icons.edit_note_rounded,
@@ -42,6 +43,7 @@ class InsigniaEstadoSolicitud extends StatelessWidget {
         ? '$ofertas ${ofertas == 1 ? 'oferta' : 'ofertas'}'
         : estado.etiqueta;
     // Con texto grande la etiqueta baja de renglón en vez de desbordar.
+    final (:fondo, texto: color) = paleta.contenedorDe(rol);
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.sizeOf(context).width * 0.6,
@@ -49,8 +51,8 @@ class InsigniaEstadoSolicitud extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.14),
-          borderRadius: BorderRadius.circular(999),
+          color: fondo,
+          borderRadius: BorderRadius.circular(RadioCampo.capsula),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

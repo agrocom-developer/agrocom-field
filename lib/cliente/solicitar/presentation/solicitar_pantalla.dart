@@ -302,7 +302,7 @@ class _Encabezado extends StatelessWidget {
                       height: 4,
                       decoration: BoxDecoration(
                         color: i <= indice ? paleta.acentoTexto : paleta.borde,
-                        borderRadius: BorderRadius.circular(999),
+                        borderRadius: BorderRadius.circular(RadioCampo.capsula),
                       ),
                     ),
                   ),

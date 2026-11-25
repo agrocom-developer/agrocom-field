@@ -187,7 +187,7 @@ class _Burbuja extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               color: fondo,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(RadioCampo.campo),
               border: Border.all(
                 color: propio ? paleta.acentoTexto : paleta.borde,
               ),

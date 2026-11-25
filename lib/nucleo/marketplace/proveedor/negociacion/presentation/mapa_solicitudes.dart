@@ -7,6 +7,7 @@ import '../../../../ui/paleta_campo.dart';
 import '../../../ui/formato_marketplace.dart';
 import '../../../ui/mapa_lote.dart';
 import '../domain/negociacion.dart';
+import '../../../../ui/tokens_campo.dart';
 
 /// Centro de Santa Cruz de la Sierra, para cuando todavía no hay solicitudes.
 const _centroSantaCruz = LatLng(-17.7833, -63.1821);
@@ -179,7 +180,7 @@ class _Marcador extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                 decoration: BoxDecoration(
                   color: activo ? paleta.acento : paleta.superficie,
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(RadioCampo.capsula),
                   border: Border.all(
                     color: activo ? paleta.acentoTexto : paleta.borde,
                     width: activo ? 3 : 1.5,
