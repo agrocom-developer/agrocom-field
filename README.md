@@ -17,7 +17,7 @@ Flutter, una sola base de código con dos flavors: `cliente` (publica, compara o
 - [`CLAUDE.md`](CLAUDE.md): reglas de marketplace, invariantes del lote, UI, seguridad y entrega.
 - [`docs/vision.md`](docs/vision.md): panorama completo del producto.
 - [`docs/planes/`](docs/planes/): planes de trabajo (identidad visual, pantallas, retiro del auxiliar, panel admin, imágenes, backend).
-- [`docs/design_handoff_agrocom_movil/`](docs/design_handoff_agrocom_movil/): diseño de la interfaz (tokens, pantallas, capturas y prototipo).
+- [`DESIGN.md`](DESIGN.md) y [`docs/diseno/`](docs/diseno/): guía de diseño, especificación de pantallas, tokens, capturas de referencia y prototipo.
 - [`docs/decisiones/`](docs/decisiones/): decisiones técnicas propias de este repo.
 
 ## Stack

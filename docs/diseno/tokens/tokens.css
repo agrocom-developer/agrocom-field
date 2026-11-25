@@ -1,0 +1,99 @@
+/* Agrocom · Industrial AgTech — tokens semánticos */
+:root, [data-theme="light"] {
+  --ag-bg: #F3F5F1;
+  --ag-surface: #FFFFFF;
+  --ag-surface-2: #E9EEE7;
+  --ag-primary: #347A36;
+  --ag-primary-hover: #28632C;
+  --ag-on-primary: #FFFFFF;
+  --ag-primary-container: #E1EEDD;
+  --ag-on-primary-container: #22562A;
+  --ag-graphite: #29343A;
+  --ag-on-graphite: #FFFFFF;
+  --ag-amber: #F5A623;
+  --ag-on-amber: #29343A;
+  --ag-amber-container: #FDF0D3;
+  --ag-on-amber-container: #7A4B00;
+  --ag-paper: #FFE680;
+  --ag-paper-2: #FFDA55;
+  --ag-paper-fold: #E8C13E;
+  --ag-on-paper: #29343A;
+  --ag-text: #202A2E;
+  --ag-text-2: #68756D;
+  --ag-border: #DDE4DC;
+  --ag-info: #2785C7;
+  --ag-info-container: #E2F0FA;
+  --ag-on-info-container: #14577F;
+  --ag-error: #DC4545;
+  --ag-error-container: #FCE6E6;
+  --ag-on-error-container: #A12727;
+  --ag-success: #347A36;
+  --ag-warning: #F5A623;
+  --ag-shadow: 0 1px 2px rgba(32,42,46,.06), 0 4px 14px rgba(32,42,46,.07);
+}
+
+[data-theme="dark"] {
+  --ag-bg: #17251C;
+  --ag-surface: #293832;
+  --ag-surface-2: #34443B;
+  --ag-primary: #62B66A;
+  --ag-primary-hover: #79CA80;
+  --ag-on-primary: #0F1F12;
+  --ag-primary-container: #2E4A35;
+  --ag-on-primary-container: #A8DCAC;
+  --ag-graphite: #34443B;
+  --ag-on-graphite: #EDF3EC;
+  --ag-amber: #FFB52E;
+  --ag-on-amber: #17251C;
+  --ag-amber-container: #4A3A17;
+  --ag-on-amber-container: #FFD488;
+  --ag-paper: #F2D56E;
+  --ag-paper-2: #E6C552;
+  --ag-paper-fold: #C9A83A;
+  --ag-on-paper: #1E2A22;
+  --ag-text: #EDF3EC;
+  --ag-text-2: #AAB8AC;
+  --ag-border: #405247;
+  --ag-info: #50A5D8;
+  --ag-info-container: #1E3A4C;
+  --ag-on-info-container: #A6D4F0;
+  --ag-error: #FF6868;
+  --ag-error-container: #4A2326;
+  --ag-on-error-container: #FFB4B4;
+  --ag-success: #62B66A;
+  --ag-warning: #FFB52E;
+  --ag-shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25);
+}
+
+[data-theme="campo"] {
+  --ag-bg: #000000;
+  --ag-surface: #0F1A13;
+  --ag-surface-2: #1B2A20;
+  --ag-primary: #8EE08F;
+  --ag-primary-hover: #A8EBA8;
+  --ag-on-primary: #000000;
+  --ag-primary-container: #1B3A22;
+  --ag-on-primary-container: #CBF5CB;
+  --ag-graphite: #1B2A20;
+  --ag-on-graphite: #FFFFFF;
+  --ag-amber: #FFC547;
+  --ag-on-amber: #000000;
+  --ag-amber-container: #3A2C00;
+  --ag-on-amber-container: #FFE3A3;
+  --ag-paper: #FFE680;
+  --ag-paper-2: #FFDA55;
+  --ag-paper-fold: #E8C13E;
+  --ag-on-paper: #000000;
+  --ag-text: #FFFFFF;
+  --ag-text-2: #D7E2D9;
+  --ag-border: #6B8272;
+  --ag-info: #8CCBF2;
+  --ag-info-container: #0E2A3B;
+  --ag-on-info-container: #C6E6FA;
+  --ag-error: #FF8A8A;
+  --ag-error-container: #3D1214;
+  --ag-on-error-container: #FFC9C9;
+  --ag-success: #8EE08F;
+  --ag-warning: #FFC547;
+  --ag-shadow: none;
+}

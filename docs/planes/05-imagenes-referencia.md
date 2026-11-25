@@ -2,7 +2,7 @@
 
 **Objetivo.** Tener fotos del servicio (dron fumigando, lotes, boquillas, pilotos) para portadas, estados vacíos y ejemplos, sin riesgo de licencia.
 
-**Ya disponible.** `docs/design_handoff_agrocom_movil/design/assets/fotos/` tiene seis fotos de Unsplash (licencia Unsplash) y una captura satelital de demo que **no** puede ir a producción.
+**Ya disponible.** `docs/diseno/prototipo/assets/fotos/` tiene seis fotos de Unsplash (licencia Unsplash) y una captura satelital de demo que **no** puede ir a producción.
 
 ## Criterios
 
