@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../../../nucleo/ui/paleta_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 
-/// Radio de las opciones: el del botón del tema claro y oscuro.
-const radioOpcion = 14.0;
+/// Radio de las opciones: el de las tarjetas medianas del sistema.
+const radioOpcion = RadioCampo.media;
 
 /// Opción seleccionable del formulario (cultivo, producto, horario). El
 /// estado elegido lleva tilde y borde de acento además del color, de modo
@@ -29,7 +30,6 @@ class OpcionSolicitud extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
     final ancha = apoyo != null;
     final forma = BorderRadius.circular(radioOpcion);
     final icono = Icon(
@@ -39,12 +39,17 @@ class OpcionSolicitud extends StatelessWidget {
                 : Icons.radio_button_unchecked_rounded)
           : Icons.check_rounded,
       size: ancha ? 24 : 18,
-      color: elegida ? paleta.acentoTexto : paleta.bordeFuerte,
+      // La pastilla elegida va rellena de acento: la tilde toma el color del
+      // texto sobre él. La opción ancha lleva el acento en el borde.
+      color: elegida
+          ? (ancha ? paleta.acentoTexto : paleta.sobreAcento)
+          : paleta.bordeFuerte,
     );
     final titular = Text(
       titulo,
-      style: texto.titleMedium?.copyWith(
-        fontWeight: elegida ? FontWeight.w800 : FontWeight.w600,
+      style: TipografiaCampo.tituloTarjeta.copyWith(
+        fontSize: 15,
+        color: elegida && !ancha ? paleta.sobreAcento : paleta.texto,
       ),
     );
 
@@ -59,14 +64,13 @@ class OpcionSolicitud extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: elegida
-              ? Color.alphaBlend(
-                  paleta.acento.withValues(alpha: 0.16),
-                  paleta.superficie,
-                )
+              ? (ancha ? paleta.acentoContenedor : paleta.acento)
               : paleta.superficie,
           borderRadius: forma,
           border: Border.all(
-            color: elegida ? paleta.acentoTexto : paleta.bordeFuerte,
+            color: elegida
+                ? (ancha ? paleta.acentoTexto : paleta.acento)
+                : paleta.bordeFuerte,
             width: elegida ? 1.5 : 1,
           ),
         ),
@@ -93,12 +97,11 @@ class OpcionSolicitud extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               titular,
-                              const SizedBox(height: 2),
+                              const SizedBox(height: EspaciadoCampo.xs),
                               Text(
                                 apoyo!,
-                                style: texto.bodySmall?.copyWith(
-                                  color: paleta.textoSecundario,
-                                ),
+                                style: TipografiaCampo.cuerpoSecundario
+                                    .copyWith(color: paleta.textoSecundario),
                               ),
                             ],
                           ),
@@ -138,7 +141,12 @@ class TituloGrupoSolicitud extends StatelessWidget {
       ),
       child: Semantics(
         header: true,
-        child: Text(texto, style: Theme.of(context).textTheme.titleLarge),
+        child: Text(
+          texto,
+          style: TipografiaCampo.tituloSeccion.copyWith(
+            color: context.paleta.texto,
+          ),
+        ),
       ),
     );
   }
