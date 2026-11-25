@@ -1,7 +1,7 @@
 // CLI del selector de pruebas por impacto.
 //
 //   dart tool/tests_afectados.dart [--base origin/develop] [--formato lista|github]
-//                                  [--solo-dart] [--archivos a,b,c]
+//                                  [--solo-dart] [--listar] [--archivos a,b,c]
 //
 // Calcula los archivos cambiados contra la base (merge-base con HEAD, árbol
 // de trabajo incluido) y devuelve las pruebas afectadas. Si no se puede
@@ -10,6 +10,8 @@
 // Formato `lista` (por defecto): una ruta por línea, o la única palabra
 // `TODO` si corre la suite completa. Con `--solo-dart`, en vez de pruebas,
 // imprime los .dart cambiados que existen (para format y analyze).
+// `--listar` imprime un encabezado con el modo y el motivo, y la lista de
+// pruebas numerada; es lo que se revisa antes de correr nada.
 // Formato `github`: líneas clave=valor para `$GITHUB_OUTPUT`.
 //
 // Se ejecuta con `dart tool/tests_afectados.dart` (sin `pub get`: solo usa
@@ -24,6 +26,7 @@ Future<void> main(List<String> args) async {
   var base = 'origin/develop';
   var formato = 'lista';
   var soloDart = false;
+  var listar = false;
   List<String>? archivosManual;
 
   for (var i = 0; i < args.length; i++) {
@@ -34,6 +37,8 @@ Future<void> main(List<String> args) async {
         formato = args[++i];
       case '--solo-dart':
         soloDart = true;
+      case '--listar':
+        listar = true;
       case '--archivos':
         archivosManual = args[++i].split(',');
       default:
@@ -48,6 +53,10 @@ Future<void> main(List<String> args) async {
   existentes.addAll(
     grafo.keys.where((r) => File('${raiz.path}/$r').existsSync()),
   );
+
+  final fuentes = <String, String>{
+    for (final r in existentes) r: File('${raiz.path}/$r').readAsStringSync(),
+  };
 
   List<String>? cambiados = archivosManual;
   String? errorDiff;
@@ -69,6 +78,7 @@ Future<void> main(List<String> args) async {
       cambiados: cambiados,
       grafo: grafo,
       existentes: existentes,
+      fuentes: fuentes,
     );
   }
 
@@ -86,6 +96,9 @@ Future<void> main(List<String> args) async {
         ..sort();
 
   stderr.writeln('selector: ${seleccion.motivo}');
+  for (final n in seleccion.notas) {
+    stderr.writeln('selector: nota: $n');
+  }
 
   if (formato == 'github') {
     final android =
@@ -109,6 +122,20 @@ Future<void> main(List<String> args) async {
     return;
   }
 
+  if (listar) {
+    if (seleccion.todo) {
+      stdout.writeln('Modo: TODO (suite completa) - ${seleccion.motivo}');
+    } else {
+      stdout.writeln(
+        'Modo: afectado, ${seleccion.pruebas.length} prueba(s) - '
+        '${seleccion.motivo}',
+      );
+      for (final p in seleccion.pruebas) {
+        stdout.writeln('  $p');
+      }
+    }
+    return;
+  }
   if (soloDart) {
     dartCambiados.forEach(stdout.writeln);
     return;

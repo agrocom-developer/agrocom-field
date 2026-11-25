@@ -6,6 +6,7 @@
 #
 #   bin/tests-afectados                    # contra origin/develop
 #   bin/tests-afectados --base develop     # otra base
+#   bin/tests-afectados --listar           # encabezado con modo y motivo, y la lista
 #   bin/tests-afectados --solo-dart        # los .dart cambiados (format/analyze)
 #
 # La lógica vive en tool/selector/ y se prueba en test/tool/selector_test.dart.
