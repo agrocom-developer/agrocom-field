@@ -25,6 +25,17 @@ El check requerido por `auto-merge.yml` sigue siendo `flutter-tests`. Es un job 
 
 Un cambio en un archivo de prueba corre esa prueba. Un cambio solo en documentación (`docs/`, `prompts/`, `.claude/`, `*.md`) deja únicamente el humo. Un cambio en `android/` suma `test/android/`.
 
+### Goldens, imágenes y textos de l10n
+
+Estos archivos no son `.dart`, pero tienen dueño conocido, así que no caen a la suite completa:
+
+- **Golden** (`.png` bajo `test/**/goldens/`). Corren las pruebas que lo referencian: las que nombran el archivo literalmente y las que llaman a `matchesGoldenFile('<carpeta>/...')` sobre su carpeta (la ruta se resuelve contra la carpeta del `.dart`, como hace `flutter test`, incluido `../goldens/`). Si la llamada está en un helper (`ayudas.dart`), entran las pruebas que importan ese helper. Los nombres de golden suelen armarse con interpolación, por eso la unidad es la carpeta y no el archivo. Un golden que ninguna prueba referencia se ignora y el selector lo anota por stderr (`selector: nota: ...`). Un `.png` bajo `test/` fuera de `goldens/` sigue sin clasificar y corre todo.
+- **Capturas e imágenes de `docs/`** (por ejemplo `docs/diseno/capturas`): ignoradas por el prefijo `docs/`; ninguna prueba las lee como entrada.
+- **Fotos e íconos de `assets/imagenes/` y `assets/icono_launcher/`** (`.png`, `.jpg`, `.jpeg`, `.webp`): corren las pruebas del código `.dart` que nombra el archivo (y de todo lo que lo importa). Si nada lo nombra, se ignora con nota. Las fuentes (`assets/fonts/`) y cualquier otro tipo bajo `assets/` corren todo, porque cambian el render de todos los goldens.
+- **Textos de l10n** (`lib/l10n/*.arb`): el impacto lo llevan `app_localizations*.dart`, que se versionan. Si el diff trae el `.arb` junto con `lib/l10n/app_localizations.dart`, el `.arb` se ignora y la selección sale de los `.dart` generados. Un `.arb` sin su código regenerado corre todo (el diff está incompleto: falta `flutter gen-l10n`).
+
+Un cambio de UI trae así solo su prueba y sus goldens. Quien actualiza goldens ejecuta únicamente las pruebas listadas, nunca una carpeta entera ni la suite.
+
 ### Humo mínimo (corre siempre)
 
 - `test/nucleo/sync/sync_engine_replay_test.dart`: replay del motor de sync (invariante 10).
@@ -43,8 +54,8 @@ El selector devuelve la suite completa si el diff toca:
 - `lib/nucleo/db/` (esquema y migraciones de `drift`).
 - `lib/nucleo/sync/` (motor de sync).
 - `.github/`, `bin/` o `tool/`.
-- `test/fixtures/`, `assets/` o cualquier `.dart` de `test/` que no sea una prueba (helpers compartidos).
-- Cualquier archivo que no sepa clasificar.
+- `test/fixtures/`, `assets/fonts/` o cualquier `.dart` de `test/` que no sea una prueba (helpers compartidos).
+- Cualquier archivo que no sepa clasificar (por ejemplo un asset que no es imagen ni fuente, o un `.png` de `test/` fuera de `goldens/`).
 
 También corre todo si no puede calcular el diff (por ejemplo, un clon sin `origin/develop`).
 
@@ -54,11 +65,13 @@ También corre todo si no puede calcular el diff (por ejemplo, un clon sin `orig
 bin/verify                   # lo afectado
 bin/verify --todo            # todo
 bin/verify --base develop    # otra base para el diff
+bin/verify --listar          # imprime qué correría (modo, motivo y pruebas), sin ejecutar
 bin/tests-afectados          # solo imprime las pruebas (o TODO)
+bin/tests-afectados --listar # lo mismo, con encabezado de modo y motivo
 bin/tests-afectados --solo-dart
 ```
 
-`bin/tests-afectados` explica su decisión por stderr (`selector: ...`).
+Antes de correr pruebas se lista la selección con `bin/verify --listar`. Si cae a TODO o pasa de unos 30 archivos, se acota por ruta en vez de correr la carpeta entera. `bin/tests-afectados` explica su decisión por stderr (`selector: ...`, más una línea `nota` por cada archivo ignorado).
 
 ## Medición y presupuesto
 

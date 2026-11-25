@@ -27,7 +27,7 @@ const List<String> prefijosCorreTodo = [
   'bin/',
   'tool/',
   'test/fixtures/',
-  'assets/',
+  'assets/fonts/',
 ];
 
 /// Archivos exactos que obligan a correr toda la suite.
@@ -47,8 +47,12 @@ const List<String> archivosIgnorables = [
 
 /// Resultado de la selección.
 class Seleccion {
-  const Seleccion.todo(this.motivo) : todo = true, pruebas = const [];
-  const Seleccion.parcial(this.pruebas, this.motivo) : todo = false;
+  const Seleccion.todo(this.motivo)
+    : todo = true,
+      pruebas = const [],
+      notas = const [];
+  const Seleccion.parcial(this.pruebas, this.motivo, {this.notas = const []})
+    : todo = false;
 
   /// `true` si corre la suite completa (sin filtro de rutas).
   final bool todo;
@@ -58,6 +62,10 @@ class Seleccion {
 
   /// Explicación legible de por qué se eligió este conjunto.
   final String motivo;
+
+  /// Avisos sobre archivos ignorados o resueltos por una regla especial
+  /// (un golden que ninguna prueba referencia, una imagen sin uso).
+  final List<String> notas;
 }
 
 /// Grafo de imports: archivo -> archivos que importa/exporta/declara como
@@ -88,6 +96,67 @@ bool _ignorable(String ruta) {
   return prefijosIgnorables.any(ruta.startsWith);
 }
 
+final RegExp _goldenLiteral = RegExp(
+  r'''matchesGoldenFile\(\s*['"]([^'"$]*)''',
+);
+const List<String> _extensionesImagen = ['.png', '.jpg', '.jpeg', '.webp'];
+
+String _dirDe(String ruta) {
+  final i = ruta.lastIndexOf('/');
+  return i < 0 ? '' : ruta.substring(0, i);
+}
+
+String _nombreDe(String ruta) => ruta.substring(ruta.lastIndexOf('/') + 1);
+
+/// Normaliza `base/rel` resolviendo `.` y `..`.
+String _unir(String base, String rel) {
+  final partes = base.isEmpty ? <String>[] : base.split('/');
+  for (final seg in rel.split('/')) {
+    if (seg == '.' || seg.isEmpty) continue;
+    if (seg == '..') {
+      if (partes.isNotEmpty) partes.removeLast();
+    } else {
+      partes.add(seg);
+    }
+  }
+  return partes.join('/');
+}
+
+/// Carpeta de goldens que [fuente] (un `.dart` de `ruta`) referencia con
+/// `matchesGoldenFile('<carpeta>/...')`, resuelta contra la carpeta del
+/// archivo, que es como la resuelve `flutter test`. Solo se lee la parte
+/// literal anterior al primer `$`.
+Set<String> carpetasDeGoldens(String ruta, String fuente) {
+  final salida = <String>{};
+  for (final m in _goldenLiteral.allMatches(fuente)) {
+    final literal = m.group(1)!;
+    final i = literal.lastIndexOf('/');
+    if (i < 0) continue;
+    salida.add(_unir(_dirDe(ruta), literal.substring(0, i)));
+  }
+  return salida;
+}
+
+/// Archivos `.dart` (de [fuentes]) que usan el recurso [ruta]: los que
+/// nombran su archivo o, si es un golden, los que referencian su carpeta
+/// con `matchesGoldenFile`.
+Set<String> _usuariosDe(
+  String ruta,
+  Map<String, String> fuentes, {
+  required bool golden,
+}) {
+  final nombre = _nombreDe(ruta);
+  final dir = _dirDe(ruta);
+  final salida = <String>{};
+  fuentes.forEach((archivo, fuente) {
+    if (fuente.contains(nombre) ||
+        (golden && carpetasDeGoldens(archivo, fuente).contains(dir))) {
+      salida.add(archivo);
+    }
+  });
+  return salida;
+}
+
 /// Invierte [grafo]: archivo -> archivos que lo importan.
 GrafoImports invertir(GrafoImports grafo) {
   final inverso = <String, Set<String>>{};
@@ -104,10 +173,13 @@ GrafoImports invertir(GrafoImports grafo) {
 /// [grafo] cubre `lib/` y `test/` (los `part` van como arista en ambos
 /// sentidos). [existentes] son los archivos presentes en disco: un archivo
 /// de prueba cambiado que ya no existe es un borrado y no se ejecuta.
+/// [fuentes] es el texto de los `.dart` de `lib/` y `test/`: sirve para
+/// saber qué código referencia un golden o una imagen cambiados.
 Seleccion seleccionar({
   required Iterable<String> cambiados,
   required GrafoImports grafo,
   required Set<String> existentes,
+  required Map<String, String> fuentes,
 }) {
   final cambios = cambiados
       .map((r) => r.replaceAll('\\', '/').trim())
@@ -127,9 +199,43 @@ Seleccion seleccionar({
   final inverso = invertir(grafo);
   final pruebas = <String>{...pruebasHumo};
   final semillas = <String>{};
+  final notas = <String>[];
 
   for (final ruta in cambios) {
     if (_ignorable(ruta)) continue;
+    final minuscula = ruta.toLowerCase();
+    final esImagen = _extensionesImagen.any(minuscula.endsWith);
+    // Textos de l10n: el impacto lo lleva el código generado, que se
+    // versiona. Un .arb sin su código regenerado es un diff inconsistente.
+    if (ruta.startsWith('lib/l10n/') && ruta.endsWith('.arb')) {
+      if (cambios.contains('lib/l10n/app_localizations.dart')) {
+        notas.add('$ruta: el impacto va por lib/l10n/app_localizations*.dart');
+        continue;
+      }
+      return Seleccion.todo(
+        'cambió $ruta sin regenerar lib/l10n/app_localizations*.dart',
+      );
+    }
+    // Goldens: solo las pruebas que los referencian.
+    if (esImagen && ruta.startsWith('test/') && ruta.contains('/goldens/')) {
+      final usuarios = _usuariosDe(ruta, fuentes, golden: true);
+      if (usuarios.isEmpty) {
+        notas.add('$ruta: ninguna prueba lo referencia, se ignora');
+      }
+      semillas.addAll(usuarios);
+      continue;
+    }
+    // Fotos e íconos: solo el código que las nombra (y sus pruebas).
+    if (esImagen &&
+        (ruta.startsWith('assets/imagenes/') ||
+            ruta.startsWith('assets/icono_launcher/'))) {
+      final usuarios = _usuariosDe(ruta, fuentes, golden: false);
+      if (usuarios.isEmpty) {
+        notas.add('$ruta: ningún .dart lo referencia, se ignora');
+      }
+      semillas.addAll(usuarios);
+      continue;
+    }
     if (ruta.startsWith('android/')) {
       pruebas.addAll(existentes.where((e) => e.startsWith('test/android/')));
       continue;
@@ -161,5 +267,6 @@ Seleccion seleccionar({
   return Seleccion.parcial(
     lista,
     '${cambios.length} archivo(s) cambiado(s) -> ${lista.length} prueba(s)',
+    notas: notas,
   );
 }
