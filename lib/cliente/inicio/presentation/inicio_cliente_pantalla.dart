@@ -6,9 +6,9 @@ import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
-import '../../../nucleo/ui/tema_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
-import '../../calificar/presentation/hoja_calificar.dart';
+import '../../calificar/presentation/calificar_pantalla.dart';
 import '../../ofertas/presentation/ofertas_pantalla.dart';
 import '../../seguimiento/presentation/seguimiento_pantalla.dart';
 import '../../solicitudes/domain/solicitud.dart';
@@ -17,8 +17,8 @@ import '../../solicitudes/presentation/tarjeta_solicitud.dart';
 import '../domain/inicio_cliente_repositorio.dart';
 import 'inicio_cliente_cubit.dart';
 
-/// Inicio del cliente: la acción principal (publicar una solicitud), la
-/// solicitud activa, los avisos del día y el historial reciente. Lee el
+/// Inicio del cliente: la acción principal (el botón flotante «Publicar
+/// lote»), la solicitud activa, los avisos del día y el historial reciente. Lee el
 /// `InicioClienteCubit` que provee la navegación principal.
 ///
 /// En teléfono es una columna; desde 600 px de ancho (iPad) pasa a dos
@@ -47,16 +47,27 @@ class InicioClientePantalla extends StatelessWidget {
             sinConexion: sinConexion,
             alReintentar: cubit.cargar,
           ),
-          InicioClienteListo(:final resumen) => RefreshIndicator(
+          InicioClienteListo(:final resumen) => Stack(
             key: const ValueKey('listo'),
-            color: context.paleta.acentoTexto,
-            backgroundColor: context.paleta.superficieElevada,
-            onRefresh: cubit.actualizar,
-            child: _Contenido(
-              resumen: resumen,
-              alSolicitar: alSolicitar,
-              alVerServicios: alVerServicios,
-            ),
+            children: [
+              Positioned.fill(
+                child: RefreshIndicator(
+                  color: context.paleta.acentoTexto,
+                  backgroundColor: context.paleta.superficieElevada,
+                  onRefresh: cubit.actualizar,
+                  child: _Contenido(
+                    resumen: resumen,
+                    alSolicitar: alSolicitar,
+                    alVerServicios: alVerServicios,
+                  ),
+                ),
+              ),
+              Positioned(
+                right: EspaciadoCampo.l,
+                bottom: EspaciadoCampo.l,
+                child: _BotonPublicar(alSolicitar: alSolicitar),
+              ),
+            ],
           ),
         };
         // El esqueleto se funde con el contenido: el cambio no es un salto.
@@ -80,7 +91,8 @@ EdgeInsets _margen(double ancho) => EdgeInsets.fromLTRB(
   EspaciadoCampo.margenLateral(ancho),
   EspaciadoCampo.xl,
   EspaciadoCampo.margenLateral(ancho),
-  EspaciadoCampo.xxl,
+  // Deja pasar el botón flotante «Publicar lote» al final del desplazamiento.
+  EspaciadoCampo.xxxl + ObjetivoTactilCampo.guantes + EspaciadoCampo.xl,
 );
 
 class _Contenido extends StatelessWidget {
@@ -99,33 +111,30 @@ class _Contenido extends StatelessWidget {
     final activo = resumen.solicitudActiva;
 
     final saludo = _Saludo(nombre: resumen.nombre, empresa: resumen.empresa);
-    final solicitar = _TarjetaSolicitar(alSolicitar: alSolicitar);
 
     final bloqueActivo = Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const _Seccion('Solicitud activa'),
         if (activo == null)
           const _SinServicioActivo()
         else ...[
           TarjetaSolicitud(
             solicitud: activo,
-            resaltada:
-                activo.estado == EstadoSolicitud.enEjecucion ||
-                activo.estado == EstadoSolicitud.conOfertas,
+            destacada: true,
+            titulo: 'Solicitud activa',
             onTap: () => _abrirDetalle(context, activo),
             acciones: [
               if (activo.estado == EstadoSolicitud.conOfertas)
-                OutlinedButton.icon(
+                BotonPrincipalMarketplace(
+                  key: const Key('inicio-ver-ofertas'),
+                  texto: 'Comparar ofertas',
                   onPressed: () => _verOfertas(context, activo),
-                  icon: const Icon(Icons.local_offer_rounded),
-                  label: const Text('Ver ofertas'),
                 )
               else if (activo.estado.conPiloto)
-                OutlinedButton.icon(
+                BotonPrincipalMarketplace(
+                  key: const Key('inicio-ver-seguimiento'),
+                  texto: 'Ver seguimiento',
                   onPressed: () => _seguir(context, activo),
-                  icon: const Icon(Icons.timeline_rounded),
-                  label: const Text('Ver seguimiento'),
                 ),
             ],
           ),
@@ -159,7 +168,7 @@ class _Contenido extends StatelessWidget {
                   onTap: () => _abrirDetalle(context, s),
                   acciones: [
                     OutlinedButton.icon(
-                      onPressed: () => mostrarHojaCalificar(context, s),
+                      onPressed: () => abrirCalificar(context, s),
                       icon: const Icon(Icons.star_outline_rounded),
                       label: const Text('Calificar'),
                     ),
@@ -234,7 +243,6 @@ class _Contenido extends StatelessWidget {
                   Expanded(
                     flex: 6,
                     child: columna([
-                      solicitar,
                       bloqueActivo,
                       bloquePorCalificar,
                     ], desde: 1),
@@ -255,7 +263,6 @@ class _Contenido extends StatelessWidget {
           cuerpo = columna([
             saludo,
             const SizedBox(height: EspaciadoCampo.xl),
-            solicitar,
             bloqueActivo,
             bloqueAvisos(),
             bloquePorCalificar,
@@ -313,72 +320,71 @@ class _Saludo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final texto = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    final paleta = context.paleta;
+    return Row(
       children: [
-        Semantics(
-          header: true,
-          child: Text('Hola, $nombre', style: texto.headlineMedium),
-        ),
-        if (empresa != null) ...[
-          const SizedBox(height: EspaciadoCampo.xs),
-          Text(
-            empresa!,
-            style: texto.bodyLarge?.copyWith(
-              color: context.paleta.textoSecundario,
-            ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (empresa != null)
+                Text(
+                  empresa!,
+                  style: TipografiaCampo.cuerpoSecundario.copyWith(
+                    color: paleta.textoSecundario,
+                  ),
+                ),
+              Semantics(
+                header: true,
+                child: Text(
+                  'Hola, $nombre',
+                  style: TipografiaCampo.tituloPantalla.copyWith(
+                    color: paleta.texto,
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
+        const SizedBox(width: EspaciadoCampo.m),
+        AvatarFoto(
+          iniciales: nombre.isEmpty ? '?' : nombre[0].toUpperCase(),
+          etiqueta: 'Tu perfil',
+          tamano: ObjetivoTactilCampo.guantes - EspaciadoCampo.s,
+        ),
       ],
     );
   }
 }
 
-/// La acción principal del inicio, destacada: una tarjeta grande con el
-/// único botón verde de la pantalla.
-class _TarjetaSolicitar extends StatelessWidget {
-  const _TarjetaSolicitar({required this.alSolicitar});
+/// La acción principal del inicio: «Publicar lote», un botón flotante
+/// grafito con el «+» en ámbar (la acción especial del sistema visual).
+class _BotonPublicar extends StatelessWidget {
+  const _BotonPublicar({required this.alSolicitar});
 
   final VoidCallback alSolicitar;
 
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
-    final radio =
-        Theme.of(context).extension<TemaCampo>()?.radioTarjetaGrande ?? 24;
-    return Container(
-      padding: const EdgeInsets.all(EspaciadoCampo.xl),
-      decoration: BoxDecoration(
-        color: ElevacionCampo.superficie(paleta, 2),
-        borderRadius: BorderRadius.circular(radio),
-        border: Border.all(color: paleta.borde),
-        boxShadow: ElevacionCampo.sombras(paleta, 1),
+    return FloatingActionButton.extended(
+      key: const Key('inicio-solicitar'),
+      onPressed: alSolicitar,
+      backgroundColor: paleta.grafito,
+      foregroundColor: paleta.sobreGrafito,
+      elevation: 0,
+      focusElevation: 0,
+      hoverElevation: 0,
+      highlightElevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(RadioCampo.tarjetaCompacta),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'NUEVA SOLICITUD',
-            style: texto.labelSmall?.copyWith(color: paleta.acentoTexto),
-          ),
-          const SizedBox(height: EspaciadoCampo.s),
-          Text('¿Qué lote fumigamos?', style: texto.headlineSmall),
-          const SizedBox(height: EspaciadoCampo.s),
-          Text(
-            'Marca tu lote, propón un precio por hectárea y elige entre las '
-            'ofertas de los pilotos.',
-            style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
-          ),
-          const SizedBox(height: EspaciadoCampo.xl),
-          BotonPrincipalMarketplace(
-            key: const Key('inicio-solicitar'),
-            texto: 'Publicar una solicitud',
-            icono: Icons.arrow_forward_rounded,
-            onPressed: alSolicitar,
-          ),
-        ],
+      icon: Icon(Icons.add_rounded, color: paleta.ambar),
+      label: Text(
+        'Publicar lote',
+        style: TipografiaCampo.tituloSeccion.copyWith(
+          color: paleta.sobreGrafito,
+        ),
       ),
     );
   }
@@ -416,7 +422,9 @@ class _Seccion extends StatelessWidget {
               header: true,
               child: Text(
                 titulo,
-                style: Theme.of(context).textTheme.titleLarge,
+                style: TipografiaCampo.tituloSeccion.copyWith(
+                  color: context.paleta.texto,
+                ),
               ),
             ),
           ),
@@ -439,7 +447,6 @@ class _SinServicioActivo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
     return SuperficieMarketplace(
       child: Row(
         children: [
@@ -451,12 +458,15 @@ class _SinServicioActivo extends StatelessWidget {
               children: [
                 Text(
                   'No tienes solicitudes en curso',
-                  style: texto.titleMedium,
+                  style: TipografiaCampo.tituloTarjeta.copyWith(
+                    color: paleta.texto,
+                  ),
                 ),
                 const SizedBox(height: EspaciadoCampo.xs),
                 Text(
-                  'Publica tu primera solicitud y compara las ofertas de los pilotos.',
-                  style: texto.bodyMedium?.copyWith(
+                  'Toca «Publicar lote», marca tu lote y compara las ofertas '
+                  'de los pilotos.',
+                  style: TipografiaCampo.cuerpoSecundario.copyWith(
                     color: paleta.textoSecundario,
                   ),
                 ),
@@ -482,13 +492,12 @@ class _TarjetaAviso extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
-    final (color, icono) = switch (aviso.tono) {
+    final (rol, icono) = switch (aviso.tono) {
       TonoAvisoInicio.info => (paleta.info, Icons.wb_sunny_outlined),
       TonoAvisoInicio.alerta => (paleta.alerta, Icons.schedule_rounded),
     };
-    final radio =
-        Theme.of(context).extension<TemaCampo>()?.radioTarjetaChica ?? 18;
+    // Par tonal del rol: fondo y texto con contraste medido, sin alpha.
+    final (:fondo, texto: color) = paleta.contenedorDe(rol);
     return Container(
       padding: const EdgeInsets.only(
         left: EspaciadoCampo.l,
@@ -496,9 +505,8 @@ class _TarjetaAviso extends StatelessWidget {
         bottom: EspaciadoCampo.m,
       ),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(radio),
-        border: Border.all(color: color.withValues(alpha: 0.35)),
+        color: fondo,
+        borderRadius: BorderRadius.circular(RadioCampo.tarjetaCompacta),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -514,11 +522,16 @@ class _TarjetaAviso extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(aviso.titulo, style: texto.titleMedium),
+                  Text(
+                    aviso.titulo,
+                    style: TipografiaCampo.tituloTarjeta.copyWith(color: color),
+                  ),
                   const SizedBox(height: EspaciadoCampo.xs),
                   Text(
                     aviso.detalle,
-                    style: texto.bodyMedium?.copyWith(color: paleta.texto),
+                    style: TipografiaCampo.cuerpoSecundario.copyWith(
+                      color: color,
+                    ),
                   ),
                 ],
               ),
@@ -530,7 +543,7 @@ class _TarjetaAviso extends StatelessWidget {
               HapticaCampo.seleccion();
               alDescartar();
             },
-            icon: Icon(Icons.close_rounded, color: paleta.textoSecundario),
+            icon: Icon(Icons.close_rounded, color: color),
           ),
         ],
       ),
@@ -548,7 +561,6 @@ class _ListaRecientes extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
     return SuperficieMarketplace(
       padding: EdgeInsets.zero,
       child: Column(
@@ -574,13 +586,15 @@ class _ListaRecientes extends StatelessWidget {
                           children: [
                             Text(
                               solicitudes[i].lote.nombre,
-                              style: texto.titleMedium,
+                              style: TipografiaCampo.tituloTarjeta.copyWith(
+                                color: paleta.texto,
+                              ),
                             ),
                             const SizedBox(height: EspaciadoCampo.xs),
                             Text(
                               '${FormatoMarketplace.fechaCorta(solicitudes[i].ventanaDesde)} · '
                               '${FormatoMarketplace.hectareas(solicitudes[i].hectareas)}',
-                              style: texto.bodyMedium?.copyWith(
+                              style: TipografiaCampo.datoMono.copyWith(
                                 color: paleta.textoSecundario,
                               ),
                             ),
@@ -599,12 +613,14 @@ class _ListaRecientes extends StatelessWidget {
                                 Icon(
                                   Icons.star_rounded,
                                   size: 18,
-                                  color: paleta.alerta,
+                                  color: paleta.ambar,
                                 ),
                                 const SizedBox(width: EspaciadoCampo.xs),
                                 Text(
                                   '${solicitudes[i].puntajeDelCliente}',
-                                  style: texto.titleMedium,
+                                  style: TipografiaCampo.cifraUnidad.copyWith(
+                                    color: paleta.texto,
+                                  ),
                                 ),
                               ],
                             ),
@@ -627,8 +643,8 @@ class _ListaRecientes extends StatelessWidget {
   }
 }
 
-/// Esqueleto con la forma del inicio: saludo, tarjeta de solicitar, sección
-/// y tarjeta de servicio.
+/// Esqueleto con la forma del inicio: saludo, tarjeta de la solicitud
+/// activa, sección y fila del historial.
 class _Cargando extends StatelessWidget {
   const _Cargando({super.key});
 
@@ -645,15 +661,11 @@ class _Cargando extends StatelessWidget {
             SizedBox(height: EspaciadoCampo.s),
             EsqueletoCampo(alto: 18, ancho: 220),
             SizedBox(height: EspaciadoCampo.xl),
-            EsqueletoCampo(alto: 196, radio: 24),
-            SizedBox(height: EspaciadoCampo.xxl),
-            EsqueletoCampo(alto: 22, ancho: 150),
-            SizedBox(height: EspaciadoCampo.l),
-            EsqueletoCampo(alto: 164, radio: 18),
+            EsqueletoCampo(alto: 240, radio: RadioCampo.tarjeta),
             SizedBox(height: EspaciadoCampo.xxl),
             EsqueletoCampo(alto: 22, ancho: 110),
             SizedBox(height: EspaciadoCampo.l),
-            EsqueletoCampo(alto: 88, radio: 18),
+            EsqueletoCampo(alto: 88, radio: RadioCampo.tarjetaCompacta),
           ],
         ),
       ),

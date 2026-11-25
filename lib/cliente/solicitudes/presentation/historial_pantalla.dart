@@ -265,9 +265,7 @@ class _Resumen extends StatelessWidget {
                                 width: EspaciadoCampo.xl,
                                 color: i == altos.length - 1
                                     ? paleta.acentoTexto
-                                    : paleta.acentoTexto.withValues(
-                                        alpha: 0.45,
-                                      ),
+                                    : paleta.apoyo,
                                 borderRadius: const BorderRadius.vertical(
                                   top: Radius.circular(EspaciadoCampo.xs),
                                 ),
