@@ -1,0 +1,77 @@
+import 'package:flutter/material.dart';
+
+import '../colores_campo.dart';
+import '../paleta_campo.dart';
+import '../tokens_campo.dart';
+
+/// Contenido de una hoja inferior: radio 32 arriba, manija de 36×4 y el
+/// [child] debajo. Es el patrón de todo lo que va sobre el mapa.
+class HojaInferiorCampo extends StatelessWidget {
+  const HojaInferiorCampo({required this.child, super.key});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final paleta = context.paleta;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: ElevacionCampo.superficie(paleta, 2),
+        border: Border.all(color: paleta.borde),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(RadioCampo.hoja),
+        ),
+        boxShadow: ElevacionCampo.sombras(paleta, 3),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: EspaciadoCampo.m),
+            Center(
+              child: Container(
+                width: 36,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: paleta.bordeFuerte,
+                  borderRadius: BorderRadius.circular(RadioCampo.capsula),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                EspaciadoCampo.l,
+                EspaciadoCampo.l,
+                EspaciadoCampo.l,
+                EspaciadoCampo.xl,
+              ),
+              child: child,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Abre una [HojaInferiorCampo] modal que se arrastra para cerrar.
+Future<T?> mostrarHojaInferiorCampo<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+}) {
+  return showModalBottomSheet<T>(
+    context: context,
+    isScrollControlled: true,
+    showDragHandle: false,
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    barrierColor: ColoresCampo.visorFoto.withValues(alpha: 0.54),
+    sheetAnimationStyle: AnimationStyle(
+      duration: MovimientoCampo.duracion(context, MovimientoCampo.lenta),
+      curve: MovimientoCampo.entrada,
+    ),
+    builder: (c) => HojaInferiorCampo(child: builder(c)),
+  );
+}
