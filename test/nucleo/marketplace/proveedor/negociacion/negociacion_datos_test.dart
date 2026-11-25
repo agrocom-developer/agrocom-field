@@ -127,6 +127,24 @@ void main() {
       expect(cerrada.estado.activa, isFalse);
     });
 
+    test('la oferta lee la zona y el lote que manda el servidor', () {
+      final sinLote = MapeoNegociacion.oferta({
+        ..._oferta(),
+        'zona': 'Montero',
+        'zona_id': 3,
+        'lote': null,
+      });
+      final adjudicada = MapeoNegociacion.oferta({
+        ..._oferta(),
+        'zona': 'Montero',
+        'lote': 'Lote Sur',
+      });
+      expect(sinLote.zona, 'Montero');
+      expect(sinLote.lote, isNull);
+      expect(adjudicada.lote, 'Lote Sur');
+      expect(MapeoNegociacion.oferta(_oferta()).zona, isNull);
+    });
+
     test('las preferencias viajan de ida y vuelta', () {
       const p = PreferenciasAviso(
         macrorregiones: [Macrorregion.valles, Macrorregion.chiquitania],

@@ -398,6 +398,35 @@ class NegociacionDemo implements NegociacionRepositorio {
 
   final AlmacenNegociacionDemo _a;
 
+  /// Como el servidor, completa la zona de la solicitud de cada oferta.
+  OfertaNegociada _conZona(OfertaNegociada o) {
+    final zona = _a.solicitudes
+        .where((s) => s.id == o.solicitudId)
+        .map((s) => s.zona)
+        .firstOrNull;
+    return zona == null
+        ? o
+        : OfertaNegociada(
+            id: o.id,
+            uuidCliente: o.uuidCliente,
+            solicitudId: o.solicitudId,
+            numero: o.numero,
+            autor: o.autor,
+            tipo: o.tipo,
+            precioHa: o.precioHa,
+            monto: o.monto,
+            estado: o.estado,
+            esDefinitiva: o.esDefinitiva,
+            venceEn: o.venceEn,
+            nota: o.nota,
+            distanciaKm: o.distanciaKm,
+            creadaEn: o.creadaEn,
+            respondidaEn: o.respondidaEn,
+            zona: zona,
+            lote: o.lote,
+          );
+  }
+
   OfertaNegociada _buscar(int id) => _a.ofertas.firstWhere((o) => o.id == id);
 
   OfertaNegociada _con(OfertaNegociada o, EstadoOferta estado) {
@@ -417,6 +446,8 @@ class NegociacionDemo implements NegociacionRepositorio {
       distanciaKm: o.distanciaKm,
       creadaEn: o.creadaEn,
       respondidaEn: _a.reloj(),
+      zona: o.zona,
+      lote: o.lote,
     );
     _a.reemplazarOferta(nueva);
     return nueva;
@@ -424,7 +455,7 @@ class NegociacionDemo implements NegociacionRepositorio {
 
   @override
   Future<List<OfertaNegociada>> misOfertas() =>
-      _conRed(_a, () async => _a.ofertas);
+      _conRed(_a, () async => [for (final o in _a.ofertas) _conZona(o)]);
 
   @override
   Future<OfertaNegociada> contraofertar(
