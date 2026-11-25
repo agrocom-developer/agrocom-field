@@ -38,6 +38,8 @@ Responden al hecho de que el lote no tiene señal; no aplican al flavor `cliente
 
 ## Política de calidad de UI
 
+La guía de diseño vigente es [`DESIGN.md`](DESIGN.md) (identidad Industrial AgTech); se consulta antes de cualquier cambio de UI y se actualiza después. Tokens, especificación de pantallas, capturas y prototipo están en `docs/diseno/`.
+
 La interfaz es parte del producto, no un acabado. Una pantalla no está terminada hasta que cumple todo esto:
 
 - **Dos lenguajes visuales, un sistema de tokens.** `piloto` y `auxiliar` usan el modo campo de alto contraste (ADR 0008): legible a pleno sol, objetivos táctiles de 56 dp o más, acciones con guantes. `cliente` usa un tema claro sobrio derivado del logo (ADR 0003): fondo neutro, un solo color de acento, jerarquía por tamaño y peso, no por decoración. Los colores, tipografías (Manrope, JetBrains Mono), espacios y radios viven en `nucleo/ui` como tokens; una pantalla no declara colores ni medidas propias.
