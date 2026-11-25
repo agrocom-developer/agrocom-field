@@ -43,15 +43,32 @@ Post-it: `paper` #FFE680 → `paper2` #FFDA55, esquina `fold` #E8C13E y texto `o
 Reglas:
 - Nunca escribas un HEX en un widget: siempre usa tokens semánticos.
 - El texto sobre un acento va en `on*` a opacidad completa. No apagues el texto con alpha.
-- `text2` sobre `bg` claro queda por debajo de 4.5:1. Úsalo sobre `surface` o ajústalo.
+- `text2` claro vale `#5F6C65` (el handoff traía `#68756D`, 4,4:1 sobre `bg`): AA sobre `bg`, `surface` y `surface2`.
+- Los tonos vivos de error, info y ámbar son rellenos; como texto se usa la variante `on*Container` (`error`, `info`, `alerta` de la paleta).
 - En mapas: verde = lote abierto o sano, ámbar = requiere atención o vence hoy. Aplica siempre el overlay `map-dim` para que se lean los pines.
 
+### Nombres en el código
+
+Los tokens viven en `lib/nucleo/ui/`; una pantalla lee `context.paleta` y nunca un HEX.
+
+| Handoff | Código |
+|---|---|
+| bg, surface, surface2, border | `fondo`, `superficie`, `superficie2`, `borde` (más `bordeFuerte` para controles y `superficieElevada` para modales) |
+| text, text2 | `texto`, `textoSecundario` |
+| primary, onPrimary, primaryContainer | `acento`, `sobreAcento`, `acentoContenedor` (`acentoTexto` y `exito` para texto o ícono) |
+| graphite, onGraphite | `grafito`, `sobreGrafito` |
+| amber, amberContainer | `ambar`, `ambarContenedor` (`alerta` como texto) |
+| info, error | `rellenoInfo`, `rellenoError` como relleno; `info`, `error` como texto |
+| paper, paper2, paperFold, onPaper | `papel`, `papel2`, `papelDoblez`, `sobrePapel` |
+
+Archivos: `paleta_campo.dart` (roles por modo, `PaletaCampo`), `colores_campo.dart` (colores base y del modo campo), `tipografia_campo.dart` (`TipografiaCampo`), `tokens_campo.dart` (`EspaciadoCampo`, `RadioCampo`, `ObjetivoTactilCampo`, `ElevacionCampo`, `MovimientoCampo`), `tema_campo.dart` (`AgrocomThemeCampo.construir(modo:)`).
+
 ## 4. Tipografía
-- **Manrope** para la UI y **JetBrains Mono** para las cifras.
+- **Manrope** para la UI y **JetBrains Mono** para las cifras, empaquetadas en `assets/fonts/`. Los estilos se llaman `tituloPantalla` (H1), `valorDestacado` (H2), `tituloBloque`, `tituloSeccion`, `cuerpo`, `cuerpoSecundario`, `etiqueta`, `etiquetaMono` (overline), `cifraDisplay`, `cifraGrande`, `cifraMedia` y `cifraUnidad` en `TipografiaCampo`.
 
 | Estilo | Tamaño / peso | Extra |
 |---|---|---|
-| Display número | Mono 56/700 | −0.04em |
+| Display número (`cifraDisplay`) | Mono 56/700 | −0.04em |
 | H1 | 28/800 | −0.02em, interlineado 1.1 |
 | H2 | 24/800 | |
 | Título de barra | 17/800 | |
@@ -64,20 +81,20 @@ Reglas:
 - Formato numérico: separador de miles con punto (Bs 7.680) y decimal con coma (★ 4,9).
 
 ## 5. Forma, espacio y elevación
-- **Radios:**
-  - píldora 28 (botones);
-  - 24 (tarjetas);
-  - 18–20 (tarjetas compactas);
-  - 16 (inputs);
-  - 12 (chips y filtros);
-  - 32 (hoja inferior);
+- **Radios** (`RadioCampo`):
+  - `pildora` 28 (botones);
+  - `tarjeta` 24;
+  - `tarjetaCompacta` 18;
+  - `campo` 16 (inputs);
+  - `chip` 12 (chips y filtros);
+  - `hoja` 32 (hoja inferior);
   - 22–24 (avatar en cuadrado redondeado).
 - **Espaciado:** 4, 8, 10, 12, 14, 16, 20, 24. Márgenes laterales de 16 y 20 para texto suelto.
-- **Elevación:** una sola sombra sutil (ver tokens), sin sombra en modo campo. Prefiere borde de 1 px más sombra suave antes que sombras grandes.
+- **Elevación:** una sola sombra sutil (`ElevacionCampo`), sin sombra en modo campo. Prefiere borde de 1 px más sombra suave antes que sombras grandes.
 
 ## 6. Componentes
 - **Botones:** primario (primary), secundario (surface con borde), texto (primary), destructivo (texto en error), especial (FAB grafito con "+" en ámbar).
-- **Chip de estado:** ok, warn, info, err o neutro. Píldora 12/700.
+- **Chip de estado** (`ChipEstadoMarketplace`, par `contenedorDe`): ok, warn, info, err o neutro. Píldora 12/700.
 - **Filtro:** activo en grafito, inactivo en surface.
 - **Barra inferior:** 4 destinos por rol, con indicador tonal de 56×30 en el activo.
   - Cliente: Inicio, Lotes, Servicios, Perfil.
@@ -109,6 +126,6 @@ Reglas:
 
 ## 10. Mantenimiento
 - Cada componente nuevo se agrega aquí con su nombre en código.
-- Si cambia un token, se actualizan `tokens.json`, el ThemeExtension y esta guía en el mismo cambio.
+- Si cambia un token, se actualizan `tokens.json`, `PaletaCampo` (o el archivo de `nucleo/ui` que lo lleve), el test de contraste y esta guía en el mismo cambio.
 - Registro de decisiones:
   - 2026-11-25: se adopta Industrial AgTech, que reemplaza el verde hoja #1F5F2E.
