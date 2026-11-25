@@ -62,6 +62,9 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
 
   final Brightness brillo;
 
+  /// Es la paleta del modo campo (alto contraste): objetivos táctiles de 72.
+  bool get esCampo => fondo == ColoresCampo.fondoProfundo;
+
   /// Fondo de pantalla.
   final Color fondo;
 

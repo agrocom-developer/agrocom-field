@@ -4,9 +4,11 @@
 
 import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/presentation/avisos_pantalla.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/presentation/chat_pantalla.dart';
+import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/presentation/mapa_solicitudes.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/presentation/mapa_solicitudes_pantalla.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/presentation/mis_ofertas_pantalla.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/presentation/solicitud_detalle_pantalla.dart';
+import 'package:agrocom_field/nucleo/marketplace/ui/superficie_marketplace.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -25,76 +27,160 @@ void main() {
   }
 
   group('Mapa de solicitudes', () {
+    // El panel de zonas es la fila de filtros de arriba (el primer
+    // `ListView`); la hoja inferior lleva el suyo.
+    Finder chip(String texto) => find.descendant(
+      of: find.byType(ListView).first,
+      matching: find.text(texto),
+    );
+
+    Future<void> abrir(
+      WidgetTester tester, {
+      Size tamano = telefonoGrande,
+      double escala = 1.0,
+    }) async {
+      await montar(
+        tester,
+        MapaSolicitudesPantalla(reloj: relojFijo),
+        dependencias: entorno.dependencias,
+        tamano: tamano,
+        escala: escala,
+      );
+      await esperar(tester);
+    }
+
     for (final (tamano, escala) in matriz) {
       testWidgets('se lee completo en ${sufijo(tamano, escala)}', (
         tester,
       ) async {
-        await montar(
-          tester,
-          const MapaSolicitudesPantalla(),
-          dependencias: entorno.dependencias,
-          tamano: tamano,
-          escala: escala,
-        );
-        await esperar(tester);
-        expect(find.text('Solicitudes abiertas'), findsOneWidget);
+        await abrir(tester, tamano: tamano, escala: escala);
+        expect(find.text('Buscar zona o lote'), findsOneWidget);
+        expect(find.byType(MapaSolicitudes), findsOneWidget);
         expect(tester.takeException(), isNull);
         await golden(tester, 'mapa_${sufijo(tamano, escala)}');
       });
     }
 
-    testWidgets('muestra las solicitudes, el resumen y las zonas', (
+    testWidgets('muestra los pines, los filtros rápidos y el resumen', (
       tester,
     ) async {
-      await montar(
-        tester,
-        const MapaSolicitudesPantalla(),
-        dependencias: entorno.dependencias,
-      );
-      await esperar(tester);
-      expect(find.widgetWithText(ChoiceChip, 'Valles'), findsOneWidget);
-      expect(find.widgetWithText(ChoiceChip, 'Chiquitania'), findsOneWidget);
+      await abrir(tester);
+      // Un pin por solicitud: el de Warnes vence hoy y lo dice.
+      expect(find.text('Bs 121 · hoy'), findsOneWidget);
+      expect(find.text('Bs 118'), findsOneWidget);
+      expect(chip('Cerca de mí'), findsOneWidget);
+      expect(chip('+50 ha'), findsOneWidget);
+      expect(chip('Vence hoy'), findsOneWidget);
+      expect(chip('Valles'), findsOneWidget);
       await tester.scrollUntilVisible(
         find.text('Dónde hay trabajo'),
         200,
-        scrollable: find.byType(Scrollable).last,
+        scrollable: find
+            .descendant(
+              of: find.byType(DraggableScrollableSheet),
+              matching: find.byType(Scrollable),
+            )
+            .first,
       );
       expect(find.text('Dónde hay trabajo'), findsOneWidget);
+    });
+
+    testWidgets('elegir un pin abre la solicitud con sus dos salidas', (
+      tester,
+    ) async {
+      await abrir(tester);
+      await tester.tap(find.text('Bs 118'));
+      await esperar(tester);
+      expect(find.text('Lote de sorgo'), findsOneWidget);
+      expect(find.text('Superficie'), findsOneWidget);
+      expect(find.text('Precio ofrecido'), findsOneWidget);
+      expect(find.text('Contraofertar'), findsOneWidget);
+      expect(find.text('Aceptar 118'), findsOneWidget);
+      await golden(tester, 'mapa_seleccion_412x915_x1');
+    });
+
+    testWidgets('aceptar desde el mapa envía la oferta al precio del cliente', (
+      tester,
+    ) async {
+      await abrir(tester);
+      await tester.tap(find.text('Bs 118'));
+      await esperar(tester);
+      await tester.tap(find.text('Aceptar 118'));
+      await esperar(tester);
+      expect(find.textContaining('Oferta enviada'), findsOneWidget);
+      expect(entorno.almacenNegociacion.ofertas.first.solicitudId, 6);
+    });
+
+    testWidgets('sin red, aceptar avisa «Sin señal» y se puede reintentar', (
+      tester,
+    ) async {
+      await abrir(tester);
+      await tester.tap(find.text('Bs 118'));
+      await esperar(tester);
+      entorno.almacenNegociacion.enLinea = false;
+      await tester.tap(find.text('Aceptar 118'));
+      await esperar(tester);
+      expect(
+        find.textContaining('Sin señal · aceptar necesita red'),
+        findsOneWidget,
+      );
+      entorno.almacenNegociacion.enLinea = true;
+      await tester.tap(find.text('Aceptar 118'));
+      await esperar(tester);
+      expect(find.textContaining('Oferta enviada'), findsOneWidget);
+    });
+
+    testWidgets('contraofertar abre la negociación con el cliente', (
+      tester,
+    ) async {
+      await abrir(tester);
+      await tester.tap(find.text('Bs 118'));
+      await esperar(tester);
+      await tester.tap(find.text('Contraofertar'));
+      await esperar(tester);
+      expect(find.text('Negociación con el cliente'), findsOneWidget);
+      expect(find.text('Ronda 2 de 5'), findsOneWidget);
     });
 
     testWidgets('filtrar por zona deja solo las solicitudes de esa zona', (
       tester,
     ) async {
-      await montar(
-        tester,
-        const MapaSolicitudesPantalla(),
-        dependencias: entorno.dependencias,
-      );
-      await esperar(tester);
-      await tester.tap(find.widgetWithText(ChoiceChip, 'Valles'));
+      await abrir(tester);
+      await tester.tap(chip('Valles'));
       await esperar(tester);
       expect(find.textContaining('60 ha'), findsWidgets);
       expect(find.textContaining('250 ha'), findsNothing);
       await golden(tester, 'mapa_filtrado_valles_412x915_x1');
     });
 
-    testWidgets('sin solicitudes en la zona, el vacío orienta', (tester) async {
-      await montar(
-        tester,
-        const MapaSolicitudesPantalla(),
-        dependencias: entorno.dependencias,
-        tamano: telefonoChico,
-      );
+    testWidgets('«Vence hoy» deja solo lo que vence hoy', (tester) async {
+      await abrir(tester);
+      await tester.tap(chip('Vence hoy'));
       await esperar(tester);
-      final chaco = find.widgetWithText(ChoiceChip, 'Chaco');
-      await tester.scrollUntilVisible(
-        chaco,
-        100,
-        scrollable: find.byType(Scrollable).first,
+      expect(find.text('Bs 121 · hoy'), findsOneWidget);
+      expect(find.text('Bs 118'), findsNothing);
+    });
+
+    testWidgets('buscar por texto acota la lista y el mapa', (tester) async {
+      await abrir(tester);
+      await tester.enterText(find.byType(TextField), 'chiquitos');
+      await esperar(tester);
+      expect(find.text('Bs 118'), findsOneWidget);
+      expect(find.text('Bs 121 · hoy'), findsNothing);
+    });
+
+    testWidgets('sin solicitudes en la zona, el vacío orienta', (tester) async {
+      await abrir(tester, tamano: telefonoChico);
+      // Los filtros no caben: el de Chaco está al final de la fila.
+      await tester.drag(
+        find.descendant(
+          of: find.byType(ListView).first,
+          matching: find.byType(Scrollable),
+        ),
+        const Offset(-900, 0),
       );
-      await Scrollable.ensureVisible(tester.element(chaco));
       await tester.pump();
-      await tester.tap(chaco);
+      await tester.tap(find.text('Chaco'));
       await esperar(tester);
       expect(find.text('Ninguna solicitud con estos filtros'), findsOneWidget);
       await golden(tester, 'mapa_vacio_360x640_x1');
@@ -104,15 +190,10 @@ void main() {
       tester,
     ) async {
       entorno.almacenNegociacion.enLinea = false;
-      await montar(
-        tester,
-        const MapaSolicitudesPantalla(),
-        dependencias: entorno.dependencias,
-        tamano: telefonoChico,
-      );
-      await esperar(tester);
+      await abrir(tester, tamano: telefonoChico);
       expect(find.text('Sin conexión'), findsOneWidget);
       expect(find.textContaining('competencia'), findsOneWidget);
+      expect(find.textContaining('Sin señal ·'), findsOneWidget);
       await golden(tester, 'mapa_sin_red_360x640_x1');
       entorno.almacenNegociacion.enLinea = true;
       await tester.tap(find.text('Reintentar'));
@@ -123,12 +204,7 @@ void main() {
     testWidgets('el panel de filtros pide hectáreas, precio, cultivo y orden', (
       tester,
     ) async {
-      await montar(
-        tester,
-        const MapaSolicitudesPantalla(),
-        dependencias: entorno.dependencias,
-      );
-      await esperar(tester);
+      await abrir(tester);
       await tester.tap(find.byTooltip('Filtros'));
       await tester.pumpAndSettle();
       expect(find.text('Filtrar solicitudes'), findsOneWidget);
@@ -194,32 +270,15 @@ void main() {
       await golden(tester, 'detalle_oferta_enviada_412x915_x1');
     });
 
-    testWidgets('contraofertar pide el precio, muestra el total y lo envía', (
+    testWidgets('contraofertar abre la negociación con el stepper', (
       tester,
     ) async {
       await abrir(tester, id: 1);
       await irA(tester, find.text('Contraofertar mi precio'));
       await tester.tap(find.text('Contraofertar mi precio'));
-      await tester.pumpAndSettle();
-      expect(find.text('Tu contraoferta'), findsOneWidget);
-
-      // El mismo precio que propone el cliente no es una contraoferta.
-      await tester.enterText(find.byType(TextFormField).first, '121');
-      await tester.tap(find.text('Enviar contraoferta'));
-      await tester.pumpAndSettle();
-      expect(find.textContaining('Es el mismo precio'), findsOneWidget);
-
-      await tester.enterText(find.byType(TextFormField).first, '118,5');
-      await tester.pump();
-      expect(find.textContaining('= Bs 4.740'), findsOneWidget);
-      await golden(tester, 'detalle_contraoferta_412x915_x1');
-      await tester.tap(find.text('Enviar contraoferta'));
-      await tester.pumpAndSettle();
-      expect(find.textContaining('Oferta enviada: Bs 118,5'), findsOneWidget);
-      expect(
-        entorno.almacenNegociacion.ofertas.first.precioHa.toString(),
-        '118.5',
-      );
+      await esperar(tester);
+      expect(find.text('Negociación con el cliente'), findsOneWidget);
+      expect(find.text('Enviar 121'), findsOneWidget);
     });
 
     testWidgets('una solicitud con negociación cerrada no admite ofertar', (
@@ -248,96 +307,109 @@ void main() {
   });
 
   group('Mis ofertas', () {
+    Future<void> abrir(
+      WidgetTester tester, {
+      Size tamano = telefonoGrande,
+      double escala = 1.0,
+    }) async {
+      await montar(
+        tester,
+        const MisOfertasPantalla(),
+        dependencias: entorno.dependencias,
+        tamano: tamano,
+        escala: escala,
+      );
+      await esperar(tester);
+    }
+
     for (final (tamano, escala) in matriz) {
       testWidgets('se lee completo en ${sufijo(tamano, escala)}', (
         tester,
       ) async {
-        await montar(
-          tester,
-          const MisOfertasPantalla(),
-          dependencias: entorno.dependencias,
-          tamano: tamano,
-          escala: escala,
-        );
-        await esperar(tester);
+        await abrir(tester, tamano: tamano, escala: escala);
         expect(find.text('Mis ofertas'), findsOneWidget);
         expect(tester.takeException(), isNull);
         await golden(tester, 'ofertas_${sufijo(tamano, escala)}');
       });
     }
 
-    testWidgets('cada oferta se titula con la zona de su solicitud', (
+    testWidgets('separa Activas, Ganadas y Cerradas con su cuenta', (
       tester,
     ) async {
-      await montar(
-        tester,
-        const MisOfertasPantalla(),
-        dependencias: entorno.dependencias,
-      );
+      await abrir(tester);
+      expect(find.text('Activas 2'), findsOneWidget);
+      expect(find.text('Ganadas 0'), findsOneWidget);
+      expect(find.text('Tu turno · R4/5'), findsOneWidget);
+      expect(find.text('Esperando · R3/5'), findsOneWidget);
+      await tester.tap(find.text('Cerradas'));
       await esperar(tester);
-      expect(find.textContaining('Solicitud en '), findsWidgets);
-      expect(find.text('Solicitud 1'), findsNothing);
+      expect(find.text('Rechazada'), findsOneWidget);
+      await tester.tap(find.text('Ganadas 0'));
+      await esperar(tester);
+      expect(find.text('Aún no ganaste ninguna'), findsOneWidget);
     });
 
-    testWidgets('la contraoferta del cliente se acepta y queda adjudicada', (
-      tester,
-    ) async {
-      await montar(
-        tester,
-        const MisOfertasPantalla(),
-        dependencias: entorno.dependencias,
-      );
-      await esperar(tester);
-      expect(find.text('Te toca responder'), findsOneWidget);
-      expect(find.text('Esperando al cliente'), findsOneWidget);
-      await tester.tap(find.textContaining('Aceptar Bs 122'));
-      await esperar(tester);
-      expect(find.textContaining('te eligió'), findsOneWidget);
-      expect(find.text('Adjudicada'), findsOneWidget);
-      await golden(tester, 'ofertas_adjudicada_412x915_x1');
+    testWidgets('la tarjeta con tu turno lleva borde ámbar', (tester) async {
+      await abrir(tester);
+      final tarjetas = tester
+          .widgetList<SuperficieMarketplace>(find.byType(SuperficieMarketplace))
+          .toList();
+      expect(tarjetas.where((t) => t.colorBorde != null), hasLength(1));
     });
 
-    testWidgets('contraofertar de vuelta reemplaza la oferta del cliente', (
+    testWidgets('cada negociación se titula con la zona de su solicitud', (
       tester,
     ) async {
-      await montar(
-        tester,
-        const MisOfertasPantalla(),
-        dependencias: entorno.dependencias,
-      );
-      await esperar(tester);
-      await tester.tap(find.text('Contraofertar'));
-      await tester.pumpAndSettle();
-      await tester.enterText(find.byType(TextFormField).first, '125');
-      await tester.tap(find.text('Enviar contraoferta'));
-      await tester.pumpAndSettle();
-      expect(find.textContaining('Enviaste tu contraoferta'), findsOneWidget);
-      expect(find.text('Te toca responder'), findsNothing);
+      await abrir(tester);
+      expect(find.text('Santa Cruz de la Sierra'), findsOneWidget);
+      expect(find.text('Solicitud 4'), findsNothing);
     });
+
+    testWidgets(
+      'aceptar la contraoferta del cliente deja la solicitud ganada',
+      (tester) async {
+        await abrir(tester);
+        await tester.tap(find.text('Santa Cruz de la Sierra'));
+        await esperar(tester);
+        expect(find.text('Negociación con el cliente'), findsOneWidget);
+        await tester.tap(find.text('Aceptar 122'));
+        await esperar(tester);
+        expect(find.textContaining('la solicitud es tuya'), findsOneWidget);
+        await golden(tester, 'ofertas_adjudicada_412x915_x1');
+        await tester.tap(find.text('Ver mis ofertas'));
+        await esperar(tester);
+        expect(find.text('Ganadas 1'), findsOneWidget);
+      },
+    );
 
     testWidgets('retirar la oferta propia la cierra', (tester) async {
-      await montar(
-        tester,
-        const MisOfertasPantalla(),
-        dependencias: entorno.dependencias,
-      );
+      await abrir(tester);
+      await tester.tap(find.text('San Ignacio de Velasco'));
       await esperar(tester);
-      await irA(tester, find.text('Retirar mi oferta'));
       await tester.tap(find.text('Retirar mi oferta'));
       await esperar(tester);
       expect(find.textContaining('Retiraste tu oferta'), findsOneWidget);
     });
 
-    testWidgets('sin conexión no deja responder y lo dice', (tester) async {
-      entorno.almacenNegociacion.enLinea = false;
+    testWidgets('sin ofertas, el vacío lleva al mapa', (tester) async {
+      entorno.almacenNegociacion.vaciarOfertas();
+      var fueAlMapa = false;
       await montar(
         tester,
-        const MisOfertasPantalla(),
+        MisOfertasPantalla(alIrAlMapa: () => fueAlMapa = true),
         dependencias: entorno.dependencias,
-        tamano: telefonoChico,
       );
       await esperar(tester);
+      expect(find.text('Todavía no hiciste ofertas'), findsOneWidget);
+      await tester.tap(find.text('Ver solicitudes en el mapa'));
+      expect(fueAlMapa, isTrue);
+    });
+
+    testWidgets('sin conexión no deja responder y lo dice', (tester) async {
+      entorno.almacenNegociacion.enLinea = false;
+      await abrir(tester, tamano: telefonoChico);
       expect(find.text('Sin conexión'), findsOneWidget);
+      expect(find.textContaining('Sin señal ·'), findsOneWidget);
       await golden(tester, 'ofertas_sin_red_360x640_x1');
     });
   });
