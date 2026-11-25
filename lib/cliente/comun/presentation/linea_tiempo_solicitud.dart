@@ -75,16 +75,16 @@ class _Hito extends StatelessWidget {
                     height: _nodo,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: hecho
-                          ? paleta.acentoTexto
-                          : actual
-                          ? paleta.acento
-                          : paleta.superficie,
+                      // Hecho: círculo verde con tilde. En curso: anillo ámbar
+                      // (lo que pide atención). Pendiente: anillo vacío.
+                      color: hecho ? paleta.acentoTexto : paleta.superficie,
                       border: Border.all(
-                        color: hecho || actual
+                        color: hecho
                             ? paleta.acentoTexto
+                            : actual
+                            ? paleta.ambar
                             : paleta.bordeFuerte,
-                        width: 2,
+                        width: actual ? 3 : 2,
                       ),
                     ),
                     child: AnimatedSwitcher(
@@ -104,11 +104,8 @@ class _Hito extends StatelessWidget {
                           size: EspaciadoCampo.l,
                           color: paleta.fondo,
                         ),
-                        EstadoHito.actual => Icon(
-                          Icons.circle,
-                          key: const ValueKey('actual'),
-                          size: EspaciadoCampo.s,
-                          color: paleta.sobreAcento,
+                        EstadoHito.actual => const SizedBox.shrink(
+                          key: ValueKey('actual'),
                         ),
                         EstadoHito.pendiente => const SizedBox.shrink(
                           key: ValueKey('pendiente'),
@@ -143,15 +140,14 @@ class _Hito extends StatelessWidget {
                       children: [
                         Text(
                           hito.titulo,
-                          style: (actual ? texto.titleMedium : texto.bodyLarge)
-                              ?.copyWith(
-                                color: hito.estado == EstadoHito.pendiente
-                                    ? paleta.textoSecundario
-                                    : paleta.texto,
-                                fontWeight: actual
-                                    ? FontWeight.w800
-                                    : FontWeight.w600,
-                              ),
+                          style: texto.bodyLarge?.copyWith(
+                            color: hito.estado == EstadoHito.pendiente
+                                ? paleta.textoSecundario
+                                : paleta.texto,
+                            fontWeight: actual
+                                ? FontWeight.w800
+                                : FontWeight.w600,
+                          ),
                         ),
                         if (momento != null)
                           Text(
