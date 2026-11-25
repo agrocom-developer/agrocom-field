@@ -9,7 +9,7 @@ import '../domain/calificacion_repositorio.dart';
 /// Calificaciones del cliente contra la API.
 ///
 /// - Escribir: `POST /api/solicitudes/{id}/calificaciones` (solo al
-///   proveedor; el cliente no califica al piloto ni al auxiliar desde esta
+///   proveedor; el cliente no califica al piloto desde esta
 ///   pantalla). El `uuid_cliente` se deriva del servicio, así que un
 ///   reintento es el mismo registro y el servidor responde `409` o `200`.
 /// - Leer lo emitido: `GET /api/solicitudes/{id}/calificaciones`.

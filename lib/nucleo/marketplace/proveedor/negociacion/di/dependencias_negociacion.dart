@@ -9,8 +9,7 @@ import '../../../../api/marketplace_http.dart';
 import '../../../../notificaciones/notificador_local.dart';
 
 /// Los repositorios de la negociación del proveedor: mapa de solicitudes,
-/// mis ofertas, chat y avisos. Los montan `piloto` y `auxiliar` con el mismo
-/// código (ADR 0012); en `auxiliar` solo se usan el chat y el servicio.
+/// mis ofertas, chat y avisos. Los monta `piloto` (ADR 0012).
 class DependenciasNegociacion {
   const DependenciasNegociacion({
     required this.mercado,

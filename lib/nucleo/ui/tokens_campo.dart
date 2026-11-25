@@ -25,7 +25,7 @@ abstract final class RadioCampo {
 }
 
 /// Tamaño mínimo de un objetivo táctil: 48 en la app general (Material),
-/// 56 con guantes (flavor piloto y auxiliar).
+/// 56 con guantes (flavor piloto).
 abstract final class ObjetivoTactilCampo {
   static const double minimo = 48;
   static const double guantes = 56;

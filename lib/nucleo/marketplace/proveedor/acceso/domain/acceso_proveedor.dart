@@ -13,7 +13,7 @@ class SesionProveedor {
   final String nombre;
   final String usuario;
 
-  /// `piloto`, `proveedor` o `auxiliar`.
+  /// `piloto` o `proveedor`.
   final String rol;
 
   String get primerNombre => nombre.trim().split(RegExp(r'\s+')).first;
@@ -135,7 +135,7 @@ class FotoDronLista {
   final Uint8List bytes;
 }
 
-/// Acceso del piloto o del auxiliar contra la API: iniciar sesión por usuario
+/// Acceso del piloto contra la API: iniciar sesión por usuario
 /// y contraseña, alta de proveedor y cierre. Requiere red (ADR 0016); la
 /// contraseña no se guarda en el dispositivo.
 abstract interface class AccesoProveedorRepositorio {

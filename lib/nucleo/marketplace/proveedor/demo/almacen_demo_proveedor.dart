@@ -6,7 +6,7 @@ import '../../demo/datos_demo.dart';
 import '../../dominio/dominio.dart';
 
 /// Estado en memoria del proveedor en modo demo. Lo comparten los flavors
-/// `piloto` y `auxiliar`: la bandeja, el perfil y los drones son del
+/// `piloto`: la bandeja, el perfil y los drones son del
 /// proveedor, no de un rol.
 class AlmacenDemoProveedor {
   AlmacenDemoProveedor({DatosDemo? datos}) : datos = datos ?? DatosDemo() {

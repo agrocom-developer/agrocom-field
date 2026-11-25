@@ -11,7 +11,7 @@ import '../domain/acceso_proveedor.dart';
 import 'acceso_cubit.dart';
 import 'registro_proveedor_pantalla.dart';
 
-/// La puerta de la app real del piloto o del auxiliar: mientras no hay
+/// La puerta de la app real del piloto: mientras no hay
 /// sesión muestra el ingreso; con sesión, [construir] arma la superficie.
 class PuertaAcceso extends StatelessWidget {
   const PuertaAcceso({
@@ -23,8 +23,7 @@ class PuertaAcceso extends StatelessWidget {
 
   final Widget Function(BuildContext, SesionProveedor) construir;
 
-  /// El auxiliar no se registra solo: lo registra su piloto y lo aprueba un
-  /// administrador.
+  /// El proveedor se registra solo y un administrador lo aprueba.
   final bool permiteRegistro;
 
   /// Host y versión al pie: un build apuntado al entorno equivocado se nota

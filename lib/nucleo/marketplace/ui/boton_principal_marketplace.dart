@@ -26,7 +26,7 @@ class BotonPrincipalMarketplace extends StatefulWidget {
   /// Ícono al final del texto (por ejemplo, una flecha de avance).
   final IconData? icono;
 
-  /// Alto mínimo; 56 dp con guantes en piloto y auxiliar.
+  /// Alto mínimo; 56 dp con guantes en piloto.
   final double alto;
 
   /// Alto mínimo: cuatro pasos por encima del objetivo táctil del cliente.

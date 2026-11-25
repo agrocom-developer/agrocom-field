@@ -5,7 +5,7 @@ import '../../../../ui/tokens_campo.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../../negociacion/presentation/avisos_pantalla.dart';
 
-/// Las filas de cuenta que van en el perfil de `piloto` y `auxiliar`: los
+/// Las filas de cuenta que van en el perfil de `piloto`: los
 /// avisos (solo con negociación) y cerrar sesión (solo en la app real).
 List<Widget> extrasDePerfil(
   BuildContext context, {

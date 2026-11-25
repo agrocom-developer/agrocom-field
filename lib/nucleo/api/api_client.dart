@@ -1,7 +1,7 @@
 // Infraestructura pura: NUNCA se llama desde un bloc ni desde presentation/.
 // Lo usan los repositorios de nucleo/sync (y de nucleo/catalogo) y las
 // implementaciones de red del flavor cliente (`cliente/*/data/`, online-first).
-// En piloto y auxiliar, si un bloc necesita datos, los pide al repositorio
+// En piloto, si un bloc necesita datos, los pide al repositorio
 // local (drift), nunca acá directo — invariante 1 de CLAUDE.md.
 //
 // Ver docs/decisiones/0001-cliente-api-manual-con-dio.md de este repo.
