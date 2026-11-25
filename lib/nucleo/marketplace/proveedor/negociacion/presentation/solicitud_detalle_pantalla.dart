@@ -11,7 +11,7 @@ import '../../../ui/marketplace_ui.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
 import 'ofertar_cubit.dart';
-import 'pedir_precio_hoja.dart';
+import 'negociacion_pantalla.dart';
 
 /// El detalle de una solicitud abierta antes de ofertar: los lotes en el
 /// mapa, el estado de la propiedad, lo que pide el cliente y las dos
@@ -301,26 +301,17 @@ class _Acciones extends StatelessWidget {
   final SolicitudAbierta solicitud;
   final OfertarEstado estado;
 
-  Future<void> _contraofertar(BuildContext context) async {
-    final cubit = context.read<OfertarCubit>();
-    final propuesta = await pedirPrecio(
-      context,
-      titulo: 'Tu contraoferta',
-      hectareas: solicitud.hectareas,
-      precioReferencia: solicitud.precioHaPropuesto,
-      etiquetaReferencia: 'El cliente propone',
-      tipoAplicacion: solicitud.tipoAplicacion ?? 'otro',
-      zonaId: solicitud.zonaId,
-      macrorregion: solicitud.macrorregion?.codigo,
-    );
-    if (propuesta == null) return;
-    await cubit.ofertar(
-      solicitudId: solicitud.id,
-      tipo: TipoOferta.contraoferta,
-      precioHa: propuesta.precioHa,
-      nota: propuesta.nota,
-    );
-  }
+  /// La contraoferta se escribe en la pantalla de negociación (el stepper
+  /// de ±1 Bs/ha con el total a la vista), no en una hoja de texto.
+  Future<void> _contraofertar(BuildContext context) =>
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => NegociacionPantalla(
+            solicitudId: solicitud.id,
+            solicitud: solicitud,
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {

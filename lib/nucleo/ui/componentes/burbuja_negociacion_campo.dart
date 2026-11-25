@@ -22,6 +22,9 @@ class BurbujaNegociacionCampo extends StatelessWidget {
     required this.total,
     this.totalRondas = 5,
     this.esTurno = false,
+    this.conBarra = true,
+    this.nota,
+    this.quien,
     super.key,
   });
 
@@ -41,6 +44,18 @@ class BurbujaNegociacionCampo extends StatelessWidget {
   /// La ronda en curso (turno de responder): su segmento va en ámbar.
   final bool esTurno;
 
+  /// Dibuja la barra de rondas dentro de la burbuja. En una conversación
+  /// completa la barra va una sola vez en el encabezado y se apaga aquí.
+  final bool conBarra;
+
+  /// Frase corta bajo las cifras («publicado», o lo que escribió quien
+  /// ofertó).
+  final String? nota;
+
+  /// Quién escribe, en mayúsculas, si no es «CLIENTE» ni «PILOTO» (la
+  /// pantalla del propio piloto dice «TÚ»).
+  final String? quien;
+
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
@@ -48,14 +63,15 @@ class BurbujaNegociacionCampo extends StatelessWidget {
     final fondo = delPiloto ? paleta.acento : paleta.superficie;
     final textoPrincipal = delPiloto ? paleta.sobreAcento : paleta.texto;
     final textoApoyo = delPiloto ? paleta.sobreAcento : paleta.textoSecundario;
-    final quien = delPiloto ? 'PILOTO' : 'CLIENTE';
+    final autorEtiqueta = quien ?? (delPiloto ? 'PILOTO' : 'CLIENTE');
     const radio = Radius.circular(RadioCampo.tarjeta);
     const esquina = Radius.circular(RadioCampo.xs);
     return Semantics(
       container: true,
       label:
-          'Ronda $ronda de $totalRondas, ${delPiloto ? 'piloto' : 'cliente'}: '
+          'Ronda $ronda de $totalRondas, ${quien?.toLowerCase() ?? (delPiloto ? 'piloto' : 'cliente')}: '
           '$precioPorHectarea bolivianos por hectárea, total $total bolivianos'
+          '${nota == null ? '' : ', $nota'}'
           '${esTurno ? ', turno de responder' : ''}',
       excludeSemantics: true,
       child: LayoutBuilder(
@@ -86,7 +102,7 @@ class BurbujaNegociacionCampo extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'R$ronda · $quien',
+                          'R$ronda · $autorEtiqueta',
                           style: TipografiaCampo.etiquetaMono.copyWith(
                             color: textoApoyo,
                           ),
@@ -111,17 +127,30 @@ class BurbujaNegociacionCampo extends StatelessWidget {
                             ),
                           ],
                         ),
-                        const SizedBox(height: EspaciadoCampo.m),
-                        _BarraRondas(
-                          ronda: ronda,
-                          total: totalRondas,
-                          esTurno: esTurno,
-                          hecho: delPiloto ? paleta.sobreAcento : paleta.acento,
-                          vacio: delPiloto
-                              ? paleta.sobreAcento.withValues(alpha: 0.3)
-                              : paleta.borde,
-                          turno: paleta.ambar,
-                        ),
+                        if (nota != null) ...[
+                          const SizedBox(height: EspaciadoCampo.s),
+                          Text(
+                            nota!,
+                            style: TipografiaCampo.cuerpoSecundario.copyWith(
+                              color: textoApoyo,
+                            ),
+                          ),
+                        ],
+                        if (conBarra) ...[
+                          const SizedBox(height: EspaciadoCampo.m),
+                          _BarraRondas(
+                            ronda: ronda,
+                            total: totalRondas,
+                            esTurno: esTurno,
+                            hecho: delPiloto
+                                ? paleta.sobreAcento
+                                : paleta.acento,
+                            vacio: delPiloto
+                                ? paleta.sobreAcento.withValues(alpha: 0.3)
+                                : paleta.borde,
+                            turno: paleta.ambar,
+                          ),
+                        ],
                       ],
                     ),
                   ),

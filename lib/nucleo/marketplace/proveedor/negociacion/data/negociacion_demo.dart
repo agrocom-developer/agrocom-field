@@ -108,6 +108,9 @@ class AlmacenNegociacionDemo {
 
   void agregarOferta(OfertaNegociada nueva) => _ofertas = [nueva, ..._ofertas];
 
+  /// Sin ofertas hechas: el piloto que todavía no negoció.
+  void vaciarOfertas() => _ofertas = [];
+
   List<MensajeChat> mensajesDe(int solicitudId) =>
       List.unmodifiable(_mensajes[solicitudId] ?? const []);
 
@@ -165,6 +168,7 @@ class AlmacenNegociacionDemo {
     MiNegociacion mia = MiNegociacion.ninguna,
     String? observaciones,
     bool accesoDificil = false,
+    Duration vence = const Duration(days: 6),
   }) => SolicitudAbierta(
     id: id,
     centro: centro,
@@ -179,7 +183,7 @@ class AlmacenNegociacionDemo {
     ventanaDesde: ahora.add(const Duration(days: 2)),
     ventanaHasta: ahora.add(const Duration(days: 8)),
     miNegociacion: mia,
-    venceEn: ahora.add(const Duration(days: 6)),
+    venceEn: ahora.add(vence),
     productoIndicado: 'Glifosato 480 SL, 2 L/ha',
     aportaProducto: 'cliente',
     observaciones: observaciones,
@@ -199,6 +203,8 @@ class AlmacenNegociacionDemo {
       precio: '121',
       centro: const GeoPunto(-17.5351, -63.1978),
       ahora: ahora,
+      // Vence hoy: el lote sale en ámbar en el mapa.
+      vence: const Duration(hours: 6),
       observaciones: 'Hay una línea de alta tensión en el borde sur.',
     ),
     _solicitud(

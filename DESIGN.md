@@ -105,6 +105,8 @@ Archivos: `paleta_campo.dart` (roles por modo, `PaletaCampo`), `colores_campo.da
 - **Ticket de pedido** (`TicketPedidoCampo`, filas `FilaTicketCampo`): cabecera grafito con el número de pedido y el estado en ámbar, filas clave/valor y separador punteado. Se usa en comparar ofertas y en precio final.
 - **Post-it de oferta** (`PostItOfertaCampo`): amarillo, esquina doblada, rotación de ±1° y badge "ELEGIDO". Recrearlo en código, nunca como imagen.
 - **Collage de fotos** (`CollageFotosCampo`, fotos `FotoCollageCampo`): grid 2fr/1fr, gap 4, radio 18: foto grande, foto y bloque ámbar con dato. Las fotos llevan la hora en una etiqueta mono.
+- **Hoja arrastrable** (`HojaArrastrableCampo`): la hoja inferior no modal que vive sobre el mapa; se arrastra entre el encabezado y la lista completa y se controla con un `DraggableScrollableController`.
+- **Pestañas** (`PestanasCampo`): carril de superficie 2 con la opción elegida elevada y una cifra mono opcional («Activas 3»). Alto 56, 72 en campo.
 - **Banner de red** (`BannerSinSenalCampo`): fondo ámbar y texto "Sin señal · …" en la parte superior.
 
 ## 7. Patrones
