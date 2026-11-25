@@ -2,7 +2,48 @@
 
 **Objetivo.** Llevar las 21 pantallas del handoff a Flutter, integradas con lo que ya existe, y diseñar las que faltan. Cada fase pide revisión con capturas del simulador.
 
-**Auditoría pendiente.** El handoff exige auditar antes de editar: clasificar cada pantalla como «existe y se re-estiliza», «existe con otra estructura» o «no existe». El primer entregable de este plan es esa tabla; no se escribe una pantalla antes.
+## Auditoría de las 21 pantallas
+
+El handoff exige auditar antes de editar. Rutas relativas a `lib/`. El flavor `auxiliar` ya no existe (ADR 0021), así que queda fuera de la tabla. «Piloto» vive en `nucleo/marketplace/proveedor/` porque el flavor `piloto` comparte esa superficie (ADR 0012).
+
+Clasificación: **A** = existe y se re-estiliza · **B** = existe con otra estructura · **C** = no existe.
+
+| # | Pantalla | Archivo actual | Clase | Qué falta frente al diseño |
+|---|---|---|---|---|
+| 01 | Portadas | `cliente/acceso/presentation/onboarding_pantalla.dart` | B | Hoy son pasos con una foto, botón «Continuar» y sin autoavance. El diseño pide carrusel de 3 slides con collage, autoavance de 3,5 s, pausa al interactuar, puntos tocables, «Comenzar» y «Ya tengo cuenta» |
+| 02 | Login por celular | `cliente/acceso/presentation/login_cliente_pantalla.dart`, `lienzo_acceso.dart`; piloto: `proveedor/acceso/presentation/acceso_pantallas.dart` (`IngresoProveedorPantalla`) | B | Hoy ingresa con usuario y contraseña. El diseño es celular +591 y código de 6 casillas, más «Continuar con Google». El contrato no ofrece código por SMS ni Google: la lógica se conserva y solo cambia la presentación |
+| 03 | Elegir rol | no existe | C | El selector de rol se retiró (ADR 0021): el flavor fija el rol. Queda solo la pantalla de presentación con Cliente y Piloto, sin navegación que la aloje hasta que el dueño decida |
+| 04 | Datos personales | cliente: `cliente/acceso/presentation/registro_cliente_pantalla.dart`; piloto: `proveedor/acceso/presentation/registro_proveedor_pantalla.dart` (paso «Tus datos») | B | El diseño es «paso 1 de 3» con foto de perfil, cédula, celular verificado, zona base y licencia en una sola pantalla; hoy son cuatro pasos y el cliente tiene un formulario plano |
+| 05 | Equipo (dron) | piloto: `registro_proveedor_pantalla.dart` (paso «Tu dron»), `proveedor/dron/presentation/drones_pantalla.dart` | B | Falta la tarjeta con foto, chip de revisión y el botón punteado «Agregar otro dron». Sin auxiliares (ADR 0021) |
+| 06 | Inicio del cliente | `cliente/inicio/presentation/inicio_cliente_pantalla.dart` | A | Tarjeta de solicitud activa con cifras, FAB «Publicar lote» |
+| 07 | Publicar lote | `cliente/solicitar/presentation/solicitar_pantalla.dart`, `pasos_solicitud.dart`, `mapa_solicitud.dart` | B | Flujo por pasos propio (ADR 0014); falta miniatura del mapa con stepper de precio y total estimado |
+| 08 | Detalle de la solicitud | `cliente/solicitudes/presentation/solicitud_detalle_pantalla.dart` | A | Mapa a sangre con hoja inferior |
+| 09 | Comparar ofertas | `cliente/ofertas/presentation/ofertas_pantalla.dart` | B | Existe la lista; faltan el ticket de pedido y los post-its |
+| 10 | Seguimiento | `cliente/seguimiento/presentation/seguimiento_pantalla.dart` | A | Cifra mono 56, mosaico de fotos, línea de tiempo |
+| 11 | Chat | `cliente/seguimiento/presentation/chat_pantalla.dart` (piloto: `proveedor/negociacion/presentation/chat_pantalla.dart`) | A | Burbuja con foto y evento de sistema |
+| 12 | Precio final | `cliente/comun/presentation/hoja_precio.dart`; piloto: `_PrecioFinal` en `proveedor/ejecucion/presentation/servicio_lote_pantalla.dart` | B | Hoy es una hoja; el diseño es pantalla con ticket «Por confirmar» |
+| 13 | Calificar | `cliente/calificar/presentation/hoja_calificar.dart` | B | Hoy es una hoja; el diseño es pantalla con avatar y chips de atributos |
+| 14 | Mapa de solicitudes | `proveedor/negociacion/presentation/mapa_solicitudes_pantalla.dart`, `mapa_solicitudes.dart` | A | Pines de precio y hoja inferior |
+| 15 | Negociación | `proveedor/negociacion/presentation/pedir_precio_hoja.dart`, `solicitud_detalle_pantalla.dart` | B | Hoy es una hoja de precio; el diseño es pantalla con rondas, burbujas y barra de 5 segmentos |
+| 16 | Mis ofertas | `proveedor/negociacion/presentation/mis_ofertas_pantalla.dart` | A | Pestañas Activas, Ganadas y Cerradas; borde ámbar si es tu turno |
+| 17 | Perfil del cliente | `cliente/cuenta/presentation/cuenta_pantalla.dart` | A | Faltan «Mis campos» y el selector de tema (no existe selector de tema en ningún perfil) |
+| 18 | Perfil del proveedor | `proveedor/perfil/presentation/perfil_pantalla.dart` | A | Falta el selector Claro, Oscuro y Campo AAA y quitar lo del auxiliar |
+| 19 | Perfil público del proveedor | no existe | C | Lo que ve el cliente antes de elegir |
+| 20 | Estado vacío | `nucleo/marketplace/ui/estado_vacio_marketplace.dart` | A | Componente compartido; falta contenedor de 88 y CTA |
+| 21 | Error de envío | `nucleo/marketplace/ui/estado_error_marketplace.dart`, `aviso_marketplace.dart` | B | Falta la pantalla con tabla de qué funciona sin red y «Reintentar ahora» |
+
+Resumen: A = 9 (06, 08, 10, 11, 14, 16, 17, 18, 20), B = 10 (01, 02, 04, 05, 07, 09, 12, 13, 15, 21), C = 2 (03, 19).
+
+### Colores y medidas sueltos por migrar
+
+El test `test/nucleo/ui/tokens_sin_sueltos_test.dart` solo vigila colores literales (`Color(0x`, `Color.from`) y radios literales (`Radius.circular(n)`); ambos están en cero fuera de `nucleo/ui`. Quedan medidas literales (`fontSize`, `EdgeInsets`, `SizedBox`, `size`) que ningún test vigila. Conteo de coincidencias por archivo, fuera de `nucleo/ui`:
+
+- `cliente/solicitudes/presentation/tarjeta_solicitud.dart` (12), `cliente/cuenta/presentation/cuenta_pantalla.dart` (8), `cliente/ofertas/presentation/ofertas_pantalla.dart` (6).
+- `nucleo/version/version_bloqueada_pantalla.dart` (7), `nucleo/marketplace/ui/mapa_lote.dart` (5), `proveedor/perfil/presentation/perfil_pantalla.dart` (5), `proveedor/negociacion/presentation/mapa_solicitudes.dart` (5), `cliente/seguimiento/presentation/mapa_ubicacion_piloto.dart` (5).
+- Con 3 o 4: `nucleo/marketplace/ui/estado_vacio_marketplace.dart`, `cliente/solicitar/presentation/mapa_solicitud.dart`, `cliente/seguimiento/presentation/seguimiento_pantalla.dart`, `cliente/inicio/presentation/inicio_cliente_pantalla.dart`, `insignia_estado_servicio.dart`, `calificacion_promedio.dart`, `aviso_marketplace.dart`, `visor_fotos_terreno.dart`, `proveedor/negociacion/presentation/solicitud_detalle_pantalla.dart`, `cliente/solicitar/presentation/solicitar_pantalla.dart`, `cliente/comun/presentation/insignia_estado_solicitud.dart`.
+- El resto, con 1 o 2 coincidencias, está en `registro_proveedor_pantalla.dart`, `pasos_solicitud.dart`, `linea_tiempo_solicitud.dart`, `servicio_lote_pantalla.dart` y componentes de `nucleo/marketplace/ui`.
+
+Cada pantalla de las fases 1 a 5 migra sus medidas a `EspaciadoCampo`, `RadioCampo`, `ObjetivoTactilCampo` y `TipografiaCampo` al re-estilizarse; los componentes de `nucleo/marketplace/ui` se migran cuando los consume la primera pantalla de la fase.
 
 ## Fases
 
