@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
 import '../paleta_campo.dart';
@@ -181,28 +182,20 @@ class _SeparadorPunteado extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 1,
+      height: 1.5,
       width: double.infinity,
-      child: CustomPaint(painter: _PintorPunteado(color)),
+      child: DottedBorder(
+        options: CustomPathDottedBorderOptions(
+          padding: EdgeInsets.zero,
+          strokeWidth: 1.5,
+          dashPattern: const [4, 4],
+          color: color,
+          customPath: (size) => Path()
+            ..moveTo(0, 0)
+            ..lineTo(size.width, 0),
+        ),
+        child: const SizedBox.shrink(),
+      ),
     );
   }
-}
-
-class _PintorPunteado extends CustomPainter {
-  const _PintorPunteado(this.color);
-
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final pincel = Paint()
-      ..color = color
-      ..strokeWidth = 1.5;
-    for (double x = 0; x < size.width; x += 8) {
-      canvas.drawLine(Offset(x, 0), Offset(x + 4, 0), pincel);
-    }
-  }
-
-  @override
-  bool shouldRepaint(_PintorPunteado viejo) => viejo.color != color;
 }

@@ -10,7 +10,6 @@ export 'estado_error_marketplace.dart';
 export 'estado_vacio_marketplace.dart';
 export 'formato_marketplace.dart';
 export 'fuente_estable.dart';
-export 'imagen_ref.dart';
 export 'insignia_estado_servicio.dart';
 export 'mapa_lote.dart';
 export 'superficie_marketplace.dart';

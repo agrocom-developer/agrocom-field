@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
 import '../colores_campo.dart';
@@ -23,34 +24,38 @@ class BotonAgregarPunteadoCampo extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          // Borde sólido, no punteado: Flutter no trae `dashed` sin un
-          // paquete de `CustomPainter` aparte — no se justifica solo por
-          // esto (ver ADR 0008, criterio de no sumar dependencias nuevas).
-          border: Border.all(
-            color: color.withValues(alpha: alerta ? 0.45 : 0.22),
-          ),
-          color: alerta ? color.withValues(alpha: 0.07) : null,
+      child: DottedBorder(
+        ignoring: false,
+        options: RoundedRectDottedBorderOptions(
+          radius: const Radius.circular(20),
+          padding: EdgeInsets.zero,
+          strokeWidth: 1.5,
+          dashPattern: const [6, 4],
+          color: color.withValues(alpha: alerta ? 0.45 : 0.32),
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.add, color: color, size: 18),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                texto,
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
-                  fontSize: 14,
-                  color: alerta ? ColoresCampo.acentoAmbarTexto : color,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: alerta ? color.withValues(alpha: 0.07) : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.add, color: color, size: 18),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  texto,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                    color: alerta ? ColoresCampo.acentoAmbarTexto : color,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

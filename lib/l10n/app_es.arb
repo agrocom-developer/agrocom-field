@@ -33,5 +33,8 @@
   "problemaMotivoCobroIndebido": "Cobro indebido",
   "problemaMotivoCobroIndebidoAyuda": "El monto no coincide con lo estimado.",
   "problemaMotivoTratoInadecuado": "Trato inadecuado",
-  "problemaMotivoTratoInadecuadoAyuda": "Hubo una falta de respeto o de cuidado."
+  "problemaMotivoTratoInadecuadoAyuda": "Hubo una falta de respeto o de cuidado.",
+
+  "redSinSenalTitulo": "Sin señal",
+  "redSinSenalMensaje": "lo que ya cargaste sigue a la vista. Pedir u ofertar necesita red."
 }

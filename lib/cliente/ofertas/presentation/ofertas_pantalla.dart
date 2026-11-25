@@ -865,16 +865,12 @@ class _Cargando extends StatelessWidget {
   Widget build(BuildContext context) => const SingleChildScrollView(
     physics: NeverScrollableScrollPhysics(),
     padding: EdgeInsets.all(EspaciadoCampo.l),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        EsqueletoCampo(alto: 168, radio: RadioCampo.tarjeta),
-        SizedBox(height: EspaciadoCampo.l),
-        EsqueletoCampo(alto: 112, radio: RadioCampo.xs),
-        SizedBox(height: EspaciadoCampo.m),
-        EsqueletoCampo(alto: 112, radio: RadioCampo.xs),
-        SizedBox(height: EspaciadoCampo.m),
-        EsqueletoCampo(alto: 112, radio: RadioCampo.xs),
+    child: EsqueletoListaCampo(
+      bloques: [
+        BloqueEsqueleto(alto: 168, radio: RadioCampo.tarjeta),
+        BloqueEsqueleto(alto: 112, radio: RadioCampo.xs),
+        BloqueEsqueleto(alto: 112, radio: RadioCampo.xs),
+        BloqueEsqueleto(alto: 112, radio: RadioCampo.xs),
       ],
     ),
   );
