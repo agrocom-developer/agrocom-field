@@ -285,7 +285,11 @@ class _Busqueda extends StatelessWidget {
                   onChanged: (_) => alCambiar(),
                   style: TipografiaCampo.cuerpo.copyWith(color: paleta.texto),
                   textInputAction: TextInputAction.search,
-                  decoration: InputDecoration.collapsed(
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: EspaciadoCampo.l,
+                    ),
                     hintText: 'Buscar zona o lote',
                     hintStyle: TipografiaCampo.cuerpo.copyWith(
                       color: paleta.textoSecundario,
