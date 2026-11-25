@@ -97,7 +97,7 @@ Una sola sombra sutil (`ElevacionCampo`): en claro `0 1 2 / 6 %` más `0 4 14 / 
 
 ## 6. Iconografía
 
-Material Symbols redondeados (`Icons.*_rounded` y `_outlined` para el estado inactivo), 24 px por defecto, 28 px en barras de calificación. El estado activo cambia de contorno a relleno. Un ícono solo, sin texto, lleva `tooltip` o `Semantics.label`. El isotipo de Agrocom se usa únicamente como marca (launcher, encabezado de sesión).
+Una sola familia, Material Icons redondeados (`Icons.*_rounded` y `_outlined` para el estado inactivo), 24 px por defecto, 28 px en barras de calificación. El estado activo cambia de contorno a relleno. Un ícono solo, sin texto, lleva `tooltip` o `Semantics.label`. El isotipo de Agrocom se usa únicamente como marca (launcher, encabezado de sesión).
 
 ## 7. Motion
 
@@ -137,6 +137,14 @@ Catálogo `*Campo` en `lib/nucleo/ui/componentes/` (un solo import: `componentes
 | `BarraAccionesCampo` | Acciones ancladas al borde inferior de una pantalla del lote: principal abajo, secundaria encima, nota de apoyo opcional. Respeta el área segura. |
 | `EstadoSyncCampo` | Pastilla de estado de sincronización con ícono y texto en mono: «En el dispositivo», «Sincronizando», «Sincronizado», «Sin sincronizar». |
 | `GrupoStatsCampo` | Fila de `StatChipCampo` que se apila cuando el ancho no alcanza para el texto escalado. |
+| `BurbujaNegociacionCampo` | Una ronda de la negociación: cliente a la izquierda, piloto a la derecha, «R# · QUIÉN», Bs/ha, total y barra de rondas con el turno en ámbar. |
+| `TicketPedidoCampo` | Ticket con cabecera grafito (número y estado en ámbar), filas clave/valor (`FilaTicketCampo`), separador punteado y total. |
+| `PostItOfertaCampo` | Oferta de un piloto como post-it dibujado en código: esquina doblada, giro de 1° (sin giro con movimiento reducido) e insignia «ELEGIDO». |
+| `CollageFotosCampo` | Foto grande, foto y bloque ámbar con el dato de avance, con la hora en mono sobre cada foto. |
+| `BannerSinSenalCampo` | Franja ámbar superior «Sin señal · …» con ícono. |
+| `StepperCampo` | Entero ±1 con la cifra en mono y botones de 56 px (72 px en campo). |
+| `HojaInferiorCampo` | Hoja inferior de radio 32 con manija de 36×4; `mostrarHojaInferiorCampo` la abre como modal. |
+| `CifraCampo` | Cifra de negocio en mono con su unidad. |
 | Botones, tarjetas, badges, campos, listas, banners | Catálogo base (ADR 0008), modo campo. |
 
 Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`) están configurados por modo con el alto táctil correspondiente. `BotonPrimarioCampo` y `BotonSecundarioCampo` tienen 56 px de alto mínimo y crecen con el texto escalado; aceptan un ícono que acompaña a la etiqueta.
