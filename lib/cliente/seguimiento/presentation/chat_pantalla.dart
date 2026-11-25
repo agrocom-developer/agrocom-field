@@ -5,7 +5,10 @@ import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../comun/presentation/estado_falla.dart';
+import '../../solicitudes/domain/solicitud.dart';
+import '../../solicitudes/domain/solicitudes_repositorio.dart';
 import '../domain/seguimiento.dart';
 import '../domain/seguimiento_repositorio.dart';
 import 'chat_cubit.dart';
@@ -13,7 +16,7 @@ import 'chat_cubit.dart';
 /// Chat de texto con el piloto adjudicado. Los mensajes llegan por sondeo
 /// corto mientras la pantalla está abierta; el cliente escribe en línea y, si
 /// el envío falla, el texto queda en el campo para reintentar.
-class ChatPantalla extends StatelessWidget {
+class ChatPantalla extends StatefulWidget {
   const ChatPantalla({
     required this.solicitudId,
     this.intervalo = const Duration(seconds: 5),
@@ -26,17 +29,106 @@ class ChatPantalla extends StatelessWidget {
   final Duration? intervalo;
 
   @override
+  State<ChatPantalla> createState() => _ChatPantallaState();
+}
+
+class _ChatPantallaState extends State<ChatPantalla> {
+  /// El servicio, para la cabecera (piloto y lote). Si no carga, la
+  /// cabecera queda genérica: el chat funciona igual.
+  Solicitud? _solicitud;
+
+  @override
+  void initState() {
+    super.initState();
+    _cargarSolicitud();
+  }
+
+  Future<void> _cargarSolicitud() async {
+    try {
+      final s = await context.read<SolicitudesRepositorio>().porId(
+        widget.solicitudId,
+      );
+      if (mounted) setState(() => _solicitud = s);
+    } on Object {
+      // La cabecera genérica basta.
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => ChatCubit(
         repositorio: context.read<SeguimientoRepositorio>(),
-        solicitudId: solicitudId,
-        intervalo: intervalo,
+        solicitudId: widget.solicitudId,
+        intervalo: widget.intervalo,
       )..cargar(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Chat con el piloto')),
+        appBar: AppBar(
+          title: _Cabecera(solicitud: _solicitud),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(1),
+            child: Divider(height: 1, color: context.paleta.borde),
+          ),
+        ),
         body: const _Cuerpo(),
       ),
+    );
+  }
+}
+
+/// Avatar con iniciales, nombre del piloto y «lote · estado».
+class _Cabecera extends StatelessWidget {
+  const _Cabecera({required this.solicitud});
+
+  final Solicitud? solicitud;
+
+  @override
+  Widget build(BuildContext context) {
+    final paleta = context.paleta;
+    final s = solicitud;
+    final nombre = s?.nombreProveedor;
+    if (s == null || nombre == null) {
+      return Text(
+        'Chat con el piloto',
+        style: TipografiaCampo.tituloSeccion.copyWith(color: paleta.texto),
+      );
+    }
+    final iniciales = nombre
+        .split(' ')
+        .where((p) => p.isNotEmpty)
+        .take(2)
+        .map((p) => p[0].toUpperCase())
+        .join();
+    return Row(
+      children: [
+        AvatarFoto(
+          iniciales: iniciales,
+          etiqueta: 'Foto de $nombre',
+          tamano: ObjetivoTactilCampo.minimo - EspaciadoCampo.s,
+        ),
+        const SizedBox(width: EspaciadoCampo.m),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                nombre,
+                overflow: TextOverflow.ellipsis,
+                style: TipografiaCampo.tituloSeccion.copyWith(
+                  color: paleta.texto,
+                ),
+              ),
+              Text(
+                '${s.lote.nombre} · ${s.estado.etiqueta.toLowerCase()}',
+                overflow: TextOverflow.ellipsis,
+                style: TipografiaCampo.cuerpoSecundario.copyWith(
+                  color: paleta.textoSecundario,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
@@ -134,8 +226,22 @@ class _CuerpoState extends State<_Cuerpo> {
                           itemCount: estado.mensajes.length,
                           separatorBuilder: (_, _) =>
                               const SizedBox(height: EspaciadoCampo.s),
-                          itemBuilder: (context, i) =>
-                              _Burbuja(mensaje: estado.mensajes[i]),
+                          itemBuilder: (context, i) {
+                            final m = estado.mensajes[i];
+                            final nuevoDia =
+                                i == 0 ||
+                                !_mismoDia(
+                                  estado.mensajes[i - 1].creadoEn,
+                                  m.creadoEn,
+                                );
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                if (nuevoDia) _SeparadorDia(dia: m.creadoEn),
+                                _Burbuja(mensaje: m),
+                              ],
+                            );
+                          },
                         ),
                 ),
                 _Redactor(
@@ -153,6 +259,37 @@ class _CuerpoState extends State<_Cuerpo> {
   }
 }
 
+bool _mismoDia(DateTime a, DateTime b) =>
+    a.year == b.year && a.month == b.month && a.day == b.day;
+
+/// «HOY» o la fecha, en mono, centrada entre los mensajes de cada día.
+class _SeparadorDia extends StatelessWidget {
+  const _SeparadorDia({required this.dia});
+
+  final DateTime dia;
+
+  @override
+  Widget build(BuildContext context) {
+    final hoy = DateTime.now();
+    final texto = _mismoDia(dia, hoy)
+        ? 'HOY'
+        : FormatoMarketplace.fechaCorta(dia).toUpperCase();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: EspaciadoCampo.s),
+      child: Center(
+        child: Text(
+          texto,
+          style: TipografiaCampo.etiquetaMono.copyWith(
+            color: context.paleta.textoSecundario,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Mensaje propio en verde a la derecha; del piloto en superficie con borde
+/// a la izquierda. La hora va en mono debajo del texto.
 class _Burbuja extends StatelessWidget {
   const _Burbuja({required this.mensaje});
 
@@ -161,14 +298,10 @@ class _Burbuja extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
     final propio = mensaje.propio;
-    final fondo = propio
-        ? Color.alphaBlend(
-            paleta.acento.withValues(alpha: 0.22),
-            paleta.superficie,
-          )
-        : paleta.superficie;
+    final color = propio ? paleta.sobreAcento : paleta.texto;
+    const radio = Radius.circular(RadioCampo.tarjetaCompacta);
+    const esquina = Radius.circular(RadioCampo.xs);
     return Align(
       alignment: propio ? Alignment.centerRight : Alignment.centerLeft,
       child: ConstrainedBox(
@@ -182,27 +315,31 @@ class _Burbuja extends StatelessWidget {
           excludeSemantics: true,
           child: Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: EspaciadoCampo.m,
-              vertical: EspaciadoCampo.s,
+              horizontal: EspaciadoCampo.l,
+              vertical: EspaciadoCampo.m,
             ),
             decoration: BoxDecoration(
-              color: fondo,
-              borderRadius: BorderRadius.circular(RadioCampo.campo),
-              border: Border.all(
-                color: propio ? paleta.acentoTexto : paleta.borde,
+              color: propio ? paleta.acento : paleta.superficie,
+              border: propio ? null : Border.all(color: paleta.borde),
+              borderRadius: BorderRadius.only(
+                topLeft: radio,
+                topRight: radio,
+                bottomLeft: propio ? radio : esquina,
+                bottomRight: propio ? esquina : radio,
               ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(mensaje.texto, style: texto.bodyLarge),
-                const SizedBox(height: 2),
+                Text(
+                  mensaje.texto,
+                  style: TipografiaCampo.cuerpo.copyWith(color: color),
+                ),
+                const SizedBox(height: EspaciadoCampo.xs),
                 Text(
                   '${propio ? 'Tú' : 'Piloto'} · '
                   '${FormatoMarketplace.hora(mensaje.creadoEn)}',
-                  style: texto.bodySmall?.copyWith(
-                    color: paleta.textoSecundario,
-                  ),
+                  style: TipografiaCampo.datoMono.copyWith(color: color),
                 ),
               ],
             ),
@@ -229,7 +366,6 @@ class _Redactor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
     if (estado.soloLectura) {
       return SafeArea(
         child: Padding(
@@ -277,7 +413,9 @@ class _Redactor extends StatelessWidget {
                             'de nuevo.',
                     },
                     key: const ValueKey('chat-fallo'),
-                    style: texto.bodySmall?.copyWith(color: paleta.error),
+                    style: TipografiaCampo.cuerpoSecundario.copyWith(
+                      color: paleta.error,
+                    ),
                   ),
                 ),
               ),
@@ -292,9 +430,15 @@ class _Redactor extends StatelessWidget {
                     maxLines: 4,
                     maxLength: 1000,
                     textCapitalization: TextCapitalization.sentences,
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       hintText: 'Escribe un mensaje',
                       counterText: '',
+                      filled: true,
+                      fillColor: paleta.superficie,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(RadioCampo.capsula),
+                        borderSide: BorderSide(color: paleta.bordeFuerte),
+                      ),
                     ),
                   ),
                 ),
@@ -312,11 +456,14 @@ class _Redactor extends StatelessWidget {
                     ),
                     onPressed: estado.enviando ? null : alEnviar,
                     icon: estado.enviando
-                        ? const SizedBox.square(
+                        ? SizedBox.square(
                             dimension: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2.5),
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: paleta.sobreAcento,
+                            ),
                           )
-                        : const Icon(Icons.send_rounded),
+                        : const Icon(Icons.arrow_upward_rounded),
                   ),
                 ),
               ],
@@ -337,14 +484,14 @@ class _Cargando extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        EsqueletoCampo(alto: 56, ancho: 240, radio: 16),
+        EsqueletoCampo(alto: 56, ancho: 240, radio: RadioCampo.campo),
         SizedBox(height: EspaciadoCampo.s),
         Align(
           alignment: Alignment.centerRight,
-          child: EsqueletoCampo(alto: 44, ancho: 200, radio: 16),
+          child: EsqueletoCampo(alto: 44, ancho: 200, radio: RadioCampo.campo),
         ),
         SizedBox(height: EspaciadoCampo.s),
-        EsqueletoCampo(alto: 56, ancho: 260, radio: 16),
+        EsqueletoCampo(alto: 56, ancho: 260, radio: RadioCampo.campo),
       ],
     ),
   );

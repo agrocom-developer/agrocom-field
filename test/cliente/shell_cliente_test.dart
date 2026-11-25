@@ -98,11 +98,11 @@ void main() {
 
     await tester.tap(find.text('Comparar ofertas'));
     await tester.pumpAndSettle();
-    expect(find.text('Ofertas'), findsWidgets);
+    expect(find.text('Comparar ofertas'), findsWidgets);
     // Las tres ofertas, la de menor precio primero y marcada.
     expect(find.byKey(const ValueKey('oferta-of-4101-b')), findsOneWidget);
-    expect(find.text('Mejor precio'), findsOneWidget);
-    expect(find.text('Bs 104/ha'), findsOneWidget);
+    expect(find.text('ELEGIDO'), findsOneWidget);
+    expect(find.textContaining('104', findRichText: true), findsWidgets);
 
     await tester.scrollUntilVisible(
       find.byKey(const ValueKey('aceptar-of-4101-b')),
@@ -114,14 +114,9 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('confirmar-aceptar')));
     await tester.pumpAndSettle();
 
-    expect(find.text('Seguimiento'), findsOneWidget);
-    expect(find.text('Piloto elegido'), findsWidgets);
-    await tester.dragUntilVisible(
-      find.text('Escribirle al piloto'),
-      find.byType(ListView).last,
-      const Offset(0, -300),
-    );
-    expect(find.text('Escribirle al piloto'), findsOneWidget);
+    expect(find.text('Servicio en curso'), findsOneWidget);
+    expect(find.text('Piloto confirmado'), findsWidgets);
+    expect(find.byKey(const ValueKey('abrir-chat')), findsOneWidget);
   });
 
   testWidgets('en iPad la navegación pasa a riel lateral', (tester) async {
