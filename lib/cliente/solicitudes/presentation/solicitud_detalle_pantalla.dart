@@ -5,9 +5,11 @@ import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
+import '../../seguimiento/presentation/precio_final_pantalla.dart';
 import '../../calificar/domain/calificacion_repositorio.dart';
-import '../../calificar/presentation/hoja_calificar.dart';
+import '../../calificar/presentation/calificar_pantalla.dart';
 import '../../comun/presentation/boton_principal.dart';
 import '../../comun/presentation/boton_secundario.dart';
 import '../../comun/presentation/estado_falla.dart';
@@ -40,10 +42,13 @@ class SolicitudDetallePantalla extends StatelessWidget {
         calificaciones: context.read<CalificacionRepositorio>(),
         solicitudId: solicitudId,
       ),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Solicitud')),
-        body: BlocBuilder<SolicitudDetalleCubit, SolicitudDetalleEstado>(
-          builder: (context, estado) => AnimatedSwitcher(
+      child: BlocBuilder<SolicitudDetalleCubit, SolicitudDetalleEstado>(
+        builder: (context, estado) => Scaffold(
+          // Listo: el mapa va a sangre y el botón de volver flota encima.
+          appBar: estado.fase == FaseDetalle.listo
+              ? null
+              : AppBar(title: const Text('Solicitud')),
+          body: AnimatedSwitcher(
             duration: MovimientoCampo.duracion(context, MovimientoCampo.media),
             switchInCurve: MovimientoCampo.entrada,
             child: switch (estado.fase) {
@@ -95,7 +100,7 @@ class _Contenido extends StatelessWidget {
 
   Future<void> _calificar(BuildContext context, Solicitud s) async {
     final cubit = context.read<SolicitudDetalleCubit>();
-    if (await mostrarHojaCalificar(context, s)) {
+    if (await abrirCalificar(context, s)) {
       await cubit.recargarAnexos();
     }
   }
@@ -140,15 +145,15 @@ class _Contenido extends StatelessWidget {
         final n = s.ofertasVigentes ?? 0;
         return BotonPrincipal(
           key: const ValueKey('ver-ofertas'),
-          texto: n > 0 ? 'Ver y comparar las ofertas ($n)' : 'Ver las ofertas',
-          icono: Icons.local_offer_rounded,
+          texto: n > 0
+              ? 'Ver ${n == 1 ? '1 oferta' : '$n ofertas'}'
+              : 'Ver las ofertas',
           onPressed: () => _verOfertas(context, s),
         );
       case EstadoSolicitud.abierta:
         return BotonPrincipal(
           key: const ValueKey('ver-ofertas'),
           texto: 'Ver las ofertas',
-          icono: Icons.local_offer_outlined,
           onPressed: () => _verOfertas(context, s),
         );
       case EstadoSolicitud.adjudicada || EstadoSolicitud.enEjecucion:
@@ -181,12 +186,61 @@ class _Contenido extends StatelessWidget {
     }
   }
 
+  /// La barra de acciones anclada abajo: con la solicitud en negociación,
+  /// «Editar precio» a un lado y la acción principal al otro; en cualquier
+  /// otro estado, solo la acción principal.
+  Widget? _barra(BuildContext context, Solicitud s, double margen) {
+    final accion = _accion(context, s);
+    if (accion == null) return null;
+    final editar = s.estado.negociando
+        ? OutlinedButton(
+            key: const ValueKey('cambiar-precio'),
+            onPressed: estado.enCurso ? null : () => _cambiarPrecio(context, s),
+            child: const Text('Editar precio'),
+          )
+        : null;
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          margen,
+          EspaciadoCampo.s,
+          margen,
+          EspaciadoCampo.l,
+        ),
+        child: Center(
+          heightFactor: 1,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: editar == null
+                ? accion
+                : MediaQuery.textScalerOf(context).scale(1) > 1.3
+                ? Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      accion,
+                      const SizedBox(height: EspaciadoCampo.s),
+                      editar,
+                    ],
+                  )
+                : Row(
+                    children: [
+                      Expanded(flex: 2, child: editar),
+                      const SizedBox(width: EspaciadoCampo.m),
+                      Expanded(flex: 3, child: accion),
+                    ],
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
     final s = estado.solicitud!;
-    final accion = _accion(context, s);
     final problema = estado.problema;
     final margen = EspaciadoCampo.margenLateral(
       MediaQuery.sizeOf(context).width,
@@ -195,242 +249,340 @@ class _Contenido extends StatelessWidget {
         problema == null &&
         (s.estado == EstadoSolicitud.finalizada ||
             s.estado == EstadoSolicitud.calificada);
-
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 720),
-        child: ListView(
-          padding: const EdgeInsets.only(bottom: EspaciadoCampo.xxl),
-          children: [
-            SizedBox(
-              height: 180,
-              child: MapaLote(
-                lotes: [s.lote],
-                seleccionado: s.lote,
-                interactivo: false,
-              ),
+    final secundario = TipografiaCampo.cuerpoSecundario.copyWith(
+      color: paleta.textoSecundario,
+    );
+    final venceEn = s.venceEn;
+    final cuerpo = <Widget>[
+      Row(
+        children: [
+          Flexible(
+            child: InsigniaEstadoSolicitud(
+              s.estado,
+              ofertas: s.ofertasVigentes,
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(margen, EspaciadoCampo.l, margen, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: InsigniaEstadoSolicitud(
-                      s.estado,
-                      ofertas: s.ofertasVigentes,
-                    ),
-                  ),
-                  const SizedBox(height: EspaciadoCampo.s),
-                  Semantics(
-                    header: true,
-                    child: Text(s.lote.nombre, style: texto.headlineSmall),
-                  ),
-                  Text(
-                    '${s.lote.zona} · ${s.cultivo} · '
-                    '${FormatoMarketplace.fechaLarga(s.ventanaDesde)}',
-                    style: texto.bodyMedium?.copyWith(
-                      color: paleta.textoSecundario,
-                    ),
-                  ),
-                  const SizedBox(height: EspaciadoCampo.s),
-                  Text(s.estado.apoyo, style: texto.bodyMedium),
-                  if (estado.fallo != null) ...[
-                    const SizedBox(height: EspaciadoCampo.l),
-                    Semantics(
-                      liveRegion: true,
-                      child: AvisoMarketplace(
-                        key: const ValueKey('aviso-accion'),
-                        tono: TonoAviso.error,
-                        icono: estado.fallo == FalloAccion.sinConexion
-                            ? Icons.wifi_off_rounded
-                            : null,
-                        mensaje: estado.fallo == FalloAccion.sinConexion
-                            ? 'Sin conexión. No se guardó el cambio; '
-                                  'inténtalo con señal.'
-                            : (estado.mensajeFallo ??
-                                  'No pudimos completar la operación.'),
-                      ),
-                    ),
-                  ],
-                  if (s.estado.terminada) ...[
-                    const SizedBox(height: EspaciadoCampo.l),
-                    _PrecioFinal(solicitud: s),
-                  ] else if (s.estado.negociando) ...[
-                    const SizedBox(height: EspaciadoCampo.l),
-                    _TuPrecio(
-                      solicitud: s,
-                      alCambiar: estado.enCurso
-                          ? null
-                          : () => _cambiarPrecio(context, s),
-                    ),
-                  ],
-                  if (accion != null) ...[
-                    const SizedBox(height: EspaciadoCampo.xl),
-                    accion,
-                  ],
-                  if (estado.anexosIncompletos) ...[
-                    const SizedBox(height: EspaciadoCampo.l),
-                    AvisoMarketplace(
-                      tono: TonoAviso.alerta,
-                      icono: estado.sinConexion ? Icons.wifi_off_rounded : null,
-                      mensaje: estado.sinConexion
-                          ? 'Sin conexión. Faltan cargar tu calificación y el '
-                                'reclamo.'
-                          : 'No pudimos cargar tu calificación y el reclamo.',
-                    ),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: BotonSecundario(
-                        texto: 'Reintentar',
-                        icono: Icons.refresh_rounded,
-                        onPressed: context
-                            .read<SolicitudDetalleCubit>()
-                            .reintentar,
-                      ),
-                    ),
-                  ],
-                  if (s.estado == EstadoSolicitud.cancelada) ...[
-                    const SizedBox(height: EspaciadoCampo.l),
-                    AvisoMarketplace(
-                      tono: TonoAviso.alerta,
-                      icono: Icons.cancel_outlined,
-                      mensaje:
-                          s.motivoCancelacion == null ||
-                              s.motivoCancelacion!.isEmpty
-                          ? 'Cancelaste esta solicitud. Puedes publicar otra '
-                                'desde «Solicitar».'
-                          : 'Cancelaste esta solicitud: '
-                                '${s.motivoCancelacion}. Puedes publicar otra '
-                                'desde «Solicitar».',
-                    ),
-                  ],
-                  if (problema != null) ...[
-                    const SizedBox(height: EspaciadoCampo.l),
-                    _ProblemaReportado(problema),
-                  ],
-                  const TituloSeccion('Estado'),
-                  LineaTiempoSolicitud(hitos: estado.hitos),
-                  if (s.nombreProveedor != null && s.estado.conPiloto) ...[
-                    const TituloSeccion('Quién fumiga'),
-                    SuperficieMarketplace(
-                      child: Row(
-                        children: [
-                          Icon(Icons.person_rounded, color: paleta.acentoTexto),
-                          const SizedBox(width: EspaciadoCampo.m),
-                          Expanded(
-                            child: Text(
-                              s.nombreProveedor!,
-                              style: texto.titleMedium,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                  const TituloSeccion('Lo que pediste'),
-                  SuperficieMarketplace(
-                    child: ListaDatos([
-                      FilaDato(
-                        'Superficie',
-                        FormatoMarketplace.hectareas(s.hectareas),
-                      ),
-                      FilaDato('Cultivo', s.cultivo),
-                      FilaDato('Producto', s.producto),
-                      FilaDato(
-                        'Fecha deseada',
-                        FormatoMarketplace.fechaConDia(s.ventanaDesde),
-                      ),
-                      if (s.accesos != null) FilaDato('Accesos', s.accesos!),
-                      if (s.observaciones != null)
-                        FilaDato('Observaciones', s.observaciones!),
-                    ]),
-                  ),
-                  if (s.puntajeDelCliente != null) ...[
-                    const TituloSeccion('Tu calificación'),
-                    SuperficieMarketplace(
-                      child: _Calificacion(
-                        puntaje: s.puntajeDelCliente!,
-                        emitida: estado.calificacion,
-                      ),
-                    ),
-                  ],
-                  if (s.estado.negociando) ...[
-                    const SizedBox(height: EspaciadoCampo.xl),
-                    Center(
-                      child: BotonSecundario(
-                        key: const ValueKey('cancelar-solicitud'),
-                        texto: 'Cancelar la solicitud',
-                        icono: Icons.close_rounded,
-                        onPressed: estado.enCurso
-                            ? null
-                            : () => _cancelar(context),
-                      ),
-                    ),
-                  ],
-                  if (puedeReportar) ...[
-                    const SizedBox(height: EspaciadoCampo.xl),
-                    Center(
-                      child: BotonSecundario(
-                        texto: 'Reportar un problema',
-                        icono: Icons.flag_outlined,
-                        onPressed: () => _reportar(context, s),
-                      ),
-                    ),
-                  ],
-                ],
+          ),
+          if (s.estado.negociando && venceEn != null) ...[
+            const SizedBox(width: EspaciadoCampo.m),
+            Expanded(
+              child: Text(
+                'Vence el ${FormatoMarketplace.fechaCorta(venceEn)}',
+                textAlign: TextAlign.end,
+                style: secundario,
               ),
             ),
           ],
+        ],
+      ),
+      const SizedBox(height: EspaciadoCampo.m),
+      Semantics(
+        header: true,
+        child: Text(
+          s.lote.nombre,
+          style: TipografiaCampo.tituloPantalla.copyWith(color: paleta.texto),
         ),
       ),
+      Text(
+        s.publicadaEn == null
+            ? s.lote.zona
+            : '${s.lote.zona} · publicada el '
+                  '${FormatoMarketplace.fechaCorta(s.publicadaEn!)}',
+        style: secundario,
+      ),
+      const SizedBox(height: EspaciadoCampo.l),
+      GrupoStatsCampo(
+        children: [
+          _Celda(
+            etiqueta: 'Superficie',
+            valor: FormatoMarketplace.hectareasNumero(s.hectareas),
+            unidad: 'ha',
+          ),
+          _Celda(
+            etiqueta: s.precioHaAcordado != null
+                ? 'Precio acordado'
+                : 'Tu precio',
+            valor: FormatoMarketplace.bsNumero(s.precioHaVigente),
+            unidad: 'Bs/ha',
+            claveValor: const ValueKey('precio-propuesto'),
+          ),
+        ],
+      ),
+      const SizedBox(height: EspaciadoCampo.s),
+      GrupoStatsCampo(
+        children: [
+          _Celda(etiqueta: 'Cultivo', texto: s.cultivo),
+          _Celda(
+            etiqueta: 'Desde',
+            texto: FormatoMarketplace.fechaCorta(s.ventanaDesde),
+          ),
+        ],
+      ),
+      const SizedBox(height: EspaciadoCampo.m),
+      if (s.estado == EstadoSolicitud.conOfertas)
+        AvisoMarketplace(
+          tono: TonoAviso.alerta,
+          icono: Icons.local_offer_rounded,
+          mensaje: (s.ofertasVigentes ?? 0) > 0
+              ? '${s.ofertasVigentes == 1 ? '1 piloto ofertó' : '${s.ofertasVigentes} pilotos ofertaron'}. '
+                    'Compáralas y elige la que prefieras.'
+              : s.estado.apoyo,
+        )
+      else
+        Text(s.estado.apoyo, style: TipografiaCampo.cuerpo),
+      if (estado.fallo != null) ...[
+        const SizedBox(height: EspaciadoCampo.l),
+        Semantics(
+          liveRegion: true,
+          child: AvisoMarketplace(
+            key: const ValueKey('aviso-accion'),
+            tono: TonoAviso.error,
+            icono: estado.fallo == FalloAccion.sinConexion
+                ? Icons.wifi_off_rounded
+                : null,
+            mensaje: estado.fallo == FalloAccion.sinConexion
+                ? 'Sin conexión. No se guardó el cambio; '
+                      'inténtalo con señal.'
+                : (estado.mensajeFallo ?? 'No pudimos completar la operación.'),
+          ),
+        ),
+      ],
+      if (s.estado.terminada) ...[
+        const SizedBox(height: EspaciadoCampo.l),
+        _PrecioFinal(solicitud: s),
+      ],
+      if (estado.anexosIncompletos) ...[
+        const SizedBox(height: EspaciadoCampo.l),
+        AvisoMarketplace(
+          tono: TonoAviso.alerta,
+          icono: estado.sinConexion ? Icons.wifi_off_rounded : null,
+          mensaje: estado.sinConexion
+              ? 'Sin conexión. Faltan cargar tu calificación y el '
+                    'reclamo.'
+              : 'No pudimos cargar tu calificación y el reclamo.',
+        ),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: BotonSecundario(
+            texto: 'Reintentar',
+            icono: Icons.refresh_rounded,
+            onPressed: context.read<SolicitudDetalleCubit>().reintentar,
+          ),
+        ),
+      ],
+      if (s.estado == EstadoSolicitud.cancelada) ...[
+        const SizedBox(height: EspaciadoCampo.l),
+        AvisoMarketplace(
+          tono: TonoAviso.alerta,
+          icono: Icons.cancel_outlined,
+          mensaje: s.motivoCancelacion == null || s.motivoCancelacion!.isEmpty
+              ? 'Cancelaste esta solicitud. Puedes publicar otra '
+                    'desde «Solicitar».'
+              : 'Cancelaste esta solicitud: '
+                    '${s.motivoCancelacion}. Puedes publicar otra '
+                    'desde «Solicitar».',
+        ),
+      ],
+      if (problema != null) ...[
+        const SizedBox(height: EspaciadoCampo.l),
+        _ProblemaReportado(problema),
+      ],
+      const TituloSeccion('Estado'),
+      LineaTiempoSolicitud(hitos: estado.hitos),
+      if (s.nombreProveedor != null && s.estado.conPiloto) ...[
+        const TituloSeccion('Quién fumiga'),
+        SuperficieMarketplace(
+          child: Row(
+            children: [
+              Icon(Icons.person_rounded, color: paleta.acentoTexto),
+              const SizedBox(width: EspaciadoCampo.m),
+              Expanded(
+                child: Text(
+                  s.nombreProveedor!,
+                  style: TipografiaCampo.tituloTarjeta.copyWith(
+                    color: paleta.texto,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+      const TituloSeccion('Lo que pediste'),
+      SuperficieMarketplace(
+        child: ListaDatos([
+          FilaDato('Producto', s.producto),
+          FilaDato(
+            'Fecha deseada',
+            FormatoMarketplace.fechaConDia(s.ventanaDesde),
+          ),
+          if (s.accesos != null) FilaDato('Accesos', s.accesos!),
+          if (s.observaciones != null)
+            FilaDato('Observaciones', s.observaciones!),
+        ]),
+      ),
+      if (s.puntajeDelCliente != null) ...[
+        const TituloSeccion('Tu calificación'),
+        SuperficieMarketplace(
+          child: _Calificacion(
+            puntaje: s.puntajeDelCliente!,
+            emitida: estado.calificacion,
+          ),
+        ),
+      ],
+      if (s.estado.negociando) ...[
+        const SizedBox(height: EspaciadoCampo.xl),
+        Center(
+          child: BotonSecundario(
+            key: const ValueKey('cancelar-solicitud'),
+            texto: 'Cancelar la solicitud',
+            icono: Icons.close_rounded,
+            onPressed: estado.enCurso ? null : () => _cancelar(context),
+          ),
+        ),
+      ],
+      if (puedeReportar) ...[
+        const SizedBox(height: EspaciadoCampo.xl),
+        Center(
+          child: BotonSecundario(
+            texto: 'Reportar un problema',
+            icono: Icons.flag_outlined,
+            onPressed: () => _reportar(context, s),
+          ),
+        ),
+      ],
+    ];
+
+    final barra = _barra(context, s, margen);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: EspaciadoCampo.xxl),
+                children: [
+                  Stack(
+                    children: [
+                      SizedBox(
+                        height: _altoMapa,
+                        child: MapaLote(
+                          lotes: [s.lote],
+                          seleccionado: s.lote,
+                          interactivo: false,
+                        ),
+                      ),
+                      // La hoja sube sobre el mapa con las esquinas altas
+                      // redondeadas.
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: _altoMapa - RadioCampo.hoja,
+                        ),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: paleta.fondo,
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(RadioCampo.hoja),
+                            ),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              margen,
+                              EspaciadoCampo.xl,
+                              margen,
+                              0,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: cuerpo,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SafeArea(
+                        child: Padding(
+                          padding: const EdgeInsets.all(EspaciadoCampo.l),
+                          child: IconButton.filled(
+                            tooltip: 'Volver',
+                            style: IconButton.styleFrom(
+                              backgroundColor: paleta.superficie,
+                              foregroundColor: paleta.texto,
+                              minimumSize: const Size.square(
+                                ObjetivoTactilCampo.guantes - EspaciadoCampo.s,
+                              ),
+                            ),
+                            onPressed: () => Navigator.of(context).maybePop(),
+                            icon: const Icon(Icons.arrow_back_rounded),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        ?barra,
+      ],
     );
   }
 }
 
-/// El precio que propone el cliente mientras la solicitud se negocia, con la
-/// opción de cambiarlo.
-class _TuPrecio extends StatelessWidget {
-  const _TuPrecio({required this.solicitud, required this.alCambiar});
+/// Alto del mapa a sangre sobre el que sube la hoja.
+const double _altoMapa = 280;
 
-  final Solicitud solicitud;
-  final VoidCallback? alCambiar;
+/// Una celda de la cuadrícula de datos: etiqueta y, debajo, una cifra en
+/// mono con su unidad o un texto.
+class _Celda extends StatelessWidget {
+  const _Celda({
+    required this.etiqueta,
+    this.valor,
+    this.unidad,
+    this.texto,
+    this.claveValor,
+  });
+
+  final String etiqueta;
+  final String? valor;
+  final String? unidad;
+  final String? texto;
+  final Key? claveValor;
 
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
-    final s = solicitud;
     return SuperficieMarketplace(
+      padding: const EdgeInsets.all(EspaciadoCampo.m),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Tu precio propuesto',
-            style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
-          ),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.centerLeft,
-            child: Text(
-              '${FormatoMarketplace.bs(s.precioHaPropuesto)}/ha',
-              key: const ValueKey('precio-propuesto'),
-              style: texto.headlineSmall,
+            etiqueta,
+            style: TipografiaCampo.cuerpoSecundario.copyWith(
+              color: paleta.textoSecundario,
             ),
           ),
-          Text(
-            'Total estimado ${FormatoMarketplace.bs(s.totalEstimado)} por '
-            '${FormatoMarketplace.hectareas(s.hectareas)}',
-            style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
-          ),
           const SizedBox(height: EspaciadoCampo.xs),
-          BotonSecundario(
-            key: const ValueKey('cambiar-precio'),
-            texto: 'Cambiar mi precio',
-            icono: Icons.edit_outlined,
-            onPressed: alCambiar,
-          ),
+          if (valor != null)
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: CifraCampo(
+                key: claveValor,
+                valor: valor!,
+                unidad: unidad,
+                estilo: TipografiaCampo.cifraMedia,
+              ),
+            )
+          else
+            Text(
+              texto ?? '',
+              style: TipografiaCampo.tituloSeccion.copyWith(
+                color: paleta.texto,
+              ),
+            ),
         ],
       ),
     );
@@ -438,7 +590,8 @@ class _TuPrecio extends StatelessWidget {
 }
 
 /// El precio final que calcula el servidor: hectáreas ejecutadas por precio
-/// acordado. La app no cobra: el pago es fuera de ella.
+/// acordado. La app no cobra: el pago es fuera de ella. Se abre el ticket
+/// completo con un toque.
 class _PrecioFinal extends StatelessWidget {
   const _PrecioFinal({required this.solicitud});
 
@@ -447,38 +600,47 @@ class _PrecioFinal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
     final s = solicitud;
     final ejecutadas = s.hectareasEjecutadas ?? s.hectareas;
     return SuperficieMarketplace(
       resaltada: s.estado == EstadoSolicitud.finalizada,
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => PrecioFinalPantalla(solicitudId: s.id),
+        ),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Precio final a pagar',
-            style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
+            style: TipografiaCampo.cuerpoSecundario.copyWith(
+              color: paleta.textoSecundario,
+            ),
           ),
           FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.centerLeft,
-            child: Text(
-              FormatoMarketplace.bs(s.totalAPagar),
+            child: CifraCampo(
               key: const ValueKey('precio-final'),
-              style: texto.displaySmall,
+              valor: FormatoMarketplace.bsNumero(s.totalAPagar),
+              unidad: 'Bs',
+              estilo: TipografiaCampo.cifraGrande,
             ),
           ),
           const SizedBox(height: EspaciadoCampo.xs),
           Text(
             '${FormatoMarketplace.hectareas(ejecutadas)} ejecutadas × '
             '${FormatoMarketplace.bs(s.precioHaVigente)}/ha',
-            style: texto.bodyMedium,
+            style: TipografiaCampo.datoMono.copyWith(color: paleta.texto),
           ),
           const SizedBox(height: EspaciadoCampo.s),
           Text(
             'Le pagas al piloto directamente, fuera de la app. Agrocom no '
             'cobra ni suma nada a este monto.',
-            style: texto.bodySmall?.copyWith(color: paleta.textoSecundario),
+            style: TipografiaCampo.cuerpoSecundario.copyWith(
+              color: paleta.textoSecundario,
+            ),
           ),
         ],
       ),
@@ -598,7 +760,7 @@ class _Cargando extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        EsqueletoCampo(alto: 180, radio: 0),
+        EsqueletoCampo(alto: _altoMapa, radio: 0),
         Padding(
           padding: EdgeInsets.all(EspaciadoCampo.l),
           child: Column(
@@ -608,9 +770,9 @@ class _Cargando extends StatelessWidget {
               SizedBox(height: EspaciadoCampo.m),
               EsqueletoCampo(alto: EspaciadoCampo.xxl, ancho: 220),
               SizedBox(height: EspaciadoCampo.xl),
-              EsqueletoCampo(alto: ObjetivoTactilCampo.guantes, radio: 14),
-              SizedBox(height: EspaciadoCampo.xl),
-              EsqueletoCampo(alto: 160, radio: 18),
+              EsqueletoCampo(alto: 96, radio: RadioCampo.tarjetaCompacta),
+              SizedBox(height: EspaciadoCampo.m),
+              EsqueletoCampo(alto: 96, radio: RadioCampo.tarjetaCompacta),
             ],
           ),
         ),
