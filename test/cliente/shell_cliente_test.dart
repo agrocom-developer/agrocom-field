@@ -4,6 +4,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:agrocom_field/cliente/app_cliente.dart';
 import 'package:agrocom_field/cliente/demo/almacen_demo_cliente.dart';
 import 'package:agrocom_field/cliente/di/dependencias_cliente.dart';
+import 'package:agrocom_field/nucleo/ui/tema_visual/tema_visual_cubit.dart';
+import 'package:agrocom_field/nucleo/ui/componentes/barra_inferior_campo.dart';
+import 'package:agrocom_field/nucleo/ui/paleta_campo.dart';
 
 import '../nucleo/marketplace/ayudas_prueba.dart';
 
@@ -19,7 +22,12 @@ void main() {
     tester,
   ) async {
     prepararTelefono(tester);
-    await tester.pumpWidget(AppCliente(dependencias: _demo()));
+    await tester.pumpWidget(
+      AppCliente(
+        dependencias: _demo(),
+        almacenTema: AlmacenTemaVisualMemoria(),
+      ),
+    );
     await tester.pumpAndSettle();
     expect(find.text('Hola, Hugo'), findsOneWidget);
     expect(find.text('Publicar lote'), findsOneWidget);
@@ -27,14 +35,19 @@ void main() {
     expect(find.text('Comparar ofertas'), findsOneWidget);
     await tester.scrollUntilVisible(find.text('Calificar'), 300);
     expect(find.text('Calificar'), findsWidgets);
-    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.byType(BarraInferiorCampo), findsOneWidget);
   });
 
   testWidgets('publicar una solicitud en cuatro pasos la deja abierta', (
     tester,
   ) async {
     prepararTelefono(tester);
-    await tester.pumpWidget(AppCliente(dependencias: _demo()));
+    await tester.pumpWidget(
+      AppCliente(
+        dependencias: _demo(),
+        almacenTema: AlmacenTemaVisualMemoria(),
+      ),
+    );
     await tester.pumpAndSettle();
 
     Future<void> tocar(Finder objetivo) async {
@@ -49,7 +62,7 @@ void main() {
       await tester.pumpAndSettle();
     }
 
-    await tester.tap(find.text('Solicitar').last);
+    await tester.tap(find.text('Publicar lote'));
     await tester.pumpAndSettle();
     expect(find.text('Paso 1 de 4 · Lote'), findsOneWidget);
 
@@ -93,7 +106,12 @@ void main() {
     tester,
   ) async {
     prepararTelefono(tester);
-    await tester.pumpWidget(AppCliente(dependencias: _demo()));
+    await tester.pumpWidget(
+      AppCliente(
+        dependencias: _demo(),
+        almacenTema: AlmacenTemaVisualMemoria(),
+      ),
+    );
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Comparar ofertas'));
@@ -121,23 +139,56 @@ void main() {
 
   testWidgets('en iPad la navegación pasa a riel lateral', (tester) async {
     prepararIpad(tester);
-    await tester.pumpWidget(AppCliente(dependencias: _demo()));
+    await tester.pumpWidget(
+      AppCliente(
+        dependencias: _demo(),
+        almacenTema: AlmacenTemaVisualMemoria(),
+      ),
+    );
     await tester.pumpAndSettle();
     expect(find.byType(NavigationRail), findsOneWidget);
-    expect(find.byType(NavigationBar), findsNothing);
+    expect(find.byType(BarraInferiorCampo), findsNothing);
   });
 
-  testWidgets('las pestañas Solicitudes y Cuenta cargan sus datos', (
+  testWidgets('las pestañas Servicios, Lotes y Perfil cargan sus datos', (
     tester,
   ) async {
     prepararTelefono(tester);
-    await tester.pumpWidget(AppCliente(dependencias: _demo()));
+    await tester.pumpWidget(
+      AppCliente(
+        dependencias: _demo(),
+        almacenTema: AlmacenTemaVisualMemoria(),
+      ),
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Solicitudes').last);
+    await tester.tap(find.text('Servicios').last);
     await tester.pumpAndSettle();
     expect(find.text('Mis solicitudes'), findsOneWidget);
-    await tester.tap(find.text('Cuenta').last);
+    await tester.tap(find.text('Lotes').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Maíz La Curva'), findsOneWidget);
+    await tester.tap(find.text('Perfil').last);
     await tester.pumpAndSettle();
     expect(find.text('Hugo Antelo Suárez'), findsOneWidget);
+    expect(find.text('Mis campos'), findsOneWidget);
+  });
+
+  testWidgets('el perfil cambia el tema y lo guarda', (tester) async {
+    prepararTelefono(tester);
+    final almacen = AlmacenTemaVisualMemoria();
+    await tester.pumpWidget(
+      AppCliente(dependencias: _demo(), almacenTema: almacen),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Perfil').last);
+    await tester.pumpAndSettle();
+    final campo = find.text('Campo AAA');
+    await tester.scrollUntilVisible(campo, 200);
+    await tester.tap(campo);
+    await tester.pumpAndSettle();
+    expect(almacen.modo, ModoVisualCampo.campo);
+    final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
+    expect(app.themeMode, ThemeMode.light);
+    expect(app.theme?.scaffoldBackgroundColor, const Color(0xFF000000));
   });
 }

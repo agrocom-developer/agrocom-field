@@ -34,34 +34,45 @@ void main() {
     expect(find.text('Valles'), findsOneWidget);
   });
 
-  testWidgets('ofertas, servicio, drones y perfil cargan con datos', (
-    tester,
-  ) async {
-    await montar(tester);
+  testWidgets(
+    'ofertas, servicios y perfil cargan con datos; el dron se abre desde el perfil',
+    (tester) async {
+      await montar(tester);
 
-    await tester.tap(find.text('Ofertas').last);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.text('Mis ofertas'), findsOneWidget);
-    expect(find.text('Tu turno · R4/5'), findsOneWidget);
+      await tester.tap(find.text('Ofertas').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('Mis ofertas'), findsOneWidget);
+      expect(find.text('Tu turno · R4/5'), findsOneWidget);
 
-    await tester.tap(find.text('Servicio').last);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.text('En ejecución'), findsOneWidget);
-    expect(find.text('Adjudicado'), findsOneWidget);
+      await tester.tap(find.text('Servicios').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 300));
+      expect(find.text('En ejecución'), findsOneWidget);
+      expect(find.text('Adjudicado'), findsOneWidget);
 
-    await tester.tap(find.text('Drones').last);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(find.text('DJI Agras T50'), findsOneWidget);
+      await tester.tap(find.text('Perfil').last);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('Métricas'), findsOneWidget);
+      expect(find.text('Rodrigo Sandoval Justiniano'), findsOneWidget);
 
-    await tester.tap(find.text('Perfil').last);
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
-    expect(find.text('Métricas'), findsOneWidget);
-    expect(find.text('Rodrigo Sandoval Justiniano'), findsOneWidget);
-  });
+      // El dron y la licencia viven en el perfil.
+      final dron = find.byKey(const Key('perfil-ver-drones'));
+      await tester.scrollUntilVisible(
+        dron,
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.ensureVisible(dron);
+      await tester.pump();
+      await tester.tap(dron);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.text('Mis drones'), findsOneWidget);
+      expect(find.text('DJI Agras T50'), findsOneWidget);
+    },
+  );
 
   testWidgets(
     'el perfil ofrece los avisos y, en demo, no hay sesión que cerrar',
@@ -86,18 +97,28 @@ void main() {
     },
   );
 
-  testWidgets('la navegación respeta los cinco destinos del piloto', (
+  testWidgets('la navegación tiene los cuatro destinos del piloto', (
     tester,
   ) async {
     await montar(tester);
-    for (final etiqueta in [
-      'Mapa',
-      'Ofertas',
-      'Servicio',
-      'Drones',
-      'Perfil',
-    ]) {
+    for (final etiqueta in ['Mapa', 'Ofertas', 'Servicios', 'Perfil']) {
       expect(find.text(etiqueta), findsWidgets);
     }
+    expect(find.text('Drones'), findsNothing);
+  });
+
+  testWidgets('el perfil ofrece Claro, Oscuro y Campo AAA', (tester) async {
+    await montar(tester);
+    await tester.tap(find.text('Perfil').last);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    final oscuro = find.text('Oscuro');
+    await tester.scrollUntilVisible(
+      oscuro,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Claro'), findsOneWidget);
+    expect(find.text('Campo AAA'), findsOneWidget);
   });
 }
