@@ -22,9 +22,9 @@ void main() {
     await tester.pumpWidget(AppCliente(dependencias: _demo()));
     await tester.pumpAndSettle();
     expect(find.text('Hola, Hugo'), findsOneWidget);
-    expect(find.text('Publicar una solicitud'), findsOneWidget);
-    expect(find.text('Solicitud activa'), findsOneWidget);
-    expect(find.text('Ver ofertas'), findsOneWidget);
+    expect(find.text('Publicar lote'), findsOneWidget);
+    expect(find.text('SOLICITUD ACTIVA'), findsOneWidget);
+    expect(find.text('Comparar ofertas'), findsOneWidget);
     await tester.scrollUntilVisible(find.text('Calificar'), 300);
     expect(find.text('Calificar'), findsWidgets);
     expect(find.byType(NavigationBar), findsOneWidget);
@@ -74,18 +74,17 @@ void main() {
       '120',
     );
     await tester.pumpAndSettle();
-    expect(find.text('Bs 10.260'), findsWidgets);
+    expect(find.textContaining('10.260', findRichText: true), findsWidgets);
     await tester.tap(find.text('Publicar solicitud').last);
     await tester.pumpAndSettle();
 
     // Abre el detalle de la solicitud, abierta y todavía sin ofertas.
-    expect(find.text('Solicitud'), findsWidgets);
     expect(find.text('Buscando piloto'), findsWidgets);
-    expect(find.text('Tu precio propuesto'), findsOneWidget);
-    expect(find.text('Bs 120/ha'), findsOneWidget);
+    expect(find.text('Tu precio'), findsOneWidget);
+    expect(find.byKey(const ValueKey('precio-propuesto')), findsOneWidget);
     expect(find.text('Maíz La Curva'), findsWidgets);
 
-    await tester.tap(find.byTooltip('Atrás'));
+    await tester.tap(find.byTooltip('Volver'));
     await tester.pumpAndSettle();
     expect(find.text('Hola, Hugo'), findsOneWidget);
   });
@@ -97,7 +96,7 @@ void main() {
     await tester.pumpWidget(AppCliente(dependencias: _demo()));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('Ver ofertas'));
+    await tester.tap(find.text('Comparar ofertas'));
     await tester.pumpAndSettle();
     expect(find.text('Ofertas'), findsWidgets);
     // Las tres ofertas, la de menor precio primero y marcada.

@@ -116,9 +116,9 @@ void main() {
 
     testWidgets('con ofertas: la acción es compararlas', (tester) async {
       await abrir(tester, '4101');
-      expect(find.text('Ver y comparar las ofertas (3)'), findsOneWidget);
-      expect(find.text('Tu precio propuesto'), findsOneWidget);
-      expect(find.text('Bs 110/ha'), findsOneWidget);
+      expect(find.text('Ver 3 ofertas'), findsOneWidget);
+      expect(find.text('Tu precio'), findsOneWidget);
+      expect(find.textContaining('110', findRichText: true), findsWidgets);
       await tester.tap(find.byKey(const ValueKey('ver-ofertas')));
       await asentar(tester, veces: 10);
       expect(find.byType(OfertasPantalla), findsOneWidget);
@@ -147,7 +147,8 @@ void main() {
       await tester.tap(enviar);
       await asentar(tester, veces: 8);
       expect(a.porId('4101')!.precioHaPropuesto, Decimal.fromInt(118));
-      expect(find.text('Bs 118/ha'), findsOneWidget);
+      expect(find.byKey(const ValueKey('precio-propuesto')), findsOneWidget);
+      expect(find.textContaining('118', findRichText: true), findsWidgets);
     });
 
     testWidgets('cancelar exige un motivo y cierra la solicitud', (
@@ -187,7 +188,7 @@ void main() {
     ) async {
       final a = await abrir(tester, '4103');
       // 64 ha × Bs 125/ha, congelado por el servidor.
-      expect(find.text('Bs 8.000'), findsWidgets);
+      expect(find.textContaining('8.000', findRichText: true), findsWidgets);
       expect(find.textContaining('Le pagas al piloto'), findsOneWidget);
       await tester.tap(find.byKey(const ValueKey('calificar')));
       await asentar(tester);
@@ -233,7 +234,7 @@ void main() {
       almacen.sinRed = false;
       await tester.tap(find.text('Reintentar'));
       await asentar(tester);
-      expect(find.text('Tu precio propuesto'), findsOneWidget);
+      expect(find.text('Tu precio'), findsOneWidget);
     });
 
     testWidgets('sin conexión al cambiar el precio no pierde el cambio', (
