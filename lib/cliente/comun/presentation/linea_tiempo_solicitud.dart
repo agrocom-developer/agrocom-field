@@ -4,6 +4,7 @@ import '../../solicitudes/domain/solicitud.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Línea de tiempo de la solicitud: qué pasó, qué pasa ahora y qué sigue.
 ///
@@ -17,9 +18,10 @@ class LineaTiempoSolicitud extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Semantics(
       container: true,
-      label: 'Avance de la solicitud',
+      label: l10n.comunAvanceSolicitud,
       child: Column(
         children: [
           for (var i = 0; i < hitos.length; i++)

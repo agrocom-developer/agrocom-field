@@ -1548,6 +1548,150 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Mínimo {largoMinimoContrasena} caracteres, con letras y números.'**
   String accesoMinimoCaracteresConLetras(int largoMinimoContrasena);
+
+  /// No description provided for @calificarGraciasPorCalificarServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'Gracias por calificar el servicio'**
+  String get calificarGraciasPorCalificarServicio;
+
+  /// No description provided for @calificarOmitir.
+  ///
+  /// In es, this message translates to:
+  /// **'Omitir'**
+  String get calificarOmitir;
+
+  /// No description provided for @calificarComentarioOpcional.
+  ///
+  /// In es, this message translates to:
+  /// **'Comentario opcional'**
+  String get calificarComentarioOpcional;
+
+  /// No description provided for @comunAvance.
+  ///
+  /// In es, this message translates to:
+  /// **'Avance: {etiqueta}'**
+  String comunAvance(String etiqueta);
+
+  /// No description provided for @comunPrecioPorHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio por hectárea'**
+  String get comunPrecioPorHectarea;
+
+  /// No description provided for @comunBsHa.
+  ///
+  /// In es, this message translates to:
+  /// **'Bs/ha'**
+  String get comunBsHa;
+
+  /// No description provided for @comunMensajeParaPilotoOpcional.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensaje para el piloto (opcional)'**
+  String get comunMensajeParaPilotoOpcional;
+
+  /// No description provided for @comunAvanceSolicitud.
+  ///
+  /// In es, this message translates to:
+  /// **'Avance de la solicitud'**
+  String get comunAvanceSolicitud;
+
+  /// No description provided for @inicioBuenClimaParaAplicar.
+  ///
+  /// In es, this message translates to:
+  /// **'Buen clima para aplicar mañana'**
+  String get inicioBuenClimaParaAplicar;
+
+  /// No description provided for @inicioVientoSinLluviaHasta.
+  ///
+  /// In es, this message translates to:
+  /// **'Viento de 8 km/h y sin lluvia hasta el mediodía en Cuatro Cañadas.'**
+  String get inicioVientoSinLluviaHasta;
+
+  /// No description provided for @inicioBuenPrecioAtraeMas.
+  ///
+  /// In es, this message translates to:
+  /// **'Un buen precio atrae más ofertas'**
+  String get inicioBuenPrecioAtraeMas;
+
+  /// No description provided for @inicioLosPilotosComparanPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Los pilotos comparan el precio por hectárea: si tardan en ofertar, puedes subirlo.'**
+  String get inicioLosPilotosComparanPrecio;
+
+  /// No description provided for @inicioSolicitudActiva.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitud activa'**
+  String get inicioSolicitudActiva;
+
+  /// No description provided for @inicioCompararOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Comparar ofertas'**
+  String get inicioCompararOfertas;
+
+  /// No description provided for @inicioVerSeguimiento.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver seguimiento'**
+  String get inicioVerSeguimiento;
+
+  /// No description provided for @inicioCalificar.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificar'**
+  String get inicioCalificar;
+
+  /// No description provided for @inicioHola.
+  ///
+  /// In es, this message translates to:
+  /// **'Hola, {nombre}'**
+  String inicioHola(String nombre);
+
+  /// No description provided for @inicioPerfil.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu perfil'**
+  String get inicioPerfil;
+
+  /// No description provided for @inicioPublicarLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar lote'**
+  String get inicioPublicarLote;
+
+  /// No description provided for @inicioTienesSolicitudesCurso.
+  ///
+  /// In es, this message translates to:
+  /// **'No tienes solicitudes en curso'**
+  String get inicioTienesSolicitudesCurso;
+
+  /// No description provided for @inicioTocaPublicarLoteMarca.
+  ///
+  /// In es, this message translates to:
+  /// **'Toca «Publicar lote», marca tu lote y compara las ofertas de los pilotos.'**
+  String get inicioTocaPublicarLoteMarca;
+
+  /// No description provided for @inicioDescartarAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar aviso'**
+  String get inicioDescartarAviso;
+
+  /// No description provided for @inicioCalificasteCon.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificaste con {puntajeDelCliente} de 5'**
+  String inicioCalificasteCon(int puntajeDelCliente);
+
+  /// No description provided for @inicioReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get inicioReintentar;
 }
 
 class _AppLocalizationsDelegate

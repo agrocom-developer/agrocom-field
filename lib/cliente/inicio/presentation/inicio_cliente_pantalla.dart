@@ -16,6 +16,7 @@ import '../../solicitudes/presentation/solicitud_detalle_pantalla.dart';
 import '../../solicitudes/presentation/tarjeta_solicitud.dart';
 import '../domain/inicio_cliente_repositorio.dart';
 import 'inicio_cliente_cubit.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Inicio del cliente: la acción principal (el botón flotante «Publicar
 /// lote»), la solicitud activa, los avisos del día y el historial reciente. Lee el
@@ -108,6 +109,7 @@ class _Contenido extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final activo = resumen.solicitudActiva;
 
     final saludo = _Saludo(nombre: resumen.nombre, empresa: resumen.empresa);
@@ -121,19 +123,19 @@ class _Contenido extends StatelessWidget {
           TarjetaSolicitud(
             solicitud: activo,
             destacada: true,
-            titulo: 'Solicitud activa',
+            titulo: l10n.inicioSolicitudActiva,
             onTap: () => _abrirDetalle(context, activo),
             acciones: [
               if (activo.estado == EstadoSolicitud.conOfertas)
                 BotonPrincipalMarketplace(
                   key: const Key('inicio-ver-ofertas'),
-                  texto: 'Comparar ofertas',
+                  texto: l10n.inicioCompararOfertas,
                   onPressed: () => _verOfertas(context, activo),
                 )
               else if (activo.estado.conPiloto)
                 BotonPrincipalMarketplace(
                   key: const Key('inicio-ver-seguimiento'),
-                  texto: 'Ver seguimiento',
+                  texto: l10n.inicioVerSeguimiento,
                   onPressed: () => _seguir(context, activo),
                 ),
             ],
@@ -170,7 +172,7 @@ class _Contenido extends StatelessWidget {
                     OutlinedButton.icon(
                       onPressed: () => abrirCalificar(context, s),
                       icon: const Icon(Icons.star_outline_rounded),
-                      label: const Text('Calificar'),
+                      label: Text(l10n.inicioCalificar),
                     ),
                   ],
                 ),
@@ -320,6 +322,7 @@ class _Saludo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Row(
       children: [
@@ -337,7 +340,7 @@ class _Saludo extends StatelessWidget {
               Semantics(
                 header: true,
                 child: Text(
-                  'Hola, $nombre',
+                  l10n.inicioHola(nombre),
                   style: TipografiaCampo.tituloPantalla.copyWith(
                     color: paleta.texto,
                   ),
@@ -349,7 +352,7 @@ class _Saludo extends StatelessWidget {
         const SizedBox(width: EspaciadoCampo.m),
         AvatarFoto(
           iniciales: nombre.isEmpty ? '?' : nombre[0].toUpperCase(),
-          etiqueta: 'Tu perfil',
+          etiqueta: l10n.inicioPerfil,
           tamano: ObjetivoTactilCampo.guantes - EspaciadoCampo.s,
         ),
       ],
@@ -366,6 +369,7 @@ class _BotonPublicar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return FloatingActionButton.extended(
       key: const Key('inicio-solicitar'),
@@ -381,7 +385,7 @@ class _BotonPublicar extends StatelessWidget {
       ),
       icon: Icon(Icons.add_rounded, color: paleta.ambar),
       label: Text(
-        'Publicar lote',
+        l10n.inicioPublicarLote,
         style: TipografiaCampo.tituloSeccion.copyWith(
           color: paleta.sobreGrafito,
         ),
@@ -446,6 +450,7 @@ class _SinServicioActivo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return SuperficieMarketplace(
       child: Row(
@@ -457,15 +462,14 @@ class _SinServicioActivo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'No tienes solicitudes en curso',
+                  l10n.inicioTienesSolicitudesCurso,
                   style: TipografiaCampo.tituloTarjeta.copyWith(
                     color: paleta.texto,
                   ),
                 ),
                 const SizedBox(height: EspaciadoCampo.xs),
                 Text(
-                  'Toca «Publicar lote», marca tu lote y compara las ofertas '
-                  'de los pilotos.',
+                  l10n.inicioTocaPublicarLoteMarca,
                   style: TipografiaCampo.cuerpoSecundario.copyWith(
                     color: paleta.textoSecundario,
                   ),
@@ -491,6 +495,7 @@ class _TarjetaAviso extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final (rol, icono) = switch (aviso.tono) {
       TonoAvisoInicio.info => (paleta.info, Icons.wb_sunny_outlined),
@@ -538,7 +543,7 @@ class _TarjetaAviso extends StatelessWidget {
             ),
           ),
           IconButton(
-            tooltip: 'Descartar aviso',
+            tooltip: l10n.inicioDescartarAviso,
             onPressed: () {
               HapticaCampo.seleccion();
               alDescartar();
@@ -560,6 +565,7 @@ class _ListaRecientes extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return SuperficieMarketplace(
       padding: EdgeInsets.zero,
@@ -603,9 +609,9 @@ class _ListaRecientes extends StatelessWidget {
                       ),
                       if (solicitudes[i].puntajeDelCliente != null)
                         Semantics(
-                          label:
-                              'Calificaste con '
-                              '${solicitudes[i].puntajeDelCliente} de 5',
+                          label: l10n.inicioCalificasteCon(
+                            solicitudes[i].puntajeDelCliente!,
+                          ),
                           child: ExcludeSemantics(
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -682,6 +688,7 @@ class _Fallo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: SingleChildScrollView(
         child: Column(
@@ -703,7 +710,7 @@ class _Fallo extends StatelessWidget {
               key: const Key('inicio-reintentar'),
               onPressed: alReintentar,
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Reintentar'),
+              label: Text(l10n.inicioReintentar),
             ),
             const SizedBox(height: EspaciadoCampo.xl),
           ],

@@ -7,6 +7,7 @@ import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../solicitar/domain/reglas_solicitud.dart';
 import 'boton_principal.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Precio por hectárea que el cliente escribió en la hoja, con una nota
 /// opcional para el piloto.
@@ -85,6 +86,7 @@ class _HojaPrecioState extends State<HojaPrecio> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final valor = _valor;
@@ -132,8 +134,8 @@ class _HojaPrecioState extends State<HojaPrecio> {
               ],
               style: texto.headlineSmall,
               decoration: InputDecoration(
-                labelText: 'Precio por hectárea',
-                suffixText: 'Bs/ha',
+                labelText: l10n.comunPrecioPorHectarea,
+                suffixText: l10n.comunBsHa,
                 errorText: error,
                 errorMaxLines: 3,
               ),
@@ -160,8 +162,8 @@ class _HojaPrecioState extends State<HojaPrecio> {
                 maxLength: 200,
                 maxLines: 2,
                 textCapitalization: TextCapitalization.sentences,
-                decoration: const InputDecoration(
-                  labelText: 'Mensaje para el piloto (opcional)',
+                decoration: InputDecoration(
+                  labelText: l10n.comunMensajeParaPilotoOpcional,
                 ),
               ),
             ],

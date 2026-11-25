@@ -11,10 +11,12 @@ import '../../comun/presentation/boton_principal.dart';
 import '../../solicitudes/domain/solicitud.dart';
 import '../domain/calificacion_repositorio.dart';
 import 'calificar_cubit.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Abre la pantalla para calificar al proveedor de [servicio]. Devuelve
 /// `true` si la calificación quedó registrada.
 Future<bool> abrirCalificar(BuildContext context, Solicitud servicio) async {
+  final l10n = AppLocalizations.of(context);
   final mensajero = ScaffoldMessenger.of(context);
   final enviada = await Navigator.of(context).push<bool>(
     MaterialPageRoute<bool>(
@@ -27,7 +29,7 @@ Future<bool> abrirCalificar(BuildContext context, Solicitud servicio) async {
   );
   if (enviada ?? false) {
     mensajero.showSnackBar(
-      const SnackBar(content: Text('Gracias por calificar el servicio')),
+      SnackBar(content: Text(l10n.calificarGraciasPorCalificarServicio)),
     );
   }
   return enviada ?? false;
@@ -52,6 +54,7 @@ class CalificarPantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final nombre = servicio.nombreProveedor;
     final primerNombre = nombre?.split(' ').first;
@@ -106,7 +109,7 @@ class CalificarPantalla extends StatelessWidget {
                               ObjetivoTactilCampo.minimo,
                             ),
                           ),
-                          child: const Text('Omitir'),
+                          child: Text(l10n.calificarOmitir),
                         ),
                       ),
                     ),
@@ -271,6 +274,7 @@ class _OpcionalesState extends State<_Opcionales> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final cubit = context.read<CalificarCubit>();
     final estado = widget.estado;
@@ -316,7 +320,7 @@ class _OpcionalesState extends State<_Opcionales> {
           textCapitalization: TextCapitalization.sentences,
           onChanged: cubit.cambiarComentario,
           decoration: InputDecoration(
-            hintText: 'Comentario opcional',
+            hintText: l10n.calificarComentarioOpcional,
             alignLabelWithHint: true,
             filled: true,
             fillColor: paleta.superficie,

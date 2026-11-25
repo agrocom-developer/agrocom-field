@@ -882,4 +882,87 @@ class AppLocalizationsEs extends AppLocalizations {
   String accesoMinimoCaracteresConLetras(int largoMinimoContrasena) {
     return 'Mínimo $largoMinimoContrasena caracteres, con letras y números.';
   }
+
+  @override
+  String get calificarGraciasPorCalificarServicio =>
+      'Gracias por calificar el servicio';
+
+  @override
+  String get calificarOmitir => 'Omitir';
+
+  @override
+  String get calificarComentarioOpcional => 'Comentario opcional';
+
+  @override
+  String comunAvance(String etiqueta) {
+    return 'Avance: $etiqueta';
+  }
+
+  @override
+  String get comunPrecioPorHectarea => 'Precio por hectárea';
+
+  @override
+  String get comunBsHa => 'Bs/ha';
+
+  @override
+  String get comunMensajeParaPilotoOpcional =>
+      'Mensaje para el piloto (opcional)';
+
+  @override
+  String get comunAvanceSolicitud => 'Avance de la solicitud';
+
+  @override
+  String get inicioBuenClimaParaAplicar => 'Buen clima para aplicar mañana';
+
+  @override
+  String get inicioVientoSinLluviaHasta =>
+      'Viento de 8 km/h y sin lluvia hasta el mediodía en Cuatro Cañadas.';
+
+  @override
+  String get inicioBuenPrecioAtraeMas => 'Un buen precio atrae más ofertas';
+
+  @override
+  String get inicioLosPilotosComparanPrecio =>
+      'Los pilotos comparan el precio por hectárea: si tardan en ofertar, puedes subirlo.';
+
+  @override
+  String get inicioSolicitudActiva => 'Solicitud activa';
+
+  @override
+  String get inicioCompararOfertas => 'Comparar ofertas';
+
+  @override
+  String get inicioVerSeguimiento => 'Ver seguimiento';
+
+  @override
+  String get inicioCalificar => 'Calificar';
+
+  @override
+  String inicioHola(String nombre) {
+    return 'Hola, $nombre';
+  }
+
+  @override
+  String get inicioPerfil => 'Tu perfil';
+
+  @override
+  String get inicioPublicarLote => 'Publicar lote';
+
+  @override
+  String get inicioTienesSolicitudesCurso => 'No tienes solicitudes en curso';
+
+  @override
+  String get inicioTocaPublicarLoteMarca =>
+      'Toca «Publicar lote», marca tu lote y compara las ofertas de los pilotos.';
+
+  @override
+  String get inicioDescartarAviso => 'Descartar aviso';
+
+  @override
+  String inicioCalificasteCon(int puntajeDelCliente) {
+    return 'Calificaste con $puntajeDelCliente de 5';
+  }
+
+  @override
+  String get inicioReintentar => 'Reintentar';
 }
