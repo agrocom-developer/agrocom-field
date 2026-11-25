@@ -21,31 +21,24 @@ void main() {
     expect((await DronesDemo(almacen).observar().first).length, 2);
   });
 
-  test(
-    'el perfil trae aprobación, auxiliares, métricas y calificaciones',
-    () async {
-      final repo = PerfilDemo(almacen);
-      final perfil = await repo.perfil();
-      expect(perfil.aprobacion, EstadoAprobacion.aprobado);
-      expect(perfil.auxiliares.first.aprobacion.habilitado, isTrue);
-      expect(
-        perfil.documentosConAccion.single.estado,
-        EstadoDocumento.porVencer,
-      );
+  test('el perfil trae aprobación, métricas y calificaciones', () async {
+    final repo = PerfilDemo(almacen);
+    final perfil = await repo.perfil();
+    expect(perfil.aprobacion, EstadoAprobacion.aprobado);
+    expect(perfil.documentosConAccion.single.estado, EstadoDocumento.porVencer);
 
-      final metricas = await repo.metricas();
-      expect(metricas.hectareasAtendidas, isA<Decimal>());
-      expect(metricas.tasaAceptacion, inInclusiveRange(0, 100));
-      expect(metricas.tasaCancelacion, inInclusiveRange(0, 100));
+    final metricas = await repo.metricas();
+    expect(metricas.hectareasAtendidas, isA<Decimal>());
+    expect(metricas.tasaAceptacion, inInclusiveRange(0, 100));
+    expect(metricas.tasaCancelacion, inInclusiveRange(0, 100));
 
-      final calificaciones = await repo.calificaciones();
-      expect(
-        calificaciones.porPuntaje.values.reduce((a, b) => a + b),
-        calificaciones.total,
-      );
-      expect(calificaciones.recientes, isNotEmpty);
-    },
-  );
+    final calificaciones = await repo.calificaciones();
+    expect(
+      calificaciones.porPuntaje.values.reduce((a, b) => a + b),
+      calificaciones.total,
+    );
+    expect(calificaciones.recientes, isNotEmpty);
+  });
 
   group('Dron', () {
     Dron dron(int ciclos, {int maximo = 400}) => Dron(

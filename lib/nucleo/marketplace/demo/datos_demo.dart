@@ -58,7 +58,6 @@ class DatosDemo {
   static const clienteNombre = 'Hugo Antelo Suárez';
   static const clienteEmpresa = 'Agropecuaria Los Tajibos';
   static const pilotoNombre = 'Rodrigo Sandoval Justiniano';
-  static const auxiliarNombre = 'Edwin Mamani Quispe';
 
   /// Proveedor que usa la sesión demo del piloto.
   Proveedor get pilotoDemo => proveedores.first;
@@ -221,13 +220,6 @@ class DatosDemo {
         serviciosCompletados: 142,
         zonas: const ['Cuatro Cañadas', 'San Julián', 'Pailón'],
         drones: [drones[0], drones[1]],
-        auxiliares: const [
-          AuxiliarAsociado(nombre: auxiliarNombre, serviciosJuntos: 96),
-          AuxiliarAsociado(
-            nombre: 'Jhonny Vaca Parada',
-            aprobacion: EstadoAprobacion.pendiente,
-          ),
-        ],
         resenas: resenasRodrigo,
         documentos: [
           DocumentoProveedor(
@@ -259,7 +251,6 @@ class DatosDemo {
         serviciosCompletados: 88,
         zonas: const ['San Julián', 'Colonia Okinawa'],
         drones: [drones[2]],
-        auxiliares: const [AuxiliarAsociado(nombre: 'Cristian Egüez Paz')],
       ),
       Proveedor(
         id: 'prov-fernando',
@@ -268,10 +259,6 @@ class DatosDemo {
         calificacion: 4.5,
         serviciosCompletados: 61,
         zonas: const ['Pailón', 'Colonia Okinawa'],
-        auxiliares: const [
-          AuxiliarAsociado(nombre: 'Daniel Chuvé Masai'),
-          AuxiliarAsociado(nombre: 'Wilson Salvatierra'),
-        ],
       ),
       Proveedor(
         id: 'prov-daniela',
@@ -280,7 +267,6 @@ class DatosDemo {
         calificacion: 4.9,
         serviciosCompletados: 203,
         zonas: const ['Cuatro Cañadas', 'Colonia Okinawa'],
-        auxiliares: const [AuxiliarAsociado(nombre: 'Pablo Cuéllar')],
       ),
     ];
 

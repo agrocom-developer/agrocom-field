@@ -27,7 +27,7 @@ enum EstadoDron {
   final String etiqueta;
 }
 
-/// Estado de aprobación de un proveedor, un piloto, un auxiliar o un dron.
+/// Estado de aprobación de un proveedor, un piloto o un dron.
 /// Solo un administrador lo cambia desde el panel web.
 enum EstadoAprobacion {
   pendiente('En revisión'),
@@ -147,20 +147,6 @@ class DocumentoProveedor {
   final String? motivoRechazo;
 }
 
-/// Auxiliar que el piloto o el proveedor registró en su equipo. Lo aprueba
-/// un administrador.
-class AuxiliarAsociado {
-  const AuxiliarAsociado({
-    required this.nombre,
-    this.aprobacion = EstadoAprobacion.aprobado,
-    this.serviciosJuntos = 0,
-  });
-
-  final String nombre;
-  final EstadoAprobacion aprobacion;
-  final int serviciosJuntos;
-}
-
 /// Métricas operativas del proveedor. Los porcentajes son enteros de 0 a 100
 /// calculados por el servidor; las hectáreas, decimal exacto.
 class MetricasProveedor {
@@ -205,7 +191,6 @@ class Proveedor {
     this.drones = const [],
     this.documentos = const [],
     this.resenas = const [],
-    this.auxiliares = const [],
     this.aprobacion = EstadoAprobacion.aprobado,
     this.motivoAprobacion,
     this.fotoRef,
@@ -223,7 +208,6 @@ class Proveedor {
   final List<Dron> drones;
   final List<DocumentoProveedor> documentos;
   final List<Resena> resenas;
-  final List<AuxiliarAsociado> auxiliares;
 
   /// Ningún proveedor opera sin aprobación de un administrador.
   final EstadoAprobacion aprobacion;

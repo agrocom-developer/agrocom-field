@@ -165,9 +165,7 @@ void main() {
   }
 
   group('Perfil del proveedor', () {
-    testWidgets('muestra aprobación, métricas, documentos y equipo', (
-      tester,
-    ) async {
+    testWidgets('muestra aprobación, métricas y documentos', (tester) async {
       await montar(tester, PerfilPantalla(reloj: () => ahora));
       expect(find.text('Rodrigo Sandoval Justiniano'), findsOneWidget);
       expect(find.bySemanticsLabel('Estado: Aprobado'), findsWidgets);
@@ -178,9 +176,7 @@ void main() {
       expect(find.byKey(const Key('perfil-documentos-accion')), findsOneWidget);
       expect(find.text('11.847'), findsOneWidget);
 
-      await irA(tester, find.text('Edwin Mamani Quispe'));
-      expect(find.text('Mi equipo'), findsOneWidget);
-      expect(find.text('Auxiliar · 96 servicios juntos'), findsOneWidget);
+      expect(find.text('Mi equipo'), findsNothing);
 
       await irA(tester, find.byKey(const Key('perfil-calificaciones')));
       expect(find.text('128 calificaciones'), findsOneWidget);
@@ -217,7 +213,6 @@ void main() {
       await golden(tester, 'perfil_en_revision_360x640_x1');
 
       await irA(tester, find.textContaining('La póliza no cubre'));
-      await irA(tester, find.textContaining('No tenés un auxiliar asociado'));
     });
 
     testWidgets('la fila de drones solo aparece si el flavor la pide', (
@@ -251,7 +246,7 @@ void main() {
       });
     }
 
-    testWidgets('golden: equipo y calificaciones', (tester) async {
+    testWidgets('golden: calificaciones', (tester) async {
       await montar(tester, PerfilPantalla(reloj: () => ahora));
       await irA(tester, find.byKey(const Key('perfil-calificaciones')));
       await tester.drag(lista(), const Offset(0, -260));
