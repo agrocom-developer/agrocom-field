@@ -200,5 +200,6 @@
   "precioFinalFalloSinConexion": "Sin conexión. No se confirmó nada; prueba de nuevo cuando tengas señal.",
   "precioFinalFalloRechazado": "El servicio todavía no terminó, así que no se puede confirmar el precio.",
   "precioFinalFalloDesconocido": "No pudimos confirmar el precio final. Prueba de nuevo.",
-  "precioFinalAbrirDisputa": "Abrir disputa"
+  "precioFinalAbrirDisputa": "Abrir disputa",
+  "contactoPilotoTitulo": "Persona de contacto"
 }

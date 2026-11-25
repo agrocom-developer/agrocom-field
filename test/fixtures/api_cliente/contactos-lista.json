@@ -1,0 +1,30 @@
+{
+    "operationId": "listarMisContactos",
+    "descripcion": "Contactos de referencia vigentes del cliente, el principal primero.",
+    "peticion": {
+        "metodo": "GET",
+        "ruta": "/api/clientes/mi/contactos",
+        "autenticada": true
+    },
+    "respuesta": {
+        "estado": 200,
+        "cuerpo": {
+            "contactos": [
+                {
+                    "id": 1,
+                    "nombre": "Rosario Antelo Vaca",
+                    "telefono": "+591 76543210",
+                    "cargo": "Gerente",
+                    "es_principal": true
+                },
+                {
+                    "id": 2,
+                    "nombre": "Mario Suárez Rojas",
+                    "telefono": "+591 71234567",
+                    "cargo": "Encargado de campo",
+                    "es_principal": false
+                }
+            ]
+        }
+    }
+}

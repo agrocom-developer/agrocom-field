@@ -1,3 +1,4 @@
+import 'package:agrocom_field/cliente/contactos/data/contactos_demo.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_cubit.dart';
 import 'package:agrocom_field/cliente/solicitar/presentation/solicitar_estado.dart';
 import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
@@ -278,5 +279,49 @@ void main() {
     expect(solicitud.cultivo, 'Soya');
     expect(solicitud.hectareas, hectareasDePoligono(contornoDePrueba));
     expect(solicitud.accesos, 'Portón azul');
+  });
+
+  group('contacto de una empresa', () {
+    test(
+      'un cliente empresa publica con el contacto principal por defecto',
+      () async {
+        final empresa = SolicitarCubit(
+          repo,
+          contactos: ContactosDemo(),
+          reloj: relojDePrueba,
+          claveIdempotencia: 'clave-e',
+        );
+        await completarHastaPrecio(empresa);
+        expect(empresa.state.contactos, hasLength(2));
+        expect(empresa.state.contactoId, 1);
+        empresa.cambiarPrecio('120');
+        await empresa.avanzar();
+        expect(repo.enviadas.single.contactoId, 1);
+        await empresa.close();
+      },
+    );
+
+    test('elegir otra persona la envía como contacto_id', () async {
+      final empresa = SolicitarCubit(
+        repo,
+        contactos: ContactosDemo(),
+        reloj: relojDePrueba,
+        claveIdempotencia: 'clave-e2',
+      );
+      await completarHastaPrecio(empresa);
+      empresa.elegirContacto(2);
+      empresa.cambiarPrecio('120');
+      await empresa.avanzar();
+      expect(repo.enviadas.single.contactoId, 2);
+      await empresa.close();
+    });
+
+    test('una persona (sin contactos) no envía contacto_id', () async {
+      await completarHastaPrecio(cubit);
+      expect(cubit.state.contactos, isEmpty);
+      cubit.cambiarPrecio('120');
+      await cubit.avanzar();
+      expect(repo.enviadas.single.contactoId, isNull);
+    });
   });
 }

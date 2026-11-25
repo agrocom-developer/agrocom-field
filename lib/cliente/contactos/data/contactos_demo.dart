@@ -34,7 +34,9 @@ class ContactosDemo implements ContactosRepositorio {
   final Duration _latencia;
   int _siguiente = 3;
 
-  Future<void> _espera() => Future<void>.delayed(_latencia);
+  Future<void> _espera() async {
+    if (_latencia > Duration.zero) await Future<void>.delayed(_latencia);
+  }
 
   List<ContactoCliente> get _ordenada => [
     ..._lista.where((c) => c.esPrincipal),

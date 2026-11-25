@@ -607,4 +607,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get precioFinalAbrirDisputa => 'Abrir disputa';
+
+  @override
+  String get contactoPilotoTitulo => 'Persona de contacto';
 }

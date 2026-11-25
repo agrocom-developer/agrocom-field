@@ -15,9 +15,11 @@ Lo que una pantalla necesita y el contrato (`agrocom-api`, `docs/api/openapi.yam
 | Dosis, producto y tipo de aplicación como campos. Solo hay `producto_indicado` (texto) y `tipo_aplicacion`. | El producto viaja como texto escrito o elegido; el tipo de aplicación se deduce del producto. |
 | Fecha de creación de la solicitud en la lista. | Usa el historial (detalle) o `publicada_en`. |
 | Contorno del terreno cuando `geometria` es nula. | Dibuja un cuadrado de reserva centrado en la zona, con la superficie del terreno, solo para ubicarlo en el mapa. |
-| Contactos de referencia de una empresa (nombre, celular, cargo; al menos uno). `POST /api/clientes/registro` y `Cliente` solo traen `tipo`, `razon_social`, `documento_fiscal` y un `telefono`. | El registro permite elegir Persona o Empresa y envía razón social y NIT; la cuenta tiene un solo contacto (quien la usa) y la pantalla lo avisa. Cuando el contrato ofrezca contactos, se agrega el bloque «Contactos de referencia» detrás de la selección Empresa. |
 | Catálogo de productos y cultivos sugeridos. | Listas fijas en la app. |
 | Calificaciones que el proveedor da al cliente (son privadas por diseño). | Solo se muestra el promedio y el conteo de la ficha del cliente. |
+| Perfil público del piloto (pantalla 19): licencia verificada, servicios completados, hectáreas fumigadas, años en la plataforma, zona base, reseñas con comentario y auxiliar. La oferta solo trae `proveedor.{nombre, foto_url, calificacion, tasa_cancelacion, dron}`. | La pantalla muestra nombre, foto, calificación, número de calificaciones, cancelaciones y dron con año y capacidad. No inventa el chip «Licencia verificada» ni la sección de reseñas. |
+| Preferencias de aviso del cliente (`/api/notificaciones/preferencias` existe; el flavor cliente no tiene repositorio). | El perfil del cliente no ofrece el interruptor «Avisos de ofertas». |
+| Hectáreas fumigadas del cliente (estadística del perfil 17). | El perfil muestra lotes, servicios y calificación como cliente. |
 | Marcar un aviso del inicio como leído desde la tarjeta. | Descartar un aviso solo lo oculta en la sesión. |
 | Entrega en tiempo real de mensajes y de ofertas. | Sondeo corto con la pantalla abierta (5 s el chat, 15 s el seguimiento, 20 s las ofertas); el contrato por cursor permite cambiar el transporte sin tocar los repositorios (ADR 0017). |
 
@@ -32,3 +34,14 @@ La capa de datos ya cubre estas rutas (ADR 0020); falta la pantalla que las use.
 | `POST` y `DELETE /api/terrenos/{id}/fotos` | Galería de fotos del terreno al crearlo o editarlo (cliente); verlas en el detalle de la solicitud abierta (piloto). |
 | `GET` y `POST /api/solicitudes/{id}/pago-confirmado` | «Ya recibí el pago» del proveedor titular en el servicio finalizado; el cliente ve el pago confirmado en el seguimiento. |
 | `POST /api/dispositivos` y `DELETE /api/dispositivos/{token}` | Sin pantalla: se llaman al iniciar y cerrar sesión cuando exista un proveedor de push que entregue el token. |
+
+## Piloto: datos que llegan del catálogo y no se guardan
+
+| Falta | Qué hace la app hoy |
+|---|---|
+| `contacto.cargo` y `contacto.empresa` de `servicios_asignados` (catálogo del piloto, PR #349 de la API). La tabla local `servicio_adjudicado` solo guarda `contacto_nombre` y `contacto_telefono`, y `ejecucion_sync_engine.dart` solo lee esos dos. Agregar las columnas es una migración de `drift` y un cambio en `nucleo/sync`, que esta fase no toca. | El dominio `ServicioLote` ya admite `contactoCargo` y `contactoEmpresa` y la pantalla del servicio los muestra cuando llegan (la demo los trae); con datos reales de `drift` quedan vacíos hasta que se agreguen las columnas (revisión línea por línea del dueño). |
+
+## Chat y precio final (dependen de PR de la API)
+
+La app consume `tipo`, `evento`, `url` y `bytes` de los mensajes, `POST /api/solicitudes/{id}/mensajes/fotos` y `GET /api/mensajes/{id}/archivo` (PR #354 de `agrocom-api`), y `GET /api/solicitudes/{id}/precio-final` y `POST …/precio-final/confirmar` (PR #353). Hasta que entren a `develop`, las pruebas usan los ejemplos de esos PR copiados en `test/fixtures/api_cliente/`.
+

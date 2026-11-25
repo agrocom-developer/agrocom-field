@@ -33,8 +33,10 @@ class EjecucionDemo implements EjecucionRepositorio {
         precioHaAcordado: Decimal.parse('115'),
         hectareasEjecutadas: Decimal.parse('51.2'),
         porcentaje: Decimal.parse('64'),
-        contactoNombre: 'Agropecuaria San Rafael SRL',
+        contactoNombre: 'Rosario Antelo Vaca',
         contactoTelefono: '+591 76543210',
+        contactoCargo: 'Gerente',
+        contactoEmpresa: 'Agropecuaria San Rafael SRL',
         fotosTotal: 2,
       ),
       ServicioEnLote(

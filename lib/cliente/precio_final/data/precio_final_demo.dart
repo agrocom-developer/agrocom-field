@@ -31,14 +31,14 @@ class PrecioFinalDemo implements PrecioFinalRepositorio {
 
   @override
   Future<PrecioFinal?> ver(String solicitudId) async {
-    await Future<void>.delayed(latencia);
+    if (latencia > Duration.zero) await Future<void>.delayed(latencia);
     _almacen.exigirRed();
     return _de(solicitudId);
   }
 
   @override
   Future<PrecioFinal> confirmar(String solicitudId) async {
-    await Future<void>.delayed(latencia);
+    if (latencia > Duration.zero) await Future<void>.delayed(latencia);
     _almacen.exigirRed();
     final p = _de(solicitudId);
     if (p == null) {

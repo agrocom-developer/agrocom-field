@@ -1113,6 +1113,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Abrir disputa'**
   String get precioFinalAbrirDisputa;
+
+  /// No description provided for @contactoPilotoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Persona de contacto'**
+  String get contactoPilotoTitulo;
 }
 
 class _AppLocalizationsDelegate

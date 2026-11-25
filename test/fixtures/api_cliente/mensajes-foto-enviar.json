@@ -1,0 +1,35 @@
+{
+    "operationId": "enviarFotoDeMensaje",
+    "descripcion": "El proveedor envía una foto por el chat (multipart, menos de 300 KB, pie opcional); idempotente por uuid_cliente.",
+    "peticion": {
+        "metodo": "POST",
+        "ruta": "/api/solicitudes/18/mensajes/fotos",
+        "autenticada": true,
+        "cuerpo": {
+            "uuid_cliente": "9c1d7e40-5a2b-4f3c-8e61-0d4b7a2c9e23",
+            "texto": "Así queda el punto de carga."
+        },
+        "multipart": {
+            "archivo": "foto.jpg (image/jpeg)"
+        }
+    },
+    "respuesta": {
+        "estado": 201,
+        "cuerpo": {
+            "mensaje": {
+                "id": 35,
+                "uuid_cliente": "9c1d7e40-5a2b-4f3c-8e61-0d4b7a2c9e23",
+                "solicitud_id": 18,
+                "autor_rol": "proveedor",
+                "propio": true,
+                "tipo": "foto",
+                "evento": null,
+                "texto": "Así queda el punto de carga.",
+                "url": "/api/mensajes/35/archivo",
+                "bytes": 1888,
+                "leido_en": null,
+                "creado_en": "2026-11-25T17:56:12+00:00"
+            }
+        }
+    }
+}
