@@ -8,8 +8,6 @@ import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:agrocom_field/nucleo/ui/componentes/barra_inferior_campo.dart';
-
 import '../../nucleo/marketplace/ayudas_prueba.dart';
 import '../dobles_cliente.dart';
 

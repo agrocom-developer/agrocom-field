@@ -187,10 +187,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get perfilCerrarSesion => 'Cerrar sesión';
 
   @override
-  String get perfilDemoAviso =>
-      'Modo demo: los datos son ficticios y no hay conexión con el servidor.';
-
-  @override
   String get perfilErrorCargaTitulo => 'No pudimos cargar tu perfil';
 
   @override
@@ -213,25 +209,10 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get lotesErrorTitulo => 'No pudimos cargar tus lotes';
-
-  @override
-  String get lotesErrorDetalle => 'Revisa tu conexión y vuelve a intentar.';
-
-  @override
   String get perfilProveedorRolPiloto => 'Piloto';
 
   @override
   String get perfilProveedorAjustes => 'Ajustes';
-
-  @override
-  String get perfilProveedorEstadCalificacion => 'calificación';
-
-  @override
-  String get perfilProveedorEstadServicios => 'servicios';
-
-  @override
-  String get perfilProveedorEstadHectareas => 'ha fumigadas';
 
   @override
   String get perfilProveedorSinCalificaciones => 'Todavía sin calificaciones';
@@ -264,9 +245,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String perfilProveedorDronesVarios(int n) {
     return '$n drones';
   }
-
-  @override
-  String get perfilProveedorZona => 'Zona de trabajo';
 
   @override
   String get perfilProveedorHectareasMes => 'Hectáreas por mes';
@@ -331,9 +309,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get perfilPublicoEstadCumplimiento => 'cancelaciones';
-
-  @override
-  String get perfilPublicoSinCalificaciones => 'Aún sin calificaciones';
 
   @override
   String get perfilPublicoEquipo => 'EQUIPO';
@@ -469,13 +444,6 @@ class AppLocalizationsEs extends AppLocalizations {
       'El piloto elegido verá a quién llamar.';
 
   @override
-  String get contactosErrorCargaTitulo => 'No pudimos cargar tus contactos';
-
-  @override
-  String get contactosErrorCargaDetalle =>
-      'Revisa tu conexión y vuelve a intentar.';
-
-  @override
   String get registroEmpresaInterruptor => 'Asociar a una empresa';
 
   @override
@@ -578,9 +546,6 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get chatCargando => 'Cargando el chat';
-
-  @override
   String get precioFinalConfirmar => 'Confirmar precio final';
 
   @override
@@ -610,9 +575,6 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get contactoPilotoTitulo => 'Persona de contacto';
-
-  @override
-  String get estadoReintentar => 'Reintentar';
 
   @override
   String get estadoReintentarAhora => 'Reintentar ahora';
@@ -670,10 +632,4 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get listaVerLotesMapa => 'Ver lotes en el mapa';
-
-  @override
-  String get listaMisOfertasVacioTitulo => 'Todavía no enviaste ofertas';
-
-  @override
-  String get listaServiciosVacioAccion => 'Publicar lote';
 }

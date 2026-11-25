@@ -158,8 +158,15 @@ void main() {
     await tester.pump();
     await tester.pumpAndSettle();
 
-    expect(find.byKey(const ValueKey('aviso-sin-conexion')), findsOneWidget);
-    expect(find.text('Reintentar publicación'), findsOneWidget);
+    // El envío fallido es una pantalla propia (estado 21).
+    expect(find.byKey(const ValueKey('solicitar-error-envio')), findsOneWidget);
+    expect(find.text('No se envió tu solicitud'), findsOneWidget);
+    expect(find.text('Reintentar ahora'), findsOneWidget);
+    expect(find.text('Volver al formulario'), findsOneWidget);
+
+    // «Volver al formulario» devuelve todo lo escrito.
+    await tester.tap(find.byKey(const ValueKey('estado-secundaria')));
+    await tester.pumpAndSettle();
     expect(find.text('Paso 4 de 4 · Precio'), findsOneWidget);
     // El resumen queda bajo la sugerencia de referencia: se baja hasta él.
     await tester.dragUntilVisible(
@@ -172,6 +179,11 @@ void main() {
     expect(solicitado, isNull);
 
     repo.demo.sinConexion = false;
+    await tester.dragUntilVisible(
+      find.byKey(_continuar),
+      find.byType(Scrollable).first,
+      const Offset(0, 120),
+    );
     await tester.tap(find.byKey(_continuar));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 10));

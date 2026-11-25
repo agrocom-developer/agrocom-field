@@ -662,7 +662,7 @@ class _Cuerpo extends StatelessWidget {
       case EstadoMapa.sinRed:
         return EstadoErrorMarketplace(
           sinConexion: true,
-          tablaSinRed: true,
+          compacto: true,
           titulo: 'Sin conexión',
           detalle:
               'El mapa de solicitudes necesita señal: es una competencia '
@@ -671,6 +671,7 @@ class _Cuerpo extends StatelessWidget {
         );
       case EstadoMapa.error:
         return EstadoErrorMarketplace(
+          compacto: true,
           titulo: 'No pudimos cargar las solicitudes',
           detalle: estado.mensaje ?? 'Intenta de nuevo en un momento.',
           onReintentar: cubit.cargar,

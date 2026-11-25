@@ -89,6 +89,15 @@ class _SeguimientoConUbicacion implements SeguimientoRepositorio {
   }) => _base.enviarMensaje(id, texto: texto, claveCliente: claveCliente);
 
   @override
+  Future<MensajeChat> enviarFoto(
+    String id, {
+    required Uint8List bytes,
+    required String claveCliente,
+    String? pie,
+  }) =>
+      _base.enviarFoto(id, bytes: bytes, claveCliente: claveCliente, pie: pie);
+
+  @override
   Future<Uint8List> archivo(String ruta) => _base.archivo(ruta);
 
   @override

@@ -161,7 +161,7 @@ void main() {
       expect(find.text('Sin conexión'), findsOneWidget);
       await golden(tester, 'negociacion_sin_red_abrir_360x640_x1');
       entorno.almacenNegociacion.enLinea = true;
-      await tester.tap(find.text('Reintentar'));
+      await tester.tap(find.text('Reintentar ahora'));
       await esperar(tester);
       expect(find.text('Ronda 2 de 5'), findsOneWidget);
     });

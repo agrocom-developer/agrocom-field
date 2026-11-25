@@ -65,7 +65,12 @@ class FilaLote extends StatelessWidget {
               ),
             ),
             const SizedBox(width: EspaciadoCampo.s),
-            Text(hectareas, style: TipografiaCampo.datoMonoDestacado),
+            Text(
+              hectareas,
+              style: TipografiaCampo.datoMonoDestacado.copyWith(
+                color: paleta.texto,
+              ),
+            ),
           ],
         ),
       ),

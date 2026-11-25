@@ -259,7 +259,9 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
                   ),
                   child: Text(
                     t.perfilCerrarSesion,
-                    style: TipografiaCampo.tituloTarjeta,
+                    style: TipografiaCampo.tituloTarjeta.copyWith(
+                      color: paleta.error,
+                    ),
                   ),
                 ),
               ),
@@ -333,7 +335,12 @@ class _Cifra extends StatelessWidget {
     final texto = Theme.of(context).textTheme;
     return Column(
       children: [
-        Text(valor, style: TipografiaCampo.cifraMedia),
+        Text(
+          valor,
+          style: TipografiaCampo.cifraMedia.copyWith(
+            color: context.paleta.texto,
+          ),
+        ),
         Text(
           etiqueta,
           textAlign: TextAlign.center,

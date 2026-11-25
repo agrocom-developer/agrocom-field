@@ -62,7 +62,6 @@
   "@perfilHectareasUnidad": {"placeholders": {"hectareas": {"type": "String"}}},
   "perfilLoDicen": "Lo que dicen de ti",
   "perfilCerrarSesion": "Cerrar sesión",
-  "perfilDemoAviso": "Modo demo: los datos son ficticios y no hay conexión con el servidor.",
   "perfilErrorCargaTitulo": "No pudimos cargar tu perfil",
   "perfilErrorCargaDetalle": "Revisa tu conexión y vuelve a intentar.",
 
@@ -71,14 +70,9 @@
   "lotesVacioDetalle": "Marca tu primer lote en el mapa al publicar una solicitud. Queda guardado para la próxima vez.",
   "lotesLoteDetalle": "{zona} · {cultivo}",
   "@lotesLoteDetalle": {"placeholders": {"zona": {"type": "String"}, "cultivo": {"type": "String"}}},
-  "lotesErrorTitulo": "No pudimos cargar tus lotes",
-  "lotesErrorDetalle": "Revisa tu conexión y vuelve a intentar.",
 
   "perfilProveedorRolPiloto": "Piloto",
   "perfilProveedorAjustes": "Ajustes",
-  "perfilProveedorEstadCalificacion": "calificación",
-  "perfilProveedorEstadServicios": "servicios",
-  "perfilProveedorEstadHectareas": "ha fumigadas",
   "perfilProveedorSinCalificaciones": "Todavía sin calificaciones",
   "perfilProveedorServicios": "{n} servicios",
   "@perfilProveedorServicios": {"placeholders": {"n": {"type": "int"}}},
@@ -91,7 +85,6 @@
   "perfilProveedorDronesUno": "1 dron",
   "perfilProveedorDronesVarios": "{n} drones",
   "@perfilProveedorDronesVarios": {"placeholders": {"n": {"type": "int"}}},
-  "perfilProveedorZona": "Zona de trabajo",
   "perfilProveedorHectareasMes": "Hectáreas por mes",
   "perfilProveedorHectareasMesVacio": "Las hectáreas de cada mes aparecen aquí después de tu primer servicio.",
   "perfilProveedorDocumentos": "Documentos",
@@ -113,7 +106,6 @@
   "perfilPublicoEstadCalificacion": "calificación",
   "perfilPublicoEstadResenas": "calificaciones",
   "perfilPublicoEstadCumplimiento": "cancelaciones",
-  "perfilPublicoSinCalificaciones": "Aún sin calificaciones",
   "perfilPublicoEquipo": "EQUIPO",
   "perfilPublicoDron": "{dron} · {litros} L",
   "@perfilPublicoDron": {"placeholders": {"dron": {"type": "String"}, "litros": {"type": "String"}}},
@@ -156,8 +148,6 @@
   "@contactosPerfilDetalle": {"placeholders": {"n": {"type": "int"}}},
   "contactosEmpresaPublicar": "Persona de contacto",
   "contactosEmpresaPublicarAyuda": "El piloto elegido verá a quién llamar.",
-  "contactosErrorCargaTitulo": "No pudimos cargar tus contactos",
-  "contactosErrorCargaDetalle": "Revisa tu conexión y vuelve a intentar.",
 
   "registroEmpresaInterruptor": "Asociar a una empresa",
   "registroEmpresaAyuda": "Si publicas lotes a nombre de una empresa, agrégala. Tú quedas como su contacto principal.",
@@ -192,7 +182,6 @@
   "@chatMensajeSemantica": {"placeholders": {"autor": {"type": "String"}, "hora": {"type": "String"}, "texto": {"type": "String"}}},
   "chatFotoSemantica": "{autor}, {hora}: foto. {pie}",
   "@chatFotoSemantica": {"placeholders": {"autor": {"type": "String"}, "hora": {"type": "String"}, "pie": {"type": "String"}}},
-  "chatCargando": "Cargando el chat",
   "precioFinalConfirmar": "Confirmar precio final",
   "precioFinalPorConfirmar": "POR CONFIRMAR",
   "precioFinalConfirmado": "CONFIRMADO",
@@ -202,7 +191,6 @@
   "precioFinalFalloDesconocido": "No pudimos confirmar el precio final. Prueba de nuevo.",
   "precioFinalAbrirDisputa": "Abrir disputa",
   "contactoPilotoTitulo": "Persona de contacto",
-  "estadoReintentar": "Reintentar",
   "estadoReintentarAhora": "Reintentar ahora",
   "estadoSinSenalBanner": "reintentando",
   "estadoSinConexionTitulo": "Sin conexión",
@@ -222,7 +210,5 @@
   "envioErrorDetalleSinRed": "Lo que escribiste sigue aquí. Cuando vuelva la señal, toca «Reintentar ahora»: no se publica dos veces.",
   "envioErrorDetalleRechazo": "No pudimos publicarla. Lo que escribiste sigue aquí.",
   "envioErrorVolver": "Volver al formulario",
-  "listaVerLotesMapa": "Ver lotes en el mapa",
-  "listaMisOfertasVacioTitulo": "Todavía no enviaste ofertas",
-  "listaServiciosVacioAccion": "Publicar lote"
+  "listaVerLotesMapa": "Ver lotes en el mapa"
 }

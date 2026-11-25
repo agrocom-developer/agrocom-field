@@ -159,6 +159,11 @@ void main() {
       tester,
     ) async {
       await abrir(tester, 10);
+      await tester.scrollUntilVisible(
+        find.text('Persona de contacto'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       expect(find.text('Persona de contacto'), findsOneWidget);
       expect(find.text('Rosario Antelo Vaca'), findsOneWidget);
       expect(

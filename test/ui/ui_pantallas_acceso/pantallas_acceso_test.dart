@@ -27,6 +27,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:agrocom_field/l10n/app_localizations.dart';
+
 import '../../cliente/dobles_cliente.dart';
 
 const _chico = Size(360, 640);
@@ -93,6 +95,9 @@ Future<void> _montar(
   await tester.pumpWidget(
     MaterialApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('es'),
       theme: AgrocomThemeCampo.construir(modo: modo),
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(

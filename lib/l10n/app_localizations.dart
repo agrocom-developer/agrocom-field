@@ -412,12 +412,6 @@ abstract class AppLocalizations {
   /// **'Cerrar sesión'**
   String get perfilCerrarSesion;
 
-  /// No description provided for @perfilDemoAviso.
-  ///
-  /// In es, this message translates to:
-  /// **'Modo demo: los datos son ficticios y no hay conexión con el servidor.'**
-  String get perfilDemoAviso;
-
   /// No description provided for @perfilErrorCargaTitulo.
   ///
   /// In es, this message translates to:
@@ -454,18 +448,6 @@ abstract class AppLocalizations {
   /// **'{zona} · {cultivo}'**
   String lotesLoteDetalle(String zona, String cultivo);
 
-  /// No description provided for @lotesErrorTitulo.
-  ///
-  /// In es, this message translates to:
-  /// **'No pudimos cargar tus lotes'**
-  String get lotesErrorTitulo;
-
-  /// No description provided for @lotesErrorDetalle.
-  ///
-  /// In es, this message translates to:
-  /// **'Revisa tu conexión y vuelve a intentar.'**
-  String get lotesErrorDetalle;
-
   /// No description provided for @perfilProveedorRolPiloto.
   ///
   /// In es, this message translates to:
@@ -477,24 +459,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ajustes'**
   String get perfilProveedorAjustes;
-
-  /// No description provided for @perfilProveedorEstadCalificacion.
-  ///
-  /// In es, this message translates to:
-  /// **'calificación'**
-  String get perfilProveedorEstadCalificacion;
-
-  /// No description provided for @perfilProveedorEstadServicios.
-  ///
-  /// In es, this message translates to:
-  /// **'servicios'**
-  String get perfilProveedorEstadServicios;
-
-  /// No description provided for @perfilProveedorEstadHectareas.
-  ///
-  /// In es, this message translates to:
-  /// **'ha fumigadas'**
-  String get perfilProveedorEstadHectareas;
 
   /// No description provided for @perfilProveedorSinCalificaciones.
   ///
@@ -543,12 +507,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{n} drones'**
   String perfilProveedorDronesVarios(int n);
-
-  /// No description provided for @perfilProveedorZona.
-  ///
-  /// In es, this message translates to:
-  /// **'Zona de trabajo'**
-  String get perfilProveedorZona;
 
   /// No description provided for @perfilProveedorHectareasMes.
   ///
@@ -657,12 +615,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'cancelaciones'**
   String get perfilPublicoEstadCumplimiento;
-
-  /// No description provided for @perfilPublicoSinCalificaciones.
-  ///
-  /// In es, this message translates to:
-  /// **'Aún sin calificaciones'**
-  String get perfilPublicoSinCalificaciones;
 
   /// No description provided for @perfilPublicoEquipo.
   ///
@@ -874,18 +826,6 @@ abstract class AppLocalizations {
   /// **'El piloto elegido verá a quién llamar.'**
   String get contactosEmpresaPublicarAyuda;
 
-  /// No description provided for @contactosErrorCargaTitulo.
-  ///
-  /// In es, this message translates to:
-  /// **'No pudimos cargar tus contactos'**
-  String get contactosErrorCargaTitulo;
-
-  /// No description provided for @contactosErrorCargaDetalle.
-  ///
-  /// In es, this message translates to:
-  /// **'Revisa tu conexión y vuelve a intentar.'**
-  String get contactosErrorCargaDetalle;
-
   /// No description provided for @registroEmpresaInterruptor.
   ///
   /// In es, this message translates to:
@@ -1060,12 +1000,6 @@ abstract class AppLocalizations {
   /// **'{autor}, {hora}: foto. {pie}'**
   String chatFotoSemantica(String autor, String hora, String pie);
 
-  /// No description provided for @chatCargando.
-  ///
-  /// In es, this message translates to:
-  /// **'Cargando el chat'**
-  String get chatCargando;
-
   /// No description provided for @precioFinalConfirmar.
   ///
   /// In es, this message translates to:
@@ -1119,12 +1053,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Persona de contacto'**
   String get contactoPilotoTitulo;
-
-  /// No description provided for @estadoReintentar.
-  ///
-  /// In es, this message translates to:
-  /// **'Reintentar'**
-  String get estadoReintentar;
 
   /// No description provided for @estadoReintentarAhora.
   ///
@@ -1227,18 +1155,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ver lotes en el mapa'**
   String get listaVerLotesMapa;
-
-  /// No description provided for @listaMisOfertasVacioTitulo.
-  ///
-  /// In es, this message translates to:
-  /// **'Todavía no enviaste ofertas'**
-  String get listaMisOfertasVacioTitulo;
-
-  /// No description provided for @listaServiciosVacioAccion.
-  ///
-  /// In es, this message translates to:
-  /// **'Publicar lote'**
-  String get listaServiciosVacioAccion;
 }
 
 class _AppLocalizationsDelegate

@@ -13,8 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:agrocom_field/nucleo/ui/componentes/barra_inferior_campo.dart';
-
 /// El render de texto difiere entre macOS y Linux: los golden de referencia
 /// se generan en macOS y en CI (Linux) se omiten en vez de dar falsos rojos.
 final String? _saltarGolden = Platform.isMacOS

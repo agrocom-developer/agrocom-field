@@ -22,6 +22,7 @@ class EstadoErrorMarketplace extends StatelessWidget {
     this.detalle,
     this.sinConexion = false,
     this.tablaSinRed = false,
+    this.compacto = false,
     this.etiquetaReintentar,
     this.etiquetaSecundaria,
     this.onSecundaria,
@@ -40,6 +41,10 @@ class EstadoErrorMarketplace extends StatelessWidget {
   /// Muestra «Qué funciona sin red» (solo en el flavor `piloto`, que
   /// trabaja sin señal en el lote).
   final bool tablaSinRed;
+
+  /// Dentro de una hoja o un panel que ya tiene su propio aviso de red: sin
+  /// banner ni tabla y sin ocupar toda la altura.
+  final bool compacto;
 
   /// Por defecto «Reintentar ahora».
   final String? etiquetaReintentar;
@@ -87,7 +92,7 @@ class EstadoErrorMarketplace extends StatelessWidget {
             style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
           ),
         ],
-        if (tablaSinRed) ...[
+        if (tablaSinRed && !compacto) ...[
           const SizedBox(height: EspaciadoCampo.xl),
           const _TablaSinRed(),
         ],
@@ -112,14 +117,14 @@ class EstadoErrorMarketplace extends StatelessWidget {
         ],
       ],
     );
-    final banner = sinConexion
+    final banner = sinConexion && !compacto
         ? BannerSinSenalCampo(mensaje: t.estadoSinSenalBanner)
         : null;
     return LayoutBuilder(
       builder: (context, c) {
         // Pantalla completa: contenido centrado y acciones al pie. Dentro de
         // una lista (alto sin tope): todo en su lugar, en orden.
-        if (!c.hasBoundedHeight) {
+        if (compacto || !c.hasBoundedHeight) {
           return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -182,26 +187,37 @@ class _TablaSinRed extends StatelessWidget {
     final t = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
-    Widget fila(String clave, String valor, Color color) => Padding(
-      padding: const EdgeInsets.symmetric(vertical: EspaciadoCampo.xs),
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              clave,
-              style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
-            ),
-          ),
-          Text(
-            valor,
-            style: texto.bodyMedium?.copyWith(
-              color: color,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ],
-      ),
-    );
+    // Con el texto muy ampliado, clave y valor no entran lado a lado.
+    final ampliado = MediaQuery.textScalerOf(context).scale(10) > 15;
+    Widget fila(String clave, String valor, Color color) {
+      final claveTexto = Text(
+        clave,
+        style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
+      );
+      final valorTexto = Text(
+        valor,
+        style: texto.bodyMedium?.copyWith(
+          color: color,
+          fontWeight: FontWeight.w800,
+        ),
+      );
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: EspaciadoCampo.xs),
+        child: ampliado
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [claveTexto, valorTexto],
+              )
+            : Row(
+                children: [
+                  Expanded(child: claveTexto),
+                  const SizedBox(width: EspaciadoCampo.s),
+                  Flexible(child: valorTexto),
+                ],
+              ),
+      );
+    }
+
     return Semantics(
       container: true,
       label: t.estadoTablaTitulo,

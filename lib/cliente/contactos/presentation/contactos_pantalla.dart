@@ -148,7 +148,12 @@ class _Lista extends StatelessWidget {
                             ),
                           ),
                         const SizedBox(height: EspaciadoCampo.xs),
-                        Text(c.telefono, style: TipografiaCampo.datoMono),
+                        Text(
+                          c.telefono,
+                          style: TipografiaCampo.datoMono.copyWith(
+                            color: paleta.texto,
+                          ),
+                        ),
                         if (c.esPrincipal) ...[
                           const SizedBox(height: EspaciadoCampo.s),
                           ChipEstadoMarketplace(

@@ -136,9 +136,11 @@ class PerfilProveedorPantalla extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${FormatoMarketplace.bsNumero(oferta.precioHa)} /ha',
+                        'Bs ${FormatoMarketplace.bsNumero(oferta.precioHa)}/ha',
                         key: const ValueKey('perfil-publico-precio'),
-                        style: TipografiaCampo.cifraMedia,
+                        style: TipografiaCampo.cifraMedia.copyWith(
+                          color: paleta.texto,
+                        ),
                       ),
                       Text(
                         t.perfilPublicoTotal(
@@ -239,7 +241,12 @@ class _Cifra extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(valor, style: TipografiaCampo.cifraMedia),
+        Text(
+          valor,
+          style: TipografiaCampo.cifraMedia.copyWith(
+            color: context.paleta.texto,
+          ),
+        ),
         Text(
           etiqueta,
           textAlign: TextAlign.center,

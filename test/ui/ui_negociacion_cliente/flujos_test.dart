@@ -10,6 +10,8 @@ import 'package:agrocom_field/cliente/demo/almacen_demo_cliente.dart';
 import 'package:agrocom_field/cliente/ofertas/domain/oferta_recibida.dart';
 import 'package:agrocom_field/cliente/ofertas/presentation/ofertas_pantalla.dart';
 import 'package:agrocom_field/cliente/problema/presentation/reportar_problema_pantalla.dart';
+import 'package:agrocom_field/cliente/seguimiento/domain/seguimiento.dart';
+import 'package:agrocom_field/cliente/seguimiento/domain/seguimiento_repositorio.dart';
 import 'package:agrocom_field/cliente/seguimiento/presentation/chat_pantalla.dart';
 import 'package:agrocom_field/cliente/seguimiento/presentation/seguimiento_pantalla.dart';
 import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
@@ -24,6 +26,21 @@ import 'ayudas.dart';
 /// Teléfono muy alto: la lista de ofertas arma sus tarjetas a medida que se
 /// ven, y estas pruebas tocan las tres.
 const _alta = Variante(ModoVisualCampo.claro, Size(412, 2400), 1);
+
+/// Chat sin ningún mensaje (ni siquiera el del sistema).
+class _ChatSinMensajes implements SeguimientoRepositorio {
+  @override
+  Future<PaginaMensajes> mensajes(
+    String solicitudId, {
+    String? despues,
+  }) async => const PaginaMensajes(mensajes: []);
+
+  @override
+  Future<void> marcarLeidos(String solicitudId, String cursor) async {}
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
 
 void main() {
   Widget historial() => Scaffold(
@@ -80,7 +97,7 @@ void main() {
       await asentar(tester);
       expect(find.text('Sin conexión'), findsOneWidget);
       almacen.sinRed = false;
-      await tester.tap(find.text('Reintentar'));
+      await tester.tap(find.text('Reintentar ahora'));
       await asentar(tester);
       expect(find.text('Mis solicitudes'), findsOneWidget);
       expect(find.byKey(const ValueKey('solicitud-4101')), findsOneWidget);
@@ -232,7 +249,7 @@ void main() {
       await asentar(tester);
       expect(find.text('Sin conexión'), findsOneWidget);
       almacen.sinRed = false;
-      await tester.tap(find.text('Reintentar'));
+      await tester.tap(find.text('Reintentar ahora'));
       await asentar(tester);
       expect(find.text('Tu precio'), findsOneWidget);
     });
@@ -596,7 +613,7 @@ void main() {
       await abrir(tester, almacen, '4102');
       expect(find.text('Sin conexión'), findsOneWidget);
       almacen.sinRed = false;
-      await tester.tap(find.text('Reintentar'));
+      await tester.tap(find.text('Reintentar ahora'));
       await asentar(tester);
       expect(find.text('61 %'), findsOneWidget);
     });
@@ -669,13 +686,34 @@ void main() {
       expect(find.byKey(const ValueKey('chat-campo')), findsNothing);
     });
 
-    testWidgets('chat vacío orienta a escribir', (tester) async {
+    testWidgets('un chat recién adjudicado abre con el evento del sistema', (
+      tester,
+    ) async {
       final almacen = almacenDePrueba();
       almacen.adjudicar(almacen.ofertaPorId('of-4101-a')!);
       await montar(
         tester,
         pantalla: ChatPantalla(solicitudId: '4101', intervalo: null),
         dependencias: dependenciasDePrueba(almacen),
+      );
+      await asentar(tester);
+      expect(
+        find.text(
+          'La solicitud quedó adjudicada. Ya pueden coordinar por aquí.',
+        ),
+        findsOneWidget,
+      );
+    });
+
+    testWidgets('chat vacío orienta a escribir', (tester) async {
+      final almacen = almacenDePrueba();
+      await montar(
+        tester,
+        pantalla: ChatPantalla(solicitudId: '4101', intervalo: null),
+        dependencias: dependenciasDePrueba(
+          almacen,
+          seguimiento: _ChatSinMensajes(),
+        ),
       );
       await asentar(tester);
       expect(find.text('Todavía no hay mensajes'), findsOneWidget);

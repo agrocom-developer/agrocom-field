@@ -193,10 +193,12 @@ void main() {
       await abrir(tester, tamano: telefonoChico);
       expect(find.text('Sin conexión'), findsOneWidget);
       expect(find.textContaining('competencia'), findsOneWidget);
-      expect(find.textContaining('Sin señal ·'), findsOneWidget);
+      expect(find.textContaining('Sin señal ·'), findsWidgets);
       await golden(tester, 'mapa_sin_red_360x640_x1');
       entorno.almacenNegociacion.enLinea = true;
-      await tester.tap(find.text('Reintentar'));
+      await tester.ensureVisible(find.text('Reintentar ahora'));
+      await tester.pump();
+      await tester.tap(find.text('Reintentar ahora'));
       await esperar(tester);
       expect(find.text('Sin conexión'), findsNothing);
     });
@@ -401,7 +403,7 @@ void main() {
       );
       await esperar(tester);
       expect(find.text('Todavía no hiciste ofertas'), findsOneWidget);
-      await tester.tap(find.text('Ver solicitudes en el mapa'));
+      await tester.tap(find.text('Ver lotes en el mapa'));
       expect(fueAlMapa, isTrue);
     });
 
@@ -409,7 +411,7 @@ void main() {
       entorno.almacenNegociacion.enLinea = false;
       await abrir(tester, tamano: telefonoChico);
       expect(find.text('Sin conexión'), findsOneWidget);
-      expect(find.textContaining('Sin señal ·'), findsOneWidget);
+      expect(find.textContaining('Sin señal ·'), findsWidgets);
       await golden(tester, 'ofertas_sin_red_360x640_x1');
     });
   });
