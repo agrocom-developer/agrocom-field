@@ -16,7 +16,7 @@ import '../data/ubicacion_red.dart';
 import '../domain/ejecucion.dart';
 
 /// Lo que necesita la ejecución de un servicio adjudicado: la base local, la
-/// cámara y la ubicación. Lo montan `piloto` y `auxiliar` (ADR 0012).
+/// cámara y la ubicación. Lo montan `piloto` (ADR 0012).
 class DependenciasEjecucion {
   const DependenciasEjecucion({
     required this.repositorio,
@@ -72,7 +72,7 @@ class DependenciasEjecucion {
   final ServicioUbicacion ubicacion;
   final UbicacionRepositorio publicador;
 
-  /// El piloto comparte su ubicación; el auxiliar no.
+  /// El piloto comparte su ubicación.
   final bool compartirUbicacion;
 
   /// El motor de subida, para dispararlo con la conectividad.

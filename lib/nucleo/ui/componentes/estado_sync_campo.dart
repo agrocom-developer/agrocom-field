@@ -4,7 +4,7 @@ import '../paleta_campo.dart';
 import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
 
-/// Qué se le cuenta al piloto o al auxiliar sobre la sincronización. No es
+/// Qué se le cuenta al piloto sobre la sincronización. No es
 /// el estado de una fila del outbox ni el del motor: es su traducción a lo
 /// que se ve en pantalla.
 enum EstadoSyncVisibleCampo {

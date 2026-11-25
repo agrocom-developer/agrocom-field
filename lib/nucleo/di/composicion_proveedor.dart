@@ -21,7 +21,7 @@ import '../marketplace/proveedor/ejecucion/di/dependencias_ejecucion.dart';
 import '../marketplace/proveedor/negociacion/di/dependencias_negociacion.dart';
 import '../notificaciones/notificador_local.dart';
 
-/// Todo lo que la app real de `piloto` o `auxiliar` necesita: la superficie
+/// Todo lo que la app real de `piloto` necesita: la superficie
 /// del proveedor (negociación, ejecución, perfil y drones), el acceso y el
 /// alta, y el selector de imágenes.
 class ComposicionProveedor {
@@ -61,14 +61,13 @@ Future<ComposicionProveedor> componerProveedor(
     version: '${paquete.version}+${paquete.buildNumber}',
   );
 
-  final esPiloto = flavor == Flavor.piloto;
   final ejecucion = DependenciasEjecucion.local(
     db: db,
     api: api,
     compresor: CompresorEvidenciaAdaptativo(),
     directorioFotos: directorio,
     selectorFoto: selectorFoto ?? SelectorFotoImagePicker(),
-    compartirUbicacion: esPiloto,
+    compartirUbicacion: true,
   );
   final negociacion = DependenciasNegociacion.red(
     http,
@@ -106,10 +105,8 @@ Future<ComposicionProveedor> componerProveedor(
         api: api,
         tokenStore: tokenStore,
         dispositivoStore: DispositivoStoreSeguro(),
-        rolesPreferidos: esPiloto
-            ? const ['proveedor', 'piloto']
-            : const ['auxiliar'],
-        nombreDispositivo: esPiloto ? 'Agrocom Piloto' : 'Agrocom Auxiliar',
+        rolesPreferidos: const ['proveedor', 'piloto'],
+        nombreDispositivo: 'Agrocom Piloto',
         alCerrarSesion: ejecucion.repositorio.limpiarAlCerrarSesion,
         retirarPush: proveedor.push.retirar,
       ),

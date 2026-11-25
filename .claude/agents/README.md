@@ -1,6 +1,6 @@
 # Agentes especializados de `agrocom-field`
 
-Quince subagentes de la app del marketplace de fumigación con drones: tres flavors (`cliente`, online-first; `piloto` y `auxiliar`, offline en el lote) sobre una sola base de código. Mismo criterio que `agrocom-api` (ver `.claude/agents/README.md` de ese repo).
+Quince subagentes de la app del marketplace de fumigación con drones: tres flavors (`cliente`, online-first; `piloto`, offline en el lote) sobre una sola base de código. Mismo criterio que `agrocom-api` (ver `.claude/agents/README.md` de ese repo).
 
 La decisión de modelo vive en el frontmatter de cada agente. Ninguno fija un modelo superior a `claude-sonnet-5` salvo decisión explícita del dueño; `ui-movil-premium` es el candidato natural si se quiere un modelo de mayor capacidad para el diseño.
 

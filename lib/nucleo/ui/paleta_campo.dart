@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'colores_campo.dart';
 
 /// Los tres modos visuales del marketplace. El flavor decide el modo por
-/// defecto (cliente y auxiliar: claro u oscuro según el sistema; piloto:
+/// defecto (cliente: claro u oscuro según el sistema; piloto:
 /// [campo], alto contraste para sol directo), pero cualquier modo es válido
 /// en cualquier flavor.
 enum ModoVisualCampo { claro, oscuro, campo }

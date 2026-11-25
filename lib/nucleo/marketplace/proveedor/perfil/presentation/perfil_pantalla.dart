@@ -14,7 +14,7 @@ import 'perfil_estado.dart';
 
 /// Perfil del proveedor: quién es y si está habilitado para operar, sus
 /// métricas, documentos, equipo y lo que los clientes dijeron de su trabajo.
-/// Es el mismo en los flavors `piloto` y `auxiliar`.
+/// Es el mismo en los flavors `piloto`.
 class PerfilPantalla extends StatelessWidget {
   const PerfilPantalla({
     this.reloj = DateTime.now,
@@ -252,17 +252,6 @@ class _Contenido extends StatelessWidget {
             _FilaDocumento(documento: doc),
             const SizedBox(height: EspaciadoCampo.s),
           ],
-          const _Titulo('Mi equipo'),
-          if (p.auxiliares.isEmpty)
-            Text(
-              'No tenés un auxiliar asociado. Podés operar solo o registrar '
-              'uno para que prepare la mezcla.',
-              style: texto.bodyMedium,
-            ),
-          for (final a in p.auxiliares) ...[
-            _FilaAuxiliar(auxiliar: a),
-            const SizedBox(height: EspaciadoCampo.s),
-          ],
           const _Titulo('Zonas de cobertura'),
           Wrap(
             spacing: EspaciadoCampo.s,
@@ -482,61 +471,6 @@ class _FilaDocumento extends StatelessWidget {
             const SizedBox(height: EspaciadoCampo.s),
             Text('Motivo: $motivo', style: texto.bodyMedium),
           ],
-        ],
-      ),
-    );
-  }
-}
-
-class _FilaAuxiliar extends StatelessWidget {
-  const _FilaAuxiliar({required this.auxiliar});
-
-  final AuxiliarAsociado auxiliar;
-
-  @override
-  Widget build(BuildContext context) {
-    final texto = Theme.of(context).textTheme;
-    final paleta = context.paleta;
-    final (tono, icono) = switch (auxiliar.aprobacion) {
-      EstadoAprobacion.aprobado => (TonoEstado.exito, Icons.verified_rounded),
-      EstadoAprobacion.pendiente => (
-        TonoEstado.info,
-        Icons.hourglass_top_rounded,
-      ),
-      EstadoAprobacion.suspendido => (
-        TonoEstado.alerta,
-        Icons.pause_circle_outline_rounded,
-      ),
-      EstadoAprobacion.rechazado => (TonoEstado.error, Icons.cancel_outlined),
-    };
-    return SuperficieMarketplace(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.science_outlined, color: paleta.textoSecundario),
-          const SizedBox(width: EspaciadoCampo.m),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(auxiliar.nombre, style: texto.titleLarge),
-                const SizedBox(height: EspaciadoCampo.xs),
-                Text(
-                  auxiliar.serviciosJuntos == 0
-                      ? 'Auxiliar · todavía sin servicios juntos'
-                      : 'Auxiliar · ${auxiliar.serviciosJuntos} servicios '
-                            'juntos',
-                  style: texto.bodyMedium,
-                ),
-                const SizedBox(height: EspaciadoCampo.s),
-                ChipEstadoMarketplace(
-                  etiqueta: auxiliar.aprobacion.etiqueta,
-                  tono: tono,
-                  icono: icono,
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );

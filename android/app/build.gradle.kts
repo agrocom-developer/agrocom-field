@@ -38,11 +38,6 @@ android {
             applicationIdSuffix = ".piloto"
             resValue(type = "string", name = "app_name", value = "Agrocom Piloto")
         }
-        create("auxiliar") {
-            dimension = "rol"
-            applicationIdSuffix = ".auxiliar"
-            resValue(type = "string", name = "app_name", value = "Agrocom Auxiliar")
-        }
         create("cliente") {
             dimension = "rol"
             applicationIdSuffix = ".cliente"

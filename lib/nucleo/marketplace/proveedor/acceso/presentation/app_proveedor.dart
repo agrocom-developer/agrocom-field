@@ -8,7 +8,7 @@ import '../domain/acceso_proveedor.dart';
 import 'acceso_cubit.dart';
 import 'acceso_pantallas.dart';
 
-/// La app real de `piloto` y de `auxiliar`: la puerta de acceso y, con
+/// La app real de `piloto`: la puerta de acceso y, con
 /// sesión, la superficie que arma [construirShell]. Los repositorios van por
 /// encima del `Navigator` para que las rutas apiladas los hereden.
 class AppProveedor extends StatelessWidget {

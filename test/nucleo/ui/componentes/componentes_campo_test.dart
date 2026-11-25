@@ -460,14 +460,14 @@ void main() {
     await tester.pumpWidget(
       _envolver(
         const PieEntornoCampo(
-          flavor: Flavor.auxiliar,
+          flavor: Flavor.piloto,
           entorno: '192.168.0.3',
           version: '0.1.0',
         ),
       ),
     );
 
-    expect(find.textContaining('AUXILIAR'), findsOneWidget);
+    expect(find.textContaining('PILOTO'), findsOneWidget);
     expect(find.textContaining('192.168.0.3'), findsOneWidget);
     expect(find.textContaining('v0.1.0'), findsOneWidget);
   });

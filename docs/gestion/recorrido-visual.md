@@ -38,4 +38,4 @@ Antes de abrir el PR de un cambio que toque un flujo del cliente o del piloto, y
 
 ## Capturas con datos ficticios
 
-Para los tres flavors, sin API, `tool/capturar_pantallas.sh <cliente|piloto|auxiliar> <simulador> <dispositivo> <claro|oscuro|campo>` corre `integration_test/<flavor>_capturas_test.dart` en modo demo y deja JPEG (560 px, calidad 78) en `docs/diseno/capturas/<flavor>/<dispositivo>/`. Cubre una pantalla por destino de navegación: cliente (acceso, inicio, solicitar, solicitudes, cuenta), piloto (mapa, ofertas, servicio, drones, perfil) y auxiliar (servicio, perfil). Los flujos completos con datos reales los cubre el recorrido de arriba.
+Para los dos flavors, sin API, `tool/capturar_pantallas.sh <cliente|piloto> <simulador> <dispositivo> <claro|oscuro|campo>` corre `integration_test/<flavor>_capturas_test.dart` en modo demo y deja JPEG (560 px, calidad 78) en `docs/diseno/capturas/<flavor>/<dispositivo>/`. Cubre una pantalla por destino de navegación: cliente (acceso, inicio, solicitar, solicitudes, cuenta) y piloto (mapa, ofertas, servicio, drones, perfil). Los flujos completos con datos reales los cubre el recorrido de arriba.

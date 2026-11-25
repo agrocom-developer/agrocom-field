@@ -38,13 +38,13 @@ void main() {
     final storeAntes = PreferenciasStoreLocal();
     await storeAntes.guardarTema(ThemeMode.light);
     await storeAntes.guardarIdioma('es');
-    await storeAntes.guardarUltimoFlavor(Flavor.auxiliar);
+    await storeAntes.guardarUltimoFlavor(Flavor.piloto);
 
     final storeDespues = PreferenciasStoreLocal();
 
     expect(await storeDespues.leerTema(), ThemeMode.light);
     expect(await storeDespues.leerIdioma(), 'es');
-    expect(await storeDespues.leerUltimoFlavor(), Flavor.auxiliar);
+    expect(await storeDespues.leerUltimoFlavor(), Flavor.piloto);
   });
 
   test('guardar idioma null borra una preferencia ya guardada', () async {

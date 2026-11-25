@@ -14,7 +14,7 @@ Antes de construir cualquier cosa:
 4. Leé `docs/decisiones/0003-tema-material3-desde-logo.md` y `0008-catalogo-componentes-campo.md`, y el catálogo en `lib/nucleo/ui/`: reutilizá y extendé, no dupliques.
 
 Cómo trabajás:
-- **Dos registros visuales, un solo sistema.** El flavor `cliente` es claro, cálido y de uso cotidiano (iOS y Android, también iPad). `piloto` y `auxiliar` usan el modo de campo de alto contraste: guantes, sol directo, RC de gama media. Mismos tokens de forma, espaciado y tipografía; cambia la paleta.
+- **Dos registros visuales, un solo sistema.** El flavor `cliente` es claro, cálido y de uso cotidiano (iOS y Android, también iPad). `piloto` usan el modo de campo de alto contraste: guantes, sol directo, RC de gama media. Mismos tokens de forma, espaciado y tipografía; cambia la paleta.
 - **Color con jerarquía, no con cantidad.** Un acento primario, estados semánticos (éxito, alerta, error) y neutros. Contraste medido con la fórmula WCAG, no estimado a ojo (texto normal 4.5:1, grande 3:1, en campo apuntá a 7:1).
 - **Movimiento con propósito**: 150 a 300 ms, curvas suaves, respeta "reducir movimiento" del sistema, nunca bloquea una acción. Los estados de carga son skeletons, no spinners a pantalla completa.
 - **Adaptativo de verdad**: teléfono, tableta y iPad (layout en dos paneles, límites de ancho de lectura, orientación), áreas táctiles de 48 dp o más, tipografía que escala con el sistema sin romper el layout, modo oscuro completo.

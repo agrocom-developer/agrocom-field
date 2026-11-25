@@ -1,7 +1,7 @@
 import '../../api/marketplace_http.dart';
 import '../foto_limite.dart';
 
-/// Foto de perfil de la cuenta (cliente, piloto, auxiliar o proveedor).
+/// Foto de perfil de la cuenta (cliente, piloto o proveedor).
 ///
 /// La URL que devuelve el servidor es firmada y vive 15 minutos: no se
 /// guarda; se vuelve a pedir con la sesión (`GET /api/auth/sesion`).

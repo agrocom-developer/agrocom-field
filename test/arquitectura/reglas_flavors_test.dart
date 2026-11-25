@@ -39,7 +39,7 @@ void main() {
   List<File> de(String carpeta) =>
       archivos.where((f) => relativa(f).startsWith('$carpeta/')).toList();
 
-  const flavors = ['cliente', 'piloto', 'auxiliar'];
+  const flavors = ['cliente', 'piloto'];
 
   for (final flavor in flavors) {
     test('lib/$flavor no importa a otro flavor', () {

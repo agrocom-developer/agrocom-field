@@ -1,7 +1,7 @@
 import '../../../dominio/dominio.dart';
 
 abstract interface class PerfilRepositorio {
-  /// El proveedor con su estado de aprobación, documentos y auxiliares.
+  /// El proveedor con su estado de aprobación, documentos y dron.
   Future<Proveedor> perfil();
 
   /// Hectáreas atendidas por mes (decimal exacto), para el gráfico.

@@ -4,7 +4,7 @@ import '../domain/perfil_repositorio.dart';
 import 'perfil_estado.dart';
 
 /// Perfil del proveedor: datos, estado de aprobación, documentos,
-/// auxiliares, métricas y calificaciones recibidas. Solo lectura: el alta y
+/// métricas y calificaciones recibidas. Solo lectura: el alta y
 /// la aprobación las resuelve un administrador en el panel web.
 class PerfilCubit extends Cubit<PerfilEstado> {
   PerfilCubit(this._repositorio) : super(const PerfilCargando());

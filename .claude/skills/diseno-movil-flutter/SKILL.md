@@ -18,7 +18,7 @@ Meta: una pantalla se entiende en dos segundos, se maneja con una mano, y se ve 
 
 ## Dos registros, un sistema
 
-| | `cliente` | `piloto` / `auxiliar` |
+| | `cliente` | `piloto` |
 |---|---|---|
 | Uso | Cotidiano, interior y exterior | Lote, sol directo, guantes, RC de gama media |
 | Modo | Claro por defecto, oscuro completo | Alto contraste "campo" (ADR 0008), sobre fondo profundo |

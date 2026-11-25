@@ -4,7 +4,7 @@
 ///
 /// Procedencia y peso de cada foto: `assets/imagenes/FUENTES.md`. Son
 /// fondos decorativos — nunca evidencia de un trabajo real (invariante 8 de
-/// `CLAUDE.md`: la evidencia siempre la captura el piloto/auxiliar).
+/// `CLAUDE.md`: la evidencia siempre la captura el piloto).
 abstract final class ImagenesCampo {
   /// Logo completo (isotipo + wordmark AGROCOM) — es lo que nombra a la app
   /// en pantalla; ninguna pantalla escribe el nombre además del logo.
@@ -30,6 +30,6 @@ abstract final class ImagenesCampo {
       'assets/imagenes/fondo_dron_sobre_agua.jpg';
 
   /// Equipo en tierra: dron, generador, baterías y RC — reservada para las
-  /// pantallas de equipos/baterías del auxiliar (HU-80).
+  /// pantallas de equipos y baterías (HU-80).
   static const String equipoDron = 'assets/imagenes/fondo_equipo_dron.jpg';
 }

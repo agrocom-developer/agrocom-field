@@ -1,21 +1,21 @@
 # CLAUDE.md — reglas de `agrocom-field`
 
-Este repo es la app móvil de Agrocom: **Flutter, una sola base de código con tres flavors** — `cliente`, `piloto` y `auxiliar`. Agrocom es un marketplace de servicio de fumigación con drones donde el precio se negocia: el cliente publica una solicitud con un precio por hectárea, los proveedores (pilotos propios de Agrocom, pilotos independientes y dueños de drones, con sus auxiliares) aceptan o contraofertan, el cliente elige, y los drones son los «vehículos». Agrocom es el nexo y el registro del estado y del resultado; lo operativo en el lote lo acuerdan en persona las partes. Es el hermano de `agrocom-api` (motor del marketplace y web admin, Laravel) — mismo dueño, mismos agentes de IA como implementadores principales.
+Este repo es la app móvil de Agrocom: **Flutter, una sola base de código con dos flavors** — `cliente` y `piloto`. Agrocom es un marketplace de servicio de fumigación con drones donde el precio se negocia: el cliente publica una solicitud con un precio por hectárea, los proveedores (pilotos propios de Agrocom, pilotos independientes y dueños de drones) aceptan o contraofertan, el cliente elige, y los drones son los «vehículos». Agrocom es el nexo y el registro del estado y del resultado; lo operativo en el lote lo acuerdan en persona las partes. Es el hermano de `agrocom-api` (motor del marketplace y web admin, Laravel) — mismo dueño, mismos agentes de IA como implementadores principales.
 
 **La fuente de verdad del contrato no vive en este repo.** Vive en `agrocom-api`, clonado en esta misma máquina en `/Applications/MAMP/htdocs/agrocom-api`: `docs/api/openapi.yaml` es el contrato de API que este repo consume (se regenera allá; acá nunca se edita a mano). `docs/vision.md` de este repo da el panorama completo del producto. Si la ruta del otro repo cambia, se actualiza acá y en `docs/vision.md`.
 
 ## Política de marketplace vista desde la app
 
-- **Tres flavors, tres roles de uso.** `cliente` (celular del dueño del campo o su encargado), `piloto` (control remoto Android del dron, también celular) y `auxiliar` (celular del ayudante en el lote). Un proveedor independiente o dueño de dron usa el flavor `piloto` o `auxiliar` según lo que haga ese día; el rol activo lo fija el flavor (ADR 0005) y el login.
-- **Qué es online-first y qué es offline.** El flavor `cliente` es **online-first**: publica, negocia, sigue y califica servicios contra la red; no tiene outbox. Lo que el piloto registra en el lote — inicio, avance, cierre, mensajes y fotos de avance — es **offline-first** en `piloto` y `auxiliar`, porque el lote no tiene señal.
+- **Dos flavors, dos roles de uso.** `cliente` (celular del dueño del campo o su encargado) y `piloto` (control remoto Android del dron, también celular). Un proveedor independiente o dueño de dron usa el flavor `piloto`. El flavor fija el rol y no hay selector de rol (ADR 0021). El auxiliar no es usuario de la app.
+- **Qué es online-first y qué es offline.** El flavor `cliente` es **online-first**: publica, negocia, sigue y califica servicios contra la red; no tiene outbox. Lo que el piloto registra en el lote — inicio, avance, cierre, mensajes y fotos de avance — es **offline-first** en `piloto`, porque el lote no tiene señal.
 - **Excepción documentada: negociar requiere red.** Publicar, ofertar, contraofertar, aceptar, rechazar y retirar una oferta son llamadas en línea con confirmación del servidor; la adjudicación es un acuerdo entre dos partes que se resuelve de forma atómica y no pasa por el outbox (ADR 0016). Todo lo posterior a la adjudicación se baja a `drift` y se ejecuta sin red.
 - **Negociación.** El cliente propone un precio por hectárea; el piloto lo acepta o contraoferta con su dron; el cliente elige, acepta, contraoferta o rechaza, por rondas con una sola oferta vigente por negociación. Aceptar la oferta vigente de la contraparte adjudica la solicitud. Estados: `borrador`, `abierta`, `con_ofertas`, `adjudicada`, `en_ejecucion`, `finalizada`, `calificada`, más `cancelada`, `expirada` y `disputada`. La decide y la valida el servidor: la app muestra las ofertas y envía la respuesta, y no replica reglas de rondas, vigencias ni turnos. No hay asignación automática ni prioridad de proveedores propios.
 - **Qué hace el piloto.** Ve el mapa de solicitudes abiertas, ofrece, marca el inicio, sube fotos de avance, marca el progreso, cierra con las hectáreas ejecutadas y puede activar o desactivar las notificaciones de nuevas solicitudes por zona. El cliente ve las fotos, el avance, el chat y la última ubicación del piloto durante la ejecución.
 - **Calificación.** La escribe el cliente en un registro propio; el proveedor solo la ve y un admin la modera. El proveedor califica al cliente con un registro propio del proveedor. Nunca dos roles editan la misma fila.
-- **Alta de proveedores.** El proveedor independiente se registra solo, con los datos de la persona y del dron con sus fotos, y un admin lo aprueba antes de operar; el piloto registra a su auxiliar y el admin lo aprueba. Mientras no esté aprobado, la app no muestra el mapa de solicitudes ni permite ofertar.
+- **Alta de proveedores.** El proveedor independiente se registra solo, con los datos de la persona y del dron con sus fotos, y un admin lo aprueba antes de operar. Mientras no esté aprobado, la app no muestra el mapa de solicitudes ni permite ofertar.
 - **Sin cobro en la app.** No se procesan pagos ni se calcula comisión. Al finalizar se muestra el precio final que calcula el servidor (hectáreas ejecutadas por precio acordado) como monto a pagar fuera de la app. Todo es solicitud por solicitud: no hay contratos ni campañas.
 
-## Invariantes físicas (flavors `piloto` y `auxiliar`)
+## Invariantes físicas (flavor `piloto`)
 
 Responden al hecho de que el lote no tiene señal; no aplican al flavor `cliente`.
 
@@ -32,15 +32,15 @@ Responden al hecho de que el lote no tiene señal; no aplican al flavor `cliente
 ## Reglas de importación y arquitectura
 
 - BLoC feature-first en tres capas por feature: `presentation/`, `domain/`, `data/` (ADR 0009).
-- `cliente/`, `piloto/` y `auxiliar/` no se importan entre sí; solo importan de `nucleo/`. Lo que dos flavors necesitan va a `nucleo/`.
+- `cliente/` y `piloto/` no se importan entre sí; solo importan de `nucleo/`. Lo que dos flavors necesitan va a `nucleo/`.
 - **Dominio en español, infraestructura en inglés**: `Servicio`, `Oferta`, `Proveedor`, `Dron`, `Calificacion`, pero `SyncEngine`, `Repository`, `Outbox`.
-- El nombre visible de la app es «Agrocom», nunca «Agrocom Field». `agrocom_field` es el nombre del paquete Dart y no aparece en texto visible; el flavor se distingue solo en el label del launcher (`Agrocom`, `Agrocom Piloto`, `Agrocom Auxiliar`).
+- El nombre visible de la app es «Agrocom», nunca «Agrocom Field». `agrocom_field` es el nombre del paquete Dart y no aparece en texto visible; el flavor se distingue solo en el label del launcher (`Agrocom`, `Agrocom Piloto`).
 
 ## Política de calidad de UI
 
 La interfaz es parte del producto, no un acabado. Una pantalla no está terminada hasta que cumple todo esto:
 
-- **Dos lenguajes visuales, un sistema de tokens.** `piloto` y `auxiliar` usan el modo campo de alto contraste (ADR 0008): legible a pleno sol, objetivos táctiles de 56 dp o más, acciones con guantes. `cliente` usa un tema claro sobrio derivado del logo (ADR 0003): fondo neutro, un solo color de acento, jerarquía por tamaño y peso, no por decoración. Los colores, tipografías (Manrope, JetBrains Mono), espacios y radios viven en `nucleo/ui` como tokens; una pantalla no declara colores ni medidas propias.
+- **Dos lenguajes visuales, un sistema de tokens.** `piloto` usa el modo campo de alto contraste (ADR 0008): legible a pleno sol, objetivos táctiles de 56 dp o más, acciones con guantes. `cliente` usa un tema claro sobrio derivado del logo (ADR 0003): fondo neutro, un solo color de acento, jerarquía por tamaño y peso, no por decoración. Los colores, tipografías (Manrope, JetBrains Mono), espacios y radios viven en `nucleo/ui` como tokens; una pantalla no declara colores ni medidas propias.
 - **Sin sobrecarga.** Una acción principal por pantalla, máximo tres niveles de jerarquía, espacio generoso, nada de ornamento sin función. Si algo no ayuda a decidir o actuar, se quita.
 - **Contraste y accesibilidad.** Contraste AA como mínimo (AAA en modo campo), texto escalable hasta 200 % sin romper el layout, etiquetas semánticas en todo control, no depender solo del color para comunicar estado.
 - **Todos los estados.** Cada pantalla define carga, vacío, error, sin red y éxito, con texto en español y una salida clara. Los estados vacíos orientan; los errores dicen qué hacer.

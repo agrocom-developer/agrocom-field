@@ -1,7 +1,7 @@
 import 'package:torch_light/torch_light.dart';
 
 /// Control de la linterna del dispositivo para el modo emergencia (HU-68,
-/// Sprint 15 — exclusivo del flavor auxiliar). Abstracta para poder fakear
+/// Sprint 15). Abstracta para poder fakear
 /// en tests sin canal de plataforma real, mismo patrón que
 /// `nucleo/notificaciones/notificador_local.dart`.
 abstract class LinternaControlador {

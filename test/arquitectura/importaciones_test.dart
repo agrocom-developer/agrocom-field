@@ -3,7 +3,6 @@
 //
 // - `nucleo/` no importa de `features/` (salvo la raíz de composición
 //   `nucleo/di/`).
-// - `piloto/` y `auxiliar/` (si existen) no se importan entre sí.
 
 import 'dart:io';
 
@@ -43,19 +42,5 @@ void main() {
         )
         .toList();
     expect(malos, isEmpty, reason: 'nucleo/ depende de features/: $malos');
-  });
-
-  test('piloto/ y auxiliar/ no se importan entre sí', () {
-    final malos = <String>[];
-    for (final (de, a) in [('piloto', 'auxiliar'), ('auxiliar', 'piloto')]) {
-      for (final raiz in ['lib/$de', 'lib/features/$de', 'lib/nucleo/$de']) {
-        for (final (archivo, uri) in _imports(raiz)) {
-          if (uri.contains('/$a/') || uri.startsWith('$a/')) {
-            malos.add('$archivo -> $uri');
-          }
-        }
-      }
-    }
-    expect(malos, isEmpty, reason: 'imports cruzados entre flavors: $malos');
   });
 }

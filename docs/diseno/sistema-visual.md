@@ -1,6 +1,6 @@
 # Sistema visual de Agrocom
 
-Agrocom es un marketplace de fumigación con drones: el cliente solicita un servicio, los proveedores (pilotos, dueños de drones y sus auxiliares) ofertan y lo ejecutan. La interfaz móvil es la fortaleza del producto y se publica en Android, iOS y iPad con tres flavors: `cliente` (online-first), `piloto` y `auxiliar` (offline en el lote).
+Agrocom es un marketplace de fumigación con drones: el cliente solicita un servicio, los proveedores (pilotos y dueños de drones) ofertan y lo ejecutan. La interfaz móvil es la fortaleza del producto y se publica en Android, iOS y iPad con dos flavors: `cliente` (online-first) y `piloto` (offline en el lote).
 
 Este documento fija el lenguaje visual común. El código vive en `lib/nucleo/ui/`; la vitrina (`lib/nucleo/ui/vitrina_campo/`, pestaña **Sistema**) lo muestra corriendo; las capturas están en `docs/diseno/capturas/`. Las decisiones de librerías están en `docs/decisiones/0009-sistema-visual-y-librerias-ui.md`.
 
@@ -9,9 +9,9 @@ Este documento fija el lenguaje visual común. El código vive en `lib/nucleo/ui
 1. **Una acción principal por pantalla.** El botón verde ocupa el ancho completo y es el elemento de mayor peso. Todo lo demás es secundario.
 2. **Sin sobrecarga.** Un dato protagonista, un apoyo, una acción. Cada elemento adicional debe justificar el espacio que ocupa.
 3. **El contraste es una función, no un gusto.** Cada par de color tiene un ratio medido y un test que lo vigila.
-4. **El lote no tiene señal; la interfaz tampoco espera.** En piloto y auxiliar la pantalla cambia antes de que exista respuesta (datos desde `drift`, sin esqueletos). Solo el flavor cliente muestra esqueletos de carga.
+4. **El lote no tiene señal; la interfaz tampoco espera.** En piloto la pantalla cambia antes de que exista respuesta (datos desde `drift`, sin esqueletos). Solo el flavor cliente muestra esqueletos de carga.
 5. **Movimiento con propósito.** Se anima lo que explica un cambio de estado; no se anima lo que se repite cien veces al día.
-6. **Una sola voz visual.** Los tres flavors comparten tokens y componentes. El flavor cambia el modo por defecto y el tamaño táctil, no el lenguaje.
+6. **Una sola voz visual.** Los dos flavors comparten tokens y componentes. El flavor cambia el modo por defecto y el tamaño táctil, no el lenguaje.
 
 ## 2. Modos y paleta
 
@@ -58,7 +58,7 @@ Verde casi negro; el primario es un verde hoja claro para que el relleno se lea.
 
 La elevación en oscuro se expresa subiendo la claridad de la superficie (`superficie` `#111B13` → `superficieElevada` `#19261B`), no con sombra.
 
-### Modo campo (alto contraste AAA, flavors piloto y auxiliar bajo sol)
+### Modo campo (alto contraste AAA, flavor piloto bajo sol)
 
 Fondo `#050A06`, superficie `#0A130B`, superficie elevada `#12220F`. Todo texto, acento y color semántico cumple AAA (7:1) sobre las tres superficies; lo vigila `test/nucleo/ui/paleta_campo_test.dart`.
 
@@ -182,7 +182,7 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 
 **Calificación (cliente).** Hoja inferior de dos toques: una estrella y enviar. Las etiquetas y el comentario aparecen después de elegir la estrella y son opcionales. Al terminar, confirmación inmediata y salida. La escribe solo el cliente; el proveedor la ve en su perfil.
 
-**Perfil de proveedor.** Encabezado con nombre, tipo, calificación promedio y cantidad de servicios; estado de aprobación con chip semántico y lo que significa para operar; aviso si un documento pide atención. Debajo, cuatro métricas operativas (servicios, hectáreas, aceptación y cancelación), hectáreas por mes, documentos con su estado, el equipo (auxiliares asociados), zonas de cobertura y calificaciones recibidas con su distribución. Sin métricas decorativas.
+**Perfil de proveedor.** Encabezado con nombre, tipo, calificación promedio y cantidad de servicios; estado de aprobación con chip semántico y lo que significa para operar; aviso si un documento pide atención. Debajo, cuatro métricas operativas (servicios, hectáreas, aceptación y cancelación), hectáreas por mes, documentos con su estado, zonas de cobertura y calificaciones recibidas con su distribución. Sin métricas decorativas.
 
 **Mis drones (proveedor).** Una tarjeta por dron: modelo, matrícula, propiedad y tanque; estado con chip; ciclos de batería con barra y los ciclos que quedan. Desde tres cuartos de vida útil la barra pasa a ámbar y el texto pide planificar el recambio. Primero se listan los drones que piden atención.
 
@@ -205,7 +205,7 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 - [ ] Lee roles de `PaletaCampo`; no hay hexadecimales ni `Colors.*` sueltos.
 - [ ] Todo texto cumple AA (4,5:1); el texto de apoyo no baja de ese umbral.
 - [ ] Bordes e íconos funcionales cumplen 3:1.
-- [ ] Objetivos táctiles de 48 px (56 px en piloto y auxiliar).
+- [ ] Objetivos táctiles de 48 px (56 px en piloto).
 - [ ] Verificada en claro, oscuro y campo.
 - [ ] Verificada con texto al 200 % sin cortes ni desbordes.
 - [ ] Verificada en iPhone, Android compacto e iPad vertical y horizontal.
@@ -213,6 +213,6 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 - [ ] Ninguna animación supera 300 ms salvo entrada de pantalla u hoja.
 - [ ] Cada ícono sin texto tiene etiqueta accesible; el estado nunca depende solo del color.
 - [ ] Estados cubiertos: cargando (esqueleto en cliente), vacío, error, sin conexión.
-- [ ] En piloto y auxiliar lee de `drift` y escribe en el outbox; no espera a la red.
+- [ ] En piloto lee de `drift` y escribe en el outbox; no espera a la red.
 - [ ] Dinero y hectáreas en tipo decimal exacto; nunca `double`.
 - [ ] Tiene test de widget y, si es un componente, golden test.

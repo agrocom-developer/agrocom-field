@@ -43,7 +43,7 @@ class _ReporteEquiposCampoVitrinaState
           children: [
             const EncabezadoCampo(
               titulo: 'Reporte de equipos',
-              subtitulo: 'Auxiliar · cierre de jornada · evidencia_equipo',
+              subtitulo: 'Piloto · cierre de jornada · evidencia_equipo',
             ),
             Expanded(
               child: ListView(

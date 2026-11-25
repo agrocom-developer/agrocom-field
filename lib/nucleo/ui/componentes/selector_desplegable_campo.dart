@@ -6,13 +6,13 @@ import '../tipografia_campo.dart';
 
 /// Lista desplegable del modo campo, con la misma tarjeta translúcida y el
 /// label mono en mayúscula de `CampoTextoCampo` — para elegir de una lista
-/// que puede ser larga o venir de `drift` (motivo de cierre, auxiliar), donde
+/// que puede ser larga o venir de `drift` (motivo de cierre), donde
 /// un `SelectorSegmentadoCampo` no entra. Envuelve un
 /// `DropdownButtonFormField` real: la validación por `Form` y las pruebas
 /// por `Key` siguen funcionando igual.
 ///
 /// `null` en [valor] es «nada elegido todavía»; una opción con valor `null`
-/// (p. ej. «Sin auxiliar») es válida si [T] es nulable.
+/// (p. ej. «Sin motivo») es válida si [T] es nulable.
 class SelectorDesplegableCampo<T> extends StatelessWidget {
   const SelectorDesplegableCampo({
     required this.etiqueta,

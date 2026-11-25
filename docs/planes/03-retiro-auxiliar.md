@@ -2,7 +2,7 @@
 
 **Estado: decidido (ADR 0021).** El flavor se retira; el esquema local no se toca en este cambio.
 
-**Qué cambia.** Quedan dos flavors, `cliente` y `piloto`. El piloto puede seguir registrando a su auxiliar como dato de su equipo (lo aprueba el admin), pero ese auxiliar no usa una app.
+**Qué cambia.** Quedan dos flavors, `cliente` y `piloto`. El auxiliar deja de ser usuario de la app y el piloto no lo registra ni lo ve (ADR 0021).
 
 ## Fases
 

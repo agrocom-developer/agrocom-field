@@ -18,7 +18,7 @@ import 'solicitudes/presentation/solicitud_detalle_pantalla.dart';
 import 'cuenta/presentation/cuenta_pantalla.dart';
 
 /// App del flavor cliente. Tema claro por defecto y oscuro según el sistema
-/// (sistema visual, §2); el modo campo es solo de piloto y auxiliar.
+/// (sistema visual, §2); el modo campo es solo de piloto.
 class AppCliente extends StatelessWidget {
   const AppCliente({required this.dependencias, super.key});
 

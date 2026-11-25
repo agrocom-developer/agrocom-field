@@ -3,10 +3,8 @@
 // etiqueta semántica en cada control y contraste de texto.
 //
 // Recorre cada pestaña de la demo, en claro y oscuro (cliente) o en modo
-// campo (piloto y auxiliar), con texto al 100 % y al 200 %.
+// campo (piloto), con texto al 100 % y al 200 %.
 
-import 'package:agrocom_field/auxiliar/app_auxiliar_demo.dart';
-import 'package:agrocom_field/auxiliar/di/dependencias_auxiliar.dart';
 import 'package:agrocom_field/cliente/app_cliente.dart';
 import 'package:agrocom_field/cliente/ofertas/presentation/ofertas_pantalla.dart';
 import 'package:agrocom_field/cliente/seguimiento/presentation/chat_pantalla.dart';
@@ -87,22 +85,6 @@ void main() {
         // Abre en el mapa: también se audita antes de cambiar de pestaña.
         await _auditar(tester);
         for (final pestana in ['Ofertas', 'Servicio', 'Drones', 'Perfil']) {
-          await tester.tap(find.text(pestana).last);
-          await asentar(tester, veces: 12);
-          await _auditar(tester);
-        }
-        semantica.dispose();
-      });
-
-      testWidgets('auxiliar campo $nombre: pestañas', (tester) async {
-        final semantica = tester.ensureSemantics();
-        await _preparar(tester, tamano, escala);
-        await tester.pumpWidget(
-          AppAuxiliarDemo(dependencias: DependenciasAuxiliar.demo()),
-        );
-        await asentar(tester, veces: 12);
-        await _auditar(tester);
-        for (final pestana in ['Servicio', 'Perfil']) {
           await tester.tap(find.text(pestana).last);
           await asentar(tester, veces: 12);
           await _auditar(tester);

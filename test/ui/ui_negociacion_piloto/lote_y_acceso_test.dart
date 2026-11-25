@@ -279,25 +279,6 @@ void main() {
       expect(find.text('Compartiendo tu ubicación'), findsOneWidget);
       expect(entorno.publicador.publicadas, isNotEmpty);
     });
-
-    testWidgets('el auxiliar ve el servicio pero no comparte ubicación', (
-      tester,
-    ) async {
-      final auxiliar = EntornoNegociacion(
-        camara: _Camara(),
-        compartirUbicacion: false,
-      );
-      await montar(
-        tester,
-        const ServicioLotePantalla(servicioId: 10),
-        dependencias: auxiliar.dependencias,
-        envolverEnScaffold: false,
-      );
-      await esperar(tester);
-      expect(find.text('Subir foto de avance'), findsOneWidget);
-      expect(find.text('Dile al cliente dónde estás'), findsNothing);
-      expect(auxiliar.publicador.publicadas, isEmpty);
-    });
   });
 
   group('Ingreso y registro', () {
@@ -362,21 +343,6 @@ void main() {
         await golden(tester, 'ingreso_error_412x915_x1');
       },
     );
-
-    testWidgets('el auxiliar no ve el registro', (tester) async {
-      await montar(
-        tester,
-        PuertaAcceso(
-          construir: (_, _) => const SizedBox(),
-          permiteRegistro: false,
-        ),
-        dependencias: entorno.dependencias,
-        envolverEnScaffold: false,
-        envoltorios: [conAcceso],
-      );
-      await esperar(tester);
-      expect(find.textContaining('quiero registrarme'), findsNothing);
-    });
 
     Future<void> abrirRegistro(
       WidgetTester tester, {

@@ -24,9 +24,7 @@ import '../../../api/marketplace_http.dart';
 
 /// Repositorios de la superficie del proveedor: la negociación (mapa de
 /// solicitudes, mis ofertas, chat y avisos), la ejecución del servicio
-/// adjudicado, el perfil y los drones. La montan los flavors `piloto` y
-/// `auxiliar` con el mismo código: todo proveedor opera con los dos roles
-/// (ADR 0012).
+/// adjudicado, el perfil y los drones. La monta el flavor `piloto` (ADR 0012).
 class DependenciasProveedor {
   const DependenciasProveedor({
     required this.negociacion,
