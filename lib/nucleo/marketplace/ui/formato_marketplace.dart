@@ -29,6 +29,19 @@ abstract final class FormatoMarketplace {
     return 'Bs ${numero(monto, decimales: entero ? 0 : 2)}';
   }
 
+  /// Solo la cifra de un monto, sin «Bs»: «7.680» o «690,50». Va en mono
+  /// junto a su unidad (`CifraCampo`).
+  static String bsNumero(Decimal monto) {
+    final entero = monto.toStringAsFixed(2).endsWith('.00');
+    return numero(monto, decimales: entero ? 0 : 2);
+  }
+
+  /// Solo la cifra de unas hectáreas, sin «ha»: «120» o «85,5».
+  static String hectareasNumero(Decimal valor) {
+    final entera = valor.toStringAsFixed(1).endsWith('.0');
+    return numero(valor, decimales: entera ? 0 : 1);
+  }
+
   /// «120 ha» o «85,5 ha».
   static String hectareas(Decimal valor) {
     final entera = valor.toStringAsFixed(1).endsWith('.0');

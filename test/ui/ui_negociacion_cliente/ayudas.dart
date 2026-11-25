@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:agrocom_field/cliente/acceso/data/acceso_demo.dart';
 import 'package:agrocom_field/cliente/calificar/data/calificacion_demo.dart';
-import 'package:agrocom_field/cliente/calificar/presentation/hoja_calificar.dart';
+import 'package:agrocom_field/cliente/calificar/presentation/calificar_pantalla.dart';
 import 'package:agrocom_field/cliente/cuenta/data/cuenta_demo.dart';
 import 'package:agrocom_field/cliente/demo/almacen_demo_cliente.dart';
 import 'package:agrocom_field/cliente/di/dependencias_cliente.dart';
@@ -188,7 +188,7 @@ class AbreHojaCalificar extends StatelessWidget {
     appBar: AppBar(title: const Text('Solicitud')),
     body: Center(
       child: TextButton(
-        onPressed: () => mostrarHojaCalificar(context, servicio),
+        onPressed: () => abrirCalificar(context, servicio),
         child: const Text('Abrir'),
       ),
     ),

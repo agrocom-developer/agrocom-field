@@ -262,7 +262,7 @@ class _MapaSolicitudState extends State<MapaSolicitud>
                   MediaQuery.withNoTextScaling(
                     child: SimpleAttributionWidget(
                       source: const Text('OpenStreetMap'),
-                      backgroundColor: paleta.superficie.withValues(alpha: 0.8),
+                      backgroundColor: paleta.superficie,
                     ),
                   ),
               ],

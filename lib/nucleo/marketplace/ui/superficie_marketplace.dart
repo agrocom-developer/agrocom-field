@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../ui/paleta_campo.dart';
+import '../../ui/tokens_campo.dart';
 
 /// Tarjeta del marketplace: superficie de la paleta activa con borde de 1 px
 /// (sistema visual, §5). A diferencia de `TarjetaCampo` (modo campo fijo),
@@ -9,8 +10,8 @@ class SuperficieMarketplace extends StatelessWidget {
   const SuperficieMarketplace({
     required this.child,
     this.onTap,
-    this.padding = const EdgeInsets.all(16),
-    this.radio = 18,
+    this.padding = const EdgeInsets.all(EspaciadoCampo.l),
+    this.radio = RadioCampo.tarjetaCompacta,
     this.resaltada = false,
     super.key,
   });

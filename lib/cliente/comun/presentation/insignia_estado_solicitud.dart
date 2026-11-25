@@ -23,7 +23,7 @@ class InsigniaEstadoSolicitud extends StatelessWidget {
         paleta.textoSecundario,
         Icons.edit_note_rounded,
       ),
-      EstadoSolicitud.abierta => (paleta.alerta, Icons.travel_explore_rounded),
+      EstadoSolicitud.abierta => (paleta.info, Icons.travel_explore_rounded),
       EstadoSolicitud.conOfertas => (
         paleta.acentoTexto,
         Icons.local_offer_rounded,
@@ -49,7 +49,10 @@ class InsigniaEstadoSolicitud extends StatelessWidget {
         maxWidth: MediaQuery.sizeOf(context).width * 0.6,
       ),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: const EdgeInsets.symmetric(
+          horizontal: EspaciadoCampo.m,
+          vertical: EspaciadoCampo.xs,
+        ),
         decoration: BoxDecoration(
           color: fondo,
           borderRadius: BorderRadius.circular(RadioCampo.capsula),
@@ -57,8 +60,8 @@ class InsigniaEstadoSolicitud extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icono, size: 14, color: color),
-            const SizedBox(width: 6),
+            Icon(icono, size: 16, color: color),
+            const SizedBox(width: EspaciadoCampo.xs),
             Flexible(
               child: Text(
                 etiqueta,

@@ -8,6 +8,7 @@ import '../../../nucleo/marketplace/terrenos/presentation/fotos_terreno_cubit.da
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../solicitudes/domain/solicitud.dart';
 import '../domain/solicitud_repositorio.dart';
@@ -250,7 +251,6 @@ class _Encabezado extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
     final total = PasoSolicitud.values.length;
     final indice = estado.paso.index;
     final puedeVolver = indice > 0 && !estado.enviando;
@@ -279,14 +279,30 @@ class _Encabezado extends StatelessWidget {
                   ),
                 ),
               Expanded(
-                child: Semantics(
-                  header: true,
-                  child: Text('Publicar solicitud', style: texto.titleLarge),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Paso ${indice + 1} de $total · ${estado.paso.etiqueta}',
+                      style: TipografiaCampo.cuerpoSecundario.copyWith(
+                        color: paleta.textoSecundario,
+                      ),
+                    ),
+                    Semantics(
+                      header: true,
+                      child: Text(
+                        'Publicar lote',
+                        style: TipografiaCampo.tituloSeccion.copyWith(
+                          color: paleta.texto,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: EspaciadoCampo.s),
+          const SizedBox(height: EspaciadoCampo.m),
           ExcludeSemantics(
             child: Row(
               children: [
@@ -299,9 +315,11 @@ class _Encabezado extends StatelessWidget {
                         MovimientoCampo.media,
                       ),
                       curve: MovimientoCampo.movimiento,
-                      height: 4,
+                      height: EspaciadoCampo.s,
                       decoration: BoxDecoration(
-                        color: i <= indice ? paleta.acentoTexto : paleta.borde,
+                        color: i <= indice
+                            ? paleta.acentoTexto
+                            : paleta.superficie2,
                         borderRadius: BorderRadius.circular(RadioCampo.capsula),
                       ),
                     ),
@@ -309,11 +327,6 @@ class _Encabezado extends StatelessWidget {
                 ],
               ],
             ),
-          ),
-          const SizedBox(height: EspaciadoCampo.s),
-          Text(
-            'Paso ${indice + 1} de $total · ${estado.paso.etiqueta}',
-            style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
           ),
         ],
       ),
@@ -425,11 +438,11 @@ class _Cargando extends StatelessWidget {
         children: [
           EsqueletoCampo(ancho: 200, alto: 22),
           SizedBox(height: EspaciadoCampo.l),
-          EsqueletoCampo(alto: 48, radio: 14),
+          EsqueletoCampo(alto: 48, radio: RadioCampo.media),
           SizedBox(height: EspaciadoCampo.m),
-          EsqueletoCampo(alto: 64, radio: 18),
+          EsqueletoCampo(alto: 64, radio: RadioCampo.tarjetaCompacta),
           SizedBox(height: EspaciadoCampo.s),
-          EsqueletoCampo(alto: 64, radio: 18),
+          EsqueletoCampo(alto: 64, radio: RadioCampo.tarjetaCompacta),
         ],
       ),
     );

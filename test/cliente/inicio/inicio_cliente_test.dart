@@ -136,7 +136,7 @@ void main() {
       prepararTelefono(tester);
       await _abrir(tester, InicioControlado.pendiente());
       expect(find.byType(EsqueletoCampo), findsWidgets);
-      expect(find.text('Publicar una solicitud'), findsNothing);
+      expect(find.byKey(const Key('inicio-solicitar')), findsNothing);
     });
 
     testWidgets('muestra publicar, solicitud activa, avisos e historial', (
@@ -146,9 +146,9 @@ void main() {
       await _abrir(tester, InicioControlado.fijo(_resumenDemo()));
       await tester.pumpAndSettle();
       expect(find.text('Hola, Hugo'), findsOneWidget);
-      expect(find.text('Publicar una solicitud'), findsOneWidget);
-      expect(find.text('Solicitud activa'), findsOneWidget);
-      expect(find.text('Ver ofertas'), findsOneWidget);
+      expect(find.text('Publicar lote'), findsOneWidget);
+      expect(find.text('SOLICITUD ACTIVA'), findsOneWidget);
+      expect(find.text('Comparar ofertas'), findsOneWidget);
       expect(find.text('Ver la otra solicitud activa'), findsOneWidget);
       await tester.scrollUntilVisible(find.text('Avisos'), 200);
       await tester.scrollUntilVisible(find.text('Historial reciente'), 200);
@@ -230,11 +230,9 @@ void main() {
       prepararIpad(tester);
       await _abrir(tester, InicioControlado.fijo(_resumenDemo()));
       await tester.pumpAndSettle();
-      final solicitar = tester.getTopLeft(
-        find.byKey(const Key('inicio-solicitar')),
-      );
+      final activa = tester.getTopLeft(find.text('SOLICITUD ACTIVA'));
       final avisos = tester.getTopLeft(find.text('Avisos'));
-      expect(avisos.dx, greaterThan(solicitar.dx + 200));
+      expect(avisos.dx, greaterThan(activa.dx + 200));
     });
   });
 }

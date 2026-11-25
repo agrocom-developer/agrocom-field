@@ -63,7 +63,7 @@ void main() {
     unawaited(cubit.cargar());
     await tester.pumpAndSettle();
 
-    expect(find.text('Publicar solicitud'), findsOneWidget);
+    expect(find.text('Publicar lote'), findsOneWidget);
     expect(find.text('Paso 1 de 4 · Lote'), findsOneWidget);
     expect(find.byType(MapaSolicitud), findsOneWidget);
     expect(botonHabilitado(tester), isFalse);
@@ -101,14 +101,14 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Paso 4 de 4 · Precio'), findsOneWidget);
-    expect(find.text('Publicar solicitud'), findsWidgets);
+    expect(find.text('Publicar solicitud'), findsOneWidget);
     expect(botonHabilitado(tester), isFalse, reason: 'falta el precio');
     await tester.enterText(
       find.byKey(const ValueKey('solicitar-precio')),
       '120',
     );
     await tester.pumpAndSettle();
-    expect(find.text('Bs 10.260'), findsWidgets);
+    expect(find.textContaining('10.260', findRichText: true), findsWidgets);
     expect(botonHabilitado(tester), isTrue);
     expect(find.byType(FilledButton), findsOneWidget);
 
@@ -168,7 +168,7 @@ void main() {
       const Offset(0, -120),
     );
     expect(find.text('Insecticida piretroide'), findsOneWidget);
-    expect(find.text('Bs 10.260'), findsWidgets);
+    expect(find.textContaining('10.260', findRichText: true), findsWidgets);
     expect(solicitado, isNull);
 
     repo.demo.sinConexion = false;
@@ -356,7 +356,7 @@ void main() {
     await tester.pumpAndSettle();
 
     Rect mapa() => tester.getRect(find.byType(MapaSolicitud));
-    final titulo = tester.getRect(find.text('Publicar solicitud'));
+    final titulo = tester.getRect(find.text('Publicar lote'));
     expect(mapa().height, greaterThan(700));
     expect(mapa().right, lessThanOrEqualTo(titulo.left));
 

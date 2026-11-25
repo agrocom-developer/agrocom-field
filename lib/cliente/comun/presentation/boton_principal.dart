@@ -39,8 +39,9 @@ class BotonPrincipal extends StatelessWidget {
               horizontal: EspaciadoCampo.xl,
               vertical: EspaciadoCampo.m,
             ),
-            disabledBackgroundColor: paleta.acento.withValues(alpha: 0.4),
-            disabledForegroundColor: paleta.sobreAcento.withValues(alpha: 0.7),
+            // Deshabilitado: superficie neutra con texto de apoyo (sin alpha).
+            disabledBackgroundColor: paleta.superficie2,
+            disabledForegroundColor: paleta.textoSecundario,
           ),
           child: AnimatedSwitcher(
             duration: MovimientoCampo.duracion(context, MovimientoCampo.rapida),

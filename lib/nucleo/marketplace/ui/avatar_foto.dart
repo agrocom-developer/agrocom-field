@@ -38,7 +38,7 @@ class AvatarFoto extends StatelessWidget {
       iniciales,
       textScaler: TextScaler.noScaling,
       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-        color: paleta.sobreAcento,
+        color: paleta.sobreAcentoContenedor,
         fontWeight: FontWeight.w800,
         fontSize: tamano * 0.36,
       ),
@@ -72,7 +72,7 @@ class AvatarFoto extends StatelessWidget {
           alignment: Alignment.center,
           clipBehavior: Clip.antiAlias,
           decoration: BoxDecoration(
-            color: paleta.acento,
+            color: paleta.acentoContenedor,
             shape: BoxShape.circle,
           ),
           child: Stack(

@@ -163,24 +163,19 @@ class _Hito extends StatelessWidget {
                           ),
                       ],
                     ),
-                    AnimatedSize(
-                      duration: duracion,
-                      curve: MovimientoCampo.movimiento,
-                      alignment: Alignment.topLeft,
-                      child: actual
-                          ? Padding(
-                              padding: const EdgeInsets.only(
-                                top: EspaciadoCampo.xs,
-                              ),
-                              child: Text(
-                                hito.detalle,
-                                style: texto.bodyMedium?.copyWith(
-                                  color: paleta.textoSecundario,
-                                ),
-                              ),
-                            )
-                          : const SizedBox(width: double.infinity),
-                    ),
+                    // Sin `AnimatedSize`: dentro de `IntrinsicHeight` y con la
+                    // pantalla tapada por otra ruta (sin tickers) el tamaño
+                    // quedaba a medias y desbordaba la columna.
+                    if (actual)
+                      Padding(
+                        padding: const EdgeInsets.only(top: EspaciadoCampo.xs),
+                        child: Text(
+                          hito.detalle,
+                          style: texto.bodyMedium?.copyWith(
+                            color: paleta.textoSecundario,
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

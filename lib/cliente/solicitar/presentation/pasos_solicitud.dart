@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,7 +7,9 @@ import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/terrenos/presentation/galeria_fotos_terreno.dart';
 import '../../../nucleo/marketplace/referencias/presentation/sugerencia_precio_referencia.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
+import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import 'opcion_solicitud.dart';
 import 'solicitar_cubit.dart';
@@ -31,7 +34,10 @@ class _Pregunta extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Semantics(
     header: true,
-    child: Text(texto, style: Theme.of(context).textTheme.headlineSmall),
+    child: Text(
+      texto,
+      style: TipografiaCampo.tituloBloque.copyWith(color: context.paleta.texto),
+    ),
   );
 }
 
@@ -106,14 +112,10 @@ class _SelectorModo extends StatelessWidget {
               minHeight: ObjetivoTactilCampo.minimo,
             ),
             decoration: BoxDecoration(
-              color: activo
-                  ? paleta.superficie
-                  : paleta.superficie.withValues(alpha: 0),
-              borderRadius: BorderRadius.circular(radioOpcion - 4),
+              color: activo ? paleta.superficie : Colors.transparent,
+              borderRadius: BorderRadius.circular(RadioCampo.chip),
               border: Border.all(
-                color: activo
-                    ? paleta.acentoTexto
-                    : paleta.acentoTexto.withValues(alpha: 0),
+                color: activo ? paleta.acentoTexto : Colors.transparent,
                 width: 1.5,
               ),
             ),
@@ -121,7 +123,7 @@ class _SelectorModo extends StatelessWidget {
               type: MaterialType.transparency,
               child: InkWell(
                 key: ValueKey('modo-${valor.name}'),
-                borderRadius: BorderRadius.circular(radioOpcion - 4),
+                borderRadius: BorderRadius.circular(RadioCampo.chip),
                 onTap: () {
                   if (!activo) HapticaCampo.seleccion();
                   alCambiar(valor);
@@ -166,7 +168,7 @@ class _SelectorModo extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(EspaciadoCampo.xs),
       decoration: BoxDecoration(
-        color: paleta.texto.withValues(alpha: 0.06),
+        color: paleta.superficie2,
         borderRadius: BorderRadius.circular(radioOpcion),
       ),
       child: IntrinsicHeight(
@@ -368,13 +370,13 @@ class _PasoAplicacionState extends State<PasoAplicacion> {
               FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),
               LengthLimitingTextInputFormatter(8),
             ],
-            style: texto.headlineSmall,
+            style: TipografiaCampo.cifraGrande.copyWith(color: paleta.texto),
             cursorColor: paleta.acentoTexto,
             decoration: InputDecoration(
               filled: true,
               fillColor: paleta.superficie,
               hintText: '0',
-              hintStyle: texto.headlineSmall?.copyWith(
+              hintStyle: TipografiaCampo.cifraGrande.copyWith(
                 color: paleta.bordeFuerte,
               ),
               suffixText: 'ha',
@@ -569,12 +571,7 @@ class _TarjetaFecha extends StatelessWidget {
         duration: MovimientoCampo.duracion(context, MovimientoCampo.rapida),
         constraints: const BoxConstraints(minWidth: 64, minHeight: 80),
         decoration: BoxDecoration(
-          color: elegida
-              ? Color.alphaBlend(
-                  paleta.acento.withValues(alpha: 0.16),
-                  paleta.superficie,
-                )
-              : paleta.superficie,
+          color: elegida ? paleta.acentoContenedor : paleta.superficie,
           borderRadius: forma,
           border: Border.all(
             color: elegida ? paleta.acentoTexto : paleta.bordeFuerte,
@@ -628,6 +625,10 @@ class PasoPrecio extends StatefulWidget {
 }
 
 class _PasoPrecioState extends State<PasoPrecio> {
+  /// La parte entera del precio escrito, para el stepper de ±1 Bs.
+  static int _precioEntero(Decimal? precio) =>
+      precio == null ? 1 : precio.truncate().toBigInt().toInt().clamp(1, 99999);
+
   late final _precio = TextEditingController(text: widget.estado.precioTexto);
 
   @override
@@ -695,8 +696,30 @@ class _PasoPrecioState extends State<PasoPrecio> {
           ),
         ],
         const SizedBox(height: EspaciadoCampo.l),
+        // Con ±1 se ajusta de a un boliviano; el campo de abajo admite el
+        // precio exacto (con decimales) y es el que valida el cubit.
+        SuperficieMarketplace(
+          child: Center(
+            child: StepperCampo(
+              valor: _precioEntero(e.precio),
+              etiqueta: 'Precio por hectárea',
+              unidad: 'Bs/ha',
+              minimo: 1,
+              maximo: 99999,
+              onCambio: (v) {
+                final escrito = '$v';
+                _precio.value = TextEditingValue(
+                  text: escrito,
+                  selection: TextSelection.collapsed(offset: escrito.length),
+                );
+                cubit.cambiarPrecio(escrito);
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: EspaciadoCampo.m),
         Semantics(
-          label: 'Precio por hectárea',
+          label: 'Precio exacto por hectárea',
           child: TextField(
             key: const ValueKey('solicitar-precio'),
             controller: _precio,
@@ -707,17 +730,18 @@ class _PasoPrecioState extends State<PasoPrecio> {
               FilteringTextInputFormatter.allow(RegExp('[0-9.,]')),
               LengthLimitingTextInputFormatter(8),
             ],
-            style: texto.headlineSmall,
+            style: TipografiaCampo.cifraMedia.copyWith(color: paleta.texto),
             cursorColor: paleta.acentoTexto,
             decoration: InputDecoration(
               filled: true,
               fillColor: paleta.superficie,
               hintText: '0',
-              hintStyle: texto.headlineSmall?.copyWith(
+              hintStyle: TipografiaCampo.cifraMedia.copyWith(
                 color: paleta.bordeFuerte,
               ),
+              labelText: 'Precio exacto',
               prefixText: 'Bs ',
-              prefixStyle: texto.titleLarge?.copyWith(
+              prefixStyle: TipografiaCampo.cifraMedia.copyWith(
                 color: paleta.textoSecundario,
               ),
               suffixText: 'por ha',
@@ -765,11 +789,20 @@ class _PasoPrecioState extends State<PasoPrecio> {
               FittedBox(
                 fit: BoxFit.scaleDown,
                 alignment: Alignment.centerLeft,
-                child: Text(
-                  total == null ? 'Bs —' : FormatoMarketplace.bs(total),
-                  key: const ValueKey('resumen-precio'),
-                  style: texto.headlineSmall,
-                ),
+                child: total == null
+                    ? Text(
+                        'Bs —',
+                        key: const ValueKey('resumen-precio'),
+                        style: TipografiaCampo.cifraGrande.copyWith(
+                          color: paleta.textoSecundario,
+                        ),
+                      )
+                    : CifraCampo(
+                        key: const ValueKey('resumen-precio'),
+                        valor: FormatoMarketplace.bsNumero(total),
+                        unidad: 'Bs',
+                        estilo: TipografiaCampo.cifraGrande,
+                      ),
               ),
               Text(
                 total == null
