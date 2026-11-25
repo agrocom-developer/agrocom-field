@@ -5,6 +5,7 @@ import '../../../ui/imagenes_campo.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../ui/boton_principal_marketplace.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Rol que la persona dice tener al abrir Agrocom. Solo hay dos: el
 /// auxiliar dejó de ser un usuario de la app (ADR 0021).
@@ -49,6 +50,7 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     return Scaffold(
@@ -88,10 +90,10 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
                           ),
                         ),
                         const SizedBox(height: EspaciadoCampo.xs),
-                        const Expanded(
+                        Expanded(
                           child: BloqueAmbarCampo(
                             titulo: 'Agrocom',
-                            etiqueta: 'Fumigación con dron',
+                            etiqueta: l10n.marketplaceAccesoFumigacionConDron,
                             cifra: false,
                             radio: 0,
                           ),
@@ -119,26 +121,25 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Fumigación con dron, al precio que acuerdes',
+                        l10n.marketplaceAccesoFumigacionConDronPrecio,
                         style: texto.headlineMedium,
                       ),
                       const SizedBox(height: EspaciadoCampo.s),
                       Text(
-                        'Publica tu lote, recibe ofertas de pilotos y elige. '
-                        'El pago es directo con el piloto.',
+                        l10n.marketplaceAccesoPublicaLoteRecibeOfertas,
                         style: texto.bodyLarge?.copyWith(
                           color: paleta.textoSecundario,
                         ),
                       ),
                       const SizedBox(height: EspaciadoCampo.xl),
                       Text(
-                        '¿Cómo vas a usar Agrocom?',
+                        l10n.marketplaceAccesoComoVasUsarAgrocom,
                         style: texto.titleMedium,
                       ),
                       const SizedBox(height: EspaciadoCampo.m),
                       Semantics(
                         container: true,
-                        label: 'Elige tu rol',
+                        label: l10n.marketplaceAccesoEligeRol,
                         child: Column(
                           children: [
                             for (final rol in RolElegido.values) ...[
@@ -172,7 +173,9 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
                     children: [
                       BotonPrincipalMarketplace(
                         key: const Key('rol-continuar'),
-                        texto: 'Continuar como ${_rol.enBoton}',
+                        texto: l10n.marketplaceAccesoContinuarComo(
+                          _rol.enBoton,
+                        ),
                         cargando: widget.cargando,
                         onPressed: () => widget.alContinuar(_rol),
                       ),
@@ -189,7 +192,7 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
                           foregroundColor: paleta.acentoTexto,
                           textStyle: texto.titleMedium,
                         ),
-                        child: const Text('Ya tengo cuenta'),
+                        child: Text(l10n.marketplaceAccesoTengoCuenta),
                       ),
                     ],
                   ),

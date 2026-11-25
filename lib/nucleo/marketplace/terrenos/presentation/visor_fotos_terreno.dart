@@ -6,6 +6,7 @@ import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../dominio/dominio.dart';
 import 'imagen_terreno.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Una foto para mostrar: la elegida en el celular o la del servidor.
 typedef ImagenParaVer = ({Uint8List? bytes, String? url});
@@ -20,6 +21,7 @@ class VisorFotosTerreno extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
     return Column(
@@ -27,13 +29,12 @@ class VisorFotosTerreno extends StatelessWidget {
       children: [
         Semantics(
           header: true,
-          child: Text('Fotos del terreno', style: texto.titleMedium),
+          child: Text(l10n.terrenosFotosDelTerreno, style: texto.titleMedium),
         ),
         const SizedBox(height: EspaciadoCampo.s),
         if (fotos.isEmpty)
           Text(
-            'El cliente no subió fotos del terreno. Pregúntale por el estado '
-            'del lote en el chat si te eligen.',
+            l10n.terrenosClienteSubioFotosDel,
             key: const Key('fotos-terreno-vacio'),
             style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
           )
@@ -111,11 +112,12 @@ class _PantallaVisorState extends State<_PantallaVisor> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Foto ${_actual + 1} de ${widget.fotos.length}'),
+        title: Text(l10n.terrenosFoto(_actual + 1, widget.fotos.length)),
         leading: IconButton(
-          tooltip: 'Cerrar',
+          tooltip: l10n.terrenosCerrar,
           icon: const Icon(Icons.close_rounded),
           onPressed: () => Navigator.of(context).pop(),
         ),

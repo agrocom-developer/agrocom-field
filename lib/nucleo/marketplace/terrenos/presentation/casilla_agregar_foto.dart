@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import 'miniatura_foto_terreno.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// El botón cuadrado que agrega otra foto al terreno.
 class CasillaAgregarFoto extends StatelessWidget {
@@ -12,10 +13,11 @@ class CasillaAgregarFoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Semantics(
       button: true,
-      label: 'Agregar una foto del terreno',
+      label: l10n.terrenosAgregarUnaFotoDel,
       excludeSemantics: true,
       child: Material(
         color: paleta.superficie,
@@ -39,7 +41,7 @@ class CasillaAgregarFoto extends StatelessWidget {
                     Icon(Icons.add_a_photo_outlined, color: paleta.acentoTexto),
                     const SizedBox(height: EspaciadoCampo.xs),
                     Text(
-                      'Agregar',
+                      l10n.terrenosAgregar,
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         color: paleta.acentoTexto,
                       ),

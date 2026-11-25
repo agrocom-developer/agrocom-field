@@ -75,15 +75,18 @@ Widget build(BuildContext context) => Column(children: [
       expect(buscarTextosEnDuro(fuente, revisarTodoLiteral: true), isEmpty);
     });
 
-    test('en pantallas revisa cualquier frase, también dentro de ternarios', () {
-      const fuente = '''
+    test(
+      'en pantallas revisa cualquier frase, también dentro de ternarios',
+      () {
+        const fuente = '''
 final t = ok ? 'Todo listo' : 'Intenta de nuevo';
 final ruta = '/api/solicitudes';
 final tipo = 'cliente';
 ''';
-      final r = buscarTextosEnDuro(fuente, revisarTodoLiteral: true);
-      expect(r.map((h) => h.cuerpo), ['Todo listo', 'Intenta de nuevo']);
-    });
+        final r = buscarTextosEnDuro(fuente, revisarTodoLiteral: true);
+        expect(r.map((h) => h.cuerpo), ['Todo listo', 'Intenta de nuevo']);
+      },
+    );
   });
 }
 

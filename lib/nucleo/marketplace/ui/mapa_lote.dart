@@ -73,8 +73,8 @@ class MapaLote extends StatelessWidget {
     final fondo = ConfiguracionMapa.fondo(paleta);
     return Semantics(
       label: seleccionado != null
-          ? 'Mapa del lote ${seleccionado!.nombre}, ${seleccionado!.zona}'
-          : 'Mapa de lotes',
+          ? l10n.uiMapaDelLote(seleccionado!.nombre, seleccionado!.zona)
+          : l10n.uiMapaLotes,
       child: ClipRect(
         child: FlutterMap(
           options: MapOptions(

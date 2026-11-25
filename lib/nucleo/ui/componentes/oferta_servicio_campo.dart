@@ -195,7 +195,11 @@ class OfertaServicioCampo extends StatelessWidget {
                 disabledBackgroundColor: paleta.borde,
                 disabledForegroundColor: paleta.textoSecundario,
               ),
-              child: Text(respondiendo ? 'Enviando…' : 'Aceptar servicio'),
+              child: Text(
+                respondiendo
+                    ? l10n.componentesEnviando
+                    : l10n.componentesAceptarServicio,
+              ),
             ),
             const SizedBox(height: EspaciadoCampo.s),
             // El alto lo pone el tema: 48 en claro y oscuro, 56 en modo campo.

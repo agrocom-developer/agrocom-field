@@ -5,6 +5,7 @@ import '../../../ui/tokens_campo.dart';
 import '../../ui/formato_marketplace.dart';
 import '../../ui/superficie_marketplace.dart';
 import '../pago_confirmado.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// «Pago confirmado»: el sello que ven el proveedor y el cliente. El monto
 /// es el que fijó el servidor.
@@ -20,6 +21,7 @@ class SelloPagoConfirmado extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
     final detalle = [
@@ -29,7 +31,7 @@ class SelloPagoConfirmado extends StatelessWidget {
     ].join(' · ');
     return Semantics(
       container: true,
-      label: 'Pago confirmado. $detalle',
+      label: l10n.pagoPagoConfirmado(detalle),
       excludeSemantics: true,
       child: SuperficieMarketplace(
         key: const Key('pago-confirmado'),
@@ -43,16 +45,14 @@ class SelloPagoConfirmado extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Pago confirmado', style: texto.titleLarge),
+                  Text(l10n.pagoPagoConfirmado2, style: texto.titleLarge),
                   const SizedBox(height: EspaciadoCampo.xs),
                   Text(detalle, style: texto.bodyLarge),
                   const SizedBox(height: EspaciadoCampo.xs),
                   Text(
                     paraProveedor
-                        ? 'Ya quedó registrado y el cliente lo ve. No hay '
-                              'nada más que hacer.'
-                        : 'El piloto confirmó que recibió el pago. Gracias '
-                              'por usar Agrocom.',
+                        ? l10n.pagoQuedoRegistradoClienteHay
+                        : l10n.pagoPilotoConfirmoQueRecibio,
                     style: texto.bodyMedium?.copyWith(
                       color: paleta.textoSecundario,
                     ),

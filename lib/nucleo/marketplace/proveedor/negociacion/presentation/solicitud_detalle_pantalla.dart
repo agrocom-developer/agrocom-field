@@ -12,6 +12,7 @@ import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
 import 'ofertar_cubit.dart';
 import 'negociacion_pantalla.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 /// El detalle de una solicitud abierta antes de ofertar: los lotes en el
 /// mapa, el estado de la propiedad, lo que pide el cliente y las dos
@@ -50,21 +51,27 @@ class _VistaState extends State<_Vista> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: Text(widget.solicitud.zona ?? 'Solicitud')),
+      appBar: AppBar(
+        title: Text(
+          widget.solicitud.zona ?? l10n.proveedorNegociacionSolicitud,
+        ),
+      ),
       body: FutureBuilder<SolicitudAbierta>(
         future: _detalle,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             final sinRed = snapshot.error is SinConexion;
             return EstadoErrorMarketplace(
-              titulo: sinRed ? 'Sin conexión' : 'No pudimos abrir la solicitud',
+              titulo: sinRed
+                  ? l10n.proveedorNegociacionSinConexion
+                  : l10n.proveedorNegociacionPudimosAbrirSolicitud,
               detalle: sinRed
-                  ? 'Para ver el detalle y ofertar necesitas señal. '
-                        'Reintenta cuando la tengas.'
+                  ? l10n.proveedorNegociacionParaVerDetalleOfertar
                   : snapshot.error is OperacionRechazada
                   ? (snapshot.error! as OperacionRechazada).mensaje
-                  : 'Intenta de nuevo en un momento.',
+                  : l10n.proveedorNegociacionIntentaNuevoMomento,
               onReintentar: _reintentar,
             );
           }
@@ -88,6 +95,7 @@ class _Contenido extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
     final s = solicitud;
@@ -132,27 +140,33 @@ class _Contenido extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'El cliente propone',
+                    l10n.proveedorNegociacionClientePropone,
                     style: texto.bodyMedium?.copyWith(
                       color: paleta.textoSecundario,
                     ),
                   ),
                   const SizedBox(height: EspaciadoCampo.xs),
                   Text(
-                    '${FormatoMarketplace.bs(s.precioHaPropuesto)} por ha',
+                    l10n.proveedorNegociacionPor(
+                      FormatoMarketplace.bs(s.precioHaPropuesto),
+                    ),
                     style: texto.headlineSmall,
                   ),
                   Text(
-                    'Total estimado ${FormatoMarketplace.bs(s.montoPropuesto)}',
+                    l10n.proveedorNegociacionTotalEstimado(
+                      FormatoMarketplace.bs(s.montoPropuesto),
+                    ),
                     style: texto.bodyLarge,
                   ),
                   const SizedBox(height: EspaciadoCampo.s),
                   Text(
                     s.ofertasVigentes == 0
-                        ? 'Todavía no tiene ofertas: sé el primero.'
+                        ? l10n.proveedorNegociacionTodaviaTieneOfertasPrimero
                         : s.ofertasVigentes == 1
-                        ? 'Ya tiene 1 oferta vigente.'
-                        : 'Ya tiene ${s.ofertasVigentes} ofertas vigentes.',
+                        ? l10n.proveedorNegociacionTieneOfertaVigente
+                        : l10n.proveedorNegociacionTieneOfertasVigentes(
+                            s.ofertasVigentes,
+                          ),
                     style: texto.bodyMedium,
                   ),
                 ],
@@ -167,23 +181,20 @@ class _Contenido extends StatelessWidget {
               VisorFotosTerreno(fotos: s.terreno?.fotos ?? const []),
             const SizedBox(height: EspaciadoCampo.l),
             Text(
-              'Tu contacto con el cliente llega solo si te eligen. Hasta '
-              'entonces no ves su nombre, teléfono ni dirección.',
+              l10n.proveedorNegociacionContactoConClienteLlega,
               style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
             ),
             const SizedBox(height: EspaciadoCampo.xl),
             if (enviada)
               AvisoMarketplace(
-                mensaje:
-                    'Oferta enviada: ${FormatoMarketplace.bs(ofertar.oferta!.precioHa)} '
-                    'por ha. La ves en «Mis ofertas».',
+                mensaje: l10n.proveedorNegociacionOfertaEnviadaPorVes(
+                  FormatoMarketplace.bs(ofertar.oferta!.precioHa),
+                ),
                 icono: Icons.check_circle_rounded,
               )
             else if (!s.puedeOfertar)
-              const AvisoMarketplace(
-                mensaje:
-                    'Tu negociación en esta solicitud ya se cerró. No puedes '
-                    'ofertar de nuevo.',
+              AvisoMarketplace(
+                mensaje: l10n.proveedorNegociacionNegociacionEstaSolicitudCerro,
                 tono: TonoAviso.alerta,
               )
             else
@@ -221,32 +232,53 @@ class _Datos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = solicitud;
     final filas = <(String, String)>[
       if (s.ventanaDesde != null && s.ventanaHasta != null)
         (
-          'Fecha deseada',
-          '${FormatoMarketplace.fechaCorta(s.ventanaDesde!)} al '
-              '${FormatoMarketplace.fechaCorta(s.ventanaHasta!)}',
+          l10n.proveedorNegociacionFechaDeseada,
+          l10n.proveedorNegociacionAl(
+            FormatoMarketplace.fechaCorta(s.ventanaDesde!),
+            FormatoMarketplace.fechaCorta(s.ventanaHasta!),
+          ),
         ),
       if (s.tipoAplicacion != null)
-        ('Aplicación', _capitalizar(s.tipoAplicacion!.replaceAll('_', ' '))),
-      if (s.productoIndicado != null) ('Producto', s.productoIndicado!),
+        (
+          l10n.proveedorNegociacionAplicacion,
+          _capitalizar(s.tipoAplicacion!.replaceAll('_', ' ')),
+        ),
+      if (s.productoIndicado != null)
+        (l10n.proveedorNegociacionProducto, s.productoIndicado!),
       if (s.aportaProducto != null)
         (
-          'Pone el producto',
-          s.aportaProducto == 'cliente' ? 'El cliente' : 'Tú',
+          l10n.proveedorNegociacionPoneProducto,
+          s.aportaProducto == 'cliente'
+              ? l10n.proveedorNegociacionCliente
+              : l10n.proveedorNegociacionTu,
         ),
-      if (s.urgente) ('Urgencia', 'Pide atención pronta'),
+      if (s.urgente)
+        (
+          l10n.proveedorNegociacionUrgencia,
+          l10n.proveedorNegociacionPideAtencionPronta,
+        ),
       (
-        'Estado del terreno',
-        s.accesoDificil ? 'Acceso difícil' : 'Acceso normal',
+        l10n.proveedorNegociacionEstadoDelTerreno,
+        s.accesoDificil
+            ? l10n.proveedorNegociacionAccesoDificil
+            : l10n.proveedorNegociacionAccesoNormal,
       ),
-      if (s.referenciasAcceso != null) ('Cómo llegar', s.referenciasAcceso!),
-      if (s.colindantesSensibles != null) ('Cuidar', s.colindantesSensibles!),
-      if (s.observaciones != null) ('Observaciones', s.observaciones!),
+      if (s.referenciasAcceso != null)
+        (l10n.proveedorNegociacionComoLlegar, s.referenciasAcceso!),
+      if (s.colindantesSensibles != null)
+        (l10n.proveedorNegociacionCuidar, s.colindantesSensibles!),
+      if (s.observaciones != null)
+        (l10n.proveedorNegociacionObservaciones, s.observaciones!),
       if (s.venceEn != null)
-        ('Abierta hasta', FormatoMarketplace.fechaLarga(s.venceEn!)),
+        (
+          l10n.proveedorNegociacionAbiertaHasta,
+          FormatoMarketplace.fechaLarga(s.venceEn!),
+        ),
     ];
     return SuperficieMarketplace(
       child: Column(
@@ -315,6 +347,7 @@ class _Acciones extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<OfertarCubit>();
     final enviando = estado.enviando;
     return Column(
@@ -329,8 +362,9 @@ class _Acciones extends StatelessWidget {
           const SizedBox(height: EspaciadoCampo.m),
         ],
         BotonPrincipalMarketplace(
-          texto:
-              'Aceptar ${FormatoMarketplace.bs(solicitud.precioHaPropuesto)} por ha',
+          texto: l10n.proveedorNegociacionAceptarPor(
+            FormatoMarketplace.bs(solicitud.precioHaPropuesto),
+          ),
           cargando: enviando,
           onPressed: () => cubit.ofertar(
             solicitudId: solicitud.id,
@@ -343,7 +377,7 @@ class _Acciones extends StatelessWidget {
             minimumSize: const Size.fromHeight(ObjetivoTactilCampo.guantes),
           ),
           onPressed: enviando ? null : () => _contraofertar(context),
-          child: const Text('Contraofertar mi precio'),
+          child: Text(l10n.proveedorNegociacionContraofertarPrecio),
         ),
       ],
     );

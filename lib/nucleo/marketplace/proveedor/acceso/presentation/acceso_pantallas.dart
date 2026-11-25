@@ -10,6 +10,7 @@ import '../../../ui/marketplace_ui.dart';
 import '../domain/acceso_proveedor.dart';
 import 'acceso_cubit.dart';
 import 'registro_proveedor_pantalla.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 /// La puerta de la app real del piloto: mientras no hay
 /// sesión muestra el ingreso; con sesión, [construir] arma la superficie.
@@ -84,6 +85,7 @@ class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
     final e = widget.estado;
@@ -97,10 +99,13 @@ class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
               children: [
                 const Align(child: LogoAgrocomCampo(ancho: 150)),
                 const SizedBox(height: EspaciadoCampo.xl),
-                Text('Entra a tu cuenta', style: texto.headlineMedium),
+                Text(
+                  l10n.proveedorAccesoEntraCuenta,
+                  style: texto.headlineMedium,
+                ),
                 const SizedBox(height: EspaciadoCampo.xs),
                 Text(
-                  'Con tu usuario y tu contraseña.',
+                  l10n.proveedorAccesoConUsuarioContrasena,
                   style: texto.bodyLarge?.copyWith(
                     color: paleta.textoSecundario,
                   ),
@@ -121,33 +126,34 @@ class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
                   child: Column(
                     children: [
                       CampoFormularioMarketplace(
-                        etiqueta: 'Usuario',
+                        etiqueta: l10n.proveedorAccesoUsuario,
                         controller: _usuario,
                         enabled: !e.enviando,
                         autofillHints: const [AutofillHints.username],
                         textInputAction: TextInputAction.next,
                         validator: (v) => (v ?? '').trim().isEmpty
-                            ? 'Escribe tu usuario.'
+                            ? l10n.proveedorAccesoEscribeUsuario
                             : null,
                       ),
                       const SizedBox(height: EspaciadoCampo.l),
                       CampoFormularioMarketplace(
-                        etiqueta: 'Contraseña',
+                        etiqueta: l10n.proveedorAccesoContrasena,
                         controller: _contrasena,
                         enabled: !e.enviando,
                         obscureText: true,
                         autofillHints: const [AutofillHints.password],
                         textInputAction: TextInputAction.done,
                         onFieldSubmitted: (_) => _entrar(),
-                        validator: (v) =>
-                            (v ?? '').isEmpty ? 'Escribe tu contraseña.' : null,
+                        validator: (v) => (v ?? '').isEmpty
+                            ? l10n.proveedorAccesoEscribeContrasena
+                            : null,
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: EspaciadoCampo.xl),
                 BotonPrincipalMarketplace(
-                  texto: 'Entrar',
+                  texto: l10n.proveedorAccesoEntrar,
                   cargando: e.enviando,
                   onPressed: _entrar,
                 ),
@@ -160,7 +166,7 @@ class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
                       ),
                     ),
                     onPressed: e.enviando ? null : () => abrirRegistro(context),
-                    child: const Text('Soy piloto y quiero registrarme'),
+                    child: Text(l10n.proveedorAccesoSoyPilotoQuieroRegistrarme),
                   ),
                 ],
                 if (widget.nota != null) ...[

@@ -13,6 +13,7 @@ import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
 import 'cifras_negociacion.dart';
 import 'negociacion_cubit.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 /// La negociación con el cliente como conversación (pantalla 15): cada ronda
 /// es una burbuja, arriba va la barra de rondas y abajo el panel con el
@@ -52,6 +53,7 @@ class _Vista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return BlocConsumer<NegociacionCubit, NegociacionEstado>(
       listenWhen: (a, b) => a.enviado != b.enviado && b.enviado != null,
@@ -63,10 +65,8 @@ class _Vista extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               if (estado.sinRed)
-                const BannerSinSenalCampo(
-                  mensaje:
-                      'ofertar necesita red. Tu precio se conserva y no '
-                      'se envió nada.',
+                BannerSinSenalCampo(
+                  mensaje: l10n.proveedorNegociacionOfertarNecesitaRedPrecio,
                 ),
               SafeArea(
                 top: !estado.sinRed,
@@ -91,10 +91,11 @@ class _Encabezado extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final s = estado.solicitud;
     final titulo = s == null
-        ? 'Solicitud'
+        ? l10n.proveedorNegociacionSolicitud
         : '${s.zona ?? 'Solicitud'} · ${FormatoMarketplace.hectareas(s.hectareas)}';
     final ronda = estado.rondaActual;
     return Padding(
@@ -110,7 +111,7 @@ class _Encabezado extends StatelessWidget {
           Row(
             children: [
               IconButton(
-                tooltip: 'Volver',
+                tooltip: l10n.proveedorNegociacionVolver,
                 constraints: BoxConstraints.tightFor(
                   width: paleta.esCampo
                       ? ObjetivoTactilCampo.campo
@@ -127,7 +128,7 @@ class _Encabezado extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Negociación con el cliente',
+                      l10n.proveedorNegociacionNegociacionConCliente,
                       style: TipografiaCampo.cuerpoSecundario.copyWith(
                         color: paleta.textoSecundario,
                       ),
@@ -176,6 +177,7 @@ class _BarraRondas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Semantics(
       container: true,
@@ -184,7 +186,7 @@ class _BarraRondas extends StatelessWidget {
       child: Row(
         children: [
           Text(
-            'Ronda $ronda de $total',
+            l10n.proveedorNegociacionRonda(ronda, total),
             style: TipografiaCampo.tituloSeccion.copyWith(color: paleta.texto),
           ),
           const SizedBox(width: EspaciadoCampo.m),
@@ -221,6 +223,7 @@ class _Cuerpo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<NegociacionCubit>();
     switch (estado.fase) {
       case FaseNegociacion.cargando:
@@ -235,16 +238,14 @@ class _Cuerpo extends StatelessWidget {
       case FaseNegociacion.sinRed:
         return ListView(
           children: [
-            const BannerSinSenalCampo(
-              mensaje: 'abrir la negociación necesita red.',
+            BannerSinSenalCampo(
+              mensaje: l10n.proveedorNegociacionAbrirNegociacionNecesitaRed,
             ),
             EstadoErrorMarketplace(
               sinConexion: true,
               tablaSinRed: true,
-              titulo: 'Sin conexión',
-              detalle:
-                  'Negociar es entre dos personas y necesita señal. Nada se '
-                  'perdió: reintenta cuando la tengas.',
+              titulo: l10n.proveedorNegociacionSinConexion,
+              detalle: l10n.proveedorNegociacionNegociarEntreDosPersonas,
               onReintentar: cubit.cargar,
             ),
           ],
@@ -253,8 +254,10 @@ class _Cuerpo extends StatelessWidget {
         return ListView(
           children: [
             EstadoErrorMarketplace(
-              titulo: 'No pudimos abrir la negociación',
-              detalle: estado.mensaje ?? 'Intenta de nuevo en un momento.',
+              titulo: l10n.proveedorNegociacionPudimosAbrirNegociacion,
+              detalle:
+                  estado.mensaje ??
+                  l10n.proveedorNegociacionIntentaNuevoMomento,
               onReintentar: cubit.cargar,
             ),
           ],
@@ -268,11 +271,13 @@ class _Cuerpo extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: EspaciadoCampo.m),
                 child: BurbujaNegociacionCampo(
                   autor: r.delPiloto ? AutorRonda.piloto : AutorRonda.cliente,
-                  quien: r.delPiloto ? 'TÚ' : null,
+                  quien: r.delPiloto ? l10n.proveedorNegociacionTu2 : null,
                   ronda: r.numero,
                   precioPorHectarea: CifrasNegociacion.bsHa(r.precioHa),
                   total: CifrasNegociacion.bs(r.total),
-                  nota: r.publicado ? 'Publicado' : r.nota,
+                  nota: r.publicado
+                      ? l10n.proveedorNegociacionPublicado
+                      : r.nota,
                   conBarra: false,
                 ),
               ),
@@ -304,39 +309,41 @@ class _AvisoTurno extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final ronda = estado.rondaActual;
     final (texto, icono) = switch (estado) {
       _ when estado.enviado == 'adjudicada' => (
-        'Aceptaste: la solicitud es tuya. El contacto del cliente llega a '
-            'Servicio.',
+        l10n.proveedorNegociacionAceptasteSolicitudTuyaContacto,
         Icons.verified_rounded,
       ),
       _ when estado.enviado == 'rechazada' => (
-        'Rechazaste la oferta. La negociación se cerró.',
+        l10n.proveedorNegociacionRechazasteOfertaNegociacionCerro,
         Icons.block_rounded,
       ),
       _ when estado.enviado == 'retirada' => (
-        'Retiraste tu oferta. La negociación se cerró.',
+        l10n.proveedorNegociacionRetirasteOfertaNegociacionCerro,
         Icons.undo_rounded,
       ),
       _ when estado.esperaAlCliente => (
-        'Esperando al cliente · te avisamos cuando responda',
+        l10n.proveedorNegociacionEsperandoClienteAvisamosCuando,
         Icons.hourglass_top_rounded,
       ),
       _ when estado.cerrada => (
-        'Esta negociación ya se cerró. No se puede ofertar de nuevo.',
+        l10n.proveedorNegociacionEstaNegociacionCerroPuede,
         Icons.lock_outline_rounded,
       ),
       _ when estado.esDefinitiva || ronda >= NegociacionEstado.rondasMaximas =>
-        (
-          'Tu turno · es la ronda final: aceptas o la negociación se cierra',
-          Icons.flag_rounded,
-        ),
+        (l10n.proveedorNegociacionTurnoRondaFinalAceptas, Icons.flag_rounded),
       _ when estado.esMiTurno => (
         ronda == NegociacionEstado.rondasMaximas - 1
-            ? 'Tu turno · después solo queda la ronda ${NegociacionEstado.rondasMaximas}'
-            : 'Tu turno · ronda $ronda de ${NegociacionEstado.rondasMaximas}',
+            ? l10n.proveedorNegociacionTurnoDespuesSoloQueda(
+                NegociacionEstado.rondasMaximas,
+              )
+            : l10n.proveedorNegociacionTurnoRonda(
+                ronda,
+                NegociacionEstado.rondasMaximas,
+              ),
         Icons.bolt_rounded,
       ),
       _ => ('', Icons.info_outline_rounded),
@@ -399,6 +406,7 @@ class _Panel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final cubit = context.read<NegociacionCubit>();
     final alto = paleta.esCampo
@@ -423,7 +431,9 @@ class _Panel extends StatelessWidget {
             const SizedBox(height: EspaciadoCampo.m),
           ],
           BotonPrincipalMarketplace(
-            texto: hecho ? 'Ver mis ofertas' : 'Volver',
+            texto: hecho
+                ? l10n.proveedorNegociacionVerMisOfertas
+                : l10n.proveedorNegociacionVolver,
             alto: alto,
             onPressed: () => Navigator.of(context).maybePop(),
           ),
@@ -435,7 +445,7 @@ class _Panel extends StatelessWidget {
                 foregroundColor: paleta.error,
               ),
               onPressed: estado.enviando ? null : cubit.retirar,
-              child: const Text('Retirar mi oferta'),
+              child: Text(l10n.proveedorNegociacionRetirarOferta),
             ),
           ],
         ],
@@ -465,7 +475,7 @@ class _Panel extends StatelessWidget {
                 minimo: 1,
                 maximo: 99999,
                 unidad: 'Bs/ha',
-                etiqueta: 'Tu precio por hectárea',
+                etiqueta: l10n.proveedorNegociacionPrecioPorHectarea2,
                 alturaCampo: paleta.esCampo,
                 onCambio: cubit.cambiarPrecio,
               ),
@@ -477,7 +487,9 @@ class _Panel extends StatelessWidget {
                 child: Text(
                   estado.total == null
                       ? ''
-                      : 'total ${FormatoMarketplace.bs(estado.total!)}',
+                      : l10n.proveedorNegociacionTotal2(
+                          FormatoMarketplace.bs(estado.total!),
+                        ),
                   style: TipografiaCampo.datoMono.copyWith(
                     fontSize: 14,
                     color: paleta.textoSecundario,
@@ -499,8 +511,10 @@ class _Panel extends StatelessWidget {
                       : cubit.aceptar,
                   child: Text(
                     aceptable == null
-                        ? 'Aceptar'
-                        : 'Aceptar ${CifrasNegociacion.bsHa(aceptable)}',
+                        ? l10n.proveedorNegociacionAceptar2
+                        : l10n.proveedorNegociacionAceptar3(
+                            CifrasNegociacion.bsHa(aceptable),
+                          ),
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -510,8 +524,8 @@ class _Panel extends StatelessWidget {
                 Expanded(
                   child: BotonPrincipalMarketplace(
                     texto: estado.sinRed
-                        ? 'Reintentar ${estado.precio}'
-                        : 'Enviar ${estado.precio}',
+                        ? l10n.proveedorNegociacionReintentar(estado.precio)
+                        : l10n.proveedorNegociacionEnviar(estado.precio),
                     alto: alto,
                     cargando: estado.enviando,
                     onPressed: estado.precio == aceptable?.toBigInt().toInt()
@@ -528,7 +542,7 @@ class _Panel extends StatelessWidget {
                       foregroundColor: paleta.error,
                     ),
                     onPressed: estado.enviando ? null : cubit.rechazar,
-                    child: const Text('Rechazar'),
+                    child: Text(l10n.proveedorNegociacionRechazar),
                   ),
                 ),
               ],

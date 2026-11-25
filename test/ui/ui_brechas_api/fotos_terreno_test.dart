@@ -7,6 +7,7 @@ import 'package:agrocom_field/nucleo/marketplace/terrenos/fotos_terreno_reposito
 import 'package:agrocom_field/nucleo/marketplace/terrenos/presentation/fotos_terreno_cubit.dart';
 import 'package:agrocom_field/nucleo/marketplace/terrenos/presentation/galeria_fotos_terreno.dart';
 import 'package:agrocom_field/nucleo/marketplace/terrenos/presentation/visor_fotos_terreno.dart';
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -45,7 +46,7 @@ class _Inestable extends FotosTerrenoDemo {
 }
 
 FotosTerrenoCubit _cubit(FotosTerrenoRepositorio repo) =>
-    FotosTerrenoCubit(repo, preparadorDePrueba());
+    FotosTerrenoCubit(repo, preparadorDePrueba(), AppLocalizationsEs());
 
 const _fotosDelServidor = [
   FotoTerreno(id: 1, url: 'assets/imagenes/fondo_dron_pulverizando.jpg'),

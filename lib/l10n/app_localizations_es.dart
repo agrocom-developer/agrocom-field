@@ -2105,4 +2105,1460 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get calificarExcelente => 'Excelente';
+
+  @override
+  String get terrenosSubePublicar => 'se sube al publicar';
+
+  @override
+  String get terrenosPudoSubir => 'no se pudo subir';
+
+  @override
+  String get terrenosFotosDelTerreno => 'Fotos del terreno';
+
+  @override
+  String get terrenosClienteSubioFotosDel =>
+      'El cliente no subió fotos del terreno. Pregúntale por el estado del lote en el chat si te eligen.';
+
+  @override
+  String terrenosFoto(int _actual, int fotos) {
+    return 'Foto $_actual de $fotos';
+  }
+
+  @override
+  String get terrenosCerrar => 'Cerrar';
+
+  @override
+  String terrenosFotos(int fotos, int maximo) {
+    return '$fotos de $maximo fotos';
+  }
+
+  @override
+  String get terrenosAgregaFotosDelEstado =>
+      'Agrega fotos del estado del terreno: el piloto las ve antes de ofertar y ajusta mejor su precio.';
+
+  @override
+  String get terrenosSubenCuandoPubliquesSolicitud =>
+      'Se suben cuando publiques la solicitud.';
+
+  @override
+  String get terrenosPilotoLasAntesOfertar =>
+      'El piloto las ve antes de ofertar.';
+
+  @override
+  String get terrenosTomarUnaFoto => 'Tomar una foto';
+
+  @override
+  String get terrenosElegirGaleria => 'Elegir de la galería';
+
+  @override
+  String get terrenosAgregarUnaFotoDel => 'Agregar una foto del terreno';
+
+  @override
+  String get terrenosAgregar => 'Agregar';
+
+  @override
+  String get proveedorDronDronRegistrado => '1 dron registrado';
+
+  @override
+  String proveedorDronDronesRegistrados(int drones) {
+    return '$drones drones registrados';
+  }
+
+  @override
+  String get proveedorDronMisDrones => 'Mis drones';
+
+  @override
+  String get proveedorDronPudimosCargarTusDrones =>
+      'No pudimos cargar tus drones';
+
+  @override
+  String get proveedorDronRevisaConexionVolveIntentar =>
+      'Revisá la conexión y volvé a intentar.';
+
+  @override
+  String get proveedorDronTodaviaRegistrasteDrones =>
+      'Todavía no registraste drones';
+
+  @override
+  String get proveedorDronSinDronAprobadoLlegan =>
+      'Sin un dron aprobado no llegan ofertas. Cada dron lo aprueba un administrador.';
+
+  @override
+  String get referenciasBuscandoPrecioReferencia =>
+      'Buscando el precio de referencia';
+
+  @override
+  String get referenciasTodaviaHayPrecioReferencia =>
+      'Todavía no hay un precio de referencia para esta aplicación. Escribe el que te parezca justo.';
+
+  @override
+  String get referenciasSinConexionParaTraer =>
+      'Sin conexión para traer el precio de referencia.';
+
+  @override
+  String get referenciasPudimosTraerPrecioReferencia =>
+      'No pudimos traer el precio de referencia.';
+
+  @override
+  String referenciasReferenciaPor(String precio) {
+    return 'Referencia: $precio por ha';
+  }
+
+  @override
+  String get referenciasEstasUsandoEstePrecio => 'Estás usando este precio';
+
+  @override
+  String get referenciasUsar => 'Usar';
+
+  @override
+  String get referenciasReintentar => 'Reintentar';
+
+  @override
+  String pagoPagoConfirmado(String detalle) {
+    return 'Pago confirmado. $detalle';
+  }
+
+  @override
+  String get pagoPagoConfirmado2 => 'Pago confirmado';
+
+  @override
+  String get pagoQuedoRegistradoClienteHay =>
+      'Ya quedó registrado y el cliente lo ve. No hay nada más que hacer.';
+
+  @override
+  String get pagoPilotoConfirmoQueRecibio =>
+      'El piloto confirmó que recibió el pago. Gracias por usar Agrocom.';
+
+  @override
+  String get pagoPudimosRevisarPago => 'No pudimos revisar el pago.';
+
+  @override
+  String get pagoReintentar => 'Reintentar';
+
+  @override
+  String get pagoPagoPendiente => 'Pago pendiente';
+
+  @override
+  String get pagoPagasPilotoDirectamenteCuando =>
+      'Le pagas al piloto directamente. Cuando él confirme que lo recibió, lo verás aquí.';
+
+  @override
+  String get pagoConfirmasQueRecibistePago =>
+      '¿Confirmas que recibiste el pago?';
+
+  @override
+  String get pagoSoloPuedeConfirmarUna =>
+      'Solo se puede confirmar una vez. El cliente verá que el pago quedó confirmado.';
+
+  @override
+  String get pagoTodavia => 'Todavía no';
+
+  @override
+  String get pagoRecibi => 'Sí, lo recibí';
+
+  @override
+  String get pagoPagaron => '¿Ya te pagaron?';
+
+  @override
+  String get pagoClientePagaDirectamenteCuando =>
+      'El cliente te paga directamente. Cuando lo recibas, confírmalo aquí: la app no cobra ni mueve dinero.';
+
+  @override
+  String get pagoComoPagoOpcional => '¿Cómo te pagó? (opcional)';
+
+  @override
+  String get pagoPudimosConfirmarPago => 'No pudimos confirmar el pago.';
+
+  @override
+  String get pagoRecibiPago => 'Ya recibí el pago';
+
+  @override
+  String get marketplaceAccesoFumigacionConDron => 'Fumigación con dron';
+
+  @override
+  String get marketplaceAccesoFumigacionConDronPrecio =>
+      'Fumigación con dron, al precio que acuerdes';
+
+  @override
+  String get marketplaceAccesoPublicaLoteRecibeOfertas =>
+      'Publica tu lote, recibe ofertas de pilotos y elige. El pago es directo con el piloto.';
+
+  @override
+  String get marketplaceAccesoComoVasUsarAgrocom => '¿Cómo vas a usar Agrocom?';
+
+  @override
+  String get marketplaceAccesoEligeRol => 'Elige tu rol';
+
+  @override
+  String marketplaceAccesoContinuarComo(String enBoton) {
+    return 'Continuar como $enBoton';
+  }
+
+  @override
+  String get marketplaceAccesoTengoCuenta => 'Ya tengo cuenta';
+
+  @override
+  String fotoPerfilFotoPerfilTocaPara(String nombre) {
+    return 'Foto de perfil de $nombre. Toca para cambiarla';
+  }
+
+  @override
+  String get fotoPerfilSinFotoPerfilToca =>
+      'Sin foto de perfil. Toca para agregar una';
+
+  @override
+  String get fotoPerfilSubiendoFoto => 'Subiendo foto…';
+
+  @override
+  String get fotoPerfilCambiarFoto => 'Cambiar foto';
+
+  @override
+  String get fotoPerfilAgregarFoto => 'Agregar foto';
+
+  @override
+  String get fotoPerfilQuitar => 'Quitar';
+
+  @override
+  String get fotoPerfilConUnaFotoCliente =>
+      'Con una foto, el cliente te reconoce al llegar al lote.';
+
+  @override
+  String get fotoPerfilReintentar => 'Reintentar';
+
+  @override
+  String get fotoPerfilTomarUnaFoto => 'Tomar una foto';
+
+  @override
+  String get fotoPerfilElegirGaleria => 'Elegir de la galería';
+
+  @override
+  String get fotoPerfilQuitarFoto => 'Quitar la foto';
+
+  @override
+  String get fotoSinConexionReintentar =>
+      'Sin conexión. Revisa tu señal y vuelve a intentar.';
+
+  @override
+  String get fotoPerfilNoPreparada =>
+      'No pudimos preparar la foto. Prueba con otra.';
+
+  @override
+  String get fotoPerfilQuitada => 'Quitamos tu foto. Verás tus iniciales.';
+
+  @override
+  String get fotoPerfilNoQuitada =>
+      'No pudimos quitar la foto. Intenta de nuevo.';
+
+  @override
+  String get fotoPerfilActualizada =>
+      'Listo: tu foto de perfil está actualizada.';
+
+  @override
+  String get fotoPerfilNoSubida =>
+      'No pudimos subir la foto. Intenta de nuevo.';
+
+  @override
+  String get pagoNoPudimosRevisar =>
+      'No pudimos revisar el pago. Intenta de nuevo.';
+
+  @override
+  String get pagoNoPudimosConfirmar =>
+      'No pudimos confirmar el pago. Tu confirmación no se perdió: intenta de nuevo.';
+
+  @override
+  String get pagoSoloTitular =>
+      'Solo el titular del proveedor puede confirmar el pago. Pídele que lo haga desde su cuenta.';
+
+  @override
+  String terrenosFotosMaximo(int maximo) {
+    return 'Ya tienes $maximo fotos, el máximo. Quita una para agregar otra.';
+  }
+
+  @override
+  String get terrenosFotoNoPreparada =>
+      'No pudimos preparar la foto. Prueba con otra.';
+
+  @override
+  String get terrenosFotoGuardada => 'Foto guardada.';
+
+  @override
+  String get terrenosFotoNoSubida =>
+      'No pudimos subir la foto. Intenta de nuevo.';
+
+  @override
+  String get terrenosFotoQuitada => 'Quitamos la foto.';
+
+  @override
+  String get terrenosFotoNoQuitada =>
+      'No pudimos quitar la foto. Intenta de nuevo.';
+
+  @override
+  String get fotoMuyPesada =>
+      'La foto es muy pesada. Elige otra o toma una nueva.';
+
+  @override
+  String get componentesEnviando => 'Enviando…';
+
+  @override
+  String get componentesAceptarServicio => 'Aceptar servicio';
+
+  @override
+  String uiMapaDelLote(String nombre, String zona) {
+    return 'Mapa del lote $nombre, $zona';
+  }
+
+  @override
+  String get uiMapaLotes => 'Mapa de lotes';
+
+  @override
+  String uiEstado(String etiqueta) {
+    return 'Estado: $etiqueta';
+  }
+
+  @override
+  String uiCurso(String texto) {
+    return '$texto, en curso';
+  }
+
+  @override
+  String get uiMostrarContrasena => 'Mostrar contraseña';
+
+  @override
+  String get uiOcultarContrasena => 'Ocultar contraseña';
+
+  @override
+  String proveedorDronBateriaCiclosPorCiento(
+    int ciclosBateria,
+    int cicloMaximoBateria,
+    int porcentaje,
+  ) {
+    return 'Batería: $ciclosBateria de $cicloMaximoBateria ciclos, $porcentaje por ciento de la vida útil';
+  }
+
+  @override
+  String get proveedorDronCiclosBateria => 'CICLOS DE BATERÍA';
+
+  @override
+  String proveedorDronDe(int cicloMaximoBateria) {
+    return ' de $cicloMaximoBateria';
+  }
+
+  @override
+  String get proveedorDronBateriaCumplioVidaUtil =>
+      'La batería cumplió su vida útil. Hay que cambiarla.';
+
+  @override
+  String proveedorDronQuedanCiclosPlanificaRecambio(int ciclosRestantes) {
+    return 'Quedan $ciclosRestantes ciclos. Planificá el recambio.';
+  }
+
+  @override
+  String proveedorDronQuedanCiclosVidaUtil(int ciclosRestantes) {
+    return 'Quedan $ciclosRestantes ciclos de vida útil.';
+  }
+
+  @override
+  String get proveedorPerfilEstasHabilitadoParaRecibir =>
+      'Estás habilitado para recibir ofertas.';
+
+  @override
+  String get proveedorPerfilAdministradorEstaRevisandoTus =>
+      'Un administrador está revisando tus datos. Te avisamos cuando puedas recibir ofertas.';
+
+  @override
+  String get proveedorPerfilRecibisOfertasMientrasDure =>
+      'No recibís ofertas mientras dure la suspensión.';
+
+  @override
+  String get proveedorPerfilSolicitudAproboPodesCorregir =>
+      'Tu solicitud no se aprobó. Podés corregir los datos y reenviarla.';
+
+  @override
+  String proveedorPerfilMotivo(String motivo) {
+    return 'Motivo: $motivo';
+  }
+
+  @override
+  String get proveedorPerfilServicios => 'SERVICIOS';
+
+  @override
+  String get proveedorPerfilHectareas => 'HECTÁREAS';
+
+  @override
+  String get proveedorPerfilCancelacion => 'CANCELACIÓN';
+
+  @override
+  String proveedorPerfilVencio(String vence) {
+    return 'Venció el $vence';
+  }
+
+  @override
+  String proveedorPerfilVence(String vence) {
+    return 'Vence el $vence';
+  }
+
+  @override
+  String proveedorPerfilCalificacionPromedioSobreCalificaciones(
+    String promedio,
+    int total,
+  ) {
+    return 'Calificación promedio $promedio de 5, sobre $total calificaciones';
+  }
+
+  @override
+  String get proveedorPerfilCalificacion => '1 calificación';
+
+  @override
+  String proveedorPerfilCalificaciones(int total) {
+    return '$total calificaciones';
+  }
+
+  @override
+  String terrenosFotoDelTerreno(int numero, String estado) {
+    return 'Foto $numero del terreno, $estado';
+  }
+
+  @override
+  String get terrenosReintentar => 'Reintentar';
+
+  @override
+  String terrenosQuitarFoto(int numero) {
+    return 'Quitar la foto $numero';
+  }
+
+  @override
+  String get proveedorAccesoEntraCuenta => 'Entra a tu cuenta';
+
+  @override
+  String get proveedorAccesoConUsuarioContrasena =>
+      'Con tu usuario y tu contraseña.';
+
+  @override
+  String get proveedorAccesoUsuario => 'Usuario';
+
+  @override
+  String get proveedorAccesoEscribeUsuario => 'Escribe tu usuario.';
+
+  @override
+  String get proveedorAccesoContrasena => 'Contraseña';
+
+  @override
+  String get proveedorAccesoEscribeContrasena => 'Escribe tu contraseña.';
+
+  @override
+  String get proveedorAccesoEntrar => 'Entrar';
+
+  @override
+  String get proveedorAccesoSoyPilotoQuieroRegistrarme =>
+      'Soy piloto y quiero registrarme';
+
+  @override
+  String get proveedorAccesoDatosPersonales => 'Datos personales';
+
+  @override
+  String get proveedorAccesoLicencia => 'Tu licencia';
+
+  @override
+  String get proveedorAccesoEquipo => 'Tu equipo';
+
+  @override
+  String get proveedorAccesoFotosDelDron => 'Fotos del dron';
+
+  @override
+  String get proveedorAccesoAsiIdentificamosContactanLos =>
+      'Así te identificamos y te contactan los clientes.';
+
+  @override
+  String get proveedorAccesoAdministradorRevisaAntesQue =>
+      'Un administrador la revisa antes de que veas solicitudes.';
+
+  @override
+  String get proveedorAccesoDronVehiculoRevisamosAntes =>
+      'Tu dron es tu vehículo: lo revisamos antes de aprobarlo.';
+
+  @override
+  String get proveedorAccesoFrontalLateralPlacaSerie =>
+      'Frontal, lateral y placa de serie.';
+
+  @override
+  String get proveedorAccesoEsteDatoObligatorio => 'Este dato es obligatorio.';
+
+  @override
+  String get proveedorAccesoEscribeNumeroMayorCero =>
+      'Escribe un número mayor a cero.';
+
+  @override
+  String get proveedorAccesoEligeFecha => 'Elige la fecha';
+
+  @override
+  String get proveedorAccesoEligeUnaFecha => 'Elige una fecha.';
+
+  @override
+  String get proveedorAccesoCarnetIdentidad => 'Carnet de identidad';
+
+  @override
+  String get proveedorAccesoFechaNacimiento => 'Fecha de nacimiento';
+
+  @override
+  String get proveedorAccesoTelefono => 'Teléfono';
+
+  @override
+  String get proveedorAccesoConEsteUsuarioEntras =>
+      'Con este usuario entras a la app. No usa correo.';
+
+  @override
+  String get proveedorAccesoUsaMenosCaracteres => 'Usa al menos 8 caracteres.';
+
+  @override
+  String get proveedorAccesoNumeroLicenciaPiloto =>
+      'Número de licencia de piloto';
+
+  @override
+  String get proveedorAccesoVence => 'Vence el';
+
+  @override
+  String get proveedorAccesoCategoriaHabilitacion =>
+      'Categoría de habilitación';
+
+  @override
+  String get proveedorAccesoComoFiguraLicencia => 'Como figura en tu licencia.';
+
+  @override
+  String get proveedorAccesoRevisionTerminarRegistro =>
+      'En revisión al terminar el registro';
+
+  @override
+  String get proveedorAccesoNumeroSerie => 'Número de serie';
+
+  @override
+  String get proveedorAccesoAnoOpcional => 'Año (opcional)';
+
+  @override
+  String get proveedorAccesoCapacidadDelTanqueLitros =>
+      'Capacidad del tanque (litros)';
+
+  @override
+  String get proveedorAccesoAnchoPasadaMetros => 'Ancho de pasada (metros)';
+
+  @override
+  String get proveedorAccesoRegistroPiloto => 'Registro de piloto';
+
+  @override
+  String get proveedorAccesoPasoAnterior => 'Paso anterior';
+
+  @override
+  String get proveedorAccesoContinuar => 'Continuar';
+
+  @override
+  String get proveedorAccesoCrearCuenta => 'Crear mi cuenta';
+
+  @override
+  String get proveedorAccesoReintentar => 'Reintentar';
+
+  @override
+  String get proveedorAccesoFaltanLasFotosObligatorias =>
+      'Faltan las fotos obligatorias: frontal, lateral y placa de serie.';
+
+  @override
+  String proveedorAccesoPaso(String paso, String total, String titulo) {
+    return 'Paso $paso de $total, $titulo';
+  }
+
+  @override
+  String proveedorAccesoPaso2(String paso, String total) {
+    return 'PASO $paso DE $total';
+  }
+
+  @override
+  String get proveedorAccesoAdministradorLasRevisaAntes =>
+      'Un administrador las revisa antes de aprobar tu dron. Cada foto se achica sola a menos de 300 KB.';
+
+  @override
+  String proveedorAccesoFoto(String etiqueta) {
+    return 'Foto $etiqueta';
+  }
+
+  @override
+  String get proveedorAccesoLista => 'Lista';
+
+  @override
+  String get proveedorAccesoFalta => 'Falta';
+
+  @override
+  String proveedorAccesoFotoDelDron(String etiqueta) {
+    return 'Foto $etiqueta del dron';
+  }
+
+  @override
+  String get proveedorAccesoTomarOtra => 'Tomar otra';
+
+  @override
+  String get proveedorAccesoCamara => 'Cámara';
+
+  @override
+  String get proveedorAccesoGaleria => 'Galería';
+
+  @override
+  String get proveedorAccesoQuitar => 'Quitar';
+
+  @override
+  String get proveedorAccesoRegistroEstaRevision =>
+      'Tu registro está en revisión';
+
+  @override
+  String get proveedorAccesoAdministradorRevisaLicenciaDron =>
+      'Un administrador revisa tu licencia y tu dron. Mientras tanto no verás solicitudes; te avisamos cuando estés aprobado.';
+
+  @override
+  String get proveedorAccesoEntrarApp => 'Entrar a la app';
+
+  @override
+  String get proveedorNegociacionLasSolicitudesLasOfertas =>
+      'las solicitudes y las ofertas necesitan red.';
+
+  @override
+  String get proveedorNegociacionBuscarZonaLote => 'Buscar zona o lote';
+
+  @override
+  String get proveedorNegociacionFiltrosHayFiltrosAplicados =>
+      'Filtros, hay filtros aplicados';
+
+  @override
+  String get proveedorNegociacionFiltros => 'Filtros';
+
+  @override
+  String get proveedorNegociacionCerca => 'Cerca de mí';
+
+  @override
+  String get proveedorNegociacion50Ha => '+50 ha';
+
+  @override
+  String get proveedorNegociacionVenceHoy => 'Vence hoy';
+
+  @override
+  String get proveedorNegociacionAbierta => 'Abierta';
+
+  @override
+  String get proveedorNegociacionSolicitudAbierta => 'Solicitud abierta';
+
+  @override
+  String proveedorNegociacionLote(String cultivo) {
+    return 'Lote de $cultivo';
+  }
+
+  @override
+  String get proveedorNegociacionAceptarNecesitaRedReintenta =>
+      'aceptar necesita red. Reintenta con señal.';
+
+  @override
+  String proveedorNegociacionOfertaEnviadaPorSigues(String precioHa) {
+    return 'Oferta enviada a $precioHa por ha. La sigues en «Ofertas».';
+  }
+
+  @override
+  String get proveedorNegociacionNegociacionEstaSolicitudCerro =>
+      'Tu negociación en esta solicitud ya se cerró. No puedes ofertar de nuevo.';
+
+  @override
+  String get proveedorNegociacionOfertasteAquiSigueNegociacion =>
+      'Ya ofertaste aquí. Sigue la negociación en «Ofertas».';
+
+  @override
+  String get proveedorNegociacionContraofertar => 'Contraofertar';
+
+  @override
+  String proveedorNegociacionAceptar(String precioHaPropuesto) {
+    return 'Aceptar $precioHaPropuesto';
+  }
+
+  @override
+  String get proveedorNegociacionVerDetalleDelLote => 'Ver detalle del lote';
+
+  @override
+  String get proveedorNegociacionSinConexion => 'Sin conexión';
+
+  @override
+  String get proveedorNegociacionMapaSolicitudesNecesitaSenal =>
+      'El mapa de solicitudes necesita señal: es una competencia entre pilotos. Reintenta cuando la tengas.';
+
+  @override
+  String get proveedorNegociacionPudimosCargarLasSolicitudes =>
+      'No pudimos cargar las solicitudes';
+
+  @override
+  String get proveedorNegociacionIntentaNuevoMomento =>
+      'Intenta de nuevo en un momento.';
+
+  @override
+  String get proveedorNegociacionNingunaSolicitudConEstos =>
+      'Ninguna solicitud con estos filtros';
+
+  @override
+  String get proveedorNegociacionHaySolicitudesAbiertasAhora =>
+      'No hay solicitudes abiertas ahora';
+
+  @override
+  String get proveedorNegociacionQuitaAlgunFiltroPrueba =>
+      'Quita algún filtro o prueba con otra zona.';
+
+  @override
+  String get proveedorNegociacionActivaLosAvisosPerfil =>
+      'Activa los avisos en Perfil y te decimos cuando llegue una en tus zonas.';
+
+  @override
+  String get proveedorNegociacionCargando => 'Cargando…';
+
+  @override
+  String get proveedorNegociacionVerMasSolicitudes => 'Ver más solicitudes';
+
+  @override
+  String get proveedorNegociacionDondeHayTrabajo => 'Dónde hay trabajo';
+
+  @override
+  String get proveedorNegociacionOtrasZonas => 'Otras zonas';
+
+  @override
+  String proveedorNegociacionSolicitudes(
+    String nombre,
+    int cuantas,
+    String ha,
+  ) {
+    return '$nombre: $cuantas solicitudes, $ha';
+  }
+
+  @override
+  String proveedorNegociacionHa(int cuantas, String ha) {
+    return '$cuantas · $ha ha';
+  }
+
+  @override
+  String get proveedorNegociacionOfertaste => 'Ofertaste';
+
+  @override
+  String get proveedorNegociacionCerrada => 'Cerrada';
+
+  @override
+  String proveedorNegociacionTotal(String montoPropuesto) {
+    return 'total $montoPropuesto';
+  }
+
+  @override
+  String get proveedorNegociacionSinOfertas => 'sin ofertas';
+
+  @override
+  String get proveedorNegociacionFiltrarSolicitudes => 'Filtrar solicitudes';
+
+  @override
+  String get proveedorNegociacionHectareasDesde => 'Hectáreas desde';
+
+  @override
+  String get proveedorNegociacionHectareasHasta => 'Hectáreas hasta';
+
+  @override
+  String get proveedorNegociacionPorDesde => 'Bs por ha desde';
+
+  @override
+  String get proveedorNegociacionPorHasta => 'Bs por ha hasta';
+
+  @override
+  String get proveedorNegociacionCultivo => 'Cultivo';
+
+  @override
+  String get proveedorNegociacionOrdenarPor => 'Ordenar por';
+
+  @override
+  String get proveedorNegociacionVerSolicitudes => 'Ver solicitudes';
+
+  @override
+  String get proveedorNegociacionQuitarFiltros => 'Quitar filtros';
+
+  @override
+  String get proveedorNegociacionAvisos => 'Avisos';
+
+  @override
+  String get proveedorNegociacionPudimosCargarTusAvisos =>
+      'No pudimos cargar tus avisos';
+
+  @override
+  String get proveedorNegociacionEligeQueQuieresEnterarte =>
+      'Elige de qué quieres enterarte. Los avisos de adjudicación, cierre, cuenta y disputas no se pueden apagar.';
+
+  @override
+  String get proveedorNegociacionNuevasSolicitudes => 'Nuevas solicitudes';
+
+  @override
+  String get proveedorNegociacionAvisamosCuandoClientePublica =>
+      'Te avisamos cuando un cliente publica una solicitud en tus zonas. Así ofertas antes que los demás.';
+
+  @override
+  String get proveedorNegociacionZonas => 'Zonas';
+
+  @override
+  String get proveedorNegociacionTodasLasZonas => 'Todas las zonas';
+
+  @override
+  String get proveedorNegociacionHectareasMinimas => 'Hectáreas mínimas';
+
+  @override
+  String get proveedorNegociacionCualquiera => 'Cualquiera';
+
+  @override
+  String proveedorNegociacionHa2(String ha) {
+    return '$ha ha';
+  }
+
+  @override
+  String get proveedorNegociacionOfertasContraofertas =>
+      'Ofertas y contraofertas';
+
+  @override
+  String get proveedorNegociacionCuandoClienteRespondeOferta =>
+      'Cuando el cliente responde a tu oferta.';
+
+  @override
+  String get proveedorNegociacionMensajes => 'Mensajes';
+
+  @override
+  String get proveedorNegociacionCuandoClienteEscribeChat =>
+      'Cuando el cliente te escribe en el chat.';
+
+  @override
+  String get proveedorNegociacionCalificaciones => 'Calificaciones';
+
+  @override
+  String get proveedorNegociacionCuandoClienteCalifica =>
+      'Cuando un cliente te califica.';
+
+  @override
+  String get proveedorNegociacionSuperficie => 'Superficie';
+
+  @override
+  String get proveedorNegociacionPrecioOfrecido => 'Precio ofrecido';
+
+  @override
+  String get proveedorNegociacionSinConexionVesLos =>
+      'Sin conexión. Ves los mensajes que ya bajaron; los nuevos llegan cuando vuelva la señal.';
+
+  @override
+  String get proveedorNegociacionTodaviaHayMensajes =>
+      'Todavía no hay mensajes';
+
+  @override
+  String get proveedorNegociacionEscribeleClienteParaCoordinar =>
+      'Escríbele al cliente para coordinar cómo llegar al lote y a qué hora.';
+
+  @override
+  String get proveedorNegociacionServicioCerroPuedesLeer =>
+      'El servicio ya cerró: puedes leer la conversación pero no escribir.';
+
+  @override
+  String get proveedorNegociacionEscribeMensaje => 'Escribe un mensaje';
+
+  @override
+  String get proveedorNegociacionEnviarMensaje => 'Enviar mensaje';
+
+  @override
+  String get proveedorNegociacionSolicitud => 'Solicitud';
+
+  @override
+  String get proveedorNegociacionPudimosAbrirSolicitud =>
+      'No pudimos abrir la solicitud';
+
+  @override
+  String get proveedorNegociacionParaVerDetalleOfertar =>
+      'Para ver el detalle y ofertar necesitas señal. Reintenta cuando la tengas.';
+
+  @override
+  String get proveedorNegociacionClientePropone => 'El cliente propone';
+
+  @override
+  String proveedorNegociacionPor(String precioHaPropuesto) {
+    return '$precioHaPropuesto por ha';
+  }
+
+  @override
+  String proveedorNegociacionTotalEstimado(String montoPropuesto) {
+    return 'Total estimado $montoPropuesto';
+  }
+
+  @override
+  String get proveedorNegociacionTodaviaTieneOfertasPrimero =>
+      'Todavía no tiene ofertas: sé el primero.';
+
+  @override
+  String get proveedorNegociacionTieneOfertaVigente =>
+      'Ya tiene 1 oferta vigente.';
+
+  @override
+  String proveedorNegociacionTieneOfertasVigentes(int ofertasVigentes) {
+    return 'Ya tiene $ofertasVigentes ofertas vigentes.';
+  }
+
+  @override
+  String get proveedorNegociacionContactoConClienteLlega =>
+      'Tu contacto con el cliente llega solo si te eligen. Hasta entonces no ves su nombre, teléfono ni dirección.';
+
+  @override
+  String proveedorNegociacionOfertaEnviadaPorVes(String precioHa) {
+    return 'Oferta enviada: $precioHa por ha. La ves en «Mis ofertas».';
+  }
+
+  @override
+  String get proveedorNegociacionFechaDeseada => 'Fecha deseada';
+
+  @override
+  String proveedorNegociacionAl(String ventanaDesde, String ventanaHasta) {
+    return '$ventanaDesde al $ventanaHasta';
+  }
+
+  @override
+  String get proveedorNegociacionAplicacion => 'Aplicación';
+
+  @override
+  String get proveedorNegociacionProducto => 'Producto';
+
+  @override
+  String get proveedorNegociacionPoneProducto => 'Pone el producto';
+
+  @override
+  String get proveedorNegociacionCliente => 'El cliente';
+
+  @override
+  String get proveedorNegociacionTu => 'Tú';
+
+  @override
+  String get proveedorNegociacionUrgencia => 'Urgencia';
+
+  @override
+  String get proveedorNegociacionPideAtencionPronta => 'Pide atención pronta';
+
+  @override
+  String get proveedorNegociacionEstadoDelTerreno => 'Estado del terreno';
+
+  @override
+  String get proveedorNegociacionAccesoDificil => 'Acceso difícil';
+
+  @override
+  String get proveedorNegociacionAccesoNormal => 'Acceso normal';
+
+  @override
+  String get proveedorNegociacionComoLlegar => 'Cómo llegar';
+
+  @override
+  String get proveedorNegociacionCuidar => 'Cuidar';
+
+  @override
+  String get proveedorNegociacionObservaciones => 'Observaciones';
+
+  @override
+  String get proveedorNegociacionAbiertaHasta => 'Abierta hasta';
+
+  @override
+  String proveedorNegociacionAceptarPor(String precioHaPropuesto) {
+    return 'Aceptar $precioHaPropuesto por ha';
+  }
+
+  @override
+  String get proveedorNegociacionContraofertarPrecio =>
+      'Contraofertar mi precio';
+
+  @override
+  String get proveedorNegociacionEscribePrecioMayorCero =>
+      'Escribe un precio mayor a cero.';
+
+  @override
+  String get proveedorNegociacionMismoPrecioCambialoAcepta =>
+      'Es el mismo precio. Cámbialo o acepta el actual.';
+
+  @override
+  String proveedorNegociacionPor2(
+    String etiquetaReferencia,
+    String precioReferencia,
+  ) {
+    return '$etiquetaReferencia: $precioReferencia por ha';
+  }
+
+  @override
+  String get proveedorNegociacionPrecioPorHectarea =>
+      'Tu precio por hectárea (Bs)';
+
+  @override
+  String get proveedorNegociacionTotalApareceCuandoEscribes =>
+      'El total aparece cuando escribes el precio.';
+
+  @override
+  String get proveedorNegociacionMensajeParaClienteOpcional =>
+      'Mensaje para el cliente (opcional)';
+
+  @override
+  String get proveedorNegociacionTusOfertasVenCon =>
+      'tus ofertas se ven con red.';
+
+  @override
+  String get proveedorNegociacionQueVesPuedeEstar =>
+      'lo que ves puede estar viejo.';
+
+  @override
+  String get proveedorNegociacionMisOfertas => 'Mis ofertas';
+
+  @override
+  String get proveedorNegociacionActivas => 'Activas';
+
+  @override
+  String get proveedorNegociacionGanadas => 'Ganadas';
+
+  @override
+  String get proveedorNegociacionCerradas => 'Cerradas';
+
+  @override
+  String get proveedorNegociacionParaVerResponderTus =>
+      'Para ver y responder tus ofertas necesitas señal. Reintenta cuando la tengas.';
+
+  @override
+  String get proveedorNegociacionPudimosCargarTusOfertas =>
+      'No pudimos cargar tus ofertas';
+
+  @override
+  String get proveedorNegociacionTodaviaHicisteOfertas =>
+      'Todavía no hiciste ofertas';
+
+  @override
+  String get proveedorNegociacionAbreUnaSolicitudMapa =>
+      'Abre una solicitud en el mapa y acepta el precio del cliente o propón el tuyo.';
+
+  @override
+  String get proveedorNegociacionTienesNegociacionesActivas =>
+      'No tienes negociaciones activas';
+
+  @override
+  String get proveedorNegociacionCuandoOfertesMapaConversacion =>
+      'Cuando ofertes en el mapa, la conversación aparece aquí.';
+
+  @override
+  String get proveedorNegociacionAunGanasteNinguna => 'Aún no ganaste ninguna';
+
+  @override
+  String get proveedorNegociacionLasSolicitudesLasQue =>
+      'Las solicitudes en las que el cliente te elige quedan aquí.';
+
+  @override
+  String get proveedorNegociacionNadaCerradoTodavia => 'Nada cerrado todavía';
+
+  @override
+  String get proveedorNegociacionLasOfertasRechazadasRetiradas =>
+      'Las ofertas rechazadas, retiradas o vencidas se guardan aquí.';
+
+  @override
+  String proveedorNegociacionTurno(int rondaQueSigue) {
+    return 'Tu turno · R$rondaQueSigue/5';
+  }
+
+  @override
+  String proveedorNegociacionEsperando(int rondaQueSigue) {
+    return 'Esperando · R$rondaQueSigue/5';
+  }
+
+  @override
+  String get proveedorNegociacionAceptada => 'Aceptada';
+
+  @override
+  String get proveedorNegociacionRechazada => 'Rechazada';
+
+  @override
+  String proveedorNegociacionSolicitud2(int solicitudId) {
+    return 'Solicitud $solicitudId';
+  }
+
+  @override
+  String proveedorNegociacionHa3(String hectareas) {
+    return '$hectareas ha';
+  }
+
+  @override
+  String get proveedorNegociacionCliente2 => 'Cliente';
+
+  @override
+  String proveedorNegociacionVenceLas(String venceEn, String venceEn2) {
+    return 'Vence $venceEn a las $venceEn2';
+  }
+
+  @override
+  String get proveedorNegociacionOfertarNecesitaRedPrecio =>
+      'ofertar necesita red. Tu precio se conserva y no se envió nada.';
+
+  @override
+  String get proveedorNegociacionVolver => 'Volver';
+
+  @override
+  String get proveedorNegociacionNegociacionConCliente =>
+      'Negociación con el cliente';
+
+  @override
+  String proveedorNegociacionRonda(int ronda, int total) {
+    return 'Ronda $ronda de $total';
+  }
+
+  @override
+  String get proveedorNegociacionAbrirNegociacionNecesitaRed =>
+      'abrir la negociación necesita red.';
+
+  @override
+  String get proveedorNegociacionNegociarEntreDosPersonas =>
+      'Negociar es entre dos personas y necesita señal. Nada se perdió: reintenta cuando la tengas.';
+
+  @override
+  String get proveedorNegociacionPudimosAbrirNegociacion =>
+      'No pudimos abrir la negociación';
+
+  @override
+  String get proveedorNegociacionTu2 => 'TÚ';
+
+  @override
+  String get proveedorNegociacionPublicado => 'Publicado';
+
+  @override
+  String get proveedorNegociacionAceptasteSolicitudTuyaContacto =>
+      'Aceptaste: la solicitud es tuya. El contacto del cliente llega a Servicio.';
+
+  @override
+  String get proveedorNegociacionRechazasteOfertaNegociacionCerro =>
+      'Rechazaste la oferta. La negociación se cerró.';
+
+  @override
+  String get proveedorNegociacionRetirasteOfertaNegociacionCerro =>
+      'Retiraste tu oferta. La negociación se cerró.';
+
+  @override
+  String get proveedorNegociacionEsperandoClienteAvisamosCuando =>
+      'Esperando al cliente · te avisamos cuando responda';
+
+  @override
+  String get proveedorNegociacionEstaNegociacionCerroPuede =>
+      'Esta negociación ya se cerró. No se puede ofertar de nuevo.';
+
+  @override
+  String get proveedorNegociacionTurnoRondaFinalAceptas =>
+      'Tu turno · es la ronda final: aceptas o la negociación se cierra';
+
+  @override
+  String proveedorNegociacionTurnoDespuesSoloQueda(int rondasMaximas) {
+    return 'Tu turno · después solo queda la ronda $rondasMaximas';
+  }
+
+  @override
+  String proveedorNegociacionTurnoRonda(int ronda, int rondasMaximas) {
+    return 'Tu turno · ronda $ronda de $rondasMaximas';
+  }
+
+  @override
+  String get proveedorNegociacionVerMisOfertas => 'Ver mis ofertas';
+
+  @override
+  String get proveedorNegociacionRetirarOferta => 'Retirar mi oferta';
+
+  @override
+  String get proveedorNegociacionPrecioPorHectarea2 => 'Tu precio por hectárea';
+
+  @override
+  String proveedorNegociacionTotal2(String total) {
+    return 'total $total';
+  }
+
+  @override
+  String get proveedorNegociacionAceptar2 => 'Aceptar';
+
+  @override
+  String proveedorNegociacionAceptar3(String aceptable) {
+    return 'Aceptar $aceptable';
+  }
+
+  @override
+  String proveedorNegociacionReintentar(int precio) {
+    return 'Reintentar $precio';
+  }
+
+  @override
+  String proveedorNegociacionEnviar(int precio) {
+    return 'Enviar $precio';
+  }
+
+  @override
+  String get proveedorNegociacionRechazar => 'Rechazar';
+
+  @override
+  String get proveedorEjecucionServicio => 'Servicio';
+
+  @override
+  String get proveedorEjecucionPudimosLeerTusServicios =>
+      'No pudimos leer tus servicios';
+
+  @override
+  String get proveedorEjecucionCierraAbreAppQue =>
+      'Cierra y abre la app. Lo que guardaste sigue aquí.';
+
+  @override
+  String get proveedorEjecucionTodaviaTienesServicioAdjudicado =>
+      'Todavía no tienes un servicio adjudicado';
+
+  @override
+  String get proveedorEjecucionCuandoClienteElijaServicio =>
+      'Cuando un cliente te elija, el servicio aparece aquí con sus datos de contacto. Jala hacia abajo para actualizar.';
+
+  @override
+  String get proveedorEjecucionSinAvanceMarcado => 'Sin avance marcado';
+
+  @override
+  String get proveedorEjecucionRegistroRechazado => '1 registro rechazado';
+
+  @override
+  String proveedorEjecucionRegistrosRechazados(int rechazos) {
+    return '$rechazos registros rechazados';
+  }
+
+  @override
+  String get proveedorEjecucionCosaPorSubir => '1 cosa por subir';
+
+  @override
+  String proveedorEjecucionCosasPorSubir(int pendientes) {
+    return '$pendientes cosas por subir';
+  }
+
+  @override
+  String get proveedorEjecucionChatConCliente => 'Chat con el cliente';
+
+  @override
+  String get proveedorEjecucionEncontramosEsteServicio =>
+      'No encontramos este servicio';
+
+  @override
+  String get proveedorEjecucionPuedeQueClienteHaya =>
+      'Puede que el cliente lo haya cancelado. Vuelve a la lista y actualiza.';
+
+  @override
+  String get proveedorEjecucionTusFotosAvancesQuedan =>
+      'tus fotos y avances quedan guardados y se suben solos.';
+
+  @override
+  String get proveedorEjecucionServidorAceptoAlgoQue =>
+      'El servidor no aceptó algo de lo que guardaste. Avisa a soporte desde el perfil.';
+
+  @override
+  String get proveedorEjecucionEstaGuardadoEsteCelular =>
+      'Está guardado en este celular y se sube solo cuando vuelva la señal.';
+
+  @override
+  String get proveedorEjecucionAvance => 'Avance';
+
+  @override
+  String proveedorEjecucionAvancePorCiento(String porcentaje) {
+    return 'Avance $porcentaje por ciento';
+  }
+
+  @override
+  String get proveedorEjecucionTodaviaMarcasteAvance =>
+      'Todavía no marcaste avance.';
+
+  @override
+  String get proveedorEjecucionSinFotosAvance => 'Sin fotos de avance';
+
+  @override
+  String get proveedorEjecucionFotoAvance => '1 foto de avance';
+
+  @override
+  String proveedorEjecucionFotosAvance(int fotosTotal) {
+    return '$fotosTotal fotos de avance';
+  }
+
+  @override
+  String get proveedorEjecucionMarcarEjecucion => 'Marcar en ejecución';
+
+  @override
+  String get proveedorEjecucionMarcaloCuandoEmpiecesLote =>
+      'Márcalo cuando empieces en el lote. El cliente recibe el aviso.';
+
+  @override
+  String get proveedorEjecucionSubirFotoAvance => 'Subir foto de avance';
+
+  @override
+  String get proveedorEjecucionMarcarAvance => 'Marcar avance';
+
+  @override
+  String get proveedorEjecucionFinalizarServicio => 'Finalizar servicio';
+
+  @override
+  String get proveedorEjecucionEscribeNumeroMayorCero =>
+      'Escribe un número mayor a cero.';
+
+  @override
+  String get proveedorEjecucionPuedePasarLasHectareas =>
+      'No puede pasar de las hectáreas del servicio.';
+
+  @override
+  String get proveedorEjecucionPuedePasar100 => 'No puede pasar de 100 %.';
+
+  @override
+  String get proveedorEjecucionHectareas => 'Hectáreas';
+
+  @override
+  String get proveedorEjecucionPorcentaje => 'Porcentaje';
+
+  @override
+  String get proveedorEjecucionHectareasEjecutadasTotal =>
+      'Hectáreas ejecutadas en total';
+
+  @override
+  String get proveedorEjecucionPorcentajeEjecutadoTotal =>
+      'Porcentaje ejecutado en total';
+
+  @override
+  String get proveedorEjecucionMenosQueUltimoAvance =>
+      'Es menos que tu último avance. Cuéntanos por qué lo corriges.';
+
+  @override
+  String get proveedorEjecucionMotivoCorreccion => 'Motivo de la corrección';
+
+  @override
+  String get proveedorEjecucionMotivoObligatorio => 'El motivo es obligatorio.';
+
+  @override
+  String get proveedorEjecucionNotaOpcional => 'Nota (opcional)';
+
+  @override
+  String get proveedorEjecucionGuardarAvance => 'Guardar avance';
+
+  @override
+  String get proveedorEjecucionEscribeLasHectareasRealmente =>
+      'Escribe las hectáreas realmente ejecutadas.';
+
+  @override
+  String get proveedorEjecucionFinalizarServicio2 => 'Finalizar el servicio';
+
+  @override
+  String get proveedorEjecucionConfirmaLasHectareasQue =>
+      'Confirma las hectáreas que realmente ejecutaste. El precio final es hectáreas ejecutadas por el precio acordado.';
+
+  @override
+  String get proveedorEjecucionHectareasEjecutadas => 'Hectáreas ejecutadas';
+
+  @override
+  String proveedorEjecucionPagar(
+    String monto,
+    String ha,
+    String precioHaAcordado,
+  ) {
+    return 'A pagar: $monto ($ha × $precioHaAcordado)';
+  }
+
+  @override
+  String get proveedorEjecucionFinalizar => 'Finalizar';
+
+  @override
+  String get proveedorEjecucionPrecioFinalPagar => 'Precio final a pagar';
+
+  @override
+  String get proveedorEjecucionPrecioEstimado => 'Precio estimado';
+
+  @override
+  String get proveedorEjecucionCalculando => 'Calculando…';
+
+  @override
+  String get proveedorEjecucionHectareasEjecutadasPorPrecio =>
+      'Hectáreas ejecutadas por el precio acordado.';
+
+  @override
+  String get proveedorEjecucionClientePagaDirectamenteApp =>
+      'El cliente te paga directamente: la app no cobra.';
+
+  @override
+  String get proveedorEjecucionUnaEstimacionHechaEste =>
+      'Es una estimación hecha en este celular. El monto final lo confirma el servidor cuando haya señal.';
+
+  @override
+  String get proveedorEjecucionCompartiendoUbicacion =>
+      'Compartiendo tu ubicación';
+
+  @override
+  String get proveedorEjecucionSinSenalReanudaSola =>
+      'Sin señal: se reanuda sola. Nada se guarda en el celular.';
+
+  @override
+  String get proveedorEjecucionClienteUltimaPosicionMapa =>
+      'El cliente ve tu última posición en un mapa mientras esta pantalla esté abierta.';
+
+  @override
+  String get proveedorEjecucionUbicacionBloqueada => 'Ubicación bloqueada';
+
+  @override
+  String get proveedorEjecucionActivalaDesdeLosAjustes =>
+      'Actívala desde los ajustes del teléfono si quieres que el cliente vea dónde estás.';
+
+  @override
+  String get proveedorEjecucionUbicacionDelTelefonoEsta =>
+      'La ubicación del teléfono está apagada';
+
+  @override
+  String get proveedorEjecucionEnciendelaParaQueCliente =>
+      'Enciéndela para que el cliente vea tu última posición.';
+
+  @override
+  String get proveedorEjecucionDileClienteDondeEstas =>
+      'Dile al cliente dónde estás';
+
+  @override
+  String get proveedorEjecucionAceptasCompartimosUltimaPosicion =>
+      'Si lo aceptas, compartimos tu última posición con el cliente mientras el servicio esté en ejecución y esta pantalla abierta. Se deja de compartir al cerrarla o al finalizar. No guardamos tu recorrido.';
+
+  @override
+  String get proveedorEjecucionCompartirUbicacion => 'Compartir mi ubicación';
+
+  @override
+  String proveedorEjecucionUltimaVez(String ultimaEn) {
+    return 'Última vez $ultimaEn';
+  }
+
+  @override
+  String get proveedorEjecucionPrecioAcordado => 'Precio acordado';
+
+  @override
+  String proveedorEjecucionPor(String precioHaAcordado) {
+    return '$precioHaAcordado por ha';
+  }
+
+  @override
+  String get proveedorEjecucionFecha => 'Fecha';
+
+  @override
+  String proveedorEjecucionAl(String ventanaDesde, String ventanaHasta) {
+    return '$ventanaDesde al $ventanaHasta';
+  }
+
+  @override
+  String get proveedorEjecucionProducto => 'Producto';
+
+  @override
+  String get proveedorEjecucionPoneProducto => 'Pone el producto';
+
+  @override
+  String get proveedorEjecucionCliente => 'El cliente';
+
+  @override
+  String get proveedorEjecucionTu => 'Tú';
+
+  @override
+  String get proveedorEjecucionEstadoDelTerreno => 'Estado del terreno';
+
+  @override
+  String get proveedorEjecucionAccesoDificil => 'Acceso difícil';
+
+  @override
+  String get proveedorEjecucionAccesoNormal => 'Acceso normal';
+
+  @override
+  String get proveedorEjecucionComoLlegar => 'Cómo llegar';
+
+  @override
+  String get proveedorEjecucionCuidar => 'Cuidar';
+
+  @override
+  String get proveedorEjecucionObservaciones => 'Observaciones';
 }

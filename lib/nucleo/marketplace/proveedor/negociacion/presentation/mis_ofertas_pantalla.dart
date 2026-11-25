@@ -59,6 +59,7 @@ class _MisOfertasVistaState extends State<MisOfertasVista> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return BlocBuilder<MisOfertasCubit, MisOfertasEstado>(
       builder: (context, estado) {
@@ -76,8 +77,8 @@ class _MisOfertasVistaState extends State<MisOfertasVista> {
                 (estado.aviso != null && estado.avisoEsError))
               BannerSinSenalCampo(
                 mensaje: estado.estado == EstadoMisOfertas.sinRed
-                    ? 'tus ofertas se ven con red.'
-                    : 'lo que ves puede estar viejo.',
+                    ? l10n.proveedorNegociacionTusOfertasVenCon
+                    : l10n.proveedorNegociacionQueVesPuedeEstar,
               ),
             Expanded(
               child: RefreshIndicator(
@@ -86,7 +87,7 @@ class _MisOfertasVistaState extends State<MisOfertasVista> {
                   padding: const EdgeInsets.all(EspaciadoCampo.l),
                   children: [
                     Text(
-                      'Mis ofertas',
+                      l10n.proveedorNegociacionMisOfertas,
                       style: TipografiaCampo.tituloPantalla.copyWith(
                         color: paleta.texto,
                       ),
@@ -98,15 +99,19 @@ class _MisOfertasVistaState extends State<MisOfertasVista> {
                       opciones: [
                         (
                           _Pestana.activas,
-                          'Activas',
+                          l10n.proveedorNegociacionActivas,
                           listo ? estado.activas.length : null,
                         ),
                         (
                           _Pestana.ganadas,
-                          'Ganadas',
+                          l10n.proveedorNegociacionGanadas,
                           listo ? estado.ganadas.length : null,
                         ),
-                        (_Pestana.cerradas, 'Cerradas', null),
+                        (
+                          _Pestana.cerradas,
+                          l10n.proveedorNegociacionCerradas,
+                          null,
+                        ),
                       ],
                     ),
                     const SizedBox(height: EspaciadoCampo.l),
@@ -131,15 +136,14 @@ class _MisOfertasVistaState extends State<MisOfertasVista> {
                       EstadoMisOfertas.sinRed => EstadoErrorMarketplace(
                         sinConexion: true,
                         tablaSinRed: true,
-                        titulo: 'Sin conexión',
-                        detalle:
-                            'Para ver y responder tus ofertas necesitas señal. '
-                            'Reintenta cuando la tengas.',
+                        titulo: l10n.proveedorNegociacionSinConexion,
+                        detalle: l10n.proveedorNegociacionParaVerResponderTus,
                         onReintentar: cubit.cargar,
                       ),
                       EstadoMisOfertas.error => EstadoErrorMarketplace(
-                        titulo: 'No pudimos cargar tus ofertas',
-                        detalle: 'Intenta de nuevo en un momento.',
+                        titulo:
+                            l10n.proveedorNegociacionPudimosCargarTusOfertas,
+                        detalle: l10n.proveedorNegociacionIntentaNuevoMomento,
                         onReintentar: cubit.cargar,
                       ),
                       EstadoMisOfertas.listo when visibles.isEmpty => _Vacio(
@@ -191,28 +195,28 @@ class _Vacio extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final (icono, titulo, detalle) = !hayOfertas
         ? (
             Icons.handshake_outlined,
-            'Todavía no hiciste ofertas',
-            'Abre una solicitud en el mapa y acepta el precio del cliente o '
-                'propón el tuyo.',
+            l10n.proveedorNegociacionTodaviaHicisteOfertas,
+            l10n.proveedorNegociacionAbreUnaSolicitudMapa,
           )
         : switch (pestana) {
             _Pestana.activas => (
               Icons.hourglass_empty_rounded,
-              'No tienes negociaciones activas',
-              'Cuando ofertes en el mapa, la conversación aparece aquí.',
+              l10n.proveedorNegociacionTienesNegociacionesActivas,
+              l10n.proveedorNegociacionCuandoOfertesMapaConversacion,
             ),
             _Pestana.ganadas => (
               Icons.emoji_events_outlined,
-              'Aún no ganaste ninguna',
-              'Las solicitudes en las que el cliente te elige quedan aquí.',
+              l10n.proveedorNegociacionAunGanasteNinguna,
+              l10n.proveedorNegociacionLasSolicitudesLasQue,
             ),
             _Pestana.cerradas => (
               Icons.inventory_2_outlined,
-              'Nada cerrado todavía',
-              'Las ofertas rechazadas, retiradas o vencidas se guardan aquí.',
+              l10n.proveedorNegociacionNadaCerradoTodavia,
+              l10n.proveedorNegociacionLasOfertasRechazadasRetiradas,
             ),
           };
     return EstadoVacioMarketplace(
@@ -242,6 +246,7 @@ class TarjetaNegociacion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final n = negociacion;
     final o = n.ultima;
     final paleta = context.paleta;
@@ -251,28 +256,30 @@ class TarjetaNegociacion extends StatelessWidget {
       EstadoOferta.vigente when n.esMiTurno => (
         TonoEstado.alerta,
         Icons.reply_rounded,
-        'Tu turno · R${n.rondaQueSigue}/5',
+        l10n.proveedorNegociacionTurno(n.rondaQueSigue),
       ),
       EstadoOferta.vigente => (
         TonoEstado.info,
         Icons.hourglass_top_rounded,
-        'Esperando · R${n.rondaQueSigue}/5',
+        l10n.proveedorNegociacionEsperando(n.rondaQueSigue),
       ),
       EstadoOferta.aceptada => (
         TonoEstado.exito,
         Icons.verified_rounded,
-        'Aceptada',
+        l10n.proveedorNegociacionAceptada,
       ),
       EstadoOferta.rechazada => (
         TonoEstado.error,
         Icons.block_rounded,
-        'Rechazada',
+        l10n.proveedorNegociacionRechazada,
       ),
       _ => (TonoEstado.neutro, Icons.history_rounded, o.estado.etiqueta),
     };
-    final titulo = o.lote ?? (n.zona ?? 'Solicitud ${o.solicitudId}');
+    final titulo =
+        o.lote ??
+        (n.zona ?? l10n.proveedorNegociacionSolicitud2(o.solicitudId));
     final detalle = [
-      '${CifrasNegociacion.ha(o.hectareas)} ha',
+      l10n.proveedorNegociacionHa3(CifrasNegociacion.ha(o.hectareas)),
       if (n.zona != null && o.lote != null) n.zona!,
     ].join(' · ');
     return Semantics(
@@ -322,15 +329,24 @@ class TarjetaNegociacion extends StatelessWidget {
               runSpacing: EspaciadoCampo.s,
               children: [
                 if (cliente != null)
-                  _Cifra(etiqueta: 'Cliente', valor: cliente.precioHa),
-                if (mia != null) _Cifra(etiqueta: 'Tú', valor: mia.precioHa),
+                  _Cifra(
+                    etiqueta: l10n.proveedorNegociacionCliente2,
+                    valor: cliente.precioHa,
+                  ),
+                if (mia != null)
+                  _Cifra(
+                    etiqueta: l10n.proveedorNegociacionTu,
+                    valor: mia.precioHa,
+                  ),
               ],
             ),
             if (n.activa) ...[
               const SizedBox(height: EspaciadoCampo.m),
               Text(
-                'Vence ${FormatoMarketplace.fechaConDia(o.venceEn)} '
-                'a las ${FormatoMarketplace.hora(o.venceEn)}',
+                l10n.proveedorNegociacionVenceLas(
+                  FormatoMarketplace.fechaConDia(o.venceEn),
+                  FormatoMarketplace.hora(o.venceEn),
+                ),
                 style: TipografiaCampo.cuerpoSecundario.copyWith(
                   color: paleta.textoSecundario,
                 ),

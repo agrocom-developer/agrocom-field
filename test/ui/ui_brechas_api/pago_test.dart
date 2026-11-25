@@ -7,6 +7,7 @@ import 'package:agrocom_field/nucleo/marketplace/pago/pagos_repositorio.dart';
 import 'package:agrocom_field/nucleo/marketplace/pago/presentation/pago_cubit.dart';
 import 'package:agrocom_field/nucleo/marketplace/pago/presentation/tarjetas_pago.dart';
 import 'package:decimal/decimal.dart';
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -82,7 +83,7 @@ void main() {
   group('PagoCubit', () {
     test('confirmar registra el pago con el monto del servidor', () async {
       final repo = _Inestable(montos: _montos);
-      final c = PagoCubit(repo, 10, uuidCliente: 'u-1');
+      final c = PagoCubit(repo, 10, AppLocalizationsEs(), uuidCliente: 'u-1');
       await c.cargar();
       expect(c.state.fase, FasePago.pendiente);
 
@@ -95,7 +96,7 @@ void main() {
 
     test('reintentar tras un fallo reutiliza el mismo uuid_cliente', () async {
       final repo = _Inestable(fallos: 2, montos: _montos);
-      final c = PagoCubit(repo, 10);
+      final c = PagoCubit(repo, 10, AppLocalizationsEs());
       await c.cargar();
       await c.confirmar();
       expect(c.state.fase, FasePago.error);
@@ -111,7 +112,7 @@ void main() {
 
     test('un doble toque no confirma dos veces', () async {
       final repo = _Inestable(montos: _montos);
-      final c = PagoCubit(repo, 10);
+      final c = PagoCubit(repo, 10, AppLocalizationsEs());
       await c.cargar();
       await Future.wait([c.confirmar(), c.confirmar()]);
       expect(repo.confirmaciones, 1);
@@ -129,7 +130,7 @@ void main() {
           fallos: 1,
           previos: [_pago()],
         );
-        final c = PagoCubit(repo, 10);
+        final c = PagoCubit(repo, 10, AppLocalizationsEs());
         // Se carga antes de que el servidor lo tuviera: se simula con un
         // estado pendiente y un 409 al confirmar.
         c.emit(const PagoEstado(fase: FasePago.pendiente));
@@ -149,7 +150,7 @@ void main() {
         ),
         montos: _montos,
       );
-      final c = PagoCubit(repo, 10);
+      final c = PagoCubit(repo, 10, AppLocalizationsEs());
       await c.cargar();
       await c.confirmar();
       expect(c.state.fallo, FalloPago.soloTitular);
@@ -158,7 +159,11 @@ void main() {
     });
 
     test('un error al leer no dice que falló la confirmación', () async {
-      final c = PagoCubit(_LecturaFalla(const SinConexion()), 10);
+      final c = PagoCubit(
+        _LecturaFalla(const SinConexion()),
+        10,
+        AppLocalizationsEs(),
+      );
       await c.cargar();
       expect(c.state.fase, FasePago.error);
       expect(c.state.fallaAlLeer, isTrue);

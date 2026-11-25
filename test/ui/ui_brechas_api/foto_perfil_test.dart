@@ -7,6 +7,7 @@ import 'package:agrocom_field/nucleo/marketplace/foto_perfil/presentation/foto_p
 import 'package:agrocom_field/nucleo/marketplace/foto_perfil/presentation/foto_perfil_widgets.dart';
 import 'package:agrocom_field/nucleo/marketplace/foto_preparador.dart';
 import 'package:agrocom_field/nucleo/marketplace/ui/avatar_foto.dart';
+import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -70,7 +71,12 @@ Widget _encabezado() => FotoPerfilProveedor(
 );
 
 FotoPerfilCubit _cubit(FotoPerfilRepositorio repo, {String? url}) =>
-    FotoPerfilCubit(repo, preparadorDePrueba(), urlInicial: url);
+    FotoPerfilCubit(
+      repo,
+      preparadorDePrueba(),
+      AppLocalizationsEs(),
+      urlInicial: url,
+    );
 
 void main() {
   setUpAll(cargarFuentes);
@@ -102,6 +108,7 @@ void main() {
       final c = FotoPerfilCubit(
         FotoPerfilDemo(),
         preparadorDePrueba(SelectorImagenFalso(cancela: true)),
+        AppLocalizationsEs(),
         urlInicial: '',
       );
       await c.elegir(OrigenFoto.camara);

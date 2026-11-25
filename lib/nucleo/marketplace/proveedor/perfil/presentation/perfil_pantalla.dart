@@ -306,28 +306,28 @@ class _Aprobacion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final (tono, icono, detalle) = switch (proveedor.aprobacion) {
       EstadoAprobacion.aprobado => (
         TonoEstado.exito,
         Icons.verified_rounded,
-        'Estás habilitado para recibir ofertas.',
+        l10n.proveedorPerfilEstasHabilitadoParaRecibir,
       ),
       EstadoAprobacion.pendiente => (
         TonoEstado.info,
         Icons.hourglass_top_rounded,
-        'Un administrador está revisando tus datos. Te avisamos cuando '
-            'puedas recibir ofertas.',
+        l10n.proveedorPerfilAdministradorEstaRevisandoTus,
       ),
       EstadoAprobacion.suspendido => (
         TonoEstado.alerta,
         Icons.pause_circle_outline_rounded,
-        'No recibís ofertas mientras dure la suspensión.',
+        l10n.proveedorPerfilRecibisOfertasMientrasDure,
       ),
       EstadoAprobacion.rechazado => (
         TonoEstado.error,
         Icons.cancel_outlined,
-        'Tu solicitud no se aprobó. Podés corregir los datos y reenviarla.',
+        l10n.proveedorPerfilSolicitudAproboPodesCorregir,
       ),
     };
     final motivo = proveedor.motivoAprobacion;
@@ -345,7 +345,7 @@ class _Aprobacion extends StatelessWidget {
           Text(detalle, style: texto.bodyLarge),
           if (motivo != null && !proveedor.aprobacion.habilitado) ...[
             const SizedBox(height: EspaciadoCampo.xs),
-            Text('Motivo: $motivo', style: texto.bodyMedium),
+            Text(l10n.proveedorPerfilMotivo(motivo), style: texto.bodyMedium),
           ],
         ],
       ),
@@ -360,19 +360,23 @@ class _Metricas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final celdas = [
       _Metrica(
-        etiqueta: 'SERVICIOS',
+        etiqueta: l10n.proveedorPerfilServicios,
         valor: '${metricas.serviciosCompletados}',
       ),
       _Metrica(
-        etiqueta: 'HECTÁREAS',
+        etiqueta: l10n.proveedorPerfilHectareas,
         valor: FormatoMarketplace.numero(
           metricas.hectareasAtendidas,
           decimales: 0,
         ),
       ),
-      _Metrica(etiqueta: 'CANCELACIÓN', valor: '${metricas.tasaCancelacion} %'),
+      _Metrica(
+        etiqueta: l10n.proveedorPerfilCancelacion,
+        valor: '${metricas.tasaCancelacion} %',
+      ),
     ];
     return LayoutBuilder(
       builder: (context, c) {
@@ -422,6 +426,7 @@ class _FilaDocumento extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final (tono, icono) = switch (documento.estado) {
       EstadoDocumento.vigente => (TonoEstado.exito, Icons.verified_rounded),
@@ -454,15 +459,19 @@ class _FilaDocumento extends StatelessWidget {
               if (vence != null)
                 Text(
                   documento.estado == EstadoDocumento.vencido
-                      ? 'Venció el ${FormatoMarketplace.fechaLarga(vence)}'
-                      : 'Vence el ${FormatoMarketplace.fechaLarga(vence)}',
+                      ? l10n.proveedorPerfilVencio(
+                          FormatoMarketplace.fechaLarga(vence),
+                        )
+                      : l10n.proveedorPerfilVence(
+                          FormatoMarketplace.fechaLarga(vence),
+                        ),
                   style: texto.bodyMedium,
                 ),
             ],
           ),
           if (motivo != null) ...[
             const SizedBox(height: EspaciadoCampo.s),
-            Text('Motivo: $motivo', style: texto.bodyMedium),
+            Text(l10n.proveedorPerfilMotivo(motivo), style: texto.bodyMedium),
           ],
         ],
       ),
@@ -478,6 +487,7 @@ class _ResumenCalificaciones extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
     final promedio = resumen.promedio.toStringAsFixed(1).replaceAll('.', ',');
@@ -492,9 +502,10 @@ class _ResumenCalificaciones extends StatelessWidget {
         children: [
           Semantics(
             container: true,
-            label:
-                'Calificación promedio $promedio de 5, sobre '
-                '${resumen.total} calificaciones',
+            label: l10n.proveedorPerfilCalificacionPromedioSobreCalificaciones(
+              promedio,
+              resumen.total,
+            ),
             excludeSemantics: true,
             child: Wrap(
               crossAxisAlignment: WrapCrossAlignment.center,
@@ -510,8 +521,8 @@ class _ResumenCalificaciones extends StatelessWidget {
                 ),
                 Text(
                   resumen.total == 1
-                      ? '1 calificación'
-                      : '${resumen.total} calificaciones',
+                      ? l10n.proveedorPerfilCalificacion
+                      : l10n.proveedorPerfilCalificaciones(resumen.total),
                   style: texto.bodyLarge,
                 ),
               ],

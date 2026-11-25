@@ -40,6 +40,7 @@ class SolicitarPantalla extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -53,6 +54,7 @@ class SolicitarPantalla extends StatelessWidget {
           create: (context) => FotosTerrenoCubit(
             context.read<FotosTerrenoRepositorio>(),
             context.read<PreparadorFoto>(),
+            l10n,
           ),
         ),
       ],

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../ui/paleta_campo.dart';
 import '../../ui/tokens_campo.dart';
+import '../../../l10n/app_localizations.dart';
 
 /// Campo de formulario del marketplace: etiqueta visible arriba, borde de la
 /// paleta activa y error en línea. A diferencia de `CampoTextoCampo` (modo
@@ -59,6 +60,7 @@ class _CampoFormularioMarketplaceState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
 
@@ -127,8 +129,8 @@ class _CampoFormularioMarketplaceState
               suffixIcon: widget.obscureText
                   ? IconButton(
                       tooltip: _oculto
-                          ? 'Mostrar contraseña'
-                          : 'Ocultar contraseña',
+                          ? l10n.uiMostrarContrasena
+                          : l10n.uiOcultarContrasena,
                       onPressed: () => setState(() => _oculto = !_oculto),
                       icon: Icon(
                         _oculto

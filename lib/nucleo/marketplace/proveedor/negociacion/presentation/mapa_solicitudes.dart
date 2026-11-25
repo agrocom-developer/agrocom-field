@@ -14,6 +14,7 @@ import '../../../ui/formato_marketplace.dart';
 import '../../../ui/mapa_lote.dart';
 import '../domain/negociacion.dart';
 import 'cifras_negociacion.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 /// Centro de Santa Cruz de la Sierra, para cuando todavía no hay solicitudes.
 const _centroSantaCruz = LatLng(-17.7833, -63.1821);
@@ -311,6 +312,7 @@ class MosaicosSolicitud extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = solicitud;
     return IntrinsicHeight(
       child: Row(
@@ -318,7 +320,7 @@ class MosaicosSolicitud extends StatelessWidget {
         children: [
           Expanded(
             child: _Mosaico(
-              etiqueta: 'Superficie',
+              etiqueta: l10n.proveedorNegociacionSuperficie,
               valor: CifrasNegociacion.ha(s.hectareas),
               unidad: 'ha',
             ),
@@ -326,7 +328,7 @@ class MosaicosSolicitud extends StatelessWidget {
           const SizedBox(width: EspaciadoCampo.m),
           Expanded(
             child: _Mosaico(
-              etiqueta: 'Precio ofrecido',
+              etiqueta: l10n.proveedorNegociacionPrecioOfrecido,
               valor: CifrasNegociacion.bsHa(s.precioHaPropuesto),
               unidad: 'Bs/ha',
             ),

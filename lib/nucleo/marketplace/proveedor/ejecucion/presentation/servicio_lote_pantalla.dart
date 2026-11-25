@@ -54,6 +54,7 @@ class ServicioLoteVista extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocConsumer<ServicioLoteCubit, ServicioLoteEstado>(
       // Solo se comparte la ubicación con el servicio en ejecución.
       listenWhen: (a, b) => a.servicio?.estado != b.servicio?.estado,
@@ -70,11 +71,11 @@ class ServicioLoteVista extends StatelessWidget {
         final s = estado.servicio;
         return Scaffold(
           appBar: AppBar(
-            title: Text(s?.terreno?.nombre ?? 'Servicio'),
+            title: Text(s?.terreno?.nombre ?? l10n.proveedorEjecucionServicio),
             actions: [
               if (s != null && s.estado != EstadoServicioLote.finalizada)
                 IconButton(
-                  tooltip: 'Chat con el cliente',
+                  tooltip: l10n.proveedorEjecucionChatConCliente,
                   icon: const Icon(Icons.chat_bubble_outline_rounded),
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute<void>(
@@ -87,12 +88,10 @@ class ServicioLoteVista extends StatelessWidget {
           body: estado.cargando
               ? const Center(child: CircularProgressIndicator())
               : s == null
-              ? const EstadoVacioMarketplace(
+              ? EstadoVacioMarketplace(
                   icono: Icons.search_off_rounded,
-                  titulo: 'No encontramos este servicio',
-                  detalle:
-                      'Puede que el cliente lo haya cancelado. Vuelve a la '
-                      'lista y actualiza.',
+                  titulo: l10n.proveedorEjecucionEncontramosEsteServicio,
+                  detalle: l10n.proveedorEjecucionPuedeQueClienteHaya,
                 )
               : Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -100,10 +99,8 @@ class ServicioLoteVista extends StatelessWidget {
                     // Lo posterior a la adjudicación es offline-first: con
                     // algo por subir, el banner lo dice y no se pierde nada.
                     if (s.pendientes > 0 && s.rechazos == 0)
-                      const BannerSinSenalCampo(
-                        mensaje:
-                            'tus fotos y avances quedan guardados y se '
-                            'suben solos.',
+                      BannerSinSenalCampo(
+                        mensaje: l10n.proveedorEjecucionTusFotosAvancesQuedan,
                       ),
                     Expanded(
                       child: _Contenido(servicio: s, estado: estado),
@@ -124,6 +121,7 @@ class _Contenido extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = servicio;
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
@@ -176,10 +174,8 @@ class _Contenido extends StatelessWidget {
           const SizedBox(height: EspaciadoCampo.xs),
           Text(
             s.rechazos > 0
-                ? 'El servidor no aceptó algo de lo que guardaste. Avisa a '
-                      'soporte desde el perfil.'
-                : 'Está guardado en este celular y se sube solo cuando '
-                      'vuelva la señal.',
+                ? l10n.proveedorEjecucionServidorAceptoAlgoQue
+                : l10n.proveedorEjecucionEstaGuardadoEsteCelular,
             style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
           ),
         ],
@@ -235,22 +231,25 @@ class _Avance extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = servicio;
     final texto = Theme.of(context).textTheme;
     return SuperficieMarketplace(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Avance', style: texto.titleMedium),
+          Text(l10n.proveedorEjecucionAvance, style: texto.titleMedium),
           const SizedBox(height: EspaciadoCampo.s),
           Semantics(
-            label: 'Avance ${s.porcentaje ?? 0} por ciento',
+            label: l10n.proveedorEjecucionAvancePorCiento(
+              (s.porcentaje ?? 0).toString(),
+            ),
             child: BarraProgresoCampo(fraccion: s.progreso),
           ),
           const SizedBox(height: EspaciadoCampo.s),
           Text(
             s.hectareasEjecutadas == null
-                ? 'Todavía no marcaste avance.'
+                ? l10n.proveedorEjecucionTodaviaMarcasteAvance
                 : '${FormatoMarketplace.hectareas(s.hectareasEjecutadas!)} de '
                       '${FormatoMarketplace.hectareas(s.hectareas)} · '
                       '${FormatoMarketplace.numero(s.porcentaje ?? Decimal.zero, decimales: 0)} %',
@@ -259,10 +258,10 @@ class _Avance extends StatelessWidget {
           const SizedBox(height: EspaciadoCampo.xs),
           Text(
             s.fotosTotal == 0
-                ? 'Sin fotos de avance'
+                ? l10n.proveedorEjecucionSinFotosAvance
                 : s.fotosTotal == 1
-                ? '1 foto de avance'
-                : '${s.fotosTotal} fotos de avance',
+                ? l10n.proveedorEjecucionFotoAvance
+                : l10n.proveedorEjecucionFotosAvance(s.fotosTotal),
             style: texto.bodyMedium,
           ),
         ],
@@ -273,6 +272,7 @@ class _Avance extends StatelessWidget {
 
 /// La única acción principal de la pantalla, según el estado del servicio.
 Widget? _accionPrincipal(BuildContext context, ServicioEnLote s, bool ocupado) {
+  final l10n = AppLocalizations.of(context);
   final cubit = context.read<ServicioLoteCubit>();
   return switch (s.estado) {
     EstadoServicioLote.adjudicada => Column(
@@ -280,21 +280,21 @@ Widget? _accionPrincipal(BuildContext context, ServicioEnLote s, bool ocupado) {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         BotonPrincipalMarketplace(
-          texto: 'Marcar en ejecución',
+          texto: l10n.proveedorEjecucionMarcarEjecucion,
           icono: Icons.flight_takeoff_rounded,
           cargando: ocupado,
           onPressed: cubit.iniciarServicio,
         ),
         const SizedBox(height: EspaciadoCampo.xs),
         Text(
-          'Márcalo cuando empieces en el lote. El cliente recibe el aviso.',
+          l10n.proveedorEjecucionMarcaloCuandoEmpiecesLote,
           style: Theme.of(context).textTheme.bodyMedium,
           textAlign: TextAlign.center,
         ),
       ],
     ),
     EstadoServicioLote.enEjecucion => BotonPrincipalMarketplace(
-      texto: 'Subir foto de avance',
+      texto: l10n.proveedorEjecucionSubirFotoAvance,
       icono: Icons.photo_camera_rounded,
       cargando: ocupado,
       onPressed: cubit.tomarFotoDeAvance,
@@ -312,6 +312,7 @@ class _AccionesSecundarias extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = servicio;
     final grande = OutlinedButton.styleFrom(
       minimumSize: const Size.fromHeight(ObjetivoTactilCampo.guantes),
@@ -322,13 +323,13 @@ class _AccionesSecundarias extends StatelessWidget {
         OutlinedButton(
           style: grande,
           onPressed: ocupado ? null : () => _marcarAvance(context, s),
-          child: const Text('Marcar avance'),
+          child: Text(l10n.proveedorEjecucionMarcarAvance),
         ),
         const SizedBox(height: EspaciadoCampo.s),
         OutlinedButton(
           style: grande,
           onPressed: ocupado ? null : () => _finalizar(context, s),
-          child: const Text('Finalizar servicio'),
+          child: Text(l10n.proveedorEjecucionFinalizarServicio),
         ),
       ],
     );
@@ -412,15 +413,16 @@ class _HojaAvanceState extends State<_HojaAvance> {
   }
 
   String? _validar(String? t) {
+    final l10n = AppLocalizations.of(context);
     final v = leerPrecio(t ?? '');
-    if (v == null) return 'Escribe un número mayor a cero.';
+    if (v == null) return l10n.proveedorEjecucionEscribeNumeroMayorCero;
     final tope = _enHectareas
         ? widget.servicio.hectareas
         : Decimal.fromInt(100);
     if (v > tope) {
       return _enHectareas
-          ? 'No puede pasar de las hectáreas del servicio.'
-          : 'No puede pasar de 100 %.';
+          ? l10n.proveedorEjecucionPuedePasarLasHectareas
+          : l10n.proveedorEjecucionPuedePasar100;
     }
     return null;
   }
@@ -446,6 +448,7 @@ class _HojaAvanceState extends State<_HojaAvance> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     return SafeArea(
       child: SingleChildScrollView(
@@ -461,12 +464,21 @@ class _HojaAvanceState extends State<_HojaAvance> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Marcar avance', style: texto.titleLarge),
+              Text(
+                l10n.proveedorEjecucionMarcarAvance,
+                style: texto.titleLarge,
+              ),
               const SizedBox(height: EspaciadoCampo.m),
               SegmentedButton<bool>(
-                segments: const [
-                  ButtonSegment(value: true, label: Text('Hectáreas')),
-                  ButtonSegment(value: false, label: Text('Porcentaje')),
+                segments: [
+                  ButtonSegment(
+                    value: true,
+                    label: Text(l10n.proveedorEjecucionHectareas),
+                  ),
+                  ButtonSegment(
+                    value: false,
+                    label: Text(l10n.proveedorEjecucionPorcentaje),
+                  ),
                 ],
                 selected: {_enHectareas},
                 onSelectionChanged: (v) => setState(() {
@@ -477,8 +489,8 @@ class _HojaAvanceState extends State<_HojaAvance> {
               const SizedBox(height: EspaciadoCampo.m),
               CampoFormularioMarketplace(
                 etiqueta: _enHectareas
-                    ? 'Hectáreas ejecutadas en total'
-                    : 'Porcentaje ejecutado en total',
+                    ? l10n.proveedorEjecucionHectareasEjecutadasTotal
+                    : l10n.proveedorEjecucionPorcentajeEjecutadoTotal,
                 controller: _valor,
                 validator: _validar,
                 keyboardType: const TextInputType.numberWithOptions(
@@ -491,31 +503,29 @@ class _HojaAvanceState extends State<_HojaAvance> {
               ),
               const SizedBox(height: EspaciadoCampo.m),
               if (_esCorreccion) ...[
-                const AvisoMarketplace(
-                  mensaje:
-                      'Es menos que tu último avance. Cuéntanos por qué lo '
-                      'corriges.',
+                AvisoMarketplace(
+                  mensaje: l10n.proveedorEjecucionMenosQueUltimoAvance,
                   tono: TonoAviso.alerta,
                 ),
                 const SizedBox(height: EspaciadoCampo.m),
                 CampoFormularioMarketplace(
-                  etiqueta: 'Motivo de la corrección',
+                  etiqueta: l10n.proveedorEjecucionMotivoCorreccion,
                   controller: _motivo,
                   errorServidor: _motivo.text.trim().isEmpty
-                      ? 'El motivo es obligatorio.'
+                      ? l10n.proveedorEjecucionMotivoObligatorio
                       : null,
                   onChanged: (_) => setState(() {}),
                 ),
                 const SizedBox(height: EspaciadoCampo.m),
               ],
               CampoFormularioMarketplace(
-                etiqueta: 'Nota (opcional)',
+                etiqueta: l10n.proveedorEjecucionNotaOpcional,
                 controller: _nota,
                 textCapitalization: TextCapitalization.sentences,
               ),
               const SizedBox(height: EspaciadoCampo.l),
               BotonPrincipalMarketplace(
-                texto: 'Guardar avance',
+                texto: l10n.proveedorEjecucionGuardarAvance,
                 onPressed: _guardar,
               ),
             ],
@@ -549,13 +559,15 @@ class _HojaFinalizarState extends State<_HojaFinalizar> {
   }
 
   String? _validar(String? t) {
+    final l10n = AppLocalizations.of(context);
     final v = leerPrecio(t ?? '');
-    if (v == null) return 'Escribe las hectáreas realmente ejecutadas.';
+    if (v == null) return l10n.proveedorEjecucionEscribeLasHectareasRealmente;
     return null;
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = widget.servicio;
     final texto = Theme.of(context).textTheme;
     final ha = leerPrecio(_ha.text);
@@ -576,16 +588,18 @@ class _HojaFinalizarState extends State<_HojaFinalizar> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Finalizar el servicio', style: texto.titleLarge),
+              Text(
+                l10n.proveedorEjecucionFinalizarServicio2,
+                style: texto.titleLarge,
+              ),
               const SizedBox(height: EspaciadoCampo.s),
               Text(
-                'Confirma las hectáreas que realmente ejecutaste. El precio '
-                'final es hectáreas ejecutadas por el precio acordado.',
+                l10n.proveedorEjecucionConfirmaLasHectareasQue,
                 style: texto.bodyMedium,
               ),
               const SizedBox(height: EspaciadoCampo.m),
               CampoFormularioMarketplace(
-                etiqueta: 'Hectáreas ejecutadas',
+                etiqueta: l10n.proveedorEjecucionHectareasEjecutadas,
                 controller: _ha,
                 validator: _validar,
                 keyboardType: const TextInputType.numberWithOptions(
@@ -599,15 +613,17 @@ class _HojaFinalizarState extends State<_HojaFinalizar> {
               if (monto != null) ...[
                 const SizedBox(height: EspaciadoCampo.s),
                 Text(
-                  'A pagar: ${FormatoMarketplace.bs(monto)} '
-                  '(${FormatoMarketplace.hectareas(ha!)} × '
-                  '${FormatoMarketplace.bs(s.precioHaAcordado!)})',
+                  l10n.proveedorEjecucionPagar(
+                    FormatoMarketplace.bs(monto),
+                    FormatoMarketplace.hectareas(ha!),
+                    FormatoMarketplace.bs(s.precioHaAcordado!),
+                  ),
                   style: texto.titleMedium,
                 ),
               ],
               const SizedBox(height: EspaciadoCampo.l),
               BotonPrincipalMarketplace(
-                texto: 'Finalizar',
+                texto: l10n.proveedorEjecucionFinalizar,
                 onPressed: () {
                   if (_clave.currentState?.validate() ?? false) {
                     Navigator.pop(context, leerPrecio(_ha.text));
@@ -629,6 +645,7 @@ class _PrecioFinal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = servicio;
     final texto = Theme.of(context).textTheme;
     final monto = s.montoAPagar;
@@ -638,18 +655,22 @@ class _PrecioFinal extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            s.montoConfirmado ? 'Precio final a pagar' : 'Precio estimado',
+            s.montoConfirmado
+                ? l10n.proveedorEjecucionPrecioFinalPagar
+                : l10n.proveedorEjecucionPrecioEstimado,
             style: texto.bodyMedium,
           ),
           const SizedBox(height: EspaciadoCampo.xs),
           Text(
-            monto == null ? 'Calculando…' : FormatoMarketplace.bs(monto),
+            monto == null
+                ? l10n.proveedorEjecucionCalculando
+                : FormatoMarketplace.bs(monto),
             style: texto.headlineMedium,
           ),
           const SizedBox(height: EspaciadoCampo.xs),
           Text(
             s.hectareasEjecutadas == null || s.precioHaAcordado == null
-                ? 'Hectáreas ejecutadas por el precio acordado.'
+                ? l10n.proveedorEjecucionHectareasEjecutadasPorPrecio
                 : '${FormatoMarketplace.hectareas(s.hectareasEjecutadas!)} × '
                       '${FormatoMarketplace.bs(s.precioHaAcordado!)} por ha',
             style: texto.bodyLarge,
@@ -657,9 +678,8 @@ class _PrecioFinal extends StatelessWidget {
           const SizedBox(height: EspaciadoCampo.s),
           Text(
             s.montoConfirmado
-                ? 'El cliente te paga directamente: la app no cobra.'
-                : 'Es una estimación hecha en este celular. El monto final lo '
-                      'confirma el servidor cuando haya señal.',
+                ? l10n.proveedorEjecucionClientePagaDirectamenteApp
+                : l10n.proveedorEjecucionUnaEstimacionHechaEste,
             style: texto.bodyMedium,
           ),
         ],
@@ -673,37 +693,33 @@ class _TarjetaUbicacion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     return BlocBuilder<UbicacionCubit, UbicacionEstado>(
       builder: (context, u) {
         final cubit = context.read<UbicacionCubit>();
         final (titulo, detalle, boton) = switch (u.fase) {
           FaseUbicacion.compartiendo => (
-            'Compartiendo tu ubicación',
+            l10n.proveedorEjecucionCompartiendoUbicacion,
             u.sinRed
-                ? 'Sin señal: se reanuda sola. Nada se guarda en el celular.'
-                : 'El cliente ve tu última posición en un mapa mientras esta '
-                      'pantalla esté abierta.',
+                ? l10n.proveedorEjecucionSinSenalReanudaSola
+                : l10n.proveedorEjecucionClienteUltimaPosicionMapa,
             null,
           ),
           FaseUbicacion.denegadaParaSiempre => (
-            'Ubicación bloqueada',
-            'Actívala desde los ajustes del teléfono si quieres que el '
-                'cliente vea dónde estás.',
+            l10n.proveedorEjecucionUbicacionBloqueada,
+            l10n.proveedorEjecucionActivalaDesdeLosAjustes,
             null,
           ),
           FaseUbicacion.servicioApagado => (
-            'La ubicación del teléfono está apagada',
-            'Enciéndela para que el cliente vea tu última posición.',
+            l10n.proveedorEjecucionUbicacionDelTelefonoEsta,
+            l10n.proveedorEjecucionEnciendelaParaQueCliente,
             null,
           ),
           FaseUbicacion.denegada || FaseUbicacion.sinPedir => (
-            'Dile al cliente dónde estás',
-            'Si lo aceptas, compartimos tu última posición con el cliente '
-                'mientras el servicio esté en ejecución y esta pantalla '
-                'abierta. Se deja de compartir al cerrarla o al finalizar. '
-                'No guardamos tu recorrido.',
-            'Compartir mi ubicación',
+            l10n.proveedorEjecucionDileClienteDondeEstas,
+            l10n.proveedorEjecucionAceptasCompartimosUltimaPosicion,
+            l10n.proveedorEjecucionCompartirUbicacion,
           ),
         };
         return SuperficieMarketplace(
@@ -728,7 +744,9 @@ class _TarjetaUbicacion extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: EspaciadoCampo.xs),
                   child: Text(
-                    'Última vez ${FormatoMarketplace.hora(u.ultimaEn!)}',
+                    l10n.proveedorEjecucionUltimaVez(
+                      FormatoMarketplace.hora(u.ultimaEn!),
+                    ),
                     style: texto.bodyMedium,
                   ),
                 ),
@@ -792,34 +810,46 @@ class _Datos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = servicio;
     final texto = Theme.of(context).textTheme;
     final filas = <(String, String)>[
       if (s.precioHaAcordado != null)
         (
-          'Precio acordado',
-          '${FormatoMarketplace.bs(s.precioHaAcordado!)} por ha',
+          l10n.proveedorEjecucionPrecioAcordado,
+          l10n.proveedorEjecucionPor(
+            FormatoMarketplace.bs(s.precioHaAcordado!),
+          ),
         ),
       if (s.ventanaDesde != null && s.ventanaHasta != null)
         (
-          'Fecha',
-          '${FormatoMarketplace.fechaCorta(s.ventanaDesde!)} al '
-              '${FormatoMarketplace.fechaCorta(s.ventanaHasta!)}',
+          l10n.proveedorEjecucionFecha,
+          l10n.proveedorEjecucionAl(
+            FormatoMarketplace.fechaCorta(s.ventanaDesde!),
+            FormatoMarketplace.fechaCorta(s.ventanaHasta!),
+          ),
         ),
       if (s.producto != null && s.producto!.isNotEmpty)
-        ('Producto', s.producto!),
+        (l10n.proveedorEjecucionProducto, s.producto!),
       if (s.aportaProducto != null)
         (
-          'Pone el producto',
-          s.aportaProducto == 'cliente' ? 'El cliente' : 'Tú',
+          l10n.proveedorEjecucionPoneProducto,
+          s.aportaProducto == 'cliente'
+              ? l10n.proveedorEjecucionCliente
+              : l10n.proveedorEjecucionTu,
         ),
       (
-        'Estado del terreno',
-        s.accesoDificil ? 'Acceso difícil' : 'Acceso normal',
+        l10n.proveedorEjecucionEstadoDelTerreno,
+        s.accesoDificil
+            ? l10n.proveedorEjecucionAccesoDificil
+            : l10n.proveedorEjecucionAccesoNormal,
       ),
-      if (s.referenciasAcceso != null) ('Cómo llegar', s.referenciasAcceso!),
-      if (s.colindantesSensibles != null) ('Cuidar', s.colindantesSensibles!),
-      if (s.observaciones != null) ('Observaciones', s.observaciones!),
+      if (s.referenciasAcceso != null)
+        (l10n.proveedorEjecucionComoLlegar, s.referenciasAcceso!),
+      if (s.colindantesSensibles != null)
+        (l10n.proveedorEjecucionCuidar, s.colindantesSensibles!),
+      if (s.observaciones != null)
+        (l10n.proveedorEjecucionObservaciones, s.observaciones!),
     ];
     return SuperficieMarketplace(
       child: Column(

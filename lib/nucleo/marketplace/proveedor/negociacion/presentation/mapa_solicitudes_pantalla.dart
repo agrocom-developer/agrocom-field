@@ -19,6 +19,7 @@ import 'negociacion_pantalla.dart';
 import 'ofertar_cubit.dart';
 import 'pedir_precio_hoja.dart';
 import 'solicitud_detalle_pantalla.dart';
+import '../../../../../l10n/app_localizations.dart';
 
 /// La pestaña «Mapa» del piloto (pantalla 14): un mapa a sangre con un lote y
 /// un pin de precio por solicitud abierta (verde = abierta, ámbar = vence
@@ -137,6 +138,7 @@ class _MapaSolicitudesVistaState extends State<MapaSolicitudesVista> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return BlocBuilder<MapaSolicitudesCubit, MapaSolicitudesEstado>(
       builder: (context, estado) {
@@ -176,9 +178,9 @@ class _MapaSolicitudesVistaState extends State<MapaSolicitudesVista> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       if (sinRed)
-                        const BannerSinSenalCampo(
+                        BannerSinSenalCampo(
                           mensaje:
-                              'las solicitudes y las ofertas necesitan red.',
+                              l10n.proveedorNegociacionLasSolicitudesLasOfertas,
                         ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(
@@ -257,6 +259,7 @@ class _Busqueda extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -279,7 +282,7 @@ class _Busqueda extends StatelessWidget {
             Expanded(
               child: Semantics(
                 textField: true,
-                label: 'Buscar zona o lote',
+                label: l10n.proveedorNegociacionBuscarZonaLote,
                 child: TextField(
                   controller: controlador,
                   onChanged: (_) => alCambiar(),
@@ -290,7 +293,7 @@ class _Busqueda extends StatelessWidget {
                     contentPadding: const EdgeInsets.symmetric(
                       vertical: EspaciadoCampo.l,
                     ),
-                    hintText: 'Buscar zona o lote',
+                    hintText: l10n.proveedorNegociacionBuscarZonaLote,
                     hintStyle: TipografiaCampo.cuerpo.copyWith(
                       color: paleta.textoSecundario,
                     ),
@@ -300,8 +303,8 @@ class _Busqueda extends StatelessWidget {
             ),
             IconButton(
               tooltip: hayFiltros
-                  ? 'Filtros, hay filtros aplicados'
-                  : 'Filtros',
+                  ? l10n.proveedorNegociacionFiltrosHayFiltrosAplicados
+                  : l10n.proveedorNegociacionFiltros,
               constraints: const BoxConstraints.tightFor(
                 width: ObjetivoTactilCampo.guantes,
                 height: ObjetivoTactilCampo.guantes,
@@ -337,6 +340,7 @@ class _FranjaFiltros extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cerca = filtros.orden == OrdenMapa.distancia;
     final grandes = filtros.hectareasMin == _cincuenta;
     return SizedBox(
@@ -346,7 +350,7 @@ class _FranjaFiltros extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: EspaciadoCampo.l),
         children: [
           _FiltroChip(
-            etiqueta: 'Cerca de mí',
+            etiqueta: l10n.proveedorNegociacionCerca,
             activo: cerca,
             alToque: () => alCambiarFiltros(
               filtros.copiarCon(
@@ -355,7 +359,7 @@ class _FranjaFiltros extends StatelessWidget {
             ),
           ),
           _FiltroChip(
-            etiqueta: '+50 ha',
+            etiqueta: l10n.proveedorNegociacion50Ha,
             activo: grandes,
             alToque: () => alCambiarFiltros(
               filtros.copiarCon(
@@ -364,7 +368,7 @@ class _FranjaFiltros extends StatelessWidget {
             ),
           ),
           _FiltroChip(
-            etiqueta: 'Vence hoy',
+            etiqueta: l10n.proveedorNegociacionVenceHoy,
             activo: soloHoy,
             marca: true,
             alToque: alCambiarHoy,
@@ -505,6 +509,7 @@ class _SeleccionSolicitud extends StatelessWidget {
   }
 
   Widget _contenido(BuildContext context, OfertarEstado ofertar) {
+    final l10n = AppLocalizations.of(context);
     final s = solicitud;
     final paleta = context.paleta;
     final alto = paleta.esCampo
@@ -534,7 +539,9 @@ class _SeleccionSolicitud extends StatelessWidget {
               ),
             ),
             ChipEstadoMarketplace(
-              etiqueta: hoy ? 'Vence hoy' : 'Abierta',
+              etiqueta: hoy
+                  ? l10n.proveedorNegociacionVenceHoy
+                  : l10n.proveedorNegociacionAbierta,
               tono: hoy ? TonoEstado.alerta : TonoEstado.exito,
               icono: hoy ? Icons.schedule_rounded : Icons.check_circle_rounded,
             ),
@@ -543,8 +550,8 @@ class _SeleccionSolicitud extends StatelessWidget {
         const SizedBox(height: EspaciadoCampo.xs),
         Text(
           s.cultivo == null
-              ? 'Solicitud abierta'
-              : 'Lote de ${s.cultivo!.toLowerCase()}',
+              ? l10n.proveedorNegociacionSolicitudAbierta
+              : l10n.proveedorNegociacionLote(s.cultivo!.toLowerCase()),
           style: TipografiaCampo.tituloPantalla.copyWith(color: paleta.texto),
         ),
         const SizedBox(height: EspaciadoCampo.l),
@@ -563,8 +570,9 @@ class _SeleccionSolicitud extends StatelessWidget {
           Semantics(
             liveRegion: true,
             child: ofertar.sinRed
-                ? const BannerSinSenalCampo(
-                    mensaje: 'aceptar necesita red. Reintenta con señal.',
+                ? BannerSinSenalCampo(
+                    mensaje:
+                        l10n.proveedorNegociacionAceptarNecesitaRedReintenta,
                   )
                 : AvisoMarketplace(
                     mensaje: ofertar.mensaje!,
@@ -575,21 +583,19 @@ class _SeleccionSolicitud extends StatelessWidget {
         ],
         if (enviada)
           AvisoMarketplace(
-            mensaje:
-                'Oferta enviada a ${FormatoMarketplace.bs(ofertar.oferta!.precioHa)} '
-                'por ha. La sigues en «Ofertas».',
+            mensaje: l10n.proveedorNegociacionOfertaEnviadaPorSigues(
+              FormatoMarketplace.bs(ofertar.oferta!.precioHa),
+            ),
             icono: Icons.check_circle_rounded,
           )
         else if (cerrada)
-          const AvisoMarketplace(
-            mensaje:
-                'Tu negociación en esta solicitud ya se cerró. No puedes '
-                'ofertar de nuevo.',
+          AvisoMarketplace(
+            mensaje: l10n.proveedorNegociacionNegociacionEstaSolicitudCerro,
             tono: TonoAviso.alerta,
           )
         else if (yaOferto)
           AvisoMarketplace(
-            mensaje: 'Ya ofertaste aquí. Sigue la negociación en «Ofertas».',
+            mensaje: l10n.proveedorNegociacionOfertasteAquiSigueNegociacion,
             icono: Icons.handshake_rounded,
             tono: TonoAviso.info,
           )
@@ -602,8 +608,8 @@ class _SeleccionSolicitud extends StatelessWidget {
                     minimumSize: Size.fromHeight(alto),
                   ),
                   onPressed: ofertar.enviando ? null : alContraofertar,
-                  child: const Text(
-                    'Contraofertar',
+                  child: Text(
+                    l10n.proveedorNegociacionContraofertar,
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -611,8 +617,9 @@ class _SeleccionSolicitud extends StatelessWidget {
               const SizedBox(width: EspaciadoCampo.m),
               Expanded(
                 child: BotonPrincipalMarketplace(
-                  texto:
-                      'Aceptar ${CifrasNegociacion.bsHa(s.precioHaPropuesto)}',
+                  texto: l10n.proveedorNegociacionAceptar(
+                    CifrasNegociacion.bsHa(s.precioHaPropuesto),
+                  ),
                   alto: alto,
                   cargando: ofertar.enviando,
                   onPressed: () => context.read<OfertarCubit>().ofertar(
@@ -629,7 +636,7 @@ class _SeleccionSolicitud extends StatelessWidget {
             minimumSize: const Size.fromHeight(ObjetivoTactilCampo.minimo),
           ),
           onPressed: alVerDetalle,
-          child: const Text('Ver detalle del lote'),
+          child: Text(l10n.proveedorNegociacionVerDetalleDelLote),
         ),
       ],
     );
@@ -653,6 +660,7 @@ class _Cuerpo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final cubit = context.read<MapaSolicitudesCubit>();
     switch (estado.estado) {
       case EstadoMapa.cargando:
@@ -667,17 +675,16 @@ class _Cuerpo extends StatelessWidget {
         return EstadoErrorMarketplace(
           sinConexion: true,
           compacto: true,
-          titulo: 'Sin conexión',
-          detalle:
-              'El mapa de solicitudes necesita señal: es una competencia '
-              'entre pilotos. Reintenta cuando la tengas.',
+          titulo: l10n.proveedorNegociacionSinConexion,
+          detalle: l10n.proveedorNegociacionMapaSolicitudesNecesitaSenal,
           onReintentar: cubit.cargar,
         );
       case EstadoMapa.error:
         return EstadoErrorMarketplace(
           compacto: true,
-          titulo: 'No pudimos cargar las solicitudes',
-          detalle: estado.mensaje ?? 'Intenta de nuevo en un momento.',
+          titulo: l10n.proveedorNegociacionPudimosCargarLasSolicitudes,
+          detalle:
+              estado.mensaje ?? l10n.proveedorNegociacionIntentaNuevoMomento,
           onReintentar: cubit.cargar,
         );
       case EstadoMapa.listo:
@@ -687,12 +694,11 @@ class _Cuerpo extends StatelessWidget {
           return EstadoVacioMarketplace(
             icono: Icons.map_outlined,
             titulo: hay
-                ? 'Ninguna solicitud con estos filtros'
-                : 'No hay solicitudes abiertas ahora',
+                ? l10n.proveedorNegociacionNingunaSolicitudConEstos
+                : l10n.proveedorNegociacionHaySolicitudesAbiertasAhora,
             detalle: hay
-                ? 'Quita algún filtro o prueba con otra zona.'
-                : 'Activa los avisos en Perfil y te decimos cuando llegue '
-                      'una en tus zonas.',
+                ? l10n.proveedorNegociacionQuitaAlgunFiltroPrueba
+                : l10n.proveedorNegociacionActivaLosAvisosPerfil,
           );
         }
         return Column(
@@ -719,7 +725,9 @@ class _Cuerpo extends StatelessWidget {
               OutlinedButton(
                 onPressed: estado.cargandoMas ? null : cubit.cargarMas,
                 child: Text(
-                  estado.cargandoMas ? 'Cargando…' : 'Ver más solicitudes',
+                  estado.cargandoMas
+                      ? l10n.proveedorNegociacionCargando
+                      : l10n.proveedorNegociacionVerMasSolicitudes,
                 ),
               ),
             if (estado.zonas.isNotEmpty) ...[
@@ -739,6 +747,7 @@ class _ResumenZonas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final porMacro = <Macrorregion?, List<ResumenZona>>{};
     for (final z in zonas) {
@@ -750,7 +759,7 @@ class _ResumenZonas extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Dónde hay trabajo',
+            l10n.proveedorNegociacionDondeHayTrabajo,
             style: TipografiaCampo.tituloSeccion.copyWith(color: paleta.texto),
           ),
           const SizedBox(height: EspaciadoCampo.s),
@@ -762,12 +771,15 @@ class _ResumenZonas extends StatelessWidget {
                   Decimal.zero,
                   (a, z) => a + z.hectareas,
                 );
-                final nombre = e.key?.etiqueta ?? 'Otras zonas';
+                final nombre =
+                    e.key?.etiqueta ?? l10n.proveedorNegociacionOtrasZonas;
                 return Semantics(
                   container: true,
-                  label:
-                      '$nombre: $cuantas solicitudes, '
-                      '${FormatoMarketplace.hectareas(ha)}',
+                  label: l10n.proveedorNegociacionSolicitudes(
+                    nombre,
+                    cuantas,
+                    FormatoMarketplace.hectareas(ha),
+                  ),
                   excludeSemantics: true,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -785,7 +797,10 @@ class _ResumenZonas extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '$cuantas · ${CifrasNegociacion.ha(ha)} ha',
+                          l10n.proveedorNegociacionHa(
+                            cuantas,
+                            CifrasNegociacion.ha(ha),
+                          ),
                           style: TipografiaCampo.datoMono.copyWith(
                             fontSize: 14,
                             color: paleta.textoSecundario,
@@ -819,6 +834,7 @@ class _TarjetaSolicitud extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final s = solicitud;
     final paleta = context.paleta;
     return Semantics(
@@ -850,16 +866,16 @@ class _TarjetaSolicitud extends StatelessWidget {
                   ),
                 ),
                 if (hoy)
-                  const ChipEstadoMarketplace(
-                    etiqueta: 'Vence hoy',
+                  ChipEstadoMarketplace(
+                    etiqueta: l10n.proveedorNegociacionVenceHoy,
                     tono: TonoEstado.alerta,
                     icono: Icons.schedule_rounded,
                   )
                 else if (s.miNegociacion != MiNegociacion.ninguna)
                   ChipEstadoMarketplace(
                     etiqueta: s.miNegociacion == MiNegociacion.vigente
-                        ? 'Ofertaste'
-                        : 'Cerrada',
+                        ? l10n.proveedorNegociacionOfertaste
+                        : l10n.proveedorNegociacionCerrada,
                     tono: s.miNegociacion == MiNegociacion.vigente
                         ? TonoEstado.info
                         : TonoEstado.neutro,
@@ -890,9 +906,11 @@ class _TarjetaSolicitud extends StatelessWidget {
             const SizedBox(height: EspaciadoCampo.s),
             Text(
               [
-                'total ${FormatoMarketplace.bs(s.montoPropuesto)}',
+                l10n.proveedorNegociacionTotal(
+                  FormatoMarketplace.bs(s.montoPropuesto),
+                ),
                 s.ofertasVigentes == 0
-                    ? 'sin ofertas'
+                    ? l10n.proveedorNegociacionSinOfertas
                     : '${s.ofertasVigentes} ${s.ofertasVigentes == 1 ? 'oferta' : 'ofertas'}',
                 if (s.distanciaKm != null)
                   FormatoMarketplace.kilometros(s.distanciaKm!),
@@ -988,6 +1006,7 @@ class _HojaFiltrosState extends State<_HojaFiltros> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     return SafeArea(
       child: SingleChildScrollView(
@@ -1001,19 +1020,32 @@ class _HojaFiltrosState extends State<_HojaFiltros> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('Filtrar solicitudes', style: texto.titleLarge),
+            Text(
+              l10n.proveedorNegociacionFiltrarSolicitudes,
+              style: texto.titleLarge,
+            ),
             const SizedBox(height: EspaciadoCampo.l),
-            _par('Hectáreas desde', _haMin, 'Hectáreas hasta', _haMax),
+            _par(
+              l10n.proveedorNegociacionHectareasDesde,
+              _haMin,
+              l10n.proveedorNegociacionHectareasHasta,
+              _haMax,
+            ),
             const SizedBox(height: EspaciadoCampo.m),
-            _par('Bs por ha desde', _precioMin, 'Bs por ha hasta', _precioMax),
+            _par(
+              l10n.proveedorNegociacionPorDesde,
+              _precioMin,
+              l10n.proveedorNegociacionPorHasta,
+              _precioMax,
+            ),
             const SizedBox(height: EspaciadoCampo.m),
             CampoFormularioMarketplace(
-              etiqueta: 'Cultivo',
+              etiqueta: l10n.proveedorNegociacionCultivo,
               controller: _cultivo,
               textCapitalization: TextCapitalization.sentences,
             ),
             const SizedBox(height: EspaciadoCampo.l),
-            Text('Ordenar por', style: texto.titleMedium),
+            Text(l10n.proveedorNegociacionOrdenarPor, style: texto.titleMedium),
             const SizedBox(height: EspaciadoCampo.s),
             Wrap(
               spacing: EspaciadoCampo.s,
@@ -1028,13 +1060,13 @@ class _HojaFiltrosState extends State<_HojaFiltros> {
             ),
             const SizedBox(height: EspaciadoCampo.xl),
             BotonPrincipalMarketplace(
-              texto: 'Ver solicitudes',
+              texto: l10n.proveedorNegociacionVerSolicitudes,
               onPressed: _aplicar,
             ),
             const SizedBox(height: EspaciadoCampo.s),
             TextButton(
               onPressed: _limpiar,
-              child: const Text('Quitar filtros'),
+              child: Text(l10n.proveedorNegociacionQuitarFiltros),
             ),
           ],
         ),

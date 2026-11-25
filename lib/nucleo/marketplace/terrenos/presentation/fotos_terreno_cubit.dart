@@ -4,6 +4,7 @@ import '../../dominio/dominio.dart';
 import '../../foto_preparador.dart';
 import '../fotos_terreno_repositorio.dart';
 import 'fotos_terreno_estado.dart';
+import '../../../../l10n/app_localizations.dart';
 
 export 'fotos_terreno_estado.dart';
 
@@ -15,11 +16,12 @@ export 'fotos_terreno_estado.dart';
 /// este celular y salen con [subirPendientes] cuando la solicitud se
 /// publica y el terreno existe.
 class FotosTerrenoCubit extends Cubit<FotosTerrenoEstado> {
-  FotosTerrenoCubit(this._repositorio, this._preparador)
+  FotosTerrenoCubit(this._repositorio, this._preparador, this._l10n)
     : super(const FotosTerrenoEstado());
 
   final FotosTerrenoRepositorio _repositorio;
   final PreparadorFoto _preparador;
+  final AppLocalizations _l10n;
 
   final _porTerreno = <int, List<FotoDeTerreno>>{};
   var _pendientes = <FotoDeTerreno>[];
@@ -79,9 +81,7 @@ class FotosTerrenoCubit extends Cubit<FotosTerrenoEstado> {
     if (state.lleno) {
       emit(
         state.copiarCon(
-          mensaje:
-              'Ya tienes ${FotosTerrenoRepositorio.maximo} fotos, el máximo. '
-              'Quita una para agregar otra.',
+          mensaje: _l10n.terrenosFotosMaximo(FotosTerrenoRepositorio.maximo),
           esError: true,
           sinRed: false,
         ),
@@ -105,7 +105,8 @@ class FotosTerrenoCubit extends Cubit<FotosTerrenoEstado> {
     } on Object catch (e) {
       final f = describirFalla(
         e,
-        porDefecto: 'No pudimos preparar la foto. Prueba con otra.',
+        l10n: _l10n,
+        porDefecto: _l10n.terrenosFotoNoPreparada,
       );
       if (!isClosed) {
         emit(
@@ -136,12 +137,13 @@ class FotosTerrenoCubit extends Cubit<FotosTerrenoEstado> {
           id: subida.id,
           url: subida.url,
         ),
-        mensaje: 'Foto guardada.',
+        mensaje: _l10n.terrenosFotoGuardada,
       );
     } on Object catch (e) {
       final falla = describirFalla(
         e,
-        porDefecto: 'No pudimos subir la foto. Intenta de nuevo.',
+        l10n: _l10n,
+        porDefecto: _l10n.terrenosFotoNoSubida,
       );
       _cambiar(
         terreno,
@@ -203,7 +205,7 @@ class FotosTerrenoCubit extends Cubit<FotosTerrenoEstado> {
     if (terreno == null ||
         foto.id == null ||
         foto.situacion != SituacionFoto.guardada) {
-      _emitir(resto, mensaje: 'Quitamos la foto.');
+      _emitir(resto, mensaje: _l10n.terrenosFotoQuitada);
       return;
     }
     try {
@@ -213,7 +215,7 @@ class FotosTerrenoCubit extends Cubit<FotosTerrenoEstado> {
       emit(
         state.copiarCon(
           fotos: resto,
-          mensaje: 'Quitamos la foto.',
+          mensaje: _l10n.terrenosFotoQuitada,
           esError: false,
           sinRed: false,
         ),
@@ -231,7 +233,8 @@ class FotosTerrenoCubit extends Cubit<FotosTerrenoEstado> {
     } on Object catch (e) {
       final f = describirFalla(
         e,
-        porDefecto: 'No pudimos quitar la foto. Intenta de nuevo.',
+        l10n: _l10n,
+        porDefecto: _l10n.terrenosFotoNoQuitada,
       );
       if (!isClosed) {
         emit(

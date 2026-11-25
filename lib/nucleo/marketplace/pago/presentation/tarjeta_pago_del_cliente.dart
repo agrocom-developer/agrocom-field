@@ -9,6 +9,7 @@ import '../../ui/superficie_marketplace.dart';
 import '../pagos_repositorio.dart';
 import 'pago_cubit.dart';
 import 'sello_pago_confirmado.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Lo que el cliente ve del pago en el seguimiento: «Pago confirmado» o que
 /// todavía falta. Es de solo lectura.
@@ -19,9 +20,11 @@ class TarjetaPagoDelCliente extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
       create: (context) =>
-          PagoCubit(context.read<PagosRepositorio>(), solicitudId)..cargar(),
+          PagoCubit(context.read<PagosRepositorio>(), solicitudId, l10n)
+            ..cargar(),
       child: BlocBuilder<PagoCubit, PagoEstado>(
         builder: (context, estado) {
           final texto = Theme.of(context).textTheme;
@@ -47,7 +50,7 @@ class TarjetaPagoDelCliente extends StatelessWidget {
                   icono: estado.fallo == FalloPago.sinRed
                       ? Icons.wifi_off_rounded
                       : null,
-                  mensaje: estado.mensaje ?? 'No pudimos revisar el pago.',
+                  mensaje: estado.mensaje ?? l10n.pagoPudimosRevisarPago,
                 ),
                 Align(
                   alignment: Alignment.centerLeft,
@@ -55,7 +58,7 @@ class TarjetaPagoDelCliente extends StatelessWidget {
                     key: const Key('pago-cliente-reintentar'),
                     onPressed: context.read<PagoCubit>().cargar,
                     icon: const Icon(Icons.refresh_rounded),
-                    label: const Text('Reintentar'),
+                    label: Text(l10n.pagoReintentar),
                   ),
                 ),
               ],
@@ -74,10 +77,9 @@ class TarjetaPagoDelCliente extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Pago pendiente', style: texto.titleMedium),
+                        Text(l10n.pagoPagoPendiente, style: texto.titleMedium),
                         Text(
-                          'Le pagas al piloto directamente. Cuando él '
-                          'confirme que lo recibió, lo verás aquí.',
+                          l10n.pagoPagasPilotoDirectamenteCuando,
                           style: texto.bodyMedium?.copyWith(
                             color: paleta.textoSecundario,
                           ),

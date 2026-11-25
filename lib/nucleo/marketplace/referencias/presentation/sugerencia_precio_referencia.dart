@@ -8,6 +8,7 @@ import '../../../ui/tokens_campo.dart';
 import '../../dominio/falla.dart';
 import '../../ui/formato_marketplace.dart';
 import '../precio_referencia.dart';
+import '../../../../l10n/app_localizations.dart';
 
 /// Los valores de `tipo_aplicacion` del contrato para un texto de producto o
 /// de aplicación escrito por una persona. Sin coincidencia, `otro`.
@@ -101,6 +102,7 @@ class _SugerenciaPrecioReferenciaState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final apagado = texto.bodyMedium?.copyWith(color: paleta.textoSecundario);
@@ -108,7 +110,7 @@ class _SugerenciaPrecioReferenciaState
       alignment: Alignment.topLeft,
       child: switch (_fase) {
         _Fase.cargando => Semantics(
-          label: 'Buscando el precio de referencia',
+          label: l10n.referenciasBuscandoPrecioReferencia,
           child: const EsqueletoCampo(
             key: Key('referencia-carga'),
             alto: ObjetivoTactilCampo.minimo,
@@ -119,15 +121,14 @@ class _SugerenciaPrecioReferenciaState
           key: const Key('referencia-vacia'),
           padding: const EdgeInsets.symmetric(vertical: EspaciadoCampo.s),
           child: Text(
-            'Todavía no hay un precio de referencia para esta aplicación. '
-            'Escribe el que te parezca justo.',
+            l10n.referenciasTodaviaHayPrecioReferencia,
             style: apagado,
           ),
         ),
         _Fase.sinRed || _Fase.error => _Reintento(
           mensaje: _fase == _Fase.sinRed
-              ? 'Sin conexión para traer el precio de referencia.'
-              : 'No pudimos traer el precio de referencia.',
+              ? l10n.referenciasSinConexionParaTraer
+              : l10n.referenciasPudimosTraerPrecioReferencia,
           alReintentar: _cargar,
         ),
         _Fase.lista => _Ficha(
@@ -160,6 +161,7 @@ class _Ficha extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final precio = FormatoMarketplace.bs(referencia.precioHa!);
@@ -205,11 +207,13 @@ class _Ficha extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Referencia: $precio por ha',
+                          l10n.referenciasReferenciaPor(precio),
                           style: texto.titleSmall,
                         ),
                         Text(
-                          usada ? 'Estás usando este precio' : _origen,
+                          usada
+                              ? l10n.referenciasEstasUsandoEstePrecio
+                              : _origen,
                           style: texto.bodySmall?.copyWith(
                             color: paleta.textoSecundario,
                           ),
@@ -219,7 +223,7 @@ class _Ficha extends StatelessWidget {
                   ),
                   if (!usada)
                     Text(
-                      'Usar',
+                      l10n.referenciasUsar,
                       style: texto.labelLarge?.copyWith(
                         color: paleta.acentoTexto,
                       ),
@@ -242,6 +246,7 @@ class _Reintento extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     return Row(
       key: const Key('referencia-reintento'),
@@ -264,7 +269,7 @@ class _Reintento extends StatelessWidget {
             ),
           ),
           onPressed: alReintentar,
-          child: const Text('Reintentar'),
+          child: Text(l10n.referenciasReintentar),
         ),
       ],
     );
