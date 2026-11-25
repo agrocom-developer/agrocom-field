@@ -22,11 +22,13 @@ class AvisoMarketplace extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final color = switch (tono) {
+    final rol = switch (tono) {
       TonoAviso.info => paleta.info,
       TonoAviso.alerta => paleta.alerta,
       TonoAviso.error => paleta.error,
     };
+    // Par tonal del rol: fondo y texto con contraste medido (sin alpha).
+    final (:fondo, texto: colorTexto) = paleta.contenedorDe(rol);
     final icon =
         icono ??
         switch (tono) {
@@ -35,23 +37,22 @@ class AvisoMarketplace extends StatelessWidget {
           TonoAviso.error => Icons.error_outline_rounded,
         };
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(EspaciadoCampo.l),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: fondo,
         borderRadius: BorderRadius.circular(RadioCampo.media),
-        border: Border.all(color: color.withValues(alpha: 0.4)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 22),
-          const SizedBox(width: 10),
+          Icon(icon, color: colorTexto, size: 22),
+          const SizedBox(width: EspaciadoCampo.m),
           Expanded(
             child: Text(
               mensaje,
               style: Theme.of(
                 context,
-              ).textTheme.bodyMedium?.copyWith(color: paleta.texto),
+              ).textTheme.bodyMedium?.copyWith(color: colorTexto),
             ),
           ),
         ],

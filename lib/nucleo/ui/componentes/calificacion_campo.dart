@@ -75,7 +75,7 @@ class _Estrella extends StatelessWidget {
       child: Icon(
         llena ? Icons.star_rounded : Icons.star_outline_rounded,
         size: tamano,
-        color: llena ? paleta.alerta : paleta.bordeFuerte,
+        color: llena ? paleta.ambar : paleta.bordeFuerte,
       ),
     );
     if (onTap == null) {
