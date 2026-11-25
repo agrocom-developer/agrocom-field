@@ -17,6 +17,7 @@ class PostItOfertaCampo extends StatelessWidget {
     required this.precioPorHectarea,
     required this.total,
     this.detalle,
+    this.iniciales,
     this.elegido = false,
     this.onTap,
     super.key,
@@ -32,6 +33,9 @@ class PostItOfertaCampo extends StatelessWidget {
 
   /// Apoyo bajo el nombre ("4,9 de 5 · 12 km").
   final String? detalle;
+
+  /// Iniciales del piloto para el cuadro redondeado de la izquierda.
+  final String? iniciales;
 
   final bool elegido;
   final VoidCallback? onTap;
@@ -57,51 +61,32 @@ class PostItOfertaCampo extends StatelessWidget {
           children: [
             ClipPath(
               clipper: const _RecorteDoblez(_doblez),
-              child: Material(
-                color: Colors.transparent,
-                child: Ink(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [paleta.papel, paleta.papel2],
+              child: SizedBox(
+                width: double.infinity,
+                child: Material(
+                  color: Colors.transparent,
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [paleta.papel, paleta.papel2],
+                      ),
                     ),
-                  ),
-                  child: InkWell(
-                    onTap: onTap,
-                    child: Padding(
-                      padding: const EdgeInsets.all(EspaciadoCampo.l),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            piloto,
-                            style: TipografiaCampo.tituloSeccion.copyWith(
-                              color: paleta.sobrePapel,
-                            ),
-                          ),
-                          if (detalle != null)
-                            Text(
-                              detalle!,
-                              style: TipografiaCampo.datoMono.copyWith(
-                                color: paleta.sobrePapel,
-                              ),
-                            ),
-                          const SizedBox(height: EspaciadoCampo.m),
-                          CifraCampo(
-                            valor: precioPorHectarea,
-                            unidad: 'Bs/ha',
-                            color: paleta.sobrePapel,
-                          ),
-                          const SizedBox(height: EspaciadoCampo.xs),
-                          CifraCampo(
-                            valor: total,
-                            unidad: 'Bs',
-                            estilo: TipografiaCampo.cifraMedia,
-                            color: paleta.sobrePapel,
-                          ),
-                        ],
+                    child: InkWell(
+                      onTap: onTap,
+                      child: Padding(
+                        padding: const EdgeInsets.all(EspaciadoCampo.l),
+                        child: _Contenido(
+                          piloto: piloto,
+                          detalle: detalle,
+                          iniciales: iniciales,
+                          precioPorHectarea: precioPorHectarea,
+                          total: total,
+                          // Con el texto muy ampliado no caben lado a lado.
+                          apilado:
+                              MediaQuery.textScalerOf(context).scale(1) > 1.3,
+                        ),
                       ),
                     ),
                   ),
@@ -149,6 +134,108 @@ class PostItOfertaCampo extends StatelessWidget {
 }
 
 /// Corta la esquina inferior derecha en diagonal.
+/// Datos del piloto a la izquierda y las cifras a la derecha, como en el
+/// handoff; apilados cuando el texto es muy grande.
+class _Contenido extends StatelessWidget {
+  const _Contenido({
+    required this.piloto,
+    required this.detalle,
+    required this.iniciales,
+    required this.precioPorHectarea,
+    required this.total,
+    required this.apilado,
+  });
+
+  final String piloto;
+  final String? detalle;
+  final String? iniciales;
+  final String precioPorHectarea;
+  final String total;
+  final bool apilado;
+
+  @override
+  Widget build(BuildContext context) {
+    final paleta = context.paleta;
+    final datos = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          piloto,
+          style: TipografiaCampo.tituloSeccion.copyWith(
+            color: paleta.sobrePapel,
+          ),
+        ),
+        if (detalle != null)
+          Text(
+            detalle!,
+            style: TipografiaCampo.datoMono.copyWith(color: paleta.sobrePapel),
+          ),
+      ],
+    );
+    final cifras = Column(
+      crossAxisAlignment: apilado
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CifraCampo(
+          valor: precioPorHectarea,
+          unidad: 'Bs/ha',
+          color: paleta.sobrePapel,
+        ),
+        CifraCampo(
+          valor: total,
+          unidad: 'Bs',
+          estilo: TipografiaCampo.cifraMedia,
+          color: paleta.sobrePapel,
+        ),
+      ],
+    );
+    final avatar = iniciales == null
+        ? null
+        : Container(
+            width: ObjetivoTactilCampo.guantes - EspaciadoCampo.s,
+            height: ObjetivoTactilCampo.guantes - EspaciadoCampo.s,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              border: Border.all(color: paleta.sobrePapel, width: 2),
+              borderRadius: BorderRadius.circular(RadioCampo.chip),
+            ),
+            child: Text(
+              iniciales!,
+              textScaler: TextScaler.noScaling,
+              style: TipografiaCampo.tituloTarjeta.copyWith(
+                color: paleta.sobrePapel,
+              ),
+            ),
+          );
+    if (apilado) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          datos,
+          const SizedBox(height: EspaciadoCampo.m),
+          cifras,
+        ],
+      );
+    }
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        if (avatar != null) ...[
+          avatar,
+          const SizedBox(width: EspaciadoCampo.m),
+        ],
+        Expanded(child: datos),
+        const SizedBox(width: EspaciadoCampo.m),
+        cifras,
+      ],
+    );
+  }
+}
+
 class _RecorteDoblez extends CustomClipper<Path> {
   const _RecorteDoblez(this.lado);
 

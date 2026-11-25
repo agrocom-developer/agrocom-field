@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
+import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../comun/presentation/boton_principal.dart';
 import '../../comun/presentation/boton_secundario.dart';
@@ -73,8 +74,32 @@ class _Vista extends StatelessWidget {
       },
       builder: (context, estado) {
         final cubit = context.read<OfertasCubit>();
+        final recibidas = estado.fase == FaseOfertas.lista
+            ? estado.vigentes(reloj()).length
+            : null;
         return Scaffold(
-          appBar: AppBar(title: const Text('Ofertas')),
+          appBar: AppBar(
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (recibidas != null)
+                  Text(
+                    recibidas == 1
+                        ? '1 oferta recibida'
+                        : '$recibidas ofertas recibidas',
+                    style: TipografiaCampo.cuerpoSecundario.copyWith(
+                      color: context.paleta.textoSecundario,
+                    ),
+                  ),
+                Text(
+                  'Comparar ofertas',
+                  style: TipografiaCampo.tituloSeccion.copyWith(
+                    color: context.paleta.texto,
+                  ),
+                ),
+              ],
+            ),
+          ),
           body: switch (estado.fase) {
             FaseOfertas.cargando => const _Cargando(),
             FaseOfertas.error => EstadoFalla(
@@ -95,110 +120,371 @@ class _Vista extends StatelessWidget {
   }
 }
 
-class _Lista extends StatelessWidget {
+/// Máximo de rondas de una negociación: la quinta es definitiva. Solo para
+/// mostrar «R3/5»; qué se puede responder lo decide el servidor
+/// (`es_definitiva`, ADR 0016).
+const int _rondasMaximas = 5;
+
+class _Lista extends StatefulWidget {
   const _Lista({required this.estado, required this.reloj});
 
   final OfertasEstado estado;
   final DateTime Function() reloj;
 
   @override
-  Widget build(BuildContext context) {
+  State<_Lista> createState() => _ListaState();
+}
+
+class _ListaState extends State<_Lista> {
+  /// La oferta marcada «ELEGIDO»; si ya no está vigente, la primera a la
+  /// que el cliente puede responder.
+  String? _marcada;
+
+  /// El piloto de la oferta marcada: una contraoferta reemplaza la oferta
+  /// (cambia su id) pero la marca sigue con el mismo piloto.
+  String? _marcadaProveedor;
+
+  OfertaRecibida? _elegida(List<OfertaRecibida> vigentes, DateTime ahora) {
+    for (final o in vigentes) {
+      if (o.id == _marcada) return o;
+    }
+    for (final o in vigentes) {
+      if (o.proveedor.id == _marcadaProveedor) return o;
+    }
+    for (final o in vigentes) {
+      if (o.esperaAlCliente(ahora)) return o;
+    }
+    return vigentes.isEmpty ? null : vigentes.first;
+  }
+
+  Future<void> _aceptar(OfertaRecibida o) async {
     final cubit = context.read<OfertasCubit>();
-    final texto = Theme.of(context).textTheme;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text('¿Elegir a ${o.proveedor.nombre}?'),
+        content: Text(
+          'Quedan acordados ${FormatoMarketplace.bs(o.precioHa)} por '
+          'hectárea (${FormatoMarketplace.bs(o.montoEstimado)} estimados). '
+          'Las demás ofertas se cierran y el piloto recibe tu contacto.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Volver'),
+          ),
+          FilledButton(
+            key: const ValueKey('confirmar-aceptar'),
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Elegir piloto'),
+          ),
+        ],
+      ),
+    );
+    if (ok ?? false) await cubit.aceptar(o);
+  }
+
+  Future<void> _contraofertar(OfertaRecibida o, Solicitud solicitud) async {
+    final cubit = context.read<OfertasCubit>();
+    final escrito = await mostrarHojaPrecio(
+      context,
+      titulo: 'Contraofertar a ${o.proveedor.nombre.split(' ').first}',
+      textoAccion: 'Enviar contraoferta',
+      hectareas: solicitud.hectareas,
+      inicial: o.precioHa,
+      conNota: true,
+      apoyo:
+          'Pide ${FormatoMarketplace.bs(o.precioHa)}/ha. Propón tu precio; '
+          'el piloto puede aceptar o responder.',
+    );
+    if (escrito != null) {
+      await cubit.contraofertar(o, escrito.precio, nota: escrito.nota);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final estado = widget.estado;
+    final cubit = context.read<OfertasCubit>();
     final paleta = context.paleta;
     final s = estado.solicitud!;
-    final ahora = reloj();
+    final ahora = widget.reloj();
     final vigentes = estado.vigentes(ahora);
     final cerradas = estado.cerradas(ahora);
     final margen = EspaciadoCampo.margenLateral(
       MediaQuery.sizeOf(context).width,
     );
     final cerradaLaSolicitud = !s.estado.negociando;
+    final elegida = cerradaLaSolicitud ? null : _elegida(vigentes, ahora);
 
-    return RefreshIndicator(
-      onRefresh: cubit.actualizar,
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 720),
-          child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.fromLTRB(
-              margen,
-              EspaciadoCampo.l,
-              margen,
-              EspaciadoCampo.xxl,
-            ),
-            children: [
-              Semantics(
-                header: true,
-                child: Text(
-                  '${s.lote.nombre} · ${FormatoMarketplace.hectareas(s.hectareas)}',
-                  style: texto.headlineSmall,
-                ),
-              ),
-              Text(
-                'Tu precio: ${FormatoMarketplace.bs(s.precioHaPropuesto)}/ha',
-                style: texto.bodyMedium?.copyWith(
-                  color: paleta.textoSecundario,
-                ),
-              ),
-              if (estado.sinConexion) ...[
-                const SizedBox(height: EspaciadoCampo.l),
-                const AvisoMarketplace(
-                  tono: TonoAviso.alerta,
-                  icono: Icons.wifi_off_rounded,
-                  mensaje:
-                      'Sin conexión. Ves lo último que cargamos; puede estar '
-                      'desactualizado.',
-                ),
-              ],
-              if (estado.aviso != null) ...[
-                const SizedBox(height: EspaciadoCampo.l),
-                _AvisoRespuesta(estado: estado),
-              ],
-              if (cerradaLaSolicitud) ...[
-                const SizedBox(height: EspaciadoCampo.l),
-                AvisoMarketplace(
-                  key: const ValueKey('solicitud-cerrada'),
-                  mensaje: switch (s.estado) {
-                    EstadoSolicitud.expirada =>
-                      'La solicitud expiró. Ábrela de nuevo para recibir '
-                          'ofertas.',
-                    EstadoSolicitud.cancelada => 'La solicitud se canceló.',
-                    _ => 'Ya elegiste a un piloto para esta solicitud.',
-                  },
-                ),
-              ],
-              if (vigentes.isNotEmpty && !cerradaLaSolicitud) ...[
-                const SizedBox(height: EspaciadoCampo.l),
-                _Orden(orden: estado.orden, alCambiar: cubit.ordenar),
-              ],
-              const SizedBox(height: EspaciadoCampo.l),
-              if (vigentes.isEmpty && !cerradaLaSolicitud)
-                const _SinOfertas()
-              else
-                for (final o in vigentes) ...[
-                  _TarjetaOferta(
-                    key: ValueKey('oferta-${o.id}'),
-                    oferta: o,
-                    solicitud: s,
-                    ahora: ahora,
-                    ocupada: estado.respondiendo != null,
-                    respondiendoEsta: estado.respondiendo == o.id,
-                    mejorPrecio:
-                        vigentes.length > 1 &&
-                        o.precioHa ==
-                            vigentes
-                                .map((x) => x.precioHa)
-                                .reduce((a, b) => a < b ? a : b),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: cubit.actualizar,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 720),
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: EdgeInsets.fromLTRB(
+                    margen,
+                    EspaciadoCampo.l,
+                    margen,
+                    EspaciadoCampo.xl,
                   ),
-                  const SizedBox(height: EspaciadoCampo.m),
-                ],
-              if (cerradas.isNotEmpty) ...[
-                const TituloSeccionOfertas('Ofertas cerradas'),
-                for (final o in cerradas) _FilaCerrada(oferta: o),
-              ],
-            ],
+                  children: [
+                    TicketPedidoCampo(
+                      numero: 'PEDIDO #${s.id}',
+                      estado: s.estado.etiqueta,
+                      filas: [
+                        FilaTicketCampo(clave: 'Lote', valor: s.lote.nombre),
+                        FilaTicketCampo(
+                          clave: 'Superficie',
+                          valor: FormatoMarketplace.hectareasNumero(
+                            s.hectareas,
+                          ),
+                          unidad: 'ha',
+                          esCifra: true,
+                        ),
+                        FilaTicketCampo(
+                          clave: 'Tu precio',
+                          valor: FormatoMarketplace.bsNumero(
+                            s.precioHaPropuesto,
+                          ),
+                          unidad: 'Bs/ha',
+                          esCifra: true,
+                        ),
+                      ],
+                    ),
+                    if (estado.sinConexion) ...[
+                      const SizedBox(height: EspaciadoCampo.l),
+                      const AvisoMarketplace(
+                        tono: TonoAviso.alerta,
+                        icono: Icons.wifi_off_rounded,
+                        mensaje:
+                            'Sin conexión. Ves lo último que cargamos; puede '
+                            'estar desactualizado.',
+                      ),
+                    ],
+                    if (estado.aviso != null) ...[
+                      const SizedBox(height: EspaciadoCampo.l),
+                      _AvisoRespuesta(estado: estado),
+                    ],
+                    if (cerradaLaSolicitud) ...[
+                      const SizedBox(height: EspaciadoCampo.l),
+                      AvisoMarketplace(
+                        key: const ValueKey('solicitud-cerrada'),
+                        mensaje: switch (s.estado) {
+                          EstadoSolicitud.expirada =>
+                            'La solicitud expiró. Ábrela de nuevo para '
+                                'recibir ofertas.',
+                          EstadoSolicitud.cancelada =>
+                            'La solicitud se canceló.',
+                          _ => 'Ya elegiste a un piloto para esta solicitud.',
+                        },
+                      ),
+                    ],
+                    if (vigentes.isNotEmpty && !cerradaLaSolicitud) ...[
+                      const SizedBox(height: EspaciadoCampo.l),
+                      Text(
+                        'OFERTAS · ORDEN: ${estado.orden.etiqueta.toUpperCase()}',
+                        style: TipografiaCampo.etiquetaMono.copyWith(
+                          color: paleta.textoSecundario,
+                        ),
+                      ),
+                      const SizedBox(height: EspaciadoCampo.s),
+                      _Orden(orden: estado.orden, alCambiar: cubit.ordenar),
+                    ],
+                    const SizedBox(height: EspaciadoCampo.l),
+                    if (vigentes.isEmpty && !cerradaLaSolicitud)
+                      const _SinOfertas()
+                    else
+                      for (final o in vigentes) ...[
+                        Padding(
+                          key: ValueKey('oferta-${o.id}'),
+                          padding: const EdgeInsets.only(
+                            bottom: EspaciadoCampo.m,
+                          ),
+                          child: PostItOfertaCampo(
+                            piloto: o.proveedor.nombre,
+                            precioPorHectarea: FormatoMarketplace.bsNumero(
+                              o.precioHa,
+                            ),
+                            total: FormatoMarketplace.bsNumero(o.montoEstimado),
+                            detalle: _detallePostIt(o),
+                            iniciales: o.proveedor.iniciales,
+                            elegido: o.id == elegida?.id,
+                            onTap: () {
+                              HapticaCampo.seleccion();
+                              setState(() {
+                                _marcada = o.id;
+                                _marcadaProveedor = o.proveedor.id;
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    if (elegida != null)
+                      _DetalleOferta(
+                        key: ValueKey('detalle-${elegida.id}'),
+                        oferta: elegida,
+                        solicitud: s,
+                        ahora: ahora,
+                      ),
+                    if (cerradas.isNotEmpty) ...[
+                      const TituloSeccionOfertas('Ofertas cerradas'),
+                      for (final o in cerradas) _FilaCerrada(oferta: o),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        if (elegida != null)
+          _BarraAcciones(
+            oferta: elegida,
+            ahora: ahora,
+            margen: margen,
+            ocupada: estado.respondiendo != null,
+            respondiendoEsta: estado.respondiendo == elegida.id,
+            alElegir: () => _aceptar(elegida),
+            alContraofertar: () => _contraofertar(elegida, s),
+            alRechazar: () => cubit.rechazar(elegida),
+          ),
+      ],
+    );
+  }
+
+  /// «4,9/5 · 86 calificaciones · R3/5» (o «Aceptó tu precio»).
+  static String _detallePostIt(OfertaRecibida o) {
+    final p = o.proveedor;
+    final nota = p.calificaciones == 0
+        ? 'Sin calificaciones'
+        : '${p.calificacion.toStringAsFixed(1).replaceAll('.', ',')}/5 · '
+              '${p.calificaciones} '
+              '${p.calificaciones == 1 ? 'calificación' : 'calificaciones'}';
+    final estado = o.aceptaPropuesta
+        ? 'Aceptó tu precio'
+        : o.autor == AutorOferta.cliente
+        ? 'Tu contraoferta · R${o.numero}/$_rondasMaximas'
+        : 'R${o.numero}/$_rondasMaximas';
+    return '$nota · $estado';
+  }
+}
+
+/// Las acciones sobre la oferta marcada, ancladas abajo: elegir al piloto
+/// (principal), contraofertar y rechazar. Si la respuesta le toca al piloto,
+/// solo se dice que se espera.
+class _BarraAcciones extends StatelessWidget {
+  const _BarraAcciones({
+    required this.oferta,
+    required this.ahora,
+    required this.margen,
+    required this.ocupada,
+    required this.respondiendoEsta,
+    required this.alElegir,
+    required this.alContraofertar,
+    required this.alRechazar,
+  });
+
+  final OfertaRecibida oferta;
+  final DateTime ahora;
+  final double margen;
+  final bool ocupada;
+  final bool respondiendoEsta;
+  final VoidCallback alElegir;
+  final VoidCallback alContraofertar;
+  final VoidCallback alRechazar;
+
+  @override
+  Widget build(BuildContext context) {
+    final paleta = context.paleta;
+    final o = oferta;
+    final primerNombre = o.proveedor.nombre.split(' ').first;
+    final espera = o.esperaAlCliente(ahora);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: paleta.fondo,
+        border: Border(top: BorderSide(color: paleta.borde)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            margen,
+            EspaciadoCampo.m,
+            margen,
+            EspaciadoCampo.s,
+          ),
+          child: Center(
+            heightFactor: 1,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 720),
+              child: espera
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        BotonPrincipal(
+                          key: ValueKey('aceptar-${o.id}'),
+                          texto:
+                              'Elegir a $primerNombre · '
+                              '${FormatoMarketplace.bs(o.montoEstimado)}',
+                          cargando: respondiendoEsta,
+                          onPressed: ocupada ? null : alElegir,
+                        ),
+                        Row(
+                          children: [
+                            if (!o.esDefinitiva)
+                              Expanded(
+                                child: BotonSecundario(
+                                  key: ValueKey('contraofertar-${o.id}'),
+                                  texto: 'Contraofertar',
+                                  icono: Icons.swap_vert_rounded,
+                                  onPressed: ocupada ? null : alContraofertar,
+                                ),
+                              ),
+                            Expanded(
+                              child: BotonSecundario(
+                                key: ValueKey('rechazar-${o.id}'),
+                                texto: 'Rechazar',
+                                icono: Icons.close_rounded,
+                                onPressed: ocupada ? null : alRechazar,
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (o.esDefinitiva)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: EspaciadoCampo.xs,
+                            ),
+                            child: Text(
+                              'Última ronda: solo puedes elegirlo o '
+                              'rechazarlo.',
+                              textAlign: TextAlign.center,
+                              style: TipografiaCampo.cuerpoSecundario.copyWith(
+                                color: paleta.textoSecundario,
+                              ),
+                            ),
+                          ),
+                      ],
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.only(bottom: EspaciadoCampo.s),
+                      child: Semantics(
+                        liveRegion: true,
+                        child: _Etiqueta(
+                          texto: 'Esperando la respuesta de $primerNombre',
+                          icono: Icons.hourglass_top_rounded,
+                          rol: paleta.info,
+                        ),
+                      ),
+                    ),
+            ),
           ),
         ),
       ),
@@ -315,14 +601,14 @@ class _SinOfertas extends StatelessWidget {
   );
 }
 
-class _TarjetaOferta extends StatelessWidget {
-  const _TarjetaOferta({
+/// El detalle de la oferta marcada: cuánto se aparta de tu precio, la nota
+/// del piloto, el dron, la distancia, cuánto vence y, si ya hubo rondas, la
+/// conversación de precios en burbujas.
+class _DetalleOferta extends StatelessWidget {
+  const _DetalleOferta({
     required this.oferta,
     required this.solicitud,
     required this.ahora,
-    required this.ocupada,
-    required this.respondiendoEsta,
-    required this.mejorPrecio,
     super.key,
   });
 
@@ -330,139 +616,53 @@ class _TarjetaOferta extends StatelessWidget {
   final Solicitud solicitud;
   final DateTime ahora;
 
-  /// Hay una respuesta viajando: se apagan las demás acciones.
-  final bool ocupada;
-  final bool respondiendoEsta;
-  final bool mejorPrecio;
-
-  Future<void> _aceptar(BuildContext context) async {
-    final cubit = context.read<OfertasCubit>();
-    final o = oferta;
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text('¿Elegir a ${o.proveedor.nombre}?'),
-        content: Text(
-          'Quedan acordados ${FormatoMarketplace.bs(o.precioHa)} por '
-          'hectárea (${FormatoMarketplace.bs(o.montoEstimado)} estimados). '
-          'Las demás ofertas se cierran y el piloto recibe tu contacto.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Volver'),
-          ),
-          FilledButton(
-            key: const ValueKey('confirmar-aceptar'),
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Elegir piloto'),
-          ),
-        ],
-      ),
-    );
-    if (ok ?? false) await cubit.aceptar(o);
-  }
-
-  Future<void> _contraofertar(BuildContext context) async {
-    final cubit = context.read<OfertasCubit>();
-    final o = oferta;
-    final escrito = await mostrarHojaPrecio(
-      context,
-      titulo: 'Contraofertar a ${o.proveedor.nombre.split(' ').first}',
-      textoAccion: 'Enviar contraoferta',
-      hectareas: solicitud.hectareas,
-      inicial: o.precioHa,
-      conNota: true,
-      apoyo:
-          'Pide ${FormatoMarketplace.bs(o.precioHa)}/ha. Propón tu precio; '
-          'el piloto puede aceptar o responder.',
-    );
-    if (escrito != null) {
-      await cubit.contraofertar(o, escrito.precio, nota: escrito.nota);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<OfertasCubit>();
     final paleta = context.paleta;
-    final texto = Theme.of(context).textTheme;
     final o = oferta;
     final p = o.proveedor;
-    final espera = o.esperaAlCliente(ahora);
     final restante = o.restante(ahora);
     final dif = o.precioHa - solicitud.precioHaPropuesto;
+    final rondas = [...o.ronda, o];
     return SuperficieMarketplace(
-      resaltada: mejorPrecio,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              _Avatar(proveedor: p),
+              AvatarFoto(
+                iniciales: p.iniciales,
+                etiqueta: 'Foto de ${p.nombre}',
+                url: p.fotoUrl,
+                tamano: ObjetivoTactilCampo.guantes - EspaciadoCampo.s,
+              ),
               const SizedBox(width: EspaciadoCampo.m),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(p.nombre, style: texto.titleMedium),
-                    const SizedBox(height: 2),
-                    p.calificaciones == 0
-                        ? Text(
-                            'Sin calificaciones todavía',
-                            style: texto.bodySmall?.copyWith(
-                              color: paleta.textoSecundario,
-                            ),
-                          )
-                        : CalificacionPromedio(
-                            valor: p.calificacion,
-                            detalle:
-                                '${p.calificaciones} '
-                                '${p.calificaciones == 1 ? 'calificación' : 'calificaciones'}',
-                          ),
-                  ],
+                child: Text(
+                  o.autor == AutorOferta.cliente
+                      ? 'Tu contraoferta · ronda ${o.numero}'
+                      : o.aceptaPropuesta
+                      ? 'Acepta tu precio'
+                      : dif > Decimal.zero
+                      ? 'Pide ${FormatoMarketplace.bs(dif)}/ha más que tu '
+                            'precio'
+                      : dif == Decimal.zero
+                      ? 'Iguala tu precio'
+                      : 'Ofrece ${FormatoMarketplace.bs(-dif)}/ha menos que '
+                            'tu precio',
+                  style: TipografiaCampo.tituloTarjeta.copyWith(
+                    color: paleta.texto,
+                  ),
                 ),
               ),
             ],
-          ),
-          const SizedBox(height: EspaciadoCampo.l),
-          Wrap(
-            spacing: EspaciadoCampo.s,
-            runSpacing: EspaciadoCampo.xs,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              Text(
-                '${FormatoMarketplace.bs(o.precioHa)}/ha',
-                key: ValueKey('precio-${o.id}'),
-                style: texto.headlineSmall,
-              ),
-              if (mejorPrecio)
-                _Etiqueta(
-                  texto: 'Mejor precio',
-                  icono: Icons.trending_down_rounded,
-                  color: paleta.acentoTexto,
-                ),
-            ],
-          ),
-          Text(
-            '${FormatoMarketplace.bs(o.montoEstimado)} por '
-            '${FormatoMarketplace.hectareas(solicitud.hectareas)}',
-            style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
-          ),
-          const SizedBox(height: EspaciadoCampo.xs),
-          Text(
-            o.autor == AutorOferta.cliente
-                ? 'Tu contraoferta · ronda ${o.numero}'
-                : o.aceptaPropuesta
-                ? 'Acepta tu precio'
-                : dif > Decimal.zero
-                ? 'Pide ${FormatoMarketplace.bs(dif)}/ha más que tu precio'
-                : 'Ofrece ${FormatoMarketplace.bs(-dif)}/ha menos que tu precio',
-            style: texto.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
           if (o.nota != null) ...[
-            const SizedBox(height: EspaciadoCampo.s),
-            Text('«${o.nota}»', style: texto.bodyMedium),
+            const SizedBox(height: EspaciadoCampo.m),
+            Text(
+              '«${o.nota}»',
+              style: TipografiaCampo.cuerpo.copyWith(color: paleta.texto),
+            ),
           ],
           const SizedBox(height: EspaciadoCampo.m),
           _Detalles(oferta: o, restante: restante),
@@ -486,51 +686,29 @@ class _TarjetaOferta extends StatelessWidget {
               ),
             ),
           ],
-          const SizedBox(height: EspaciadoCampo.l),
-          if (espera) ...[
-            BotonPrincipal(
-              key: ValueKey('aceptar-${o.id}'),
-              texto: 'Elegir a ${p.nombre.split(' ').first}',
-              icono: Icons.check_rounded,
-              cargando: respondiendoEsta,
-              onPressed: ocupada ? null : () => _aceptar(context),
-            ),
-            const SizedBox(height: EspaciadoCampo.xs),
-            Row(
-              children: [
-                if (!o.esDefinitiva)
-                  Expanded(
-                    child: BotonSecundario(
-                      key: ValueKey('contraofertar-${o.id}'),
-                      texto: 'Contraofertar',
-                      icono: Icons.swap_vert_rounded,
-                      onPressed: ocupada ? null : () => _contraofertar(context),
-                    ),
-                  ),
-                Expanded(
-                  child: BotonSecundario(
-                    key: ValueKey('rechazar-${o.id}'),
-                    texto: 'Rechazar',
-                    icono: Icons.close_rounded,
-                    onPressed: ocupada ? null : () => cubit.rechazar(o),
-                  ),
-                ),
-              ],
-            ),
-            if (o.esDefinitiva)
-              Text(
-                'Última ronda: solo puedes elegirlo o rechazarlo.',
-                style: texto.bodySmall?.copyWith(color: paleta.textoSecundario),
-              ),
-          ] else
-            Semantics(
-              liveRegion: true,
-              child: _Etiqueta(
-                texto: 'Esperando la respuesta de ${p.nombre.split(' ').first}',
-                icono: Icons.hourglass_top_rounded,
-                color: paleta.info,
+          if (o.ronda.isNotEmpty) ...[
+            const SizedBox(height: EspaciadoCampo.l),
+            Text(
+              'RONDAS',
+              style: TipografiaCampo.etiquetaMono.copyWith(
+                color: paleta.textoSecundario,
               ),
             ),
+            const SizedBox(height: EspaciadoCampo.s),
+            for (final r in rondas) ...[
+              BurbujaNegociacionCampo(
+                autor: r.autor == AutorOferta.cliente
+                    ? AutorRonda.cliente
+                    : AutorRonda.piloto,
+                ronda: r.numero,
+                precioPorHectarea: FormatoMarketplace.bsNumero(r.precioHa),
+                total: FormatoMarketplace.bsNumero(r.montoEstimado),
+                totalRondas: _rondasMaximas,
+                esTurno: identical(r, o) && o.esperaAlCliente(ahora),
+              ),
+              const SizedBox(height: EspaciadoCampo.s),
+            ],
+          ],
         ],
       ),
     );
@@ -592,55 +770,45 @@ class _Detalles extends StatelessWidget {
   }
 }
 
+/// Píldora tonal con ícono: el par fondo/texto del rol (sin alpha).
 class _Etiqueta extends StatelessWidget {
   const _Etiqueta({
     required this.texto,
     required this.icono,
-    required this.color,
+    required this.rol,
   });
 
   final String texto;
   final IconData icono;
-  final Color color;
+  final Color rol;
 
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-    decoration: BoxDecoration(
-      color: color.withValues(alpha: 0.14),
-      borderRadius: BorderRadius.circular(RadioCampo.capsula),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icono, size: 14, color: color),
-        const SizedBox(width: 6),
-        Flexible(
-          child: Text(
-            texto,
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: color,
-              fontWeight: FontWeight.w700,
+  Widget build(BuildContext context) {
+    final (:fondo, texto: color) = context.paleta.contenedorDe(rol);
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: EspaciadoCampo.m,
+        vertical: EspaciadoCampo.s,
+      ),
+      decoration: BoxDecoration(
+        color: fondo,
+        borderRadius: BorderRadius.circular(RadioCampo.capsula),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icono, size: 16, color: color),
+          const SizedBox(width: EspaciadoCampo.xs),
+          Flexible(
+            child: Text(
+              texto,
+              style: TipografiaCampo.etiqueta.copyWith(color: color),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
-
-class _Avatar extends StatelessWidget {
-  const _Avatar({required this.proveedor});
-
-  final ProveedorOfertante proveedor;
-
-  @override
-  Widget build(BuildContext context) => AvatarFoto(
-    iniciales: proveedor.iniciales,
-    etiqueta: 'Foto de ${proveedor.nombre}',
-    url: proveedor.fotoUrl,
-    tamano: 44,
-  );
+        ],
+      ),
+    );
+  }
 }
 
 class _FilaCerrada extends StatelessWidget {
@@ -698,13 +866,15 @@ class _Cargando extends StatelessWidget {
     physics: NeverScrollableScrollPhysics(),
     padding: EdgeInsets.all(EspaciadoCampo.l),
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        EsqueletoCampo(alto: EspaciadoCampo.xl, ancho: 220),
+        EsqueletoCampo(alto: 168, radio: RadioCampo.tarjeta),
         SizedBox(height: EspaciadoCampo.l),
-        EsqueletoCampo(alto: 220, radio: 18),
+        EsqueletoCampo(alto: 112, radio: RadioCampo.xs),
         SizedBox(height: EspaciadoCampo.m),
-        EsqueletoCampo(alto: 220, radio: 18),
+        EsqueletoCampo(alto: 112, radio: RadioCampo.xs),
+        SizedBox(height: EspaciadoCampo.m),
+        EsqueletoCampo(alto: 112, radio: RadioCampo.xs),
       ],
     ),
   );
