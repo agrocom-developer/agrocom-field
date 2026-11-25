@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/aviso_marketplace.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/marketplace/ui/campo_formulario_marketplace.dart';
@@ -66,7 +67,12 @@ class _FormularioState extends State<_Formulario> {
   final _contrasena = TextEditingController();
   final _razonSocial = TextEditingController();
   final _documentoFiscal = TextEditingController();
-  TipoCliente _tipo = TipoCliente.persona;
+  final _cargo = TextEditingController();
+
+  /// «Asociar a una empresa»: el registro es siempre de una persona; con el
+  /// interruptor, además crea la empresa y deja a quien se registra como su
+  /// contacto principal.
+  bool _conEmpresa = false;
   bool _intentado = false;
 
   @override
@@ -77,6 +83,7 @@ class _FormularioState extends State<_Formulario> {
     _contrasena.dispose();
     _razonSocial.dispose();
     _documentoFiscal.dispose();
+    _cargo.dispose();
     super.dispose();
   }
 
@@ -90,10 +97,11 @@ class _FormularioState extends State<_Formulario> {
         telefono: _telefono.text.trim(),
         usuario: _usuario.text.trim(),
         contrasena: _contrasena.text,
-        tipo: _tipo,
-        razonSocial: _tipo == TipoCliente.empresa ? _razonSocial.text : null,
-        documentoFiscal: _tipo == TipoCliente.empresa
-            ? _documentoFiscal.text
+        tipo: _conEmpresa ? TipoCliente.empresa : TipoCliente.persona,
+        razonSocial: _conEmpresa ? _razonSocial.text : null,
+        documentoFiscal: _conEmpresa ? _documentoFiscal.text : null,
+        cargo: _conEmpresa && _cargo.text.trim().isNotEmpty
+            ? _cargo.text.trim()
             : null,
       ),
     );
@@ -104,6 +112,7 @@ class _FormularioState extends State<_Formulario> {
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     final cubit = context.read<RegistroClienteCubit>();
+    final t = AppLocalizations.of(context);
     return BlocBuilder<RegistroClienteCubit, FormularioAccesoEstado>(
       builder: (context, estado) {
         final mensaje = estado.mensajeFallo;
@@ -177,69 +186,7 @@ class _FormularioState extends State<_Formulario> {
                           ),
                         ),
                 ),
-                bloque('Tipo de cliente'),
-                SegmentedButton<TipoCliente>(
-                  key: const Key('registro-tipo'),
-                  showSelectedIcon: false,
-                  segments: const [
-                    ButtonSegment(
-                      value: TipoCliente.persona,
-                      label: Text('Persona'),
-                      icon: Icon(Icons.person_outline_rounded),
-                    ),
-                    ButtonSegment(
-                      value: TipoCliente.empresa,
-                      label: Text('Empresa'),
-                      icon: Icon(Icons.business_outlined),
-                    ),
-                  ],
-                  selected: {_tipo},
-                  onSelectionChanged: estado.enviando
-                      ? null
-                      : (v) => setState(() => _tipo = v.first),
-                ),
-                const SizedBox(height: EspaciadoCampo.xl),
-                if (_tipo == TipoCliente.empresa) ...[
-                  bloque('Tu empresa'),
-                  CampoFormularioMarketplace(
-                    key: const Key('registro-razon-social'),
-                    etiqueta: 'Razón social',
-                    controller: _razonSocial,
-                    enabled: !estado.enviando,
-                    textCapitalization: TextCapitalization.words,
-                    textInputAction: TextInputAction.next,
-                    validator: ReglasAcceso.razonSocial,
-                    errorServidor: estado.porCampo[CampoAcceso.razonSocial],
-                    onChanged: (_) =>
-                        cubit.campoEditado(CampoAcceso.razonSocial),
-                  ),
-                  const SizedBox(height: EspaciadoCampo.l),
-                  CampoFormularioMarketplace(
-                    key: const Key('registro-documento-fiscal'),
-                    etiqueta: 'NIT',
-                    controller: _documentoFiscal,
-                    enabled: !estado.enviando,
-                    keyboardType: TextInputType.number,
-                    textInputAction: TextInputAction.next,
-                    validator: ReglasAcceso.documentoFiscal,
-                    errorServidor: estado.porCampo[CampoAcceso.documentoFiscal],
-                    onChanged: (_) =>
-                        cubit.campoEditado(CampoAcceso.documentoFiscal),
-                  ),
-                  const SizedBox(height: EspaciadoCampo.m),
-                  const AvisoMarketplace(
-                    mensaje:
-                        'Por ahora la cuenta tiene un solo contacto: la '
-                        'persona que la usa. Los contactos de referencia de '
-                        'la empresa se podrán agregar más adelante.',
-                  ),
-                  const SizedBox(height: EspaciadoCampo.xl),
-                ],
-                bloque(
-                  _tipo == TipoCliente.empresa
-                      ? 'Quién usa la cuenta'
-                      : 'Tus datos',
-                ),
+                bloque('Tus datos'),
                 CampoFormularioMarketplace(
                   key: const Key('registro-nombre'),
                   etiqueta: 'Nombre completo',
@@ -269,6 +216,55 @@ class _FormularioState extends State<_Formulario> {
                   errorServidor: estado.porCampo[CampoAcceso.telefono],
                   onChanged: (_) => cubit.campoEditado(CampoAcceso.telefono),
                 ),
+                SwitchListTile(
+                  key: const Key('registro-empresa'),
+                  contentPadding: EdgeInsets.zero,
+                  value: _conEmpresa,
+                  onChanged: estado.enviando
+                      ? null
+                      : (v) => setState(() => _conEmpresa = v),
+                  title: Text(t.registroEmpresaInterruptor),
+                  subtitle: Text(t.registroEmpresaAyuda),
+                ),
+                if (_conEmpresa) ...[
+                  const SizedBox(height: EspaciadoCampo.m),
+                  CampoFormularioMarketplace(
+                    key: const Key('registro-razon-social'),
+                    etiqueta: t.registroEmpresaRazon,
+                    controller: _razonSocial,
+                    enabled: !estado.enviando,
+                    textCapitalization: TextCapitalization.words,
+                    textInputAction: TextInputAction.next,
+                    validator: ReglasAcceso.razonSocial,
+                    errorServidor: estado.porCampo[CampoAcceso.razonSocial],
+                    onChanged: (_) =>
+                        cubit.campoEditado(CampoAcceso.razonSocial),
+                  ),
+                  const SizedBox(height: EspaciadoCampo.l),
+                  CampoFormularioMarketplace(
+                    key: const Key('registro-documento-fiscal'),
+                    etiqueta: t.registroEmpresaDocumento,
+                    controller: _documentoFiscal,
+                    enabled: !estado.enviando,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.next,
+                    validator: ReglasAcceso.documentoFiscal,
+                    errorServidor: estado.porCampo[CampoAcceso.documentoFiscal],
+                    onChanged: (_) =>
+                        cubit.campoEditado(CampoAcceso.documentoFiscal),
+                  ),
+                  const SizedBox(height: EspaciadoCampo.l),
+                  CampoFormularioMarketplace(
+                    key: const Key('registro-cargo'),
+                    etiqueta: t.registroEmpresaCargo,
+                    controller: _cargo,
+                    enabled: !estado.enviando,
+                    textCapitalization: TextCapitalization.sentences,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  const SizedBox(height: EspaciadoCampo.m),
+                  AvisoMarketplace(mensaje: t.registroEmpresaContactoNota),
+                ],
                 const SizedBox(height: EspaciadoCampo.xl),
                 bloque('Tu acceso'),
                 CampoFormularioMarketplace(

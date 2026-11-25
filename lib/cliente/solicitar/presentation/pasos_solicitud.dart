@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/terrenos/presentation/galeria_fotos_terreno.dart';
 import '../../../nucleo/marketplace/referencias/presentation/sugerencia_precio_referencia.dart';
@@ -505,6 +506,36 @@ class _PasoCuandoState extends State<PasoCuando> {
             mensaje:
                 'Pedirlo para mañana marca tu solicitud como urgente. Los '
                 'pilotos con el dron libre responden más rápido.',
+          ),
+        ],
+        if (estado.contactos.isNotEmpty) ...[
+          TituloGrupoSolicitud(
+            AppLocalizations.of(context).contactosEmpresaPublicar,
+          ),
+          Text(
+            AppLocalizations.of(context).contactosEmpresaPublicarAyuda,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: context.paleta.textoSecundario,
+            ),
+          ),
+          const SizedBox(height: EspaciadoCampo.s),
+          RadioGroup<int>(
+            groupValue: estado.contactoId,
+            onChanged: (id) {
+              if (id != null) cubit.elegirContacto(id);
+            },
+            child: Column(
+              children: [
+                for (final c in estado.contactos)
+                  RadioListTile<int>(
+                    key: ValueKey('solicitar-contacto-${c.id}'),
+                    contentPadding: EdgeInsets.zero,
+                    value: c.id,
+                    title: Text(c.nombre),
+                    subtitle: Text([?c.cargo, c.telefono].join(' · ')),
+                  ),
+              ],
+            ),
           ),
         ],
         const TituloGrupoSolicitud('Datos para los pilotos'),

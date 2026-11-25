@@ -54,6 +54,13 @@ class ClienteHttp {
     }
   });
 
+  /// Envía un `PUT` (corrige un recurso propio).
+  Future<Map<String, dynamic>> reemplazar(String ruta, {Object? datos}) =>
+      proteger(() async {
+        final r = await _api.put(ruta, data: datos);
+        return _mapa(r.data);
+      });
+
   static const claveConflicto = 'conflicto';
 
   /// Descarga el archivo de [ruta] (una foto de avance o del dron).

@@ -717,6 +717,210 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Foto de {nombre}'**
   String perfilPublicoFotoDe(String nombre);
+
+  /// No description provided for @contactosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Contactos de referencia'**
+  String get contactosTitulo;
+
+  /// No description provided for @contactosIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto que elijas ve a la persona de contacto de cada solicitud, con su cargo, solo después de adjudicarla.'**
+  String get contactosIntro;
+
+  /// No description provided for @contactosPrincipal.
+  ///
+  /// In es, this message translates to:
+  /// **'Principal'**
+  String get contactosPrincipal;
+
+  /// No description provided for @contactosAgregar.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar contacto'**
+  String get contactosAgregar;
+
+  /// No description provided for @contactosEditar.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar contacto'**
+  String get contactosEditar;
+
+  /// No description provided for @contactosNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo contacto'**
+  String get contactosNuevo;
+
+  /// No description provided for @contactosNombre.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre completo'**
+  String get contactosNombre;
+
+  /// No description provided for @contactosCelular.
+  ///
+  /// In es, this message translates to:
+  /// **'Celular'**
+  String get contactosCelular;
+
+  /// No description provided for @contactosCargo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargo (opcional)'**
+  String get contactosCargo;
+
+  /// No description provided for @contactosHacerPrincipal.
+  ///
+  /// In es, this message translates to:
+  /// **'Es el contacto principal'**
+  String get contactosHacerPrincipal;
+
+  /// No description provided for @contactosHacerPrincipalAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Se usa cuando una solicitud no elige a otra persona.'**
+  String get contactosHacerPrincipalAyuda;
+
+  /// No description provided for @contactosGuardar.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get contactosGuardar;
+
+  /// No description provided for @contactosCancelar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get contactosCancelar;
+
+  /// No description provided for @contactosQuitar.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar contacto'**
+  String get contactosQuitar;
+
+  /// No description provided for @contactosQuitarPregunta.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quitar a {nombre}?'**
+  String contactosQuitarPregunta(String nombre);
+
+  /// No description provided for @contactosQuitarAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Las solicitudes que ya publicaste conservan a esta persona.'**
+  String get contactosQuitarAviso;
+
+  /// No description provided for @contactosUnicoAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Una empresa necesita al menos un contacto: agrega otro antes de quitar a este.'**
+  String get contactosUnicoAviso;
+
+  /// No description provided for @contactosErrorNombre.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el nombre.'**
+  String get contactosErrorNombre;
+
+  /// No description provided for @contactosErrorCelular.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un celular de al menos 7 dígitos.'**
+  String get contactosErrorCelular;
+
+  /// No description provided for @contactosSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. No se guardó nada; prueba de nuevo cuando tengas señal.'**
+  String get contactosSinConexion;
+
+  /// No description provided for @contactosErrorGuardar.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardar el contacto. Prueba de nuevo.'**
+  String get contactosErrorGuardar;
+
+  /// No description provided for @contactosFilaSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{nombre}, {cargo}, {celular}'**
+  String contactosFilaSemantica(String nombre, String cargo, String celular);
+
+  /// No description provided for @contactosPerfilFila.
+  ///
+  /// In es, this message translates to:
+  /// **'Contactos de referencia'**
+  String get contactosPerfilFila;
+
+  /// No description provided for @contactosPerfilDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'{n, plural, one{1 persona} other{{n} personas}}'**
+  String contactosPerfilDetalle(int n);
+
+  /// No description provided for @contactosEmpresaPublicar.
+  ///
+  /// In es, this message translates to:
+  /// **'Persona de contacto'**
+  String get contactosEmpresaPublicar;
+
+  /// No description provided for @contactosEmpresaPublicarAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto elegido verá a quién llamar.'**
+  String get contactosEmpresaPublicarAyuda;
+
+  /// No description provided for @contactosErrorCargaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus contactos'**
+  String get contactosErrorCargaTitulo;
+
+  /// No description provided for @contactosErrorCargaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentar.'**
+  String get contactosErrorCargaDetalle;
+
+  /// No description provided for @registroEmpresaInterruptor.
+  ///
+  /// In es, this message translates to:
+  /// **'Asociar a una empresa'**
+  String get registroEmpresaInterruptor;
+
+  /// No description provided for @registroEmpresaAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Si publicas lotes a nombre de una empresa, agrégala. Tú quedas como su contacto principal.'**
+  String get registroEmpresaAyuda;
+
+  /// No description provided for @registroEmpresaRazon.
+  ///
+  /// In es, this message translates to:
+  /// **'Razón social'**
+  String get registroEmpresaRazon;
+
+  /// No description provided for @registroEmpresaDocumento.
+  ///
+  /// In es, this message translates to:
+  /// **'NIT'**
+  String get registroEmpresaDocumento;
+
+  /// No description provided for @registroEmpresaCargo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cargo en la empresa (opcional)'**
+  String get registroEmpresaCargo;
+
+  /// No description provided for @registroEmpresaContactoNota.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu nombre y celular quedan como contacto principal. Después puedes agregar a otras personas desde tu perfil.'**
+  String get registroEmpresaContactoNota;
 }
 
 class _AppLocalizationsDelegate

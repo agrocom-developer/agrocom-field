@@ -60,12 +60,7 @@ void main() {
               AppCliente(dependencias: dependenciasDePrueba(almacenDePrueba())),
             );
             await asentar(tester, veces: 12);
-            for (final pestana in [
-              'Inicio',
-              'Solicitar',
-              'Solicitudes',
-              'Cuenta',
-            ]) {
+            for (final pestana in ['Inicio', 'Lotes', 'Servicios', 'Perfil']) {
               await tester.tap(find.text(pestana).last);
               await asentar(tester, veces: 12);
               await _auditar(tester);
@@ -84,7 +79,7 @@ void main() {
         await asentar(tester, veces: 12);
         // Abre en el mapa: también se audita antes de cambiar de pestaña.
         await _auditar(tester);
-        for (final pestana in ['Ofertas', 'Servicio', 'Drones', 'Perfil']) {
+        for (final pestana in ['Ofertas', 'Servicios', 'Perfil']) {
           await tester.tap(find.text(pestana).last);
           await asentar(tester, veces: 12);
           await _auditar(tester);

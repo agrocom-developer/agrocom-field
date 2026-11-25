@@ -199,6 +199,15 @@ class AccesoRed implements AccesoRepositorio {
           if (datos.tipo == TipoCliente.empresa) ...{
             'razon_social': datos.razonSocial?.trim(),
             'documento_fiscal': datos.documentoFiscal?.trim(),
+            // Quien se registra es el contacto principal de la empresa.
+            'contactos': [
+              {
+                'nombre': datos.nombre.trim(),
+                'telefono': datos.telefono.trim(),
+                if (datos.cargo != null) 'cargo': datos.cargo!.trim(),
+                'es_principal': true,
+              },
+            ],
           },
         },
       );

@@ -25,6 +25,9 @@ import '../calificar/data/calificacion_demo.dart';
 import '../calificar/data/calificacion_red.dart';
 import '../calificar/domain/calificacion_repositorio.dart';
 import '../comun/presentation/foto_remota.dart';
+import '../contactos/data/contactos_demo.dart';
+import '../contactos/data/contactos_red.dart';
+import '../contactos/domain/contactos_repositorio.dart';
 import '../cuenta/data/cuenta_demo.dart';
 import '../cuenta/data/cuenta_red.dart';
 import '../cuenta/domain/cuenta_repositorio.dart';
@@ -73,6 +76,7 @@ class DependenciasCliente {
     required this.pagos,
     required this.preparadorFoto,
     required this.push,
+    this.contactos,
     this.notaAcceso,
     this.sesionExpirada,
   });
@@ -131,6 +135,7 @@ class DependenciasCliente {
             CompresorEvidenciaAdaptativo(),
           ),
       push: DispositivosPushDemo(TokenPushEnMemoria()),
+      contactos: ContactosDemo(),
       notaAcceso:
           'Modo demo: entra con cualquier usuario y una contraseña de 8 '
           'caracteres o más. Los datos son ficticios.',
@@ -208,6 +213,7 @@ class DependenciasCliente {
         CompresorEvidenciaAdaptativo(),
       ),
       push: push,
+      contactos: ContactosRed(http),
       notaAcceso: notaAcceso,
       sesionExpirada: expiracion.stream,
     );
@@ -241,6 +247,10 @@ class DependenciasCliente {
   /// Token de push del aparato; se retira al cerrar sesión.
   final DispositivosPushRepositorio push;
 
+  /// Contactos de referencia del cliente empresa; sin él, el cliente no los
+  /// gestiona (las pruebas que no los necesitan lo omiten).
+  final ContactosRepositorio? contactos;
+
   /// Nota que la pantalla de ingreso muestra bajo el formulario; solo la
   /// define el modo demo.
   final String? notaAcceso;
@@ -266,6 +276,8 @@ class DependenciasCliente {
       RepositoryProvider<FotosTerrenoRepositorio>.value(value: fotosTerreno),
       RepositoryProvider<PagosRepositorio>.value(value: pagos),
       RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
+      if (contactos != null)
+        RepositoryProvider<ContactosRepositorio>.value(value: contactos!),
     ],
     child: child,
   );

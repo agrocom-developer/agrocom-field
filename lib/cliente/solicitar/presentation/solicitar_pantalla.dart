@@ -10,6 +10,7 @@ import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
+import '../../contactos/domain/contactos_repositorio.dart';
 import '../../solicitudes/domain/solicitud.dart';
 import '../domain/solicitud_repositorio.dart';
 import 'mapa_solicitud.dart';
@@ -40,8 +41,11 @@ class SolicitarPantalla extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) =>
-              SolicitarCubit(context.read<SolicitudRepositorio>())..cargar(),
+          create: (context) => SolicitarCubit(
+            context.read<SolicitudRepositorio>(),
+            // Solo un cliente empresa tiene contactos de referencia.
+            contactos: _contactosDe(context),
+          )..cargar(),
         ),
         BlocProvider(
           create: (context) => FotosTerrenoCubit(
@@ -52,6 +56,14 @@ class SolicitarPantalla extends StatelessWidget {
       ],
       child: SolicitarVista(alSolicitado: alSolicitado),
     );
+  }
+}
+
+ContactosRepositorio? _contactosDe(BuildContext context) {
+  try {
+    return context.read<ContactosRepositorio>();
+  } on ProviderNotFoundException {
+    return null;
   }
 }
 

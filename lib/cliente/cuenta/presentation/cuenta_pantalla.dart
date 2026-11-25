@@ -11,6 +11,9 @@ import '../../../nucleo/ui/tema_visual/selector_tema_visual.dart';
 import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../calificar/domain/calificacion_repositorio.dart';
+import '../../contactos/domain/contacto.dart';
+import '../../contactos/domain/contactos_repositorio.dart';
+import '../../contactos/presentation/contactos_pantalla.dart';
 import '../../lotes/presentation/fila_lote.dart';
 import '../../solicitar/domain/solicitud_repositorio.dart';
 import '../domain/cuenta_repositorio.dart';
@@ -37,6 +40,16 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
 
   VoidCallback? get alCerrarSesion => widget.alCerrarSesion;
   VoidCallback? get alPublicar => widget.alPublicar;
+
+  /// El repositorio de contactos existe solo si la app lo provee.
+  bool get conContactos {
+    try {
+      context.read<ContactosRepositorio>();
+      return true;
+    } on ProviderNotFoundException {
+      return false;
+    }
+  }
 
   static String _iniciales(String nombre) => nombre
       .split(' ')
@@ -204,6 +217,10 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
             const SuperficieMarketplace(
               child: SelectorTemaVisual(predeterminado: ModoVisualCampo.claro),
             ),
+            if (cuenta.empresa.isNotEmpty && conContactos) ...[
+              const SizedBox(height: EspaciadoCampo.l),
+              _FilaContactos(),
+            ],
             const SizedBox(height: EspaciadoCampo.xl),
             Text(t.perfilLoDicen, style: texto.titleLarge),
             const SizedBox(height: EspaciadoCampo.m),
@@ -250,6 +267,49 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
           ],
         );
       },
+    );
+  }
+}
+
+/// «Contactos de referencia · N personas»: abre la pantalla de contactos.
+class _FilaContactos extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    final texto = Theme.of(context).textTheme;
+    return FuturoEstable<List<ContactoCliente>>(
+      crear: () => context.read<ContactosRepositorio>().listar(),
+      builder: (context, snap) => SuperficieMarketplace(
+        key: const Key('perfil-contactos'),
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(builder: (_) => const ContactosPantalla()),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.groups_outlined, color: context.paleta.acentoTexto),
+            const SizedBox(width: EspaciadoCampo.m),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(t.contactosPerfilFila, style: texto.titleMedium),
+                  if (snap.data != null)
+                    Text(
+                      t.contactosPerfilDetalle(snap.data!.length),
+                      style: texto.bodyMedium?.copyWith(
+                        color: context.paleta.textoSecundario,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: context.paleta.textoSecundario,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

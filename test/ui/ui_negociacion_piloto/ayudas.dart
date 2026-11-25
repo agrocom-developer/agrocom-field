@@ -18,6 +18,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:agrocom_field/l10n/app_localizations.dart';
+
 /// Los goldens se generan y se comparan en macOS; en otras plataformas la
 /// prueba solo monta cada pantalla (un desborde de layout la hace fallar).
 final bool conGoldens = Platform.isMacOS;
@@ -111,6 +113,9 @@ Future<void> montar(
   }
   await tester.pumpWidget(
     MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('es'),
       debugShowCheckedModeBanner: false,
       theme: AgrocomThemeCampo.construir(),
       builder: (context, child) => MediaQuery(

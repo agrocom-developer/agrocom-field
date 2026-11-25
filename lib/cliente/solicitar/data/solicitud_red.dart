@@ -106,7 +106,7 @@ class SolicitudRed implements SolicitudRepositorio {
     final huella =
         '${s.claveIdempotencia}|${s.lote.id}|${s.hectareas}|${s.producto}|'
         '${s.cultivo}|${MapeoSolicitud.diaApi(desde)}|${s.precioHa}|'
-        '${s.observaciones}';
+        '${s.observaciones}|${s.contactoId}';
     final terrenoId = await _terrenoDe(s.lote, s.accesos);
     final r = await _http.enviar(
       '/api/solicitudes',
@@ -122,6 +122,7 @@ class SolicitudRed implements SolicitudRepositorio {
         'ventana_hasta': MapeoSolicitud.diaApi(hasta),
         'urgente': ReglasSolicitud.esUrgente(desde, _reloj()),
         'observaciones': ?s.observaciones,
+        'contacto_id': ?s.contactoId,
         'precio_ha_propuesto': '${s.precioHa}',
       },
     );

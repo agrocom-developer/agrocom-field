@@ -11,6 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:agrocom_field/l10n/app_localizations.dart';
+
 /// El render de texto difiere entre macOS y Linux: los goldens de referencia
 /// se generan en macOS y en CI (Linux) se omiten.
 final String? saltarGolden = Platform.isMacOS
@@ -88,6 +90,9 @@ Future<void> montar(
   }
   await tester.pumpWidget(
     MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: const Locale('es'),
       debugShowCheckedModeBanner: false,
       theme: AgrocomThemeCampo.construir(modo: variante.modo),
       builder: (context, child) => MediaQuery(

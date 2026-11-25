@@ -369,4 +369,129 @@ class AppLocalizationsEs extends AppLocalizations {
   String perfilPublicoFotoDe(String nombre) {
     return 'Foto de $nombre';
   }
+
+  @override
+  String get contactosTitulo => 'Contactos de referencia';
+
+  @override
+  String get contactosIntro =>
+      'El piloto que elijas ve a la persona de contacto de cada solicitud, con su cargo, solo después de adjudicarla.';
+
+  @override
+  String get contactosPrincipal => 'Principal';
+
+  @override
+  String get contactosAgregar => 'Agregar contacto';
+
+  @override
+  String get contactosEditar => 'Editar contacto';
+
+  @override
+  String get contactosNuevo => 'Nuevo contacto';
+
+  @override
+  String get contactosNombre => 'Nombre completo';
+
+  @override
+  String get contactosCelular => 'Celular';
+
+  @override
+  String get contactosCargo => 'Cargo (opcional)';
+
+  @override
+  String get contactosHacerPrincipal => 'Es el contacto principal';
+
+  @override
+  String get contactosHacerPrincipalAyuda =>
+      'Se usa cuando una solicitud no elige a otra persona.';
+
+  @override
+  String get contactosGuardar => 'Guardar';
+
+  @override
+  String get contactosCancelar => 'Cancelar';
+
+  @override
+  String get contactosQuitar => 'Quitar contacto';
+
+  @override
+  String contactosQuitarPregunta(String nombre) {
+    return '¿Quitar a $nombre?';
+  }
+
+  @override
+  String get contactosQuitarAviso =>
+      'Las solicitudes que ya publicaste conservan a esta persona.';
+
+  @override
+  String get contactosUnicoAviso =>
+      'Una empresa necesita al menos un contacto: agrega otro antes de quitar a este.';
+
+  @override
+  String get contactosErrorNombre => 'Escribe el nombre.';
+
+  @override
+  String get contactosErrorCelular =>
+      'Escribe un celular de al menos 7 dígitos.';
+
+  @override
+  String get contactosSinConexion =>
+      'Sin conexión. No se guardó nada; prueba de nuevo cuando tengas señal.';
+
+  @override
+  String get contactosErrorGuardar =>
+      'No pudimos guardar el contacto. Prueba de nuevo.';
+
+  @override
+  String contactosFilaSemantica(String nombre, String cargo, String celular) {
+    return '$nombre, $cargo, $celular';
+  }
+
+  @override
+  String get contactosPerfilFila => 'Contactos de referencia';
+
+  @override
+  String contactosPerfilDetalle(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n personas',
+      one: '1 persona',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get contactosEmpresaPublicar => 'Persona de contacto';
+
+  @override
+  String get contactosEmpresaPublicarAyuda =>
+      'El piloto elegido verá a quién llamar.';
+
+  @override
+  String get contactosErrorCargaTitulo => 'No pudimos cargar tus contactos';
+
+  @override
+  String get contactosErrorCargaDetalle =>
+      'Revisa tu conexión y vuelve a intentar.';
+
+  @override
+  String get registroEmpresaInterruptor => 'Asociar a una empresa';
+
+  @override
+  String get registroEmpresaAyuda =>
+      'Si publicas lotes a nombre de una empresa, agrégala. Tú quedas como su contacto principal.';
+
+  @override
+  String get registroEmpresaRazon => 'Razón social';
+
+  @override
+  String get registroEmpresaDocumento => 'NIT';
+
+  @override
+  String get registroEmpresaCargo => 'Tu cargo en la empresa (opcional)';
+
+  @override
+  String get registroEmpresaContactoNota =>
+      'Tu nombre y celular quedan como contacto principal. Después puedes agregar a otras personas desde tu perfil.';
 }

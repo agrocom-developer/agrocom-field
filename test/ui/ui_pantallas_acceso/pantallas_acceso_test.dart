@@ -256,31 +256,39 @@ void main() {
     });
   });
 
-  group('04 registro del cliente · persona o empresa', () {
+  group('04 registro del cliente · asociar a una empresa', () {
     Widget registro() => RepositoryProvider<AccesoRepositorio>.value(
       value: AccesoDemo(almacenFijo(), latencia: Duration.zero),
       child: RegistroClientePantalla(alEntrar: (_) {}, alVolver: () {}),
     );
 
-    testWidgets('Empresa pide razón social y NIT; Persona no', (tester) async {
-      await _montar(tester, registro());
-      expect(find.byKey(const Key('registro-razon-social')), findsNothing);
-      await tester.tap(find.text('Empresa'));
-      await tester.pump(const Duration(milliseconds: 50));
-      expect(find.byKey(const Key('registro-razon-social')), findsOneWidget);
-      expect(
-        find.byKey(const Key('registro-documento-fiscal')),
-        findsOneWidget,
-      );
-      await tester.tap(find.text('Persona'));
-      await tester.pump(const Duration(milliseconds: 50));
-      expect(find.byKey(const Key('registro-razon-social')), findsNothing);
-    });
+    testWidgets(
+      '«Asociar a una empresa» pide razón social, NIT y cargo; sin él no',
+      (tester) async {
+        await _montar(tester, registro());
+        expect(find.byKey(const Key('registro-razon-social')), findsNothing);
+        // No hay selector excluyente ni aviso de «contáctanos».
+        expect(find.byKey(const Key('registro-tipo')), findsNothing);
+        await tester.ensureVisible(find.byKey(const Key('registro-empresa')));
+        await tester.tap(find.byKey(const Key('registro-empresa')));
+        await tester.pump(const Duration(milliseconds: 50));
+        expect(find.byKey(const Key('registro-razon-social')), findsOneWidget);
+        expect(
+          find.byKey(const Key('registro-documento-fiscal')),
+          findsOneWidget,
+        );
+        expect(find.byKey(const Key('registro-cargo')), findsOneWidget);
+        await tester.tap(find.byKey(const Key('registro-empresa')));
+        await tester.pump(const Duration(milliseconds: 50));
+        expect(find.byKey(const Key('registro-razon-social')), findsNothing);
+      },
+    );
 
     testWidgets('Empresa: golden claro y oscuro', (tester) async {
       for (final modo in [ModoVisualCampo.claro, ModoVisualCampo.oscuro]) {
         await _montar(tester, registro(), modo: modo, tamano: _chico);
-        await tester.tap(find.text('Empresa'));
+        await tester.ensureVisible(find.byKey(const Key('registro-empresa')));
+        await tester.tap(find.byKey(const Key('registro-empresa')));
         await tester.pump(const Duration(milliseconds: 50));
         await _golden(tester, 'registro_cliente_empresa_${modo.name}_360x640');
         expect(tester.takeException(), isNull);

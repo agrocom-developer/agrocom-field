@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:agrocom_field/nucleo/ui/componentes/barra_inferior_campo.dart';
+
 /// El render de texto difiere entre macOS y Linux: los golden de referencia
 /// se generan en macOS y en CI (Linux) se omiten en vez de dar falsos rojos.
 final String? _saltarGolden = Platform.isMacOS
@@ -232,14 +234,14 @@ void main() {
 
     testWidgets('teléfono: barra inferior', (tester) async {
       await montar(tester, const Size(390, 844));
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(BarraInferiorCampo), findsOneWidget);
       expect(find.byType(NavigationRail), findsNothing);
     });
 
     testWidgets('iPad: riel lateral', (tester) async {
       await montar(tester, const Size(834, 1194));
       expect(find.byType(NavigationRail), findsOneWidget);
-      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.byType(BarraInferiorCampo), findsNothing);
     });
   });
 }

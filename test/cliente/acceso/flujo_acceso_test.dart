@@ -8,6 +8,8 @@ import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:agrocom_field/nucleo/ui/componentes/barra_inferior_campo.dart';
+
 import '../../nucleo/marketplace/ayudas_prueba.dart';
 import '../dobles_cliente.dart';
 
@@ -118,7 +120,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Hola, Hugo'), findsOneWidget);
-    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.byType(BarraInferiorCampo), findsOneWidget);
     expect(find.text('Ingresa a tu cuenta'), findsNothing);
   });
 
@@ -203,20 +205,20 @@ void main() {
     expect(find.text('Hola, Ana'), findsOneWidget);
   });
 
-  testWidgets('cerrar sesión desde Cuenta vuelve al ingreso', (tester) async {
+  testWidgets('cerrar sesión desde Perfil vuelve al ingreso', (tester) async {
     prepararTelefono(tester);
     await _abrir(tester, primerUso: false);
     await tester.pumpAndSettle();
     expect(find.text('Hola, Hugo'), findsOneWidget);
 
-    await tester.tap(find.text('Cuenta').last);
+    await tester.tap(find.text('Perfil').last);
     await tester.pumpAndSettle();
     final cerrar = find.byKey(const Key('cuenta-cerrar-sesion'));
     await tester.scrollUntilVisible(cerrar, 300);
     await tester.tap(cerrar);
     await tester.pumpAndSettle();
     expect(find.text('Ingresa a tu cuenta'), findsOneWidget);
-    expect(find.byType(NavigationBar), findsNothing);
+    expect(find.byType(BarraInferiorCampo), findsNothing);
   });
 
   testWidgets('si no se puede leer la sesión guardada hay salida', (
