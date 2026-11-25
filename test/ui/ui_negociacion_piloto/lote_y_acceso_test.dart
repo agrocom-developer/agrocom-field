@@ -155,6 +155,24 @@ void main() {
       });
     }
 
+    testWidgets('muestra la persona de contacto con su cargo y su empresa', (
+      tester,
+    ) async {
+      await abrir(tester, 10);
+      await tester.scrollUntilVisible(
+        find.text('Persona de contacto'),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
+      expect(find.text('Persona de contacto'), findsOneWidget);
+      expect(find.text('Rosario Antelo Vaca'), findsOneWidget);
+      expect(
+        find.text('Gerente · Agropecuaria San Rafael SRL'),
+        findsOneWidget,
+      );
+      expect(find.text('+591 76543210'), findsOneWidget);
+    });
+
     testWidgets('adjudicado: una sola acción principal, marcar en ejecución', (
       tester,
     ) async {

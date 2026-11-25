@@ -7,7 +7,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:agrocom_field/cliente/acceso/data/acceso_demo.dart';
 import 'package:agrocom_field/cliente/calificar/data/calificacion_demo.dart';
 import 'package:agrocom_field/cliente/calificar/presentation/calificar_pantalla.dart';
+import 'package:agrocom_field/cliente/contactos/data/contactos_demo.dart';
+import 'package:agrocom_field/cliente/contactos/domain/contactos_repositorio.dart';
 import 'package:agrocom_field/cliente/cuenta/data/cuenta_demo.dart';
+import 'package:agrocom_field/cliente/precio_final/data/precio_final_demo.dart';
 import 'package:agrocom_field/cliente/demo/almacen_demo_cliente.dart';
 import 'package:agrocom_field/cliente/di/dependencias_cliente.dart';
 import 'package:agrocom_field/cliente/inicio/data/inicio_cliente_demo.dart';
@@ -63,6 +66,7 @@ DependenciasCliente dependenciasDePrueba(
   SolicitudesRepositorio? solicitudes,
   OfertasRepositorio? ofertas,
   SeguimientoRepositorio? seguimiento,
+  ContactosRepositorio? contactos,
 }) => DependenciasCliente(
   solicitudes: solicitudes ?? SolicitudesDemo(almacen, latencia: Duration.zero),
   solicitud: SolicitudDemo(almacen, latencia: Duration.zero),
@@ -84,6 +88,8 @@ DependenciasCliente dependenciasDePrueba(
   pagos: PagosDemo(),
   preparadorFoto: preparadorDePrueba(),
   push: DispositivosPushDemo(TokenPushEnMemoria()),
+  contactos: contactos ?? ContactosDemo(),
+  precioFinal: PrecioFinalDemo(almacen),
 );
 
 /// Variante visual de una captura: modo, tamaño lógico y escala de texto.

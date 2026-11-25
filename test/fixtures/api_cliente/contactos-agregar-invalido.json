@@ -1,0 +1,26 @@
+{
+    "operationId": "agregarContacto",
+    "descripcion": "Validación: faltan el nombre y el teléfono.",
+    "peticion": {
+        "metodo": "POST",
+        "ruta": "/api/clientes/mi/contactos",
+        "autenticada": true,
+        "cuerpo": {
+            "cargo": "Administradora"
+        }
+    },
+    "respuesta": {
+        "estado": 422,
+        "cuerpo": {
+            "message": "Este campo es obligatorio. (y 1 error más)",
+            "errors": {
+                "nombre": [
+                    "Este campo es obligatorio."
+                ],
+                "telefono": [
+                    "Este campo es obligatorio."
+                ]
+            }
+        }
+    }
+}

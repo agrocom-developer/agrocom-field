@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -13,7 +14,10 @@ import 'servicio_lote_pantalla.dart';
 /// La pestaña «Servicio»: los servicios adjudicados del equipo, que se ven y
 /// se operan sin red. Lee de la base local.
 class ServiciosLotePantalla extends StatelessWidget {
-  const ServiciosLotePantalla({super.key});
+  const ServiciosLotePantalla({this.alIrAlMapa, super.key});
+
+  /// Salida de la lista vacía: «Ver lotes en el mapa».
+  final VoidCallback? alIrAlMapa;
 
   @override
   Widget build(BuildContext context) {
@@ -21,13 +25,15 @@ class ServiciosLotePantalla extends StatelessWidget {
       create: (context) =>
           ServiciosLoteCubit(context.read<DependenciasEjecucion>().repositorio)
             ..iniciar(),
-      child: const ServiciosLoteVista(),
+      child: ServiciosLoteVista(alIrAlMapa: alIrAlMapa),
     );
   }
 }
 
 class ServiciosLoteVista extends StatelessWidget {
-  const ServiciosLoteVista({super.key});
+  const ServiciosLoteVista({this.alIrAlMapa, super.key});
+
+  final VoidCallback? alIrAlMapa;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +62,11 @@ class ServiciosLoteVista extends StatelessWidget {
                   onReintentar: cubit.iniciar,
                 ),
                 ServiciosLoteListos(:final servicios) when servicios.isEmpty =>
-                  const EstadoVacioMarketplace(
+                  EstadoVacioMarketplace(
+                    etiquetaAccion: alIrAlMapa == null
+                        ? null
+                        : AppLocalizations.of(context).listaVerLotesMapa,
+                    alAccion: alIrAlMapa,
                     icono: Icons.flight_takeoff_outlined,
                     titulo: 'Todavía no tienes un servicio adjudicado',
                     detalle:

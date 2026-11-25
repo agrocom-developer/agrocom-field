@@ -16,6 +16,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:agrocom_field/l10n/app_localizations.dart';
+
 import '../../nucleo/marketplace/dobles_foto.dart';
 
 /// Lunes 23 de noviembre de 2026, 10:00. «Mañana» es el martes 24.
@@ -135,6 +137,9 @@ Widget envolver({
       create: (_) =>
           FotosTerrenoCubit(FotosTerrenoDemo(), preparadorDePrueba()),
       child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('es'),
         debugShowCheckedModeBanner: false,
         theme: AgrocomThemeCampo.construir(modo: modo),
         builder: (context, hijo) => MediaQuery(

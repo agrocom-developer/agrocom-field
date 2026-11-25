@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
+import '../../../nucleo/marketplace/dominio/dominio.dart'
+    show OperacionRechazada;
+import '../../../nucleo/marketplace/foto_preparador.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
+import '../../comun/presentation/foto_remota.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
@@ -89,7 +94,7 @@ class _Cabecera extends StatelessWidget {
     final nombre = s?.nombreProveedor;
     if (s == null || nombre == null) {
       return Text(
-        'Chat con el piloto',
+        AppLocalizations.of(context).chatTitulo,
         style: TipografiaCampo.tituloSeccion.copyWith(color: paleta.texto),
       );
     }
@@ -103,7 +108,7 @@ class _Cabecera extends StatelessWidget {
       children: [
         AvatarFoto(
           iniciales: iniciales,
-          etiqueta: 'Foto de $nombre',
+          etiqueta: AppLocalizations.of(context).chatFotoDe(nombre),
           tamano: ObjetivoTactilCampo.minimo - EspaciadoCampo.s,
         ),
         const SizedBox(width: EspaciadoCampo.m),
@@ -119,7 +124,9 @@ class _Cabecera extends StatelessWidget {
                 ),
               ),
               Text(
-                '${s.lote.nombre} · ${s.estado.etiqueta.toLowerCase()}',
+                AppLocalizations.of(
+                  context,
+                ).chatCabecera(s.lote.nombre, s.estado.etiqueta.toLowerCase()),
                 overflow: TextOverflow.ellipsis,
                 style: TipografiaCampo.cuerpoSecundario.copyWith(
                   color: paleta.textoSecundario,
@@ -157,6 +164,47 @@ class _CuerpoState extends State<_Cuerpo> {
     final ok = await cubit.enviar(texto);
     // Solo se vacía el campo si el servidor lo confirmó.
     if (ok && mounted) _campo.clear();
+  }
+
+  /// Elige cámara o galería, comprime a menos de 300 KB y envía la foto.
+  Future<void> _adjuntar() async {
+    final t = AppLocalizations.of(context);
+    final origen = await showModalBottomSheet<OrigenFoto>(
+      context: context,
+      showDragHandle: true,
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              key: const ValueKey('chat-foto-camara'),
+              leading: const Icon(Icons.photo_camera_outlined),
+              title: Text(t.chatFotoCamara),
+              onTap: () => Navigator.of(ctx).pop(OrigenFoto.camara),
+            ),
+            ListTile(
+              key: const ValueKey('chat-foto-galeria'),
+              leading: const Icon(Icons.photo_library_outlined),
+              title: Text(t.chatFotoGaleria),
+              onTap: () => Navigator.of(ctx).pop(OrigenFoto.galeria),
+            ),
+          ],
+        ),
+      ),
+    );
+    if (origen == null || !mounted) return;
+    final cubit = context.read<ChatCubit>();
+    final mensajes = ScaffoldMessenger.of(context);
+    try {
+      final bytes = await context.read<PreparadorFoto>().preparar(origen);
+      if (bytes == null) return;
+      final ok = await cubit.enviarFoto(bytes);
+      if (!ok && mounted && cubit.state.fallo == null) {
+        mensajes.showSnackBar(SnackBar(content: Text(t.chatFalloFoto)));
+      }
+    } on OperacionRechazada catch (e) {
+      mensajes.showSnackBar(SnackBar(content: Text(e.mensaje)));
+    }
   }
 
   void _alFinal() {
@@ -200,22 +248,22 @@ class _CuerpoState extends State<_Cuerpo> {
                       margen,
                       0,
                     ),
-                    child: const AvisoMarketplace(
+                    child: AvisoMarketplace(
                       tono: TonoAviso.alerta,
                       icono: Icons.wifi_off_rounded,
-                      mensaje:
-                          'Sin conexión. Los mensajes nuevos llegan cuando '
-                          'vuelva la señal.',
+                      mensaje: AppLocalizations.of(
+                        context,
+                      ).chatSinConexionAviso,
                     ),
                   ),
                 Expanded(
                   child: estado.mensajes.isEmpty
-                      ? const EstadoVacioMarketplace(
+                      ? EstadoVacioMarketplace(
                           icono: Icons.chat_bubble_outline_rounded,
-                          titulo: 'Todavía no hay mensajes',
-                          detalle:
-                              'Escríbele al piloto para coordinar el día de '
-                              'la visita y los accesos al lote.',
+                          titulo: AppLocalizations.of(context).chatVacioTitulo,
+                          detalle: AppLocalizations.of(
+                            context,
+                          ).chatVacioDetalle,
                         )
                       : ListView.separated(
                           controller: _scroll,
@@ -238,7 +286,7 @@ class _CuerpoState extends State<_Cuerpo> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 if (nuevoDia) _SeparadorDia(dia: m.creadoEn),
-                                _Burbuja(mensaje: m),
+                                _Mensaje(mensaje: m),
                               ],
                             );
                           },
@@ -248,6 +296,7 @@ class _CuerpoState extends State<_Cuerpo> {
                   estado: estado,
                   campo: _campo,
                   alEnviar: _enviar,
+                  alAdjuntar: _adjuntar,
                   margen: margen,
                 ),
               ],
@@ -272,7 +321,7 @@ class _SeparadorDia extends StatelessWidget {
   Widget build(BuildContext context) {
     final hoy = DateTime.now();
     final texto = _mismoDia(dia, hoy)
-        ? 'HOY'
+        ? AppLocalizations.of(context).chatHoy
         : FormatoMarketplace.fechaCorta(dia).toUpperCase();
     return Padding(
       padding: const EdgeInsets.only(bottom: EspaciadoCampo.s),
@@ -288,65 +337,44 @@ class _SeparadorDia extends StatelessWidget {
   }
 }
 
-/// Mensaje propio en verde a la derecha; del piloto en superficie con borde
-/// a la izquierda. La hora va en mono debajo del texto.
-class _Burbuja extends StatelessWidget {
-  const _Burbuja({required this.mensaje});
+/// Un mensaje según su tipo: texto, foto o evento del sistema.
+class _Mensaje extends StatelessWidget {
+  const _Mensaje({required this.mensaje});
 
   final MensajeChat mensaje;
 
   @override
   Widget build(BuildContext context) {
-    final paleta = context.paleta;
-    final propio = mensaje.propio;
-    final color = propio ? paleta.sobreAcento : paleta.texto;
-    const radio = Radius.circular(RadioCampo.tarjetaCompacta);
-    const esquina = Radius.circular(RadioCampo.xs);
-    return Align(
-      alignment: propio ? Alignment.centerRight : Alignment.centerLeft,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.sizeOf(context).width * 0.8,
-        ),
-        child: Semantics(
-          label:
-              '${propio ? 'Tú' : 'Piloto'}, '
-              '${FormatoMarketplace.hora(mensaje.creadoEn)}: ${mensaje.texto}',
-          excludeSemantics: true,
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: EspaciadoCampo.l,
-              vertical: EspaciadoCampo.m,
-            ),
-            decoration: BoxDecoration(
-              color: propio ? paleta.acento : paleta.superficie,
-              border: propio ? null : Border.all(color: paleta.borde),
-              borderRadius: BorderRadius.only(
-                topLeft: radio,
-                topRight: radio,
-                bottomLeft: propio ? radio : esquina,
-                bottomRight: propio ? esquina : radio,
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  mensaje.texto,
-                  style: TipografiaCampo.cuerpo.copyWith(color: color),
+    final t = AppLocalizations.of(context);
+    final hora = FormatoMarketplace.hora(mensaje.creadoEn);
+    final autor = mensaje.propio ? t.chatAutorTu : t.chatAutorPiloto;
+    switch (mensaje.tipo) {
+      case TipoMensajeChat.sistema:
+        return EventoSistemaChatCampo(texto: mensaje.texto);
+      case TipoMensajeChat.foto:
+        final ruta = mensaje.ruta;
+        return BurbujaFotoChatCampo(
+          propio: mensaje.propio,
+          hora: hora,
+          pie: mensaje.texto,
+          etiquetaSemantica: t.chatFotoSemantica(autor, hora, mensaje.texto),
+          foto: ruta == null
+              ? const SizedBox.shrink()
+              : FotoRemota(
+                  ruta: ruta,
+                  ancho: BurbujaFotoChatCampo.ancho,
+                  alto: BurbujaFotoChatCampo.ancho * 0.75,
+                  etiqueta: t.chatFotoSemantica(autor, hora, mensaje.texto),
                 ),
-                const SizedBox(height: EspaciadoCampo.xs),
-                Text(
-                  '${propio ? 'Tú' : 'Piloto'} · '
-                  '${FormatoMarketplace.hora(mensaje.creadoEn)}',
-                  style: TipografiaCampo.datoMono.copyWith(color: color),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+        );
+      case TipoMensajeChat.texto:
+        return BurbujaTextoChatCampo(
+          texto: mensaje.texto,
+          propio: mensaje.propio,
+          hora: hora,
+          etiquetaSemantica: t.chatMensajeSemantica(autor, hora, mensaje.texto),
+        );
+    }
   }
 }
 
@@ -355,12 +383,14 @@ class _Redactor extends StatelessWidget {
     required this.estado,
     required this.campo,
     required this.alEnviar,
+    required this.alAdjuntar,
     required this.margen,
   });
 
   final ChatEstado estado;
   final TextEditingController campo;
   final VoidCallback alEnviar;
+  final VoidCallback alAdjuntar;
   final double margen;
 
   @override
@@ -370,12 +400,10 @@ class _Redactor extends StatelessWidget {
       return SafeArea(
         child: Padding(
           padding: EdgeInsets.all(margen),
-          child: const AvisoMarketplace(
-            key: ValueKey('chat-solo-lectura'),
+          child: AvisoMarketplace(
+            key: const ValueKey('chat-solo-lectura'),
             icono: Icons.lock_outline_rounded,
-            mensaje:
-                'El chat se cerró. Puedes leer lo conversado, pero ya no '
-                'escribir.',
+            mensaje: AppLocalizations.of(context).chatCerradoAviso,
           ),
         ),
       );
@@ -403,14 +431,15 @@ class _Redactor extends StatelessWidget {
                   liveRegion: true,
                   child: Text(
                     switch (estado.fallo!) {
-                      FalloMensaje.sinConexion =>
-                        'Sin conexión. Tu mensaje sigue acá; envíalo cuando '
-                            'vuelva la señal.',
-                      FalloMensaje.cerrado =>
-                        'El chat se cerró y no se envió tu mensaje.',
-                      FalloMensaje.desconocido =>
-                        'No pudimos enviarlo. Tu mensaje sigue acá; prueba '
-                            'de nuevo.',
+                      FalloMensaje.sinConexion => AppLocalizations.of(
+                        context,
+                      ).chatFalloSinConexion,
+                      FalloMensaje.cerrado => AppLocalizations.of(
+                        context,
+                      ).chatFalloCerrado,
+                      FalloMensaje.desconocido => AppLocalizations.of(
+                        context,
+                      ).chatFalloDesconocido,
                     },
                     key: const ValueKey('chat-fallo'),
                     style: TipografiaCampo.cuerpoSecundario.copyWith(
@@ -422,6 +451,16 @@ class _Redactor extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+                IconButton(
+                  key: const ValueKey('chat-adjuntar'),
+                  tooltip: AppLocalizations.of(context).chatAdjuntar,
+                  constraints: const BoxConstraints(
+                    minWidth: ObjetivoTactilCampo.guantes,
+                    minHeight: ObjetivoTactilCampo.guantes,
+                  ),
+                  onPressed: estado.enviando ? null : alAdjuntar,
+                  icon: const Icon(Icons.add_a_photo_outlined),
+                ),
                 Expanded(
                   child: TextField(
                     key: const ValueKey('chat-campo'),
@@ -431,7 +470,7 @@ class _Redactor extends StatelessWidget {
                     maxLength: 1000,
                     textCapitalization: TextCapitalization.sentences,
                     decoration: InputDecoration(
-                      hintText: 'Escribe un mensaje',
+                      hintText: AppLocalizations.of(context).chatEscribe,
                       counterText: '',
                       filled: true,
                       fillColor: paleta.superficie,
@@ -445,11 +484,13 @@ class _Redactor extends StatelessWidget {
                 const SizedBox(width: EspaciadoCampo.s),
                 Semantics(
                   button: true,
-                  label: estado.enviando ? 'Enviando' : 'Enviar mensaje',
+                  label: estado.enviando
+                      ? AppLocalizations.of(context).chatEnviando
+                      : AppLocalizations.of(context).chatEnviarSemantica,
                   excludeSemantics: true,
                   child: IconButton.filled(
                     key: const ValueKey('chat-enviar'),
-                    tooltip: 'Enviar',
+                    tooltip: AppLocalizations.of(context).chatEnviar,
                     constraints: const BoxConstraints(
                       minWidth: ObjetivoTactilCampo.guantes,
                       minHeight: ObjetivoTactilCampo.guantes,

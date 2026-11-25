@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/paleta_campo.dart';
+import '../../../../ui/tema_visual/selector_tema_visual.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../../negociacion/presentation/avisos_pantalla.dart';
@@ -11,26 +13,33 @@ List<Widget> extrasDePerfil(
   BuildContext context, {
   required bool conAvisos,
   VoidCallback? alSalir,
-}) => [
-  if (conAvisos)
-    FilaAccionPerfil(
-      clave: const Key('perfil-avisos'),
-      icono: Icons.notifications_active_outlined,
-      titulo: 'Avisos',
-      detalle: 'Nuevas solicitudes en tus zonas, mensajes y ofertas',
-      alToque: () => Navigator.of(
-        context,
-      ).push(MaterialPageRoute<void>(builder: (_) => const AvisosPantalla())),
+}) {
+  final t = AppLocalizations.of(context);
+  return [
+    const SuperficieMarketplace(
+      key: Key('perfil-tema'),
+      child: SelectorTemaVisual(predeterminado: ModoVisualCampo.campo),
     ),
-  if (alSalir != null)
-    FilaAccionPerfil(
-      clave: const Key('perfil-salir'),
-      icono: Icons.logout_rounded,
-      titulo: 'Cerrar sesión',
-      detalle: 'Lo que aún no se subió se conserva en este celular',
-      alToque: alSalir,
-    ),
-];
+    if (conAvisos)
+      FilaAccionPerfil(
+        clave: const Key('perfil-avisos'),
+        icono: Icons.notifications_active_outlined,
+        titulo: t.perfilProveedorAvisos,
+        detalle: t.perfilProveedorAvisosDetalle,
+        alToque: () => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => const AvisosPantalla())),
+      ),
+    if (alSalir != null)
+      FilaAccionPerfil(
+        clave: const Key('perfil-salir'),
+        icono: Icons.logout_rounded,
+        titulo: t.perfilCerrarSesion,
+        detalle: t.perfilProveedorCerrarSesionDetalle,
+        alToque: alSalir,
+      ),
+  ];
+}
 
 class FilaAccionPerfil extends StatelessWidget {
   const FilaAccionPerfil({

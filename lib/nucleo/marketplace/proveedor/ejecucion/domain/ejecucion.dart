@@ -63,6 +63,8 @@ class ServicioEnLote {
     this.montoFinal,
     this.contactoNombre,
     this.contactoTelefono,
+    this.contactoCargo,
+    this.contactoEmpresa,
     this.registrosPendientes = 0,
     this.fotosPendientes = 0,
     this.fotosTotal = 0,
@@ -99,6 +101,11 @@ class ServicioEnLote {
   final Decimal? montoFinal;
   final String? contactoNombre;
   final String? contactoTelefono;
+
+  /// Cargo de la persona de contacto y razón social, si el cliente es una
+  /// empresa (`contacto.cargo` y `contacto.empresa` del catálogo).
+  final String? contactoCargo;
+  final String? contactoEmpresa;
 
   /// Registros de inicio, avance o cierre todavía sin subir.
   final int registrosPendientes;
@@ -160,6 +167,8 @@ class ServicioEnLote {
     montoFinal: montoFinal ?? this.montoFinal,
     contactoNombre: contactoNombre,
     contactoTelefono: contactoTelefono,
+    contactoCargo: contactoCargo,
+    contactoEmpresa: contactoEmpresa,
     registrosPendientes: registrosPendientes ?? this.registrosPendientes,
     fotosPendientes: fotosPendientes ?? this.fotosPendientes,
     fotosTotal: fotosTotal ?? this.fotosTotal,

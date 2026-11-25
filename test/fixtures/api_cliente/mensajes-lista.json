@@ -1,0 +1,74 @@
+{
+    "operationId": "listarMensajes",
+    "descripcion": "Mensajes en orden con cursor: el cliente consulta cada pocos segundos con `despues`.",
+    "peticion": {
+        "metodo": "GET",
+        "ruta": "/api/solicitudes/18/mensajes",
+        "autenticada": true
+    },
+    "respuesta": {
+        "estado": 200,
+        "cuerpo": {
+            "mensajes": [
+                {
+                    "id": 32,
+                    "uuid_cliente": "63cdf3d3-ff6e-5c18-89cb-e3b1d1f2775b",
+                    "solicitud_id": 18,
+                    "autor_rol": "sistema",
+                    "propio": false,
+                    "tipo": "sistema",
+                    "evento": "solicitud_adjudicada",
+                    "texto": "La solicitud quedó adjudicada. Ya pueden coordinar por aquí.",
+                    "url": null,
+                    "bytes": null,
+                    "leido_en": null,
+                    "creado_en": "2026-11-25T17:56:12+00:00"
+                },
+                {
+                    "id": 33,
+                    "uuid_cliente": "9c1d7e40-5a2b-4f3c-8e61-0d4b7a2c9e21",
+                    "solicitud_id": 18,
+                    "autor_rol": "cliente",
+                    "propio": true,
+                    "tipo": "texto",
+                    "evento": null,
+                    "texto": "Hola, ¿qué día pueden venir?",
+                    "url": null,
+                    "bytes": null,
+                    "leido_en": null,
+                    "creado_en": "2026-11-25T17:56:12+00:00"
+                },
+                {
+                    "id": 34,
+                    "uuid_cliente": "9c1d7e40-5a2b-4f3c-8e61-0d4b7a2c9e22",
+                    "solicitud_id": 18,
+                    "autor_rol": "proveedor",
+                    "propio": false,
+                    "tipo": "texto",
+                    "evento": null,
+                    "texto": "El jueves temprano, si el viento lo permite.",
+                    "url": null,
+                    "bytes": null,
+                    "leido_en": null,
+                    "creado_en": "2026-11-25T17:56:12+00:00"
+                },
+                {
+                    "id": 35,
+                    "uuid_cliente": "9c1d7e40-5a2b-4f3c-8e61-0d4b7a2c9e23",
+                    "solicitud_id": 18,
+                    "autor_rol": "proveedor",
+                    "propio": false,
+                    "tipo": "foto",
+                    "evento": null,
+                    "texto": "Así queda el punto de carga.",
+                    "url": "/api/mensajes/35/archivo",
+                    "bytes": 1888,
+                    "leido_en": null,
+                    "creado_en": "2026-11-25T17:56:12+00:00"
+                }
+            ],
+            "cursor": 35,
+            "solo_lectura": false
+        }
+    }
+}

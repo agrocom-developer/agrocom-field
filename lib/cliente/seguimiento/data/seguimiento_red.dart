@@ -123,7 +123,38 @@ class SeguimientoRed implements SeguimientoRepositorio {
       creadoEn: creado,
       propio: m['propio'] == true,
       claveCliente: m['uuid_cliente'] as String?,
+      tipo: switch (m['tipo']) {
+        'foto' => TipoMensajeChat.foto,
+        'sistema' => TipoMensajeChat.sistema,
+        _ => TipoMensajeChat.texto,
+      },
+      evento: m['evento'] as String?,
+      ruta: m['url'] as String?,
     );
+  }
+
+  @override
+  Future<MensajeChat> enviarFoto(
+    String solicitudId, {
+    required Uint8List bytes,
+    required String claveCliente,
+    String? pie,
+  }) async {
+    final r = await _http.subir(
+      '/api/solicitudes/$solicitudId/mensajes/fotos',
+      campos: {
+        'uuid_cliente': claveCliente,
+        if (pie != null && pie.trim().isNotEmpty) 'texto': pie.trim(),
+      },
+      campoArchivo: 'archivo',
+      bytes: bytes,
+    );
+    final m = r['mensaje'];
+    final mensaje = m is Map ? _mensaje(Map<String, dynamic>.from(m)) : null;
+    if (mensaje == null) {
+      throw const OperacionRechazada('No pudimos enviar la foto.');
+    }
+    return mensaje;
   }
 
   @override

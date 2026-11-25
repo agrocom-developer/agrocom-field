@@ -13,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:agrocom_field/l10n/app_localizations.dart';
+
 import 'package:agrocom_field/nucleo/marketplace/demo/datos_demo.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/demo/almacen_demo_proveedor.dart';
@@ -130,6 +132,9 @@ void main() {
     });
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('es'),
         debugShowCheckedModeBanner: false,
         theme: AgrocomThemeCampo.construir(),
         builder: (context, child) => MediaQuery(
@@ -225,7 +230,7 @@ void main() {
       );
       final fila = find.byKey(const Key('perfil-ver-drones'));
       await irA(tester, fila);
-      expect(find.text('Mis drones · 2 drones'), findsOneWidget);
+      expect(find.text('Dron y licencia · 2 drones'), findsOneWidget);
       expect(tester.getSize(fila).height, greaterThanOrEqualTo(56));
       await tester.tap(fila);
       expect(abiertos, 1);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
+import 'barra_inferior_campo.dart';
 
 /// Destino de [NavegacionAdaptativaCampo].
 class DestinoCampo {
@@ -62,17 +63,10 @@ class NavegacionAdaptativaCampo extends StatelessWidget {
     if (clase == ClasePantallaCampo.compacto) {
       return Scaffold(
         body: SafeArea(bottom: false, child: contenido),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: indice,
-          onDestinationSelected: _seleccionar,
-          destinations: [
-            for (final d in destinos)
-              NavigationDestination(
-                icon: Icon(d.icono),
-                selectedIcon: Icon(d.iconoActivo),
-                label: d.etiqueta,
-              ),
-          ],
+        bottomNavigationBar: BarraInferiorCampo(
+          destinos: destinos,
+          indice: indice,
+          onSeleccionar: _seleccionar,
         ),
       );
     }

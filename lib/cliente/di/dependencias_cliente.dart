@@ -28,10 +28,16 @@ import '../calificar/data/calificacion_demo.dart';
 import '../calificar/data/calificacion_red.dart';
 import '../calificar/domain/calificacion_repositorio.dart';
 import '../comun/presentation/foto_remota.dart';
+import '../contactos/data/contactos_demo.dart';
+import '../contactos/data/contactos_red.dart';
+import '../contactos/domain/contactos_repositorio.dart';
 import '../cuenta/data/cuenta_demo.dart';
 import '../cuenta/data/cuenta_red.dart';
 import '../cuenta/domain/cuenta_repositorio.dart';
 import '../demo/almacen_demo_cliente.dart';
+import '../precio_final/data/precio_final_demo.dart';
+import '../precio_final/data/precio_final_red.dart';
+import '../precio_final/domain/precio_final_repositorio.dart';
 import '../inicio/data/inicio_cliente_demo.dart';
 import '../inicio/data/inicio_cliente_red.dart';
 import '../inicio/domain/inicio_cliente_repositorio.dart';
@@ -76,6 +82,8 @@ class DependenciasCliente {
     required this.pagos,
     required this.preparadorFoto,
     required this.push,
+    this.contactos,
+    this.precioFinal,
     this.notaAcceso,
     this.sesionExpirada,
     ConectividadServicio? conectividad,
@@ -135,6 +143,8 @@ class DependenciasCliente {
             CompresorEvidenciaAdaptativo(),
           ),
       push: DispositivosPushDemo(TokenPushEnMemoria()),
+      contactos: ContactosDemo(),
+      precioFinal: PrecioFinalDemo(almacen),
       notaAcceso:
           'Modo demo: entra con cualquier usuario y una contraseña de 8 '
           'caracteres o más. Los datos son ficticios.',
@@ -212,6 +222,8 @@ class DependenciasCliente {
         CompresorEvidenciaAdaptativo(),
       ),
       push: push,
+      contactos: ContactosRed(http),
+      precioFinal: PrecioFinalRed(http),
       notaAcceso: notaAcceso,
       sesionExpirada: expiracion.stream,
       conectividad: ConectividadReal(),
@@ -246,6 +258,14 @@ class DependenciasCliente {
   /// Token de push del aparato; se retira al cerrar sesión.
   final DispositivosPushRepositorio push;
 
+  /// Contactos de referencia del cliente empresa; sin él, el cliente no los
+  /// gestiona (las pruebas que no los necesitan lo omiten).
+  final ContactosRepositorio? contactos;
+
+  /// Precio final y su confirmación; sin él la pantalla muestra solo lo de
+  /// la solicitud.
+  final PrecioFinalRepositorio? precioFinal;
+
   /// Nota que la pantalla de ingreso muestra bajo el formulario; solo la
   /// define el modo demo.
   final String? notaAcceso;
@@ -275,6 +295,10 @@ class DependenciasCliente {
       RepositoryProvider<FotosTerrenoRepositorio>.value(value: fotosTerreno),
       RepositoryProvider<PagosRepositorio>.value(value: pagos),
       RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
+      if (precioFinal != null)
+        RepositoryProvider<PrecioFinalRepositorio>.value(value: precioFinal!),
+      if (contactos != null)
+        RepositoryProvider<ContactosRepositorio>.value(value: contactos!),
     ],
     child: child,
   );

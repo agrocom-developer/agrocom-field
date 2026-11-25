@@ -218,7 +218,7 @@ void main() {
       final inicio = InicioControlado.fijo(_resumenDemo());
       await _abrir(tester, inicio);
       await tester.pumpAndSettle();
-      await tester.tap(find.text('Cuenta').last);
+      await tester.tap(find.text('Perfil').last);
       await tester.pumpAndSettle();
       await tester.tap(find.text('Inicio').last);
       await tester.pumpAndSettle();

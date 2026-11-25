@@ -31,8 +31,9 @@ class SesionCliente {
 /// Quién es el cliente ante Agrocom (`tipo` del contrato).
 enum TipoCliente { persona, empresa }
 
-/// Datos del formulario de registro del cliente. Una empresa envía además
-/// razón social y documento fiscal (NIT); `nombre` es quien usa la cuenta.
+/// Datos del formulario de registro del cliente. El registro es siempre de una
+/// persona; con «Asociar a una empresa» envía además razón social y documento
+/// fiscal (NIT) y esa persona queda como contacto principal de la empresa.
 class DatosRegistroCliente {
   const DatosRegistroCliente({
     required this.nombre,
@@ -42,11 +43,16 @@ class DatosRegistroCliente {
     this.tipo = TipoCliente.persona,
     this.razonSocial,
     this.documentoFiscal,
+    this.cargo,
   });
 
   final TipoCliente tipo;
   final String? razonSocial;
   final String? documentoFiscal;
+
+  /// Cargo de quien se registra en la empresa; opcional. Solo se envía con
+  /// `tipo` empresa: la persona queda como contacto principal.
+  final String? cargo;
 
   final String nombre;
   final String telefono;

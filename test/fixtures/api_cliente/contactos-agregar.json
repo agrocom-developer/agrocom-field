@@ -1,0 +1,26 @@
+{
+    "operationId": "agregarContacto",
+    "descripcion": "Agrega una persona de referencia; el primer contacto de un cliente queda como principal.",
+    "peticion": {
+        "metodo": "POST",
+        "ruta": "/api/clientes/mi/contactos",
+        "autenticada": true,
+        "cuerpo": {
+            "nombre": "Elena Chávez Soliz",
+            "telefono": "+591 70011223",
+            "cargo": "Administradora"
+        }
+    },
+    "respuesta": {
+        "estado": 201,
+        "cuerpo": {
+            "contacto": {
+                "id": 4,
+                "nombre": "Elena Chávez Soliz",
+                "telefono": "+591 70011223",
+                "cargo": "Administradora",
+                "es_principal": false
+            }
+        }
+    }
+}

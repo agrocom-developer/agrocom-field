@@ -3,7 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
+import '../../contactos/domain/contacto.dart';
 import '../../../nucleo/marketplace/ui/formato_marketplace.dart';
+import '../../contactos/domain/contactos_repositorio.dart';
 import '../domain/reglas_solicitud.dart';
 import '../domain/solicitud_repositorio.dart';
 import 'solicitar_estado.dart';
@@ -24,9 +26,11 @@ String _textoHectareas(Decimal valor) {
 class SolicitarCubit extends Cubit<SolicitarEstado> {
   SolicitarCubit(
     this._repositorio, {
+    ContactosRepositorio? contactos,
     DateTime Function()? reloj,
     String? claveIdempotencia,
-  }) : _reloj = reloj ?? DateTime.now,
+  }) : _contactos = contactos,
+       _reloj = reloj ?? DateTime.now,
        super(
          SolicitarEstado(
            claveIdempotencia: claveIdempotencia ?? const Uuid().v4(),
@@ -34,6 +38,7 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
        );
 
   final SolicitudRepositorio _repositorio;
+  final ContactosRepositorio? _contactos;
   final DateTime Function() _reloj;
 
   Future<void> cargar() async {
@@ -42,9 +47,19 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
       final lotes = await _repositorio.lotesDelCliente();
       final productos = await _repositorio.productosSugeridos();
       final cultivos = await _repositorio.cultivosSugeridos();
+      // Los contactos son un extra de la empresa: si no cargan, se publica
+      // con el principal que el servidor elige por defecto.
+      var contactos = state.contactos;
+      try {
+        contactos = await _contactos?.listar() ?? const [];
+      } on Object {
+        contactos = const [];
+      }
       if (isClosed) return;
       emit(
         state.copiarCon(
+          contactos: contactos,
+          contactoId: state.contactoId ?? _principal(contactos),
           carga: CargaSolicitud.lista,
           lotes: lotes,
           productos: productos,
@@ -59,6 +74,19 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
       emit(state.copiarCon(carga: CargaSolicitud.error));
     }
   }
+
+  static int? _principal(List<ContactoCliente> lista) {
+    for (final c in lista) {
+      if (c.esPrincipal) return c.id;
+    }
+    return lista.isEmpty ? null : lista.first.id;
+  }
+
+  /// Vuelve al formulario tras un envío fallido, con todo lo escrito.
+  void descartarFallo() =>
+      emit(state.copiarCon(falloEnvio: null, mensajeRechazo: null));
+
+  void elegirContacto(int id) => emit(state.copiarCon(contactoId: id));
 
   // ── Paso 1: lote ─────────────────────────────────────────────────────
 
@@ -214,6 +242,7 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
           claveIdempotencia: state.claveIdempotencia,
           accesos: accesos.isEmpty ? null : accesos,
           observaciones: observaciones.isEmpty ? null : observaciones,
+          contactoId: state.contactos.isEmpty ? null : state.contactoId,
         ),
       );
       if (isClosed) return;

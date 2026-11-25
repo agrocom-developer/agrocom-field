@@ -24,6 +24,7 @@ class NuevaSolicitud {
     required this.claveIdempotencia,
     this.accesos,
     this.observaciones,
+    this.contactoId,
   });
 
   final Lote lote;
@@ -39,6 +40,10 @@ class NuevaSolicitud {
   /// Cómo se llega al lote; solo se guarda si el lote es nuevo.
   final String? accesos;
   final String? observaciones;
+
+  /// Persona de contacto de un cliente empresa (`contacto_id` del contrato);
+  /// `null` si el cliente es una persona o no eligió.
+  final int? contactoId;
 
   /// Total estimado con el precio propuesto.
   Decimal get total => hectareas * precioHa;

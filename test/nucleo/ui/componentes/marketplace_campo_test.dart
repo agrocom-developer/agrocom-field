@@ -232,14 +232,14 @@ void main() {
 
     testWidgets('teléfono: barra inferior', (tester) async {
       await montar(tester, const Size(390, 844));
-      expect(find.byType(NavigationBar), findsOneWidget);
+      expect(find.byType(BarraInferiorCampo), findsOneWidget);
       expect(find.byType(NavigationRail), findsNothing);
     });
 
     testWidgets('iPad: riel lateral', (tester) async {
       await montar(tester, const Size(834, 1194));
       expect(find.byType(NavigationRail), findsOneWidget);
-      expect(find.byType(NavigationBar), findsNothing);
+      expect(find.byType(BarraInferiorCampo), findsNothing);
     });
   });
 }

@@ -274,6 +274,888 @@ abstract class AppLocalizations {
   /// **'Hubo una falta de respeto o de cuidado.'**
   String get problemaMotivoTratoInadecuadoAyuda;
 
+  /// No description provided for @navInicio.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get navInicio;
+
+  /// No description provided for @navLotes.
+  ///
+  /// In es, this message translates to:
+  /// **'Lotes'**
+  String get navLotes;
+
+  /// No description provided for @navServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'Servicios'**
+  String get navServicios;
+
+  /// No description provided for @navPerfil.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil'**
+  String get navPerfil;
+
+  /// No description provided for @navMapa.
+  ///
+  /// In es, this message translates to:
+  /// **'Mapa'**
+  String get navMapa;
+
+  /// No description provided for @navOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas'**
+  String get navOfertas;
+
+  /// Selector del tema visual en el perfil.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema'**
+  String get temaTitulo;
+
+  /// No description provided for @temaClaro.
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get temaClaro;
+
+  /// No description provided for @temaOscuro.
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get temaOscuro;
+
+  /// No description provided for @temaCampo.
+  ///
+  /// In es, this message translates to:
+  /// **'Campo AAA'**
+  String get temaCampo;
+
+  /// No description provided for @publicarLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicar lote'**
+  String get publicarLote;
+
+  /// No description provided for @publicarLoteCerrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get publicarLoteCerrar;
+
+  /// No description provided for @solicitudPublicada.
+  ///
+  /// In es, this message translates to:
+  /// **'Publicamos tu solicitud. Te avisamos cuando lleguen ofertas.'**
+  String get solicitudPublicada;
+
+  /// No description provided for @perfilClienteRol.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente'**
+  String get perfilClienteRol;
+
+  /// No description provided for @perfilClienteEstadLotes.
+  ///
+  /// In es, this message translates to:
+  /// **'lotes'**
+  String get perfilClienteEstadLotes;
+
+  /// No description provided for @perfilClienteEstadServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'servicios'**
+  String get perfilClienteEstadServicios;
+
+  /// No description provided for @perfilClienteEstadCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'como cliente'**
+  String get perfilClienteEstadCalificacion;
+
+  /// No description provided for @perfilMisCampos.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis campos'**
+  String get perfilMisCampos;
+
+  /// No description provided for @perfilAgregarCampo.
+  ///
+  /// In es, this message translates to:
+  /// **'+ Agregar'**
+  String get perfilAgregarCampo;
+
+  /// No description provided for @perfilMisCamposVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes lotes. Se guardan al publicar tu primera solicitud.'**
+  String get perfilMisCamposVacio;
+
+  /// No description provided for @perfilHectareasUnidad.
+  ///
+  /// In es, this message translates to:
+  /// **'{hectareas} ha'**
+  String perfilHectareasUnidad(String hectareas);
+
+  /// No description provided for @perfilLoDicen.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que dicen de ti'**
+  String get perfilLoDicen;
+
+  /// No description provided for @perfilCerrarSesion.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión'**
+  String get perfilCerrarSesion;
+
+  /// No description provided for @perfilErrorCargaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tu perfil'**
+  String get perfilErrorCargaTitulo;
+
+  /// No description provided for @perfilErrorCargaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentar.'**
+  String get perfilErrorCargaDetalle;
+
+  /// No description provided for @lotesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Lotes'**
+  String get lotesTitulo;
+
+  /// No description provided for @lotesVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes lotes'**
+  String get lotesVacioTitulo;
+
+  /// No description provided for @lotesVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca tu primer lote en el mapa al publicar una solicitud. Queda guardado para la próxima vez.'**
+  String get lotesVacioDetalle;
+
+  /// No description provided for @lotesLoteDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'{zona} · {cultivo}'**
+  String lotesLoteDetalle(String zona, String cultivo);
+
+  /// No description provided for @perfilProveedorRolPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Piloto'**
+  String get perfilProveedorRolPiloto;
+
+  /// No description provided for @perfilProveedorAjustes.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get perfilProveedorAjustes;
+
+  /// No description provided for @perfilProveedorSinCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía sin calificaciones'**
+  String get perfilProveedorSinCalificaciones;
+
+  /// No description provided for @perfilProveedorServicios.
+  ///
+  /// In es, this message translates to:
+  /// **'{n} servicios'**
+  String perfilProveedorServicios(int n);
+
+  /// No description provided for @perfilProveedorDocumentoAtencion.
+  ///
+  /// In es, this message translates to:
+  /// **'«{nombre}» necesita tu atención. Un documento vencido suspende las ofertas.'**
+  String perfilProveedorDocumentoAtencion(String nombre);
+
+  /// No description provided for @perfilProveedorDocumentosAtencion.
+  ///
+  /// In es, this message translates to:
+  /// **'{n} documentos necesitan tu atención. Un documento vencido suspende las ofertas.'**
+  String perfilProveedorDocumentosAtencion(int n);
+
+  /// No description provided for @perfilProveedorMetricas.
+  ///
+  /// In es, this message translates to:
+  /// **'Métricas'**
+  String get perfilProveedorMetricas;
+
+  /// No description provided for @perfilProveedorDronLicencia.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron y licencia'**
+  String get perfilProveedorDronLicencia;
+
+  /// No description provided for @perfilProveedorDronesUno.
+  ///
+  /// In es, this message translates to:
+  /// **'1 dron'**
+  String get perfilProveedorDronesUno;
+
+  /// No description provided for @perfilProveedorDronesVarios.
+  ///
+  /// In es, this message translates to:
+  /// **'{n} drones'**
+  String perfilProveedorDronesVarios(int n);
+
+  /// No description provided for @perfilProveedorHectareasMes.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas por mes'**
+  String get perfilProveedorHectareasMes;
+
+  /// No description provided for @perfilProveedorHectareasMesVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'Las hectáreas de cada mes aparecen aquí después de tu primer servicio.'**
+  String get perfilProveedorHectareasMesVacio;
+
+  /// No description provided for @perfilProveedorDocumentos.
+  ///
+  /// In es, this message translates to:
+  /// **'Documentos'**
+  String get perfilProveedorDocumentos;
+
+  /// No description provided for @perfilProveedorDocumentosVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no cargaste documentos. Sin ellos no se puede aprobar tu perfil.'**
+  String get perfilProveedorDocumentosVacio;
+
+  /// No description provided for @perfilProveedorZonas.
+  ///
+  /// In es, this message translates to:
+  /// **'Zonas de cobertura'**
+  String get perfilProveedorZonas;
+
+  /// No description provided for @perfilProveedorZonaSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Zona: {zona}'**
+  String perfilProveedorZonaSemantica(String zona);
+
+  /// No description provided for @perfilProveedorCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificaciones recibidas'**
+  String get perfilProveedorCalificaciones;
+
+  /// No description provided for @perfilProveedorResenasVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'Las reseñas de tus clientes aparecen aquí después de cada servicio.'**
+  String get perfilProveedorResenasVacio;
+
+  /// No description provided for @perfilProveedorErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tu perfil'**
+  String get perfilProveedorErrorTitulo;
+
+  /// No description provided for @perfilProveedorErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentar.'**
+  String get perfilProveedorErrorDetalle;
+
+  /// No description provided for @perfilProveedorAvisos.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos'**
+  String get perfilProveedorAvisos;
+
+  /// No description provided for @perfilProveedorAvisosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevas solicitudes en tus zonas, mensajes y ofertas'**
+  String get perfilProveedorAvisosDetalle;
+
+  /// No description provided for @perfilProveedorCerrarSesionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que aún no se subió se conserva en este celular'**
+  String get perfilProveedorCerrarSesionDetalle;
+
+  /// No description provided for @perfilPublicoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Perfil del piloto'**
+  String get perfilPublicoTitulo;
+
+  /// No description provided for @perfilPublicoOfertaPara.
+  ///
+  /// In es, this message translates to:
+  /// **'Oferta para {lote}'**
+  String perfilPublicoOfertaPara(String lote);
+
+  /// No description provided for @perfilPublicoEstadCalificacion.
+  ///
+  /// In es, this message translates to:
+  /// **'calificación'**
+  String get perfilPublicoEstadCalificacion;
+
+  /// No description provided for @perfilPublicoEstadResenas.
+  ///
+  /// In es, this message translates to:
+  /// **'calificaciones'**
+  String get perfilPublicoEstadResenas;
+
+  /// No description provided for @perfilPublicoEstadCumplimiento.
+  ///
+  /// In es, this message translates to:
+  /// **'cancelaciones'**
+  String get perfilPublicoEstadCumplimiento;
+
+  /// No description provided for @perfilPublicoEquipo.
+  ///
+  /// In es, this message translates to:
+  /// **'EQUIPO'**
+  String get perfilPublicoEquipo;
+
+  /// No description provided for @perfilPublicoDron.
+  ///
+  /// In es, this message translates to:
+  /// **'{dron} · {litros} L'**
+  String perfilPublicoDron(String dron, String litros);
+
+  /// No description provided for @perfilPublicoDronAnio.
+  ///
+  /// In es, this message translates to:
+  /// **'Año {anio}'**
+  String perfilPublicoDronAnio(int anio);
+
+  /// No description provided for @perfilPublicoSinDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Este piloto aún no muestra su dron.'**
+  String get perfilPublicoSinDron;
+
+  /// No description provided for @perfilPublicoSuOferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Su oferta'**
+  String get perfilPublicoSuOferta;
+
+  /// No description provided for @perfilPublicoTotal.
+  ///
+  /// In es, this message translates to:
+  /// **'total {monto}'**
+  String perfilPublicoTotal(String monto);
+
+  /// No description provided for @perfilPublicoElegir.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir'**
+  String get perfilPublicoElegir;
+
+  /// No description provided for @perfilPublicoVerPerfil.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver perfil'**
+  String get perfilPublicoVerPerfil;
+
+  /// No description provided for @perfilPublicoFotoDe.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto de {nombre}'**
+  String perfilPublicoFotoDe(String nombre);
+
+  /// No description provided for @contactosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Contactos de referencia'**
+  String get contactosTitulo;
+
+  /// No description provided for @contactosIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto que elijas ve a la persona de contacto de cada solicitud, con su cargo, solo después de adjudicarla.'**
+  String get contactosIntro;
+
+  /// No description provided for @contactosPrincipal.
+  ///
+  /// In es, this message translates to:
+  /// **'Principal'**
+  String get contactosPrincipal;
+
+  /// No description provided for @contactosAgregar.
+  ///
+  /// In es, this message translates to:
+  /// **'Agregar contacto'**
+  String get contactosAgregar;
+
+  /// No description provided for @contactosEditar.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar contacto'**
+  String get contactosEditar;
+
+  /// No description provided for @contactosNuevo.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo contacto'**
+  String get contactosNuevo;
+
+  /// No description provided for @contactosNombre.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre completo'**
+  String get contactosNombre;
+
+  /// No description provided for @contactosCelular.
+  ///
+  /// In es, this message translates to:
+  /// **'Celular'**
+  String get contactosCelular;
+
+  /// No description provided for @contactosCargo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargo (opcional)'**
+  String get contactosCargo;
+
+  /// No description provided for @contactosHacerPrincipal.
+  ///
+  /// In es, this message translates to:
+  /// **'Es el contacto principal'**
+  String get contactosHacerPrincipal;
+
+  /// No description provided for @contactosHacerPrincipalAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Se usa cuando una solicitud no elige a otra persona.'**
+  String get contactosHacerPrincipalAyuda;
+
+  /// No description provided for @contactosGuardar.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar'**
+  String get contactosGuardar;
+
+  /// No description provided for @contactosCancelar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get contactosCancelar;
+
+  /// No description provided for @contactosQuitar.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar contacto'**
+  String get contactosQuitar;
+
+  /// No description provided for @contactosQuitarPregunta.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Quitar a {nombre}?'**
+  String contactosQuitarPregunta(String nombre);
+
+  /// No description provided for @contactosQuitarAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Las solicitudes que ya publicaste conservan a esta persona.'**
+  String get contactosQuitarAviso;
+
+  /// No description provided for @contactosUnicoAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Una empresa necesita al menos un contacto: agrega otro antes de quitar a este.'**
+  String get contactosUnicoAviso;
+
+  /// No description provided for @contactosErrorNombre.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el nombre.'**
+  String get contactosErrorNombre;
+
+  /// No description provided for @contactosErrorCelular.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un celular de al menos 7 dígitos.'**
+  String get contactosErrorCelular;
+
+  /// No description provided for @contactosSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. No se guardó nada; prueba de nuevo cuando tengas señal.'**
+  String get contactosSinConexion;
+
+  /// No description provided for @contactosErrorGuardar.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardar el contacto. Prueba de nuevo.'**
+  String get contactosErrorGuardar;
+
+  /// No description provided for @contactosFilaSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{nombre}, {cargo}, {celular}'**
+  String contactosFilaSemantica(String nombre, String cargo, String celular);
+
+  /// No description provided for @contactosPerfilFila.
+  ///
+  /// In es, this message translates to:
+  /// **'Contactos de referencia'**
+  String get contactosPerfilFila;
+
+  /// No description provided for @contactosPerfilDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'{n, plural, one{1 persona} other{{n} personas}}'**
+  String contactosPerfilDetalle(int n);
+
+  /// No description provided for @contactosEmpresaPublicar.
+  ///
+  /// In es, this message translates to:
+  /// **'Persona de contacto'**
+  String get contactosEmpresaPublicar;
+
+  /// No description provided for @contactosEmpresaPublicarAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'El piloto elegido verá a quién llamar.'**
+  String get contactosEmpresaPublicarAyuda;
+
+  /// No description provided for @registroEmpresaInterruptor.
+  ///
+  /// In es, this message translates to:
+  /// **'Asociar a una empresa'**
+  String get registroEmpresaInterruptor;
+
+  /// No description provided for @registroEmpresaAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Si publicas lotes a nombre de una empresa, agrégala. Tú quedas como su contacto principal.'**
+  String get registroEmpresaAyuda;
+
+  /// No description provided for @registroEmpresaRazon.
+  ///
+  /// In es, this message translates to:
+  /// **'Razón social'**
+  String get registroEmpresaRazon;
+
+  /// No description provided for @registroEmpresaDocumento.
+  ///
+  /// In es, this message translates to:
+  /// **'NIT'**
+  String get registroEmpresaDocumento;
+
+  /// No description provided for @registroEmpresaCargo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cargo en la empresa (opcional)'**
+  String get registroEmpresaCargo;
+
+  /// No description provided for @registroEmpresaContactoNota.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu nombre y celular quedan como contacto principal. Después puedes agregar a otras personas desde tu perfil.'**
+  String get registroEmpresaContactoNota;
+
+  /// No description provided for @chatTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Chat con el piloto'**
+  String get chatTitulo;
+
+  /// No description provided for @chatHoy.
+  ///
+  /// In es, this message translates to:
+  /// **'HOY'**
+  String get chatHoy;
+
+  /// No description provided for @chatCabecera.
+  ///
+  /// In es, this message translates to:
+  /// **'{lote} · {estado}'**
+  String chatCabecera(String lote, String estado);
+
+  /// No description provided for @chatFotoDe.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto de {nombre}'**
+  String chatFotoDe(String nombre);
+
+  /// No description provided for @chatVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay mensajes'**
+  String get chatVacioTitulo;
+
+  /// No description provided for @chatVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Escríbele al piloto para coordinar el día de la visita y los accesos al lote.'**
+  String get chatVacioDetalle;
+
+  /// No description provided for @chatSinConexionAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Los mensajes nuevos llegan cuando vuelva la señal.'**
+  String get chatSinConexionAviso;
+
+  /// No description provided for @chatCerradoAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'El chat se cerró. Puedes leer lo conversado, pero ya no escribir.'**
+  String get chatCerradoAviso;
+
+  /// No description provided for @chatEscribe.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un mensaje'**
+  String get chatEscribe;
+
+  /// No description provided for @chatEnviar.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get chatEnviar;
+
+  /// No description provided for @chatEnviarSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar mensaje'**
+  String get chatEnviarSemantica;
+
+  /// No description provided for @chatEnviando.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviando'**
+  String get chatEnviando;
+
+  /// No description provided for @chatAdjuntar.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar una foto'**
+  String get chatAdjuntar;
+
+  /// No description provided for @chatFotoCamara.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomar una foto'**
+  String get chatFotoCamara;
+
+  /// No description provided for @chatFotoGaleria.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir de la galería'**
+  String get chatFotoGaleria;
+
+  /// No description provided for @chatFalloSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Tu mensaje sigue aquí; envíalo cuando vuelva la señal.'**
+  String get chatFalloSinConexion;
+
+  /// No description provided for @chatFalloCerrado.
+  ///
+  /// In es, this message translates to:
+  /// **'El chat se cerró y no se envió tu mensaje.'**
+  String get chatFalloCerrado;
+
+  /// No description provided for @chatFalloDesconocido.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviarlo. Tu mensaje sigue aquí; prueba de nuevo.'**
+  String get chatFalloDesconocido;
+
+  /// No description provided for @chatFalloFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar la foto. Prueba de nuevo.'**
+  String get chatFalloFoto;
+
+  /// No description provided for @chatAutorTu.
+  ///
+  /// In es, this message translates to:
+  /// **'Tú'**
+  String get chatAutorTu;
+
+  /// No description provided for @chatAutorPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Piloto'**
+  String get chatAutorPiloto;
+
+  /// No description provided for @chatMensajeSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{autor}, {hora}: {texto}'**
+  String chatMensajeSemantica(String autor, String hora, String texto);
+
+  /// No description provided for @chatFotoSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{autor}, {hora}: foto. {pie}'**
+  String chatFotoSemantica(String autor, String hora, String pie);
+
+  /// No description provided for @precioFinalConfirmar.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar precio final'**
+  String get precioFinalConfirmar;
+
+  /// No description provided for @precioFinalPorConfirmar.
+  ///
+  /// In es, this message translates to:
+  /// **'POR CONFIRMAR'**
+  String get precioFinalPorConfirmar;
+
+  /// No description provided for @precioFinalConfirmado.
+  ///
+  /// In es, this message translates to:
+  /// **'CONFIRMADO'**
+  String get precioFinalConfirmado;
+
+  /// No description provided for @precioFinalConfirmadoAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmaste el precio final. El pago sigue siendo directo al piloto.'**
+  String get precioFinalConfirmadoAviso;
+
+  /// No description provided for @precioFinalFalloSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. No se confirmó nada; prueba de nuevo cuando tengas señal.'**
+  String get precioFinalFalloSinConexion;
+
+  /// No description provided for @precioFinalFalloRechazado.
+  ///
+  /// In es, this message translates to:
+  /// **'El servicio todavía no terminó, así que no se puede confirmar el precio.'**
+  String get precioFinalFalloRechazado;
+
+  /// No description provided for @precioFinalFalloDesconocido.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos confirmar el precio final. Prueba de nuevo.'**
+  String get precioFinalFalloDesconocido;
+
+  /// No description provided for @precioFinalAbrirDisputa.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir disputa'**
+  String get precioFinalAbrirDisputa;
+
+  /// No description provided for @contactoPilotoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Persona de contacto'**
+  String get contactoPilotoTitulo;
+
+  /// No description provided for @estadoReintentarAhora.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar ahora'**
+  String get estadoReintentarAhora;
+
+  /// No description provided for @estadoSinSenalBanner.
+  ///
+  /// In es, this message translates to:
+  /// **'reintentando'**
+  String get estadoSinSenalBanner;
+
+  /// No description provided for @estadoSinConexionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión'**
+  String get estadoSinConexionTitulo;
+
+  /// No description provided for @estadoSinConexionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitamos señal para cargar {queNoCargo}. Revisa tu conexión y prueba de nuevo.'**
+  String estadoSinConexionDetalle(String queNoCargo);
+
+  /// No description provided for @estadoErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Algo salió mal'**
+  String get estadoErrorTitulo;
+
+  /// No description provided for @estadoErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar {queNoCargo}. Prueba de nuevo en un momento.'**
+  String estadoErrorDetalle(String queNoCargo);
+
+  /// No description provided for @estadoTablaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué funciona sin red'**
+  String get estadoTablaTitulo;
+
+  /// No description provided for @estadoTablaFotos.
+  ///
+  /// In es, this message translates to:
+  /// **'Fotos y avance'**
+  String get estadoTablaFotos;
+
+  /// No description provided for @estadoTablaFuncionan.
+  ///
+  /// In es, this message translates to:
+  /// **'Funcionan sin red'**
+  String get estadoTablaFuncionan;
+
+  /// No description provided for @estadoTablaOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas y chat'**
+  String get estadoTablaOfertas;
+
+  /// No description provided for @estadoTablaRequieren.
+  ///
+  /// In es, this message translates to:
+  /// **'Requieren red'**
+  String get estadoTablaRequieren;
+
+  /// No description provided for @estadoErrorEstaPantalla.
+  ///
+  /// In es, this message translates to:
+  /// **'esta pantalla'**
+  String get estadoErrorEstaPantalla;
+
+  /// No description provided for @envioErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No se envió tu solicitud'**
+  String get envioErrorTitulo;
+
+  /// No description provided for @envioErrorDetalleSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que escribiste sigue aquí. Cuando vuelva la señal, toca «Reintentar ahora»: no se publica dos veces.'**
+  String get envioErrorDetalleSinRed;
+
+  /// No description provided for @envioErrorDetalleRechazo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos publicarla. Lo que escribiste sigue aquí.'**
+  String get envioErrorDetalleRechazo;
+
+  /// No description provided for @envioErrorVolver.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver al formulario'**
+  String get envioErrorVolver;
+
+  /// No description provided for @listaVerLotesMapa.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver lotes en el mapa'**
+  String get listaVerLotesMapa;
+
   /// No description provided for @redSinSenalTitulo.
   ///
   /// In es, this message translates to:

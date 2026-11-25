@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/foundation.dart';
 
 import '../../../nucleo/marketplace/dominio/dominio.dart';
+import '../../contactos/domain/contacto.dart';
 import '../../solicitudes/domain/solicitud.dart';
 import '../domain/reglas_solicitud.dart';
 
@@ -54,6 +55,8 @@ class SolicitarEstado {
     this.falloEnvio,
     this.mensajeRechazo,
     this.solicitud,
+    this.contactos = const [],
+    this.contactoId,
   });
 
   /// Nace al abrir el formulario y viaja en cada reintento.
@@ -96,6 +99,12 @@ class SolicitarEstado {
 
   /// La solicitud publicada; con valor, el flujo terminó.
   final Solicitud? solicitud;
+
+  /// Contactos de referencia de un cliente empresa; vacío si es persona.
+  final List<ContactoCliente> contactos;
+
+  /// El contacto elegido para esta solicitud; por defecto, el principal.
+  final int? contactoId;
 
   bool get contornoCerrado => vertices.length >= 3;
 
@@ -187,6 +196,8 @@ class SolicitarEstado {
     Object? falloEnvio = _sinCambio,
     Object? mensajeRechazo = _sinCambio,
     Solicitud? solicitud,
+    List<ContactoCliente>? contactos,
+    Object? contactoId = _sinCambio,
   }) => SolicitarEstado(
     claveIdempotencia: claveIdempotencia,
     carga: carga ?? this.carga,
@@ -219,5 +230,9 @@ class SolicitarEstado {
         ? this.mensajeRechazo
         : mensajeRechazo as String?,
     solicitud: solicitud ?? this.solicitud,
+    contactos: contactos ?? this.contactos,
+    contactoId: identical(contactoId, _sinCambio)
+        ? this.contactoId
+        : contactoId as int?,
   );
 }

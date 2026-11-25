@@ -214,7 +214,17 @@ class AlmacenDemoCliente {
       ),
     );
     _avances[s.id] = AvanceServicio.vacio(s.hectareas);
-    _mensajes[s.id] = [];
+    // Al adjudicar, el sistema abre el chat con su evento, como el servidor.
+    _mensajes[s.id] = [
+      MensajeChat(
+        id: 'm-${_siguiente++}',
+        texto: 'La solicitud quedó adjudicada. Ya pueden coordinar por aquí.',
+        creadoEn: ahora,
+        propio: false,
+        tipo: TipoMensajeChat.sistema,
+        evento: 'solicitud_adjudicada',
+      ),
+    ];
     if (respuestasAutomaticas) {
       _tras(
         () => agregarMensaje(

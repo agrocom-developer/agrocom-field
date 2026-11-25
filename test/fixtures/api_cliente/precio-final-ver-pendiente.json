@@ -1,0 +1,21 @@
+{
+    "operationId": "verPrecioFinalDeSolicitud",
+    "descripcion": "El cliente ve el precio final que cerró el piloto, aún sin confirmar.",
+    "peticion": {
+        "metodo": "GET",
+        "ruta": "/api/solicitudes/18/precio-final",
+        "autenticada": true
+    },
+    "respuesta": {
+        "estado": 200,
+        "cuerpo": {
+            "precio_final": {
+                "hectareas_ejecutadas": "98.5000",
+                "precio_ha_acordado": "121.0000",
+                "monto_final": "11918.50",
+                "confirmado": false,
+                "confirmado_en": null
+            }
+        }
+    }
+}

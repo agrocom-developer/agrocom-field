@@ -82,6 +82,35 @@ class SeguimientoDemo implements SeguimientoRepositorio {
   }
 
   @override
+  Future<MensajeChat> enviarFoto(
+    String solicitudId, {
+    required Uint8List bytes,
+    required String claveCliente,
+    String? pie,
+  }) async {
+    await Future<void>.delayed(latencia);
+    _almacen.exigirRed();
+    final previo = _almacen
+        .mensajesDe(solicitudId)
+        .where((m) => m.claveCliente == claveCliente)
+        .firstOrNull;
+    if (previo != null) return previo;
+    final mensaje = MensajeChat(
+      id: 'm-${_almacen.nuevoId()}',
+      texto: pie?.trim() ?? '',
+      creadoEn: _almacen.ahora,
+      propio: true,
+      claveCliente: claveCliente,
+      tipo: TipoMensajeChat.foto,
+      // En la demo no hay servidor que guarde los bytes: se muestra una foto
+      // empaquetada.
+      ruta: 'assets/imagenes/fondo_dron_pulverizando.jpg',
+    );
+    _almacen.agregarMensaje(solicitudId, mensaje);
+    return mensaje;
+  }
+
+  @override
   Future<Uint8List> archivo(String ruta) async {
     final datos = await rootBundle.load(ruta);
     return datos.buffer.asUint8List();

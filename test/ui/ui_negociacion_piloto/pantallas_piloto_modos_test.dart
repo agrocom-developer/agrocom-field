@@ -11,6 +11,8 @@ import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:agrocom_field/l10n/app_localizations.dart';
+
 import 'ayudas.dart';
 
 void main() {
@@ -35,6 +37,9 @@ void main() {
     });
     await tester.pumpWidget(
       MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('es'),
         debugShowCheckedModeBanner: false,
         theme: AgrocomThemeCampo.construir(modo: modo),
         builder: (context, child) => MediaQuery(

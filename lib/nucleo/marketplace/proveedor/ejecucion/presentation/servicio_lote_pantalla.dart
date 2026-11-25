@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -761,13 +762,21 @@ class _Contacto extends StatelessWidget {
     final s = servicio;
     if (s.contactoNombre == null) return const SizedBox.shrink();
     final texto = Theme.of(context).textTheme;
+    final t = AppLocalizations.of(context);
+    final puesto = [?s.contactoCargo, ?s.contactoEmpresa].join(' · ');
     return SuperficieMarketplace(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Cliente', style: texto.bodyMedium),
+          Text(t.contactoPilotoTitulo, style: texto.bodyMedium),
           const SizedBox(height: EspaciadoCampo.xs),
           Text(s.contactoNombre!, style: texto.titleMedium),
+          if (puesto.isNotEmpty)
+            Text(
+              puesto,
+              key: const Key('contacto-cargo-empresa'),
+              style: texto.bodyMedium,
+            ),
           if (s.contactoTelefono != null)
             Text(s.contactoTelefono!, style: texto.bodyLarge),
         ],

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/terrenos/presentation/galeria_fotos_terreno.dart';
 import '../../../nucleo/marketplace/referencias/presentation/sugerencia_precio_referencia.dart';
@@ -507,6 +508,36 @@ class _PasoCuandoState extends State<PasoCuando> {
                 'pilotos con el dron libre responden más rápido.',
           ),
         ],
+        if (estado.contactos.isNotEmpty) ...[
+          TituloGrupoSolicitud(
+            AppLocalizations.of(context).contactosEmpresaPublicar,
+          ),
+          Text(
+            AppLocalizations.of(context).contactosEmpresaPublicarAyuda,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: context.paleta.textoSecundario,
+            ),
+          ),
+          const SizedBox(height: EspaciadoCampo.s),
+          RadioGroup<int>(
+            groupValue: estado.contactoId,
+            onChanged: (id) {
+              if (id != null) cubit.elegirContacto(id);
+            },
+            child: Column(
+              children: [
+                for (final c in estado.contactos)
+                  RadioListTile<int>(
+                    key: ValueKey('solicitar-contacto-${c.id}'),
+                    contentPadding: EdgeInsets.zero,
+                    value: c.id,
+                    title: Text(c.nombre),
+                    subtitle: Text([?c.cargo, c.telefono].join(' · ')),
+                  ),
+              ],
+            ),
+          ),
+        ],
         const TituloGrupoSolicitud('Datos para los pilotos'),
         if (pideAccesos) ...[
           TextField(
@@ -665,36 +696,6 @@ class _PasoPrecioState extends State<PasoPrecio> {
           'eliges la oferta que prefieras.',
           style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
         ),
-        if (e.falloEnvio != null) ...[
-          const SizedBox(height: EspaciadoCampo.m),
-          Semantics(
-            liveRegion: true,
-            child: switch (e.falloEnvio!) {
-              FalloEnvio.sinConexion => const AvisoMarketplace(
-                key: ValueKey('aviso-sin-conexion'),
-                tono: TonoAviso.alerta,
-                icono: Icons.wifi_off_rounded,
-                mensaje:
-                    'Sin conexión. Tu solicitud sigue aquí, completa: cuando '
-                    'vuelva la señal, reintenta la publicación.',
-              ),
-              FalloEnvio.rechazado => AvisoMarketplace(
-                key: const ValueKey('aviso-rechazo'),
-                tono: TonoAviso.error,
-                mensaje:
-                    e.mensajeRechazo ??
-                    'No pudimos publicar la solicitud. Revisa los datos.',
-              ),
-              FalloEnvio.desconocido => const AvisoMarketplace(
-                key: ValueKey('aviso-fallo-envio'),
-                tono: TonoAviso.error,
-                mensaje:
-                    'No pudimos publicar la solicitud. Tus datos siguen aquí; '
-                    'prueba de nuevo.',
-              ),
-            },
-          ),
-        ],
         const SizedBox(height: EspaciadoCampo.l),
         // Con ±1 se ajusta de a un boliviano; el campo de abajo admite el
         // precio exacto (con decimales) y es el que valida el cubit.
