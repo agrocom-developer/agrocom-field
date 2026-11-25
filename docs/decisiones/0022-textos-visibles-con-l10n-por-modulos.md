@@ -1,4 +1,4 @@
-# ADR 0021 — Textos visibles con `gen-l10n`, migrados por módulos
+# ADR 0022 — Textos visibles con `gen-l10n`, migrados por módulos
 
 **Estado:** Aceptada · **Serie:** ADR propios de `agrocom-field`.
 

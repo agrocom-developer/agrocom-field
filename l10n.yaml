@@ -1,4 +1,4 @@
-# Textos visibles de la app (ADR 0021). Español es la única lengua y la de
+# Textos visibles de la app (ADR 0022). Español es la única lengua y la de
 # plantilla; cada módulo aporta sus claves con su prefijo.
 arb-dir: lib/l10n
 template-arb-file: app_es.arb
