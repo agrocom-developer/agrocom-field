@@ -39,6 +39,13 @@ abstract final class ColoresCampo {
   /// Fondo del visor de fotos a pantalla completa.
   static const Color visorFoto = Color(0xFF000000);
 
+  /// Velo `map-dim` sobre el mapa (tokens.json: overlay): rgb(23, 37, 28) con
+  /// alfa .12 en claro, .38 en oscuro y .5 en campo. Baja el brillo de la
+  /// imagen para que los pines y los lotes se lean encima.
+  static const Color veloMapaClaro = Color(0x1F17251C);
+  static const Color veloMapaOscuro = Color(0x6117251C);
+  static const Color veloMapaCampo = Color(0x8017251C);
+
   /// Fondo del mapa sin teselas.
   static const Color mapaVacioClaro = Color(0xFFE9EEE7);
   static const Color mapaVacioOscuro = Color(0xFF17251C);

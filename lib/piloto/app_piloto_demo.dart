@@ -84,7 +84,7 @@ class _ShellPilotoState extends State<ShellPiloto> {
       onSeleccionar: (i) => setState(() => _indice = i),
       cuerpo: switch (_indice) {
         0 => const MapaSolicitudesPantalla(),
-        1 => const MisOfertasPantalla(),
+        1 => MisOfertasPantalla(alIrAlMapa: () => setState(() => _indice = 0)),
         2 => const ServiciosLotePantalla(),
         3 => const DronesPantalla(),
         _ => PerfilPantalla(

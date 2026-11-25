@@ -16,6 +16,13 @@ abstract final class ConfiguracionMapa {
   static const urlTeselas = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
   static const agenteUsuario = 'com.agrocom.agrocom_field';
 
+  /// Velo `map-dim` que va sobre las teselas, según el modo de la paleta.
+  static Color velo(PaletaCampo paleta) => paleta.esCampo
+      ? ColoresCampo.veloMapaCampo
+      : paleta.brillo == Brightness.dark
+      ? ColoresCampo.veloMapaOscuro
+      : ColoresCampo.veloMapaClaro;
+
   /// Color del mapa sin teselas (sin red o mientras cargan).
   static Color fondo(PaletaCampo paleta) => paleta.brillo == Brightness.dark
       ? ColoresCampo.mapaVacioOscuro
