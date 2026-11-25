@@ -12,7 +12,6 @@ void main() {
       .whereType<File>()
       .where((f) => f.path.endsWith('.dart'))
       .where((f) => !f.path.contains('lib/nucleo/ui/'))
-      .where((f) => !f.path.contains('lib/auxiliar/'))
       .where((f) => !f.path.endsWith('.g.dart'))
       .toList();
 

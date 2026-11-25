@@ -187,7 +187,7 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 - [ ] Lee roles de `PaletaCampo`; no hay hexadecimales ni `Colors.*` sueltos.
 - [ ] Todo texto cumple AA (4,5:1); el texto de apoyo no baja de ese umbral.
 - [ ] Bordes e íconos funcionales cumplen 3:1.
-- [ ] Objetivos táctiles de 48 px (56 px de alto de botón en piloto y auxiliar; 72 px en controles de campo).
+- [ ] Objetivos táctiles de 48 px (56 px de alto de botón en piloto; 72 px en controles de campo).
 - [ ] Verificada en claro, oscuro y campo.
 - [ ] Verificada con texto al 200 % sin cortes ni desbordes.
 - [ ] Verificada en iPhone, Android compacto e iPad vertical y horizontal.
