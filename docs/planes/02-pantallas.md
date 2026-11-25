@@ -32,6 +32,8 @@ Clasificación: **A** = existe y se re-estiliza · **B** = existe con otra estru
 | 20 | Estado vacío | `nucleo/marketplace/ui/estado_vacio_marketplace.dart` | A | Componente compartido; falta contenedor de 88 y CTA |
 | 21 | Error de envío | `nucleo/marketplace/ui/estado_error_marketplace.dart`, `aviso_marketplace.dart` | B | Falta la pantalla con tabla de qué funciona sin red y «Reintentar ahora» |
 
+Requisito del dueño: el cliente puede ser **persona o empresa** con contactos de referencia. El contrato (`POST /api/clientes/registro`) soporta `tipo` (persona o empresa), `razon_social` y `documento_fiscal` (NIT, obligatorios para empresa); **no** soporta contactos de referencia (nombre, celular, cargo). Pantalla 04 del cliente: selector Persona o Empresa y campos de empresa con lo que el contrato ofrece. Los contactos de referencia son una brecha en `docs/gestion/brechas-api.md`; no se inventan en la app. El alta manual de pilotos y clientes desde el panel web es de la API.
+
 Resumen: A = 9 (06, 08, 10, 11, 14, 16, 17, 18, 20), B = 10 (01, 02, 04, 05, 07, 09, 12, 13, 15, 21), C = 2 (03, 19).
 
 ### Colores y medidas sueltos por migrar
