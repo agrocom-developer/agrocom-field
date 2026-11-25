@@ -23,6 +23,16 @@ abstract interface class SeguimientoRepositorio {
     required String claveCliente,
   });
 
+  /// Envía una foto por el chat. [bytes] ya vienen comprimidos a menos de
+  /// 300 KB (invariante 7); [pie] es opcional (hasta 280 caracteres).
+  /// [claveCliente] hace idempotente el reintento, como en el texto.
+  Future<MensajeChat> enviarFoto(
+    String solicitudId, {
+    required Uint8List bytes,
+    required String claveCliente,
+    String? pie,
+  });
+
   /// Descarga una foto (de avance o del dron) con la sesión del cliente.
   Future<Uint8List> archivo(String ruta);
 

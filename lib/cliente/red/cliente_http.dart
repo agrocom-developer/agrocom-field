@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart' show FormData, MultipartFile;
 import '../../nucleo/api/api_client.dart';
 import '../../nucleo/api/api_excepcion.dart';
 import '../../nucleo/marketplace/dominio/dominio.dart';
@@ -52,6 +53,24 @@ class ClienteHttp {
       if (conflictoComoExito && e.codigo == 409) return {claveConflicto: true};
       rethrow;
     }
+  });
+
+  /// Sube un archivo (multipart) con sus campos de texto. Con
+  /// [conflictoComoExito], un `409` devuelve `{conflicto: true}`.
+  Future<Map<String, dynamic>> subir(
+    String ruta, {
+    required Map<String, Object?> campos,
+    required String campoArchivo,
+    required List<int> bytes,
+    String nombreArchivo = 'foto.jpg',
+  }) => proteger(() async {
+    final formulario = FormData.fromMap({
+      for (final e in campos.entries)
+        if (e.value != null) e.key: e.value,
+      campoArchivo: MultipartFile.fromBytes(bytes, filename: nombreArchivo),
+    });
+    final r = await _api.post(ruta, data: formulario);
+    return _mapa(r.data);
   });
 
   /// Envía un `PUT` (corrige un recurso propio).

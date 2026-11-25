@@ -921,6 +921,198 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Tu nombre y celular quedan como contacto principal. Después puedes agregar a otras personas desde tu perfil.'**
   String get registroEmpresaContactoNota;
+
+  /// No description provided for @chatTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Chat con el piloto'**
+  String get chatTitulo;
+
+  /// No description provided for @chatHoy.
+  ///
+  /// In es, this message translates to:
+  /// **'HOY'**
+  String get chatHoy;
+
+  /// No description provided for @chatCabecera.
+  ///
+  /// In es, this message translates to:
+  /// **'{lote} · {estado}'**
+  String chatCabecera(String lote, String estado);
+
+  /// No description provided for @chatFotoDe.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto de {nombre}'**
+  String chatFotoDe(String nombre);
+
+  /// No description provided for @chatVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay mensajes'**
+  String get chatVacioTitulo;
+
+  /// No description provided for @chatVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Escríbele al piloto para coordinar el día de la visita y los accesos al lote.'**
+  String get chatVacioDetalle;
+
+  /// No description provided for @chatSinConexionAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Los mensajes nuevos llegan cuando vuelva la señal.'**
+  String get chatSinConexionAviso;
+
+  /// No description provided for @chatCerradoAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'El chat se cerró. Puedes leer lo conversado, pero ya no escribir.'**
+  String get chatCerradoAviso;
+
+  /// No description provided for @chatEscribe.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un mensaje'**
+  String get chatEscribe;
+
+  /// No description provided for @chatEnviar.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar'**
+  String get chatEnviar;
+
+  /// No description provided for @chatEnviarSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar mensaje'**
+  String get chatEnviarSemantica;
+
+  /// No description provided for @chatEnviando.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviando'**
+  String get chatEnviando;
+
+  /// No description provided for @chatAdjuntar.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar una foto'**
+  String get chatAdjuntar;
+
+  /// No description provided for @chatFotoCamara.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomar una foto'**
+  String get chatFotoCamara;
+
+  /// No description provided for @chatFotoGaleria.
+  ///
+  /// In es, this message translates to:
+  /// **'Elegir de la galería'**
+  String get chatFotoGaleria;
+
+  /// No description provided for @chatFalloSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Tu mensaje sigue aquí; envíalo cuando vuelva la señal.'**
+  String get chatFalloSinConexion;
+
+  /// No description provided for @chatFalloCerrado.
+  ///
+  /// In es, this message translates to:
+  /// **'El chat se cerró y no se envió tu mensaje.'**
+  String get chatFalloCerrado;
+
+  /// No description provided for @chatFalloDesconocido.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviarlo. Tu mensaje sigue aquí; prueba de nuevo.'**
+  String get chatFalloDesconocido;
+
+  /// No description provided for @chatFalloFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar la foto. Prueba de nuevo.'**
+  String get chatFalloFoto;
+
+  /// No description provided for @chatAutorTu.
+  ///
+  /// In es, this message translates to:
+  /// **'Tú'**
+  String get chatAutorTu;
+
+  /// No description provided for @chatAutorPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Piloto'**
+  String get chatAutorPiloto;
+
+  /// No description provided for @chatMensajeSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{autor}, {hora}: {texto}'**
+  String chatMensajeSemantica(String autor, String hora, String texto);
+
+  /// No description provided for @chatFotoSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{autor}, {hora}: foto. {pie}'**
+  String chatFotoSemantica(String autor, String hora, String pie);
+
+  /// No description provided for @chatCargando.
+  ///
+  /// In es, this message translates to:
+  /// **'Cargando el chat'**
+  String get chatCargando;
+
+  /// No description provided for @precioFinalConfirmar.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmar precio final'**
+  String get precioFinalConfirmar;
+
+  /// No description provided for @precioFinalPorConfirmar.
+  ///
+  /// In es, this message translates to:
+  /// **'POR CONFIRMAR'**
+  String get precioFinalPorConfirmar;
+
+  /// No description provided for @precioFinalConfirmado.
+  ///
+  /// In es, this message translates to:
+  /// **'CONFIRMADO'**
+  String get precioFinalConfirmado;
+
+  /// No description provided for @precioFinalConfirmadoAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirmaste el precio final. El pago sigue siendo directo al piloto.'**
+  String get precioFinalConfirmadoAviso;
+
+  /// No description provided for @precioFinalFalloSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. No se confirmó nada; prueba de nuevo cuando tengas señal.'**
+  String get precioFinalFalloSinConexion;
+
+  /// No description provided for @precioFinalFalloRechazado.
+  ///
+  /// In es, this message translates to:
+  /// **'El servicio todavía no terminó, así que no se puede confirmar el precio.'**
+  String get precioFinalFalloRechazado;
+
+  /// No description provided for @precioFinalFalloDesconocido.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos confirmar el precio final. Prueba de nuevo.'**
+  String get precioFinalFalloDesconocido;
+
+  /// No description provided for @precioFinalAbrirDisputa.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir disputa'**
+  String get precioFinalAbrirDisputa;
 }
 
 class _AppLocalizationsDelegate

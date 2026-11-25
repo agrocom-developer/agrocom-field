@@ -494,4 +494,117 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get registroEmpresaContactoNota =>
       'Tu nombre y celular quedan como contacto principal. Después puedes agregar a otras personas desde tu perfil.';
+
+  @override
+  String get chatTitulo => 'Chat con el piloto';
+
+  @override
+  String get chatHoy => 'HOY';
+
+  @override
+  String chatCabecera(String lote, String estado) {
+    return '$lote · $estado';
+  }
+
+  @override
+  String chatFotoDe(String nombre) {
+    return 'Foto de $nombre';
+  }
+
+  @override
+  String get chatVacioTitulo => 'Todavía no hay mensajes';
+
+  @override
+  String get chatVacioDetalle =>
+      'Escríbele al piloto para coordinar el día de la visita y los accesos al lote.';
+
+  @override
+  String get chatSinConexionAviso =>
+      'Sin conexión. Los mensajes nuevos llegan cuando vuelva la señal.';
+
+  @override
+  String get chatCerradoAviso =>
+      'El chat se cerró. Puedes leer lo conversado, pero ya no escribir.';
+
+  @override
+  String get chatEscribe => 'Escribe un mensaje';
+
+  @override
+  String get chatEnviar => 'Enviar';
+
+  @override
+  String get chatEnviarSemantica => 'Enviar mensaje';
+
+  @override
+  String get chatEnviando => 'Enviando';
+
+  @override
+  String get chatAdjuntar => 'Enviar una foto';
+
+  @override
+  String get chatFotoCamara => 'Tomar una foto';
+
+  @override
+  String get chatFotoGaleria => 'Elegir de la galería';
+
+  @override
+  String get chatFalloSinConexion =>
+      'Sin conexión. Tu mensaje sigue aquí; envíalo cuando vuelva la señal.';
+
+  @override
+  String get chatFalloCerrado => 'El chat se cerró y no se envió tu mensaje.';
+
+  @override
+  String get chatFalloDesconocido =>
+      'No pudimos enviarlo. Tu mensaje sigue aquí; prueba de nuevo.';
+
+  @override
+  String get chatFalloFoto => 'No pudimos enviar la foto. Prueba de nuevo.';
+
+  @override
+  String get chatAutorTu => 'Tú';
+
+  @override
+  String get chatAutorPiloto => 'Piloto';
+
+  @override
+  String chatMensajeSemantica(String autor, String hora, String texto) {
+    return '$autor, $hora: $texto';
+  }
+
+  @override
+  String chatFotoSemantica(String autor, String hora, String pie) {
+    return '$autor, $hora: foto. $pie';
+  }
+
+  @override
+  String get chatCargando => 'Cargando el chat';
+
+  @override
+  String get precioFinalConfirmar => 'Confirmar precio final';
+
+  @override
+  String get precioFinalPorConfirmar => 'POR CONFIRMAR';
+
+  @override
+  String get precioFinalConfirmado => 'CONFIRMADO';
+
+  @override
+  String get precioFinalConfirmadoAviso =>
+      'Confirmaste el precio final. El pago sigue siendo directo al piloto.';
+
+  @override
+  String get precioFinalFalloSinConexion =>
+      'Sin conexión. No se confirmó nada; prueba de nuevo cuando tengas señal.';
+
+  @override
+  String get precioFinalFalloRechazado =>
+      'El servicio todavía no terminó, así que no se puede confirmar el precio.';
+
+  @override
+  String get precioFinalFalloDesconocido =>
+      'No pudimos confirmar el precio final. Prueba de nuevo.';
+
+  @override
+  String get precioFinalAbrirDisputa => 'Abrir disputa';
 }

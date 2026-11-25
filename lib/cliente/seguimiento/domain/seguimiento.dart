@@ -99,7 +99,12 @@ class UbicacionPiloto {
   final int? precisionMetros;
 }
 
-/// Un mensaje del chat entre el cliente y el piloto adjudicado.
+/// Qué es un mensaje del chat (`tipo` del contrato).
+enum TipoMensajeChat { texto, foto, sistema }
+
+/// Un mensaje del chat entre el cliente y el piloto adjudicado. Puede ser de
+/// texto, una foto con pie opcional o un evento del sistema (adjudicación,
+/// inicio, fin, precio final confirmado).
 class MensajeChat {
   const MensajeChat({
     required this.id,
@@ -107,6 +112,9 @@ class MensajeChat {
     required this.creadoEn,
     required this.propio,
     this.claveCliente,
+    this.tipo = TipoMensajeChat.texto,
+    this.evento,
+    this.ruta,
   });
 
   final String id;
@@ -116,6 +124,15 @@ class MensajeChat {
   /// Lo escribió el cliente.
   final bool propio;
   final String? claveCliente;
+  final TipoMensajeChat tipo;
+
+  /// Solo en eventos del sistema: `solicitud_adjudicada`,
+  /// `servicio_iniciado`, `servicio_finalizado` o `precio_final_confirmado`.
+  final String? evento;
+
+  /// Solo en fotos: la ruta de descarga (`/api/mensajes/{id}/archivo`) o un
+  /// recurso empaquetado de la demo. En una foto, [texto] es el pie.
+  final String? ruta;
 }
 
 /// Mensajes con el cursor para pedir los siguientes.

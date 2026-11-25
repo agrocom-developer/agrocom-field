@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -84,6 +85,8 @@ class ChatCubit extends Cubit<ChatEstado> {
   /// respuesta crea un solo mensaje.
   String? _claveActual;
   String? _textoActual;
+  Uint8List? _bytesActuales;
+  String? _claveFoto;
 
   Future<void> cargar() async {
     if (state.fase != FaseChat.lista) {
@@ -172,6 +175,57 @@ class ChatCubit extends Cubit<ChatEstado> {
               : [...state.mensajes, mensaje],
           // El cursor no avanza: la próxima lectura trae lo que el piloto
           // escribió antes de este mensaje, y los repetidos se descartan.
+        ),
+      );
+      return true;
+    } on ChatCerrado {
+      if (!isClosed) {
+        emit(
+          state.copiarCon(
+            enviando: false,
+            soloLectura: true,
+            fallo: FalloMensaje.cerrado,
+          ),
+        );
+      }
+    } on SinConexion {
+      if (!isClosed) {
+        emit(state.copiarCon(enviando: false, fallo: FalloMensaje.sinConexion));
+      }
+    } on Object {
+      if (!isClosed) {
+        emit(state.copiarCon(enviando: false, fallo: FalloMensaje.desconocido));
+      }
+    }
+    return false;
+  }
+
+  /// Envía una foto ya comprimida a menos de 300 KB. Un reintento con los
+  /// mismos bytes reutiliza la clave: el servidor devuelve el mismo mensaje.
+  Future<bool> enviarFoto(Uint8List bytes, {String? pie}) async {
+    if (state.enviando || state.soloLectura) return false;
+    if (!identical(_bytesActuales, bytes)) {
+      _bytesActuales = bytes;
+      _claveFoto = _uuid.v4();
+    }
+    emit(state.copiarCon(enviando: true, fallo: null));
+    try {
+      final mensaje = await _repositorio.enviarFoto(
+        solicitudId,
+        bytes: bytes,
+        claveCliente: _claveFoto!,
+        pie: pie,
+      );
+      if (isClosed) return true;
+      _bytesActuales = null;
+      _claveFoto = null;
+      final conocidos = {for (final m in state.mensajes) m.id};
+      emit(
+        state.copiarCon(
+          enviando: false,
+          mensajes: conocidos.contains(mensaje.id)
+              ? state.mensajes
+              : [...state.mensajes, mensaje],
         ),
       );
       return true;

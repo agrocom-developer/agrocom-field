@@ -2,6 +2,7 @@ import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
@@ -11,6 +12,8 @@ import '../../calificar/domain/calificacion_repositorio.dart';
 import '../../calificar/presentation/calificar_pantalla.dart';
 import '../../comun/presentation/boton_principal.dart';
 import '../../comun/presentation/estado_falla.dart';
+import '../../precio_final/domain/precio_final_repositorio.dart';
+import '../../precio_final/presentation/precio_final_cubit.dart';
 import '../../problema/domain/problema_repositorio.dart';
 import '../../problema/presentation/reportar_problema_pantalla.dart';
 import '../../solicitudes/domain/solicitud.dart';
@@ -22,22 +25,39 @@ import '../../solicitudes/presentation/solicitud_detalle_cubit.dart';
 /// recalcula montos). El pago es directo al piloto, fuera de la app: aquí no
 /// se cobra nada.
 ///
-/// Las acciones son las que el contrato ofrece al cliente: calificar al
-/// piloto y reportar un problema. No hay un paso de «confirmar» el precio.
+/// El cliente tiene la última decisión: confirma el precio final (o abre la
+/// disputa como salida alterna), califica al piloto y puede reportar un
+/// problema.
 class PrecioFinalPantalla extends StatelessWidget {
   const PrecioFinalPantalla({required this.solicitudId, super.key});
 
   final String solicitudId;
 
+  static PrecioFinalRepositorio? _repositorio(BuildContext context) {
+    try {
+      return context.read<PrecioFinalRepositorio>();
+    } on ProviderNotFoundException {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => SolicitudDetalleCubit(
-        solicitudes: context.read<SolicitudesRepositorio>(),
-        problemas: context.read<ProblemaRepositorio>(),
-        calificaciones: context.read<CalificacionRepositorio>(),
-        solicitudId: solicitudId,
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              PrecioFinalCubit(_repositorio(context), solicitudId)..cargar(),
+        ),
+        BlocProvider(
+          create: (context) => SolicitudDetalleCubit(
+            solicitudes: context.read<SolicitudesRepositorio>(),
+            problemas: context.read<ProblemaRepositorio>(),
+            calificaciones: context.read<CalificacionRepositorio>(),
+            solicitudId: solicitudId,
+          ),
+        ),
+      ],
       child: BlocBuilder<SolicitudDetalleCubit, SolicitudDetalleEstado>(
         builder: (context, estado) {
           final s = estado.solicitud;
@@ -137,8 +157,17 @@ class _Contenido extends StatelessWidget {
     final margen = EspaciadoCampo.margenLateral(
       MediaQuery.sizeOf(context).width,
     );
-    final ejecutadas = s.hectareasEjecutadas ?? s.hectareas;
+    final t = AppLocalizations.of(context);
+    final precio = context.watch<PrecioFinalCubit>().state;
+    final cierre = precio.precio;
+    // Lo que cerró el piloto manda; sin esa lectura, lo de la solicitud.
+    final ejecutadas =
+        cierre?.hectareasEjecutadas ?? s.hectareasEjecutadas ?? s.hectareas;
     final menos = s.hectareas - ejecutadas;
+    final puedeConfirmar =
+        cierre != null &&
+        !cierre.confirmado &&
+        s.estado == EstadoSolicitud.finalizada;
     final puedeCalificar =
         s.estado == EstadoSolicitud.finalizada &&
         s.puntajeDelCliente == null &&
@@ -164,7 +193,11 @@ class _Contenido extends StatelessWidget {
                 children: [
                   TicketPedidoCampo(
                     numero: 'PEDIDO #${s.id}',
-                    estado: s.estado.etiqueta,
+                    estado: cierre == null
+                        ? s.estado.etiqueta
+                        : (cierre.confirmado
+                              ? t.precioFinalConfirmado
+                              : t.precioFinalPorConfirmar),
                     filas: [
                       FilaTicketCampo(
                         clave: 'Hectáreas ejecutadas',
@@ -175,13 +208,15 @@ class _Contenido extends StatelessWidget {
                       FilaTicketCampo(
                         clave: 'Precio acordado',
                         valor:
-                            '× ${FormatoMarketplace.bsNumero(s.precioHaVigente)}',
+                            '× ${FormatoMarketplace.bsNumero(cierre?.precioHaAcordado ?? s.precioHaVigente)}',
                         unidad: 'Bs/ha',
                         esCifra: true,
                       ),
                     ],
                     etiquetaTotal: 'Total a pagar al piloto',
-                    total: FormatoMarketplace.bsNumero(s.totalAPagar),
+                    total: FormatoMarketplace.bsNumero(
+                      cierre?.montoFinal ?? s.totalAPagar,
+                    ),
                   ),
                   if (menos > Decimal.zero) ...[
                     const SizedBox(height: EspaciadoCampo.m),
@@ -204,6 +239,30 @@ class _Contenido extends StatelessWidget {
                         'El pago es directo al piloto. Agrocom no cobra '
                         'dentro de la app.',
                   ),
+                  if (cierre?.confirmado ?? false) ...[
+                    const SizedBox(height: EspaciadoCampo.m),
+                    AvisoMarketplace(
+                      key: const ValueKey('aviso-precio-confirmado'),
+                      tono: TonoAviso.info,
+                      icono: Icons.check_circle_outline_rounded,
+                      mensaje: t.precioFinalConfirmadoAviso,
+                    ),
+                  ],
+                  if (precio.fallo != null) ...[
+                    const SizedBox(height: EspaciadoCampo.m),
+                    AvisoMarketplace(
+                      key: const ValueKey('aviso-fallo-precio'),
+                      tono: TonoAviso.error,
+                      mensaje: switch (precio.fallo!) {
+                        FalloPrecioFinal.sinConexion =>
+                          t.precioFinalFalloSinConexion,
+                        FalloPrecioFinal.rechazado =>
+                          t.precioFinalFalloRechazado,
+                        FalloPrecioFinal.desconocido =>
+                          t.precioFinalFalloDesconocido,
+                      },
+                    ),
+                  ],
                   if (estado.problema != null) ...[
                     const SizedBox(height: EspaciadoCampo.m),
                     AvisoMarketplace(
@@ -235,7 +294,7 @@ class _Contenido extends StatelessWidget {
             ),
           ),
         ),
-        if (puedeCalificar || puedeReportar)
+        if (puedeConfirmar || puedeCalificar || puedeReportar)
           SafeArea(
             top: false,
             child: Padding(
@@ -253,6 +312,15 @@ class _Contenido extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      if (puedeConfirmar)
+                        BotonPrincipal(
+                          key: const ValueKey('confirmar-precio-final'),
+                          texto: t.precioFinalConfirmar,
+                          icono: Icons.check_rounded,
+                          cargando: precio.confirmando,
+                          onPressed: () =>
+                              context.read<PrecioFinalCubit>().confirmar(),
+                        ),
                       if (puedeCalificar)
                         BotonPrincipal(
                           key: const ValueKey('calificar-desde-precio'),
@@ -271,7 +339,11 @@ class _Contenido extends StatelessWidget {
                               ObjetivoTactilCampo.guantes,
                             ),
                           ),
-                          child: const Text('Reportar un problema'),
+                          child: Text(
+                            puedeConfirmar
+                                ? t.precioFinalAbrirDisputa
+                                : 'Reportar un problema',
+                          ),
                         ),
                     ],
                   ),
