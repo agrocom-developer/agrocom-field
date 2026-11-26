@@ -12,7 +12,6 @@ import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
 import 'package:agrocom_field/nucleo/marketplace/foto_perfil/foto_perfil_repositorio.dart';
 import 'package:agrocom_field/nucleo/marketplace/pago/pago_confirmado.dart';
 import 'package:agrocom_field/nucleo/marketplace/pago/pagos_repositorio.dart';
-import 'package:agrocom_field/nucleo/marketplace/referencias/precio_referencia.dart';
 import 'package:agrocom_field/nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
 import 'package:agrocom_field/nucleo/notificaciones/push/dispositivos_push_repositorio.dart';
 import 'package:agrocom_field/nucleo/notificaciones/push/token_push_store.dart';
@@ -396,74 +395,6 @@ void main() {
         'basura',
       ]);
       expect(fotos.single.id, 5);
-    });
-  });
-
-  group('precio de referencia', () {
-    test('envía tipo y zona, y parsea el precio como decimal', () async {
-      red.servidor.responder(
-        'GET',
-        '/api/referencias/precio',
-        cuerpo: {
-          'tipo_aplicacion': 'herbicida',
-          'zona_id': 3,
-          'macrorregion': 'chiquitania',
-          'precio_ha': '132.0000',
-          'nivel': 'macrorregion',
-        },
-      );
-      final p = await ReferenciasRed(
-        http,
-      ).precio(tipoAplicacion: 'herbicida', zonaId: 3);
-      expect(p.precioHa, Decimal.parse('132'));
-      expect(p.nivel, NivelPrecio.macrorregion);
-      final q = red.servidor.de('GET', '/api/referencias/precio').single.query;
-      expect(q, {'tipo_aplicacion': 'herbicida', 'zona_id': 3});
-    });
-
-    test('sin referencia, precio y nivel quedan null', () async {
-      red.servidor.responder(
-        'GET',
-        '/api/referencias/precio',
-        cuerpo: {
-          'tipo_aplicacion': 'otro',
-          'zona_id': null,
-          'macrorregion': null,
-          'precio_ha': null,
-          'nivel': null,
-        },
-      );
-      final p = await ReferenciasRed(http).precio(tipoAplicacion: 'otro');
-      expect(p.precioHa, isNull);
-      expect(p.nivel, isNull);
-    });
-
-    test('422 llega como rechazo con el mensaje del servidor', () async {
-      red.servidor.responder(
-        'GET',
-        '/api/referencias/precio',
-        codigo: 422,
-        cuerpo: {'message': 'Tipo de aplicación inválido.'},
-      );
-      await expectLater(
-        ReferenciasRed(http).precio(tipoAplicacion: 'x'),
-        throwsA(
-          isA<OperacionRechazada>().having(
-            (e) => e.mensaje,
-            'm',
-            'Tipo de aplicación inválido.',
-          ),
-        ),
-      );
-    });
-
-    test('demo responde por tipo', () async {
-      final p = await ReferenciasDemo().precio(tipoAplicacion: 'fungicida');
-      expect(p.precioHa, Decimal.parse('150'));
-      expect(
-        (await ReferenciasDemo().precio(tipoAplicacion: 'zzz')).precioHa,
-        isNull,
-      );
     });
   });
 

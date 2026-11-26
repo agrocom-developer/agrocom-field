@@ -3608,54 +3608,6 @@ abstract class AppLocalizations {
   /// **'Sin un dron aprobado no llegan ofertas. Cada dron lo aprueba un administrador.'**
   String get proveedorDronSinDronAprobadoLlegan;
 
-  /// No description provided for @referenciasBuscandoPrecioReferencia.
-  ///
-  /// In es, this message translates to:
-  /// **'Buscando el precio de referencia'**
-  String get referenciasBuscandoPrecioReferencia;
-
-  /// No description provided for @referenciasTodaviaHayPrecioReferencia.
-  ///
-  /// In es, this message translates to:
-  /// **'Todavía no hay un precio de referencia para esta aplicación. Escribe el que te parezca justo.'**
-  String get referenciasTodaviaHayPrecioReferencia;
-
-  /// No description provided for @referenciasSinConexionParaTraer.
-  ///
-  /// In es, this message translates to:
-  /// **'Sin conexión para traer el precio de referencia.'**
-  String get referenciasSinConexionParaTraer;
-
-  /// No description provided for @referenciasPudimosTraerPrecioReferencia.
-  ///
-  /// In es, this message translates to:
-  /// **'No pudimos traer el precio de referencia.'**
-  String get referenciasPudimosTraerPrecioReferencia;
-
-  /// No description provided for @referenciasReferenciaPor.
-  ///
-  /// In es, this message translates to:
-  /// **'Referencia: {precio} por ha'**
-  String referenciasReferenciaPor(String precio);
-
-  /// No description provided for @referenciasEstasUsandoEstePrecio.
-  ///
-  /// In es, this message translates to:
-  /// **'Estás usando este precio'**
-  String get referenciasEstasUsandoEstePrecio;
-
-  /// No description provided for @referenciasUsar.
-  ///
-  /// In es, this message translates to:
-  /// **'Usar'**
-  String get referenciasUsar;
-
-  /// No description provided for @referenciasReintentar.
-  ///
-  /// In es, this message translates to:
-  /// **'Reintentar'**
-  String get referenciasReintentar;
-
   /// No description provided for @pagoPagoConfirmado.
   ///
   /// In es, this message translates to:
@@ -6180,42 +6132,6 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **': {descripcion}'**
   String terrenosFotoDescripcionSufijo(String descripcion);
-
-  /// No description provided for @referenciasPrecioZona.
-  ///
-  /// In es, this message translates to:
-  /// **'Precio habitual en tu zona'**
-  String get referenciasPrecioZona;
-
-  /// No description provided for @referenciasPrecioRegion.
-  ///
-  /// In es, this message translates to:
-  /// **'Precio habitual en tu región'**
-  String get referenciasPrecioRegion;
-
-  /// No description provided for @referenciasPrecioPais.
-  ///
-  /// In es, this message translates to:
-  /// **'Precio habitual en el país'**
-  String get referenciasPrecioPais;
-
-  /// No description provided for @referenciasSemantica.
-  ///
-  /// In es, this message translates to:
-  /// **'Precio de referencia: {precio} por hectárea. {origen}. {uso}'**
-  String referenciasSemantica(String precio, String origen, String uso);
-
-  /// No description provided for @referenciasYaLoUsas.
-  ///
-  /// In es, this message translates to:
-  /// **'Ya lo estás usando.'**
-  String get referenciasYaLoUsas;
-
-  /// No description provided for @referenciasTocaParaUsarlo.
-  ///
-  /// In es, this message translates to:
-  /// **'Toca para usarlo.'**
-  String get referenciasTocaParaUsarlo;
 
   /// No description provided for @accesoRolCliente.
   ///

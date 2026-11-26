@@ -1,13 +1,10 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
-import '../../../referencias/precio_referencia.dart';
-import '../../../referencias/presentation/sugerencia_precio_referencia.dart';
 import '../../../ui/boton_principal_marketplace.dart';
 import '../../../ui/campo_formulario_marketplace.dart';
 import '../../../ui/formato_marketplace.dart';
@@ -38,50 +35,21 @@ Future<PrecioPropuesto?> pedirPrecio(
   required Decimal precioReferencia,
   required String etiquetaReferencia,
   String? textoBoton,
-  String? tipoAplicacion,
-  int? zonaId,
-  String? macrorregion,
 }) {
-  // La hoja vive en el `Navigator`, fuera del árbol de la pantalla: se le
-  // pasa el repositorio de referencias para que lo encuentre.
-  final referencias = tipoAplicacion == null
-      ? null
-      : context.read<ReferenciasRepositorio>();
   return showModalBottomSheet<PrecioPropuesto>(
     context: context,
     isScrollControlled: true,
     showDragHandle: true,
-    builder: (_) => _ConReferencias(
-      repositorio: referencias,
-      hijo: _HojaPrecio(
-        titulo: titulo,
-        hectareas: hectareas,
-        precioReferencia: precioReferencia,
-        etiquetaReferencia: etiquetaReferencia,
-        textoBoton:
-            textoBoton ??
-            AppLocalizations.of(context).proveedorNegociacionEnviarContraoferta,
-        tipoAplicacion: tipoAplicacion,
-        zonaId: zonaId,
-        macrorregion: macrorregion,
-      ),
+    builder: (_) => _HojaPrecio(
+      titulo: titulo,
+      hectareas: hectareas,
+      precioReferencia: precioReferencia,
+      etiquetaReferencia: etiquetaReferencia,
+      textoBoton:
+          textoBoton ??
+          AppLocalizations.of(context).proveedorNegociacionEnviarContraoferta,
     ),
   );
-}
-
-class _ConReferencias extends StatelessWidget {
-  const _ConReferencias({required this.repositorio, required this.hijo});
-
-  final ReferenciasRepositorio? repositorio;
-  final Widget hijo;
-
-  @override
-  Widget build(BuildContext context) => repositorio == null
-      ? hijo
-      : RepositoryProvider<ReferenciasRepositorio>.value(
-          value: repositorio!,
-          child: hijo,
-        );
 }
 
 class _HojaPrecio extends StatefulWidget {
@@ -91,9 +59,6 @@ class _HojaPrecio extends StatefulWidget {
     required this.precioReferencia,
     required this.etiquetaReferencia,
     required this.textoBoton,
-    this.tipoAplicacion,
-    this.zonaId,
-    this.macrorregion,
   });
 
   final String titulo;
@@ -101,11 +66,6 @@ class _HojaPrecio extends StatefulWidget {
   final Decimal precioReferencia;
   final String etiquetaReferencia;
   final String textoBoton;
-
-  /// Con el tipo de aplicación se muestra el precio de referencia.
-  final String? tipoAplicacion;
-  final int? zonaId;
-  final String? macrorregion;
 
   @override
   State<_HojaPrecio> createState() => _HojaPrecioState();
@@ -175,16 +135,6 @@ class _HojaPrecioState extends State<_HojaPrecio> {
                   color: paleta.textoSecundario,
                 ),
               ),
-              if (widget.tipoAplicacion != null) ...[
-                const SizedBox(height: EspaciadoCampo.m),
-                SugerenciaPrecioReferencia(
-                  tipoAplicacion: widget.tipoAplicacion!,
-                  zonaId: widget.zonaId,
-                  macrorregion: widget.macrorregion,
-                  actual: _valor,
-                  alUsar: (v) => setState(() => _precio.text = '$v'),
-                ),
-              ],
               const SizedBox(height: EspaciadoCampo.l),
               CampoFormularioMarketplace(
                 etiqueta: l10n.proveedorNegociacionPrecioPorHectarea,

@@ -29,7 +29,6 @@ La capa de datos ya cubre estas rutas (ADR 0020); falta la pantalla que las use.
 
 | Ruta | Pantalla que falta |
 |---|---|
-| `GET /api/referencias/precio` | El precio de referencia junto al campo de precio al solicitar (cliente), y en la hoja de oferta del piloto. |
 | `PUT` y `DELETE /api/perfil/foto` | Elegir, cambiar y quitar la foto de perfil en la cuenta (cliente) y en el perfil (piloto); mostrarla en la tarjeta del proveedor de la oferta. |
 | `POST` y `DELETE /api/terrenos/{id}/fotos` | Galería de fotos del terreno al crearlo o editarlo (cliente); verlas en el detalle de la solicitud abierta (piloto). |
 | `GET` y `POST /api/solicitudes/{id}/pago-confirmado` | «Ya recibí el pago» del proveedor titular en el servicio finalizado; el cliente ve el pago confirmado en el seguimiento. |
