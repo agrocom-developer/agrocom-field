@@ -8,7 +8,7 @@ enum EstadoSolicitud {
   borrador('Borrador', 'Todavía no está publicada.'),
   abierta('Buscando piloto', 'Los pilotos ya pueden ver tu solicitud.'),
   conOfertas('Buscando piloto', 'Ya tienes ofertas para comparar.'),
-  adjudicada('Piloto elegido', 'Acuerden en persona cómo trabajar el lote.'),
+  adjudicada('Piloto elegido', 'Acuerda en persona cómo trabajar el lote.'),
   enEjecucion('En ejecución', 'El piloto está trabajando en tu lote.'),
   finalizada('Finalizada', 'El piloto terminó. Revisa el resultado.'),
   calificada('Calificada', 'Gracias por calificar el servicio.'),
@@ -272,7 +272,7 @@ List<HitoSolicitud> lineaDeTiempo(Solicitud s) {
       estado: de(2),
       titulo: 'Piloto elegido',
       detalle:
-          '$proveedor ya tiene tu contacto. Acuerden en persona cómo '
+          '$proveedor ya tiene tu contacto. Acuerda en persona cómo '
           'trabajar el lote.',
       momento: s.momentoDe(EstadoSolicitud.adjudicada),
     ),

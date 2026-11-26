@@ -130,7 +130,7 @@ class EjecucionSyncEngine {
         await _marcarFoto(
           fila.uuidCliente,
           EstadoFotoEjecucion.rechazado,
-          motivo: 'El archivo de la foto ya no está en el dispositivo.',
+          motivo: 'El archivo de la foto ya no está en el teléfono.',
         );
         continue;
       }
@@ -344,6 +344,6 @@ class EjecucionSyncEngine {
     if (cuerpo is Map && cuerpo['message'] is String) {
       return cuerpo['message'] as String;
     }
-    return 'El servidor rechazó el registro (${e.codigo}).';
+    return 'No pudimos aceptar el envío (${e.codigo}).';
   }
 }

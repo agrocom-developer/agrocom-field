@@ -127,13 +127,13 @@ abstract class AppLocalizations {
   /// No description provided for @problemaSinConexion.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. El reporte no se envió; prueba de nuevo cuando tengas señal.'**
+  /// **'Sin conexión. El reporte no se envió; vuelve a intentarlo cuando tengas señal.'**
   String get problemaSinConexion;
 
   /// No description provided for @problemaErrorEnvio.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos enviar el reporte. Prueba de nuevo.'**
+  /// **'No pudimos enviar el reporte. Vuelve a intentarlo.'**
   String get problemaErrorEnvio;
 
   /// No description provided for @problemaAvisoSoporte.
@@ -379,7 +379,7 @@ abstract class AppLocalizations {
   /// No description provided for @perfilMisCampos.
   ///
   /// In es, this message translates to:
-  /// **'Mis campos'**
+  /// **'Mis lotes'**
   String get perfilMisCampos;
 
   /// No description provided for @perfilAgregarCampo.
@@ -421,7 +421,7 @@ abstract class AppLocalizations {
   /// No description provided for @perfilErrorCargaDetalle.
   ///
   /// In es, this message translates to:
-  /// **'Revisa tu conexión y vuelve a intentar.'**
+  /// **'Revisa tu conexión y vuelve a intentarlo.'**
   String get perfilErrorCargaDetalle;
 
   /// No description provided for @lotesTitulo.
@@ -529,7 +529,7 @@ abstract class AppLocalizations {
   /// No description provided for @perfilProveedorDocumentosVacio.
   ///
   /// In es, this message translates to:
-  /// **'Todavía no cargaste documentos. Sin ellos no se puede aprobar tu perfil.'**
+  /// **'Todavía no subiste documentos. Sin ellos no se puede aprobar tu perfil.'**
   String get perfilProveedorDocumentosVacio;
 
   /// No description provided for @perfilProveedorZonas.
@@ -553,7 +553,7 @@ abstract class AppLocalizations {
   /// No description provided for @perfilProveedorResenasVacio.
   ///
   /// In es, this message translates to:
-  /// **'Las reseñas de tus clientes aparecen aquí después de cada servicio.'**
+  /// **'Las calificaciones de tus clientes aparecen aquí después de cada servicio.'**
   String get perfilProveedorResenasVacio;
 
   /// No description provided for @perfilProveedorErrorTitulo.
@@ -565,13 +565,13 @@ abstract class AppLocalizations {
   /// No description provided for @perfilProveedorErrorDetalle.
   ///
   /// In es, this message translates to:
-  /// **'Revisa tu conexión y vuelve a intentar.'**
+  /// **'Revisa tu conexión y vuelve a intentarlo.'**
   String get perfilProveedorErrorDetalle;
 
   /// No description provided for @perfilProveedorAvisos.
   ///
   /// In es, this message translates to:
-  /// **'Avisos'**
+  /// **'Notificaciones'**
   String get perfilProveedorAvisos;
 
   /// No description provided for @perfilProveedorAvisosDetalle.
@@ -583,7 +583,7 @@ abstract class AppLocalizations {
   /// No description provided for @perfilProveedorCerrarSesionDetalle.
   ///
   /// In es, this message translates to:
-  /// **'Lo que aún no se subió se conserva en este celular'**
+  /// **'Lo que aún no se subió se conserva en este teléfono'**
   String get perfilProveedorCerrarSesionDetalle;
 
   /// No description provided for @perfilPublicoTitulo.
@@ -715,7 +715,7 @@ abstract class AppLocalizations {
   /// No description provided for @contactosCelular.
   ///
   /// In es, this message translates to:
-  /// **'Celular'**
+  /// **'Teléfono'**
   String get contactosCelular;
 
   /// No description provided for @contactosCargo.
@@ -751,13 +751,13 @@ abstract class AppLocalizations {
   /// No description provided for @contactosQuitar.
   ///
   /// In es, this message translates to:
-  /// **'Quitar contacto'**
+  /// **'Eliminar contacto'**
   String get contactosQuitar;
 
   /// No description provided for @contactosQuitarPregunta.
   ///
   /// In es, this message translates to:
-  /// **'¿Quitar a {nombre}?'**
+  /// **'¿Eliminar a {nombre}?'**
   String contactosQuitarPregunta(String nombre);
 
   /// No description provided for @contactosQuitarAviso.
@@ -769,7 +769,7 @@ abstract class AppLocalizations {
   /// No description provided for @contactosUnicoAviso.
   ///
   /// In es, this message translates to:
-  /// **'Una empresa necesita al menos un contacto: agrega otro antes de quitar a este.'**
+  /// **'Una empresa necesita al menos un contacto: agrega otro antes de eliminar a este.'**
   String get contactosUnicoAviso;
 
   /// No description provided for @contactosErrorNombre.
@@ -781,19 +781,19 @@ abstract class AppLocalizations {
   /// No description provided for @contactosErrorCelular.
   ///
   /// In es, this message translates to:
-  /// **'Escribe un celular de al menos 7 dígitos.'**
+  /// **'Escribe un teléfono de al menos 7 dígitos.'**
   String get contactosErrorCelular;
 
   /// No description provided for @contactosSinConexion.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. No se guardó nada; prueba de nuevo cuando tengas señal.'**
+  /// **'Sin conexión. No se guardó nada; vuelve a intentarlo cuando tengas señal.'**
   String get contactosSinConexion;
 
   /// No description provided for @contactosErrorGuardar.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos guardar el contacto. Prueba de nuevo.'**
+  /// **'No pudimos guardar el contacto. Vuelve a intentarlo.'**
   String get contactosErrorGuardar;
 
   /// No description provided for @contactosFilaSemantica.
@@ -859,7 +859,7 @@ abstract class AppLocalizations {
   /// No description provided for @registroEmpresaContactoNota.
   ///
   /// In es, this message translates to:
-  /// **'Tu nombre y celular quedan como contacto principal. Después puedes agregar a otras personas desde tu perfil.'**
+  /// **'Tu nombre y teléfono quedan como contacto principal. Después puedes agregar a otras personas desde tu perfil.'**
   String get registroEmpresaContactoNota;
 
   /// No description provided for @chatTitulo.
@@ -967,13 +967,13 @@ abstract class AppLocalizations {
   /// No description provided for @chatFalloDesconocido.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos enviarlo. Tu mensaje sigue aquí; prueba de nuevo.'**
+  /// **'No pudimos enviarlo. Tu mensaje sigue aquí; vuelve a intentarlo.'**
   String get chatFalloDesconocido;
 
   /// No description provided for @chatFalloFoto.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos enviar la foto. Prueba de nuevo.'**
+  /// **'No pudimos enviar la foto. Vuelve a intentarlo.'**
   String get chatFalloFoto;
 
   /// No description provided for @chatAutorTu.
@@ -1027,7 +1027,7 @@ abstract class AppLocalizations {
   /// No description provided for @precioFinalFalloSinConexion.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. No se confirmó nada; prueba de nuevo cuando tengas señal.'**
+  /// **'Sin conexión. No se confirmó nada; vuelve a intentarlo cuando tengas señal.'**
   String get precioFinalFalloSinConexion;
 
   /// No description provided for @precioFinalFalloRechazado.
@@ -1039,7 +1039,7 @@ abstract class AppLocalizations {
   /// No description provided for @precioFinalFalloDesconocido.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos confirmar el precio final. Prueba de nuevo.'**
+  /// **'No pudimos confirmar el precio final. Vuelve a intentarlo.'**
   String get precioFinalFalloDesconocido;
 
   /// No description provided for @precioFinalAbrirDisputa.
@@ -1075,7 +1075,7 @@ abstract class AppLocalizations {
   /// No description provided for @estadoSinConexionDetalle.
   ///
   /// In es, this message translates to:
-  /// **'Necesitamos señal para cargar {queNoCargo}. Revisa tu conexión y prueba de nuevo.'**
+  /// **'Necesitamos señal para cargar {queNoCargo}. Revisa tu conexión y vuelve a intentarlo.'**
   String estadoSinConexionDetalle(String queNoCargo);
 
   /// No description provided for @estadoErrorTitulo.
@@ -1087,7 +1087,7 @@ abstract class AppLocalizations {
   /// No description provided for @estadoErrorDetalle.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos cargar {queNoCargo}. Prueba de nuevo en un momento.'**
+  /// **'No pudimos cargar {queNoCargo}. Vuelve a intentarlo en un momento.'**
   String estadoErrorDetalle(String queNoCargo);
 
   /// No description provided for @estadoTablaTitulo.
@@ -1165,7 +1165,7 @@ abstract class AppLocalizations {
   /// No description provided for @redSinSenalMensaje.
   ///
   /// In es, this message translates to:
-  /// **'lo que ya cargaste sigue a la vista. Pedir u ofertar necesita red.'**
+  /// **'lo que ya cargaste sigue a la vista. Publicar u ofertar necesita red.'**
   String get redSinSenalMensaje;
 
   /// No description provided for @componentesCalificacion.
@@ -1277,7 +1277,7 @@ abstract class AppLocalizations {
   /// No description provided for @componentesPedido.
   ///
   /// In es, this message translates to:
-  /// **'Pedido {numero}, {estado}'**
+  /// **'Solicitud {numero}, {estado}'**
   String componentesPedido(String numero, String estado);
 
   /// No description provided for @uiPosicionDelDron.
@@ -1384,7 +1384,7 @@ abstract class AppLocalizations {
   /// No description provided for @accesoFumigacionConDronesPedido.
   ///
   /// In es, this message translates to:
-  /// **'Fumigación con drones, a pedido'**
+  /// **'Fumigación con drones cuando la necesites'**
   String get accesoFumigacionConDronesPedido;
 
   /// No description provided for @accesoSolicitaServicioSigueVuelo.
@@ -1480,7 +1480,7 @@ abstract class AppLocalizations {
   /// No description provided for @accesoIntentaNuevoMomento.
   ///
   /// In es, this message translates to:
-  /// **'Intenta de nuevo en un momento.'**
+  /// **'Vuelve a intentarlo en un momento.'**
   String get accesoIntentaNuevoMomento;
 
   /// No description provided for @accesoReintentar.
@@ -1522,7 +1522,7 @@ abstract class AppLocalizations {
   /// No description provided for @accesoConQueVasEntrar.
   ///
   /// In es, this message translates to:
-  /// **'Es con lo que vas a entrar. Sin espacios ni correo.'**
+  /// **'Con este usuario ingresas a la app. Sin espacios ni correo.'**
   String get accesoConQueVasEntrar;
 
   /// No description provided for @accesoMinimoCaracteresConLetras.
@@ -1636,7 +1636,7 @@ abstract class AppLocalizations {
   /// No description provided for @inicioDescartarAviso.
   ///
   /// In es, this message translates to:
-  /// **'Descartar aviso'**
+  /// **'Descartar notificación'**
   String get inicioDescartarAviso;
 
   /// No description provided for @inicioCalificasteCon.
@@ -1753,7 +1753,7 @@ abstract class AppLocalizations {
   /// No description provided for @ofertasLosPilotosZonaVen.
   ///
   /// In es, this message translates to:
-  /// **'Los pilotos de la zona ya ven tu solicitud. Cuando alguno ofrezca, te avisamos. Si tarda, prueba subir tu precio.'**
+  /// **'Los pilotos de la zona ya ven tu solicitud. Cuando alguno ofrezca, te avisamos. Si tarda, puedes subir tu precio.'**
   String get ofertasLosPilotosZonaVen;
 
   /// No description provided for @ofertasFoto.
@@ -1855,7 +1855,7 @@ abstract class AppLocalizations {
   /// No description provided for @seguimientoAcuerdenFechaPorChat.
   ///
   /// In es, this message translates to:
-  /// **'Acuerden la fecha por el chat.'**
+  /// **'Acuerda la fecha con el piloto por el chat.'**
   String get seguimientoAcuerdenFechaPorChat;
 
   /// No description provided for @seguimientoCierrePrecioFinal.
@@ -1879,7 +1879,7 @@ abstract class AppLocalizations {
   /// No description provided for @seguimientoPilotoTodaviaEmpezoAcuerden.
   ///
   /// In es, this message translates to:
-  /// **'El piloto todavía no empezó. Acuerden la fecha por el chat.'**
+  /// **'El piloto todavía no empezó. Acuerda la fecha con él por el chat.'**
   String get seguimientoPilotoTodaviaEmpezoAcuerden;
 
   /// No description provided for @seguimientoUltimaActualizacion.
@@ -1921,7 +1921,7 @@ abstract class AppLocalizations {
   /// No description provided for @seguimientoTodaviaHayFotosPiloto.
   ///
   /// In es, this message translates to:
-  /// **'Todavía no hay fotos. El piloto las sube a medida que avanza, y las verás acá.'**
+  /// **'Todavía no hay fotos. El piloto las sube a medida que avanza, y las verás aquí.'**
   String get seguimientoTodaviaHayFotosPiloto;
 
   /// No description provided for @seguimientoFotoDelAvance.
@@ -2011,7 +2011,7 @@ abstract class AppLocalizations {
   /// No description provided for @ofertasPedido.
   ///
   /// In es, this message translates to:
-  /// **'PEDIDO #{id}'**
+  /// **'SOLICITUD #{id}'**
   String ofertasPedido(String id);
 
   /// No description provided for @ofertasSolicitudExpiroAbrelaNuevo.
@@ -2071,13 +2071,13 @@ abstract class AppLocalizations {
   /// No description provided for @ofertasSinConexionEnviamosRespuesta.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. No enviamos tu respuesta; inténtalo con señal.'**
+  /// **'Sin conexión. No se envió tu respuesta; vuelve a intentarlo cuando tengas señal.'**
   String get ofertasSinConexionEnviamosRespuesta;
 
   /// No description provided for @ofertasPudimosEnviarRespuesta.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos enviar tu respuesta.'**
+  /// **'No pudimos enviar tu respuesta. Vuelve a intentarlo.'**
   String get ofertasPudimosEnviarRespuesta;
 
   /// No description provided for @ofertasContraofertaRonda.
@@ -2173,7 +2173,7 @@ abstract class AppLocalizations {
   /// No description provided for @seguimientoPedido.
   ///
   /// In es, this message translates to:
-  /// **'PEDIDO #{id}'**
+  /// **'SOLICITUD #{id}'**
   String seguimientoPedido(String id);
 
   /// No description provided for @seguimientoTotalPagarPiloto.
@@ -2377,7 +2377,7 @@ abstract class AppLocalizations {
   /// No description provided for @solicitarPedirloParaMananaMarca.
   ///
   /// In es, this message translates to:
-  /// **'Pedirlo para mañana marca tu solicitud como urgente. Los pilotos con el dron libre responden más rápido.'**
+  /// **'Si la necesitas para mañana, tu solicitud se marca como urgente. Los pilotos con el dron libre responden más rápido.'**
   String get solicitarPedirloParaMananaMarca;
 
   /// No description provided for @solicitarComoLlegaLoteOpcional.
@@ -2485,7 +2485,7 @@ abstract class AppLocalizations {
   /// No description provided for @solicitarPublicarUnaSolicitudNecesita.
   ///
   /// In es, this message translates to:
-  /// **'Publicar una solicitud necesita conexión. Revisa la señal y vuelve a intentar.'**
+  /// **'Publicar una solicitud necesita conexión. Revisa la señal y vuelve a intentarlo.'**
   String get solicitarPublicarUnaSolicitudNecesita;
 
   /// No description provided for @solicitarReintentar.
@@ -2551,7 +2551,7 @@ abstract class AppLocalizations {
   /// No description provided for @solicitudesLasOfertasQueRecibiste.
   ///
   /// In es, this message translates to:
-  /// **'Las ofertas que ya recibiste no cambian; los pilotos que negocian contigo reciben el aviso.'**
+  /// **'Las ofertas que ya recibiste no cambian; los pilotos que negocian contigo reciben una notificación.'**
   String get solicitudesLasOfertasQueRecibiste;
 
   /// No description provided for @solicitudesVerLasOfertas.
@@ -2693,19 +2693,19 @@ abstract class AppLocalizations {
   /// No description provided for @solicitudesTodos.
   ///
   /// In es, this message translates to:
-  /// **'Todos'**
+  /// **'Todas'**
   String get solicitudesTodos;
 
   /// No description provided for @solicitudesActivos.
   ///
   /// In es, this message translates to:
-  /// **'Activos'**
+  /// **'Activas'**
   String get solicitudesActivos;
 
   /// No description provided for @solicitudesListos.
   ///
   /// In es, this message translates to:
-  /// **'Listos'**
+  /// **'Terminadas'**
   String get solicitudesListos;
 
   /// No description provided for @solicitudesFumigadoConAgrocom.
@@ -2867,13 +2867,13 @@ abstract class AppLocalizations {
   /// No description provided for @calificarSinConexionCalificacionEnvio.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. Tu calificación no se envió; prueba de nuevo cuando tengas señal.'**
+  /// **'Sin conexión. Tu calificación no se envió; vuelve a intentarlo cuando tengas señal.'**
   String get calificarSinConexionCalificacionEnvio;
 
   /// No description provided for @calificarPudimosEnviarCalificacionPrueba.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos enviar tu calificación. Prueba de nuevo.'**
+  /// **'No pudimos enviar tu calificación. Vuelve a intentarlo.'**
   String get calificarPudimosEnviarCalificacionPrueba;
 
   /// No description provided for @calificarReintentar.
@@ -2903,7 +2903,7 @@ abstract class AppLocalizations {
   /// No description provided for @accesoSesionVencioEntraNuevo.
   ///
   /// In es, this message translates to:
-  /// **'Tu sesión venció. Entra de nuevo.'**
+  /// **'Tu sesión venció. Ingresa de nuevo.'**
   String get accesoSesionVencioEntraNuevo;
 
   /// No description provided for @accesoTusDatos.
@@ -2951,7 +2951,7 @@ abstract class AppLocalizations {
   /// No description provided for @inicioAvisos.
   ///
   /// In es, this message translates to:
-  /// **'Avisos'**
+  /// **'Notificaciones'**
   String get inicioAvisos;
 
   /// No description provided for @inicioHistorialReciente.
@@ -2981,13 +2981,13 @@ abstract class AppLocalizations {
   /// No description provided for @inicioRevisaSenalIntentaNuevo.
   ///
   /// In es, this message translates to:
-  /// **'Revisa tu señal e intenta de nuevo. Publicar una solicitud requiere conexión.'**
+  /// **'Revisa tu señal y vuelve a intentarlo. Publicar una solicitud requiere conexión.'**
   String get inicioRevisaSenalIntentaNuevo;
 
   /// No description provided for @inicioIntentaNuevoMomento.
   ///
   /// In es, this message translates to:
-  /// **'Intenta de nuevo en un momento.'**
+  /// **'Vuelve a intentarlo en un momento.'**
   String get inicioIntentaNuevoMomento;
 
   /// No description provided for @comunEnviando.
@@ -3047,19 +3047,19 @@ abstract class AppLocalizations {
   /// No description provided for @solicitudesSinConexionGuardoCambio.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. No se guardó el cambio; inténtalo con señal.'**
+  /// **'Sin conexión. No se guardó el cambio; vuelve a intentarlo cuando tengas señal.'**
   String get solicitudesSinConexionGuardoCambio;
 
   /// No description provided for @solicitudesPudimosCompletarOperacion.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos completar la operación.'**
+  /// **'No pudimos completar la operación. Vuelve a intentarlo.'**
   String get solicitudesPudimosCompletarOperacion;
 
   /// No description provided for @solicitudesSinConexionFaltanCargar.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. Faltan cargar tu calificación y el reclamo.'**
+  /// **'Sin conexión. No pudimos cargar tu calificación ni el reclamo.'**
   String get solicitudesSinConexionFaltanCargar;
 
   /// No description provided for @solicitudesPudimosCargarCalificacionReclamo.
@@ -3095,7 +3095,7 @@ abstract class AppLocalizations {
   /// No description provided for @solicitudesQuePediste.
   ///
   /// In es, this message translates to:
-  /// **'Lo que pediste'**
+  /// **'Lo que solicitaste'**
   String get solicitudesQuePediste;
 
   /// No description provided for @solicitudesProducto.
@@ -3155,7 +3155,7 @@ abstract class AppLocalizations {
   /// No description provided for @solicitudesCuandoPilotoTerminaQueda.
   ///
   /// In es, this message translates to:
-  /// **'Cuando un piloto termina, queda guardado acá con sus fotos y el precio final.'**
+  /// **'Cuando un piloto termina, queda guardado aquí con sus fotos y el precio final.'**
   String get solicitudesCuandoPilotoTerminaQueda;
 
   /// No description provided for @solicitudesPublicaLoteComparaLas.
@@ -3197,7 +3197,7 @@ abstract class AppLocalizations {
   /// No description provided for @solicitarErrorHectareasSobreLote.
   ///
   /// In es, this message translates to:
-  /// **'El lote tiene {tope} ha: no puedes pedir más.'**
+  /// **'El lote tiene {tope} ha: no puedes solicitar más.'**
   String solicitarErrorHectareasSobreLote(String tope);
 
   /// No description provided for @solicitarErrorPrecioVacio.
@@ -3275,19 +3275,19 @@ abstract class AppLocalizations {
   /// No description provided for @accesoErrorCredenciales.
   ///
   /// In es, this message translates to:
-  /// **'El usuario o la contraseña no coinciden. Revísalos e intenta de nuevo.'**
+  /// **'El usuario o la contraseña no coinciden. Revísalos y vuelve a intentarlo.'**
   String get accesoErrorCredenciales;
 
   /// No description provided for @accesoErrorSinConexion.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. Lo que escribiste sigue aquí: intenta de nuevo cuando tengas señal.'**
+  /// **'Sin conexión. Lo que escribiste sigue aquí: vuelve a intentarlo cuando tengas señal.'**
   String get accesoErrorSinConexion;
 
   /// No description provided for @accesoErrorDesconocido.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos completar la operación. Intenta de nuevo en un momento.'**
+  /// **'No pudimos completar la operación. Vuelve a intentarlo en un momento.'**
   String get accesoErrorDesconocido;
 
   /// No description provided for @accesoPortadaPublicaTitulo.
@@ -3485,7 +3485,7 @@ abstract class AppLocalizations {
   /// No description provided for @terrenosClienteSubioFotosDel.
   ///
   /// In es, this message translates to:
-  /// **'El cliente no subió fotos del terreno. Pregúntale por el estado del lote en el chat si te eligen.'**
+  /// **'El cliente no subió fotos del terreno. Si te eligen, pregúntale por el estado del lote en el chat.'**
   String get terrenosClienteSubioFotosDel;
 
   /// No description provided for @terrenosFoto.
@@ -3575,7 +3575,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorDronRevisaConexionVolveIntentar.
   ///
   /// In es, this message translates to:
-  /// **'Revisá la conexión y volvé a intentar.'**
+  /// **'Revisa la conexión y vuelve a intentarlo.'**
   String get proveedorDronRevisaConexionVolveIntentar;
 
   /// No description provided for @proveedorDronTodaviaRegistrasteDrones.
@@ -3803,7 +3803,7 @@ abstract class AppLocalizations {
   /// No description provided for @fotoSinConexionReintentar.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. Revisa tu señal y vuelve a intentar.'**
+  /// **'Sin conexión. Revisa tu señal y vuelve a intentarlo.'**
   String get fotoSinConexionReintentar;
 
   /// No description provided for @fotoPerfilNoPreparada.
@@ -3821,7 +3821,7 @@ abstract class AppLocalizations {
   /// No description provided for @fotoPerfilNoQuitada.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos quitar la foto. Intenta de nuevo.'**
+  /// **'No pudimos quitar la foto. Vuelve a intentarlo.'**
   String get fotoPerfilNoQuitada;
 
   /// No description provided for @fotoPerfilActualizada.
@@ -3833,19 +3833,19 @@ abstract class AppLocalizations {
   /// No description provided for @fotoPerfilNoSubida.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos subir la foto. Intenta de nuevo.'**
+  /// **'No pudimos subir la foto. Vuelve a intentarlo.'**
   String get fotoPerfilNoSubida;
 
   /// No description provided for @pagoNoPudimosRevisar.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos revisar el pago. Intenta de nuevo.'**
+  /// **'No pudimos revisar el pago. Vuelve a intentarlo.'**
   String get pagoNoPudimosRevisar;
 
   /// No description provided for @pagoNoPudimosConfirmar.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos confirmar el pago. Tu confirmación no se perdió: intenta de nuevo.'**
+  /// **'No pudimos confirmar el pago. Tu confirmación no se perdió: vuelve a intentarlo.'**
   String get pagoNoPudimosConfirmar;
 
   /// No description provided for @pagoSoloTitular.
@@ -3875,7 +3875,7 @@ abstract class AppLocalizations {
   /// No description provided for @terrenosFotoNoSubida.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos subir la foto. Intenta de nuevo.'**
+  /// **'No pudimos subir la foto. Vuelve a intentarlo.'**
   String get terrenosFotoNoSubida;
 
   /// No description provided for @terrenosFotoQuitada.
@@ -3887,7 +3887,7 @@ abstract class AppLocalizations {
   /// No description provided for @terrenosFotoNoQuitada.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos quitar la foto. Intenta de nuevo.'**
+  /// **'No pudimos quitar la foto. Vuelve a intentarlo.'**
   String get terrenosFotoNoQuitada;
 
   /// No description provided for @fotoMuyPesada.
@@ -3975,7 +3975,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorDronQuedanCiclosPlanificaRecambio.
   ///
   /// In es, this message translates to:
-  /// **'Quedan {ciclosRestantes} ciclos. Planificá el recambio.'**
+  /// **'Quedan {ciclosRestantes} ciclos. Planifica el recambio.'**
   String proveedorDronQuedanCiclosPlanificaRecambio(int ciclosRestantes);
 
   /// No description provided for @proveedorDronQuedanCiclosVidaUtil.
@@ -3999,13 +3999,13 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorPerfilRecibisOfertasMientrasDure.
   ///
   /// In es, this message translates to:
-  /// **'No recibís ofertas mientras dure la suspensión.'**
+  /// **'No recibes ofertas mientras dure la suspensión.'**
   String get proveedorPerfilRecibisOfertasMientrasDure;
 
   /// No description provided for @proveedorPerfilSolicitudAproboPodesCorregir.
   ///
   /// In es, this message translates to:
-  /// **'Tu solicitud no se aprobó. Podés corregir los datos y reenviarla.'**
+  /// **'Tu registro no se aprobó. Puedes corregir los datos y reenviarlo.'**
   String get proveedorPerfilSolicitudAproboPodesCorregir;
 
   /// No description provided for @proveedorPerfilMotivo.
@@ -4086,7 +4086,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorAccesoEntraCuenta.
   ///
   /// In es, this message translates to:
-  /// **'Entra a tu cuenta'**
+  /// **'Ingresa a tu cuenta'**
   String get proveedorAccesoEntraCuenta;
 
   /// No description provided for @proveedorAccesoConUsuarioContrasena.
@@ -4122,7 +4122,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorAccesoEntrar.
   ///
   /// In es, this message translates to:
-  /// **'Entrar'**
+  /// **'Ingresar'**
   String get proveedorAccesoEntrar;
 
   /// No description provided for @proveedorAccesoSoyPilotoQuieroRegistrarme.
@@ -4212,7 +4212,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorAccesoConEsteUsuarioEntras.
   ///
   /// In es, this message translates to:
-  /// **'Con este usuario entras a la app. No usa correo.'**
+  /// **'Con este usuario ingresas a la app. No usa correo.'**
   String get proveedorAccesoConEsteUsuarioEntras;
 
   /// No description provided for @proveedorAccesoUsaMenosCaracteres.
@@ -4296,7 +4296,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorAccesoCrearCuenta.
   ///
   /// In es, this message translates to:
-  /// **'Crear mi cuenta'**
+  /// **'Crear cuenta'**
   String get proveedorAccesoCrearCuenta;
 
   /// No description provided for @proveedorAccesoReintentar.
@@ -4326,7 +4326,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorAccesoAdministradorLasRevisaAntes.
   ///
   /// In es, this message translates to:
-  /// **'Un administrador las revisa antes de aprobar tu dron. Cada foto se achica sola a menos de 300 KB.'**
+  /// **'Un administrador las revisa antes de aprobar tu dron. Cada foto se comprime sola a menos de 300 KB.'**
   String get proveedorAccesoAdministradorLasRevisaAntes;
 
   /// No description provided for @proveedorAccesoFoto.
@@ -4392,7 +4392,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorAccesoEntrarApp.
   ///
   /// In es, this message translates to:
-  /// **'Entrar a la app'**
+  /// **'Ingresar a la app'**
   String get proveedorAccesoEntrarApp;
 
   /// No description provided for @proveedorNegociacionLasSolicitudesLasOfertas.
@@ -4458,7 +4458,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionAceptarNecesitaRedReintenta.
   ///
   /// In es, this message translates to:
-  /// **'aceptar necesita red. Reintenta con señal.'**
+  /// **'aceptar necesita red. Vuelve a intentarlo con señal.'**
   String get proveedorNegociacionAceptarNecesitaRedReintenta;
 
   /// No description provided for @proveedorNegociacionOfertaEnviadaPorSigues.
@@ -4506,7 +4506,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionMapaSolicitudesNecesitaSenal.
   ///
   /// In es, this message translates to:
-  /// **'El mapa de solicitudes necesita señal: es una competencia entre pilotos. Reintenta cuando la tengas.'**
+  /// **'El mapa de solicitudes necesita señal para mostrar lo que hay disponible. Vuelve a intentarlo cuando tengas señal.'**
   String get proveedorNegociacionMapaSolicitudesNecesitaSenal;
 
   /// No description provided for @proveedorNegociacionPudimosCargarLasSolicitudes.
@@ -4518,7 +4518,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionIntentaNuevoMomento.
   ///
   /// In es, this message translates to:
-  /// **'Intenta de nuevo en un momento.'**
+  /// **'Vuelve a intentarlo en un momento.'**
   String get proveedorNegociacionIntentaNuevoMomento;
 
   /// No description provided for @proveedorNegociacionNingunaSolicitudConEstos.
@@ -4542,7 +4542,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionActivaLosAvisosPerfil.
   ///
   /// In es, this message translates to:
-  /// **'Activa los avisos en Perfil y te decimos cuando llegue una en tus zonas.'**
+  /// **'Activa las notificaciones en tu perfil y te avisamos cuando llegue una en tus zonas.'**
   String get proveedorNegociacionActivaLosAvisosPerfil;
 
   /// No description provided for @proveedorNegociacionCargando.
@@ -4662,19 +4662,19 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionAvisos.
   ///
   /// In es, this message translates to:
-  /// **'Avisos'**
+  /// **'Notificaciones'**
   String get proveedorNegociacionAvisos;
 
   /// No description provided for @proveedorNegociacionPudimosCargarTusAvisos.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos cargar tus avisos'**
+  /// **'No pudimos cargar tus notificaciones'**
   String get proveedorNegociacionPudimosCargarTusAvisos;
 
   /// No description provided for @proveedorNegociacionEligeQueQuieresEnterarte.
   ///
   /// In es, this message translates to:
-  /// **'Elige de qué quieres enterarte. Los avisos de adjudicación, cierre, cuenta y reclamos no se pueden apagar.'**
+  /// **'Elige de qué quieres recibir notificaciones. Las de adjudicación, cierre, cuenta y reclamos no se pueden desactivar.'**
   String get proveedorNegociacionEligeQueQuieresEnterarte;
 
   /// No description provided for @proveedorNegociacionNuevasSolicitudes.
@@ -4770,7 +4770,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionSinConexionVesLos.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. Ves los mensajes que ya bajaron; los nuevos llegan cuando vuelva la señal.'**
+  /// **'Sin conexión. Ves los mensajes que ya recibimos; los nuevos llegan cuando vuelva la señal.'**
   String get proveedorNegociacionSinConexionVesLos;
 
   /// No description provided for @proveedorNegociacionTodaviaHayMensajes.
@@ -4818,7 +4818,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionParaVerDetalleOfertar.
   ///
   /// In es, this message translates to:
-  /// **'Para ver el detalle y ofertar necesitas señal. Reintenta cuando la tengas.'**
+  /// **'Para ver el detalle y ofertar necesitas señal. Vuelve a intentarlo cuando tengas señal.'**
   String get proveedorNegociacionParaVerDetalleOfertar;
 
   /// No description provided for @proveedorNegociacionClientePropone.
@@ -4860,7 +4860,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionContactoConClienteLlega.
   ///
   /// In es, this message translates to:
-  /// **'Tu contacto con el cliente llega solo si te eligen. Hasta entonces no ves su nombre, teléfono ni dirección.'**
+  /// **'Los datos de contacto del cliente se muestran solo si te elige. Hasta entonces no ves su nombre, teléfono ni dirección.'**
   String get proveedorNegociacionContactoConClienteLlega;
 
   /// No description provided for @proveedorNegociacionOfertaEnviadaPorVes.
@@ -4896,7 +4896,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionPoneProducto.
   ///
   /// In es, this message translates to:
-  /// **'Pone el producto'**
+  /// **'Quién aporta el producto'**
   String get proveedorNegociacionPoneProducto;
 
   /// No description provided for @proveedorNegociacionCliente.
@@ -4920,7 +4920,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionPideAtencionPronta.
   ///
   /// In es, this message translates to:
-  /// **'Pide atención pronta'**
+  /// **'Lo necesita pronto'**
   String get proveedorNegociacionPideAtencionPronta;
 
   /// No description provided for @proveedorNegociacionEstadoDelTerreno.
@@ -4950,7 +4950,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionCuidar.
   ///
   /// In es, this message translates to:
-  /// **'Cuidar'**
+  /// **'Colindantes sensibles'**
   String get proveedorNegociacionCuidar;
 
   /// No description provided for @proveedorNegociacionObservaciones.
@@ -5025,7 +5025,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionQueVesPuedeEstar.
   ///
   /// In es, this message translates to:
-  /// **'lo que ves puede estar viejo.'**
+  /// **'lo que ves puede estar desactualizado.'**
   String get proveedorNegociacionQueVesPuedeEstar;
 
   /// No description provided for @proveedorNegociacionMisOfertas.
@@ -5055,7 +5055,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionParaVerResponderTus.
   ///
   /// In es, this message translates to:
-  /// **'Para ver y responder tus ofertas necesitas señal. Reintenta cuando la tengas.'**
+  /// **'Para ver y responder tus ofertas necesitas señal. Vuelve a intentarlo cuando tengas señal.'**
   String get proveedorNegociacionParaVerResponderTus;
 
   /// No description provided for @proveedorNegociacionPudimosCargarTusOfertas.
@@ -5193,7 +5193,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionNegociarEntreDosPersonas.
   ///
   /// In es, this message translates to:
-  /// **'Negociar es entre dos personas y necesita señal. Nada se perdió: reintenta cuando la tengas.'**
+  /// **'Negociar necesita señal. No se perdió nada: vuelve a intentarlo cuando tengas señal.'**
   String get proveedorNegociacionNegociarEntreDosPersonas;
 
   /// No description provided for @proveedorNegociacionPudimosAbrirNegociacion.
@@ -5217,7 +5217,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionAceptasteSolicitudTuyaContacto.
   ///
   /// In es, this message translates to:
-  /// **'Aceptaste: la solicitud es tuya. El contacto del cliente llega a Servicio.'**
+  /// **'Aceptaste la oferta: la solicitud es tuya. Los datos del cliente aparecen en «Servicio».'**
   String get proveedorNegociacionAceptasteSolicitudTuyaContacto;
 
   /// No description provided for @proveedorNegociacionRechazasteOfertaNegociacionCerro.
@@ -5331,7 +5331,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorEjecucionCierraAbreAppQue.
   ///
   /// In es, this message translates to:
-  /// **'Cierra y abre la app. Lo que guardaste sigue aquí.'**
+  /// **'Cierra la app y vuelve a abrirla. Lo que guardaste sigue aquí.'**
   String get proveedorEjecucionCierraAbreAppQue;
 
   /// No description provided for @proveedorEjecucionTodaviaTienesServicioAdjudicado.
@@ -5343,7 +5343,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorEjecucionCuandoClienteElijaServicio.
   ///
   /// In es, this message translates to:
-  /// **'Cuando un cliente te elija, el servicio aparece aquí con sus datos de contacto. Jala hacia abajo para actualizar.'**
+  /// **'Cuando un cliente te elija, el servicio aparece aquí con sus datos de contacto. Desliza hacia abajo para actualizar.'**
   String get proveedorEjecucionCuandoClienteElijaServicio;
 
   /// No description provided for @proveedorEjecucionSinAvanceMarcado.
@@ -5355,25 +5355,25 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorEjecucionRegistroRechazado.
   ///
   /// In es, this message translates to:
-  /// **'1 registro rechazado'**
+  /// **'1 envío rechazado'**
   String get proveedorEjecucionRegistroRechazado;
 
   /// No description provided for @proveedorEjecucionRegistrosRechazados.
   ///
   /// In es, this message translates to:
-  /// **'{rechazos} registros rechazados'**
+  /// **'{rechazos} envíos rechazados'**
   String proveedorEjecucionRegistrosRechazados(int rechazos);
 
   /// No description provided for @proveedorEjecucionCosaPorSubir.
   ///
   /// In es, this message translates to:
-  /// **'1 cosa por subir'**
+  /// **'1 envío por subir'**
   String get proveedorEjecucionCosaPorSubir;
 
   /// No description provided for @proveedorEjecucionCosasPorSubir.
   ///
   /// In es, this message translates to:
-  /// **'{pendientes} cosas por subir'**
+  /// **'{pendientes} envíos por subir'**
   String proveedorEjecucionCosasPorSubir(int pendientes);
 
   /// No description provided for @proveedorEjecucionChatConCliente.
@@ -5403,13 +5403,13 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorEjecucionServidorAceptoAlgoQue.
   ///
   /// In es, this message translates to:
-  /// **'El servidor no aceptó algo de lo que guardaste. Avisa a soporte desde el perfil.'**
+  /// **'No pudimos aceptar algo de lo que guardaste. Avisa a soporte desde tu perfil.'**
   String get proveedorEjecucionServidorAceptoAlgoQue;
 
   /// No description provided for @proveedorEjecucionEstaGuardadoEsteCelular.
   ///
   /// In es, this message translates to:
-  /// **'Está guardado en este celular y se sube solo cuando vuelva la señal.'**
+  /// **'Está guardado en este teléfono y se sube solo cuando vuelva la señal.'**
   String get proveedorEjecucionEstaGuardadoEsteCelular;
 
   /// No description provided for @proveedorEjecucionAvance.
@@ -5457,7 +5457,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorEjecucionMarcaloCuandoEmpiecesLote.
   ///
   /// In es, this message translates to:
-  /// **'Márcalo cuando empieces en el lote. El cliente recibe el aviso.'**
+  /// **'Márcalo cuando empieces en el lote. El cliente recibe una notificación.'**
   String get proveedorEjecucionMarcaloCuandoEmpiecesLote;
 
   /// No description provided for @proveedorEjecucionSubirFotoAvance.
@@ -5487,13 +5487,13 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorEjecucionPuedePasarLasHectareas.
   ///
   /// In es, this message translates to:
-  /// **'No puede pasar de las hectáreas del servicio.'**
+  /// **'No puede ser mayor que las hectáreas del servicio.'**
   String get proveedorEjecucionPuedePasarLasHectareas;
 
   /// No description provided for @proveedorEjecucionPuedePasar100.
   ///
   /// In es, this message translates to:
-  /// **'No puede pasar de 100 %.'**
+  /// **'No puede ser mayor que 100 %.'**
   String get proveedorEjecucionPuedePasar100;
 
   /// No description provided for @proveedorEjecucionHectareas.
@@ -5623,7 +5623,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorEjecucionUnaEstimacionHechaEste.
   ///
   /// In es, this message translates to:
-  /// **'Es una estimación hecha en este celular. El monto final lo confirma el servidor cuando haya señal.'**
+  /// **'Es una estimación hecha en este teléfono. Agrocom confirma el monto final cuando haya señal.'**
   String get proveedorEjecucionUnaEstimacionHechaEste;
 
   /// No description provided for @proveedorEjecucionCompartiendoUbicacion.
@@ -5635,7 +5635,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorEjecucionSinSenalReanudaSola.
   ///
   /// In es, this message translates to:
-  /// **'Sin señal: se reanuda sola. Nada se guarda en el celular.'**
+  /// **'Sin señal: se reanuda sola. Nada se guarda en el teléfono.'**
   String get proveedorEjecucionSinSenalReanudaSola;
 
   /// No description provided for @proveedorEjecucionClienteUltimaPosicionMapa.
@@ -5725,7 +5725,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorEjecucionPoneProducto.
   ///
   /// In es, this message translates to:
-  /// **'Pone el producto'**
+  /// **'Quién aporta el producto'**
   String get proveedorEjecucionPoneProducto;
 
   /// No description provided for @proveedorEjecucionCliente.
@@ -5767,7 +5767,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorEjecucionCuidar.
   ///
   /// In es, this message translates to:
-  /// **'Cuidar'**
+  /// **'Colindantes sensibles'**
   String get proveedorEjecucionCuidar;
 
   /// No description provided for @proveedorEjecucionObservaciones.
@@ -5803,67 +5803,67 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorEjecucionPudimosAchicarFotoSuficiente.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos achicar la foto lo suficiente. Toma otra con menos detalle.'**
+  /// **'No pudimos reducir el tamaño de la foto lo suficiente. Toma otra con menos detalle.'**
   String get proveedorEjecucionPudimosAchicarFotoSuficiente;
 
   /// No description provided for @proveedorEjecucionPudimosGuardarloIntentaNuevo.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos guardarlo. Intenta de nuevo.'**
+  /// **'No pudimos guardarlo. Vuelve a intentarlo.'**
   String get proveedorEjecucionPudimosGuardarloIntentaNuevo;
 
   /// No description provided for @proveedorAccesoPudimosAchicarEsaFoto.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos achicar esa foto. Prueba con otra o tómala de nuevo.'**
+  /// **'No pudimos reducir el tamaño de esa foto. Prueba con otra o tómala de nuevo.'**
   String get proveedorAccesoPudimosAchicarEsaFoto;
 
   /// No description provided for @proveedorAccesoSinConexionQueEscribiste.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. Lo que escribiste se conserva: reintenta con señal y seguimos donde quedó.'**
+  /// **'Sin conexión. Lo que escribiste se conserva: vuelve a intentarlo con señal y seguimos donde quedó.'**
   String get proveedorAccesoSinConexionQueEscribiste;
 
   /// No description provided for @proveedorAccesoSinConexionQueEscribiste2.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. Lo que escribiste se conserva: reintenta con señal.'**
+  /// **'Sin conexión. Lo que escribiste se conserva: vuelve a intentarlo con señal.'**
   String get proveedorAccesoSinConexionQueEscribiste2;
 
   /// No description provided for @proveedorAccesoCuentaQuedoCreadaPero.
   ///
   /// In es, this message translates to:
-  /// **'Tu cuenta quedó creada, pero no pudimos entrar. Vuelve al ingreso e inicia sesión.'**
+  /// **'Tu cuenta quedó creada, pero no pudimos ingresar. Vuelve al ingreso e inicia sesión.'**
   String get proveedorAccesoCuentaQuedoCreadaPero;
 
   /// No description provided for @proveedorAccesoRevisaLosDatosMarcados.
   ///
   /// In es, this message translates to:
-  /// **'Revisa los datos marcados e intenta de nuevo.'**
+  /// **'Revisa los datos marcados y vuelve a intentarlo.'**
   String get proveedorAccesoRevisaLosDatosMarcados;
 
   /// No description provided for @proveedorAccesoPudimosCompletarRegistroIntenta.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos completar el registro. Intenta de nuevo.'**
+  /// **'No pudimos completar el registro. Vuelve a intentarlo.'**
   String get proveedorAccesoPudimosCompletarRegistroIntenta;
 
   /// No description provided for @proveedorAccesoSesionVencioEntraNuevo.
   ///
   /// In es, this message translates to:
-  /// **'Tu sesión venció. Entra de nuevo.'**
+  /// **'Tu sesión venció. Ingresa de nuevo.'**
   String get proveedorAccesoSesionVencioEntraNuevo;
 
   /// No description provided for @proveedorAccesoUsuarioContrasenaIncorrectosRevisa.
   ///
   /// In es, this message translates to:
-  /// **'Usuario o contraseña incorrectos. Revisa e intenta de nuevo.'**
+  /// **'Usuario o contraseña incorrectos. Revísalos y vuelve a intentarlo.'**
   String get proveedorAccesoUsuarioContrasenaIncorrectosRevisa;
 
   /// No description provided for @proveedorAccesoSinConexionNecesitasSenal.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. Necesitas señal para entrar; lo que ya guardaste en el celular sigue ahí.'**
+  /// **'Sin conexión. Necesitas señal para ingresar; lo que ya guardaste en el teléfono sigue ahí.'**
   String get proveedorAccesoSinConexionNecesitasSenal;
 
   /// No description provided for @proveedorAccesoEstaCuentaEstaApp.
@@ -5875,19 +5875,19 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorAccesoPudimosEntrarIntentaNuevo.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos entrar. Intenta de nuevo en un momento.'**
+  /// **'No pudimos ingresar. Vuelve a intentarlo en un momento.'**
   String get proveedorAccesoPudimosEntrarIntentaNuevo;
 
   /// No description provided for @proveedorNegociacionSinConexionPuedeQue.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión: puede que lo que ves esté viejo.'**
+  /// **'Sin conexión: puede que lo que ves esté desactualizado.'**
   String get proveedorNegociacionSinConexionPuedeQue;
 
   /// No description provided for @proveedorNegociacionListoClienteEligioPuedes.
   ///
   /// In es, this message translates to:
-  /// **'¡Listo! El cliente te eligió. Ya puedes escribirle desde Servicio.'**
+  /// **'¡Listo! El cliente te eligió. Ya puedes escribirle desde «Servicio».'**
   String get proveedorNegociacionListoClienteEligioPuedes;
 
   /// No description provided for @proveedorNegociacionRechazasteOfertaDelCliente.
@@ -5911,7 +5911,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionHayConexionEnvioNada.
   ///
   /// In es, this message translates to:
-  /// **'No hay conexión. No se envió nada: reintenta con señal.'**
+  /// **'Sin conexión. No se envió nada: vuelve a intentarlo cuando tengas señal.'**
   String get proveedorNegociacionHayConexionEnvioNada;
 
   /// No description provided for @proveedorNegociacionEsaOfertaEstaVigente.
@@ -5935,19 +5935,19 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionSinConexionMensajeSigue.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. Tu mensaje sigue aquí: reintenta.'**
+  /// **'Sin conexión. Tu mensaje sigue aquí: vuelve a intentarlo.'**
   String get proveedorNegociacionSinConexionMensajeSigue;
 
   /// No description provided for @proveedorNegociacionRetiroReintentaCuandoTengas.
   ///
   /// In es, this message translates to:
-  /// **'No se retiró. Reintenta cuando tengas señal.'**
+  /// **'No se retiró. Vuelve a intentarlo cuando tengas señal.'**
   String get proveedorNegociacionRetiroReintentaCuandoTengas;
 
   /// No description provided for @proveedorNegociacionEnvioPrecioSigueAqui.
   ///
   /// In es, this message translates to:
-  /// **'No se envió. Tu precio sigue aquí: reintenta cuando tengas señal.'**
+  /// **'No se envió. Tu precio sigue aquí: vuelve a intentarlo cuando tengas señal.'**
   String get proveedorNegociacionEnvioPrecioSigueAqui;
 
   /// No description provided for @proveedorNegociacionEsaOfertaEstaVigente2.
@@ -5959,7 +5959,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionHayConexionQueEscribiste.
   ///
   /// In es, this message translates to:
-  /// **'No hay conexión. Lo que escribiste se conserva: reintenta cuando tengas señal.'**
+  /// **'Sin conexión. Lo que escribiste se conserva: vuelve a intentarlo cuando tengas señal.'**
   String get proveedorNegociacionHayConexionQueEscribiste;
 
   /// No description provided for @proveedorDronFotos.
@@ -6040,13 +6040,13 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionAvisosSinConexion.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. Los avisos se configuran con señal.'**
+  /// **'Sin conexión. Las notificaciones se configuran con señal.'**
   String get proveedorNegociacionAvisosSinConexion;
 
   /// No description provided for @proveedorNegociacionAvisosNoGuardado.
   ///
   /// In es, this message translates to:
-  /// **'No se guardó: no hay conexión. Intenta con señal.'**
+  /// **'No se guardó: no hay conexión. Vuelve a intentarlo con señal.'**
   String get proveedorNegociacionAvisosNoGuardado;
 
   /// No description provided for @proveedorNegociacionMapaSemantica.
@@ -6124,7 +6124,7 @@ abstract class AppLocalizations {
   /// No description provided for @accesoRolClienteDetalle.
   ///
   /// In es, this message translates to:
-  /// **'Publico lotes y elijo piloto'**
+  /// **'Publico lotes y elijo al piloto'**
   String get accesoRolClienteDetalle;
 
   /// No description provided for @accesoRolClienteBoton.
@@ -6190,7 +6190,7 @@ abstract class AppLocalizations {
   /// No description provided for @componentesSyncEnDispositivo.
   ///
   /// In es, this message translates to:
-  /// **'En el dispositivo'**
+  /// **'En este teléfono'**
   String get componentesSyncEnDispositivo;
 
   /// No description provided for @componentesSyncSincronizando.

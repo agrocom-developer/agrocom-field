@@ -82,7 +82,7 @@ class PerfilRed implements PerfilRepositorio {
           DocumentoProveedor(
             nombre: '$d'.replaceAll('_', ' '),
             estado: EstadoDocumento.rechazado,
-            motivoRechazo: 'Falta cargarlo o renovarlo.',
+            motivoRechazo: 'Falta subirlo o renovarlo.',
           ),
       ],
     );

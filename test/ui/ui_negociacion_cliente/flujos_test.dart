@@ -76,12 +76,12 @@ void main() {
       expect(find.text('274 ha'), findsOneWidget);
       expect(find.byKey(const ValueKey('solicitud-4101')), findsOneWidget);
 
-      await tester.tap(find.text('Listos'));
+      await tester.tap(find.text('Terminadas'));
       await asentar(tester);
       expect(find.byKey(const ValueKey('solicitud-4103')), findsOneWidget);
       expect(find.byKey(const ValueKey('solicitud-4101')), findsNothing);
 
-      await tester.tap(find.text('Activos'));
+      await tester.tap(find.text('Activas'));
       await asentar(tester);
       expect(find.byKey(const ValueKey('solicitud-4101')), findsOneWidget);
       expect(find.byKey(const ValueKey('solicitud-4104')), findsNothing);
