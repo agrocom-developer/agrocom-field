@@ -1,6 +1,6 @@
 # ADR 0018 — El piloto: negociación en línea y ejecución en el lote
 
-**Estado:** Aceptada (decisión revisable) · **Serie:** ADR propios de `agrocom-field` · Desarrolla el ADR 0016 para los flavors `piloto` y `auxiliar`.
+**Estado:** Aceptada (decisión revisable), actualizada por el ADR 0023 · **Serie:** ADR propios de `agrocom-field` · Desarrolla el ADR 0016 para los flavors `piloto` y `auxiliar`.
 
 ## Contexto
 
@@ -12,11 +12,11 @@ El piloto decide dónde ofertar mirando un mapa, negocia el precio por hectárea
 
 `lib/nucleo/marketplace/proveedor/negociacion/` (con `domain/`, `data/` y `presentation/`) concentra el mapa de solicitudes abiertas, el detalle previo a ofertar, la primera oferta, mis ofertas, el chat y los avisos.
 
-- **Mapa.** `flutter_map` con un marcador por solicitud (lleva el precio por hectárea escrito) y filtros por macrorregión, hectáreas, precio, cultivo y orden. Valles y Chiquitania van primero entre las zonas. El resumen por zona responde cuántas solicitudes y hectáreas hay en cada una.
+- **Mapa.** `flutter_map` con un marcador por solicitud (lleva el precio por hectárea escrito) y filtros por departamento, hectáreas, precio, fecha y cultivo, y orden por más reciente, precio, hectáreas o fecha deseada. No hay zonas, resumen por zona ni distancia, y la consulta no envía la posición del piloto (ADR 0023).
 - **Oferta.** Aceptar el precio propuesto o contraofertar el propio. La clave `uuid_cliente` nace en el dispositivo al primer intento y se conserva si la respuesta se pierde: reenviar devuelve la misma oferta. Una respuesta del servidor cierra el intento y el siguiente nace con otra clave.
 - **Mis ofertas.** Ordenadas por quién tiene el turno. La app habilita solo lo que cada oferta permite (`autor`, `estado`, `es_definitiva`) y traduce `oferta_no_vigente`, `solicitud_ya_adjudicada` y `equipo_no_disponible` a un texto que dice qué pasó; después recarga.
 - **Chat.** Texto de hasta 1000 caracteres con `uuid_cliente` por mensaje. Se actualiza cada 8 segundos mientras la pantalla está abierta, sin servicio en segundo plano.
-- **Avisos.** El interruptor de nuevas solicitudes (con zonas y hectáreas mínimas) se guarda en el servidor. Al abrir o refrescar el mapa, `AvisadorSolicitudesNuevas` consulta el mercado completo y muestra una notificación local por lo nuevo que encaja con las preferencias. La primera consulta solo registra lo que ya hay. El permiso de notificaciones se pide al activar el interruptor.
+- **Avisos.** El interruptor de nuevas solicitudes, sus filtros (departamentos que no acepta, hectáreas mínimas y tipos de aplicación que no quiere) y la disponibilidad se guardan en el servidor, que decide por oleadas a quién avisar. La app no arma avisos locales: los de nuevas solicitudes llegan por la lista de notificaciones y el push. El permiso de notificaciones se pide al activar el interruptor.
 
 ### Ejecución: offline-first sobre `drift`
 

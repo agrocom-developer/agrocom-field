@@ -1,6 +1,6 @@
 # ADR 0016 — Negociación de ofertas en las apps
 
-**Estado:** Aceptada (decisión revisable) · **Serie:** ADR propios de `agrocom-field` · Contrato: `docs/especificacion/negociacion-contrato.md` de `agrocom-api` (ADR 0030, 0038, 0041 y 0042 de ese repo).
+**Estado:** Aceptada (decisión revisable), actualizada por el ADR 0023 · **Serie:** ADR propios de `agrocom-field` · Contrato: `docs/especificacion/negociacion-contrato.md` de `agrocom-api` (ADR 0030, 0038, 0041, 0042 y 0045 de ese repo).
 
 ## Contexto
 
@@ -12,8 +12,8 @@ El cliente publica una solicitud con un precio por hectárea; los pilotos la ven
 
 | Flavor | Negociación |
 |---|---|
-| `cliente` | Dibuja su propiedad y lotes, crea la solicitud con su precio por hectárea, la publica, cambia el precio, compara las ofertas (precio por hectárea y total, calificación, dron con fotos, distancia, vigencia), acepta, contraoferta o rechaza, y renueva o cancela. |
-| `piloto` | Ve el mapa de solicitudes abiertas con filtros y resumen por zona, abre el detalle (lotes, hectáreas, cultivo, accesos, observaciones y fotos del terreno), acepta el precio propuesto o contraoferta con su dron, responde a las contraofertas y retira su oferta. Configura sus notificaciones. |
+| `cliente` | Dibuja su propiedad y lotes, crea la solicitud con su precio por hectárea, la publica, cambia el precio, compara las ofertas (precio por hectárea y total, calificación, dron con fotos, vigencia y los requisitos que una oferta no cumple), acepta, contraoferta o rechaza, elige «Sin buscar más pilotos», y renueva o cancela. |
+| `piloto` | Ve el mapa de solicitudes abiertas con filtro por departamento, abre el detalle (lotes, hectáreas, cultivo, accesos, observaciones y fotos del terreno), acepta el precio propuesto o contraoferta con su dron, responde a las contraofertas y retira su oferta. Configura sus notificaciones. |
 | `auxiliar` | No negocia. Ve el servicio adjudicado del equipo. |
 
 ### La negociación requiere red
@@ -40,11 +40,11 @@ Precio por hectárea, montos y hectáreas son `Decimal` (ADR 0002) en el dominio
 
 ### Mapa
 
-`flutter_map` con teselas abiertas (ya en uso). El piloto ve pines por solicitud agrupados por zona y un resumen por zona (solicitudes, hectáreas, precio medio) para decidir adónde ir. El cliente dibuja sus lotes y ve los de sus solicitudes. La posición del piloto para ordenar por distancia se envía con la consulta y no se guarda.
+`flutter_map` con teselas abiertas (ya en uso). El piloto ve pines por solicitud, con filtro por departamento; no hay zonas ni distancia (ADR 0023). El cliente dibuja sus lotes y ve los de sus solicitudes.
 
 ### Notificaciones
 
-Cada cuenta administra sus preferencias (nuevas solicitudes con zonas y hectáreas mínimas, ofertas, mensajes, avance, calificaciones) y registra el token de push de su dispositivo, que se retira al cerrar sesión. Las categorías obligatorias no se pueden apagar. El permiso de notificaciones del sistema se pide explicando el motivo, cuando el piloto activa las nuevas solicitudes.
+Cada cuenta administra sus preferencias (nuevas solicitudes con sus filtros de departamentos, hectáreas mínimas y tipos de aplicación, ofertas, mensajes, avance, calificaciones) y registra el token de push de su dispositivo, que se retira al cerrar sesión. Las categorías obligatorias no se pueden apagar. El permiso de notificaciones del sistema se pide explicando el motivo, cuando el piloto activa las nuevas solicitudes.
 
 ### Registro del proveedor
 

@@ -14,10 +14,10 @@ Lo que una pantalla necesita y el contrato (`agrocom-api`, `docs/api/openapi.yam
 | La ruta de las fotos aprobadas del dron en la oferta. `proveedor.dron.fotos` llega vacío en los datos de demostración. | Muestra las fotos cuando traen `url`; si no, solo marca, modelo y capacidad. |
 | Dosis, producto y tipo de aplicación como campos. Solo hay `producto_indicado` (texto) y `tipo_aplicacion`. | El producto viaja como texto escrito o elegido; el tipo de aplicación se deduce del producto. |
 | Fecha de creación de la solicitud en la lista. | Usa el historial (detalle) o `publicada_en`. |
-| Contorno del terreno cuando `geometria` es nula. | Dibuja un cuadrado de reserva centrado en la zona, con la superficie del terreno, solo para ubicarlo en el mapa. |
+| Contorno del terreno cuando `geometria` es nula. | Dibuja un cuadrado de reserva centrado en el punto del terreno, con la superficie del terreno, solo para ubicarlo en el mapa. |
 | Catálogo de productos y cultivos sugeridos. | Listas fijas en la app. |
 | Calificaciones que el proveedor da al cliente (son privadas por diseño). | Solo se muestra el promedio y el conteo de la ficha del cliente. |
-| Perfil público del piloto (pantalla 19): licencia verificada, servicios completados, hectáreas fumigadas, años en la plataforma, zona base, reseñas con comentario y auxiliar. La oferta solo trae `proveedor.{nombre, foto_url, calificacion, tasa_cancelacion, dron}`. | La pantalla muestra nombre, foto, calificación, número de calificaciones, cancelaciones y dron con año y capacidad. No inventa el chip «Licencia verificada» ni la sección de reseñas. |
+| Perfil público del piloto (pantalla 19): licencia verificada, servicios completados, hectáreas fumigadas, años en la plataforma, reseñas con comentario y auxiliar. La oferta solo trae `proveedor.{nombre, foto_url, calificacion, tasa_cancelacion, dron}`. | La pantalla muestra nombre, foto, calificación, número de calificaciones, cancelaciones y dron con año y capacidad. No inventa el chip «Licencia verificada» ni la sección de reseñas. |
 | Preferencias de aviso del cliente (`/api/notificaciones/preferencias` existe; el flavor cliente no tiene repositorio). | El perfil del cliente no ofrece el interruptor «Avisos de ofertas». |
 | Hectáreas fumigadas del cliente (estadística del perfil 17). | El perfil muestra lotes, servicios y calificación como cliente. |
 | Marcar un aviso del inicio como leído desde la tarjeta. | Descartar un aviso solo lo oculta en la sesión. |
@@ -29,7 +29,6 @@ La capa de datos ya cubre estas rutas (ADR 0020); falta la pantalla que las use.
 
 | Ruta | Pantalla que falta |
 |---|---|
-| `GET /api/referencias/precio` | El precio de referencia junto al campo de precio al solicitar (cliente), y en la hoja de oferta del piloto. |
 | `PUT` y `DELETE /api/perfil/foto` | Elegir, cambiar y quitar la foto de perfil en la cuenta (cliente) y en el perfil (piloto); mostrarla en la tarjeta del proveedor de la oferta. |
 | `POST` y `DELETE /api/terrenos/{id}/fotos` | Galería de fotos del terreno al crearlo o editarlo (cliente); verlas en el detalle de la solicitud abierta (piloto). |
 | `GET` y `POST /api/solicitudes/{id}/pago-confirmado` | «Ya recibí el pago» del proveedor titular en el servicio finalizado; el cliente ve el pago confirmado en el seguimiento. |
