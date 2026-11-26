@@ -11,7 +11,7 @@ Publicar una solicitud es la acción principal del cliente del marketplace (`agr
 ### Estado y capas
 
 - El formulario vive en `SolicitarCubit` (`lib/cliente/solicitar/presentation/`), con un `SolicitarEstado` inmutable. Los widgets no guardan datos del formulario: un fallo de envío o un cambio de paso nunca pierde lo escrito.
-- Las reglas que se validan en el dispositivo (anticipación mínima de un día, 14 días ofrecidos, urgencia, formato y tope de hectáreas, formato del precio) están en `ReglasSolicitud` (`domain/`). Un terreno registrado limita las hectáreas que se pueden pedir a las suyas. El servidor las vuelve a validar y su mensaje llega a la pantalla tal cual.
+- Las reglas que se validan en el dispositivo (anticipación mínima de un día, 14 días ofrecidos, la sugerencia de marcar la solicitud como urgente, formato y tope de hectáreas, formato del precio; la urgencia ya no se deriva de la fecha: la declara el cliente con una fecha límite, ADR 0023) están en `ReglasSolicitud` (`domain/`). Un terreno registrado limita las hectáreas que se pueden pedir a las suyas. El servidor las vuelve a validar y su mensaje llega a la pantalla tal cual.
 
 ### Cuatro pasos, una acción por pantalla
 
