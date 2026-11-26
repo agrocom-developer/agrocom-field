@@ -144,8 +144,7 @@ bool _esPantalla(String ruta) =>
     ruta.contains('/presentation/') ||
     ruta.contains('/componentes/') ||
     ruta.contains('/marketplace/ui/') ||
-    ruta.contains('/tema_visual/') ||
-    ruta.contains('/version/');
+    ruta.contains('/tema_visual/');
 
 Iterable<File> _archivosDart() => Directory('lib')
     .listSync(recursive: true)

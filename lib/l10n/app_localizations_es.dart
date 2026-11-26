@@ -722,17 +722,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get uiOpenstreetmap => 'OpenStreetMap';
 
   @override
-  String get versionActualizacionObligatoria => 'Actualización obligatoria';
-
-  @override
-  String versionEstaVersionAppEsta(String version) {
-    return 'Esta versión de la app ya no está autorizada. Instalá la versión $version o superior para seguir usándola.';
-  }
-
-  @override
-  String get versionDescargalaDesde => 'DESCÁRGALA DESDE';
-
-  @override
   String componentesRondaSemantica(
     Object ronda,
     Object totalRondas,

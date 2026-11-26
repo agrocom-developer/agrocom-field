@@ -88,7 +88,6 @@ El contrato completo está en `docs/api/openapi.yaml` de `agrocom-api`, generado
 | Ubicación del piloto (`PUT /api/ubicacion`) | `piloto` | Con red, sin outbox; se omite sin señal |
 | Catálogo de servicios adjudicados (`GET /api/sync/catalogo`) | `piloto` | Pull con cursor |
 | Registros del lote (`POST /api/sync`) y fotos (`POST /api/evidencias`) | `piloto` | Offline, outbox |
-| Versión mínima del APK (`GET /api/version`) | Todos | Polling, sin red tolerado |
 
 ## Qué no hace la app
 
