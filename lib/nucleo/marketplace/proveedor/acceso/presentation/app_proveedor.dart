@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../l10n/app_localizations_es.dart';
 import '../../../../camara/selector_imagen.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tema_visual/tema_visual_app.dart';
@@ -46,7 +47,9 @@ class AppProveedor extends StatelessWidget {
       child: BlocProvider(
         create: (_) => AccesoCubit(
           acceso.acceso,
-          AppLocalizations.of(context),
+          // Este `context` queda por encima del `MaterialApp`, que es quien
+          // instala las localizaciones; la app va fija en español.
+          AppLocalizationsEs(),
           sesionExpirada: acceso.sesionExpirada,
         )..iniciar(),
         child: TemaVisualApp(
