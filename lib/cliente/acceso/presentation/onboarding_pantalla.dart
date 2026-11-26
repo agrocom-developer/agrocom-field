@@ -21,6 +21,12 @@ const Duration _intervaloAutoavance = Duration(milliseconds: 3500);
 /// la foto ocupa todo el ancho, el texto queda en una columna legible.
 const double _anchoMaximoTexto = 560;
 
+/// En pantallas bajas el texto de la portada no crece más de este factor,
+/// por grande que sea la letra del sistema: así deja ver la foto y no se
+/// come media pantalla. Los controles (botones) sí siguen el ajuste completo.
+const double _alturaPantallaBaja = 700;
+const double _escalaMaximaTextoPantallaBaja = 1.3;
+
 /// Color del texto sobre la foto. No sale de la paleta del tema porque la
 /// foto es oscura en la parte baja en claro y en oscuro; el degradado
 /// ([_Pagina]) garantiza el contraste.
@@ -359,6 +365,10 @@ class _Pagina extends StatelessWidget {
     final texto = Theme.of(context).textTheme;
     final inferior = MediaQuery.paddingOf(context).bottom;
     final superior = MediaQuery.paddingOf(context).top;
+    final escalaSistema = MediaQuery.textScalerOf(context);
+    final escala = MediaQuery.sizeOf(context).height < _alturaPantallaBaja
+        ? escalaSistema.clamp(maxScaleFactor: _escalaMaximaTextoPantallaBaja)
+        : escalaSistema;
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -367,6 +377,28 @@ class _Pagina extends StatelessWidget {
           fit: BoxFit.cover,
           alignment: Alignment.topCenter,
           excludeFromSemantics: true,
+        ),
+        // Velo oscuro arriba: la hora y los íconos claros de la barra de
+        // estado se leen también sobre un cielo claro.
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: superior + ObjetivoTactilCampo.minimo * 2,
+          child: const DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.0, 0.55, 1.0],
+                colors: [
+                  Color(0xA6_050A06),
+                  Color(0x73_050A06),
+                  Color(0x00_050A06),
+                ],
+              ),
+            ),
+          ),
         ),
         const DecoratedBox(
           decoration: BoxDecoration(
@@ -419,6 +451,7 @@ class _Pagina extends StatelessWidget {
                     children: [
                       Text(
                         portada.titulo(l10n),
+                        textScaler: escala,
                         style: texto.headlineMedium?.copyWith(
                           color: _textoSobreFoto,
                         ),
@@ -426,6 +459,7 @@ class _Pagina extends StatelessWidget {
                       const SizedBox(height: EspaciadoCampo.m),
                       Text(
                         portada.detalle(l10n),
+                        textScaler: escala,
                         style: texto.bodyLarge?.copyWith(
                           color: _textoSecundarioSobreFoto,
                         ),
@@ -447,27 +481,13 @@ class _Pagina extends StatelessWidget {
   }
 }
 
-/// El logo de Agrocom sobre la foto (imagen, no texto), con su sombra.
+/// El logo de Agrocom (PNG transparente) directo sobre la foto, sin caja y
+/// con la sombra del componente, que cae solo hacia abajo y sigue la silueta.
 class _SelloAgrocom extends StatelessWidget {
   const _SelloAgrocom();
 
   @override
-  Widget build(BuildContext context) {
-    // Píldora clara: el verde del logo se pierde sobre el follaje.
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: const Color(0xF2FFFFFF),
-        borderRadius: BorderRadius.circular(RadioCampo.media),
-      ),
-      child: const Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: EspaciadoCampo.m,
-          vertical: EspaciadoCampo.xs,
-        ),
-        child: LogoAgrocomCampo(ancho: 96, sombra: false),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const LogoAgrocomCampo(ancho: 112);
 }
 
 class _PastillaSaltar extends StatelessWidget {
