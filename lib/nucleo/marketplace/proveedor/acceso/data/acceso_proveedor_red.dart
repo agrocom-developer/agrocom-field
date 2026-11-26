@@ -199,7 +199,7 @@ class AccesoProveedorRed implements AccesoProveedorRepositorio {
         throw const AccesoProveedorExcepcion(
           MotivoFalloAcceso.desconocido,
           mensaje:
-              'Hiciste demasiados registros desde esta red. Espera un rato.',
+              'Hiciste demasiados intentos de registro desde esta red. Espera un rato.',
         );
       }
       throw const AccesoProveedorExcepcion(MotivoFalloAcceso.desconocido);

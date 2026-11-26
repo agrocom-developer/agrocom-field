@@ -150,7 +150,7 @@ void main() {
       expect(find.text('SOLICITUD ACTIVA'), findsOneWidget);
       expect(find.text('Comparar ofertas'), findsOneWidget);
       expect(find.text('Ver la otra solicitud activa'), findsOneWidget);
-      await tester.scrollUntilVisible(find.text('Avisos'), 200);
+      await tester.scrollUntilVisible(find.text('Notificaciones'), 200);
       await tester.scrollUntilVisible(find.text('Historial reciente'), 200);
       expect(find.text('Ver todo'), findsOneWidget);
     });
@@ -161,7 +161,7 @@ void main() {
       await tester.pumpAndSettle();
       final aviso = find.text('Buen clima para aplicar mañana');
       await tester.scrollUntilVisible(aviso, 200);
-      await tester.tap(find.byTooltip('Descartar aviso').first);
+      await tester.tap(find.byTooltip('Descartar notificación').first);
       await tester.pumpAndSettle();
       expect(aviso, findsNothing);
       expect(find.text('Un buen precio atrae más ofertas'), findsOneWidget);
@@ -231,7 +231,7 @@ void main() {
       await _abrir(tester, InicioControlado.fijo(_resumenDemo()));
       await tester.pumpAndSettle();
       final activa = tester.getTopLeft(find.text('SOLICITUD ACTIVA'));
-      final avisos = tester.getTopLeft(find.text('Avisos'));
+      final avisos = tester.getTopLeft(find.text('Notificaciones'));
       expect(avisos.dx, greaterThan(activa.dx + 200));
     });
   });

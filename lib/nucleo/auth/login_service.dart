@@ -114,6 +114,6 @@ class LoginService {
     if (cuerpo is Map && cuerpo['message'] is String) {
       return cuerpo['message'] as String;
     }
-    return 'Revisá los datos ingresados.';
+    return 'Revisa los datos ingresados.';
   }
 }

@@ -52,7 +52,7 @@ class ProblemaRed implements ProblemaRepositorio {
       final previo = await delServicio(reporte.servicioId);
       if (previo == null) {
         throw const OperacionRechazada(
-          'No pudimos registrar el problema. Intenta de nuevo.',
+          'No pudimos registrar el problema. Vuelve a intentarlo.',
         );
       }
       caso = previo;

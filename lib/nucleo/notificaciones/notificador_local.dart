@@ -24,9 +24,9 @@ class NotificadorLocalPlugin implements NotificadorLocal {
   final FlutterLocalNotificationsPlugin _plugin;
 
   static const _canalId = 'avisos_locales';
-  static const _canalNombre = 'Avisos';
+  static const _canalNombre = 'Notificaciones';
   static const _canalDescripcion =
-      'Avisos generados en el dispositivo, sin conexión';
+      'Notificaciones generadas en el teléfono, sin conexión';
 
   bool _inicializado = false;
 

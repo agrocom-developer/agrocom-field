@@ -192,7 +192,10 @@ void main() {
       entorno.almacenNegociacion.enLinea = false;
       await abrir(tester, tamano: telefonoChico);
       expect(find.text('Sin conexión'), findsOneWidget);
-      expect(find.textContaining('competencia'), findsOneWidget);
+      expect(
+        find.textContaining('para mostrar lo que hay disponible'),
+        findsOneWidget,
+      );
       expect(find.textContaining('Sin señal ·'), findsWidgets);
       await golden(tester, 'mapa_sin_red_360x640_x1');
       entorno.almacenNegociacion.enLinea = true;
@@ -299,7 +302,10 @@ void main() {
       await irA(tester, find.textContaining('Aceptar Bs 121'));
       await tester.tap(find.textContaining('Aceptar Bs 121'));
       await esperar(tester);
-      expect(find.textContaining('No hay conexión'), findsOneWidget);
+      expect(
+        find.textContaining('vuelve a intentarlo cuando tengas señal'),
+        findsOneWidget,
+      );
       expect(find.textContaining('Aceptar Bs 121'), findsOneWidget);
       entorno.almacenNegociacion.enLinea = true;
       await tester.tap(find.textContaining('Aceptar Bs 121'));

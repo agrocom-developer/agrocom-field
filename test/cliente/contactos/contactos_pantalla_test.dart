@@ -60,7 +60,7 @@ void main() {
     await asentar(tester);
     expect(find.text('Escribe el nombre.'), findsOneWidget);
     expect(
-      find.text('Escribe un celular de al menos 7 dígitos.'),
+      find.text('Escribe un teléfono de al menos 7 dígitos.'),
       findsOneWidget,
     );
   });

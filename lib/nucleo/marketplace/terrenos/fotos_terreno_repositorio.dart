@@ -65,7 +65,7 @@ class FotosTerrenoDemo implements FotosTerrenoRepositorio {
     final fotos = _porTerreno.putIfAbsent(terrenoId, () => []);
     if (fotos.length >= FotosTerrenoRepositorio.maximo) {
       throw const OperacionRechazada(
-        'Este terreno ya tiene el máximo de fotos. Borra una para subir otra.',
+        'Este terreno ya tiene el máximo de fotos. Elimina una para subir otra.',
         codigo: 422,
       );
     }

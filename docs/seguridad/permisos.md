@@ -9,7 +9,7 @@ Los permisos propios de cada flavor viven en su source set; el manifest común (
 | Permiso o característica | `cliente` | `piloto` | Por qué |
 | --- | --- | --- | --- |
 | `INTERNET` | sí | sí | Negociar, sincronizar y subir fotos; el tráfico en claro está prohibido en release |
-| `ACCESS_FINE_LOCATION` y `ACCESS_COARSE_LOCATION` | no | sí | Solo el piloto comparte su última posición, durante `en_ejecucion`, y puede desactivarla. No hay ubicación en segundo plano ni servicio en primer plano |
+| `ACCESS_FINE_LOCATION` y `ACCESS_COARSE_LOCATION` | no | sí | Solo el piloto comparte su última posición, durante `en_ejecucion`, y puede desactivarla; también la toma una vez, solo si pulsa el botón de auxilio o reporta una incidencia (ADR 0025). No hay ubicación en segundo plano ni servicio en primer plano. El SOS del cliente usa la ubicación del terreno del servicio y no pide permiso |
 | `POST_NOTIFICATIONS` | no | sí | El piloto recibe avisos locales de solicitudes nuevas. El cliente no tiene avisos hoy |
 | `uses-feature camera.flash` (`required=false`) | no | sí | Linterna de emergencia del piloto (`torch_light`); no excluye dispositivos sin flash |
 | `ACCESS_NETWORK_STATE`, `VIBRATE` | `ACCESS_NETWORK_STATE` | ambos | Los aportan `connectivity_plus` y `flutter_local_notifications`; son permisos normales, sin aviso al usuario. El cliente quita `VIBRATE` |
@@ -30,6 +30,6 @@ Para ver el manifest fusionado de un flavor: `bin/probar flutter build apk --deb
 | --- | --- | --- |
 | `NSCameraUsageDescription` | ambos | Selfie de verificación, documento, fotos del terreno y del avance del servicio, y quién las ve |
 | `NSPhotoLibraryUsageDescription` | ambos | Fotos que la persona elige (perfil, logo, documentos, terreno); no se lee el resto de la galería |
-| `NSLocationWhenInUseUsageDescription` | `piloto` (el cliente nunca la pide) | Nombra «Agrocom Piloto»: la última ubicación se comparte con el cliente solo durante un servicio en ejecución y puede desactivarse |
+| `NSLocationWhenInUseUsageDescription` | `piloto` (el cliente nunca la pide) | Nombra «Agrocom Piloto»: la última ubicación se comparte con el cliente solo durante un servicio en ejecución y puede desactivarse; **debe agregar** que también se usa, solo si pulsa el botón de auxilio o reporta una incidencia, para avisar a soporte dónde está (ADR 0025, punto 15) |
 
 No hay `UIBackgroundModes`, ubicación permanente ni micrófono. El permiso de notificaciones de iOS no lleva clave en el plist: lo pide el plugin en ejecución. Cada permiso se pide en contexto, con el motivo explicado antes del aviso del sistema (ADR 0024).

@@ -78,6 +78,6 @@ class InicioClienteRed implements InicioClienteRepositorio {
     if (tipo.contains('expirada')) return 'Solicitud expirada';
     if (tipo.contains('cancelada')) return 'Solicitud cancelada';
     if (tipo.contains('adjudicada')) return 'Ya tienes piloto';
-    return 'Aviso de Agrocom';
+    return 'Notificación de Agrocom';
   }
 }

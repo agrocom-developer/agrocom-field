@@ -81,7 +81,7 @@ class MarketplaceHttp {
   }
 
   static const _mensajeGenerico =
-      'No pudimos completar la operación. Intenta de nuevo en un momento.';
+      'No pudimos completar la operación. Vuelve a intentarlo en un momento.';
 
   static Map<String, dynamic> _mapa(Object? datos) =>
       datos is Map ? Map<String, dynamic>.from(datos) : <String, dynamic>{};
@@ -101,15 +101,15 @@ class MarketplaceHttp {
   static String mensajeDeServidor(int codigo, Object? cuerpo) {
     final propio = _mensaje(cuerpo);
     return switch (codigo) {
-      401 => 'Tu sesión venció. Entra de nuevo.',
+      401 => 'Tu sesión venció. Ingresa de nuevo.',
       403 => propio ?? 'Esta cuenta no tiene permiso para hacer esto.',
       404 => 'No encontramos lo que buscas. Puede haber cambiado.',
       409 =>
         propio ??
-            'Esto cambió mientras lo mirabas. Actualiza e intenta de nuevo.',
-      422 => propio ?? 'Revisa los datos e intenta de nuevo.',
-      429 => 'Demasiados intentos. Espera un momento e intenta de nuevo.',
-      >= 500 => 'El servidor tuvo un problema. Intenta de nuevo en un momento.',
+            'Esto cambió mientras lo mirabas. Actualiza y vuelve a intentarlo.',
+      422 => propio ?? 'Revisa los datos y vuelve a intentarlo.',
+      429 => 'Demasiados intentos. Espera un momento y vuelve a intentarlo.',
+      >= 500 => 'Tuvimos un problema. Vuelve a intentarlo en un momento.',
       _ => _mensajeGenerico,
     };
   }

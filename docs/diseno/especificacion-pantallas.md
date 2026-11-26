@@ -100,13 +100,13 @@ Las capturas están en `referencia/claro/` (y una selección en `oscuro/` y `cam
 - **13 Calificar:** avatar de 80, 5 estrellas de 48 (ámbar), chips de atributos, comentario y "Enviar calificación".
 
 **Piloto**
-- **14 Mapa de solicitudes:** mapa a sangre con lotes (verde = abierto, ámbar = urgente) y pines de precio (el seleccionado en primary). Búsqueda en píldora de 56, filtros (con «Solo urgentes»; las urgentes van primero y llevan la insignia «Urgente · faltan N días») y hoja inferior con lote, cifras y los botones Contraofertar / Aceptar Bs 62.
+- **14 Mapa de solicitudes:** mapa a sangre con lotes (verde = abierto, ámbar = urgente) y pines de precio (el seleccionado en primary). Una solicitud que el cliente amplió y que es de otro departamento lleva la etiqueta «En otro departamento: Beni» (texto e ícono) en el pin, la lista y el detalle. Búsqueda en píldora de 56, filtros (con «Solo urgentes»; las urgentes van primero y llevan la insignia «Urgente · faltan N días») y hoja inferior con lote, cifras y los botones Contraofertar / Aceptar Bs 62.
 - **15 Negociación:** cabecera "Ronda 4 de 5" con barra de segmentos, burbujas R1–R3 y aviso ámbar "Tu turno". Panel inferior con stepper (68 Bs/ha, total) y los botones Aceptar 65 / Enviar 68.
 - **16 Mis ofertas:** pestañas segmentadas Activas / Ganadas / Cerradas. Tarjetas con chip de estado y cifras de cliente y tuyas; si es tu turno, la tarjeta lleva borde ámbar. El chip de estado de una oferta activa dice "Tu oferta está en cola" (con reloj), "El cliente la está viendo" o "En conversación", con texto además de ícono; nunca muestra posición ni cuántos esperan. Una oferta en cola se puede retirar.
 
 **Perfiles**
 - **17 Perfil del cliente:** avatar, estadísticas (lotes, ha, calificación), "Mis campos" con miniaturas, ajustes (avisos, tema, cambiar a piloto) y "Cerrar sesión".
-- **18 Perfil del proveedor · ajustes:** estadísticas, selector de tema Claro / Oscuro / Campo AAA, avisos con sus filtros (incluido «Recibir solicitudes urgentes»), disponibilidad, dron y licencia.
+- **18 Perfil del proveedor · ajustes:** estadísticas, selector de tema Claro / Oscuro / Campo AAA, departamentos donde trabaja (los 9 del catálogo, al menos uno; solo lectura para el piloto de una empresa), avisos con sus filtros (hectáreas mínimas, tipos de aplicación y «Recibir solicitudes urgentes», más una línea con los departamentos que lleva al perfil), disponibilidad, dron y licencia.
 - **19 Perfil público del proveedor:** lo que ve el cliente. Chip "Licencia verificada", estadísticas, EQUIPO (dron y piloto), RESEÑAS y barra inferior con la oferta y el botón "Elegir".
 
 **Estados**
@@ -134,7 +134,10 @@ Las variables mínimas son:
 
 ## Páginas que convendría agregar
 Estas pantallas aún no están diseñadas:
-- Revisión y publicación (paso 3 de 3 de "Publicar lote").
+- Revisión y publicación (paso 3 de 3 de "Publicar lote"), con el interruptor apagado «Buscar también en otros departamentos» y su explicación («Tu solicitud también se ofrecerá a pilotos de otros departamentos. Podrás volver a tu departamento cuando quieras»).
+- Alcance en el detalle de la solicitud (cliente): el botón «Buscar también en otros departamentos»; ya ampliada, el estado «Buscamos también en otros departamentos» con «Volver a mi departamento» y su confirmación; y la tarjeta de sugerencia de «Esperando piloto», junto con subir el precio y ampliar la fecha. Estados: cargando, sin red (no cambia), error, «Marca primero Volver a buscar» (solicitud «En acuerdo») y éxito.
+- Departamentos donde trabaja (piloto): selección múltiple de los 9 departamentos, con el mínimo de uno, en el registro y en el perfil; estados de carga, error, sin red y éxito; solo lectura con «Los define tu empresa» para el piloto de una empresa.
+- «En otro departamento» (piloto): etiqueta con texto e ícono en el pin, la lista, el detalle y la campana, con el texto de ayuda «El viaje y el costo los acuerdas con el cliente»; el aviso «Nueva solicitud en otro departamento», el estado vacío del mapa («Ves las solicitudes de los departamentos donde trabajas. Puedes cambiarlos en tu perfil») y el mensaje «Esta solicitud ya no está disponible» cuando el cliente vuelve a su departamento.
 - Dibujo del polígono sobre el mapa (paso 1).
 - Detalle de la oferta del lado del piloto antes de aceptar.
 - Ejecución en modo campo del piloto: marcar avance y finalizar.
@@ -147,7 +150,12 @@ Estas pantallas aún no están diseñadas:
 - Proveedor no aprobado: en lugar del mapa, el contador «Hay N solicitudes abiertas que no puedes ver hasta que te aprueben», con filtro por departamento y el camino a la verificación.
 - Piloto de una empresa: invitaciones y código de empresa en el perfil del piloto, y «Mis pilotos» del encargado (invitar, aprobar, liberar).
 - Equipo del servicio: integrantes opcionales dentro del formulario del equipo (piloto) y vista del equipo completo tras adjudicar (cliente).
-- Permisos (ubicación, cámara).
+- Privacidad y datos (Perfil), con enlaces a términos y privacidad, contacto de soporte, «Cuentas bloqueadas» y «Eliminar mi cuenta» (ADR 0025).
+- Eliminar mi cuenta, en cuatro pasos y una sola acción principal por pantalla: resumen de lo que se elimina y lo que se conserva con los impedimentos explicados (servicio en curso, reclamo abierto, incidencia grave, pilotos vinculados, registros sin sincronizar), contraseña y envío del código, código y botón destructivo, y confirmación con la fecha. Aparte, la pantalla de la cuenta en proceso de eliminación (única pantalla de esa sesión: «Conservar mi cuenta» y «Cerrar sesión»). Cinco estados cada una: carga, bloqueada, sin red, error y éxito.
+- Chat con «Reportar» (hoja con motivo, detalle de hasta 280 caracteres y el aviso de que soporte podrá leer lo reportado; sirve para un mensaje, la conversación y una foto de avance) y «Bloquear» (confirmación con tres líneas de efecto; chat de solo lectura después); y «Cuentas bloqueadas» con su estado vacío «No bloqueaste a nadie».
+- Botón de auxilio (SOS) y reporte de incidencia: número de emergencias primero, ubicación adjunta (la del dispositivo en el piloto; la del terreno del servicio y un texto opcional en el cliente) y estados sin red, que en el piloto quedan guardados y se sincronizan.
+- Permisos con pantalla previa: cámara (selfie y documento, terreno y avance), fotos, ubicación (solo piloto: durante el servicio y para el SOS) y notificaciones, con los textos de ADR 0025, puntos 13 a 16.
+- Registro: casilla «Soy mayor de 18 años» junto a la aceptación de términos y privacidad.
 
 ## Assets
 - `prototipo/assets/mapa-santa-cruz.png`: captura satelital de Google Maps del centro de Santa Cruz que dio el cliente. **Solo para la demo**; en la app hay que usar un SDK de mapas.
