@@ -10,7 +10,7 @@
 |---|---|---|
 | 1 | Reemplazar `brand.css` por los valores de `tokens.json` (verde `#347A36`, grafito `#29343A`, ámbar `#F5A623` con contenedores) sin tocar componentes: todo pasa por los tokens semánticos | Contraste AA en ambos temas; nada fuera de `semantic/` usa un hex |
 | 2 | Manrope y JetBrains Mono en `--ag-font-family-base` y `--ag-font-family-mono`, con la fuente cargada localmente | Cifras de tablas y métricas en mono |
-| 3 | Pantallas con más valor del negociador: solicitudes y ofertas, rondas de negociación, disputas, aprobación de proveedores y dron | Sin tablas donde convenga mostrar la conversación |
+| 3 | Pantallas con más valor del negociador: solicitudes y ofertas, rondas de negociación, reclamos, aprobación de proveedores y dron | Sin tablas donde convenga mostrar la conversación |
 | 4 | Gráficas y PDF con los mismos tokens (los PDF ya usan tokens de color) | Una sola fuente de color |
 
 **Dependencia.** Se hace en `agrocom-api` con su flujo (worktree desde `origin/develop`, PR, CI). La fuente de verdad de los valores es `tokens.json` de este repo.

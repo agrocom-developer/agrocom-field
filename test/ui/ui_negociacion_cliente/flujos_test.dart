@@ -800,7 +800,7 @@ void main() {
 
   group('reportar problema', () {
     testWidgets(
-      'exige motivo y detalle, envía y deja la solicitud en disputa',
+      'exige motivo y detalle, envía y deja la solicitud en reclamo',
       (tester) async {
         final almacen = almacenDePrueba();
         await montar(

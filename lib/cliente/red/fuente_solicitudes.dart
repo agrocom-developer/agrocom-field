@@ -43,7 +43,7 @@ class ZonasRed {
 }
 
 /// Solicitudes del cliente leídas de la API, compartidas por los
-/// repositorios de solicitudes, inicio, calificación y disputa.
+/// repositorios de solicitudes, inicio, calificación y reclamo.
 ///
 /// Es online-first: cada lectura va a la red y guarda en memoria lo último
 /// conocido, que se muestra cuando falla la conexión. Quien escribe algo que

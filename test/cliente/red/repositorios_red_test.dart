@@ -375,7 +375,7 @@ void main() {
               {
                 'id': 51,
                 'tipo': 'disputa_resuelta',
-                'titulo': 'La disputa del servicio #8 se cerró.',
+                'titulo': 'El reclamo del servicio #8 se cerró.',
                 'recurso_tipo': 'disputa',
                 'recurso_id': 2,
                 'leida': false,
@@ -553,7 +553,7 @@ void main() {
       'creada_en': '2026-11-24T12:18:29+00:00',
     };
 
-    test('abre la disputa con el motivo del contrato', () async {
+    test('abre el reclamo con el motivo del contrato', () async {
       final red = _entornoConServicios();
       red.servidor.responder(
         'POST',
@@ -579,7 +579,7 @@ void main() {
       expect(caso.motivo, MotivoProblema.coberturaIncompleta);
     });
 
-    test('si ya había una disputa (409) devuelve esa', () async {
+    test('si ya había un reclamo (409) devuelve ese', () async {
       final red = _entornoConServicios();
       red.servidor
         ..responder(
@@ -604,7 +604,7 @@ void main() {
       expect(caso.numeroCaso, 'D-9');
     });
 
-    test('delServicio devuelve null sin disputa y un 422 se explica', () async {
+    test('delServicio devuelve null sin reclamo y un 422 se explica', () async {
       final red = _entornoConServicios();
       final repo = ProblemaRed(red.http, red.fuente);
       expect(await repo.delServicio('7'), isNull);
@@ -612,7 +612,7 @@ void main() {
         'POST',
         '/api/solicitudes/7/disputas',
         codigo: 422,
-        cuerpo: {'message': 'El plazo para abrir la disputa venció.'},
+        cuerpo: {'message': 'El plazo para abrir el reclamo venció.'},
       );
       await expectLater(
         repo.reportar(

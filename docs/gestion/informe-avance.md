@@ -38,7 +38,7 @@ El script usa `flutter drive` con `integration_test/<flavor>_capturas_test.dart`
 
 ## Qué publica la API
 
-`agrocom-api` publica el contrato de la negociación (`docs/especificacion/negociacion-contrato.md`): solicitudes, mapa de abiertas, ofertas por rondas, adjudicación, seguimiento con fotos, mensajes y ubicación, calificaciones, disputas y métricas. El catálogo de sincronización entrega los servicios adjudicados del piloto.
+`agrocom-api` publica el contrato de la negociación (`docs/especificacion/negociacion-contrato.md`): solicitudes, mapa de abiertas, ofertas por rondas, adjudicación, seguimiento con fotos, mensajes y ubicación, calificaciones, reclamos y métricas. El catálogo de sincronización entrega los servicios adjudicados del piloto.
 
 ## Qué falta
 

@@ -64,12 +64,12 @@ Cada pantalla de las fases 1 a 5 migra sus medidas a `EspaciadoCampo`, `RadioCam
 - **Perfil público del piloto (19).** `PerfilProveedorPantalla`, desde «Ver perfil» en comparar ofertas. Solo muestra lo que el contrato entrega con la oferta; el resto está en `docs/gestion/brechas-api.md`.
 - **Contactos de referencia.** Pantalla de contactos (cliente empresa), selector de contacto en «Publicar lote» y la persona de contacto con cargo y empresa en el servicio del piloto. El registro del cliente es siempre de una persona; el interruptor «Asociar a una empresa» crea la empresa con quien se registra como contacto principal.
 - **Chat.** Burbujas de texto sobre `chat_bubbles`, burbuja con foto de 200 de ancho y evento de sistema en píldora (`chat_campo.dart`); envío de fotos comprimidas a menos de 300 KB.
-- **Precio final.** El cliente confirma el precio final en la pantalla 12; la disputa queda como salida alterna.
+- **Precio final.** El cliente confirma el precio final en la pantalla 12; el reclamo queda como salida alterna.
 - **Estados 20 y 21.** `EstadoVacioMarketplace` (contenedor de 88 y acción) y `EstadoErrorMarketplace` (banner sin señal, «!» tonal, tabla de qué funciona sin red y «Reintentar ahora») son el patrón de todas las listas; la publicación de una solicitud que falla usa la pantalla de error con «Volver al formulario».
 
 ## Pantallas que faltan por diseñar
 
-Revisión y publicación (paso 3), dibujo del polígono, detalle de la oferta antes de aceptar, ejecución del piloto en modo campo (marcar avance y finalizar), disputa, notificaciones, historial de servicios, verificación del proveedor (en revisión o rechazado), permisos de ubicación y cámara. La pantalla «App del auxiliar» del handoff se descarta (plan 03).
+Revisión y publicación (paso 3), dibujo del polígono, detalle de la oferta antes de aceptar, ejecución del piloto en modo campo (marcar avance y finalizar), reclamo, notificaciones, historial de servicios, verificación del proveedor (en revisión o rechazado), permisos de ubicación y cámara. La pantalla «App del auxiliar» del handoff se descarta (plan 03).
 
 ## Criterio común
 

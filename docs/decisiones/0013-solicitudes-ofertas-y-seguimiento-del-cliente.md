@@ -17,7 +17,7 @@ El dominio de la negociación vive en el flavor, junto a las pantallas que lo us
 - `OfertaRecibida`, `ProveedorOfertante` y `EstadoOferta` (`ofertas/domain/`): cada oferta lleva su ronda, su autor (el piloto abre y el cliente responde), si es definitiva, su vencimiento, la distancia, la calificación del piloto, su tasa de cancelación y el dron con sus fotos aprobadas. Qué se puede hacer sale de `autor`, `estado`, `es_definitiva` y `vence_en`; la app no replica el máximo de rondas ni las vigencias.
 - `AvanceServicio`, `FotoAvance`, `UbicacionPiloto` y `MensajeChat` (`seguimiento/domain/`).
 - `EtiquetaCalificacion` y `CalificacionEmitida`: el catálogo cerrado de etiquetas que el cliente aplica al piloto.
-- `MotivoProblema`, `ReporteProblema` y `ProblemaReportado`: los motivos son los de la política de disputas. En la interfaz se llama «reportar un problema»; del lado servidor es una disputa.
+- `MotivoProblema`, `ReporteProblema` y `ProblemaReportado`: los motivos son los de la política de reclamos. En la interfaz se llama «reportar un problema»; del lado servidor es un reclamo.
 
 ### Repositorios
 

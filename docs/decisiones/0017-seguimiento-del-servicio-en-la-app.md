@@ -37,9 +37,9 @@ La app `piloto` envía su posición a `PUT /ubicacion` cada 30 segundos mientras
 
 Al finalizar, ambas apps muestran el precio final que calcula el servidor: hectáreas ejecutadas por precio acordado. El texto dice que el pago se hace fuera de la app. El proveedor puede marcar que lo recibió.
 
-### Calificación y disputa
+### Calificación y reclamo
 
-El cliente califica al proveedor en un registro propio durante 7 días desde `finalizada`; el proveedor califica al cliente en otro, privado. Cualquiera abre una disputa dentro de su plazo.
+El cliente califica al proveedor en un registro propio durante 7 días desde `finalizada`; el proveedor califica al cliente en otro, privado. Cualquiera abre un reclamo dentro de su plazo.
 
 ## Alternativas descartadas
 

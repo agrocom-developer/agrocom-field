@@ -23,7 +23,7 @@ Un solo código Flutter, dos flavors (ADR 0009, ADR 0021):
 | `cliente` | Dueño del campo o encargado | Registrarse, marcar propiedad y lotes en el mapa, publicar una solicitud con su precio por hectárea, comparar y elegir ofertas, ver fotos de avance, chatear, ver la última ubicación del piloto, calificar | Online-first, sin outbox |
 | `piloto` | Piloto (control remoto del dron o celular) | Registrarse con sus datos y los de su dron con fotos, ver el mapa de solicitudes abiertas, ofertar, activar o desactivar notificaciones por zona; ejecutar: marcar inicio, subir fotos, marcar avance, cerrar con las hectáreas ejecutadas | Negociación con red; ejecución offline en el lote |
 
-Las superficies web (panel admin y motor del marketplace) viven en `agrocom-api`: aprobación de proveedores y drones con sus fotos, moderación de calificaciones, disputas y métricas.
+Las superficies web (panel admin y motor del marketplace) viven en `agrocom-api`: aprobación de proveedores y drones con sus fotos, moderación de calificaciones, reclamos y métricas.
 
 ### Qué es online y qué es offline
 
@@ -39,7 +39,7 @@ Las superficies web (panel admin y motor del marketplace) viven en `agrocom-api`
 4. **Elección.** El cliente compara las ofertas y negocia ronda por ronda hasta que una parte acepta la oferta de la otra. La solicitud queda `adjudicada` con su precio acordado; se abren los datos de contacto y el chat.
 5. **Ejecución.** Las partes acuerdan en persona cómo trabajan. El piloto marca el inicio (`en_ejecucion`), sube fotos de su avance y marca el progreso (porcentaje u hectáreas). Todo se sincroniza cuando vuelve la señal; las fotos, comprimidas a menos de 300 KB, viajan en una cola aparte. El cliente ve las fotos, el avance, los mensajes y la última ubicación del piloto como un punto en el mapa.
 6. **Cierre.** El piloto cierra con las hectáreas ejecutadas. El servidor calcula el precio final (hectáreas ejecutadas por precio acordado) y ambos lo ven como el monto a pagar. La solicitud queda `finalizada`.
-7. **Calificación.** El cliente califica al proveedor en un registro propio y la solicitud pasa a `calificada`; el proveedor lo ve y un admin lo modera. El proveedor califica al cliente en otro registro, privado. Cualquiera puede abrir una disputa dentro de su plazo.
+7. **Calificación.** El cliente califica al proveedor en un registro propio y la solicitud pasa a `calificada`; el proveedor lo ve y un admin lo modera. El proveedor califica al cliente en otro registro, privado. Cualquiera puede abrir un reclamo dentro de su plazo.
 
 Una solicitud sin adjudicar vence (`expirada`) y el cliente puede renovarla. Cancelar antes de adjudicar no tiene consecuencia; después de adjudicar se registra quién cancela y se muestra en su tasa de cancelación, sin penalidad en dinero.
 

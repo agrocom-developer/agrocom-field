@@ -26,7 +26,7 @@ class ClienteHttp {
   });
 
   /// Como [obtener], pero un `404` devuelve `null` en vez de fallar: sirve
-  /// para recursos que pueden no existir (la disputa de un servicio).
+  /// para recursos que pueden no existir (el reclamo de un servicio).
   Future<Map<String, dynamic>?> obtenerOpcional(String ruta) =>
       proteger(() async {
         try {

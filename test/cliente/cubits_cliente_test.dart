@@ -194,7 +194,7 @@ void main() {
       expect(cubit.state.puedeEnviar, isTrue);
     });
 
-    test('envía, devuelve el caso y la solicitud queda en disputa', () async {
+    test('envía, devuelve el caso y la solicitud queda en reclamo', () async {
       final cubit = crear()
         ..elegirMotivo(MotivoProblema.coberturaIncompleta)
         ..cambiarDetalle('  Faltó el borde norte del lote.  ');

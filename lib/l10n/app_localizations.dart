@@ -1045,7 +1045,7 @@ abstract class AppLocalizations {
   /// No description provided for @precioFinalAbrirDisputa.
   ///
   /// In es, this message translates to:
-  /// **'Abrir disputa'**
+  /// **'Abrir un reclamo'**
   String get precioFinalAbrirDisputa;
 
   /// No description provided for @contactoPilotoTitulo.
@@ -4740,7 +4740,7 @@ abstract class AppLocalizations {
   /// No description provided for @proveedorNegociacionEligeQueQuieresEnterarte.
   ///
   /// In es, this message translates to:
-  /// **'Elige de qué quieres enterarte. Los avisos de adjudicación, cierre, cuenta y disputas no se pueden apagar.'**
+  /// **'Elige de qué quieres enterarte. Los avisos de adjudicación, cierre, cuenta y reclamos no se pueden apagar.'**
   String get proveedorNegociacionEligeQueQuieresEnterarte;
 
   /// No description provided for @proveedorNegociacionNuevasSolicitudes.

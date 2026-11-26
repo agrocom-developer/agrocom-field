@@ -12,7 +12,7 @@ enum EstadoSolicitud {
   enEjecucion('En ejecución', 'El piloto está trabajando en tu lote.'),
   finalizada('Finalizada', 'El piloto terminó. Revisa el resultado.'),
   calificada('Calificada', 'Gracias por calificar el servicio.'),
-  disputada('En disputa', 'Soporte está revisando el caso.'),
+  disputada('En reclamo', 'Soporte está revisando el caso.'),
   expirada('Expirada', 'Nadie la tomó a tiempo. Puedes volver a abrirla.'),
   cancelada('Cancelada', 'La solicitud se canceló.');
 
