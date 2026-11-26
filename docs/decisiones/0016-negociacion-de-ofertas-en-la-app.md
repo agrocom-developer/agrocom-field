@@ -26,7 +26,7 @@ La app no replica reglas de la negociación: ni el máximo de rondas, ni las vig
 
 ### Estados de la solicitud en la app
 
-`borrador`, `abierta`, `con_ofertas`, `adjudicada`, `en_ejecucion`, `finalizada`, `calificada`, `disputada`, `expirada` y `cancelada`, con el texto y el ícono propios de cada uno (no se comunica solo con color). El cliente ve «Buscando piloto» en `abierta` y `con_ofertas`.
+`borrador`, `abierta`, `con_ofertas`, `adjudicada`, `en_ejecucion`, `finalizada`, `calificada`, `disputada` y `cancelada` (la solicitud no vence sola; su etapa «Esperando piloto» es una condición, no un estado; ADR 0023), con el texto y el ícono propios de cada uno (no se comunica solo con color). El cliente ve «Buscando piloto» en `abierta` y `con_ofertas`.
 
 ### Qué ve cada flavor y cuándo
 
