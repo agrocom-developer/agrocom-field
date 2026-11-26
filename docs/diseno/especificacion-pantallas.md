@@ -87,9 +87,9 @@ Las capturas están en `referencia/claro/` (y una selección en `oscuro/` y `cam
   - Tarjeta "SOLICITUD ACTIVA" con chip ámbar "Tienes 3 aceptaciones nuevas" (la bandeja), cifras ha / tu precio / mejor oferta y el botón "Ver aceptaciones".
   - Tarjeta de servicio en curso con barra de progreso.
   - FAB grafito "Publicar lote" y barra inferior: Inicio / Lotes / Servicios / Perfil.
-- **07 Publicar lote:** pasos 2 de 3. Miniatura del mapa con el polígono, "120 ha dibujadas" y "Editar". Campos: nombre, cultivo (chips), ubicación (departamento y provincia en listas; municipio y comunidad en texto), tipo de dron opcional y precio con stepper ±, sin precio de referencia. Total estimado y "Revisar y publicar".
+- **07 Publicar lote:** pasos 2 de 3. Miniatura del mapa con el polígono, "120 ha dibujadas" y "Editar". Campos: nombre, cultivo (chips), ubicación (departamento y provincia en listas; municipio y comunidad en texto), tipo de dron opcional, fecha deseada opcional con el interruptor «Es urgente» (fecha límite obligatoria, motivo opcional y texto de consecuencias; la fecha cercana solo sugiere marcarla) y precio con stepper ±, sin precio de referencia. Total estimado y "Revisar y publicar".
 - **08 Detalle de la solicitud:** mapa a sangre de 300 px. Hoja inferior con:
-  - chip info "Abierta · recibiendo ofertas" (o la etapa: «Buscando piloto», «Con aceptaciones», «En acuerdo», «Esperando piloto») y la fecha deseada; la solicitud no vence sola;
+  - chip info "Abierta · recibiendo ofertas" (o la etapa: «Buscando piloto», «Con aceptaciones», «En acuerdo», «Esperando piloto») y la fecha deseada; la solicitud no vence sola; si es urgente, la insignia «Urgente · faltan N días» con el motivo, las acciones «Cambiar fecha límite» y «Quitar urgencia», las sugerencias de ajuste (subir el precio, ampliar la fecha, quitar el requisito de dron) y, pasada la fecha límite, «Pasó tu fecha límite» con sus tres salidas;
   - una cuadrícula de 2×2 con superficie, precio, cultivo y fecha;
   - un aviso ámbar sobre las ofertas;
   - los botones Editar / Ver 3 aceptaciones; con una conversación abierta, la acción secundaria "Marcar En acuerdo" (y, ya en acuerdo, "Volver a buscar"); en "Esperando piloto", cuánto lleva sin respuesta y las salidas ajustar, volver a lanzar y cancelar.
@@ -100,13 +100,13 @@ Las capturas están en `referencia/claro/` (y una selección en `oscuro/` y `cam
 - **13 Calificar:** avatar de 80, 5 estrellas de 48 (ámbar), chips de atributos, comentario y "Enviar calificación".
 
 **Piloto**
-- **14 Mapa de solicitudes:** mapa a sangre con lotes (verde = abierto, ámbar = vence hoy) y pines de precio (el seleccionado en primary). Búsqueda en píldora de 56, filtros y hoja inferior con lote, cifras y los botones Contraofertar / Aceptar Bs 62.
+- **14 Mapa de solicitudes:** mapa a sangre con lotes (verde = abierto, ámbar = urgente) y pines de precio (el seleccionado en primary). Búsqueda en píldora de 56, filtros (con «Solo urgentes»; las urgentes van primero y llevan la insignia «Urgente · faltan N días») y hoja inferior con lote, cifras y los botones Contraofertar / Aceptar Bs 62.
 - **15 Negociación:** cabecera "Ronda 4 de 5" con barra de segmentos, burbujas R1–R3 y aviso ámbar "Tu turno". Panel inferior con stepper (68 Bs/ha, total) y los botones Aceptar 65 / Enviar 68.
 - **16 Mis ofertas:** pestañas segmentadas Activas / Ganadas / Cerradas. Tarjetas con chip de estado y cifras de cliente y tuyas; si es tu turno, la tarjeta lleva borde ámbar. El chip de estado de una oferta activa dice "Tu oferta está en cola" (con reloj), "El cliente la está viendo" o "En conversación", con texto además de ícono; nunca muestra posición ni cuántos esperan. Una oferta en cola se puede retirar.
 
 **Perfiles**
 - **17 Perfil del cliente:** avatar, estadísticas (lotes, ha, calificación), "Mis campos" con miniaturas, ajustes (avisos, tema, cambiar a piloto) y "Cerrar sesión".
-- **18 Perfil del proveedor · ajustes:** estadísticas, selector de tema Claro / Oscuro / Campo AAA, avisos con sus filtros, disponibilidad, dron y licencia.
+- **18 Perfil del proveedor · ajustes:** estadísticas, selector de tema Claro / Oscuro / Campo AAA, avisos con sus filtros (incluido «Recibir solicitudes urgentes»), disponibilidad, dron y licencia.
 - **19 Perfil público del proveedor:** lo que ve el cliente. Chip "Licencia verificada", estadísticas, EQUIPO (dron y piloto), RESEÑAS y barra inferior con la oferta y el botón "Elegir".
 
 **Estados**
