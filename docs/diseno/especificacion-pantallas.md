@@ -147,7 +147,12 @@ Estas pantallas aún no están diseñadas:
 - Proveedor no aprobado: en lugar del mapa, el contador «Hay N solicitudes abiertas que no puedes ver hasta que te aprueben», con filtro por departamento y el camino a la verificación.
 - Piloto de una empresa: invitaciones y código de empresa en el perfil del piloto, y «Mis pilotos» del encargado (invitar, aprobar, liberar).
 - Equipo del servicio: integrantes opcionales dentro del formulario del equipo (piloto) y vista del equipo completo tras adjudicar (cliente).
-- Permisos (ubicación, cámara).
+- Privacidad y datos (Perfil), con enlaces a términos y privacidad, contacto de soporte, «Cuentas bloqueadas» y «Eliminar mi cuenta» (ADR 0025).
+- Eliminar mi cuenta, en cuatro pasos y una sola acción principal por pantalla: resumen de lo que se elimina y lo que se conserva con los impedimentos explicados (servicio en curso, reclamo abierto, incidencia grave, pilotos vinculados, registros sin sincronizar), contraseña y envío del código, código y botón destructivo, y confirmación con la fecha. Aparte, la pantalla de la cuenta en proceso de eliminación (única pantalla de esa sesión: «Conservar mi cuenta» y «Cerrar sesión»). Cinco estados cada una: carga, bloqueada, sin red, error y éxito.
+- Chat con «Reportar» (hoja con motivo, detalle de hasta 280 caracteres y el aviso de que soporte podrá leer lo reportado; sirve para un mensaje, la conversación y una foto de avance) y «Bloquear» (confirmación con tres líneas de efecto; chat de solo lectura después); y «Cuentas bloqueadas» con su estado vacío «No bloqueaste a nadie».
+- Botón de auxilio (SOS) y reporte de incidencia: número de emergencias primero, ubicación adjunta (la del dispositivo en el piloto; la del terreno del servicio y un texto opcional en el cliente) y estados sin red, que en el piloto quedan guardados y se sincronizan.
+- Permisos con pantalla previa: cámara (selfie y documento, terreno y avance), fotos, ubicación (solo piloto: durante el servicio y para el SOS) y notificaciones, con los textos de ADR 0025, puntos 13 a 16.
+- Registro: casilla «Soy mayor de 18 años» junto a la aceptación de términos y privacidad.
 
 ## Assets
 - `prototipo/assets/mapa-santa-cruz.png`: captura satelital de Google Maps del centro de Santa Cruz que dio el cliente. **Solo para la demo**; en la app hay que usar un SDK de mapas.

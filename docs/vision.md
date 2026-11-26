@@ -97,14 +97,16 @@ El contrato completo está en `docs/api/openapi.yaml` de `agrocom-api`, generado
 
 ## Publicación en las tiendas y privacidad
 
-Lo que Google Play y la App Store exigen sobre privacidad, eliminación de cuenta, permisos, contenido de usuarios, edad y cuentas para los revisores, el mapa de datos que las apps recogen y el panorama de protección de datos en Latinoamérica están en `docs/politicas/tiendas-y-privacidad.md` de `agrocom-api` (`/Applications/MAMP/htdocs/agrocom-api`), que es la fuente de verdad. No es asesoría legal. Lo que toca a esta app:
+Lo que Google Play y la App Store exigen sobre privacidad, eliminación de cuenta, permisos, contenido de usuarios, edad y cuentas para los revisores, el mapa de datos que las apps recogen y el panorama de protección de datos en Latinoamérica están en `docs/politicas/tiendas-y-privacidad.md` de `agrocom-api` (`/Applications/MAMP/htdocs/agrocom-api`), que es la fuente de verdad, con la decisión en el ADR 0047 de ese repo y el de las apps en el ADR 0025 de este. No es asesoría legal. El dueño decidió ajustarse a lo que las tiendas exigen. Lo que toca a las apps:
 
-- «Eliminar mi cuenta» dentro de cada app (Perfil, Privacidad y datos), con la contraparte en la API y una página web.
-- Textos de propósito de cámara, fotos, ubicación y notificaciones por flavor, con una explicación previa dentro de la app, y permisos de Android por flavor (el cliente no usa ubicación).
-- Enlaces a los términos y la privacidad en el registro y en los ajustes, y contacto de soporte visible.
-- Reportar y bloquear en el chat.
-- Manifiesto de privacidad de iOS, teselas del mapa y push, que son terceros que hay que declarar.
+- **«Eliminar mi cuenta»** dentro de cada app (Perfil, Privacidad y datos): contraseña y código al correo de respaldo, 7 días para arrepentirse, anonimización de los datos personales en el servidor y una página web para quien no puede entrar. Se conservan, declarados, la selfie y el documento 90 días (12 meses con antecedentes), un registro mínimo antifraude y los servicios y calificaciones sin datos identificables.
+- **Reportar y bloquear en el chat.** Reportar un mensaje, la conversación o una foto abre un reclamo de conducta que soporte atiende leyendo solo lo reportado; bloquear cierra el chat y la negociación y oculta las solicitudes del otro, sin romper un servicio adjudicado.
+- **Ubicación de emergencia.** El botón de auxilio y las incidencias adjuntan una posición que el servidor guarda 90 días tras cerrar el caso; en el piloto es la del dispositivo y en el cliente la del terreno del servicio (la app del cliente no declara permisos de ubicación).
+- Textos de propósito de cámara, fotos, ubicación y notificaciones por flavor, con una explicación previa dentro de la app, y permisos de Android por flavor.
+- Enlaces a los términos y la privacidad en el registro y en los ajustes, contacto de soporte visible y declaración de mayoría de edad (18 años).
+- Manifiesto de privacidad de iOS, teselas del mapa y push, que son terceros que hay que declarar. Sign in with Apple no aplica.
 - Declaraciones de Data safety y App Privacy para cada app.
+- Antes de enviar: dominio, HTTPS y las páginas públicas `/terminos`, `/privacidad` y `/eliminar-cuenta`, trabajo de infraestructura del dueño con su lista de verificación en «Antes de publicar en las tiendas».
 
 ## Qué no hace la app
 
@@ -130,8 +132,8 @@ Lo que Google Play y la App Store exigen sobre privacidad, eliminación de cuent
 | El piloto ve lotes y fotos antes de ofertar, y el contacto solo tras adjudicar | Decide su precio con información sin exponer al cliente |
 | La calificación la escribe el cliente en un registro propio; el proveedor solo la ve; el admin modera | Un solo rol escritor por registro |
 | Sin cobro ni comisión calculada en la app | Reduce superficie y riesgo; el modelo de ingresos es del negocio |
-| La ubicación del piloto es solo la última posición durante la ejecución | Privacidad: sin historial ni ruta |
+| La ubicación del piloto es solo la última posición durante la ejecución; la única otra que se guarda es la de una emergencia o incidencia, 90 días tras cerrarla | Privacidad: sin historial ni ruta, y lo que se guarda por seguridad está declarado |
 | El cliente y el proveedor se registran solos, se verifican (selfie con cámara y documento) y el admin aprueba cada cuenta | Se entra y se ve la app sin frenar el alta, pero no se negocia con terrenos, dinero y drones ajenos sin saber que la persona existe |
 | Una cuenta por app y una persona con a lo sumo una cuenta de cada tipo | Son dos apps; evita cuentas repetidas de la misma persona y que la persona se contrate a sí misma sin verlo |
 | El auxiliar no es usuario de la app (ADR 0021) | No hay trabajo propio que justifique una app ni un selector de rol |
-| El mapa usa `flutter_map` con teselas abiertas, sin clave de proveedor | Evita gestionar una clave de mapas en la primera versión |
+| El mapa usa `flutter_map` con teselas abiertas de OpenStreetMap solo mientras dura la beta; para publicar, el dueño decide el proveedor de teselas (ADR 0025, punto 19) | Evita gestionar una clave de mapas en la primera versión; las teselas públicas no son base para una app publicada |

@@ -44,3 +44,15 @@ La capa de datos ya cubre estas rutas (ADR 0020); falta la pantalla que las use.
 
 La app consume `tipo`, `evento`, `url` y `bytes` de los mensajes, `POST /api/solicitudes/{id}/mensajes/fotos` y `GET /api/mensajes/{id}/archivo` (PR #354 de `agrocom-api`), y `GET /api/solicitudes/{id}/precio-final` y `POST …/precio-final/confirmar` (PR #353). Hasta que entren a `develop`, las pruebas usan los ejemplos de esos PR copiados en `test/fixtures/api_cliente/`.
 
+## Tiendas: eliminación de cuenta, reportar y bloquear (ADR 0025)
+
+Lo que el contrato (`docs/api/openapi.yaml` de `agrocom-api`) todavía no entrega. Hasta que exista, las pantallas no se publican en las tiendas y trabajan contra los ejemplos de `docs/api/ejemplos/` o el modo demo.
+
+| Falta en la API | Qué hace la app hoy |
+|---|---|
+| `GET/POST /api/cuenta/eliminacion`, `/codigo` y `/cancelar`, con `409 eliminacion_bloqueada` y sus `motivos`, y `403 cuenta_en_eliminacion` con la sesión de gracia | La opción «Eliminar mi cuenta» no existe; en demo, un repositorio de demostración con los motivos fijos |
+| `cuenta.eliminacion` en `GET /api/auth/sesion` (estado y fecha de ejecución) | La app no distingue una cuenta en proceso de eliminación |
+| `POST /api/solicitudes/{id}/mensajes/{mensaje}/reportar`, `/chat/reportar` y `/evidencias/{foto}/reportar`, con el catálogo de motivos | El chat no ofrece «Reportar» |
+| `GET/POST /api/bloqueos` y `DELETE /api/bloqueos/{id}` | El chat no ofrece «Bloquear» ni hay «Cuentas bloqueadas» |
+| `mensaje_no_permitido` (filtro) en el envío y en el resultado `rechazado` de la sincronización | El mensaje se envía sin filtro del servidor |
+| El adjunto de ubicación en `POST /api/emergencias` y `POST /api/incidencias` del cliente (la ubicación del terreno la pone el servidor) | El botón de auxilio no existe en la app |
