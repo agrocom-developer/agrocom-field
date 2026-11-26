@@ -26,11 +26,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get problemaSinConexion =>
-      'Sin conexión. El reporte no se envió; prueba de nuevo cuando tengas señal.';
+      'Sin conexión. El reporte no se envió; vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get problemaErrorEnvio =>
-      'No pudimos enviar el reporte. Prueba de nuevo.';
+      'No pudimos enviar el reporte. Vuelve a intentarlo.';
 
   @override
   String get problemaAvisoSoporte =>
@@ -166,7 +166,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get perfilClienteEstadCalificacion => 'como cliente';
 
   @override
-  String get perfilMisCampos => 'Mis campos';
+  String get perfilMisCampos => 'Mis lotes';
 
   @override
   String get perfilAgregarCampo => '+ Agregar';
@@ -191,7 +191,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get perfilErrorCargaDetalle =>
-      'Revisa tu conexión y vuelve a intentar.';
+      'Revisa tu conexión y vuelve a intentarlo.';
 
   @override
   String get lotesTitulo => 'Lotes';
@@ -258,7 +258,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get perfilProveedorDocumentosVacio =>
-      'Todavía no cargaste documentos. Sin ellos no se puede aprobar tu perfil.';
+      'Todavía no subiste documentos. Sin ellos no se puede aprobar tu perfil.';
 
   @override
   String get perfilProveedorZonas => 'Zonas de cobertura';
@@ -273,17 +273,17 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get perfilProveedorResenasVacio =>
-      'Las reseñas de tus clientes aparecen aquí después de cada servicio.';
+      'Las calificaciones de tus clientes aparecen aquí después de cada servicio.';
 
   @override
   String get perfilProveedorErrorTitulo => 'No pudimos cargar tu perfil';
 
   @override
   String get perfilProveedorErrorDetalle =>
-      'Revisa tu conexión y vuelve a intentar.';
+      'Revisa tu conexión y vuelve a intentarlo.';
 
   @override
-  String get perfilProveedorAvisos => 'Avisos';
+  String get perfilProveedorAvisos => 'Notificaciones';
 
   @override
   String get perfilProveedorAvisosDetalle =>
@@ -291,7 +291,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get perfilProveedorCerrarSesionDetalle =>
-      'Lo que aún no se subió se conserva en este celular';
+      'Lo que aún no se subió se conserva en este teléfono';
 
   @override
   String get perfilPublicoTitulo => 'Perfil del piloto';
@@ -368,7 +368,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get contactosNombre => 'Nombre completo';
 
   @override
-  String get contactosCelular => 'Celular';
+  String get contactosCelular => 'Teléfono';
 
   @override
   String get contactosCargo => 'Cargo (opcional)';
@@ -387,11 +387,11 @@ class AppLocalizationsEs extends AppLocalizations {
   String get contactosCancelar => 'Cancelar';
 
   @override
-  String get contactosQuitar => 'Quitar contacto';
+  String get contactosQuitar => 'Eliminar contacto';
 
   @override
   String contactosQuitarPregunta(String nombre) {
-    return '¿Quitar a $nombre?';
+    return '¿Eliminar a $nombre?';
   }
 
   @override
@@ -400,22 +400,22 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get contactosUnicoAviso =>
-      'Una empresa necesita al menos un contacto: agrega otro antes de quitar a este.';
+      'Una empresa necesita al menos un contacto: agrega otro antes de eliminar a este.';
 
   @override
   String get contactosErrorNombre => 'Escribe el nombre.';
 
   @override
   String get contactosErrorCelular =>
-      'Escribe un celular de al menos 7 dígitos.';
+      'Escribe un teléfono de al menos 7 dígitos.';
 
   @override
   String get contactosSinConexion =>
-      'Sin conexión. No se guardó nada; prueba de nuevo cuando tengas señal.';
+      'Sin conexión. No se guardó nada; vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get contactosErrorGuardar =>
-      'No pudimos guardar el contacto. Prueba de nuevo.';
+      'No pudimos guardar el contacto. Vuelve a intentarlo.';
 
   @override
   String contactosFilaSemantica(String nombre, String cargo, String celular) {
@@ -461,7 +461,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get registroEmpresaContactoNota =>
-      'Tu nombre y celular quedan como contacto principal. Después puedes agregar a otras personas desde tu perfil.';
+      'Tu nombre y teléfono quedan como contacto principal. Después puedes agregar a otras personas desde tu perfil.';
 
   @override
   String get chatTitulo => 'Chat con el piloto';
@@ -524,10 +524,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get chatFalloDesconocido =>
-      'No pudimos enviarlo. Tu mensaje sigue aquí; prueba de nuevo.';
+      'No pudimos enviarlo. Tu mensaje sigue aquí; vuelve a intentarlo.';
 
   @override
-  String get chatFalloFoto => 'No pudimos enviar la foto. Prueba de nuevo.';
+  String get chatFalloFoto => 'No pudimos enviar la foto. Vuelve a intentarlo.';
 
   @override
   String get chatAutorTu => 'Tú';
@@ -560,7 +560,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get precioFinalFalloSinConexion =>
-      'Sin conexión. No se confirmó nada; prueba de nuevo cuando tengas señal.';
+      'Sin conexión. No se confirmó nada; vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get precioFinalFalloRechazado =>
@@ -568,7 +568,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get precioFinalFalloDesconocido =>
-      'No pudimos confirmar el precio final. Prueba de nuevo.';
+      'No pudimos confirmar el precio final. Vuelve a intentarlo.';
 
   @override
   String get precioFinalAbrirDisputa => 'Abrir un reclamo';
@@ -587,7 +587,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String estadoSinConexionDetalle(String queNoCargo) {
-    return 'Necesitamos señal para cargar $queNoCargo. Revisa tu conexión y prueba de nuevo.';
+    return 'Necesitamos señal para cargar $queNoCargo. Revisa tu conexión y vuelve a intentarlo.';
   }
 
   @override
@@ -595,7 +595,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String estadoErrorDetalle(String queNoCargo) {
-    return 'No pudimos cargar $queNoCargo. Prueba de nuevo en un momento.';
+    return 'No pudimos cargar $queNoCargo. Vuelve a intentarlo en un momento.';
   }
 
   @override
@@ -638,7 +638,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get redSinSenalMensaje =>
-      'lo que ya cargaste sigue a la vista. Pedir u ofertar necesita red.';
+      'lo que ya cargaste sigue a la vista. Publicar u ofertar necesita red.';
 
   @override
   String componentesCalificacion(int valor) {
@@ -712,7 +712,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String componentesPedido(String numero, String estado) {
-    return 'Pedido $numero, $estado';
+    return 'Solicitud $numero, $estado';
   }
 
   @override
@@ -791,7 +791,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accesoFumigacionConDronesPedido =>
-      'Fumigación con drones, a pedido';
+      'Fumigación con drones cuando la necesites';
 
   @override
   String get accesoSolicitaServicioSigueVuelo =>
@@ -843,7 +843,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accesoPudimosAbrirSesion => 'No pudimos abrir tu sesión';
 
   @override
-  String get accesoIntentaNuevoMomento => 'Intenta de nuevo en un momento.';
+  String get accesoIntentaNuevoMomento => 'Vuelve a intentarlo en un momento.';
 
   @override
   String get accesoReintentar => 'Reintentar';
@@ -865,7 +865,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accesoConQueVasEntrar =>
-      'Es con lo que vas a entrar. Sin espacios ni correo.';
+      'Con este usuario ingresas a la app. Sin espacios ni correo.';
 
   @override
   String accesoMinimoCaracteresConLetras(int largoMinimoContrasena) {
@@ -931,7 +931,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Toca «Publicar lote», marca tu lote y compara las ofertas de los pilotos.';
 
   @override
-  String get inicioDescartarAviso => 'Descartar aviso';
+  String get inicioDescartarAviso => 'Descartar notificación';
 
   @override
   String inicioCalificasteCon(int puntajeDelCliente) {
@@ -1009,7 +1009,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get ofertasLosPilotosZonaVen =>
-      'Los pilotos de la zona ya ven tu solicitud. Cuando alguno ofrezca, te avisamos. Si tarda, prueba subir tu precio.';
+      'Los pilotos de la zona ya ven tu solicitud. Cuando alguno ofrezca, te avisamos. Si tarda, puedes subir tu precio.';
 
   @override
   String ofertasFoto(String nombre) {
@@ -1077,7 +1077,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get seguimientoAcuerdenFechaPorChat =>
-      'Acuerden la fecha por el chat.';
+      'Acuerda la fecha con el piloto por el chat.';
 
   @override
   String get seguimientoCierrePrecioFinal => 'Cierre y precio final';
@@ -1092,7 +1092,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get seguimientoPilotoTodaviaEmpezoAcuerden =>
-      'El piloto todavía no empezó. Acuerden la fecha por el chat.';
+      'El piloto todavía no empezó. Acuerda la fecha con él por el chat.';
 
   @override
   String seguimientoUltimaActualizacion(String ahora) {
@@ -1119,7 +1119,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get seguimientoTodaviaHayFotosPiloto =>
-      'Todavía no hay fotos. El piloto las sube a medida que avanza, y las verás acá.';
+      'Todavía no hay fotos. El piloto las sube a medida que avanza, y las verás aquí.';
 
   @override
   String get seguimientoFotoDelAvance => 'Foto del avance';
@@ -1185,7 +1185,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String ofertasPedido(String id) {
-    return 'PEDIDO #$id';
+    return 'SOLICITUD #$id';
   }
 
   @override
@@ -1223,10 +1223,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get ofertasSinConexionEnviamosRespuesta =>
-      'Sin conexión. No enviamos tu respuesta; inténtalo con señal.';
+      'Sin conexión. No se envió tu respuesta; vuelve a intentarlo cuando tengas señal.';
 
   @override
-  String get ofertasPudimosEnviarRespuesta => 'No pudimos enviar tu respuesta.';
+  String get ofertasPudimosEnviarRespuesta =>
+      'No pudimos enviar tu respuesta. Vuelve a intentarlo.';
 
   @override
   String ofertasContraofertaRonda(int numero) {
@@ -1293,7 +1294,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String seguimientoPedido(String id) {
-    return 'PEDIDO #$id';
+    return 'SOLICITUD #$id';
   }
 
   @override
@@ -1425,7 +1426,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get solicitarPedirloParaMananaMarca =>
-      'Pedirlo para mañana marca tu solicitud como urgente. Los pilotos con el dron libre responden más rápido.';
+      'Si la necesitas para mañana, tu solicitud se marca como urgente. Los pilotos con el dron libre responden más rápido.';
 
   @override
   String get solicitarComoLlegaLoteOpcional =>
@@ -1486,7 +1487,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get solicitarPublicarUnaSolicitudNecesita =>
-      'Publicar una solicitud necesita conexión. Revisa la señal y vuelve a intentar.';
+      'Publicar una solicitud necesita conexión. Revisa la señal y vuelve a intentarlo.';
 
   @override
   String get solicitarReintentar => 'Reintentar';
@@ -1528,7 +1529,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get solicitudesLasOfertasQueRecibiste =>
-      'Las ofertas que ya recibiste no cambian; los pilotos que negocian contigo reciben el aviso.';
+      'Las ofertas que ya recibiste no cambian; los pilotos que negocian contigo reciben una notificación.';
 
   @override
   String get solicitudesVerLasOfertas => 'Ver las ofertas';
@@ -1610,13 +1611,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Sin conexión. Ves lo último que cargamos; puede estar desactualizado.';
 
   @override
-  String get solicitudesTodos => 'Todos';
+  String get solicitudesTodos => 'Todas';
 
   @override
-  String get solicitudesActivos => 'Activos';
+  String get solicitudesActivos => 'Activas';
 
   @override
-  String get solicitudesListos => 'Listos';
+  String get solicitudesListos => 'Terminadas';
 
   @override
   String get solicitudesFumigadoConAgrocom => 'Fumigado con Agrocom';
@@ -1711,11 +1712,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get calificarSinConexionCalificacionEnvio =>
-      'Sin conexión. Tu calificación no se envió; prueba de nuevo cuando tengas señal.';
+      'Sin conexión. Tu calificación no se envió; vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get calificarPudimosEnviarCalificacionPrueba =>
-      'No pudimos enviar tu calificación. Prueba de nuevo.';
+      'No pudimos enviar tu calificación. Vuelve a intentarlo.';
 
   @override
   String get calificarReintentar => 'Reintentar';
@@ -1731,7 +1732,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accesoSesionVencioEntraNuevo =>
-      'Tu sesión venció. Entra de nuevo.';
+      'Tu sesión venció. Ingresa de nuevo.';
 
   @override
   String get accesoTusDatos => 'Tus datos';
@@ -1757,7 +1758,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get inicioPorCalificar => 'Por calificar';
 
   @override
-  String get inicioAvisos => 'Avisos';
+  String get inicioAvisos => 'Notificaciones';
 
   @override
   String get inicioHistorialReciente => 'Historial reciente';
@@ -1773,10 +1774,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get inicioRevisaSenalIntentaNuevo =>
-      'Revisa tu señal e intenta de nuevo. Publicar una solicitud requiere conexión.';
+      'Revisa tu señal y vuelve a intentarlo. Publicar una solicitud requiere conexión.';
 
   @override
-  String get inicioIntentaNuevoMomento => 'Intenta de nuevo en un momento.';
+  String get inicioIntentaNuevoMomento => 'Vuelve a intentarlo en un momento.';
 
   @override
   String comunEnviando(String texto) {
@@ -1814,15 +1815,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get solicitudesSinConexionGuardoCambio =>
-      'Sin conexión. No se guardó el cambio; inténtalo con señal.';
+      'Sin conexión. No se guardó el cambio; vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get solicitudesPudimosCompletarOperacion =>
-      'No pudimos completar la operación.';
+      'No pudimos completar la operación. Vuelve a intentarlo.';
 
   @override
   String get solicitudesSinConexionFaltanCargar =>
-      'Sin conexión. Faltan cargar tu calificación y el reclamo.';
+      'Sin conexión. No pudimos cargar tu calificación ni el reclamo.';
 
   @override
   String get solicitudesPudimosCargarCalificacionReclamo =>
@@ -1844,7 +1845,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get solicitudesQuienFumiga => 'Quién fumiga';
 
   @override
-  String get solicitudesQuePediste => 'Lo que pediste';
+  String get solicitudesQuePediste => 'Lo que solicitaste';
 
   @override
   String get solicitudesProducto => 'Producto';
@@ -1877,7 +1878,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get solicitudesCuandoPilotoTerminaQueda =>
-      'Cuando un piloto termina, queda guardado acá con sus fotos y el precio final.';
+      'Cuando un piloto termina, queda guardado aquí con sus fotos y el precio final.';
 
   @override
   String get solicitudesPublicaLoteComparaLas =>
@@ -1905,7 +1906,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String solicitarErrorHectareasSobreLote(String tope) {
-    return 'El lote tiene $tope ha: no puedes pedir más.';
+    return 'El lote tiene $tope ha: no puedes solicitar más.';
   }
 
   @override
@@ -1953,15 +1954,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get accesoErrorCredenciales =>
-      'El usuario o la contraseña no coinciden. Revísalos e intenta de nuevo.';
+      'El usuario o la contraseña no coinciden. Revísalos y vuelve a intentarlo.';
 
   @override
   String get accesoErrorSinConexion =>
-      'Sin conexión. Lo que escribiste sigue aquí: intenta de nuevo cuando tengas señal.';
+      'Sin conexión. Lo que escribiste sigue aquí: vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get accesoErrorDesconocido =>
-      'No pudimos completar la operación. Intenta de nuevo en un momento.';
+      'No pudimos completar la operación. Vuelve a intentarlo en un momento.';
 
   @override
   String get accesoPortadaPublicaTitulo => 'Publica tu lote en el mapa';
@@ -2092,7 +2093,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get terrenosClienteSubioFotosDel =>
-      'El cliente no subió fotos del terreno. Pregúntale por el estado del lote en el chat si te eligen.';
+      'El cliente no subió fotos del terreno. Si te eligen, pregúntale por el estado del lote en el chat.';
 
   @override
   String terrenosFoto(int _actual, int fotos) {
@@ -2148,7 +2149,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorDronRevisaConexionVolveIntentar =>
-      'Revisá la conexión y volvé a intentar.';
+      'Revisa la conexión y vuelve a intentarlo.';
 
   @override
   String get proveedorDronTodaviaRegistrasteDrones =>
@@ -2281,7 +2282,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get fotoSinConexionReintentar =>
-      'Sin conexión. Revisa tu señal y vuelve a intentar.';
+      'Sin conexión. Revisa tu señal y vuelve a intentarlo.';
 
   @override
   String get fotoPerfilNoPreparada =>
@@ -2292,7 +2293,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get fotoPerfilNoQuitada =>
-      'No pudimos quitar la foto. Intenta de nuevo.';
+      'No pudimos quitar la foto. Vuelve a intentarlo.';
 
   @override
   String get fotoPerfilActualizada =>
@@ -2300,15 +2301,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get fotoPerfilNoSubida =>
-      'No pudimos subir la foto. Intenta de nuevo.';
+      'No pudimos subir la foto. Vuelve a intentarlo.';
 
   @override
   String get pagoNoPudimosRevisar =>
-      'No pudimos revisar el pago. Intenta de nuevo.';
+      'No pudimos revisar el pago. Vuelve a intentarlo.';
 
   @override
   String get pagoNoPudimosConfirmar =>
-      'No pudimos confirmar el pago. Tu confirmación no se perdió: intenta de nuevo.';
+      'No pudimos confirmar el pago. Tu confirmación no se perdió: vuelve a intentarlo.';
 
   @override
   String get pagoSoloTitular =>
@@ -2328,14 +2329,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get terrenosFotoNoSubida =>
-      'No pudimos subir la foto. Intenta de nuevo.';
+      'No pudimos subir la foto. Vuelve a intentarlo.';
 
   @override
   String get terrenosFotoQuitada => 'Quitamos la foto.';
 
   @override
   String get terrenosFotoNoQuitada =>
-      'No pudimos quitar la foto. Intenta de nuevo.';
+      'No pudimos quitar la foto. Vuelve a intentarlo.';
 
   @override
   String get fotoMuyPesada =>
@@ -2394,7 +2395,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String proveedorDronQuedanCiclosPlanificaRecambio(int ciclosRestantes) {
-    return 'Quedan $ciclosRestantes ciclos. Planificá el recambio.';
+    return 'Quedan $ciclosRestantes ciclos. Planifica el recambio.';
   }
 
   @override
@@ -2412,11 +2413,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorPerfilRecibisOfertasMientrasDure =>
-      'No recibís ofertas mientras dure la suspensión.';
+      'No recibes ofertas mientras dure la suspensión.';
 
   @override
   String get proveedorPerfilSolicitudAproboPodesCorregir =>
-      'Tu solicitud no se aprobó. Podés corregir los datos y reenviarla.';
+      'Tu registro no se aprobó. Puedes corregir los datos y reenviarlo.';
 
   @override
   String proveedorPerfilMotivo(String motivo) {
@@ -2472,7 +2473,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get proveedorAccesoEntraCuenta => 'Entra a tu cuenta';
+  String get proveedorAccesoEntraCuenta => 'Ingresa a tu cuenta';
 
   @override
   String get proveedorAccesoConUsuarioContrasena =>
@@ -2491,7 +2492,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proveedorAccesoEscribeContrasena => 'Escribe tu contraseña.';
 
   @override
-  String get proveedorAccesoEntrar => 'Entrar';
+  String get proveedorAccesoEntrar => 'Ingresar';
 
   @override
   String get proveedorAccesoSoyPilotoQuieroRegistrarme =>
@@ -2542,7 +2543,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorAccesoConEsteUsuarioEntras =>
-      'Con este usuario entras a la app. No usa correo.';
+      'Con este usuario ingresas a la app. No usa correo.';
 
   @override
   String get proveedorAccesoUsaMenosCaracteres => 'Usa al menos 8 caracteres.';
@@ -2588,7 +2589,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proveedorAccesoContinuar => 'Continuar';
 
   @override
-  String get proveedorAccesoCrearCuenta => 'Crear mi cuenta';
+  String get proveedorAccesoCrearCuenta => 'Crear cuenta';
 
   @override
   String get proveedorAccesoReintentar => 'Reintentar';
@@ -2609,7 +2610,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorAccesoAdministradorLasRevisaAntes =>
-      'Un administrador las revisa antes de aprobar tu dron. Cada foto se achica sola a menos de 300 KB.';
+      'Un administrador las revisa antes de aprobar tu dron. Cada foto se comprime sola a menos de 300 KB.';
 
   @override
   String proveedorAccesoFoto(String etiqueta) {
@@ -2648,7 +2649,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Un administrador revisa tu licencia y tu dron. Mientras tanto no verás solicitudes; te avisamos cuando estés aprobado.';
 
   @override
-  String get proveedorAccesoEntrarApp => 'Entrar a la app';
+  String get proveedorAccesoEntrarApp => 'Ingresar a la app';
 
   @override
   String get proveedorNegociacionLasSolicitudesLasOfertas =>
@@ -2686,7 +2687,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionAceptarNecesitaRedReintenta =>
-      'aceptar necesita red. Reintenta con señal.';
+      'aceptar necesita red. Vuelve a intentarlo con señal.';
 
   @override
   String proveedorNegociacionOfertaEnviadaPorSigues(String precioHa) {
@@ -2717,7 +2718,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionMapaSolicitudesNecesitaSenal =>
-      'El mapa de solicitudes necesita señal: es una competencia entre pilotos. Reintenta cuando la tengas.';
+      'El mapa de solicitudes necesita señal para mostrar lo que hay disponible. Vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get proveedorNegociacionPudimosCargarLasSolicitudes =>
@@ -2725,7 +2726,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionIntentaNuevoMomento =>
-      'Intenta de nuevo en un momento.';
+      'Vuelve a intentarlo en un momento.';
 
   @override
   String get proveedorNegociacionNingunaSolicitudConEstos =>
@@ -2741,7 +2742,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionActivaLosAvisosPerfil =>
-      'Activa los avisos en Perfil y te decimos cuando llegue una en tus zonas.';
+      'Activa las notificaciones en tu perfil y te avisamos cuando llegue una en tus zonas.';
 
   @override
   String get proveedorNegociacionCargando => 'Cargando…';
@@ -2811,15 +2812,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proveedorNegociacionQuitarFiltros => 'Quitar filtros';
 
   @override
-  String get proveedorNegociacionAvisos => 'Avisos';
+  String get proveedorNegociacionAvisos => 'Notificaciones';
 
   @override
   String get proveedorNegociacionPudimosCargarTusAvisos =>
-      'No pudimos cargar tus avisos';
+      'No pudimos cargar tus notificaciones';
 
   @override
   String get proveedorNegociacionEligeQueQuieresEnterarte =>
-      'Elige de qué quieres enterarte. Los avisos de adjudicación, cierre, cuenta y reclamos no se pueden apagar.';
+      'Elige de qué quieres recibir notificaciones. Las de adjudicación, cierre, cuenta y reclamos no se pueden desactivar.';
 
   @override
   String get proveedorNegociacionNuevasSolicitudes => 'Nuevas solicitudes';
@@ -2875,7 +2876,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionSinConexionVesLos =>
-      'Sin conexión. Ves los mensajes que ya bajaron; los nuevos llegan cuando vuelva la señal.';
+      'Sin conexión. Ves los mensajes que ya recibimos; los nuevos llegan cuando vuelva la señal.';
 
   @override
   String get proveedorNegociacionTodaviaHayMensajes =>
@@ -2904,7 +2905,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionParaVerDetalleOfertar =>
-      'Para ver el detalle y ofertar necesitas señal. Reintenta cuando la tengas.';
+      'Para ver el detalle y ofertar necesitas señal. Vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get proveedorNegociacionClientePropone => 'El cliente propone';
@@ -2934,7 +2935,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionContactoConClienteLlega =>
-      'Tu contacto con el cliente llega solo si te eligen. Hasta entonces no ves su nombre, teléfono ni dirección.';
+      'Los datos de contacto del cliente se muestran solo si te elige. Hasta entonces no ves su nombre, teléfono ni dirección.';
 
   @override
   String proveedorNegociacionOfertaEnviadaPorVes(String precioHa) {
@@ -2956,7 +2957,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proveedorNegociacionProducto => 'Producto';
 
   @override
-  String get proveedorNegociacionPoneProducto => 'Pone el producto';
+  String get proveedorNegociacionPoneProducto => 'Quién aporta el producto';
 
   @override
   String get proveedorNegociacionCliente => 'El cliente';
@@ -2968,7 +2969,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proveedorNegociacionUrgencia => 'Urgencia';
 
   @override
-  String get proveedorNegociacionPideAtencionPronta => 'Pide atención pronta';
+  String get proveedorNegociacionPideAtencionPronta => 'Lo necesita pronto';
 
   @override
   String get proveedorNegociacionEstadoDelTerreno => 'Estado del terreno';
@@ -2983,7 +2984,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proveedorNegociacionComoLlegar => 'Cómo llegar';
 
   @override
-  String get proveedorNegociacionCuidar => 'Cuidar';
+  String get proveedorNegociacionCuidar => 'Colindantes sensibles';
 
   @override
   String get proveedorNegociacionObservaciones => 'Observaciones';
@@ -3034,7 +3035,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionQueVesPuedeEstar =>
-      'lo que ves puede estar viejo.';
+      'lo que ves puede estar desactualizado.';
 
   @override
   String get proveedorNegociacionMisOfertas => 'Mis ofertas';
@@ -3050,7 +3051,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionParaVerResponderTus =>
-      'Para ver y responder tus ofertas necesitas señal. Reintenta cuando la tengas.';
+      'Para ver y responder tus ofertas necesitas señal. Vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get proveedorNegociacionPudimosCargarTusOfertas =>
@@ -3142,7 +3143,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionNegociarEntreDosPersonas =>
-      'Negociar es entre dos personas y necesita señal. Nada se perdió: reintenta cuando la tengas.';
+      'Negociar necesita señal. No se perdió nada: vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get proveedorNegociacionPudimosAbrirNegociacion =>
@@ -3156,7 +3157,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionAceptasteSolicitudTuyaContacto =>
-      'Aceptaste: la solicitud es tuya. El contacto del cliente llega a Servicio.';
+      'Aceptaste la oferta: la solicitud es tuya. Los datos del cliente aparecen en «Servicio».';
 
   @override
   String get proveedorNegociacionRechazasteOfertaNegociacionCerro =>
@@ -3232,7 +3233,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorEjecucionCierraAbreAppQue =>
-      'Cierra y abre la app. Lo que guardaste sigue aquí.';
+      'Cierra la app y vuelve a abrirla. Lo que guardaste sigue aquí.';
 
   @override
   String get proveedorEjecucionTodaviaTienesServicioAdjudicado =>
@@ -3240,25 +3241,25 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorEjecucionCuandoClienteElijaServicio =>
-      'Cuando un cliente te elija, el servicio aparece aquí con sus datos de contacto. Jala hacia abajo para actualizar.';
+      'Cuando un cliente te elija, el servicio aparece aquí con sus datos de contacto. Desliza hacia abajo para actualizar.';
 
   @override
   String get proveedorEjecucionSinAvanceMarcado => 'Sin avance marcado';
 
   @override
-  String get proveedorEjecucionRegistroRechazado => '1 registro rechazado';
+  String get proveedorEjecucionRegistroRechazado => '1 envío rechazado';
 
   @override
   String proveedorEjecucionRegistrosRechazados(int rechazos) {
-    return '$rechazos registros rechazados';
+    return '$rechazos envíos rechazados';
   }
 
   @override
-  String get proveedorEjecucionCosaPorSubir => '1 cosa por subir';
+  String get proveedorEjecucionCosaPorSubir => '1 envío por subir';
 
   @override
   String proveedorEjecucionCosasPorSubir(int pendientes) {
-    return '$pendientes cosas por subir';
+    return '$pendientes envíos por subir';
   }
 
   @override
@@ -3278,11 +3279,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorEjecucionServidorAceptoAlgoQue =>
-      'El servidor no aceptó algo de lo que guardaste. Avisa a soporte desde el perfil.';
+      'No pudimos aceptar algo de lo que guardaste. Avisa a soporte desde tu perfil.';
 
   @override
   String get proveedorEjecucionEstaGuardadoEsteCelular =>
-      'Está guardado en este celular y se sube solo cuando vuelva la señal.';
+      'Está guardado en este teléfono y se sube solo cuando vuelva la señal.';
 
   @override
   String get proveedorEjecucionAvance => 'Avance';
@@ -3312,7 +3313,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorEjecucionMarcaloCuandoEmpiecesLote =>
-      'Márcalo cuando empieces en el lote. El cliente recibe el aviso.';
+      'Márcalo cuando empieces en el lote. El cliente recibe una notificación.';
 
   @override
   String get proveedorEjecucionSubirFotoAvance => 'Subir foto de avance';
@@ -3329,10 +3330,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorEjecucionPuedePasarLasHectareas =>
-      'No puede pasar de las hectáreas del servicio.';
+      'No puede ser mayor que las hectáreas del servicio.';
 
   @override
-  String get proveedorEjecucionPuedePasar100 => 'No puede pasar de 100 %.';
+  String get proveedorEjecucionPuedePasar100 => 'No puede ser mayor que 100 %.';
 
   @override
   String get proveedorEjecucionHectareas => 'Hectáreas';
@@ -3409,7 +3410,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorEjecucionUnaEstimacionHechaEste =>
-      'Es una estimación hecha en este celular. El monto final lo confirma el servidor cuando haya señal.';
+      'Es una estimación hecha en este teléfono. Agrocom confirma el monto final cuando haya señal.';
 
   @override
   String get proveedorEjecucionCompartiendoUbicacion =>
@@ -3417,7 +3418,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorEjecucionSinSenalReanudaSola =>
-      'Sin señal: se reanuda sola. Nada se guarda en el celular.';
+      'Sin señal: se reanuda sola. Nada se guarda en el teléfono.';
 
   @override
   String get proveedorEjecucionClienteUltimaPosicionMapa =>
@@ -3474,7 +3475,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proveedorEjecucionProducto => 'Producto';
 
   @override
-  String get proveedorEjecucionPoneProducto => 'Pone el producto';
+  String get proveedorEjecucionPoneProducto => 'Quién aporta el producto';
 
   @override
   String get proveedorEjecucionCliente => 'El cliente';
@@ -3495,7 +3496,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proveedorEjecucionComoLlegar => 'Cómo llegar';
 
   @override
-  String get proveedorEjecucionCuidar => 'Cuidar';
+  String get proveedorEjecucionCuidar => 'Colindantes sensibles';
 
   @override
   String get proveedorEjecucionObservaciones => 'Observaciones';
@@ -3517,47 +3518,47 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorEjecucionPudimosAchicarFotoSuficiente =>
-      'No pudimos achicar la foto lo suficiente. Toma otra con menos detalle.';
+      'No pudimos reducir el tamaño de la foto lo suficiente. Toma otra con menos detalle.';
 
   @override
   String get proveedorEjecucionPudimosGuardarloIntentaNuevo =>
-      'No pudimos guardarlo. Intenta de nuevo.';
+      'No pudimos guardarlo. Vuelve a intentarlo.';
 
   @override
   String get proveedorAccesoPudimosAchicarEsaFoto =>
-      'No pudimos achicar esa foto. Prueba con otra o tómala de nuevo.';
+      'No pudimos reducir el tamaño de esa foto. Prueba con otra o tómala de nuevo.';
 
   @override
   String get proveedorAccesoSinConexionQueEscribiste =>
-      'Sin conexión. Lo que escribiste se conserva: reintenta con señal y seguimos donde quedó.';
+      'Sin conexión. Lo que escribiste se conserva: vuelve a intentarlo con señal y seguimos donde quedó.';
 
   @override
   String get proveedorAccesoSinConexionQueEscribiste2 =>
-      'Sin conexión. Lo que escribiste se conserva: reintenta con señal.';
+      'Sin conexión. Lo que escribiste se conserva: vuelve a intentarlo con señal.';
 
   @override
   String get proveedorAccesoCuentaQuedoCreadaPero =>
-      'Tu cuenta quedó creada, pero no pudimos entrar. Vuelve al ingreso e inicia sesión.';
+      'Tu cuenta quedó creada, pero no pudimos ingresar. Vuelve al ingreso e inicia sesión.';
 
   @override
   String get proveedorAccesoRevisaLosDatosMarcados =>
-      'Revisa los datos marcados e intenta de nuevo.';
+      'Revisa los datos marcados y vuelve a intentarlo.';
 
   @override
   String get proveedorAccesoPudimosCompletarRegistroIntenta =>
-      'No pudimos completar el registro. Intenta de nuevo.';
+      'No pudimos completar el registro. Vuelve a intentarlo.';
 
   @override
   String get proveedorAccesoSesionVencioEntraNuevo =>
-      'Tu sesión venció. Entra de nuevo.';
+      'Tu sesión venció. Ingresa de nuevo.';
 
   @override
   String get proveedorAccesoUsuarioContrasenaIncorrectosRevisa =>
-      'Usuario o contraseña incorrectos. Revisa e intenta de nuevo.';
+      'Usuario o contraseña incorrectos. Revísalos y vuelve a intentarlo.';
 
   @override
   String get proveedorAccesoSinConexionNecesitasSenal =>
-      'Sin conexión. Necesitas señal para entrar; lo que ya guardaste en el celular sigue ahí.';
+      'Sin conexión. Necesitas señal para ingresar; lo que ya guardaste en el teléfono sigue ahí.';
 
   @override
   String get proveedorAccesoEstaCuentaEstaApp =>
@@ -3565,15 +3566,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorAccesoPudimosEntrarIntentaNuevo =>
-      'No pudimos entrar. Intenta de nuevo en un momento.';
+      'No pudimos ingresar. Vuelve a intentarlo en un momento.';
 
   @override
   String get proveedorNegociacionSinConexionPuedeQue =>
-      'Sin conexión: puede que lo que ves esté viejo.';
+      'Sin conexión: puede que lo que ves esté desactualizado.';
 
   @override
   String get proveedorNegociacionListoClienteEligioPuedes =>
-      '¡Listo! El cliente te eligió. Ya puedes escribirle desde Servicio.';
+      '¡Listo! El cliente te eligió. Ya puedes escribirle desde «Servicio».';
 
   @override
   String get proveedorNegociacionRechazasteOfertaDelCliente =>
@@ -3588,7 +3589,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionHayConexionEnvioNada =>
-      'No hay conexión. No se envió nada: reintenta con señal.';
+      'Sin conexión. No se envió nada: vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get proveedorNegociacionEsaOfertaEstaVigente =>
@@ -3604,15 +3605,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionSinConexionMensajeSigue =>
-      'Sin conexión. Tu mensaje sigue aquí: reintenta.';
+      'Sin conexión. Tu mensaje sigue aquí: vuelve a intentarlo.';
 
   @override
   String get proveedorNegociacionRetiroReintentaCuandoTengas =>
-      'No se retiró. Reintenta cuando tengas señal.';
+      'No se retiró. Vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get proveedorNegociacionEnvioPrecioSigueAqui =>
-      'No se envió. Tu precio sigue aquí: reintenta cuando tengas señal.';
+      'No se envió. Tu precio sigue aquí: vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get proveedorNegociacionEsaOfertaEstaVigente2 =>
@@ -3620,7 +3621,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionHayConexionQueEscribiste =>
-      'No hay conexión. Lo que escribiste se conserva: reintenta cuando tengas señal.';
+      'Sin conexión. Lo que escribiste se conserva: vuelve a intentarlo cuando tengas señal.';
 
   @override
   String proveedorDronFotos(String detalle) {
@@ -3699,11 +3700,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionAvisosSinConexion =>
-      'Sin conexión. Los avisos se configuran con señal.';
+      'Sin conexión. Las notificaciones se configuran con señal.';
 
   @override
   String get proveedorNegociacionAvisosNoGuardado =>
-      'No se guardó: no hay conexión. Intenta con señal.';
+      'No se guardó: no hay conexión. Vuelve a intentarlo con señal.';
 
   @override
   String proveedorNegociacionMapaSemantica(int cantidad) {
@@ -3769,7 +3770,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accesoRolCliente => 'Cliente';
 
   @override
-  String get accesoRolClienteDetalle => 'Publico lotes y elijo piloto';
+  String get accesoRolClienteDetalle => 'Publico lotes y elijo al piloto';
 
   @override
   String get accesoRolClienteBoton => 'cliente';
@@ -3803,7 +3804,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get componentesTotal => 'Total';
 
   @override
-  String get componentesSyncEnDispositivo => 'En el dispositivo';
+  String get componentesSyncEnDispositivo => 'En este teléfono';
 
   @override
   String get componentesSyncSincronizando => 'Sincronizando';

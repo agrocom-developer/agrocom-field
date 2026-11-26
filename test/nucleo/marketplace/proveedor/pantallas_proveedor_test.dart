@@ -273,7 +273,7 @@ void main() {
         findsOneWidget,
       );
       expect(
-        find.text('Quedan 82 ciclos. Planificá el recambio.'),
+        find.text('Quedan 82 ciclos. Planifica el recambio.'),
         findsOneWidget,
       );
       // El de batería por agotarse va primero.

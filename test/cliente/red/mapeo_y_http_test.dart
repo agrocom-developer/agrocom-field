@@ -265,7 +265,7 @@ void main() {
       );
       expect(
         ClienteHttp.mensajeDeServidor(500, null),
-        contains('Intenta de nuevo'),
+        contains('Vuelve a intentarlo'),
       );
       expect(ClienteHttp.mensajeDeServidor(429, null), contains('Espera'));
       expect(

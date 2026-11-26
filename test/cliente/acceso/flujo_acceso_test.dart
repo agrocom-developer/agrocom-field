@@ -239,7 +239,10 @@ void main() {
     prepararIpad(tester);
     await _abrir(tester);
     await _saltarPresentacion(tester);
-    expect(find.text('Fumigación con drones, a pedido'), findsOneWidget);
+    expect(
+      find.text('Fumigación con drones cuando la necesites'),
+      findsOneWidget,
+    );
     expect(find.text('Ingresa a tu cuenta'), findsOneWidget);
   });
 

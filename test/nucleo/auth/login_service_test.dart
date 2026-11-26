@@ -260,7 +260,7 @@ void main() {
     expect(resultado, isA<LoginDatosInvalidos>());
     expect(
       (resultado as LoginDatosInvalidos).mensaje,
-      'Revisá los datos ingresados.',
+      'Revisa los datos ingresados.',
     );
   });
 

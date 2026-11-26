@@ -219,7 +219,7 @@ void main() {
       await tester.tap(find.text('Guardar avance'));
       await tester.pumpAndSettle();
       expect(
-        find.textContaining('No puede pasar de las hectáreas'),
+        find.textContaining('No puede ser mayor que las hectáreas'),
         findsOneWidget,
       );
     });
@@ -254,7 +254,7 @@ void main() {
       await abrir(tester, 10);
       await tester.tap(find.text('Subir foto de avance'));
       await esperar(tester);
-      expect(find.text('1 cosa por subir'), findsOneWidget);
+      expect(find.text('1 envío por subir'), findsOneWidget);
       expect(find.textContaining('se sube solo'), findsOneWidget);
       await golden(tester, 'servicio_por_subir_412x915_x1');
       entorno.ejecucionDemo.enLinea = true;
@@ -335,7 +335,7 @@ void main() {
           envoltorios: [conAcceso],
         );
         await esperar(tester);
-        expect(find.text('Entra a tu cuenta'), findsOneWidget);
+        expect(find.text('Ingresa a tu cuenta'), findsOneWidget);
         expect(tester.takeException(), isNull);
         await golden(tester, 'ingreso_${sufijo(tamano, escala)}');
       });
@@ -352,12 +352,12 @@ void main() {
           envoltorios: [conAcceso],
         );
         await esperar(tester);
-        await tester.tap(find.text('Entrar'));
+        await tester.tap(find.text('Ingresar'));
         await tester.pump();
         expect(find.text('Escribe tu usuario.'), findsOneWidget);
         await tester.enterText(find.byType(TextFormField).first, 'rodrigo');
         await tester.enterText(find.byType(TextFormField).last, 'mala');
-        await tester.tap(find.text('Entrar'));
+        await tester.tap(find.text('Ingresar'));
         await esperar(tester);
         expect(find.textContaining('incorrectos'), findsOneWidget);
         await golden(tester, 'ingreso_error_412x915_x1');

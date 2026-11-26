@@ -170,7 +170,7 @@ void main() {
     await tester.tap(find.text('Perfil').last);
     await tester.pumpAndSettle();
     expect(find.text('Hugo Antelo Suárez'), findsOneWidget);
-    expect(find.text('Mis campos'), findsOneWidget);
+    expect(find.text('Mis lotes'), findsOneWidget);
   });
 
   testWidgets('el perfil cambia el tema y lo guarda', (tester) async {

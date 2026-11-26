@@ -143,7 +143,7 @@ class DependenciasCliente {
       contactos: ContactosDemo(),
       precioFinal: PrecioFinalDemo(almacen),
       notaAcceso:
-          'Modo demo: entra con cualquier usuario y una contraseña de 8 '
+          'Modo demo: ingresa con cualquier usuario y una contraseña de 8 '
           'caracteres o más. Los datos son ficticios.',
     );
   }
