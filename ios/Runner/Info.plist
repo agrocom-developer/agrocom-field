@@ -25,11 +25,11 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Agrocom comparte tu última ubicación con el cliente solo mientras tienes un servicio en ejecución.</string>
+	<string>Agrocom Piloto comparte tu última ubicación con el cliente solo mientras tienes un servicio en ejecución. Puedes desactivarlo cuando quieras.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Agrocom usa la cámara para fotografiar el lote, las incidencias y los documentos.</string>
+	<string>Agrocom usa la cámara para tomarte una selfie y fotografiar tu documento, y para tomar fotos del terreno y del avance del servicio. Solo las ve quien tiene que verificarlas o quien participa del servicio.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Agrocom necesita acceder a tus fotos para adjuntar evidencias y documentos.</string>
+	<string>Agrocom accede solo a las fotos que eliges para tu perfil, el logo de tu empresa, tus documentos y el terreno. No lee el resto de tu galería.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

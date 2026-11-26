@@ -1,0 +1,23 @@
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- El cliente no usa ubicación, linterna ni avisos locales: no declara
+         ACCESS_*_LOCATION ni la característica de flash (están solo en
+         src/piloto). Los plugins `flutter_local_notifications` y `geolocator`
+         viven en el pubspec compartido y sus manifests aportan más de lo que
+         el cliente usa; se quita aquí para no declarar lo que no ejecuta:
+         POST_NOTIFICATIONS, VIBRATE y el servicio de ubicación en primer plano.
+         Cuando el cliente reciba avisos (push), se quitan estas líneas y se
+         agrega su texto de propósito (docs/seguridad/permisos.md). -->
+    <uses-permission
+        android:name="android.permission.POST_NOTIFICATIONS"
+        tools:node="remove"/>
+    <uses-permission
+        android:name="android.permission.VIBRATE"
+        tools:node="remove"/>
+    <application>
+        <service
+            android:name="com.baseflow.geolocator.GeolocatorLocationService"
+            tools:node="remove"/>
+    </application>
+</manifest>

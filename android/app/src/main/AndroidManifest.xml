@@ -4,23 +4,9 @@
          la build release no tendría red. El tráfico en claro está prohibido en
          release por res/xml/network_security_config.xml. -->
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- HU-62: avisos locales (flutter_local_notifications) — runtime en
-         Android 13+, la propia API del plugin la pide en tiempo de
-         ejecución (ver NotificadorLocalPlugin.pedirPermiso). -->
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <!-- Ubicación del piloto durante un servicio en ejecución: se pide solo
-         entonces, con el motivo explicado antes del permiso. Sin servicio en
-         segundo plano ni permiso de ubicación permanente. -->
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <!-- HU-68: linterna de emergencia (torch_light). No se declara
-         android.permission.CAMERA: el plugin controla el flash con
-         CameraManager.setTorchMode, que Android no exige pedir en runtime
-         (no abre la cámara) — ver runs/09.md. `required="false"` para no
-         excluir del Play Store los dispositivos sin flash. -->
-    <uses-feature
-        android:name="android.hardware.camera.flash"
-        android:required="false"/>
+    <!-- Los permisos propios de cada flavor viven en src/cliente y src/piloto
+         (docs/seguridad/permisos.md): aquí solo va lo que comparten. El
+         manifest de cada flavor se fusiona sobre este. -->
     <application
         android:label="@string/app_name"
         android:name="${applicationName}"
