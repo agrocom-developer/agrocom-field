@@ -7,9 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/ui/colores_campo.dart';
+import '../../../nucleo/ui/componentes/logo_agrocom_campo.dart';
 import '../../../nucleo/ui/imagenes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
-import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../domain/acceso_repositorio.dart';
 import 'onboarding_cubit.dart';
@@ -387,7 +387,6 @@ class _Pagina extends StatelessWidget {
           // El texto nunca sube debajo del sello ni de «Saltar».
           padding: EdgeInsets.only(
             top: superior + ObjetivoTactilCampo.minimo + EspaciadoCampo.l * 2,
-            bottom: reservaInferior + inferior,
           ),
           child: Align(
             alignment: Alignment.bottomLeft,
@@ -412,7 +411,7 @@ class _Pagina extends StatelessWidget {
                     lateral,
                     ObjetivoTactilCampo.minimo,
                     lateral,
-                    EspaciadoCampo.l,
+                    0,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -431,6 +430,11 @@ class _Pagina extends StatelessWidget {
                           color: _textoSecundarioSobreFoto,
                         ),
                       ),
+                      // Espacio de los controles: el degradado llega hasta
+                      // el borde inferior sin cortes.
+                      SizedBox(
+                        height: reservaInferior + inferior + EspaciadoCampo.l,
+                      ),
                     ],
                   ),
                 ),
@@ -443,31 +447,24 @@ class _Pagina extends StatelessWidget {
   }
 }
 
-/// «AGROCOM» en mono sobre píldora clara: la marca sobre la foto.
+/// El logo de Agrocom sobre la foto (imagen, no texto), con su sombra.
 class _SelloAgrocom extends StatelessWidget {
   const _SelloAgrocom();
 
   @override
   Widget build(BuildContext context) {
-    final paleta = context.paleta;
-    return Semantics(
-      label: 'Agrocom',
-      excludeSemantics: true,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: paleta.superficie,
-          borderRadius: BorderRadius.circular(RadioCampo.media),
+    // Píldora clara: el verde del logo se pierde sobre el follaje.
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xF2FFFFFF),
+        borderRadius: BorderRadius.circular(RadioCampo.media),
+      ),
+      child: const Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: EspaciadoCampo.m,
+          vertical: EspaciadoCampo.xs,
         ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: EspaciadoCampo.m,
-            vertical: EspaciadoCampo.s,
-          ),
-          child: Text(
-            'AGROCOM',
-            style: TipografiaCampo.etiquetaMono.copyWith(color: paleta.texto),
-          ),
-        ),
+        child: LogoAgrocomCampo(ancho: 96, sombra: false),
       ),
     );
   }
