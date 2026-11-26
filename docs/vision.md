@@ -35,14 +35,14 @@ Las superficies web (panel admin y motor del marketplace) viven en `agrocom-api`
 ## El recorrido de un servicio
 
 1. **Publicación.** El cliente marca su propiedad y sus lotes en el mapa, elige el departamento y la provincia, escribe el municipio y la comunidad, declara hectáreas (decimal exacto), cultivo, producto, fecha deseada (puede ser dentro de semanas o meses), accesos, observaciones, un requisito de dron si lo necesita y su precio por hectárea. La solicitud viaja con una clave de idempotencia generada en el dispositivo y queda `abierta`.
-2. **Mapa de solicitudes.** El piloto ve las solicitudes abiertas que le corresponden en un mapa, con filtro por departamento, hectáreas, precio, fecha y cultivo; decide si quiere ir y la distancia se acuerda en la negociación. No hay zonas ni restricción geográfica. Si activó las notificaciones y no está «Ocupado» ni «En trabajo», recibe un aviso por oleadas: primero los propios de Agrocom y los mejor calificados que cumplen todos los filtros (del sistema, del cliente y los suyos), y cada pocos minutos se abre a más proveedores sin avisar dos veces al mismo.
-3. **Oferta.** El piloto abre el detalle, acepta el precio o contraoferta. La solicitud pasa a `con_ofertas`.
-4. **Elección.** El cliente compara las ofertas y negocia ronda por ronda hasta que una parte acepta la oferta de la otra. Mientras negocia, la solicitud está «En negociación» y no aparece a los demás pilotos; si ya conversa con quien le interesa, puede elegir «Sin buscar más pilotos». Un dron que no cumple lo pedido puede ofertar y se le marca al cliente. La solicitud queda `adjudicada` con su precio acordado; se abren los datos de contacto y el chat.
+2. **Mapa de solicitudes.** El piloto ve las solicitudes abiertas que le corresponden en un mapa, con filtro por departamento, hectáreas, precio, fecha y cultivo; decide si quiere ir y la distancia se acuerda en la negociación. No hay zonas ni restricción geográfica. Si activó las notificaciones y no está «Ocupado» ni «En trabajo», recibe un aviso por oleadas: primero los propios de Agrocom y los mejor calificados que cumplen todos los filtros (del sistema, del cliente y los suyos), luego, anillo por anillo, más proveedores y al final todos los elegibles (la súper ola), sin avisar dos veces al mismo en un ciclo. Mientras no haya push el aviso se ve dentro de la app (campana y lista). Un proveedor aún no aprobado no ve el mapa: ve solo cuántas solicitudes abiertas hay.
+3. **Oferta.** El piloto abre el detalle, acepta el precio o contraoferta. Al registrarse esa primera oferta la solicitud pasa a `con_ofertas`, entra «En negociación» y deja de aparecer a los demás pilotos; abrir la pantalla de precios sin enviar nada no cambia nada.
+4. **Elección.** El cliente compara las ofertas y negocia ronda por ronda hasta que una parte acepta la oferta de la otra. Si la negociación termina sin acuerdo, la solicitud vuelve a ofertarse; si ya conversa con quien le interesa, el cliente puede elegir «Sin buscar más pilotos». Si nadie acepta ni contraoferta, queda «Esperando piloto»: no se desactiva ni vence, y el cliente la relanza a mano o por el horario que eligió (mínimo 2 días por semana, a lo más uno por día) o la cancela. Un dron que no cumple lo pedido puede ofertar y se le marca al cliente. La solicitud queda `adjudicada` con su precio acordado; se abren los datos de contacto y el chat.
 5. **Ejecución.** Las partes acuerdan en persona cómo trabajan. El piloto marca el inicio (`en_ejecucion`), sube fotos de su avance y marca el progreso (porcentaje u hectáreas). Todo se sincroniza cuando vuelve la señal; las fotos, comprimidas a menos de 300 KB, viajan en una cola aparte. El cliente ve las fotos, el avance, los mensajes y la última ubicación del piloto como un punto en el mapa.
 6. **Cierre.** El piloto cierra con las hectáreas ejecutadas. El servidor calcula el precio final (hectáreas ejecutadas por precio acordado) y ambos lo ven como el monto a pagar. La solicitud queda `finalizada`.
 7. **Calificación.** El cliente califica al proveedor en un registro propio y la solicitud pasa a `calificada`; el proveedor lo ve y un admin lo modera. El proveedor califica al cliente en otro registro, privado. Cualquiera puede abrir un reclamo dentro de su plazo.
 
-Una solicitud sin adjudicar vence al fin de su fecha deseada (`expirada`) y el cliente puede renovarla. Cancelar antes de adjudicar no tiene consecuencia; después de adjudicar se registra quién cancela y se muestra en su tasa de cancelación, sin penalidad en dinero.
+Una solicitud sin adjudicar no vence sola: sigue hasta que se adjudica o el cliente la cancela. Cancelar antes de adjudicar no tiene consecuencia; después de adjudicar se registra quién cancela y se muestra en su tasa de cancelación, sin penalidad en dinero.
 
 ## Proveedores y drones
 
@@ -86,7 +86,7 @@ El contrato completo está en `docs/api/openapi.yaml` de `agrocom-api`, generado
 | Grupo | Quién lo usa | Conectividad |
 |---|---|---|
 | Autenticación sin rol (`POST /api/auth/token` con la app de origen, `GET /api/auth/sesion`, que devuelven cuenta, persona y verificación), registro de cliente y de proveedor con persona única y verificación de identidad (selfie y documento) | Los dos flavors | Con red, sin outbox |
-| Terrenos, solicitud (publicar, precio, renovar, cancelar), comparador de ofertas, avance, ubicación del piloto, calificación | `cliente` | Con red |
+| Terrenos, solicitud (publicar, precio, ajustes, relanzar, cancelar), comparador de ofertas, avance, ubicación del piloto, calificación | `cliente` | Con red |
 | Mapa de solicitudes abiertas, detalle, ofertar, contraofertar, aceptar, rechazar, retirar | `piloto` | Con red, sin outbox |
 | Mensajes de la solicitud | `cliente`, `piloto` | Cliente con red; piloto por outbox |
 | Perfil, documentos, drones y fotos del dron | `piloto` | Con red |
@@ -113,6 +113,8 @@ El contrato completo está en `docs/api/openapi.yaml` de `agrocom-api`, generado
 | Negociar requiere red | La adjudicación es un acuerdo entre dos partes que el servidor resuelve; el lote sigue offline |
 | El cliente elige entre las ofertas; no hay adjudicación automática | El cliente decide con precio, calificación y dron; el orden recomendado (propios primero, luego calificación) solo sugiere |
 | Los avisos de nuevas solicitudes salen por oleadas desde el servidor y la app no los calcula | Prioridad por tiempo para los propios y los mejor calificados sin avisar dos veces; ADR 0023 |
+| La solicitud no vence sola; si nadie acepta queda «Esperando piloto» y el cliente la relanza o la cancela | Un trato puede tardar semanas; el cliente decide cuándo cancelar; ADR 0023 |
+| Sin push por ahora: los avisos se ven dentro de la app (campana y lista) | El push (Firebase o Supabase) se implementa después; el modelo de oleadas no cambia; ADR 0023 |
 | Sin zonas, sin distancia y sin precio de referencia | El mercado es abierto; los precios los ponen el cliente y el proveedor |
 | El piloto ve lotes y fotos antes de ofertar, y el contacto solo tras adjudicar | Decide su precio con información sin exponer al cliente |
 | La calificación la escribe el cliente en un registro propio; el proveedor solo la ve; el admin modera | Un solo rol escritor por registro |
