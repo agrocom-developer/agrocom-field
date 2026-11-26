@@ -95,6 +95,17 @@ El contrato completo está en `docs/api/openapi.yaml` de `agrocom-api`, generado
 | Catálogo de servicios adjudicados (`GET /api/sync/catalogo`) | `piloto` | Pull con cursor |
 | Registros del lote (`POST /api/sync`) y fotos (`POST /api/evidencias`) | `piloto` | Offline, outbox |
 
+## Publicación en las tiendas y privacidad
+
+Lo que Google Play y la App Store exigen sobre privacidad, eliminación de cuenta, permisos, contenido de usuarios, edad y cuentas para los revisores, el mapa de datos que las apps recogen y el panorama de protección de datos en Latinoamérica están en `docs/politicas/tiendas-y-privacidad.md` de `agrocom-api` (`/Applications/MAMP/htdocs/agrocom-api`), que es la fuente de verdad. No es asesoría legal. Lo que toca a esta app:
+
+- «Eliminar mi cuenta» dentro de cada app (Perfil, Privacidad y datos), con la contraparte en la API y una página web.
+- Textos de propósito de cámara, fotos, ubicación y notificaciones por flavor, con una explicación previa dentro de la app, y permisos de Android por flavor (el cliente no usa ubicación).
+- Enlaces a los términos y la privacidad en el registro y en los ajustes, y contacto de soporte visible.
+- Reportar y bloquear en el chat.
+- Manifiesto de privacidad de iOS, teselas del mapa y push, que son terceros que hay que declarar.
+- Declaraciones de Data safety y App Privacy para cada app.
+
 ## Qué no hace la app
 
 - No procesa cobros ni calcula comisión: el precio final se muestra y el pago ocurre fuera de ella.
