@@ -14,7 +14,7 @@ Agrocom es un marketplace de servicio de fumigación con drones donde el precio 
 | Cliente | Publica la solicitud con su precio, compara y elige ofertas, ve fotos, chat y ubicación del piloto, califica | Flavor `cliente` (online-first, sin outbox) |
 | Piloto | Ve el mapa de solicitudes abiertas, ofrece, marca inicio, avance y cierre, sube fotos, chatea, activa o desactiva avisos de nuevas solicitudes | Flavor `piloto` |
 | Proveedor independiente / dueño de drones / piloto propio de Agrocom | Se registra con datos de la persona y del dron con fotos; opera tras aprobación; compite en igualdad | Pilotos y panel web |
-| Admin | Aprueba proveedores, auxiliares y drones con sus fotos, modera calificaciones, resuelve disputas | Panel web de `agrocom-api` |
+| Admin | Aprueba proveedores, auxiliares y drones con sus fotos, modera calificaciones, resuelve reclamos | Panel web de `agrocom-api` |
 
 ## Ciclo de una solicitud
 

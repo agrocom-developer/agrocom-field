@@ -96,7 +96,7 @@ Las capturas están en `referencia/claro/` (y una selección en `oscuro/` y `cam
 - **09 Comparar ofertas (ticket):** ticket con cabecera grafito y el resumen del lote, y debajo 3 post-its ordenados por menor total. Botón "Elegir a Marcelo · Bs 7.680".
 - **10 Seguimiento:** "48 / 120 ha" en mono 56, barra de 14 px y mosaico de fotos (+5 en ámbar). Timeline de 4 pasos: hecho en primary con ✓, actual con anillo ámbar, pendiente con borde. Tarjeta del piloto con botón Chat.
 - **11 Chat:** burbujas de texto, burbuja con foto de 200 px de ancho, evento de sistema en píldora primaryContainer y campo de mensaje de 52 con botón de enviar circular.
-- **12 Precio final:** ticket "POR CONFIRMAR" con 118 ha × 64 Bs/ha y "Bs 7.552" en mono 44. Avisos: ámbar (diferencia de ha) e info (pago directo). Botones "Confirmar precio final" y "Abrir disputa" (en error).
+- **12 Precio final:** ticket "POR CONFIRMAR" con 118 ha × 64 Bs/ha y "Bs 7.552" en mono 44. Avisos: ámbar (diferencia de ha) e info (pago directo). Botones "Confirmar precio final" y "Abrir un reclamo" (en error).
 - **13 Calificar:** avatar de 80, 5 estrellas de 48 (ámbar), chips de atributos, comentario y "Enviar calificación".
 
 **Piloto**
@@ -138,7 +138,7 @@ Estas pantallas aún no están diseñadas:
 - Dibujo del polígono sobre el mapa (paso 1).
 - Detalle de la oferta del lado del piloto antes de aceptar.
 - Ejecución en modo campo del piloto: marcar avance y finalizar.
-- Disputa: motivo, evidencia y estado.
+- Reclamo: motivo, evidencia y estado.
 - Notificaciones.
 - Historial de servicios.
 - Revisión de verificación (perfil en revisión o rechazado).

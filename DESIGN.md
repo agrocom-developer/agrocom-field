@@ -4,7 +4,7 @@ Guía de diseño viva del proyecto. Cualquier cambio de UI la consulta antes y l
 
 ## 1. Producto
 - Marketplace de fumigación con drones por negociación, con tres apps: cliente, piloto y auxiliar.
-- Flujo: publicar lote → ofertas → hasta 5 rondas → elegir piloto → ejecución con fotos → precio final (ha ejecutadas × precio acordado) → calificación o disputa.
+- Flujo: publicar lote → ofertas → hasta 5 rondas → elegir piloto → ejecución con fotos → precio final (ha ejecutadas × precio acordado) → calificación o reclamo.
 - Sin cobro dentro de la app: el pago es directo entre cliente y piloto. Todos los textos van en español (Bolivia, moneda Bs).
 - Contexto de uso: en el lote, a pleno sol, muchas veces sin señal y con una mano.
 
