@@ -78,7 +78,7 @@ Las capturas están en `referencia/claro/` (y una selección en `oscuro/` y `cam
   - Título 28/800 y texto 15. Los puntos marcan la posición (activo de 28 px) y se pueden tocar. Botones "Comenzar" y "Ya tengo cuenta". "Saltar" arriba a la derecha.
 - **02 Login:** "Ingresa con tu celular". Campo +591 con chip "Enviado". Código de 6 casillas de 56 de alto (la activa con borde primary de 2 px) y "Reenviar en 0:42". Botones Ingresar, "o", Continuar con Google y "¿Nuevo en Agrocom? Crear cuenta".
 - **03 Elige tu rol:** collage de 270 px con foto grande, foto y bloque ámbar "Agrocom · Fumigación con dron". Título "Fumigación con dron, al precio que acuerdes". Selección de rol Cliente / Piloto: la opción elegida tiene fondo primaryContainer y borde primary de 2 px. Botones "Continuar como cliente" y "Ya tengo cuenta".
-- **04 Registro · datos personales:** pasos 1 de 3. Foto de perfil (cuadro punteado). Campos: Nombre, Cédula (mono), Celular (chip Verificado), Zona base y Licencia DGAC (chip Subida). Botón Continuar.
+- **04 Registro · datos personales:** pasos 1 de 3. Foto de perfil (cuadro punteado). Campos: Nombre, Cédula (mono), Celular (chip Verificado) y Licencia DGAC (chip Subida). Botón Continuar.
 - **05 Registro · tu equipo:** pasos 2 de 3.
   - DRONES: tarjeta con foto de 72, "DJI Agras T50", "Tanque 40 L · serie" y chip "En revisión"; debajo "+ Agregar otro dron" (borde punteado).
 
@@ -87,7 +87,7 @@ Las capturas están en `referencia/claro/` (y una selección en `oscuro/` y `cam
   - Tarjeta "SOLICITUD ACTIVA" con chip ámbar "3 ofertas nuevas", cifras ha / tu precio / mejor oferta y el botón "Comparar ofertas".
   - Tarjeta de servicio en curso con barra de progreso.
   - FAB grafito "Publicar lote" y barra inferior: Inicio / Lotes / Servicios / Perfil.
-- **07 Publicar lote:** pasos 2 de 3. Miniatura del mapa con el polígono, "120 ha dibujadas" y "Editar". Campos: nombre, cultivo (chips) y precio con stepper ±. "Promedio en la zona 58–66". Total estimado y "Revisar y publicar".
+- **07 Publicar lote:** pasos 2 de 3. Miniatura del mapa con el polígono, "120 ha dibujadas" y "Editar". Campos: nombre, cultivo (chips), ubicación (departamento y provincia en listas; municipio y comunidad en texto), tipo de dron opcional y precio con stepper ±, sin precio de referencia. Total estimado y "Revisar y publicar".
 - **08 Detalle de la solicitud:** mapa a sangre de 300 px. Hoja inferior con:
   - chip info "Abierta · recibiendo ofertas" y "Vence en 2 días";
   - una cuadrícula de 2×2 con superficie, precio, cultivo y fecha;
@@ -106,7 +106,7 @@ Las capturas están en `referencia/claro/` (y una selección en `oscuro/` y `cam
 
 **Perfiles**
 - **17 Perfil del cliente:** avatar, estadísticas (lotes, ha, calificación), "Mis campos" con miniaturas, ajustes (avisos, tema, cambiar a piloto) y "Cerrar sesión".
-- **18 Perfil del proveedor · ajustes:** estadísticas, selector de tema Claro / Oscuro / Campo AAA, avisos, zona de trabajo, dron y licencia.
+- **18 Perfil del proveedor · ajustes:** estadísticas, selector de tema Claro / Oscuro / Campo AAA, avisos con sus filtros, disponibilidad, dron y licencia.
 - **19 Perfil público del proveedor:** lo que ve el cliente. Chip "Licencia verificada", estadísticas, EQUIPO (dron y piloto), RESEÑAS y barra inferior con la oferta y el botón "Elegir".
 
 **Estados**
