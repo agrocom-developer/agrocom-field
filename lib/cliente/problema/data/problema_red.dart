@@ -4,7 +4,7 @@ import '../../red/fuente_solicitudes.dart';
 import '../../red/mapeo_solicitud.dart';
 import '../domain/problema_repositorio.dart';
 
-/// Problemas que el cliente reporta, contra las disputas de la API
+/// Problemas que el cliente reporta, contra los reclamos de la API
 /// (`/api/solicitudes/{id}/disputas` y `/disputa`). Hay una por servicio: si
 /// ya existe, abrirla de nuevo devuelve la misma.
 class ProblemaRed implements ProblemaRepositorio {
@@ -48,7 +48,7 @@ class ProblemaRed implements ProblemaRepositorio {
     if (d is Map) {
       caso = _problema(Map<String, dynamic>.from(d));
     } else {
-      // 409: el servicio ya tenía una disputa; esa es la que se devuelve.
+      // 409: el servicio ya tenía un reclamo; ese es el que se devuelve.
       final previo = await delServicio(reporte.servicioId);
       if (previo == null) {
         throw const OperacionRechazada(

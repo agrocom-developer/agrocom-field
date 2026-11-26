@@ -26,7 +26,7 @@ import '../../solicitudes/presentation/solicitud_detalle_cubit.dart';
 /// se cobra nada.
 ///
 /// El cliente tiene la última decisión: confirma el precio final (o abre la
-/// disputa como salida alterna), califica al piloto y puede reportar un
+/// reclamo como salida alterna), califica al piloto y puede reportar un
 /// problema.
 class PrecioFinalPantalla extends StatelessWidget {
   const PrecioFinalPantalla({required this.solicitudId, super.key});

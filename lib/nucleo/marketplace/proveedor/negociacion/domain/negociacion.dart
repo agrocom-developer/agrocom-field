@@ -369,7 +369,7 @@ class PaginaMensajes {
 }
 
 /// Qué avisos recibe el piloto. Las categorías obligatorias (adjudicación,
-/// cierre, expiración, cuenta, disputas, emergencias) no se pueden apagar y
+/// cierre, expiración, cuenta, reclamos, emergencias) no se pueden apagar y
 /// por eso no aparecen aquí.
 class PreferenciasAviso {
   const PreferenciasAviso({

@@ -1,5 +1,5 @@
 /// Motivos por los que el cliente reporta un problema con un servicio.
-/// Catálogo cerrado de la política de disputas.
+/// Catálogo cerrado de la política de reclamos.
 enum MotivoProblema {
   coberturaIncompleta(
     'Cobertura incompleta',

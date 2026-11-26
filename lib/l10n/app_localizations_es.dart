@@ -571,7 +571,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'No pudimos confirmar el precio final. Prueba de nuevo.';
 
   @override
-  String get precioFinalAbrirDisputa => 'Abrir disputa';
+  String get precioFinalAbrirDisputa => 'Abrir un reclamo';
 
   @override
   String get contactoPilotoTitulo => 'Persona de contacto';
@@ -2860,7 +2860,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get proveedorNegociacionEligeQueQuieresEnterarte =>
-      'Elige de qué quieres enterarte. Los avisos de adjudicación, cierre, cuenta y disputas no se pueden apagar.';
+      'Elige de qué quieres enterarte. Los avisos de adjudicación, cierre, cuenta y reclamos no se pueden apagar.';
 
   @override
   String get proveedorNegociacionNuevasSolicitudes => 'Nuevas solicitudes';

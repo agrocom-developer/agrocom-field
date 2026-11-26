@@ -34,7 +34,7 @@ class SolicitudDetalleEstado {
   final CalificacionEmitida? calificacion;
   final bool sinConexion;
 
-  /// La solicitud cargó, pero la calificación o la disputa no.
+  /// La solicitud cargó, pero la calificación o el reclamo no.
   final bool anexosIncompletos;
 
   /// Hay una acción viajando al servidor.
@@ -73,7 +73,7 @@ class SolicitudDetalleEstado {
 const _igual = Object();
 
 /// Detalle de una solicitud: la solicitud (en vivo, del repositorio), la
-/// calificación emitida y la disputa abierta, más las acciones de la
+/// calificación emitida y el reclamo abierto, más las acciones de la
 /// negociación que el cliente puede hacer sobre ella.
 class SolicitudDetalleCubit extends Cubit<SolicitudDetalleEstado> {
   SolicitudDetalleCubit({
@@ -138,7 +138,7 @@ class SolicitudDetalleCubit extends Cubit<SolicitudDetalleEstado> {
     );
   }
 
-  /// Vuelve a leer la calificación y la disputa. Se llama al volver de
+  /// Vuelve a leer la calificación y el reclamo. Se llama al volver de
   /// calificar o de reportar.
   Future<void> recargarAnexos() async {
     final estado = state.solicitud?.estado;
