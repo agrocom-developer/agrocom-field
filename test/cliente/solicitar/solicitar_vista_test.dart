@@ -168,7 +168,7 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('estado-secundaria')));
     await tester.pumpAndSettle();
     expect(find.text('Paso 4 de 4 · Precio'), findsOneWidget);
-    // El resumen queda bajo la sugerencia de referencia: se baja hasta él.
+    // El resumen queda bajo el campo de precio: se baja hasta él.
     await tester.dragUntilVisible(
       find.text('Insecticida piretroide'),
       find.byType(Scrollable).first,

@@ -9,7 +9,6 @@ import '../../../notificaciones/push/token_push_store.dart';
 import '../../foto_perfil/foto_perfil_repositorio.dart';
 import '../../foto_preparador.dart';
 import '../../pago/pagos_repositorio.dart';
-import '../../referencias/precio_referencia.dart';
 import '../acceso/domain/acceso_proveedor.dart';
 import '../demo/almacen_demo_proveedor.dart';
 import '../dron/data/drones_demo.dart';
@@ -31,7 +30,6 @@ class DependenciasProveedor {
     required this.ejecucion,
     required this.drones,
     required this.perfil,
-    required this.referencias,
     required this.fotoPerfil,
     required this.pagos,
     required this.preparadorFoto,
@@ -53,7 +51,6 @@ class DependenciasProveedor {
         DependenciasEjecucion.demo(compartirUbicacion: compartirUbicacion),
     drones: DronesDemo(almacen),
     perfil: PerfilDemo(almacen),
-    referencias: ReferenciasDemo(),
     fotoPerfil: FotoPerfilDemo(),
     pagos:
         pagos ??
@@ -80,7 +77,6 @@ class DependenciasProveedor {
     ejecucion: ejecucion,
     drones: DronesRed(http),
     perfil: PerfilRed(http),
-    referencias: ReferenciasRed(http),
     fotoPerfil: FotoPerfilRed(http),
     pagos: PagosRed(http),
     preparadorFoto: PreparadorFoto(
@@ -94,9 +90,6 @@ class DependenciasProveedor {
   final DependenciasEjecucion ejecucion;
   final DronesRepositorio drones;
   final PerfilRepositorio perfil;
-
-  /// Precio por hectárea de referencia para la hoja de contraoferta.
-  final ReferenciasRepositorio referencias;
 
   /// Foto de perfil de la cuenta del proveedor.
   final FotoPerfilRepositorio fotoPerfil;
@@ -116,7 +109,6 @@ class DependenciasProveedor {
     ...ejecucion.proveedores,
     RepositoryProvider<DronesRepositorio>.value(value: drones),
     RepositoryProvider<PerfilRepositorio>.value(value: perfil),
-    RepositoryProvider<ReferenciasRepositorio>.value(value: referencias),
     RepositoryProvider<FotoPerfilRepositorio>.value(value: fotoPerfil),
     RepositoryProvider<PagosRepositorio>.value(value: pagos),
     RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),

@@ -17,7 +17,6 @@ import '../../nucleo/marketplace/foto_perfil/foto_perfil_repositorio.dart';
 import '../../nucleo/marketplace/foto_preparador.dart';
 import '../../nucleo/marketplace/pago/pago_confirmado.dart';
 import '../../nucleo/marketplace/pago/pagos_repositorio.dart';
-import '../../nucleo/marketplace/referencias/precio_referencia.dart';
 import '../../nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
 import '../../nucleo/notificaciones/push/dispositivos_push_repositorio.dart';
 import '../../nucleo/notificaciones/push/token_push_store.dart';
@@ -76,7 +75,6 @@ class DependenciasCliente {
     required this.cuenta,
     required this.acceso,
     required this.inicio,
-    required this.referencias,
     required this.fotoPerfil,
     required this.fotosTerreno,
     required this.pagos,
@@ -132,7 +130,6 @@ class DependenciasCliente {
         sesionIniciada: !primerUso,
       ),
       inicio: InicioClienteDemo(almacen),
-      referencias: ReferenciasDemo(),
       fotoPerfil: FotoPerfilDemo(),
       fotosTerreno: FotosTerrenoDemo(),
       pagos: pagos ?? _pagosDemo(almacen),
@@ -213,7 +210,6 @@ class DependenciasCliente {
         retirarPush: push.retirar,
       ),
       inicio: InicioClienteRed(fuente, http, cuenta),
-      referencias: ReferenciasRed(marketplace),
       fotoPerfil: FotoPerfilRed(marketplace),
       fotosTerreno: FotosTerrenoRed(marketplace),
       pagos: PagosRed(marketplace),
@@ -239,9 +235,6 @@ class DependenciasCliente {
   final CuentaRepositorio cuenta;
   final AccesoRepositorio acceso;
   final InicioClienteRepositorio inicio;
-
-  /// Precio por hectárea de referencia para el paso de precio.
-  final ReferenciasRepositorio referencias;
 
   /// Foto de perfil de la cuenta.
   final FotoPerfilRepositorio fotoPerfil;
@@ -290,7 +283,6 @@ class DependenciasCliente {
       RepositoryProvider<CuentaRepositorio>.value(value: cuenta),
       RepositoryProvider<AccesoRepositorio>.value(value: acceso),
       RepositoryProvider<InicioClienteRepositorio>.value(value: inicio),
-      RepositoryProvider<ReferenciasRepositorio>.value(value: referencias),
       RepositoryProvider<FotoPerfilRepositorio>.value(value: fotoPerfil),
       RepositoryProvider<FotosTerrenoRepositorio>.value(value: fotosTerreno),
       RepositoryProvider<PagosRepositorio>.value(value: pagos),

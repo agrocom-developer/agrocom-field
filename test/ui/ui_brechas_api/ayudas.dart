@@ -1,5 +1,5 @@
 // Ayudas de las pruebas de UI de las pantallas de las rutas nuevas de la API
-// (precio de referencia, foto de perfil, fotos de terreno, pago confirmado):
+// (foto de perfil, fotos de terreno, pago confirmado):
 // fuentes reales, matriz de tamaños, modos claro, oscuro y campo.
 
 import 'dart:io' show Platform;
