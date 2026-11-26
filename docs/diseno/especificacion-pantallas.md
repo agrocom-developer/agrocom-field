@@ -78,7 +78,7 @@ Las capturas están en `referencia/claro/` (y una selección en `oscuro/` y `cam
   - Título 28/800 y texto 15. Los puntos marcan la posición (activo de 28 px) y se pueden tocar. Botones "Comenzar" y "Ya tengo cuenta". "Saltar" arriba a la derecha.
 - **02 Login:** "Ingresa con tu celular". Campo +591 con chip "Enviado". Código de 6 casillas de 56 de alto (la activa con borde primary de 2 px) y "Reenviar en 0:42". Botones Ingresar, "o", Continuar con Google y "¿Nuevo en Agrocom? Crear cuenta".
 - **03 Elige tu rol:** collage de 270 px con foto grande, foto y bloque ámbar "Agrocom · Fumigación con dron". Título "Fumigación con dron, al precio que acuerdes". Selección de rol Cliente / Piloto: la opción elegida tiene fondo primaryContainer y borde primary de 2 px. Botones "Continuar como cliente" y "Ya tengo cuenta".
-- **04 Registro · datos personales:** pasos 1 de 3. Foto de perfil (cuadro punteado). Campos: Nombre, Cédula (mono), Celular (chip Verificado), Zona base y Licencia DGAC (chip Subida). Botón Continuar.
+- **04 Registro · datos personales:** pasos 1 de 3. Foto de perfil (cuadro punteado). Campos: Nombre, Cédula (mono), Celular (sin chip de verificado mientras no haya código por SMS o WhatsApp), Correo de respaldo, Zona base y Licencia DGAC (chip Subida). Botón Continuar.
 - **05 Registro · tu equipo:** pasos 2 de 3.
   - DRONES: tarjeta con foto de 72, "DJI Agras T50", "Tanque 40 L · serie" y chip "En revisión"; debajo "+ Agregar otro dron" (borde punteado).
 
@@ -142,7 +142,10 @@ Estas pantallas aún no están diseñadas:
 - Notificaciones.
 - Historial de servicios.
 - Verificación de identidad (ADR 0024), una por cuenta y en los dos flavors: selfie con cámara frontal sin galería, documento (tipo, número y foto), envío, y los estados sin enviar, en revisión, aprobada, rechazada con motivo y «verificada por la oficina»;; siempre se piden de nuevo, aunque la persona ya esté verificada con su otra cuenta.
-- Registro con documento (tipo y número) y la pantalla «Ya tienes una cuenta de cliente (o de proveedor)» con «Iniciar sesión» y «Recuperar mi acceso»; mensaje «Esta cuenta es de proveedor: ingresa en la app Agrocom Piloto» cuando se entra en la app equivocada; y estado de la cuenta en el perfil.
+- Registro con documento (tipo y número), teléfono, correo de respaldo y la casilla «Acepto los Términos y la Política de Privacidad» con los dos textos como enlaces (sin marcar de antemano), y la pantalla «Ya tienes una cuenta de cliente (o de proveedor)» con «Iniciar sesión» y «Recuperar mi acceso»; mensaje «Esta cuenta es de proveedor: ingresa en la app Agrocom Piloto» cuando se entra en la app equivocada; y estado de la cuenta en el perfil.
+- Recuperar mi acceso (usuario, teléfono o correo; código de 6 dígitos; contraseña nueva y usuario recuperado) y cambiar el teléfono en el perfil (código al correo de respaldo), con los estados de código vencido, equivocado y demasiados intentos.
+- Proveedor no aprobado: en lugar del mapa, el contador «Hay N solicitudes abiertas que no puedes ver hasta que te aprueben», con filtro por departamento y el camino a la verificación.
+- Piloto de una empresa: invitaciones y código de empresa en el perfil del piloto, y «Mis pilotos» del encargado (invitar, aprobar, liberar).
 - Equipo del servicio: integrantes opcionales dentro del formulario del equipo (piloto) y vista del equipo completo tras adjudicar (cliente).
 - Permisos (ubicación, cámara).
 

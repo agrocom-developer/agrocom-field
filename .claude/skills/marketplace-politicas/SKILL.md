@@ -16,7 +16,7 @@ Agrocom es un marketplace de servicio de fumigación con drones donde el precio 
 | Proveedor independiente / dueño de drones / piloto propio de Agrocom | Se registra con datos de la persona y del dron con fotos; opera tras aprobación; compite en igualdad | Flavor `piloto` |
 | Admin / operador | Personal de Agrocom: verifica y aprueba clientes y proveedores y drones con sus fotos, modera calificaciones, resuelve reclamos | Panel web de `agrocom-api` |
 
-Cada app admite un solo tipo de cuenta, con su propio usuario, verificación y aprobación; una persona tiene a lo sumo una cuenta de cada tipo (ADR 0024).
+Cada app admite un solo tipo de cuenta, con su propio usuario, verificación y aprobación; una persona tiene a lo sumo una cuenta de cada tipo y el teléfono es único por tipo de cuenta, con un correo de respaldo para recuperar el acceso desde la app con un código (ADR 0024). Quien ya es cliente y se registra como proveedor sube de nuevo todo: no se reutiliza verificación.
 
 ## Ciclo de una solicitud
 
@@ -57,7 +57,7 @@ Gratuita y sin registro antes de adjudicar. Tras adjudicar se registra quién ca
 
 ## Alta y aprobación
 
-- Cualquiera se registra y entra; el cliente y el proveedor se verifican desde la app (selfie con cámara y documento de identidad) y un admin aprueba cada cuenta antes de que publique, acepte, ofrezca o vea el mapa. El proveedor registra además la persona y su dron con fotos.
+- Cualquiera se registra y entra; el cliente y el proveedor se verifican desde la app (selfie con cámara y documento de identidad) y un admin aprueba cada cuenta antes de que publique, acepte, ofrezca o vea el mapa; el proveedor no aprobado ve solo un contador de solicitudes abiertas (sin lotes, clientes ni ubicación). El proveedor registra además la persona y su dron con fotos.
 - Una cuenta creada por la oficina puede venir aprobada («verificada por la oficina»).
 - El auxiliar no es usuario de la app (ADR 0021).
 
