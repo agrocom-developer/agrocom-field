@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
-import '../../../nucleo/ui/componentes/componentes_campo.dart';
+import '../../../nucleo/ui/colores_campo.dart';
 import '../../../nucleo/ui/imagenes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tipografia_campo.dart';
@@ -16,34 +17,45 @@ import 'onboarding_cubit.dart';
 /// Tiempo que se queda cada portada antes de avanzar sola.
 const Duration _intervaloAutoavance = Duration(milliseconds: 3500);
 
-/// Alto máximo del collage en teléfono; en pantallas bajas toma casi la
-/// mitad del alto disponible.
-const double _altoColageMaximo = 400;
-const double _fraccionColage = 0.5;
+/// Ancho máximo del bloque de texto y controles en pantallas amplias (iPad):
+/// la foto ocupa todo el ancho, el texto queda en una columna legible.
+const double _anchoMaximoTexto = 560;
+
+/// Color del texto sobre la foto. No sale de la paleta del tema porque la
+/// foto es oscura en la parte baja en claro y en oscuro; el degradado
+/// ([_Pagina]) garantiza el contraste.
+const Color _textoSobreFoto = Color(0xFFFFFFFF);
+const Color _textoSecundarioSobreFoto = Color(0xFFE6EBE7);
 
 class _Portada {
-  const _Portada(this.titulo, this.detalle, this.colage);
+  const _Portada(this.titulo, this.detalle, this.foto, this.fotoAncha);
 
   final String Function(AppLocalizations l10n) titulo;
   final String Function(AppLocalizations l10n) detalle;
-  final Widget Function(BuildContext context, double radio) colage;
+
+  /// Foto en teléfono vertical y foto en pantalla ancha (iPad, horizontal).
+  final String foto;
+  final String fotoAncha;
 }
 
 final _portadas = <_Portada>[
   _Portada(
     (l10n) => l10n.accesoPortadaPublicaTitulo,
     (l10n) => l10n.accesoPortadaPublicaDetalle,
-    _colagePublica,
+    ImagenesCampo.dronPulverizandoVertical,
+    ImagenesCampo.dronPulverizando,
   ),
   _Portada(
     (l10n) => l10n.accesoPortadaNegociaTitulo,
     (l10n) => l10n.accesoPortadaNegociaDetalle,
-    _colageNegocia,
+    ImagenesCampo.dronAgrasT50,
+    ImagenesCampo.dronAgrasT50,
   ),
   _Portada(
     (l10n) => l10n.accesoPortadaPagasTitulo,
     (l10n) => l10n.accesoPortadaPagasDetalle,
-    _colagePrecioFinal,
+    ImagenesCampo.equipoDron,
+    ImagenesCampo.equipoDron,
   ),
 ];
 
@@ -178,186 +190,255 @@ class _VistaState extends State<_Vista> {
     if (!valor) _reiniciarReloj();
   }
 
+  final _clave = GlobalKey();
+  double _altoControles = 0;
+
+  /// Mide los controles para que el texto de cada portada quede justo encima,
+  /// también con letra grande.
+  void _medirControles() {
+    final caja = _clave.currentContext?.findRenderObject() as RenderBox?;
+    if (caja == null || !caja.hasSize) return;
+    if ((caja.size.height - _altoControles).abs() > 0.5) {
+      setState(() => _altoControles = caja.size.height);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final cubit = context.read<OnboardingCubit>();
-    final paleta = context.paleta;
-    return Scaffold(
-      body: LayoutBuilder(
-        builder: (context, c) {
-          final ancho = ClasePantallaCampo.deAncho(c.maxWidth);
-          final amplia = ancho != ClasePantallaCampo.compacto;
-          final margen = EspaciadoCampo.margenLateral(c.maxWidth);
-          final carrusel = Listener(
-            onPointerDown: (_) => _pausar(true),
-            onPointerUp: (_) => _pausar(false),
-            onPointerCancel: (_) => _pausar(false),
-            child: PageView.builder(
-              controller: _controlador,
-              itemCount: _portadas.length,
-              onPageChanged: cubit.irA,
-              itemBuilder: (context, i) =>
-                  _Pagina(portada: _portadas[i], amplia: amplia),
-            ),
-          );
-          final controles = Padding(
-            padding: EdgeInsets.fromLTRB(
-              margen,
-              EspaciadoCampo.s,
-              margen,
-              EspaciadoCampo.s,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: BlocBuilder<OnboardingCubit, OnboardingEstado>(
-                    buildWhen: (a, b) => a.paso != b.paso,
-                    builder: (context, estado) =>
-                        _Puntos(paso: estado.paso, alElegir: _irPorPunto),
-                  ),
-                ),
-                const SizedBox(height: EspaciadoCampo.s),
-                BotonPrincipalMarketplace(
-                  key: const Key('onboarding-continuar'),
-                  texto: l10n.accesoComenzar,
-                  onPressed: widget.alComenzar,
-                ),
-                const SizedBox(height: EspaciadoCampo.xs),
-                TextButton(
-                  key: const Key('onboarding-tengo-cuenta'),
-                  onPressed: widget.alTenerCuenta,
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size.fromHeight(
-                      ObjetivoTactilCampo.minimo,
-                    ),
-                    foregroundColor: paleta.acentoTexto,
-                    textStyle: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  child: Text(l10n.accesoTengoCuenta),
-                ),
-              ],
-            ),
-          );
-          final saltar = Positioned(
-            top: 0,
-            right: 0,
-            child: SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(margen),
-                child: _PastillaSaltar(
-                  alTocar: () => context.read<OnboardingCubit>().terminar(),
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) _medirControles();
+    });
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      // Íconos claros de la barra de estado: la foto es oscura arriba.
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor: ColoresCampo.fondoProfundo,
+        body: LayoutBuilder(
+          builder: (context, c) {
+            final ancho = ClasePantallaCampo.deAncho(c.maxWidth);
+            final amplia = ancho != ClasePantallaCampo.compacto;
+            final margen = EspaciadoCampo.margenLateral(c.maxWidth);
+            final lateral = amplia
+                ? ((c.maxWidth - _anchoMaximoTexto) / 2).clamp(
+                    margen,
+                    c.maxWidth,
+                  )
+                : margen;
+            final carrusel = Listener(
+              onPointerDown: (_) => _pausar(true),
+              onPointerUp: (_) => _pausar(false),
+              onPointerCancel: (_) => _pausar(false),
+              child: PageView.builder(
+                controller: _controlador,
+                itemCount: _portadas.length,
+                onPageChanged: cubit.irA,
+                itemBuilder: (context, i) => _Pagina(
+                  portada: _portadas[i],
+                  ancha: c.maxWidth > c.maxHeight,
+                  lateral: lateral,
+                  reservaInferior: _altoControles,
                 ),
               ),
-            ),
-          );
-          final contenido = Stack(
-            children: [
-              Column(
+            );
+            final controles = Padding(
+              key: _clave,
+              padding: EdgeInsets.fromLTRB(
+                lateral,
+                EspaciadoCampo.s,
+                lateral,
+                EspaciadoCampo.s,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(child: carrusel),
-                  SafeArea(top: false, child: controles),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: BlocBuilder<OnboardingCubit, OnboardingEstado>(
+                      buildWhen: (a, b) => a.paso != b.paso,
+                      builder: (context, estado) =>
+                          _Puntos(paso: estado.paso, alElegir: _irPorPunto),
+                    ),
+                  ),
+                  const SizedBox(height: EspaciadoCampo.s),
+                  BotonPrincipalMarketplace(
+                    key: const Key('onboarding-continuar'),
+                    texto: l10n.accesoComenzar,
+                    onPressed: widget.alComenzar,
+                  ),
+                  const SizedBox(height: EspaciadoCampo.xs),
+                  TextButton(
+                    key: const Key('onboarding-tengo-cuenta'),
+                    onPressed: widget.alTenerCuenta,
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size.fromHeight(
+                        ObjetivoTactilCampo.minimo,
+                      ),
+                      foregroundColor: _textoSobreFoto,
+                      textStyle: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    child: Text(l10n.accesoTengoCuenta),
+                  ),
                 ],
               ),
-              saltar,
-            ],
-          );
-          if (!amplia) return contenido;
-          return Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 560),
-              child: contenido,
-            ),
-          );
-        },
+            );
+            return Stack(
+              children: [
+                Positioned.fill(child: carrusel),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: SafeArea(top: false, child: controles),
+                ),
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  child: SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        lateral,
+                        margen,
+                        margen,
+                        margen,
+                      ),
+                      child: const _SelloAgrocom(),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: SafeArea(
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        margen,
+                        margen,
+                        lateral,
+                        margen,
+                      ),
+                      child: _PastillaSaltar(
+                        alTocar: () =>
+                            context.read<OnboardingCubit>().terminar(),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
 }
 
-/// Una portada: collage arriba (con la marca) y, debajo, título y texto. Si
-/// el texto no cabe (letra grande), esa parte se desplaza.
+/// Una portada: la foto completa a sangre y, encima, título y texto sobre un
+/// degradado que solo oscurece la parte baja. Si el texto no cabe (letra
+/// grande), esa parte se desplaza.
 class _Pagina extends StatelessWidget {
-  const _Pagina({required this.portada, required this.amplia});
+  const _Pagina({
+    required this.portada,
+    required this.ancha,
+    required this.lateral,
+    required this.reservaInferior,
+  });
 
   final _Portada portada;
-  final bool amplia;
+  final bool ancha;
+  final double lateral;
+
+  /// Alto de los controles fijos que quedan debajo del texto.
+  final double reservaInferior;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
-    return LayoutBuilder(
-      builder: (context, c) {
-        final margen = EspaciadoCampo.margenLateral(c.maxWidth);
-        final alto = (c.maxHeight * _fraccionColage).clamp(
-          0.0,
-          _altoColageMaximo,
-        );
-        final radio = RadioCampo.hoja;
-        final colage = ClipRRect(
-          borderRadius: amplia
-              ? BorderRadius.circular(radio)
-              : BorderRadius.vertical(bottom: Radius.circular(radio)),
-          child: SizedBox(
-            height: alto,
-            width: double.infinity,
-            child: portada.colage(context, RadioCampo.tarjetaCompacta),
+    final inferior = MediaQuery.paddingOf(context).bottom;
+    final superior = MediaQuery.paddingOf(context).top;
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        Image.asset(
+          ancha ? portada.fotoAncha : portada.foto,
+          fit: BoxFit.cover,
+          alignment: Alignment.topCenter,
+          excludeFromSemantics: true,
+        ),
+        const DecoratedBox(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.0, 0.42, 0.78, 1.0],
+              colors: [
+                Color(0x00_050A06),
+                Color(0x00_050A06),
+                Color(0xB3_050A06),
+                Color(0xE6_050A06),
+              ],
+            ),
           ),
-        );
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: amplia
-                  ? const EdgeInsets.only(top: EspaciadoCampo.xl)
-                  : EdgeInsets.zero,
-              child: Stack(
-                children: [
-                  colage,
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    child: SafeArea(
-                      child: Padding(
-                        padding: EdgeInsets.all(margen),
-                        child: const _SelloAgrocom(),
-                      ),
-                    ),
+        ),
+        Padding(
+          // El texto nunca sube debajo del sello ni de «Saltar».
+          padding: EdgeInsets.only(
+            top: superior + ObjetivoTactilCampo.minimo + EspaciadoCampo.l * 2,
+            bottom: reservaInferior + inferior,
+          ),
+          child: Align(
+            alignment: Alignment.bottomLeft,
+            child: SingleChildScrollView(
+              reverse: true,
+              child: DecoratedBox(
+                // Degradado propio del texto: crece con él (letra grande).
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: [0.0, 0.3, 1.0],
+                    colors: [
+                      Color(0x00_050A06),
+                      Color(0x99_050A06),
+                      Color(0xCC_050A06),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.fromLTRB(
-                  margen,
-                  EspaciadoCampo.xl,
-                  margen,
-                  EspaciadoCampo.l,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(portada.titulo(l10n), style: texto.headlineMedium),
-                    const SizedBox(height: EspaciadoCampo.m),
-                    Text(
-                      portada.detalle(l10n),
-                      style: texto.bodyLarge?.copyWith(
-                        color: paleta.textoSecundario,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    lateral,
+                    ObjetivoTactilCampo.minimo,
+                    lateral,
+                    EspaciadoCampo.l,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        portada.titulo(l10n),
+                        style: texto.headlineMedium?.copyWith(
+                          color: _textoSobreFoto,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: EspaciadoCampo.m),
+                      Text(
+                        portada.detalle(l10n),
+                        style: texto.bodyLarge?.copyWith(
+                          color: _textoSecundarioSobreFoto,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ],
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 }
@@ -442,7 +523,6 @@ class _Puntos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final paleta = context.paleta;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -470,7 +550,9 @@ class _Puntos extends StatelessWidget {
                     width: i == paso ? EspaciadoCampo.xl : EspaciadoCampo.s,
                     height: EspaciadoCampo.s,
                     decoration: BoxDecoration(
-                      color: i == paso ? paleta.acento : paleta.borde,
+                      color: i == paso
+                          ? _textoSobreFoto
+                          : const Color(0x80FFFFFF),
                       borderRadius: BorderRadius.circular(EspaciadoCampo.s),
                     ),
                   ),
@@ -481,138 +563,4 @@ class _Puntos extends StatelessWidget {
       ],
     );
   }
-}
-
-// --- Collages ---------------------------------------------------------------
-
-const double _separacion = EspaciadoCampo.xs;
-
-/// 1 · Foto grande con precios sobre ella, foto del dron y bloque ámbar.
-Widget _colagePublica(BuildContext context, double radio) {
-  final l10n = AppLocalizations.of(context);
-  return Row(
-    children: [
-      Expanded(
-        flex: 2,
-        child: FotoColageCampo(
-          imagen: ImagenesCampo.dronAgrasT50,
-          radio: 0,
-          child: const Stack(
-            children: [
-              Align(
-                alignment: Alignment(-0.1, 0.1),
-                child: PastillaPrecioCampo(valor: '62', destacada: true),
-              ),
-              Align(
-                alignment: Alignment(0.3, 0.75),
-                child: PastillaPrecioCampo(valor: '55'),
-              ),
-            ],
-          ),
-        ),
-      ),
-      const SizedBox(width: _separacion),
-      Expanded(
-        child: Column(
-          children: [
-            Expanded(
-              child: FotoColageCampo(
-                imagen: ImagenesCampo.dronPulverizandoVertical,
-                radio: 0,
-              ),
-            ),
-            const SizedBox(height: _separacion),
-            Expanded(
-              child: BloqueAmbarCampo(
-                titulo: '120',
-                etiqueta: l10n.accesoHectareasPublicadas,
-                radio: 0,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ],
-  );
-}
-
-/// 2 · Foto a sangre con las ofertas y la barra de rondas.
-Widget _colageNegocia(BuildContext context, double radio) {
-  const sobreFoto = PaletaCampo.campo;
-  return FondoFotoCampo(
-    imagen: ImagenesCampo.dronPulverizandoVertical,
-    alineacion: Alignment.topCenter,
-    child: Padding(
-      padding: const EdgeInsets.all(EspaciadoCampo.l),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: PastillaPrecioCampo(valor: '62'),
-          ),
-          const SizedBox(height: EspaciadoCampo.s),
-          const Align(
-            alignment: Alignment.centerRight,
-            child: PastillaPrecioCampo(valor: '68', destacada: true),
-          ),
-          const SizedBox(height: EspaciadoCampo.s),
-          const Align(
-            alignment: Alignment.centerLeft,
-            child: PastillaPrecioCampo(valor: '65'),
-          ),
-          const SizedBox(height: EspaciadoCampo.l),
-          RondasColageCampo(hechas: 3, total: 5, colorTexto: sobreFoto.texto),
-        ],
-      ),
-    ),
-  );
-}
-
-/// 3 · Foto, post-it con el precio final y foto del dron en tierra.
-Widget _colagePrecioFinal(BuildContext context, double radio) {
-  final l10n = AppLocalizations.of(context);
-  final paleta = context.paleta;
-  return Column(
-    children: [
-      Expanded(
-        flex: 5,
-        child: FotoColageCampo(
-          imagen: ImagenesCampo.dronPulverizando,
-          radio: 0,
-        ),
-      ),
-      const SizedBox(height: _separacion),
-      Expanded(
-        flex: 4,
-        child: Row(
-          children: [
-            Expanded(
-              child: ColoredBox(
-                color: paleta.ambarContenedor,
-                child: Padding(
-                  padding: EdgeInsets.all(EspaciadoCampo.m),
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: PostItCampo(
-                      etiqueta: l10n.accesoPrecioFinal,
-                      cuenta: l10n.acceso118,
-                      total: l10n.acceso552,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: _separacion),
-            Expanded(
-              child: FotoColageCampo(
-                imagen: ImagenesCampo.equipoDron,
-                radio: 0,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ],
-  );
 }
