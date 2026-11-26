@@ -10,6 +10,7 @@ import '../../../nucleo/ui/colores_campo.dart';
 import '../../../nucleo/ui/componentes/logo_agrocom_campo.dart';
 import '../../../nucleo/ui/imagenes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
+import '../../../nucleo/ui/sobre_foto_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../domain/acceso_repositorio.dart';
 import 'onboarding_cubit.dart';
@@ -27,11 +28,8 @@ const double _anchoMaximoTexto = 560;
 const double _alturaPantallaBaja = 700;
 const double _escalaMaximaTextoPantallaBaja = 1.3;
 
-/// Color del texto sobre la foto. No sale de la paleta del tema porque la
-/// foto es oscura en la parte baja en claro y en oscuro; el degradado
-/// ([_Pagina]) garantiza el contraste.
-const Color _textoSobreFoto = Color(0xFFFFFFFF);
-const Color _textoSecundarioSobreFoto = Color(0xFFE6EBE7);
+const Color _textoSobreFoto = SobreFotoCampo.texto;
+const Color _textoSecundarioSobreFoto = SobreFotoCampo.textoSecundario;
 
 class _Portada {
   const _Portada(this.titulo, this.detalle, this.foto, this.fotoAncha);
@@ -391,11 +389,7 @@ class _Pagina extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 stops: [0.0, 0.55, 1.0],
-                colors: [
-                  Color(0xA6_050A06),
-                  Color(0x73_050A06),
-                  Color(0x00_050A06),
-                ],
+                colors: SobreFotoCampo.veloSuperior,
               ),
             ),
           ),
@@ -406,12 +400,7 @@ class _Pagina extends StatelessWidget {
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               stops: [0.0, 0.42, 0.78, 1.0],
-              colors: [
-                Color(0x00_050A06),
-                Color(0x00_050A06),
-                Color(0xB3_050A06),
-                Color(0xE6_050A06),
-              ],
+              colors: SobreFotoCampo.veloPortada,
             ),
           ),
         ),
@@ -431,11 +420,7 @@ class _Pagina extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     stops: [0.0, 0.3, 1.0],
-                    colors: [
-                      Color(0x00_050A06),
-                      Color(0x99_050A06),
-                      Color(0xCC_050A06),
-                    ],
+                    colors: SobreFotoCampo.veloTexto,
                   ),
                 ),
                 child: Padding(
@@ -569,7 +554,7 @@ class _Puntos extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: i == paso
                           ? _textoSobreFoto
-                          : const Color(0x80FFFFFF),
+                          : SobreFotoCampo.puntoInactivo,
                       borderRadius: BorderRadius.circular(EspaciadoCampo.s),
                     ),
                   ),
