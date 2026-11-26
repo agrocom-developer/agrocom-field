@@ -116,6 +116,8 @@ Lo que Google Play y la App Store exigen sobre privacidad, eliminación de cuent
 - No muestra ruta ni tiempo estimado de llegada del piloto: solo su última ubicación.
 - No sincroniza nada del flavor `cliente` por outbox.
 
+**Modelo de negocio, sin decidir.** Cómo lucra Agrocom (una suscripción de acceso a la plataforma, un periodo de gratuidad previo y qué permiten las tiendas) está en exploración en el ADR 0048 de `agrocom-api` (`docs/decisiones/0048-modelo-de-negocio-suscripcion-y-periodo-de-gratuidad.md`). Mientras no se decida, las apps no muestran precios, enlaces de pago ni compras; lo que no se cobra en la app es el servicio, y una suscripción de acceso sería otra cosa.
+
 ## Decisiones por defecto, revisables
 
 | Decisión | Motivo |
