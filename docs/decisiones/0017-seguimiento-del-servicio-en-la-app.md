@@ -52,3 +52,11 @@ El cliente califica al proveedor en un registro propio durante 7 días desde `fi
 - `nucleo/sync` suma los tipos `inicio`, `avance`, `cierre` y `mensaje`; el replay los cubre.
 - El flavor `auxiliar` queda con el servicio adjudicado y las fotos de avance.
 - Los registros operativos detallados del lote que la app capturaba dejan de ser requisito para cerrar; el servidor los sigue aceptando mientras existan en dispositivos.
+
+## Revisión (27/11/2026) — reportar y bloquear en el chat, y ubicación de emergencia
+
+El dueño decidió ajustarse a lo que exigen las tiendas (ADR 0025 de este repo; ADR 0047 de `agrocom-api`). Cambia respecto de la primera versión de este ADR:
+
+1. **Chat.** Cada mensaje, la conversación y cada foto de avance se pueden **reportar** (motivo, detalle opcional y aviso de que soporte podrá leer lo reportado) y el chat permite **bloquear** a la otra parte; ambas son llamadas en línea, sin outbox. Bloquear cierra el chat de esa solicitud (solo lectura) y no rompe un servicio adjudicado. Soporte lee solo lo reportado, no el chat completo.
+2. **Ubicación.** La regla pasa a su formulación exacta: la ubicación del piloto durante la ejecución se guarda solo como última posición en el servidor y se elimina al finalizar; la única otra ubicación es la de una emergencia o incidencia, que la persona adjunta al pulsar el SOS o reportar, y viaja dentro del registro de la incidencia hasta sincronizarse. Motivo: la especificación del servidor ya prevé guardar esa posición y la regla absoluta lo contradecía.
+3. **Fotos.** Las fotos de avance se comprimen sin metadatos de ubicación.
