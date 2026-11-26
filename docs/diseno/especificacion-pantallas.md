@@ -89,7 +89,7 @@ Las capturas están en `referencia/claro/` (y una selección en `oscuro/` y `cam
   - FAB grafito "Publicar lote" y barra inferior: Inicio / Lotes / Servicios / Perfil.
 - **07 Publicar lote:** pasos 2 de 3. Miniatura del mapa con el polígono, "120 ha dibujadas" y "Editar". Campos: nombre, cultivo (chips), ubicación (departamento y provincia en listas; municipio y comunidad en texto), tipo de dron opcional y precio con stepper ±, sin precio de referencia. Total estimado y "Revisar y publicar".
 - **08 Detalle de la solicitud:** mapa a sangre de 300 px. Hoja inferior con:
-  - chip info "Abierta · recibiendo ofertas" y "Vence en 2 días";
+  - chip info "Abierta · recibiendo ofertas" (o la etapa: «En negociación», «Sin buscar más pilotos», «Esperando piloto») y la fecha deseada; la solicitud no vence sola;
   - una cuadrícula de 2×2 con superficie, precio, cultivo y fecha;
   - un aviso ámbar sobre las ofertas;
   - los botones Editar / Ver 3 ofertas.
