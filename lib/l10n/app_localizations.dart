@@ -1292,24 +1292,6 @@ abstract class AppLocalizations {
   /// **'OpenStreetMap'**
   String get uiOpenstreetmap;
 
-  /// No description provided for @versionActualizacionObligatoria.
-  ///
-  /// In es, this message translates to:
-  /// **'Actualización obligatoria'**
-  String get versionActualizacionObligatoria;
-
-  /// No description provided for @versionEstaVersionAppEsta.
-  ///
-  /// In es, this message translates to:
-  /// **'Esta versión de la app ya no está autorizada. Instalá la versión {version} o superior para seguir usándola.'**
-  String versionEstaVersionAppEsta(String version);
-
-  /// No description provided for @versionDescargalaDesde.
-  ///
-  /// In es, this message translates to:
-  /// **'DESCÁRGALA DESDE'**
-  String get versionDescargalaDesde;
-
   /// No description provided for @componentesRondaSemantica.
   ///
   /// In es, this message translates to:
