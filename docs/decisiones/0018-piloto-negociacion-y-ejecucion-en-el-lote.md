@@ -40,9 +40,9 @@ Solo mientras la pantalla de un servicio en ejecución está abierta, cada 30 se
 
 ### Acceso y registro
 
-Inicio de sesión por usuario y contraseña (`POST /api/auth/token`, nunca correo). Una cuenta con varios roles entra con el primero que el flavor admite: `piloto` prefiere `proveedor` (que además administra drones y perfil) y cae a `piloto`; `auxiliar` solo entra como `auxiliar`. Una cuenta de otro flavor no entra: se revoca el token recién emitido y se explica por qué. El token vive solo en almacenamiento seguro y un `401` devuelve al ingreso.
+Inicio de sesión por usuario y contraseña (`POST /api/auth/token`, nunca correo). El login no lleva rol: declara la app `piloto` y solo entran cuentas de proveedor; una cuenta de cliente recibe `tipo_de_cuenta_incorrecto` (ADR 0024). El token vive solo en almacenamiento seguro y un `401` devuelve al ingreso.
 
-El alta del piloto independiente tiene cuatro pasos: datos de la persona, licencia, dron y fotos del dron (frontal, lateral y placa de serie, desde la cámara o la galería). Cada foto se comprime a menos de 300 KB con una escalera de calidad y lado; si ninguna pasada alcanza, no se sube. El envío hace cuenta → sesión → dron → fotos y, si falla a medias, reintentar retoma desde el paso que faltó sin crear nada dos veces. Termina en «en revisión»: sin aprobación de un administrador no se ve el mapa.
+El alta del piloto independiente tiene cuatro pasos: datos de la persona, licencia, dron y fotos del dron (frontal, lateral y placa de serie, desde la cámara o la galería). Cada foto se comprime a menos de 300 KB con una escalera de calidad y lado; si ninguna pasada alcanza, no se sube. El envío hace cuenta → sesión → dron → fotos y, si falla a medias, reintentar retoma desde el paso que faltó sin crear nada dos veces. Termina en «en revisión»: sin aprobación de un administrador no se ve el mapa. El alta incluye además la verificación de identidad de la persona (selfie con cámara y documento, ADR 0024).
 
 ### Qué se quitó
 
@@ -51,6 +51,6 @@ La bandeja de ofertas con cuenta regresiva, el servicio asignado de la sesión d
 ## Consecuencias
 
 - El esquema `drift` y el motor de subida son críticos: se anotan en `runs/revision-pendiente.txt` para la revisión línea por línea. La migración v14 → v15 se prueba con datos (`test/nucleo/db/migracion_ejecucion_test.dart`) y la subida con la prueba de replay (`test/nucleo/marketplace/proveedor/ejecucion/ejecucion_local_test.dart`).
-- El perfil de una cuenta con rol `piloto` (sin proveedor propio) muestra a la persona y su reputación, sin drones: `proveedores/mi` le responde `403`.
+- El perfil de una cuenta que es piloto de un tercero (cuenta de proveedor con `rol_en_proveedor: piloto`, sin proveedor propio) muestra a la persona y su reputación, sin drones: `proveedores/mi` le responde `403`.
 - Pendiente de contrato: la vida útil de la batería por dron (la app usa un valor fijo para dibujar el desgaste) y las hectáreas por mes del perfil.
 - Pendiente de producto: agregar un dron después del alta y registrar al auxiliar desde la app.

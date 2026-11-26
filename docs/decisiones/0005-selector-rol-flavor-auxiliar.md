@@ -1,6 +1,6 @@
 # ADR 0005 — Selector de rol activo en el flavor `auxiliar`
 
-**Estado:** Reemplazada por ADR 0021 · **Serie:** ADR propios de `agrocom-field` (ver nota de numeración en ADR 0001).
+**Estado:** Reemplazada por ADR 0021 y por ADR 0024 (el login ya no lleva rol: cada app admite un solo tipo de cuenta) · **Serie:** ADR propios de `agrocom-field` (ver nota de numeración en ADR 0001).
 
 ## Contexto
 

@@ -7,7 +7,8 @@ Este documento orienta a quien empieza a trabajar en este repo. Describe el prod
 Agrocom es un **marketplace de servicio de fumigación con drones** donde el precio se negocia entre quien pide el servicio y quien lo hace. Un cliente publica una solicitud sobre su propiedad con un precio por hectárea; los pilotos la ven en un mapa y aceptan ese precio o proponen el suyo; el cliente compara las ofertas y elige. Los drones son los «vehículos».
 
 - **Clientes**: dueños de campo o sus encargados. Publican, negocian, siguen y califican servicios.
-- **Proveedores**: pilotos de Agrocom, pilotos independientes y dueños de drones, Compiten en igualdad.
+- **Proveedores**: pilotos de Agrocom, pilotos independientes y dueños de drones. Compiten en igualdad.
+- **Dos apps, dos tipos de cuenta.** El cliente usa la app `cliente` y el proveedor la app `piloto`; cada una admite un solo tipo de cuenta, con su propio usuario, verificación y aprobación. Cualquiera se registra y entra a su app, pero no publica, ofrece ni acepta hasta estar aprobado (ADR 0024). Un cliente que quiere ser proveedor se registra de nuevo en la app `piloto`; una misma persona tiene a lo sumo una cuenta de cada tipo.
 - **Agrocom**: capta clientes, es el nexo entre ambos lados y el registro del estado y del resultado; además es proveedor propio. Lo operativo en el lote (cómo se trabaja, cuándo se vuela) lo acuerdan en persona el cliente y el piloto. La app no cobra: el pago se hace fuera de ella.
 
 ### Negociación
@@ -20,10 +21,10 @@ Un solo código Flutter, dos flavors (ADR 0009, ADR 0021):
 
 | Flavor | Quién lo usa | Qué hace | Conectividad |
 |---|---|---|---|
-| `cliente` | Dueño del campo o encargado | Registrarse, marcar propiedad y lotes en el mapa, publicar una solicitud con su precio por hectárea, comparar y elegir ofertas, ver fotos de avance, chatear, ver la última ubicación del piloto, calificar | Online-first, sin outbox |
-| `piloto` | Piloto (control remoto del dron o celular) | Registrarse con sus datos y los de su dron con fotos, ver el mapa de solicitudes abiertas, ofertar, activar o desactivar notificaciones por zona; ejecutar: marcar inicio, subir fotos, marcar avance, cerrar con las hectáreas ejecutadas | Negociación con red; ejecución offline en el lote |
+| `cliente` | Dueño del campo o encargado | Registrarse y verificarse, marcar propiedad y lotes en el mapa, publicar una solicitud con su precio por hectárea, comparar y elegir ofertas, ver fotos de avance, chatear, ver la última ubicación del piloto, calificar | Online-first, sin outbox |
+| `piloto` | Piloto o proveedor (control remoto del dron o celular) | Registrarse y verificarse con sus datos y los de su dron con fotos, ver el mapa de solicitudes abiertas, ofertar, activar o desactivar notificaciones por zona; ejecutar: marcar inicio, subir fotos, marcar avance, cerrar con las hectáreas ejecutadas | Negociación con red; ejecución offline en el lote |
 
-Las superficies web (panel admin y motor del marketplace) viven en `agrocom-api`: aprobación de proveedores y drones con sus fotos, moderación de calificaciones, reclamos y métricas.
+Las superficies web (panel admin y motor del marketplace) viven en `agrocom-api`: verificación y aprobación de clientes y proveedores, aprobación de drones con sus fotos, moderación de calificaciones, reclamos y métricas.
 
 ### Qué es online y qué es offline
 
@@ -45,8 +46,10 @@ Una solicitud sin adjudicar vence (`expirada`) y el cliente puede renovarla. Can
 
 ## Proveedores y drones
 
-- El **proveedor independiente se registra solo**, con los datos de la persona (nombres, apellidos, documento, teléfono, foto), su licencia y los datos del dron (marca, modelo, año, serie, capacidad) con sus fotos; un admin lo aprueba antes de que vea el mapa y ofrezca.
-- El **auxiliar no usa la app** (ADR 0021): el piloto no lo registra ni lo ve en su equipo.
+- El **proveedor independiente se registra solo**, con los datos de la persona (nombres, apellidos, documento, celular, foto de perfil), su licencia y los datos del dron (marca, modelo, año, serie, capacidad) con sus fotos; además se **verifica** con una selfie tomada con la cámara en el momento y un documento de identidad (carnet, licencia de conducir o pasaporte). Un admin lo aprueba antes de que vea el mapa y ofrezca. El **cliente se verifica igual** antes de publicar o aceptar ofertas.
+- **Una persona, una cuenta de cada tipo:** la persona se identifica por su documento; si ya tiene una cuenta de este tipo, la app la lleva a iniciar sesión o recuperar su acceso. Cada cuenta se verifica y se aprueba por separado.
+- **Empresas:** un cliente o proveedor puede cargar, opcionalmente, logo, NIT, razón social y nombre comercial.
+- El **auxiliar no usa la app** (ADR 0021). El proveedor puede anotar, opcionalmente, nombre y celular de las personas de su equipo, solo como información, dentro del formulario del equipo; el cliente ve el equipo completo, con el piloto marcado, solo después de adjudicar.
 - El **dron es el vehículo**: tiene matrícula, modelo, capacidad, fotos y estado, y pertenece a Agrocom o a un tercero. El cliente ve el modelo y las fotos aprobadas en cada oferta.
 - Los **documentos del proveedor** (licencia de piloto, matrícula del dron, seguros) se suben desde su perfil y los revisa el admin.
 
@@ -56,7 +59,7 @@ Una solicitud sin adjudicar vence (`expirada`) y el cliente puede renovarla. Can
 - `cliente/` y `piloto/` no se importan entre sí; solo importan de `nucleo/`.
 - Cliente HTTP manual sobre `dio` (ADR 0001); decimal exacto para hectáreas y dinero (ADR 0002); configuración de entorno por `--dart-define-from-file` (ADR 0004); versionado SemVer automatizado (ADR 0007).
 - Tema claro derivado del logo para `cliente` (ADR 0003) y modo campo de alto contraste para `piloto` (ADR 0008).
-- Sin selector de rol: el flavor fija el rol (ADR 0021, que reemplaza el ADR 0005).
+- Sin selector de rol y sin rol en el token: el flavor fija el tipo de cuenta que admite la app y el login lo declara (ADR 0024, que reemplaza al ADR 0005 y concreta el ADR 0021).
 - Negociación de ofertas (ADR 0016) y seguimiento del servicio (ADR 0017).
 
 ### Sincronización del lote
@@ -79,7 +82,7 @@ El contrato completo está en `docs/api/openapi.yaml` de `agrocom-api`, generado
 
 | Grupo | Quién lo usa | Conectividad |
 |---|---|---|
-| Autenticación (`POST /api/auth/token`, `GET /api/auth/sesion`) y registro de cliente y proveedor (con datos de la persona y del dron) | Los dos flavors | Con red |
+| Autenticación sin rol (`POST /api/auth/token` con la app de origen, `GET /api/auth/sesion`, que devuelven cuenta, persona y verificación), registro de cliente y de proveedor con persona única y verificación de identidad (selfie y documento) | Los dos flavors | Con red, sin outbox |
 | Terrenos, solicitud (publicar, precio, renovar, cancelar), comparador de ofertas, avance, ubicación del piloto, calificación | `cliente` | Con red |
 | Mapa de solicitudes abiertas, detalle, ofertar, contraofertar, aceptar, rechazar, retirar | `piloto` | Con red, sin outbox |
 | Mensajes de la solicitud | `cliente`, `piloto` | Cliente con red; piloto por outbox |
@@ -111,6 +114,7 @@ El contrato completo está en `docs/api/openapi.yaml` de `agrocom-api`, generado
 | La calificación la escribe el cliente en un registro propio; el proveedor solo la ve; el admin modera | Un solo rol escritor por registro |
 | Sin cobro ni comisión calculada en la app | Reduce superficie y riesgo; el modelo de ingresos es del negocio |
 | La ubicación del piloto es solo la última posición durante la ejecución | Privacidad: sin historial ni ruta |
-| El proveedor independiente se registra solo y el admin lo aprueba | Control de calidad sin frenar el alta |
+| El cliente y el proveedor se registran solos, se verifican (selfie con cámara y documento) y el admin aprueba cada cuenta | Se entra y se ve la app sin frenar el alta, pero no se negocia con terrenos, dinero y drones ajenos sin saber que la persona existe |
+| Una cuenta por app y una persona con a lo sumo una cuenta de cada tipo | Son dos apps; evita cuentas repetidas de la misma persona y que la persona se contrate a sí misma sin verlo |
 | El auxiliar no es usuario de la app (ADR 0021) | No hay trabajo propio que justifique una app ni un selector de rol |
 | El mapa usa `flutter_map` con teselas abiertas, sin clave de proveedor | Evita gestionar una clave de mapas en la primera versión |

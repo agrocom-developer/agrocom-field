@@ -141,7 +141,9 @@ Estas pantallas aún no están diseñadas:
 - Reclamo: motivo, evidencia y estado.
 - Notificaciones.
 - Historial de servicios.
-- Revisión de verificación (perfil en revisión o rechazado).
+- Verificación de identidad (ADR 0024), una por cuenta y en los dos flavors: selfie con cámara frontal sin galería, documento (tipo, número y foto), envío, y los estados sin enviar, en revisión, aprobada, rechazada con motivo y «verificada por la oficina»;; siempre se piden de nuevo, aunque la persona ya esté verificada con su otra cuenta.
+- Registro con documento (tipo y número) y la pantalla «Ya tienes una cuenta de cliente (o de proveedor)» con «Iniciar sesión» y «Recuperar mi acceso»; mensaje «Esta cuenta es de proveedor: ingresa en la app Agrocom Piloto» cuando se entra en la app equivocada; y estado de la cuenta en el perfil.
+- Equipo del servicio: integrantes opcionales dentro del formulario del equipo (piloto) y vista del equipo completo tras adjudicar (cliente).
 - Permisos (ubicación, cámara).
 
 ## Assets

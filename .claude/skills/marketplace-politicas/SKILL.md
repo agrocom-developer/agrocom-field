@@ -11,10 +11,12 @@ Agrocom es un marketplace de servicio de fumigación con drones donde el precio 
 
 | Rol | Qué hace | Superficie |
 |---|---|---|
-| Cliente | Publica la solicitud con su precio, compara y elige ofertas, ve fotos, chat y ubicación del piloto, califica | Flavor `cliente` (online-first, sin outbox) |
-| Piloto | Ve el mapa de solicitudes abiertas, ofrece, marca inicio, avance y cierre, sube fotos, chatea, activa o desactiva avisos de nuevas solicitudes | Flavor `piloto` |
-| Proveedor independiente / dueño de drones / piloto propio de Agrocom | Se registra con datos de la persona y del dron con fotos; opera tras aprobación; compite en igualdad | Pilotos y panel web |
-| Admin | Aprueba proveedores, auxiliares y drones con sus fotos, modera calificaciones, resuelve reclamos | Panel web de `agrocom-api` |
+| Cliente | Publica la solicitud con su precio, compara y elige ofertas, ve fotos, chat y ubicación del piloto, califica; debe estar aprobado | Flavor `cliente` (online-first, sin outbox) |
+| Proveedor | Ve el mapa de solicitudes abiertas, ofrece, marca inicio, avance y cierre, sube fotos, chatea, activa o desactiva avisos de nuevas solicitudes | Flavor `piloto` |
+| Proveedor independiente / dueño de drones / piloto propio de Agrocom | Se registra con datos de la persona y del dron con fotos; opera tras aprobación; compite en igualdad | Flavor `piloto` |
+| Admin / operador | Personal de Agrocom: verifica y aprueba clientes y proveedores y drones con sus fotos, modera calificaciones, resuelve reclamos | Panel web de `agrocom-api` |
+
+Cada app admite un solo tipo de cuenta, con su propio usuario, verificación y aprobación; una persona tiene a lo sumo una cuenta de cada tipo (ADR 0024).
 
 ## Ciclo de una solicitud
 
@@ -55,7 +57,8 @@ Gratuita y sin registro antes de adjudicar. Tras adjudicar se registra quién ca
 
 ## Alta y aprobación
 
-- El proveedor independiente se registra solo, con datos de la persona y del dron con fotos; un admin lo aprueba antes de que vea el mapa y ofrezca.
+- Cualquiera se registra y entra; el cliente y el proveedor se verifican desde la app (selfie con cámara y documento de identidad) y un admin aprueba cada cuenta antes de que publique, acepte, ofrezca o vea el mapa. El proveedor registra además la persona y su dron con fotos.
+- Una cuenta creada por la oficina puede venir aprobada («verificada por la oficina»).
 - El auxiliar no es usuario de la app (ADR 0021).
 
 ## Lo que no existe

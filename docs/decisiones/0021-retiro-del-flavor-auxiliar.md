@@ -1,6 +1,6 @@
 # ADR 0021 — Retiro del flavor `auxiliar`
 
-**Estado:** Aceptada · **Reemplaza:** ADR 0005 (selector de rol del flavor `auxiliar`) y la parte de ADR 0009 que define tres superficies.
+**Estado:** Aceptada; el punto 2 se concreta en el ADR 0024 (cada app admite un solo tipo de cuenta y el login lo declara) · **Reemplaza:** ADR 0005 (selector de rol del flavor `auxiliar`) y la parte de ADR 0009 que define tres superficies.
 
 ## Contexto
 
@@ -9,7 +9,7 @@ El flavor `auxiliar` nació para el ayudante del piloto en el lote: registraba m
 ## Decisión
 
 1. **Quedan dos flavors:** `cliente` y `piloto`. Se retiran `lib/auxiliar/`, `lib/main_auxiliar.dart`, el flavor de Gradle, el esquema y los `xcconfig` de iOS, el job de CI y las referencias en scripts y documentación.
-2. **Se retira el selector de rol** (ADR 0005). El flavor fija la superficie y el login emite el token del rol de ese flavor; si la persona tiene varios roles, el rol lo fija el flavor y no se pregunta.
+2. **Se retira el selector de rol** (ADR 0005). El flavor fija la superficie y no se pregunta nada. (Cómo valida el login el tipo de cuenta: ADR 0024.)
 3. **El auxiliar deja de ser un usuario de la app.** El piloto no registra auxiliares en la app ni los ve en su equipo; las pantallas de «Elige tu rol» y «Tu equipo» del diseño quedan en Cliente y Piloto, y en dron.
 4. **El esquema local `drift` no se modifica en este cambio.** Lo que solo el auxiliar escribía deja de usarse, pero borrar tablas o columnas es una migración destructiva y requiere respaldo, camino de vuelta y revisión línea por línea del dueño (CLAUDE.md). Se registra como deuda y se decide en una tarea aparte.
 5. **El contrato de `agrocom-api` no cambia aquí.** El rol `auxiliar` puede seguir existiendo en el servidor; retirarlo allá es una decisión del repo de la API. La app deja de ofrecerlo y debe tolerar que el servidor lo devuelva.
