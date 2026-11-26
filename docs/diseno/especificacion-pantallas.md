@@ -84,16 +84,16 @@ Las capturas están en `referencia/claro/` (y una selección en `oscuro/` y `cam
 
 **Cliente**
 - **06 Inicio:** saludo y avatar.
-  - Tarjeta "SOLICITUD ACTIVA" con chip ámbar "3 ofertas nuevas", cifras ha / tu precio / mejor oferta y el botón "Comparar ofertas".
+  - Tarjeta "SOLICITUD ACTIVA" con chip ámbar "Tienes 3 aceptaciones nuevas" (la bandeja), cifras ha / tu precio / mejor oferta y el botón "Ver aceptaciones".
   - Tarjeta de servicio en curso con barra de progreso.
   - FAB grafito "Publicar lote" y barra inferior: Inicio / Lotes / Servicios / Perfil.
 - **07 Publicar lote:** pasos 2 de 3. Miniatura del mapa con el polígono, "120 ha dibujadas" y "Editar". Campos: nombre, cultivo (chips), ubicación (departamento y provincia en listas; municipio y comunidad en texto), tipo de dron opcional y precio con stepper ±, sin precio de referencia. Total estimado y "Revisar y publicar".
 - **08 Detalle de la solicitud:** mapa a sangre de 300 px. Hoja inferior con:
-  - chip info "Abierta · recibiendo ofertas" (o la etapa: «En negociación», «Sin buscar más pilotos», «Esperando piloto») y la fecha deseada; la solicitud no vence sola;
+  - chip info "Abierta · recibiendo ofertas" (o la etapa: «Buscando piloto», «Con aceptaciones», «En acuerdo», «Esperando piloto») y la fecha deseada; la solicitud no vence sola;
   - una cuadrícula de 2×2 con superficie, precio, cultivo y fecha;
   - un aviso ámbar sobre las ofertas;
-  - los botones Editar / Ver 3 ofertas.
-- **09 Comparar ofertas (ticket):** ticket con cabecera grafito y el resumen del lote, y debajo 3 post-its ordenados por menor total. Botón "Elegir a Marcelo · Bs 7.680".
+  - los botones Editar / Ver 3 aceptaciones; con una conversación abierta, la acción secundaria "Marcar En acuerdo" (y, ya en acuerdo, "Volver a buscar"); en "Esperando piloto", cuánto lleva sin respuesta y las salidas ajustar, volver a lanzar y cancelar.
+- **09 Comparar ofertas (ticket) / bandeja:** ticket con cabecera grafito y el resumen del lote, y debajo hasta 3 post-its (el cupo), uno por aceptación, con la insignia "Nueva" hasta abrirla. Botón "Elegir a Marcelo · Bs 7.680" y, por post-it, "Rechazar" o "Cerrar conversación". Con los 3 lugares ocupados, una línea dice "Conversas con el máximo de pilotos a la vez (3)"; nunca se muestra la cola ni cuántos esperan.
 - **10 Seguimiento:** "48 / 120 ha" en mono 56, barra de 14 px y mosaico de fotos (+5 en ámbar). Timeline de 4 pasos: hecho en primary con ✓, actual con anillo ámbar, pendiente con borde. Tarjeta del piloto con botón Chat.
 - **11 Chat:** burbujas de texto, burbuja con foto de 200 px de ancho, evento de sistema en píldora primaryContainer y campo de mensaje de 52 con botón de enviar circular.
 - **12 Precio final:** ticket "POR CONFIRMAR" con 118 ha × 64 Bs/ha y "Bs 7.552" en mono 44. Avisos: ámbar (diferencia de ha) e info (pago directo). Botones "Confirmar precio final" y "Abrir un reclamo" (en error).
@@ -102,7 +102,7 @@ Las capturas están en `referencia/claro/` (y una selección en `oscuro/` y `cam
 **Piloto**
 - **14 Mapa de solicitudes:** mapa a sangre con lotes (verde = abierto, ámbar = vence hoy) y pines de precio (el seleccionado en primary). Búsqueda en píldora de 56, filtros y hoja inferior con lote, cifras y los botones Contraofertar / Aceptar Bs 62.
 - **15 Negociación:** cabecera "Ronda 4 de 5" con barra de segmentos, burbujas R1–R3 y aviso ámbar "Tu turno". Panel inferior con stepper (68 Bs/ha, total) y los botones Aceptar 65 / Enviar 68.
-- **16 Mis ofertas:** pestañas segmentadas Activas / Ganadas / Cerradas. Tarjetas con chip de estado y cifras de cliente y tuyas; si es tu turno, la tarjeta lleva borde ámbar.
+- **16 Mis ofertas:** pestañas segmentadas Activas / Ganadas / Cerradas. Tarjetas con chip de estado y cifras de cliente y tuyas; si es tu turno, la tarjeta lleva borde ámbar. El chip de estado de una oferta activa dice "Tu oferta está en cola" (con reloj), "El cliente la está viendo" o "En conversación", con texto además de ícono; nunca muestra posición ni cuántos esperan. Una oferta en cola se puede retirar.
 
 **Perfiles**
 - **17 Perfil del cliente:** avatar, estadísticas (lotes, ha, calificación), "Mis campos" con miniaturas, ajustes (avisos, tema, cambiar a piloto) y "Cerrar sesión".

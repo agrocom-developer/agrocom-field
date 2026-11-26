@@ -20,16 +20,16 @@ Cada app admite un solo tipo de cuenta, con su propio usuario, verificación y a
 
 ## Ciclo de una solicitud
 
-`borrador` → `abierta` → `con_ofertas` → `adjudicada` → `en_ejecucion` → `finalizada` → `calificada`; además `cancelada`, `expirada` y `disputada`. Todo es solicitud por solicitud: no hay contratos ni campañas.
+`borrador` → `abierta` → `con_ofertas` → (`en_acuerdo`, opcional, lo marca el cliente) → `adjudicada` → `en_ejecucion` → `finalizada` → `calificada`; además `cancelada` y `disputada`. Todo es solicitud por solicitud: no hay contratos ni campañas.
 
 ## Negociación
 
 1. El cliente propone un precio por hectárea; la solicitud queda abierta y visible en el mapa del piloto.
 2. El piloto acepta el precio o contraoferta, con el dron que usará, después de ver los lotes y sus fotos.
-3. En cada negociación hay una sola oferta vigente: quien la recibe acepta, contraoferta o rechaza. Hay un máximo de ofertas y la última es definitiva. Las ofertas vencen y la solicitud expira; el cliente puede renovarla.
+3. En cada negociación hay una sola oferta vigente: quien la recibe acepta, contraoferta o rechaza. Hay un máximo de ofertas y la última es definitiva. La oferta vence (24 horas desde que llega a la bandeja del cliente); la solicitud no vence sola.
 4. Aceptar la oferta vigente de la contraparte adjudica la solicitud con su precio acordado; las demás ofertas se cierran.
 5. No hay asignación automática, zonas, radios, precio de referencia ni sanciones automáticas: el cliente elige. Hay prioridad solo en el aviso y en el orden sugerido: los avisos salen por oleadas desde el servidor (propios y mejor calificados primero, a nadie dos veces) y las ofertas se ordenan por defecto con los propios primero y luego por calificación.
-6. Mientras el cliente negocia, la solicitud está «En negociación» y no aparece a los demás pilotos; el cliente puede elegir «Sin buscar más pilotos». Un dron que no cumple lo pedido puede ofertar y se le marca al cliente.
+6. La negociación es asíncrona: cada aceptación llega a una bandeja del cliente (hasta 3 conversaciones a la vez); las demás esperan en una cola que el cliente no ve y pasan a la bandeja, por prioridad, cuando él rechaza o cierra una conversación. Ofertar no oculta la solicitud a los demás: solo el cliente la detiene marcándola «En acuerdo». El piloto ve «Tu oferta está en cola» o «El cliente la está viendo», nunca posiciones ni datos de otros. En una empresa ofrece el encargado, que puede delegar la oferta a pilotos concretos. Un dron que no cumple lo pedido puede ofertar y se le marca al cliente.
 El detalle de reglas y casos límite lo mantiene el agente `negociacion-ofertas`.
 
 ## Qué ve cada parte
