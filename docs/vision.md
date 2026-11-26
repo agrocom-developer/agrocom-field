@@ -13,7 +13,7 @@ Agrocom es un **marketplace de servicio de fumigación con drones** donde el pre
 
 ### Negociación
 
-El cliente propone un precio por hectárea. El piloto, antes de ofertar, revisa el estado de la propiedad y de los lotes (lotes dibujados, cultivo, accesos, observaciones y fotos), y acepta el precio o contraoferta con el dron que usará. El cliente recibe varias ofertas, las compara por precio, calificación, dron y distancia, y acepta una, contraoferta o rechaza. En cada negociación hay una sola oferta vigente y hay un máximo de ofertas; aceptar la oferta vigente de la contraparte adjudica la solicitud y cierra las demás. Todo lo decide y valida el servidor; la app muestra y envía.
+El cliente propone un precio por hectárea. El piloto, antes de ofertar, revisa el estado de la propiedad y de los lotes (lotes dibujados, cultivo, accesos, observaciones y fotos), y acepta el precio o contraoferta con el dron que usará. El cliente recibe varias ofertas, las compara por precio, calificación y dron (el orden recomendado pone primero a los proveedores propios de Agrocom y luego a los mejor calificados, y el cliente lo cambia), y acepta una, contraoferta o rechaza. La distancia no se calcula: se acuerda en la negociación. En cada negociación hay una sola oferta vigente y hay un máximo de ofertas; aceptar la oferta vigente de la contraparte adjudica la solicitud y cierra las demás. Todo lo decide y valida el servidor; la app muestra y envía.
 
 ## Las dos superficies móviles
 
@@ -22,7 +22,7 @@ Un solo código Flutter, dos flavors (ADR 0009, ADR 0021):
 | Flavor | Quién lo usa | Qué hace | Conectividad |
 |---|---|---|---|
 | `cliente` | Dueño del campo o encargado | Registrarse y verificarse, marcar propiedad y lotes en el mapa, publicar una solicitud con su precio por hectárea, comparar y elegir ofertas, ver fotos de avance, chatear, ver la última ubicación del piloto, calificar | Online-first, sin outbox |
-| `piloto` | Piloto o proveedor (control remoto del dron o celular) | Registrarse y verificarse con sus datos y los de su dron con fotos, ver el mapa de solicitudes abiertas, ofertar, activar o desactivar notificaciones por zona; ejecutar: marcar inicio, subir fotos, marcar avance, cerrar con las hectáreas ejecutadas | Negociación con red; ejecución offline en el lote |
+| `piloto` | Piloto o proveedor (control remoto del dron o celular) | Registrarse y verificarse con sus datos y los de su dron con fotos, ver el mapa de solicitudes abiertas, ofertar, ajustar sus avisos y su disponibilidad; ejecutar: marcar inicio, subir fotos, marcar avance, cerrar con las hectáreas ejecutadas | Negociación con red; ejecución offline en el lote |
 
 Las superficies web (panel admin y motor del marketplace) viven en `agrocom-api`: verificación y aprobación de clientes y proveedores, aprobación de drones con sus fotos, moderación de calificaciones, reclamos y métricas.
 
@@ -34,15 +34,15 @@ Las superficies web (panel admin y motor del marketplace) viven en `agrocom-api`
 
 ## El recorrido de un servicio
 
-1. **Publicación.** El cliente marca su propiedad y sus lotes en el mapa, declara hectáreas (decimal exacto), cultivo, producto, fecha deseada, accesos, observaciones y su precio por hectárea. La solicitud viaja con una clave de idempotencia generada en el dispositivo y queda `abierta`.
-2. **Mapa de solicitudes.** El piloto ve las solicitudes abiertas en un mapa, con filtros por zona (valles, Chiquitania y otras), hectáreas y precio, y un resumen por zona para decidir adónde llevar su equipo. Si activó las notificaciones, recibe un aviso cuando se abre una solicitud en sus zonas.
+1. **Publicación.** El cliente marca su propiedad y sus lotes en el mapa, elige el departamento y la provincia, escribe el municipio y la comunidad, declara hectáreas (decimal exacto), cultivo, producto, fecha deseada (puede ser dentro de semanas o meses), accesos, observaciones, un requisito de dron si lo necesita y su precio por hectárea. La solicitud viaja con una clave de idempotencia generada en el dispositivo y queda `abierta`.
+2. **Mapa de solicitudes.** El piloto ve las solicitudes abiertas que le corresponden en un mapa, con filtro por departamento, hectáreas, precio, fecha y cultivo; decide si quiere ir y la distancia se acuerda en la negociación. No hay zonas ni restricción geográfica. Si activó las notificaciones y no está «Ocupado» ni «En trabajo», recibe un aviso por oleadas: primero los propios de Agrocom y los mejor calificados que cumplen todos los filtros (del sistema, del cliente y los suyos), y cada pocos minutos se abre a más proveedores sin avisar dos veces al mismo.
 3. **Oferta.** El piloto abre el detalle, acepta el precio o contraoferta. La solicitud pasa a `con_ofertas`.
-4. **Elección.** El cliente compara las ofertas y negocia ronda por ronda hasta que una parte acepta la oferta de la otra. La solicitud queda `adjudicada` con su precio acordado; se abren los datos de contacto y el chat.
+4. **Elección.** El cliente compara las ofertas y negocia ronda por ronda hasta que una parte acepta la oferta de la otra. Mientras negocia, la solicitud está «En negociación» y no aparece a los demás pilotos; si ya conversa con quien le interesa, puede elegir «Sin buscar más pilotos». Un dron que no cumple lo pedido puede ofertar y se le marca al cliente. La solicitud queda `adjudicada` con su precio acordado; se abren los datos de contacto y el chat.
 5. **Ejecución.** Las partes acuerdan en persona cómo trabajan. El piloto marca el inicio (`en_ejecucion`), sube fotos de su avance y marca el progreso (porcentaje u hectáreas). Todo se sincroniza cuando vuelve la señal; las fotos, comprimidas a menos de 300 KB, viajan en una cola aparte. El cliente ve las fotos, el avance, los mensajes y la última ubicación del piloto como un punto en el mapa.
 6. **Cierre.** El piloto cierra con las hectáreas ejecutadas. El servidor calcula el precio final (hectáreas ejecutadas por precio acordado) y ambos lo ven como el monto a pagar. La solicitud queda `finalizada`.
 7. **Calificación.** El cliente califica al proveedor en un registro propio y la solicitud pasa a `calificada`; el proveedor lo ve y un admin lo modera. El proveedor califica al cliente en otro registro, privado. Cualquiera puede abrir un reclamo dentro de su plazo.
 
-Una solicitud sin adjudicar vence (`expirada`) y el cliente puede renovarla. Cancelar antes de adjudicar no tiene consecuencia; después de adjudicar se registra quién cancela y se muestra en su tasa de cancelación, sin penalidad en dinero.
+Una solicitud sin adjudicar vence al fin de su fecha deseada (`expirada`) y el cliente puede renovarla. Cancelar antes de adjudicar no tiene consecuencia; después de adjudicar se registra quién cancela y se muestra en su tasa de cancelación, sin penalidad en dinero.
 
 ## Proveedores y drones
 
@@ -63,7 +63,7 @@ Una solicitud sin adjudicar vence (`expirada`) y el cliente puede renovarla. Can
 - Cliente HTTP manual sobre `dio` (ADR 0001); decimal exacto para hectáreas y dinero (ADR 0002); configuración de entorno por `--dart-define-from-file` (ADR 0004); versionado SemVer automatizado (ADR 0007).
 - Tema claro derivado del logo para `cliente` (ADR 0003) y modo campo de alto contraste para `piloto` (ADR 0008).
 - Sin selector de rol y sin rol en el token: el flavor fija el tipo de cuenta que admite la app y el login lo declara (ADR 0024, que reemplaza al ADR 0005 y concreta el ADR 0021).
-- Negociación de ofertas (ADR 0016) y seguimiento del servicio (ADR 0017).
+- Negociación de ofertas (ADR 0016), seguimiento del servicio (ADR 0017) y mercado sin zonas con avisos por oleadas (ADR 0023).
 
 ### Sincronización del lote
 
@@ -94,7 +94,6 @@ El contrato completo está en `docs/api/openapi.yaml` de `agrocom-api`, generado
 | Ubicación del piloto (`PUT /api/ubicacion`) | `piloto` | Con red, sin outbox; se omite sin señal |
 | Catálogo de servicios adjudicados (`GET /api/sync/catalogo`) | `piloto` | Pull con cursor |
 | Registros del lote (`POST /api/sync`) y fotos (`POST /api/evidencias`) | `piloto` | Offline, outbox |
-| Versión mínima del APK (`GET /api/version`) | Todos | Polling, sin red tolerado |
 
 ## Qué no hace la app
 
@@ -112,7 +111,9 @@ El contrato completo está en `docs/api/openapi.yaml` de `agrocom-api`, generado
 |---|---|
 | El panel web admin vive dentro de `agrocom-api` | Un solo despliegue y un solo modelo de datos |
 | Negociar requiere red | La adjudicación es un acuerdo entre dos partes que el servidor resuelve; el lote sigue offline |
-| El cliente elige entre las ofertas; no hay adjudicación automática | El cliente decide con precio, calificación, dron y distancia |
+| El cliente elige entre las ofertas; no hay adjudicación automática | El cliente decide con precio, calificación y dron; el orden recomendado (propios primero, luego calificación) solo sugiere |
+| Los avisos de nuevas solicitudes salen por oleadas desde el servidor y la app no los calcula | Prioridad por tiempo para los propios y los mejor calificados sin avisar dos veces; ADR 0023 |
+| Sin zonas, sin distancia y sin precio de referencia | El mercado es abierto; los precios los ponen el cliente y el proveedor |
 | El piloto ve lotes y fotos antes de ofertar, y el contacto solo tras adjudicar | Decide su precio con información sin exponer al cliente |
 | La calificación la escribe el cliente en un registro propio; el proveedor solo la ve; el admin modera | Un solo rol escritor por registro |
 | Sin cobro ni comisión calculada en la app | Reduce superficie y riesgo; el modelo de ingresos es del negocio |

@@ -72,4 +72,4 @@ El riesgo de no automatizar:
 - ADR 0006 (`agrocom-api`): GitFlow simplificado — ambos repos, mismo flujo de ramas.
 - `pubspec.yaml`: formato `version: X.Y.Z+N` — estándar de Flutter.
 - `android/app/build.gradle.kts`: `versionCode = flutter.versionCode`, `versionName = flutter.versionName`.
-- Especificación §16 (`agrocom-api`): `GET /api/version` — la app consulta por polling qué versión mínima/autorizada hay; el bump de acá solo prepara la versión nueva lista para distribuir, no la publica.
+- Las apps salen por Play Store y App Store: el servidor no publica una versión mínima (`GET /api/version` se retiró) ni la app la consulta, así que no hay forma de forzar una actualización desde el servidor. El bump de acá solo prepara la versión nueva lista para publicar en las tiendas.

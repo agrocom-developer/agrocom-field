@@ -722,17 +722,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get uiOpenstreetmap => 'OpenStreetMap';
 
   @override
-  String get versionActualizacionObligatoria => 'Actualización obligatoria';
-
-  @override
-  String versionEstaVersionAppEsta(String version) {
-    return 'Esta versión de la app ya no está autorizada. Instalá la versión $version o superior para seguir usándola.';
-  }
-
-  @override
-  String get versionDescargalaDesde => 'DESCÁRGALA DESDE';
-
-  @override
   String componentesRondaSemantica(
     Object ronda,
     Object totalRondas,
@@ -2168,36 +2157,6 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get proveedorDronSinDronAprobadoLlegan =>
       'Sin un dron aprobado no llegan ofertas. Cada dron lo aprueba un administrador.';
-
-  @override
-  String get referenciasBuscandoPrecioReferencia =>
-      'Buscando el precio de referencia';
-
-  @override
-  String get referenciasTodaviaHayPrecioReferencia =>
-      'Todavía no hay un precio de referencia para esta aplicación. Escribe el que te parezca justo.';
-
-  @override
-  String get referenciasSinConexionParaTraer =>
-      'Sin conexión para traer el precio de referencia.';
-
-  @override
-  String get referenciasPudimosTraerPrecioReferencia =>
-      'No pudimos traer el precio de referencia.';
-
-  @override
-  String referenciasReferenciaPor(String precio) {
-    return 'Referencia: $precio por ha';
-  }
-
-  @override
-  String get referenciasEstasUsandoEstePrecio => 'Estás usando este precio';
-
-  @override
-  String get referenciasUsar => 'Usar';
-
-  @override
-  String get referenciasReintentar => 'Reintentar';
 
   @override
   String pagoPagoConfirmado(String detalle) {
@@ -3805,26 +3764,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String terrenosFotoDescripcionSufijo(String descripcion) {
     return ': $descripcion';
   }
-
-  @override
-  String get referenciasPrecioZona => 'Precio habitual en tu zona';
-
-  @override
-  String get referenciasPrecioRegion => 'Precio habitual en tu región';
-
-  @override
-  String get referenciasPrecioPais => 'Precio habitual en el país';
-
-  @override
-  String referenciasSemantica(String precio, String origen, String uso) {
-    return 'Precio de referencia: $precio por hectárea. $origen. $uso';
-  }
-
-  @override
-  String get referenciasYaLoUsas => 'Ya lo estás usando.';
-
-  @override
-  String get referenciasTocaParaUsarlo => 'Toca para usarlo.';
 
   @override
   String get accesoRolCliente => 'Cliente';

@@ -12,7 +12,7 @@ Agrocom es un marketplace de servicio de fumigación con drones donde el precio 
 | Rol | Qué hace | Superficie |
 |---|---|---|
 | Cliente | Publica la solicitud con su precio, compara y elige ofertas, ve fotos, chat y ubicación del piloto, califica; debe estar aprobado | Flavor `cliente` (online-first, sin outbox) |
-| Proveedor | Ve el mapa de solicitudes abiertas, ofrece, marca inicio, avance y cierre, sube fotos, chatea, activa o desactiva avisos de nuevas solicitudes | Flavor `piloto` |
+| Proveedor | Ve el mapa de solicitudes abiertas, ofrece, marca inicio, avance y cierre, sube fotos, chatea, ajusta sus avisos de nuevas solicitudes (filtros) y su disponibilidad | Flavor `piloto` |
 | Proveedor independiente / dueño de drones / piloto propio de Agrocom | Se registra con datos de la persona y del dron con fotos; opera tras aprobación; compite en igualdad | Flavor `piloto` |
 | Admin / operador | Personal de Agrocom: verifica y aprueba clientes y proveedores y drones con sus fotos, modera calificaciones, resuelve reclamos | Panel web de `agrocom-api` |
 
@@ -28,13 +28,14 @@ Cada app admite un solo tipo de cuenta, con su propio usuario, verificación y a
 2. El piloto acepta el precio o contraoferta, con el dron que usará, después de ver los lotes y sus fotos.
 3. En cada negociación hay una sola oferta vigente: quien la recibe acepta, contraoferta o rechaza. Hay un máximo de ofertas y la última es definitiva. Las ofertas vencen y la solicitud expira; el cliente puede renovarla.
 4. Aceptar la oferta vigente de la contraparte adjudica la solicitud con su precio acordado; las demás ofertas se cierran.
-5. No hay asignación automática, prioridad de propios, radios ni sanciones automáticas.
+5. No hay asignación automática, zonas, radios, precio de referencia ni sanciones automáticas: el cliente elige. Hay prioridad solo en el aviso y en el orden sugerido: los avisos salen por oleadas desde el servidor (propios y mejor calificados primero, a nadie dos veces) y las ofertas se ordenan por defecto con los propios primero y luego por calificación.
+6. Mientras el cliente negocia, la solicitud está «En negociación» y no aparece a los demás pilotos; el cliente puede elegir «Sin buscar más pilotos». Un dron que no cumple lo pedido puede ofertar y se le marca al cliente.
 El detalle de reglas y casos límite lo mantiene el agente `negociacion-ofertas`.
 
 ## Qué ve cada parte
 
 - Antes de ofertar, el piloto ve lotes, hectáreas, cultivo, accesos, observaciones y fotos del terreno; no ve datos del cliente ni las ofertas de otros pilotos.
-- El cliente ve por oferta el precio, la calificación, el dron con fotos aprobadas y la distancia.
+- El cliente ve por oferta el precio, la calificación y el dron con fotos aprobadas, y qué requisito no cumple. No hay distancia calculada.
 - Los datos de contacto se entregan solo tras adjudicar. La ubicación del piloto se comparte con el cliente solo durante `en_ejecucion`.
 
 ## Reglas de red

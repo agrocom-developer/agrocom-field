@@ -1,4 +1,3 @@
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,7 +6,6 @@ import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tipografia_campo.dart';
 import '../../../../ui/tokens_campo.dart';
-import '../../../referencias/presentation/sugerencia_precio_referencia.dart';
 import '../../../ui/boton_principal_marketplace.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../domain/negociacion.dart';
@@ -289,18 +287,6 @@ class _Cuerpo extends StatelessWidget {
               ),
             ],
             _AvisoTurno(estado: estado),
-            // Una guía, no un límite: tocarla solo mueve el stepper.
-            if (estado.esMiTurno && !estado.esDefinitiva) ...[
-              const SizedBox(height: EspaciadoCampo.l),
-              SugerenciaPrecioReferencia(
-                tipoAplicacion: estado.solicitud!.tipoAplicacion ?? 'otro',
-                zonaId: estado.solicitud!.zonaId,
-                macrorregion: estado.solicitud!.macrorregion?.codigo,
-                actual: Decimal.fromInt(estado.precio),
-                alUsar: (v) =>
-                    cubit.cambiarPrecio(v.round().toBigInt().toInt()),
-              ),
-            ],
           ],
         );
     }

@@ -6,7 +6,6 @@ import 'package:agrocom_field/cliente/solicitudes/domain/solicitud.dart';
 import 'package:agrocom_field/l10n/app_localizations_es.dart';
 import 'package:agrocom_field/nucleo/marketplace/demo/datos_demo.dart';
 import 'package:agrocom_field/nucleo/marketplace/dominio/dominio.dart';
-import 'package:agrocom_field/nucleo/marketplace/referencias/precio_referencia.dart';
 import 'package:agrocom_field/nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
 import 'package:agrocom_field/nucleo/marketplace/terrenos/presentation/fotos_terreno_cubit.dart';
 import 'package:agrocom_field/nucleo/marketplace/ui/mapa_lote.dart';
@@ -130,9 +129,6 @@ Widget envolver({
   return MultiRepositoryProvider(
     providers: [
       RepositoryProvider<SolicitudRepositorio>.value(value: repositorio),
-      RepositoryProvider<ReferenciasRepositorio>.value(
-        value: ReferenciasDemo(),
-      ),
     ],
     child: BlocProvider(
       create: (_) => FotosTerrenoCubit(

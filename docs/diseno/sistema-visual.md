@@ -128,7 +128,7 @@ Catálogo `*Campo` en `lib/nucleo/ui/componentes/` (un solo import: `componentes
 
 | Componente | Función |
 |---|---|
-| `OfertaServicioCampo` | Oferta entrante: cuenta regresiva en anillo, título, mapa del lote opcional, pago, distancia, aceptar y rechazar, con los estados «enviando» y «sin conexión». Recibe `restante` y `total` desde el bloc; el monto llega ya formateado (nunca `double`). |
+| `OfertaServicioCampo` | Oferta entrante: cuenta regresiva en anillo, título, mapa del lote opcional, pago, aceptar y rechazar, con los estados «enviando» y «sin conexión». Recibe `restante` y `total` desde el bloc; el monto llega ya formateado (nunca `double`). |
 | `ChipEstadoMarketplace` | Estado en una píldora (aprobación, documento, dron): ícono, texto y tono semántico. En `lib/nucleo/marketplace/ui/`. |
 | `EstadoErrorMarketplace` | Error de carga con botón de reintento. En `lib/nucleo/marketplace/ui/`. |
 | `CalificacionCampo` | Estrellas de 1 a 5; interactiva para el cliente, de solo lectura para el proveedor. Objetivo táctil de 48 px y etiqueta accesible por estrella. |
@@ -160,11 +160,11 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 - *Estados.* Esqueleto al cargar, vacío que lleva a dibujar, error con reintento, y sin conexión al enviar: el aviso aparece arriba del resumen, el formulario queda intacto y el botón pasa a «Reintentar envío».
 - *iPad horizontal.* Panel dividido: el mapa fijo a la izquierda en los cuatro pasos y el formulario en una columna de 420 px a la derecha (`NavegacionAdaptativaCampo.anchoCompleto`).
 
-**Ofertas recibidas (cliente).** Lista de las ofertas de una solicitud, cada una con el nombre del piloto, su calificación, el precio por hectárea, el dron, la distancia y el vencimiento. Aceptar es la acción principal de la oferta vigente; contraofertar y rechazar son secundarias. Solo se habilita lo que el servidor permite según el autor y el estado de la oferta. Sin ofertas, el estado vacío explica que los pilotos las verán en el mapa y que el cliente recibirá un aviso.
+**Ofertas recibidas (cliente).** Lista de las ofertas de una solicitud, cada una con el nombre del piloto, su calificación, el precio por hectárea, el dron, el requisito que no cumple si lo hay y el vencimiento. El orden recomendado es del servidor (propios primero, luego calificación) y el cliente lo cambia. Aceptar es la acción principal de la oferta vigente; contraofertar y rechazar son secundarias. Solo se habilita lo que el servidor permite según el autor y el estado de la oferta. Sin ofertas, el estado vacío explica que los pilotos las verán en el mapa y que el cliente recibirá un aviso.
 
 **Mapa de seguimiento (cliente).** Mapa a pantalla completa con una hoja inferior arrastrable (peek 30 %, expandida 70 %): estado del servicio, piloto, calificación y avance. Un punto marca la última ubicación del piloto, sin estela; con movimiento reducido salta a la posición nueva. Ninguna decoración sobre el mapa salvo controles de zoom y recentrado a 48 px.
 
-**Oferta en el mapa (proveedor).** Cada solicitud abierta es un marcador con el precio por hectárea escrito; el detalle muestra hectáreas, cultivo, producto, fecha y distancia. Jerarquía: precio propuesto como título; aceptarlo o contraofertar abajo (56 px, ancho completo). En «Mis ofertas» se ordena por quién tiene el turno. La oferta que ya no está vigente y la solicitud ya adjudicada quedan a la vista con un texto neutro, sin color de error. Ofertar y responder requieren red: si no hay señal, el botón muestra el estado y no se queda a medias.
+**Oferta en el mapa (proveedor).** Cada solicitud abierta es un marcador con el precio por hectárea escrito; el detalle muestra ubicación (departamento, provincia, municipio, comunidad), hectáreas, cultivo, producto, fecha y los requisitos del cliente. Jerarquía: precio propuesto como título; aceptarlo o contraofertar abajo (56 px, ancho completo). En «Mis ofertas» se ordena por quién tiene el turno. La oferta que ya no está vigente y la solicitud ya adjudicada quedan a la vista con un texto neutro, sin color de error. Ofertar y responder requieren red: si no hay señal, el botón muestra el estado y no se queda a medias.
 
 **Línea de tiempo del servicio (cliente).** Seis puntos en vertical: publicada, ofertas, piloto elegido, fumigación, precio final y calificación. Solo el punto en curso lleva su explicación; los demás quedan en una línea. El nodo hecho lleva una tilde, el actual un punto sobre el acento y el pendiente un anillo vacío: el estado no depende solo del color.
 
@@ -172,7 +172,7 @@ Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`
 
 **Calificación (cliente).** Hoja inferior de dos toques: una estrella y enviar. Las etiquetas y el comentario aparecen después de elegir la estrella y son opcionales. Al terminar, confirmación inmediata y salida. La escribe solo el cliente; el proveedor la ve en su perfil.
 
-**Perfil de proveedor.** Encabezado con nombre, tipo, calificación promedio y cantidad de servicios; estado de aprobación con chip semántico y lo que significa para operar; aviso si un documento pide atención. Debajo, cuatro métricas operativas (servicios, hectáreas, aceptación y cancelación), hectáreas por mes, documentos con su estado, zonas de cobertura y calificaciones recibidas con su distribución. Sin métricas decorativas.
+**Perfil de proveedor.** Encabezado con nombre, tipo, calificación promedio y cantidad de servicios; estado de aprobación con chip semántico y lo que significa para operar; aviso si un documento pide atención. Debajo, cuatro métricas operativas (servicios, hectáreas, aceptación y cancelación), hectáreas por mes, documentos con su estado, su disponibilidad y calificaciones recibidas con su distribución. Sin métricas decorativas.
 
 **Mis drones (proveedor).** Una tarjeta por dron: modelo, matrícula, propiedad y tanque; estado con chip; ciclos de batería con barra y los ciclos que quedan. Desde tres cuartos de vida útil la barra pasa a ámbar y el texto pide planificar el recambio. Primero se listan los drones que piden atención.
 
