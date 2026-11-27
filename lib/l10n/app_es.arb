@@ -1229,5 +1229,17 @@
   "permisosDenegadoAjustes": "Puedes activarlo en los ajustes del teléfono. Al volver, la app lo toma al instante.",
   "permisosDenegadoReintento": "Si cambias de idea, te lo volvemos a pedir cuando lo necesites.",
   "permisosAbrirAjustes": "Abrir ajustes",
-  "permisosCerrar": "Cerrar"
+  "permisosCerrar": "Cerrar",
+  "biometriaBloqueadaTitulo": "Sesión bloqueada",
+  "biometriaBloqueadaDetalle": "Usa tu huella o tu rostro para entrar. Lo que hayas guardado en el teléfono sigue a salvo.",
+  "biometriaDesbloquear": "Desbloquear",
+  "biometriaUsarContrasena": "Entrar con mi contraseña",
+  "biometriaMotivoDesbloqueo": "Confirma que eres tú para abrir Agrocom",
+  "biometriaMotivoActivar": "Confirma tu huella o rostro para activar el desbloqueo",
+  "biometriaUsaContrasena": "No pudimos usar la huella o el rostro. Entra con tu contraseña.",
+  "biometriaAjusteTitulo": "Desbloquear con huella o rostro",
+  "biometriaAjusteDetalle": "Al abrir la app te pedimos tu huella o rostro en vez de entrar directo. No se envía a Agrocom.",
+  "biometriaAjusteSinRegistrar": "Registra una huella o un rostro en los ajustes del teléfono para activarlo.",
+  "biometriaAjusteSinHardware": "Este teléfono no tiene lector de huella ni de rostro.",
+  "biometriaNoConfirmada": "No pudimos confirmar tu huella o rostro. El desbloqueo sigue desactivado."
 }

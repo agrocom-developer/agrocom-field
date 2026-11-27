@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../auth/presentation/bloqueo_biometrico_widgets.dart';
 import '../../../../ui/componentes/logo_agrocom_campo.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -42,6 +43,11 @@ class PuertaAcceso extends StatelessWidget {
           estado: estado,
           permiteRegistro: permiteRegistro,
           nota: nota,
+        ),
+        AccesoBloqueado(:final desbloqueando) => PantallaBloqueoBiometrico(
+          desbloqueando: desbloqueando,
+          alDesbloquear: context.read<AccesoCubit>().desbloquear,
+          alUsarContrasena: () => context.read<AccesoCubit>().usarContrasena(),
         ),
         AccesoDentro(:final sesion) => construir(context, sesion),
       },

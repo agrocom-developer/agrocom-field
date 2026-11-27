@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
+import '../nucleo/auth/bloqueo_biometrico.dart';
 import '../nucleo/conectividad/data/conectividad_falsa.dart';
 import '../nucleo/conectividad/domain/conectividad_servicio.dart';
 import '../nucleo/conectividad/presentation/con_banner_de_red.dart';
@@ -49,7 +50,10 @@ class AppPilotoDemo extends StatelessWidget {
 /// Navegación del piloto: el mapa de solicitudes abiertas, sus ofertas, sus
 /// servicios adjudicados y el perfil (que lleva el dron y la licencia).
 class ShellPiloto extends StatefulWidget {
-  const ShellPiloto({this.conectividad, this.alSalir, super.key});
+  const ShellPiloto({this.conectividad, this.alSalir, this.bloqueo, super.key});
+
+  /// Si está, el perfil ofrece activar el desbloqueo con huella o rostro.
+  final BloqueoBiometrico? bloqueo;
 
   /// Estado de la red para el banner «Sin señal»; sin él, siempre hay red.
   final ConectividadServicio? conectividad;
@@ -125,6 +129,7 @@ class _ShellPilotoState extends State<ShellPiloto> {
               context,
               conAvisos: true,
               alSalir: widget.alSalir,
+              bloqueo: widget.bloqueo,
             ),
           ),
         },

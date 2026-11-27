@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../l10n/app_localizations_es.dart';
+import '../../../nucleo/auth/bloqueo_biometrico.dart';
+import '../../../nucleo/auth/presentation/bloqueo_biometrico_widgets.dart';
 import '../../../nucleo/marketplace/ui/estado_vacio_marketplace.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../domain/acceso_repositorio.dart';
@@ -24,8 +27,12 @@ class PuertaAccesoCliente extends StatefulWidget {
     required this.dentro,
     this.notaAcceso,
     this.sesionExpirada,
+    this.bloqueo,
     super.key,
   });
+
+  /// Desbloqueo con huella o rostro al abrir con sesión guardada (opcional).
+  final BloqueoBiometrico? bloqueo;
 
   final WidgetBuilder dentro;
   final String? notaAcceso;
@@ -41,6 +48,10 @@ class PuertaAccesoCliente extends StatefulWidget {
 class _PuertaAccesoClienteState extends State<PuertaAccesoCliente> {
   late final ArranqueCubit _arranque = ArranqueCubit(
     context.read<AccesoRepositorio>(),
+    bloqueo: widget.bloqueo,
+    // Este estado vive antes de que haya localizaciones en el árbol; la app
+    // va fija en español.
+    l10n: AppLocalizationsEs(),
   );
   bool _splashLista = false;
   bool _registro = false;
@@ -120,6 +131,14 @@ class _PuertaAccesoClienteState extends State<PuertaAccesoCliente> {
                 nota: _vencida
                     ? AppLocalizations.of(context).accesoSesionVencioEntraNuevo
                     : widget.notaAcceso,
+              ),
+            ),
+            EtapaArranque.bloqueada => (
+              'bloqueada',
+              PantallaBloqueoBiometrico(
+                desbloqueando: estado.desbloqueando,
+                alDesbloquear: _arranque.desbloquear,
+                alUsarContrasena: _arranque.usarContrasena,
               ),
             ),
             EtapaArranque.dentro => ('dentro', widget.dentro(context)),

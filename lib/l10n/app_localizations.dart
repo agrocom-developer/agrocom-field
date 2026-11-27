@@ -6342,6 +6342,78 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Cerrar'**
   String get permisosCerrar;
+
+  /// No description provided for @biometriaBloqueadaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión bloqueada'**
+  String get biometriaBloqueadaTitulo;
+
+  /// No description provided for @biometriaBloqueadaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa tu huella o tu rostro para entrar. Lo que hayas guardado en el teléfono sigue a salvo.'**
+  String get biometriaBloqueadaDetalle;
+
+  /// No description provided for @biometriaDesbloquear.
+  ///
+  /// In es, this message translates to:
+  /// **'Desbloquear'**
+  String get biometriaDesbloquear;
+
+  /// No description provided for @biometriaUsarContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Entrar con mi contraseña'**
+  String get biometriaUsarContrasena;
+
+  /// No description provided for @biometriaMotivoDesbloqueo.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma que eres tú para abrir Agrocom'**
+  String get biometriaMotivoDesbloqueo;
+
+  /// No description provided for @biometriaMotivoActivar.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma tu huella o rostro para activar el desbloqueo'**
+  String get biometriaMotivoActivar;
+
+  /// No description provided for @biometriaUsaContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos usar la huella o el rostro. Entra con tu contraseña.'**
+  String get biometriaUsaContrasena;
+
+  /// No description provided for @biometriaAjusteTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Desbloquear con huella o rostro'**
+  String get biometriaAjusteTitulo;
+
+  /// No description provided for @biometriaAjusteDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Al abrir la app te pedimos tu huella o rostro en vez de entrar directo. No se envía a Agrocom.'**
+  String get biometriaAjusteDetalle;
+
+  /// No description provided for @biometriaAjusteSinRegistrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra una huella o un rostro en los ajustes del teléfono para activarlo.'**
+  String get biometriaAjusteSinRegistrar;
+
+  /// No description provided for @biometriaAjusteSinHardware.
+  ///
+  /// In es, this message translates to:
+  /// **'Este teléfono no tiene lector de huella ni de rostro.'**
+  String get biometriaAjusteSinHardware;
+
+  /// No description provided for @biometriaNoConfirmada.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos confirmar tu huella o rostro. El desbloqueo sigue desactivado.'**
+  String get biometriaNoConfirmada;
 }
 
 class _AppLocalizationsDelegate

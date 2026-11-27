@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../camara/selector_imagen.dart';
 import '../../../evidencias/compresor_adaptativo.dart';
+import '../../../auth/bloqueo_biometrico.dart';
 import '../../../notificaciones/push/dispositivos_push_repositorio.dart';
 import '../../../notificaciones/push/token_push_store.dart';
 import '../../foto_perfil/foto_perfil_repositorio.dart';
@@ -125,6 +126,7 @@ class DependenciasAccesoProveedor {
     required this.registroDrones,
     this.sesionExpirada,
     this.nota,
+    this.bloqueo,
   });
 
   final AccesoProveedorRepositorio acceso;
@@ -135,4 +137,8 @@ class DependenciasAccesoProveedor {
 
   /// Host y versión al pie del ingreso.
   final String? nota;
+
+  /// Desbloqueo con huella o rostro (ADR 0026); sin él, la app entra directo
+  /// con la sesión guardada.
+  final BloqueoBiometrico? bloqueo;
 }

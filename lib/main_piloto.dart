@@ -30,8 +30,11 @@ Future<void> main() async {
       proveedor: c.proveedor,
       acceso: c.acceso,
       selectorImagen: c.selectorImagen,
-      construirShell: (context, alSalir) =>
-          ShellPiloto(conectividad: ConectividadReal(), alSalir: alSalir),
+      construirShell: (context, alSalir) => ShellPiloto(
+        conectividad: ConectividadReal(),
+        alSalir: alSalir,
+        bloqueo: c.acceso.bloqueo,
+      ),
     ),
   );
 }

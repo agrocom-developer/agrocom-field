@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../auth/bloqueo_biometrico.dart';
+import '../../../../auth/presentation/bloqueo_biometrico_widgets.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tema_visual/selector_tema_visual.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -13,6 +15,7 @@ List<Widget> extrasDePerfil(
   BuildContext context, {
   required bool conAvisos,
   VoidCallback? alSalir,
+  BloqueoBiometrico? bloqueo,
 }) {
   final t = AppLocalizations.of(context);
   return [
@@ -29,6 +32,11 @@ List<Widget> extrasDePerfil(
         alToque: () => Navigator.of(
           context,
         ).push(MaterialPageRoute<void>(builder: (_) => const AvisosPantalla())),
+      ),
+    if (bloqueo != null)
+      FilaBloqueoBiometrico(
+        bloqueo: bloqueo,
+        motivoActivacion: t.biometriaMotivoActivar,
       ),
     if (alSalir != null)
       FilaAccionPerfil(

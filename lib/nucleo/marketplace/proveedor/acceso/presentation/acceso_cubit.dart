@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../auth/bloqueo_biometrico.dart';
 import '../domain/acceso_proveedor.dart';
 
 sealed class AccesoEstado {
@@ -27,6 +28,14 @@ final class AccesoSinSesion extends AccesoEstado {
   final bool sesionVencida;
 }
 
+/// Hay sesión guardada y el bloqueo biométrico está activo: no se lee el token
+/// hasta reconocer a la persona (ADR 0026).
+final class AccesoBloqueado extends AccesoEstado {
+  const AccesoBloqueado({this.desbloqueando = false});
+
+  final bool desbloqueando;
+}
+
 final class AccesoDentro extends AccesoEstado {
   const AccesoDentro(this.sesion);
 
@@ -36,10 +45,16 @@ final class AccesoDentro extends AccesoEstado {
 /// La puerta de la app real: decide entre el ingreso y la superficie del
 /// proveedor según haya o no una sesión válida.
 class AccesoCubit extends Cubit<AccesoEstado> {
-  AccesoCubit(this._acceso, this._l10n, {Stream<void>? sesionExpirada})
-    : super(const AccesoVerificando()) {
+  AccesoCubit(
+    this._acceso,
+    this._l10n, {
+    Stream<void>? sesionExpirada,
+    BloqueoBiometrico? bloqueo,
+  }) : _bloqueo = bloqueo,
+       super(const AccesoVerificando()) {
     _sub = sesionExpirada?.listen((_) {
       if (state is AccesoDentro) {
+        _bloqueo?.olvidar();
         emit(
           AccesoSinSesion(
             sesionVencida: true,
@@ -52,9 +67,49 @@ class AccesoCubit extends Cubit<AccesoEstado> {
 
   final AppLocalizations _l10n;
   final AccesoProveedorRepositorio _acceso;
+  final BloqueoBiometrico? _bloqueo;
   StreamSubscription<void>? _sub;
 
   Future<void> iniciar() async {
+    final bloqueo = _bloqueo;
+    if (bloqueo != null && await bloqueo.activo()) {
+      emit(const AccesoBloqueado());
+      await desbloquear();
+      return;
+    }
+    await _leerSesion();
+  }
+
+  /// Pide huella o rostro y, solo si coinciden, lee la sesión guardada. Si
+  /// cancela, queda bloqueado y puede reintentar; si ya no hay biometría en el
+  /// teléfono, pasa al ingreso con contraseña.
+  Future<void> desbloquear() async {
+    final bloqueo = _bloqueo;
+    if (bloqueo == null) return _leerSesion();
+    emit(const AccesoBloqueado(desbloqueando: true));
+    final resultado = await bloqueo.desbloquear(
+      motivo: _l10n.biometriaMotivoDesbloqueo,
+    );
+    if (isClosed) return;
+    switch (resultado) {
+      case ResultadoDesbloqueo.noAplica:
+      case ResultadoDesbloqueo.desbloqueado:
+        await _leerSesion();
+      case ResultadoDesbloqueo.cancelado:
+        emit(const AccesoBloqueado());
+      case ResultadoDesbloqueo.usarContrasena:
+        await usarContrasena(mensaje: _l10n.biometriaUsaContrasena);
+    }
+  }
+
+  /// Sale del bloqueo por el ingreso normal: cierra la sesión guardada (revoca
+  /// el dispositivo si hay red) y pide usuario y contraseña.
+  Future<void> usarContrasena({String? mensaje}) async {
+    await salir();
+    if (!isClosed && mensaje != null) emit(AccesoSinSesion(mensaje: mensaje));
+  }
+
+  Future<void> _leerSesion() async {
     try {
       final sesion = await _acceso.sesionActual();
       if (isClosed) return;
@@ -83,6 +138,7 @@ class AccesoCubit extends Cubit<AccesoEstado> {
   Future<void> alRegistrarse() => iniciar();
 
   Future<void> salir() async {
+    await _bloqueo?.olvidar();
     await _acceso.cerrarSesion();
     if (!isClosed) emit(const AccesoSinSesion());
   }

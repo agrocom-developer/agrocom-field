@@ -54,6 +54,9 @@ import '../seguimiento/domain/seguimiento_repositorio.dart';
 import '../solicitar/data/solicitud_demo.dart';
 import '../solicitar/data/solicitud_red.dart';
 import '../solicitar/domain/solicitud_repositorio.dart';
+import '../../nucleo/auth/biometria.dart';
+import '../../nucleo/auth/bloqueo_biometrico.dart';
+import '../../nucleo/auth/bloqueo_biometrico_store.dart';
 import '../solicitudes/data/solicitudes_demo.dart';
 import '../solicitudes/data/solicitudes_red.dart';
 import '../solicitudes/domain/solicitudes_repositorio.dart';
@@ -84,6 +87,7 @@ class DependenciasCliente {
     this.precioFinal,
     this.notaAcceso,
     this.sesionExpirada,
+    this.bloqueo,
     ConectividadServicio? conectividad,
   }) : conectividad = conectividad ?? ConectividadFalsa();
 
@@ -222,6 +226,10 @@ class DependenciasCliente {
       precioFinal: PrecioFinalRed(http),
       notaAcceso: notaAcceso,
       sesionExpirada: expiracion.stream,
+      bloqueo: BloqueoBiometrico(
+        BiometriaLocalAuth(),
+        BloqueoBiometricoStoreSeguro(),
+      ),
       conectividad: ConectividadReal(),
     );
   }
@@ -258,6 +266,10 @@ class DependenciasCliente {
   /// Precio final y su confirmación; sin él la pantalla muestra solo lo de
   /// la solicitud.
   final PrecioFinalRepositorio? precioFinal;
+
+  /// Desbloqueo con huella o rostro (ADR 0026). Solo en la app real: la demo
+  /// no guarda sesión.
+  final BloqueoBiometrico? bloqueo;
 
   /// Nota que la pantalla de ingreso muestra bajo el formulario; solo la
   /// define el modo demo.

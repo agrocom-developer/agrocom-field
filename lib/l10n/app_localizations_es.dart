@@ -3897,4 +3897,48 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get permisosCerrar => 'Cerrar';
+
+  @override
+  String get biometriaBloqueadaTitulo => 'Sesión bloqueada';
+
+  @override
+  String get biometriaBloqueadaDetalle =>
+      'Usa tu huella o tu rostro para entrar. Lo que hayas guardado en el teléfono sigue a salvo.';
+
+  @override
+  String get biometriaDesbloquear => 'Desbloquear';
+
+  @override
+  String get biometriaUsarContrasena => 'Entrar con mi contraseña';
+
+  @override
+  String get biometriaMotivoDesbloqueo =>
+      'Confirma que eres tú para abrir Agrocom';
+
+  @override
+  String get biometriaMotivoActivar =>
+      'Confirma tu huella o rostro para activar el desbloqueo';
+
+  @override
+  String get biometriaUsaContrasena =>
+      'No pudimos usar la huella o el rostro. Entra con tu contraseña.';
+
+  @override
+  String get biometriaAjusteTitulo => 'Desbloquear con huella o rostro';
+
+  @override
+  String get biometriaAjusteDetalle =>
+      'Al abrir la app te pedimos tu huella o rostro en vez de entrar directo. No se envía a Agrocom.';
+
+  @override
+  String get biometriaAjusteSinRegistrar =>
+      'Registra una huella o un rostro en los ajustes del teléfono para activarlo.';
+
+  @override
+  String get biometriaAjusteSinHardware =>
+      'Este teléfono no tiene lector de huella ni de rostro.';
+
+  @override
+  String get biometriaNoConfirmada =>
+      'No pudimos confirmar tu huella o rostro. El desbloqueo sigue desactivado.';
 }

@@ -51,6 +51,7 @@ class AppProveedor extends StatelessWidget {
           // instala las localizaciones; la app va fija en español.
           AppLocalizationsEs(),
           sesionExpirada: acceso.sesionExpirada,
+          bloqueo: acceso.bloqueo,
         )..iniciar(),
         child: TemaVisualApp(
           predeterminado: ModoVisualCampo.campo,

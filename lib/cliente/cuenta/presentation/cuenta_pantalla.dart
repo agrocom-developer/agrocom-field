@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../nucleo/auth/bloqueo_biometrico.dart';
+import '../../../nucleo/auth/presentation/bloqueo_biometrico_widgets.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/foto_perfil/presentation/foto_perfil_widgets.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
@@ -22,7 +24,15 @@ import '../domain/cuenta_repositorio.dart';
 /// ajustes (tema) y cerrar sesión; debajo, lo que los proveedores dijeron de
 /// él.
 class CuentaPantalla extends StatefulWidget {
-  const CuentaPantalla({this.alCerrarSesion, this.alPublicar, super.key});
+  const CuentaPantalla({
+    this.alCerrarSesion,
+    this.alPublicar,
+    this.bloqueo,
+    super.key,
+  });
+
+  /// Si está, ofrece activar el desbloqueo con huella o rostro (ADR 0026).
+  final BloqueoBiometrico? bloqueo;
 
   /// Acción de cerrar sesión; sin ella el botón no se muestra.
   final VoidCallback? alCerrarSesion;
@@ -40,6 +50,7 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
 
   VoidCallback? get alCerrarSesion => widget.alCerrarSesion;
   VoidCallback? get alPublicar => widget.alPublicar;
+  BloqueoBiometrico? get bloqueo => widget.bloqueo;
 
   /// El repositorio de contactos existe solo si la app lo provee.
   bool get conContactos {
@@ -217,6 +228,13 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
             const SuperficieMarketplace(
               child: SelectorTemaVisual(predeterminado: ModoVisualCampo.claro),
             ),
+            if (bloqueo != null) ...[
+              const SizedBox(height: EspaciadoCampo.l),
+              FilaBloqueoBiometrico(
+                bloqueo: bloqueo!,
+                motivoActivacion: t.biometriaMotivoActivar,
+              ),
+            ],
             if (cuenta.empresa.isNotEmpty && conContactos) ...[
               const SizedBox(height: EspaciadoCampo.l),
               _FilaContactos(),

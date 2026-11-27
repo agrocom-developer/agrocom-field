@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../l10n/app_localizations.dart';
+import '../nucleo/auth/bloqueo_biometrico.dart';
 import '../nucleo/conectividad/data/conectividad_falsa.dart';
 import '../nucleo/conectividad/domain/conectividad_servicio.dart';
 import '../nucleo/conectividad/presentation/con_banner_de_red.dart';
@@ -57,8 +58,10 @@ class AppCliente extends StatelessWidget {
         home: PuertaAccesoCliente(
           notaAcceso: dependencias.notaAcceso,
           sesionExpirada: dependencias.sesionExpirada,
+          bloqueo: dependencias.bloqueo,
           dentro: (context) => ShellCliente(
             conectividad: dependencias.conectividad,
+            bloqueo: dependencias.bloqueo,
             alCerrarSesion: context.read<ArranqueCubit>().cerrarSesion,
           ),
         ),
@@ -72,7 +75,15 @@ class AppCliente extends StatelessWidget {
 /// «Publicar lote» no es un destino: es la acción principal del inicio y abre
 /// el flujo sobre la navegación.
 class ShellCliente extends StatefulWidget {
-  const ShellCliente({this.conectividad, this.alCerrarSesion, super.key});
+  const ShellCliente({
+    this.conectividad,
+    this.alCerrarSesion,
+    this.bloqueo,
+    super.key,
+  });
+
+  /// Si está, el perfil ofrece activar el desbloqueo con huella o rostro.
+  final BloqueoBiometrico? bloqueo;
 
   /// Estado de la red para el banner «Sin señal»; sin él, siempre hay red.
   final ConectividadServicio? conectividad;
@@ -169,6 +180,7 @@ class _ShellClienteState extends State<ShellCliente> {
           _ => CuentaPantalla(
             alCerrarSesion: widget.alCerrarSesion,
             alPublicar: _publicarLote,
+            bloqueo: widget.bloqueo,
           ),
         },
       ),
