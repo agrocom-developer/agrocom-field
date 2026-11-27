@@ -90,6 +90,23 @@ void main() {
     await tester.pump();
     await tester.tap(avisos);
     await tester.pumpAndSettle();
+    // La fila del perfil abre la bandeja de mensajes, no la configuración.
+    expect(find.text('Nuevas solicitudes'), findsNothing);
+    expect(find.byType(AppBar), findsOneWidget);
+  });
+
+  testWidgets('el menú ofrece Notificaciones (configuración) y Cobertura', (
+    tester,
+  ) async {
+    await montar(tester);
+    await tester.tap(find.text('Perfil').last);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.tap(find.byKey(const Key('perfil-menu')));
+    await tester.pumpAndSettle();
+    expect(find.text('Cobertura'), findsOneWidget);
+    await tester.tap(find.text('Notificaciones').last);
+    await tester.pumpAndSettle();
     expect(find.text('Nuevas solicitudes'), findsOneWidget);
   });
 
@@ -117,15 +134,9 @@ void main() {
     await tester.tapAt(const Offset(5, 5));
     await tester.pumpAndSettle();
 
-    final ajustes = find.byKey(const Key('perfil-ajustes'));
-    await tester.scrollUntilVisible(
-      ajustes,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    await Scrollable.ensureVisible(tester.element(ajustes), alignment: 0.5);
-    await tester.pump();
-    await tester.tap(ajustes);
+    await tester.tap(find.byKey(const Key('perfil-menu')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ajustes').last);
     await tester.pumpAndSettle();
     expect(find.text('Cerrar sesión'), findsOneWidget);
     await tester.tap(find.text('Cerrar sesión'));

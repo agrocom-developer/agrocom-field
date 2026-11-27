@@ -186,7 +186,7 @@ void main() {
     });
 
     testWidgets(
-      'Calificaciones, Documentos y Hectáreas y zonas abren su página',
+      'Calificaciones y Documentos abren su página; Cobertura va en el menú',
       (tester) async {
         await montar(tester, PerfilPantalla(reloj: () => ahora));
 
@@ -208,8 +208,11 @@ void main() {
         Navigator.of(tester.element(find.byType(Scaffold).last)).pop();
         await tester.pumpAndSettle();
 
-        await irA(tester, find.byKey(const Key('perfil-actividad')));
-        await tester.tap(find.byKey(const Key('perfil-actividad')));
+        // La fila de hectáreas ya no está en el perfil.
+        expect(find.byKey(const Key('perfil-actividad')), findsNothing);
+        await tester.tap(find.byKey(const Key('perfil-menu')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Cobertura'));
         await tester.pumpAndSettle();
         expect(find.text('Hectáreas por mes'), findsOneWidget);
         expect(find.text('Zonas de cobertura'), findsOneWidget);
@@ -244,7 +247,8 @@ void main() {
       expect(find.text('Todavía sin calificaciones'), findsOneWidget);
       await golden(tester, 'perfil_en_revision_360x640_x1');
 
-      await irA(tester, find.textContaining('La póliza no cubre'));
+      // Los documentos y sus avisos viven en su página, no en el perfil.
+      expect(find.textContaining('La póliza no cubre'), findsNothing);
     });
 
     testWidgets('la fila de drones solo aparece si el flavor la pide', (
@@ -258,10 +262,9 @@ void main() {
       final fila = find.byKey(const Key('perfil-ver-drones'));
       await irA(tester, fila);
       expect(find.text('Mis drones'), findsOneWidget);
-      expect(find.text('Dron y licencia'), findsOneWidget);
-      // Con 2 o más drones, una pastilla con la cantidad.
-      expect(find.byType(PildoraContadorCampo), findsOneWidget);
-      expect(find.text('2'), findsOneWidget);
+      // Subtexto de una sola línea con la cantidad, sin pastilla.
+      expect(find.text('2 drones · Dron y licencia'), findsOneWidget);
+      expect(find.byType(PildoraContadorCampo), findsNothing);
       expect(tester.getSize(fila).height, greaterThanOrEqualTo(56));
       await tester.tap(fila);
       expect(abiertos, 1);

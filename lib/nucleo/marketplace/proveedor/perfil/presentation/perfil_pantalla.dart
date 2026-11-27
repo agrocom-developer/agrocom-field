@@ -11,6 +11,7 @@ import '../../../foto_perfil/presentation/foto_perfil_widgets.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../../negociacion/presentation/avisos_pantalla.dart';
 import '../domain/perfil_repositorio.dart';
+import '../../../../notificaciones/bandeja/presentation/bandeja_notificaciones_pantalla.dart';
 import 'actividad_pantalla.dart';
 import 'documentos_pantalla.dart';
 import 'perfil_cubit.dart';
@@ -164,6 +165,10 @@ class _Contenido extends StatelessWidget {
       CalificacionesPantalla(resumen: datos.calificaciones, reloj: () => ahora),
     );
     void verAvisos() => _abrir(context, const AvisosPantalla());
+    void verCobertura() => _abrir(
+      context,
+      ActividadPantalla(meses: datos.hectareasPorMes, zonas: p.zonas),
+    );
     // Notificaciones también vive en Ajustes, con el estilo de esa pantalla.
     void verAjustes() => _abrir(
       context,
@@ -175,7 +180,7 @@ class _Contenido extends StatelessWidget {
               clave: const Key('ajustes-avisos'),
               icono: Icons.notifications_active_outlined,
               titulo: t.perfilProveedorAvisos,
-              detalle: t.perfilProveedorAvisosDetalle,
+              detalle: t.perfilPil2AvisosConfigDetalle,
               alToque: verAvisos,
             ),
         ],
@@ -197,6 +202,11 @@ class _Contenido extends StatelessWidget {
                     etiqueta: t.perfilProveedorAvisos,
                     alToque: verAvisos,
                   ),
+                (
+                  icono: Icons.map_outlined,
+                  etiqueta: t.perfilPil2Cobertura,
+                  alToque: verCobertura,
+                ),
               ],
             ),
             avatar: AvatarFotoPerfil(
@@ -228,8 +238,9 @@ class _Contenido extends StatelessWidget {
                     clave: const Key('perfil-avisos'),
                     icono: Icons.notifications_active_outlined,
                     titulo: t.perfilProveedorAvisos,
-                    detalle: t.perfilProveedorAvisosDetalle,
-                    alToque: verAvisos,
+                    detalle: t.perfilPil2BandejaDetalle,
+                    alToque: () =>
+                        _abrir(context, const BandejaNotificacionesPantalla()),
                   ),
                   const SizedBox(height: EspaciadoCampo.m),
                 ],
@@ -238,10 +249,11 @@ class _Contenido extends StatelessWidget {
                     clave: const Key('perfil-ver-drones'),
                     icono: Icons.flight_rounded,
                     titulo: t.perfilPilMisDrones,
-                    detalle: t.perfilProveedorDronLicencia,
-                    trailing: p.drones.length >= 2
-                        ? PildoraContadorCampo(p.drones.length)
-                        : null,
+                    detalle: t.perfilPil2DronesDetalle(
+                      p.drones.length == 1
+                          ? t.perfilProveedorDronesUno
+                          : t.perfilProveedorDronesVarios(p.drones.length),
+                    ),
                     alToque: onVerDrones!,
                   ),
                   const SizedBox(height: EspaciadoCampo.m),
@@ -267,28 +279,6 @@ class _Contenido extends StatelessWidget {
                         ),
                   alToque: verCalificaciones,
                 ),
-                const SizedBox(height: EspaciadoCampo.m),
-                FilaAccionCampo(
-                  clave: const Key('perfil-actividad'),
-                  icono: Icons.bar_chart_rounded,
-                  titulo: t.perfilPilActividad,
-                  detalle: t.perfilPilActividadDetalle,
-                  alToque: () => _abrir(
-                    context,
-                    ActividadPantalla(
-                      meses: datos.hectareasPorMes,
-                      zonas: p.zonas,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: EspaciadoCampo.m),
-                FilaAccionCampo(
-                  clave: const Key('perfil-ajustes'),
-                  icono: Icons.settings_outlined,
-                  titulo: t.ajustesTitulo,
-                  detalle: t.perfilPilAjustesDetalle,
-                  alToque: verAjustes,
-                ),
               ]),
             ),
           ),
@@ -307,12 +297,16 @@ class _Titulo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(
-        top: EspaciadoCampo.xl,
+        top: EspaciadoCampo.l,
         bottom: EspaciadoCampo.m,
       ),
       child: Semantics(
         header: true,
-        child: Text(texto, style: Theme.of(context).textTheme.titleLarge),
+        child: Text(
+          texto,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
       ),
     );
   }
