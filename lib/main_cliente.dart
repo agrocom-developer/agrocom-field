@@ -24,7 +24,14 @@ Future<void> main() async {
 
   if (modoDemo) {
     // La demo arranca como recién instalada: presentación, acceso e inicio.
-    runApp(AppCliente(dependencias: DependenciasCliente.demo(primerUso: true)));
+    runApp(
+      AppCliente(
+        dependencias: DependenciasCliente.demo(
+          primerUso: true,
+          conSesion: sesionDemo,
+        ),
+      ),
+    );
     return;
   }
 

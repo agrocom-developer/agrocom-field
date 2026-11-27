@@ -107,10 +107,12 @@ class DependenciasCliente {
   /// [primerUso] arranca como recién instalada: presentación, acceso y
   /// después el inicio (así corre `main_cliente.dart` en modo demo), y los
   /// pilotos simulados responden: ofertan, contraofertan y contestan el chat.
-  /// Con [almacen] y [latencia] las pruebas fijan los datos y quitan la
+  /// Con [conSesion] sigue con los pilotos simulados pero ya dentro de la app
+  /// (`SESION_DEMO`). Con [almacen] y [latencia] las pruebas fijan los datos y quitan la
   /// espera simulada.
   factory DependenciasCliente.demo({
     bool primerUso = false,
+    bool conSesion = false,
     AlmacenDemoCliente? almacen,
     Duration? latencia,
     SelectorImagen? selectorImagen,
@@ -140,8 +142,8 @@ class DependenciasCliente {
       cuenta: CuentaDemo(almacen),
       acceso: AccesoDemo(
         almacen,
-        onboardingVisto: !primerUso,
-        sesionIniciada: !primerUso,
+        onboardingVisto: !primerUso || conSesion,
+        sesionIniciada: !primerUso || conSesion,
       ),
       inicio: InicioClienteDemo(almacen),
       fotoPerfil: FotoPerfilDemo(),
