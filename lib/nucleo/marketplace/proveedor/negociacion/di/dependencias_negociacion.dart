@@ -7,6 +7,8 @@ import '../domain/avisador_solicitudes.dart';
 import '../domain/negociacion_repositorios.dart';
 import '../../../../api/marketplace_http.dart';
 import '../../../../notificaciones/notificador_local.dart';
+import '../../../../permisos/data/gestor_permisos_plataforma.dart';
+import '../../../../permisos/domain/permiso.dart';
 
 /// Los repositorios de la negociación del proveedor: mapa de solicitudes,
 /// mis ofertas, chat y avisos. Los monta `piloto` (ADR 0012).
@@ -18,6 +20,7 @@ class DependenciasNegociacion {
     required this.avisos,
     this.avisador,
     this.notificador,
+    this.permisos,
   });
 
   /// Datos ficticios en memoria (`MODO_DEMO`, ADR 0010).
@@ -45,6 +48,7 @@ class DependenciasNegociacion {
       mensajes: MensajesRed(http),
       avisos: avisos,
       notificador: notificador,
+      permisos: GestorPermisosPlataforma(),
       avisador: AvisadorSolicitudesNuevas(
         mercado: mercado,
         avisos: avisos,
@@ -64,6 +68,10 @@ class DependenciasNegociacion {
 
   /// Para pedir el permiso de notificaciones al activar los avisos.
   final NotificadorLocal? notificador;
+
+  /// Pide los permisos con su explicación previa (ADR 0026). Sin él (demo y
+  /// pruebas), el aviso del sistema sale directo por [notificador].
+  final GestorPermisos? permisos;
 
   List<RepositoryProvider<Object>> get proveedores => [
     RepositoryProvider<DependenciasNegociacion>.value(value: this),
