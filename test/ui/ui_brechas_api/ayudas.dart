@@ -31,11 +31,10 @@ class Variante {
 const chico = Size(360, 640);
 const grande = Size(412, 915);
 
-/// Claro en chico y grande, oscuro en grande y el chico con el texto al 200 %.
+/// Claro en chico y grande y el chico con el texto al 200 %.
 const matrizCliente = [
   Variante('claro_360', ModoVisualCampo.claro, chico, 1),
   Variante('claro_412', ModoVisualCampo.claro, grande, 1),
-  Variante('oscuro_412', ModoVisualCampo.oscuro, grande, 1),
   Variante('claro_360_texto200', ModoVisualCampo.claro, chico, 2),
 ];
 

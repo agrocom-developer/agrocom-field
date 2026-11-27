@@ -25,7 +25,7 @@ import 'solicitudes/presentation/solicitud_detalle_pantalla.dart';
 import 'cuenta/presentation/cuenta_pantalla.dart';
 import 'lotes/presentation/lotes_pantalla.dart';
 
-/// App del flavor cliente. Sigue al sistema (claro u oscuro) mientras la
+/// App del flavor cliente. Arranca en claro mientras la
 /// persona no elija otro tema en su perfil (sistema visual, §2); la elección
 /// se guarda en [almacenTema].
 class AppCliente extends StatelessWidget {
@@ -137,8 +137,8 @@ class _ShellClienteState extends State<ShellCliente> {
           etiqueta: t.navInicio,
         ),
         DestinoCampo(
-          icono: Icons.crop_square_rounded,
-          iconoActivo: Icons.crop_square_rounded,
+          icono: Icons.landscape_outlined,
+          iconoActivo: Icons.landscape_rounded,
           etiqueta: t.navLotes,
         ),
         DestinoCampo(

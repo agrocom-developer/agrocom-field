@@ -171,21 +171,6 @@ void main() {
     }
   });
 
-  test('el modo campo supera el contraste del modo oscuro en texto', () {
-    expect(
-      ContrasteWcag.ratio(
-        PaletaCampo.campo.textoSecundario,
-        PaletaCampo.campo.fondo,
-      ),
-      greaterThan(
-        ContrasteWcag.ratio(
-          PaletaCampo.oscuro.textoSecundario,
-          PaletaCampo.oscuro.fondo,
-        ),
-      ),
-    );
-  });
-
   test('construir() instala la paleta del modo en el tema', () {
     final tema = AgrocomThemeCampo.construir(modo: ModoVisualCampo.claro);
     expect(tema.extension<PaletaCampo>(), PaletaCampo.claro);
@@ -198,10 +183,10 @@ void main() {
   });
 
   test('lerp interpola entre paletas', () {
-    final mitad = PaletaCampo.claro.lerp(PaletaCampo.oscuro, 0.5);
+    final mitad = PaletaCampo.claro.lerp(PaletaCampo.campo, 0.5);
     expect(
       mitad.fondo,
-      Color.lerp(PaletaCampo.claro.fondo, PaletaCampo.oscuro.fondo, 0.5),
+      Color.lerp(PaletaCampo.claro.fondo, PaletaCampo.campo.fondo, 0.5),
     );
   });
 

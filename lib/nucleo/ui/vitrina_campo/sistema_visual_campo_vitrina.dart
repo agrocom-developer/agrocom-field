@@ -22,7 +22,6 @@ class _SistemaVisualCampoVitrinaState extends State<SistemaVisualCampoVitrina> {
 
   static const _opciones = [
     (ModoVisualCampo.claro, 'Claro'),
-    (ModoVisualCampo.oscuro, 'Oscuro'),
     (ModoVisualCampo.campo, 'Campo'),
   ];
 

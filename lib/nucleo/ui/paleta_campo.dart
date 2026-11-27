@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'colores_campo.dart';
 
-/// Los tres modos visuales del marketplace. El flavor decide el modo por
-/// defecto (cliente: claro u oscuro según el sistema; piloto:
-/// [campo], alto contraste para sol directo), pero cualquier modo es válido
-/// en cualquier flavor.
-enum ModoVisualCampo { claro, oscuro, campo }
+/// Los dos modos visuales del marketplace: [claro] (ciudad, el predeterminado
+/// de los dos flavors) y [campo] (alto contraste para sol directo y guantes).
+/// Cualquier modo es válido en cualquier flavor y se elige en el perfil.
+enum ModoVisualCampo { claro, campo }
 
 /// Paleta semántica del sistema visual Industrial AgTech (DESIGN.md y
 /// docs/diseno/sistema-visual.md); la fuente de los valores es
 /// `docs/diseno/tokens/tokens.json`.
 ///
-/// Cada rol existe en los tres modos y cumple WCAG 2.2 AA como mínimo, AAA en
+/// Cada rol existe en los dos modos y cumple WCAG 2.2 AA como mínimo, AAA en
 /// campo (verificado en `test/nucleo/ui/paleta_campo_test.dart`). Las
 /// pantallas leen roles (`context.paleta.texto`), nunca valores hexadecimales.
 ///
@@ -209,45 +208,6 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     sobrePapel: Color(0xFF29343A),
   );
 
-  static const PaletaCampo oscuro = PaletaCampo(
-    brillo: Brightness.dark,
-    fondo: Color(0xFF17251C),
-    superficie: Color(0xFF293832),
-    superficieElevada: Color(0xFF34443B),
-    borde: Color(0xFF405247),
-    bordeFuerte: Color(0xFF8A9C90),
-    texto: Color(0xFFEDF3EC),
-    textoSecundario: Color(0xFFAAB8AC),
-    acento: ColoresCampo.acentoHojaOscuro,
-    apoyo: ColoresCampo.acentoHojaOscuro,
-    sobreAcento: Color(0xFF0F1F12),
-    acentoTexto: ColoresCampo.acentoTextoOscuro,
-    exito: ColoresCampo.acentoTextoOscuro,
-    alerta: Color(0xFFFFB52E),
-    error: Color(0xFFFF8080),
-    info: Color(0xFF5BADDF),
-    superficie2: Color(0xFF34443B),
-    acentoContenedor: Color(0xFF2E4A35),
-    sobreAcentoContenedor: Color(0xFFA8DCAC),
-    acentoHover: Color(0xFF79CA80),
-    grafito: Color(0xFF34443B),
-    sobreGrafito: Color(0xFFEDF3EC),
-    ambar: Color(0xFFFFB52E),
-    sobreAmbar: Color(0xFF17251C),
-    ambarContenedor: Color(0xFF4A3A17),
-    sobreAmbarContenedor: Color(0xFFFFD488),
-    rellenoInfo: Color(0xFF50A5D8),
-    infoContenedor: Color(0xFF1E3A4C),
-    sobreInfoContenedor: Color(0xFFA6D4F0),
-    rellenoError: Color(0xFFFF6868),
-    errorContenedor: Color(0xFF4A2326),
-    sobreErrorContenedor: Color(0xFFFFB4B4),
-    papel: Color(0xFFF2D56E),
-    papel2: Color(0xFFE6C552),
-    papelDoblez: Color(0xFFC9A83A),
-    sobrePapel: Color(0xFF1E2A22),
-  );
-
   /// Modo campo: alto contraste AAA para sol directo y guantes (ADR 0008).
   static const PaletaCampo campo = PaletaCampo(
     brillo: Brightness.dark,
@@ -309,7 +269,6 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
 
   static PaletaCampo deModo(ModoVisualCampo modo) => switch (modo) {
     ModoVisualCampo.claro => claro,
-    ModoVisualCampo.oscuro => oscuro,
     ModoVisualCampo.campo => campo,
   };
 

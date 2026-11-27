@@ -120,7 +120,7 @@ void main() {
     ),
   );
 
-  for (final oscuro in [false, true]) {
+  for (final oscuro in [false]) {
     final modo = oscuro ? 'oscuro' : 'claro';
 
     group('teléfono, modo $modo', () {
@@ -281,16 +281,6 @@ void main() {
       await tester.enterText(find.bySemanticsLabel('Contraseña'), 'segura123');
       await _tocar(tester, find.byKey(const Key('login-ingresar')));
       await _comparar(tester, 'ipad_h_inicio');
-    });
-
-    testWidgets('horizontal oscuro: inicio', skip: saltar, (tester) async {
-      await _abrir(
-        tester,
-        dependenciasDePrueba(),
-        tamano: _ipadHorizontal,
-        oscuro: true,
-      );
-      await _comparar(tester, 'ipad_h_inicio_oscuro');
     });
 
     testWidgets('vertical: presentación, registro e inicio', skip: saltar, (

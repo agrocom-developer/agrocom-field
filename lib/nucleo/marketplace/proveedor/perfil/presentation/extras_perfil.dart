@@ -18,7 +18,7 @@ List<Widget> extrasDePerfil(
   return [
     const SuperficieMarketplace(
       key: Key('perfil-tema'),
-      child: SelectorTemaVisual(predeterminado: ModoVisualCampo.campo),
+      child: SelectorTemaVisual(predeterminado: ModoVisualCampo.claro),
     ),
     if (conAvisos)
       FilaAccionPerfil(

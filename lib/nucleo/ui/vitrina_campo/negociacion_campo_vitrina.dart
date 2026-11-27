@@ -47,10 +47,6 @@ class _NegociacionCampoVitrinaState extends State<NegociacionCampoVitrina> {
                         label: Text('Claro'),
                       ),
                       ButtonSegment(
-                        value: ModoVisualCampo.oscuro,
-                        label: Text('Oscuro'),
-                      ),
-                      ButtonSegment(
                         value: ModoVisualCampo.campo,
                         label: Text('Campo'),
                       ),

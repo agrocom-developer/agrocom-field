@@ -73,15 +73,6 @@ void main() {
     );
   });
 
-  testWidgets('iPhone 17 Pro, modo oscuro', skip: saltar, (tester) async {
-    await capturar(
-      tester,
-      tamano: const Size(402, 1500),
-      archivo: 'iphone17pro_oscuro.png',
-      modo: 'Oscuro',
-    );
-  });
-
   testWidgets('iPhone 17 Pro, modo campo', skip: saltar, (tester) async {
     await capturar(
       tester,

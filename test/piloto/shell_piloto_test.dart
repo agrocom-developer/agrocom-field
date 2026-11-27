@@ -107,14 +107,14 @@ void main() {
     expect(find.text('Drones'), findsNothing);
   });
 
-  testWidgets('el perfil ofrece Claro, Oscuro y Campo AAA', (tester) async {
+  testWidgets('el perfil ofrece Claro y Campo AAA', (tester) async {
     await montar(tester);
     await tester.tap(find.text('Perfil').last);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
-    final oscuro = find.text('Oscuro');
+    final campo = find.text('Campo AAA');
     await tester.scrollUntilVisible(
-      oscuro,
+      campo,
       200,
       scrollable: find.byType(Scrollable).first,
     );

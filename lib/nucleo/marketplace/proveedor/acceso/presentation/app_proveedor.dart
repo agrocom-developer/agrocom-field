@@ -53,7 +53,7 @@ class AppProveedor extends StatelessWidget {
           sesionExpirada: acceso.sesionExpirada,
         )..iniciar(),
         child: TemaVisualApp(
-          predeterminado: ModoVisualCampo.campo,
+          predeterminado: ModoVisualCampo.claro,
           construir: (context, tema) => MaterialApp(
             title: 'Agrocom',
             localizationsDelegates: AppLocalizations.localizationsDelegates,

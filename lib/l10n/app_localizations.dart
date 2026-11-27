@@ -322,12 +322,6 @@ abstract class AppLocalizations {
   /// **'Claro'**
   String get temaClaro;
 
-  /// No description provided for @temaOscuro.
-  ///
-  /// In es, this message translates to:
-  /// **'Oscuro'**
-  String get temaOscuro;
-
   /// No description provided for @temaCampo.
   ///
   /// In es, this message translates to:

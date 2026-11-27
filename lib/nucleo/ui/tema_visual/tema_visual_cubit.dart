@@ -51,9 +51,8 @@ class AlmacenTemaVisualMemoria implements AlmacenTemaVisual {
   Future<void> guardar(ModoVisualCampo nuevo) async => modo = nuevo;
 }
 
-/// El tema que eligió la persona (Claro, Oscuro o Campo AAA). `null` es «sin
-/// elegir»: cada flavor aplica su predeterminado (el cliente sigue al
-/// sistema; el piloto usa el modo campo).
+/// El tema que eligió la persona (Claro o Campo AAA). `null` es «sin
+/// elegir»: los dos flavors arrancan en claro.
 class TemaVisualCubit extends Cubit<ModoVisualCampo?> {
   TemaVisualCubit(this._almacen) : super(null);
 
@@ -91,21 +90,13 @@ class ConfiguracionTema {
   final ThemeData oscuro;
   final ThemeMode modo;
 
-  /// Con [elegido] nulo se usa [predeterminado]: `claro` sigue al sistema
-  /// (claro u oscuro); `oscuro` y `campo` fijan ese tema.
+  /// Con [elegido] nulo se usa [predeterminado]; el tema es siempre el
+  /// mismo para `theme` y `darkTheme`: no se sigue el modo oscuro del sistema.
   factory ConfiguracionTema.de({
     required ModoVisualCampo? elegido,
     required ModoVisualCampo predeterminado,
   }) {
-    final modo = elegido ?? predeterminado;
-    if (elegido == null && predeterminado == ModoVisualCampo.claro) {
-      return ConfiguracionTema(
-        claro: AgrocomThemeCampo.construir(modo: ModoVisualCampo.claro),
-        oscuro: AgrocomThemeCampo.construir(modo: ModoVisualCampo.oscuro),
-        modo: ThemeMode.system,
-      );
-    }
-    final tema = AgrocomThemeCampo.construir(modo: modo);
+    final tema = AgrocomThemeCampo.construir(modo: elegido ?? predeterminado);
     return ConfiguracionTema(claro: tema, oscuro: tema, modo: ThemeMode.light);
   }
 }

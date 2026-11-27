@@ -40,7 +40,7 @@ class FilaLote extends StatelessWidget {
                 borderRadius: BorderRadius.circular(RadioCampo.media),
               ),
               child: Icon(
-                Icons.crop_square_rounded,
+                Icons.landscape_rounded,
                 color: paleta.sobreAcentoContenedor,
               ),
             ),

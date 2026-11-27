@@ -27,7 +27,7 @@ class AppPilotoDemo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TemaVisualApp(
-      predeterminado: ModoVisualCampo.campo,
+      predeterminado: ModoVisualCampo.claro,
       construir: (context, tema) => MaterialApp(
         title: 'Agrocom',
         localizationsDelegates: AppLocalizations.localizationsDelegates,

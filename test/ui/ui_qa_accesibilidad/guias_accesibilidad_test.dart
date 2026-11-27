@@ -47,7 +47,7 @@ void main() {
           '${tamano.width.toInt()}x${tamano.height.toInt()} '
           'texto ${(escala * 100).toInt()} %';
 
-      for (final oscuro in [false, true]) {
+      for (final oscuro in [false]) {
         testWidgets(
           'cliente ${oscuro ? 'oscuro' : 'claro'} $nombre: pestañas',
           (tester) async {
