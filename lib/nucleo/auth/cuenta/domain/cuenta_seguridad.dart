@@ -298,6 +298,18 @@ abstract interface class CuentaSeguridadRepositorio {
   Future<EliminacionCuenta> conservarCuenta();
 }
 
+/// Lo que el dispositivo tiene sin subir al servidor. Solo el piloto lo
+/// provee (el lote es offline-first): antes de eliminar la cuenta debe
+/// sincronizar, porque un registro que llegara después de la eliminación se
+/// rechazaría y se perdería (ADR 0025, punto 3). El cliente no lo provee.
+abstract interface class PendientesDeSincronizacion {
+  /// Registros y fotos todavía sin subir.
+  Future<int> cantidad();
+
+  /// Intenta subirlos ahora; sin red no hace nada.
+  Future<void> sincronizar();
+}
+
 /// Renueva la sesión al desbloquear con biometría. Lo implementa
 /// [CuentaSeguridadRepositorio].
 typedef RenovadorSesion = Future<bool> Function();

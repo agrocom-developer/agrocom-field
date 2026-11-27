@@ -283,6 +283,29 @@ void main() {
       expect(cerro, 1);
     });
 
+    testWidgets('el piloto con registros sin subir primero sincroniza', (
+      tester,
+    ) async {
+      final lote = _Lote(2);
+      await _montar(
+        tester,
+        RepositoryProvider<PendientesDeSincronizacion>.value(
+          value: lote,
+          child: EliminarCuentaPantalla(alCerrarSesion: () {}),
+        ),
+        CuentaSeguridadDemo(),
+        modo: ModoVisualCampo.campo,
+      );
+      await _asentar(tester);
+      expect(find.byKey(const Key('eliminar-pendientes')), findsOneWidget);
+      expect(find.textContaining('2 registros sin subir'), findsOneWidget);
+      expect(find.byKey(const Key('eliminar-continuar')), findsNothing);
+
+      await _tocar(tester, find.byKey(const Key('eliminar-sincronizar')));
+      expect(find.byKey(const Key('eliminar-pendientes')), findsNothing);
+      expect(find.byKey(const Key('eliminar-continuar')), findsOneWidget);
+    });
+
     testWidgets('quien olvidó la contraseña confirma con un código', (
       tester,
     ) async {
@@ -402,4 +425,16 @@ void main() {
       expect(find.byKey(const Key('ya-registrada-volver')), findsOneWidget);
     });
   });
+}
+
+class _Lote implements PendientesDeSincronizacion {
+  _Lote(this.pendientes);
+
+  int pendientes;
+
+  @override
+  Future<int> cantidad() async => pendientes;
+
+  @override
+  Future<void> sincronizar() async => pendientes = 0;
 }

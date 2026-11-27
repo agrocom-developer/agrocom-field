@@ -23,6 +23,7 @@ import '../dron/data/drones_demo.dart';
 import '../dron/data/drones_red.dart';
 import '../dron/domain/drones_repositorio.dart';
 import '../ejecucion/di/dependencias_ejecucion.dart';
+import '../ejecucion/domain/ejecucion.dart';
 import '../negociacion/di/dependencias_negociacion.dart';
 import '../perfil/data/perfil_demo.dart';
 import '../perfil/data/perfil_red.dart';
@@ -142,6 +143,10 @@ class DependenciasProveedor {
     RepositoryProvider<CuentaProveedorRepositorio>.value(value: cuenta),
     RepositoryProvider<GestorPermisos>.value(value: permisos),
     RepositoryProvider<CuentaSeguridadRepositorio>.value(value: seguridad),
+    // Antes de eliminar la cuenta hay que subir lo del lote.
+    RepositoryProvider<PendientesDeSincronizacion>.value(
+      value: _PendientesDelLote(ejecucion.repositorio),
+    ),
   ];
 
   Widget proveer({required Widget child}) =>
@@ -175,4 +180,25 @@ class DependenciasAccesoProveedor {
   /// Renueva el token al desbloquear con la biometría si le quedan pocos
   /// días (`POST /api/auth/renovar`).
   final RenovadorSesion? renovarSesion;
+}
+
+/// Lo que el lote tiene sin subir, visto desde la eliminación de la cuenta.
+class _PendientesDelLote implements PendientesDeSincronizacion {
+  _PendientesDelLote(this._repositorio);
+
+  final EjecucionRepositorio _repositorio;
+
+  @override
+  Future<int> cantidad() async {
+    // Si la base no responde pronto, no se bloquea la pantalla: el servidor
+    // sigue decidiendo.
+    final servicios = await _repositorio.observar().first.timeout(
+      const Duration(seconds: 3),
+      onTimeout: () => const <ServicioEnLote>[],
+    );
+    return servicios.fold<int>(0, (suma, s) => suma + s.pendientes);
+  }
+
+  @override
+  Future<void> sincronizar() => _repositorio.sincronizarAhora();
 }

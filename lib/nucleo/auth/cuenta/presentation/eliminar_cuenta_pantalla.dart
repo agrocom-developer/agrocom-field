@@ -31,9 +31,10 @@ class EliminarCuentaPantalla extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          EliminarCuentaCubit(context.read<CuentaSeguridadRepositorio>())
-            ..cargar(),
+      create: (_) => EliminarCuentaCubit(
+        context.read<CuentaSeguridadRepositorio>(),
+        pendientes: _pendientesDe(context),
+      )..cargar(),
       child: Scaffold(
         appBar: AppBar(title: const Text('Eliminar mi cuenta')),
         body: SafeArea(
@@ -46,6 +47,15 @@ class EliminarCuentaPantalla extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+/// Solo el piloto provee lo pendiente de subir; en el cliente es `null`.
+PendientesDeSincronizacion? _pendientesDe(BuildContext context) {
+  try {
+    return context.read<PendientesDeSincronizacion>();
+  } on ProviderNotFoundException {
+    return null;
   }
 }
 
@@ -205,12 +215,34 @@ class _Explicacion extends StatelessWidget {
         ),
         // Las fallas de la confirmación las muestra la propia hoja.
         const SizedBox(height: EspaciadoCampo.xl),
-        BotonDestructivoCuenta(
-          key: const Key('eliminar-continuar'),
-          texto: 'Continuar',
-          cargando: estado.etapa == EtapaEliminar.enviando,
-          onPressed: () => _confirmar(context, cubit),
-        ),
+        if (estado.pendientesPorSubir > 0) ...[
+          // Un registro que llegara después de la eliminación se rechazaría y
+          // se perdería: primero se sube lo del lote.
+          AvisoMarketplace(
+            key: const Key('eliminar-pendientes'),
+            mensaje:
+                'Primero sincroniza lo que registraste en el lote: tienes '
+                '${estado.pendientesPorSubir} '
+                '${estado.pendientesPorSubir == 1 ? 'registro' : 'registros'} '
+                'sin subir. Hazlo con señal y vuelve aquí.',
+            tono: TonoAviso.alerta,
+          ),
+          const SizedBox(height: EspaciadoCampo.m),
+          BotonPrincipalMarketplace(
+            key: const Key('eliminar-sincronizar'),
+            texto: 'Sincronizar ahora',
+            icono: Icons.sync_rounded,
+            alto: ObjetivoTactilCampo.guantes,
+            cargando: estado.sincronizando,
+            onPressed: cubit.sincronizar,
+          ),
+        ] else
+          BotonDestructivoCuenta(
+            key: const Key('eliminar-continuar'),
+            texto: 'Continuar',
+            cargando: estado.etapa == EtapaEliminar.enviando,
+            onPressed: () => _confirmar(context, cubit),
+          ),
       ],
     );
   }

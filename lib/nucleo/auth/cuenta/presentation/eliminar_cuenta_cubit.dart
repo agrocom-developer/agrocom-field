@@ -29,7 +29,14 @@ class EliminarCuentaEstado {
     this.consulta,
     this.eliminacion,
     this.falla,
+    this.pendientesPorSubir = 0,
+    this.sincronizando = false,
   });
+
+  /// Registros del lote sin subir (solo piloto): mientras haya, no se ofrece
+  /// eliminar.
+  final int pendientesPorSubir;
+  final bool sincronizando;
 
   final EtapaEliminar etapa;
   final ConsultaEliminacion? consulta;
@@ -43,11 +50,15 @@ class EliminarCuentaEstado {
     ConsultaEliminacion? consulta,
     EliminacionCuenta? eliminacion,
     CuentaFalla? Function()? falla,
+    int? pendientesPorSubir,
+    bool? sincronizando,
   }) => EliminarCuentaEstado(
     etapa: etapa ?? this.etapa,
     consulta: consulta ?? this.consulta,
     eliminacion: eliminacion ?? this.eliminacion,
     falla: falla != null ? falla() : this.falla,
+    pendientesPorSubir: pendientesPorSubir ?? this.pendientesPorSubir,
+    sincronizando: sincronizando ?? this.sincronizando,
   );
 }
 
@@ -55,22 +66,57 @@ class EliminarCuentaEstado {
 /// La app explica los impedimentos y envía la confirmación; el servidor
 /// decide y calcula los plazos.
 class EliminarCuentaCubit extends Cubit<EliminarCuentaEstado> {
-  EliminarCuentaCubit(this._repositorio) : super(const EliminarCuentaEstado());
+  EliminarCuentaCubit(
+    this._repositorio, {
+    PendientesDeSincronizacion? pendientes,
+  }) : _pendientes = pendientes,
+       super(const EliminarCuentaEstado());
 
   final CuentaSeguridadRepositorio _repositorio;
+  final PendientesDeSincronizacion? _pendientes;
 
   Future<void> cargar() async {
     emit(const EliminarCuentaEstado());
     try {
       final consulta = await _repositorio.consultarEliminacion();
+      final pendientes = await _contarPendientes();
       if (isClosed) return;
       emit(
-        EliminarCuentaEstado(etapa: EtapaEliminar.listo, consulta: consulta),
+        EliminarCuentaEstado(
+          etapa: EtapaEliminar.listo,
+          consulta: consulta,
+          pendientesPorSubir: pendientes,
+        ),
       );
     } on CuentaFalla catch (e) {
       if (!isClosed) {
         emit(EliminarCuentaEstado(etapa: EtapaEliminar.error, falla: e));
       }
+    }
+  }
+
+  Future<int> _contarPendientes() async {
+    try {
+      return await _pendientes?.cantidad() ?? 0;
+    } on Object {
+      // Si no se puede contar, no se bloquea: el servidor decide.
+      return 0;
+    }
+  }
+
+  /// «Sincronizar ahora»: sube lo pendiente y vuelve a contar.
+  Future<void> sincronizar() async {
+    final pendientes = _pendientes;
+    if (pendientes == null || state.sincronizando) return;
+    emit(state.copiarCon(sincronizando: true));
+    try {
+      await pendientes.sincronizar();
+    } on Object {
+      // Sin red no se sube; el conteo de abajo lo refleja.
+    }
+    final quedan = await _contarPendientes();
+    if (!isClosed) {
+      emit(state.copiarCon(sincronizando: false, pendientesPorSubir: quedan));
     }
   }
 

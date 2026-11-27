@@ -40,7 +40,7 @@ Ingreso y registro se alternan con estado local dentro de la puerta, no con ruta
 ### Modo demo
 
 - `main_cliente.dart` con `MODO_DEMO` arranca como una instalación nueva: `DependenciasCliente.demo(primerUso: true)`. `DependenciasCliente.demo()` sin argumentos abre con la sesión iniciada, que es lo que usan los tests de navegación.
-- `AccesoDemo` no tiene cuentas: cualquier correo bien escrito entra con una contraseña de 8 caracteres o más. Tres valores fijos muestran los estados de error: el correo `sinred@agrocom.example` responde sin conexión, la contraseña `incorrecta` responde credenciales inválidas y registrarse con `ocupado@agrocom.example` devuelve un error junto al campo del correo.
+- `AccesoDemo` no tiene cuentas: cualquier usuario entra con una contraseña de 4 caracteres o más. Tres valores fijos muestran los estados de error: el usuario `sinred` responde sin conexión, la contraseña `incorrecta` responde credenciales inválidas, y registrarse con `ocupado` devuelve un error junto al campo del usuario o con `yaregistrado` muestra «Ya tienes una cuenta».
 - La pantalla de ingreso muestra una nota de entorno solo cuando `DependenciasCliente.notaAcceso` la define (modo demo).
 
 ## Consecuencias
