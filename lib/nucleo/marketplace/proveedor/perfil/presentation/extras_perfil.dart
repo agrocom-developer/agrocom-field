@@ -7,6 +7,8 @@ import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tema_visual/selector_tema_visual.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../ui/marketplace_ui.dart';
+import '../../cuenta/presentation/disponibilidad_pantalla.dart';
+import '../../cuenta/presentation/documentos_pantalla.dart';
 import '../../negociacion/presentation/avisos_pantalla.dart';
 
 /// Las filas de cuenta que van en el perfil de `piloto`: los
@@ -16,6 +18,7 @@ List<Widget> extrasDePerfil(
   required bool conAvisos,
   VoidCallback? alSalir,
   BloqueoBiometrico? bloqueo,
+  bool conCuenta = false,
 }) {
   final t = AppLocalizations.of(context);
   return [
@@ -23,6 +26,26 @@ List<Widget> extrasDePerfil(
       key: Key('perfil-tema'),
       child: SelectorTemaVisual(predeterminado: ModoVisualCampo.campo),
     ),
+    if (conCuenta) ...[
+      FilaAccionPerfil(
+        clave: const Key('perfil-documentos'),
+        icono: Icons.folder_open_outlined,
+        titulo: t.perfilCuentaDocumentos,
+        detalle: t.perfilCuentaDocumentosDetalle,
+        alToque: () => abrirDocumentos(context),
+      ),
+      FilaAccionPerfil(
+        clave: const Key('perfil-disponibilidad'),
+        icono: Icons.toggle_on_outlined,
+        titulo: t.perfilCuentaDisponibilidad,
+        detalle: t.perfilCuentaDisponibilidadDetalle,
+        alToque: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const DisponibilidadPantalla(),
+          ),
+        ),
+      ),
+    ],
     if (conAvisos)
       FilaAccionPerfil(
         clave: const Key('perfil-avisos'),

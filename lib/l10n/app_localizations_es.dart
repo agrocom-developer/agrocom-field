@@ -3941,4 +3941,264 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get biometriaNoConfirmada =>
       'No pudimos confirmar tu huella o rostro. El desbloqueo sigue desactivado.';
+
+  @override
+  String get cuentaEnRevisionTitulo => 'Tu cuenta está en revisión';
+
+  @override
+  String get cuentaRechazadaTitulo => 'Tu cuenta fue rechazada';
+
+  @override
+  String get cuentaSuspendidaTitulo => 'Tu cuenta está suspendida';
+
+  @override
+  String get cuentaEnRevisionDetalle =>
+      'Un administrador revisa tus datos y documentos. Mientras tanto puedes ver tu perfil y tu dron, pero todavía no ves el mapa de solicitudes ni puedes ofertar.';
+
+  @override
+  String get cuentaRechazadaDetalle =>
+      'Corrige lo que te indicamos, vuelve a subir lo que haga falta y envíala otra vez a revisión.';
+
+  @override
+  String get cuentaSuspendidaDetalle =>
+      'No puedes ver el mapa ni ofertar mientras dure la suspensión. Escríbenos si necesitas ayuda.';
+
+  @override
+  String cuentaMotivo(String motivo) {
+    return 'Motivo: $motivo';
+  }
+
+  @override
+  String get cuentaQueFalta => 'Qué falta';
+
+  @override
+  String get cuentaNadaFalta =>
+      'No te falta ningún documento. Te avisamos cuando te aprueben.';
+
+  @override
+  String get cuentaSubirDocumentos => 'Subir documentos';
+
+  @override
+  String get cuentaReenviar => 'Volver a enviar a revisión';
+
+  @override
+  String get cuentaActualizar => 'Actualizar';
+
+  @override
+  String get cuentaErrorCarga => 'No pudimos revisar el estado de tu cuenta';
+
+  @override
+  String get cuentaErrorDetalle => 'Vuelve a intentarlo en un momento.';
+
+  @override
+  String get cuentaSinRed =>
+      'Sin conexión. Necesitamos señal para revisar tu cuenta.';
+
+  @override
+  String get cuentaActualizandoSemantica =>
+      'Actualizando el estado de tu cuenta';
+
+  @override
+  String get documentosTitulo => 'Mis documentos';
+
+  @override
+  String get documentosIntro =>
+      'Toma una foto de cada documento con la cámara. Se envían por conexión segura y no se guardan en tu teléfono.';
+
+  @override
+  String get documentosTipoIdentidad => 'Documento de identidad';
+
+  @override
+  String get documentosTipoLicenciaPiloto => 'Licencia de piloto';
+
+  @override
+  String get documentosTipoHabilitacionDron => 'Habilitación del dron';
+
+  @override
+  String get documentosTipoSeguroResponsabilidad => 'Seguro de responsabilidad';
+
+  @override
+  String get documentosTipoRegistroDron => 'Matrícula del dron';
+
+  @override
+  String get documentosTipoCertificadoFumigacion => 'Certificado de fumigación';
+
+  @override
+  String get documentosTipoAntecedentes => 'Antecedentes';
+
+  @override
+  String get documentosTipoOtro => 'Otro documento';
+
+  @override
+  String get documentosEtapaFaltante => 'Falta';
+
+  @override
+  String get documentosEtapaSubiendo => 'Subiendo';
+
+  @override
+  String get documentosEtapaEnRevision => 'En revisión';
+
+  @override
+  String get documentosEtapaAprobado => 'Aprobado';
+
+  @override
+  String get documentosEtapaRechazado => 'Rechazado';
+
+  @override
+  String get documentosEtapaVencido => 'Vencido';
+
+  @override
+  String get documentosEtapaError => 'No se envió';
+
+  @override
+  String get documentosTomarFoto => 'Tomar foto';
+
+  @override
+  String get documentosVolverATomar => 'Volver a tomar';
+
+  @override
+  String get documentosReintentar => 'Reintentar';
+
+  @override
+  String documentosVence(String fecha) {
+    return 'Vence el $fecha';
+  }
+
+  @override
+  String get documentosPreguntaVence => '¿Cuándo vence este documento?';
+
+  @override
+  String get documentosErrorSinRed =>
+      'Sin conexión. La foto sigue aquí: reintenta cuando tengas señal.';
+
+  @override
+  String get documentosErrorCarga => 'No pudimos cargar tus documentos';
+
+  @override
+  String get documentosVacio => 'No te pedimos ningún documento por ahora.';
+
+  @override
+  String get documentosVacioDetalle => 'Si falta algo, te lo mostramos aquí.';
+
+  @override
+  String documentosSemantica(String documento, String estado) {
+    return '$documento, $estado';
+  }
+
+  @override
+  String get disponibilidadTitulo => 'Disponibilidad';
+
+  @override
+  String get disponibilidadAyudaFila =>
+      'Ponte ocupado para no recibir avisos de solicitudes nuevas';
+
+  @override
+  String get disponibilidadIntro =>
+      'Ocupado o en trabajo, dejas de recibir avisos de solicitudes nuevas. Sigues viendo el mapa y puedes ofertar.';
+
+  @override
+  String get disponibilidadDisponible => 'Disponible';
+
+  @override
+  String get disponibilidadDisponibleDetalle =>
+      'Te avisamos de las solicitudes nuevas.';
+
+  @override
+  String get disponibilidadOcupado => 'Ocupado';
+
+  @override
+  String get disponibilidadOcupadoDetalle =>
+      'No te avisamos de solicitudes nuevas.';
+
+  @override
+  String get disponibilidadEnTrabajo => 'En trabajo';
+
+  @override
+  String get disponibilidadEnTrabajoDetalle =>
+      'No te avisamos mientras estás trabajando.';
+
+  @override
+  String disponibilidadEmpresaTeMarco(String estado) {
+    return 'Tu empresa te marcó como $estado';
+  }
+
+  @override
+  String disponibilidadEmpresaOcupada(String estado) {
+    return 'Tu empresa está $estado: no recibes avisos de solicitudes nuevas aunque tú estés disponible.';
+  }
+
+  @override
+  String get disponibilidadSinRed =>
+      'Sin conexión. Tu disponibilidad no cambió: inténtalo cuando tengas señal.';
+
+  @override
+  String get disponibilidadErrorCarga => 'No pudimos cargar tu disponibilidad';
+
+  @override
+  String get disponibilidadErrorDetalle => 'Vuelve a intentarlo en un momento.';
+
+  @override
+  String get disponibilidadTusAvisos => 'Tus avisos';
+
+  @override
+  String get disponibilidadAvisosActivos =>
+      'Avisos de solicitudes nuevas: activados';
+
+  @override
+  String get disponibilidadAvisosApagados =>
+      'Avisos de solicitudes nuevas: desactivados';
+
+  @override
+  String disponibilidadHectareasMinimas(String hectareas) {
+    return 'Hectáreas mínimas: $hectareas';
+  }
+
+  @override
+  String get disponibilidadCualquiera => 'cualquiera';
+
+  @override
+  String disponibilidadDepartamentosExcluidos(int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad departamentos excluidos',
+      one: '1 departamento excluido',
+      zero: 'Sin departamentos excluidos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String disponibilidadTiposExcluidos(int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad tipos de aplicación excluidos',
+      one: '1 tipo de aplicación excluido',
+      zero: 'Sin tipos de aplicación excluidos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get disponibilidadAjustarAvisos => 'Ajustar avisos';
+
+  @override
+  String disponibilidadEstadoActual(String estado) {
+    return 'Estado actual: $estado';
+  }
+
+  @override
+  String get perfilCuentaDocumentos => 'Mis documentos';
+
+  @override
+  String get perfilCuentaDocumentosDetalle =>
+      'Licencia, matrícula y lo que falta para tu aprobación';
+
+  @override
+  String get perfilCuentaDisponibilidad => 'Disponibilidad';
+
+  @override
+  String get perfilCuentaDisponibilidadDetalle =>
+      'Ponte ocupado para no recibir avisos';
 }

@@ -6414,6 +6414,426 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No pudimos confirmar tu huella o rostro. El desbloqueo sigue desactivado.'**
   String get biometriaNoConfirmada;
+
+  /// No description provided for @cuentaEnRevisionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta está en revisión'**
+  String get cuentaEnRevisionTitulo;
+
+  /// No description provided for @cuentaRechazadaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta fue rechazada'**
+  String get cuentaRechazadaTitulo;
+
+  /// No description provided for @cuentaSuspendidaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta está suspendida'**
+  String get cuentaSuspendidaTitulo;
+
+  /// No description provided for @cuentaEnRevisionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Un administrador revisa tus datos y documentos. Mientras tanto puedes ver tu perfil y tu dron, pero todavía no ves el mapa de solicitudes ni puedes ofertar.'**
+  String get cuentaEnRevisionDetalle;
+
+  /// No description provided for @cuentaRechazadaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Corrige lo que te indicamos, vuelve a subir lo que haga falta y envíala otra vez a revisión.'**
+  String get cuentaRechazadaDetalle;
+
+  /// No description provided for @cuentaSuspendidaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes ver el mapa ni ofertar mientras dure la suspensión. Escríbenos si necesitas ayuda.'**
+  String get cuentaSuspendidaDetalle;
+
+  /// No description provided for @cuentaMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Motivo: {motivo}'**
+  String cuentaMotivo(String motivo);
+
+  /// No description provided for @cuentaQueFalta.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué falta'**
+  String get cuentaQueFalta;
+
+  /// No description provided for @cuentaNadaFalta.
+  ///
+  /// In es, this message translates to:
+  /// **'No te falta ningún documento. Te avisamos cuando te aprueben.'**
+  String get cuentaNadaFalta;
+
+  /// No description provided for @cuentaSubirDocumentos.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir documentos'**
+  String get cuentaSubirDocumentos;
+
+  /// No description provided for @cuentaReenviar.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a enviar a revisión'**
+  String get cuentaReenviar;
+
+  /// No description provided for @cuentaActualizar.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get cuentaActualizar;
+
+  /// No description provided for @cuentaErrorCarga.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos revisar el estado de tu cuenta'**
+  String get cuentaErrorCarga;
+
+  /// No description provided for @cuentaErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a intentarlo en un momento.'**
+  String get cuentaErrorDetalle;
+
+  /// No description provided for @cuentaSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Necesitamos señal para revisar tu cuenta.'**
+  String get cuentaSinRed;
+
+  /// No description provided for @cuentaActualizandoSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizando el estado de tu cuenta'**
+  String get cuentaActualizandoSemantica;
+
+  /// No description provided for @documentosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis documentos'**
+  String get documentosTitulo;
+
+  /// No description provided for @documentosIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Toma una foto de cada documento con la cámara. Se envían por conexión segura y no se guardan en tu teléfono.'**
+  String get documentosIntro;
+
+  /// No description provided for @documentosTipoIdentidad.
+  ///
+  /// In es, this message translates to:
+  /// **'Documento de identidad'**
+  String get documentosTipoIdentidad;
+
+  /// No description provided for @documentosTipoLicenciaPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia de piloto'**
+  String get documentosTipoLicenciaPiloto;
+
+  /// No description provided for @documentosTipoHabilitacionDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Habilitación del dron'**
+  String get documentosTipoHabilitacionDron;
+
+  /// No description provided for @documentosTipoSeguroResponsabilidad.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguro de responsabilidad'**
+  String get documentosTipoSeguroResponsabilidad;
+
+  /// No description provided for @documentosTipoRegistroDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Matrícula del dron'**
+  String get documentosTipoRegistroDron;
+
+  /// No description provided for @documentosTipoCertificadoFumigacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Certificado de fumigación'**
+  String get documentosTipoCertificadoFumigacion;
+
+  /// No description provided for @documentosTipoAntecedentes.
+  ///
+  /// In es, this message translates to:
+  /// **'Antecedentes'**
+  String get documentosTipoAntecedentes;
+
+  /// No description provided for @documentosTipoOtro.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro documento'**
+  String get documentosTipoOtro;
+
+  /// No description provided for @documentosEtapaFaltante.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta'**
+  String get documentosEtapaFaltante;
+
+  /// No description provided for @documentosEtapaSubiendo.
+  ///
+  /// In es, this message translates to:
+  /// **'Subiendo'**
+  String get documentosEtapaSubiendo;
+
+  /// No description provided for @documentosEtapaEnRevision.
+  ///
+  /// In es, this message translates to:
+  /// **'En revisión'**
+  String get documentosEtapaEnRevision;
+
+  /// No description provided for @documentosEtapaAprobado.
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobado'**
+  String get documentosEtapaAprobado;
+
+  /// No description provided for @documentosEtapaRechazado.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazado'**
+  String get documentosEtapaRechazado;
+
+  /// No description provided for @documentosEtapaVencido.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencido'**
+  String get documentosEtapaVencido;
+
+  /// No description provided for @documentosEtapaError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se envió'**
+  String get documentosEtapaError;
+
+  /// No description provided for @documentosTomarFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomar foto'**
+  String get documentosTomarFoto;
+
+  /// No description provided for @documentosVolverATomar.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a tomar'**
+  String get documentosVolverATomar;
+
+  /// No description provided for @documentosReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get documentosReintentar;
+
+  /// No description provided for @documentosVence.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence el {fecha}'**
+  String documentosVence(String fecha);
+
+  /// No description provided for @documentosPreguntaVence.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuándo vence este documento?'**
+  String get documentosPreguntaVence;
+
+  /// No description provided for @documentosErrorSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. La foto sigue aquí: reintenta cuando tengas señal.'**
+  String get documentosErrorSinRed;
+
+  /// No description provided for @documentosErrorCarga.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus documentos'**
+  String get documentosErrorCarga;
+
+  /// No description provided for @documentosVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'No te pedimos ningún documento por ahora.'**
+  String get documentosVacio;
+
+  /// No description provided for @documentosVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Si falta algo, te lo mostramos aquí.'**
+  String get documentosVacioDetalle;
+
+  /// No description provided for @documentosSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{documento}, {estado}'**
+  String documentosSemantica(String documento, String estado);
+
+  /// No description provided for @disponibilidadTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponibilidad'**
+  String get disponibilidadTitulo;
+
+  /// No description provided for @disponibilidadAyudaFila.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponte ocupado para no recibir avisos de solicitudes nuevas'**
+  String get disponibilidadAyudaFila;
+
+  /// No description provided for @disponibilidadIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocupado o en trabajo, dejas de recibir avisos de solicitudes nuevas. Sigues viendo el mapa y puedes ofertar.'**
+  String get disponibilidadIntro;
+
+  /// No description provided for @disponibilidadDisponible.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponible'**
+  String get disponibilidadDisponible;
+
+  /// No description provided for @disponibilidadDisponibleDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te avisamos de las solicitudes nuevas.'**
+  String get disponibilidadDisponibleDetalle;
+
+  /// No description provided for @disponibilidadOcupado.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocupado'**
+  String get disponibilidadOcupado;
+
+  /// No description provided for @disponibilidadOcupadoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'No te avisamos de solicitudes nuevas.'**
+  String get disponibilidadOcupadoDetalle;
+
+  /// No description provided for @disponibilidadEnTrabajo.
+  ///
+  /// In es, this message translates to:
+  /// **'En trabajo'**
+  String get disponibilidadEnTrabajo;
+
+  /// No description provided for @disponibilidadEnTrabajoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'No te avisamos mientras estás trabajando.'**
+  String get disponibilidadEnTrabajoDetalle;
+
+  /// No description provided for @disponibilidadEmpresaTeMarco.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu empresa te marcó como {estado}'**
+  String disponibilidadEmpresaTeMarco(String estado);
+
+  /// No description provided for @disponibilidadEmpresaOcupada.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu empresa está {estado}: no recibes avisos de solicitudes nuevas aunque tú estés disponible.'**
+  String disponibilidadEmpresaOcupada(String estado);
+
+  /// No description provided for @disponibilidadSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Tu disponibilidad no cambió: inténtalo cuando tengas señal.'**
+  String get disponibilidadSinRed;
+
+  /// No description provided for @disponibilidadErrorCarga.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tu disponibilidad'**
+  String get disponibilidadErrorCarga;
+
+  /// No description provided for @disponibilidadErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a intentarlo en un momento.'**
+  String get disponibilidadErrorDetalle;
+
+  /// No description provided for @disponibilidadTusAvisos.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus avisos'**
+  String get disponibilidadTusAvisos;
+
+  /// No description provided for @disponibilidadAvisosActivos.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos de solicitudes nuevas: activados'**
+  String get disponibilidadAvisosActivos;
+
+  /// No description provided for @disponibilidadAvisosApagados.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos de solicitudes nuevas: desactivados'**
+  String get disponibilidadAvisosApagados;
+
+  /// No description provided for @disponibilidadHectareasMinimas.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas mínimas: {hectareas}'**
+  String disponibilidadHectareasMinimas(String hectareas);
+
+  /// No description provided for @disponibilidadCualquiera.
+  ///
+  /// In es, this message translates to:
+  /// **'cualquiera'**
+  String get disponibilidadCualquiera;
+
+  /// No description provided for @disponibilidadDepartamentosExcluidos.
+  ///
+  /// In es, this message translates to:
+  /// **'{cantidad, plural, =0{Sin departamentos excluidos} =1{1 departamento excluido} other{{cantidad} departamentos excluidos}}'**
+  String disponibilidadDepartamentosExcluidos(int cantidad);
+
+  /// No description provided for @disponibilidadTiposExcluidos.
+  ///
+  /// In es, this message translates to:
+  /// **'{cantidad, plural, =0{Sin tipos de aplicación excluidos} =1{1 tipo de aplicación excluido} other{{cantidad} tipos de aplicación excluidos}}'**
+  String disponibilidadTiposExcluidos(int cantidad);
+
+  /// No description provided for @disponibilidadAjustarAvisos.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustar avisos'**
+  String get disponibilidadAjustarAvisos;
+
+  /// No description provided for @disponibilidadEstadoActual.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado actual: {estado}'**
+  String disponibilidadEstadoActual(String estado);
+
+  /// No description provided for @perfilCuentaDocumentos.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis documentos'**
+  String get perfilCuentaDocumentos;
+
+  /// No description provided for @perfilCuentaDocumentosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia, matrícula y lo que falta para tu aprobación'**
+  String get perfilCuentaDocumentosDetalle;
+
+  /// No description provided for @perfilCuentaDisponibilidad.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponibilidad'**
+  String get perfilCuentaDisponibilidad;
+
+  /// No description provided for @perfilCuentaDisponibilidadDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponte ocupado para no recibir avisos'**
+  String get perfilCuentaDisponibilidadDetalle;
 }
 
 class _AppLocalizationsDelegate

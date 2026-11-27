@@ -34,6 +34,7 @@ Future<void> main() async {
         conectividad: ConectividadReal(),
         alSalir: alSalir,
         bloqueo: c.acceso.bloqueo,
+        conCuenta: true,
       ),
     ),
   );

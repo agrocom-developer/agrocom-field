@@ -376,6 +376,8 @@ class PreferenciasAviso {
     this.nuevasSolicitudes = true,
     this.macrorregiones = const [],
     this.hectareasMinimas,
+    this.departamentosExcluidos = const [],
+    this.tiposAplicacionExcluidos = const [],
     this.ofertas = true,
     this.mensajes = true,
     this.avance = true,
@@ -387,6 +389,12 @@ class PreferenciasAviso {
   /// Vacío: todas las zonas.
   final List<Macrorregion> macrorregiones;
   final Decimal? hectareasMinimas;
+
+  /// Códigos de departamento de los que no se avisa (contrato vigente).
+  final List<String> departamentosExcluidos;
+
+  /// Tipos de aplicación de los que no se avisa (`herbicida`, `desecante`...).
+  final List<String> tiposAplicacionExcluidos;
   final bool ofertas;
   final bool mensajes;
   final bool avance;
@@ -396,6 +404,8 @@ class PreferenciasAviso {
     bool? nuevasSolicitudes,
     List<Macrorregion>? macrorregiones,
     Decimal? Function()? hectareasMinimas,
+    List<String>? departamentosExcluidos,
+    List<String>? tiposAplicacionExcluidos,
     bool? ofertas,
     bool? mensajes,
     bool? avance,
@@ -406,6 +416,10 @@ class PreferenciasAviso {
     hectareasMinimas: hectareasMinimas != null
         ? hectareasMinimas()
         : this.hectareasMinimas,
+    departamentosExcluidos:
+        departamentosExcluidos ?? this.departamentosExcluidos,
+    tiposAplicacionExcluidos:
+        tiposAplicacionExcluidos ?? this.tiposAplicacionExcluidos,
     ofertas: ofertas ?? this.ofertas,
     mensajes: mensajes ?? this.mensajes,
     avance: avance ?? this.avance,

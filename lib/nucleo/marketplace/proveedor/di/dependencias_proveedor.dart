@@ -6,11 +6,16 @@ import '../../../camara/selector_imagen.dart';
 import '../../../evidencias/compresor_adaptativo.dart';
 import '../../../auth/bloqueo_biometrico.dart';
 import '../../../notificaciones/push/dispositivos_push_repositorio.dart';
+import '../../../permisos/data/gestor_permisos_plataforma.dart';
+import '../../../permisos/domain/permiso.dart';
 import '../../../notificaciones/push/token_push_store.dart';
 import '../../foto_perfil/foto_perfil_repositorio.dart';
 import '../../foto_preparador.dart';
 import '../../pago/pagos_repositorio.dart';
 import '../acceso/domain/acceso_proveedor.dart';
+import '../cuenta/data/cuenta_proveedor_demo.dart';
+import '../cuenta/data/cuenta_proveedor_red.dart';
+import '../cuenta/domain/cuenta_proveedor.dart';
 import '../demo/almacen_demo_proveedor.dart';
 import '../dron/data/drones_demo.dart';
 import '../dron/data/drones_red.dart';
@@ -26,7 +31,7 @@ import '../../../api/marketplace_http.dart';
 /// solicitudes, mis ofertas, chat y avisos), la ejecución del servicio
 /// adjudicado, el perfil y los drones. La monta el flavor `piloto` (ADR 0012).
 class DependenciasProveedor {
-  const DependenciasProveedor({
+  DependenciasProveedor({
     required this.negociacion,
     required this.ejecucion,
     required this.drones,
@@ -35,7 +40,10 @@ class DependenciasProveedor {
     required this.pagos,
     required this.preparadorFoto,
     required this.push,
-  });
+    CuentaProveedorRepositorio? cuenta,
+    GestorPermisos? permisos,
+  }) : cuenta = cuenta ?? CuentaProveedorDemo(),
+       permisos = permisos ?? GestorPermisosEnMemoria();
 
   factory DependenciasProveedor.demo(
     AlmacenDemoProveedor almacen, {
@@ -85,6 +93,8 @@ class DependenciasProveedor {
       CompresorEvidenciaAdaptativo(),
     ),
     push: DispositivosPushRed(http, TokenPushStoreSeguro()),
+    cuenta: CuentaProveedorRed(http),
+    permisos: GestorPermisosPlataforma(),
   );
 
   final DependenciasNegociacion negociacion;
@@ -104,6 +114,12 @@ class DependenciasProveedor {
   /// Token de push del aparato; se retira al cerrar sesión.
   final DispositivosPushRepositorio push;
 
+  /// Estado de aprobación, documentos y disponibilidad (ADR 0024).
+  final CuentaProveedorRepositorio cuenta;
+
+  /// Permisos del sistema con su explicación previa (ADR 0026).
+  final GestorPermisos permisos;
+
   /// Para sumarlos al `MultiRepositoryProvider` del flavor.
   List<RepositoryProvider<Object>> get proveedores => [
     ...negociacion.proveedores,
@@ -113,6 +129,8 @@ class DependenciasProveedor {
     RepositoryProvider<FotoPerfilRepositorio>.value(value: fotoPerfil),
     RepositoryProvider<PagosRepositorio>.value(value: pagos),
     RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
+    RepositoryProvider<CuentaProveedorRepositorio>.value(value: cuenta),
+    RepositoryProvider<GestorPermisos>.value(value: permisos),
   ];
 
   Widget proveer({required Widget child}) =>
