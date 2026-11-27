@@ -102,15 +102,18 @@ void main() {
 
     await tester.tap(find.byKey(const Key('login-ingresar')));
     await tester.pumpAndSettle();
-    expect(find.text('Escribe tu usuario'), findsOneWidget);
+    expect(find.text('Escribe tu usuario o teléfono'), findsOneWidget);
     expect(find.text('Escribe tu contraseña'), findsOneWidget);
 
     await tester.enterText(find.bySemanticsLabel('Usuario'), 'ana finca');
     await tester.pumpAndSettle();
+    // Al ingresar se acepta usuario o teléfono y decide el servidor: el
+    // formato del usuario solo se exige al registrarse.
     expect(
       find.text('Usa de 3 a 40 letras, números, punto o guion'),
-      findsOneWidget,
+      findsNothing,
     );
+    expect(find.text('Escribe tu usuario o teléfono'), findsNothing);
 
     await tester.enterText(find.bySemanticsLabel('Usuario'), 'ana.finca');
     await tester.enterText(find.bySemanticsLabel('Contraseña'), 'segura123');

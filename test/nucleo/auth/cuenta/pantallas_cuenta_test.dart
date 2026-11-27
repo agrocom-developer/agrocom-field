@@ -17,13 +17,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+/// «Eliminar mi cuenta» es una lista larga y perezosa: en un teléfono de 915
+/// de alto el botón queda fuera de lo construido; con más alto se arma entera.
+const _tamanoLargo = Size(412, 1800);
+
 Future<void> _montar(
   WidgetTester tester,
   Widget home,
   CuentaSeguridadRepositorio repo, {
   ModoVisualCampo modo = ModoVisualCampo.claro,
+  Size tamano = const Size(412, 915),
 }) async {
-  tester.view.physicalSize = const Size(412, 915);
+  tester.view.physicalSize = tamano;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   await tester.pumpWidget(
@@ -254,6 +259,7 @@ void main() {
         tester,
         EliminarCuentaPantalla(alCerrarSesion: () => cerro++),
         CuentaSeguridadDemo(),
+        tamano: _tamanoLargo,
       );
       await _asentar(tester);
       expect(find.text('Qué se borra'), findsOneWidget);
@@ -295,6 +301,7 @@ void main() {
         ),
         CuentaSeguridadDemo(),
         modo: ModoVisualCampo.campo,
+        tamano: _tamanoLargo,
       );
       await _asentar(tester);
       expect(find.byKey(const Key('eliminar-pendientes')), findsOneWidget);
@@ -314,6 +321,7 @@ void main() {
         tester,
         EliminarCuentaPantalla(alCerrarSesion: () {}),
         repo,
+        tamano: _tamanoLargo,
       );
       await _asentar(tester);
       await _tocar(tester, find.byKey(const Key('eliminar-continuar')));
@@ -392,6 +400,7 @@ void main() {
         ),
         CuentaSeguridadDemo(),
         modo: ModoVisualCampo.campo,
+        tamano: _tamanoLargo,
       );
       expect(find.text('Ya tienes una cuenta'), findsOneWidget);
       // Un proveedor con el alta a medias continúa donde quedó.
