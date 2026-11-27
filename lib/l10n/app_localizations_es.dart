@@ -3829,4 +3829,72 @@ class AppLocalizationsEs extends AppLocalizations {
   String proveedorEjecucionHectareasPorPrecio(String hectareas, String precio) {
     return '$hectareas × $precio por ha';
   }
+
+  @override
+  String get permisosCamaraTitulo => 'Usar la cámara';
+
+  @override
+  String get permisosCamaraMotivo =>
+      'Tomamos las fotos en el momento: tu selfie, tus documentos y las fotos del avance. Para eso no usamos tu galería.';
+
+  @override
+  String get permisosCamaraQuienVe =>
+      'Solo las ve el equipo de Agrocom que las revisa y, en las fotos de avance, el cliente del servicio.';
+
+  @override
+  String get permisosCamaraSin =>
+      'Sin la cámara no puedes enviar fotos desde la app.';
+
+  @override
+  String get permisosUbicacionTitulo => 'Compartir tu ubicación';
+
+  @override
+  String get permisosUbicacionMotivo =>
+      'Mientras tienes un servicio en ejecución, el cliente ve tu última posición. También la usamos una sola vez si pulsas el botón de auxilio o reportas una incidencia. Nunca la usamos en segundo plano.';
+
+  @override
+  String get permisosUbicacionQuienVe =>
+      'La ve el cliente del servicio en curso y, solo en un auxilio, soporte de Agrocom. Puedes desactivarla cuando quieras.';
+
+  @override
+  String get permisosUbicacionSin =>
+      'Sin la ubicación no puedes compartir tu posición con el cliente ni avisar dónde estás en un auxilio.';
+
+  @override
+  String get permisosNotificacionesTitulo => 'Recibir avisos';
+
+  @override
+  String get permisosNotificacionesMotivo =>
+      'Te avisamos cuando hay una solicitud nueva, cuando el cliente responde tu oferta o cuando te escribe.';
+
+  @override
+  String get permisosNotificacionesQuienVe =>
+      'Los avisos solo llegan a este teléfono. En Avisos puedes apagar los que no quieras.';
+
+  @override
+  String get permisosNotificacionesSin =>
+      'Sin avisos solo te enteras de las novedades al abrir la app.';
+
+  @override
+  String get permisosContinuar => 'Continuar';
+
+  @override
+  String get permisosAhoraNo => 'Ahora no';
+
+  @override
+  String get permisosDenegadoTitulo => 'Permiso desactivado';
+
+  @override
+  String get permisosDenegadoAjustes =>
+      'Puedes activarlo en los ajustes del teléfono. Al volver, la app lo toma al instante.';
+
+  @override
+  String get permisosDenegadoReintento =>
+      'Si cambias de idea, te lo volvemos a pedir cuando lo necesites.';
+
+  @override
+  String get permisosAbrirAjustes => 'Abrir ajustes';
+
+  @override
+  String get permisosCerrar => 'Cerrar';
 }

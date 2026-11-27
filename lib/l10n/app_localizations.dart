@@ -6228,6 +6228,120 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{hectareas} × {precio} por ha'**
   String proveedorEjecucionHectareasPorPrecio(String hectareas, String precio);
+
+  /// No description provided for @permisosCamaraTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar la cámara'**
+  String get permisosCamaraTitulo;
+
+  /// No description provided for @permisosCamaraMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomamos las fotos en el momento: tu selfie, tus documentos y las fotos del avance. Para eso no usamos tu galería.'**
+  String get permisosCamaraMotivo;
+
+  /// No description provided for @permisosCamaraQuienVe.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo las ve el equipo de Agrocom que las revisa y, en las fotos de avance, el cliente del servicio.'**
+  String get permisosCamaraQuienVe;
+
+  /// No description provided for @permisosCamaraSin.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin la cámara no puedes enviar fotos desde la app.'**
+  String get permisosCamaraSin;
+
+  /// No description provided for @permisosUbicacionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Compartir tu ubicación'**
+  String get permisosUbicacionTitulo;
+
+  /// No description provided for @permisosUbicacionMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Mientras tienes un servicio en ejecución, el cliente ve tu última posición. También la usamos una sola vez si pulsas el botón de auxilio o reportas una incidencia. Nunca la usamos en segundo plano.'**
+  String get permisosUbicacionMotivo;
+
+  /// No description provided for @permisosUbicacionQuienVe.
+  ///
+  /// In es, this message translates to:
+  /// **'La ve el cliente del servicio en curso y, solo en un auxilio, soporte de Agrocom. Puedes desactivarla cuando quieras.'**
+  String get permisosUbicacionQuienVe;
+
+  /// No description provided for @permisosUbicacionSin.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin la ubicación no puedes compartir tu posición con el cliente ni avisar dónde estás en un auxilio.'**
+  String get permisosUbicacionSin;
+
+  /// No description provided for @permisosNotificacionesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Recibir avisos'**
+  String get permisosNotificacionesTitulo;
+
+  /// No description provided for @permisosNotificacionesMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Te avisamos cuando hay una solicitud nueva, cuando el cliente responde tu oferta o cuando te escribe.'**
+  String get permisosNotificacionesMotivo;
+
+  /// No description provided for @permisosNotificacionesQuienVe.
+  ///
+  /// In es, this message translates to:
+  /// **'Los avisos solo llegan a este teléfono. En Avisos puedes apagar los que no quieras.'**
+  String get permisosNotificacionesQuienVe;
+
+  /// No description provided for @permisosNotificacionesSin.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin avisos solo te enteras de las novedades al abrir la app.'**
+  String get permisosNotificacionesSin;
+
+  /// No description provided for @permisosContinuar.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get permisosContinuar;
+
+  /// No description provided for @permisosAhoraNo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get permisosAhoraNo;
+
+  /// No description provided for @permisosDenegadoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Permiso desactivado'**
+  String get permisosDenegadoTitulo;
+
+  /// No description provided for @permisosDenegadoAjustes.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes activarlo en los ajustes del teléfono. Al volver, la app lo toma al instante.'**
+  String get permisosDenegadoAjustes;
+
+  /// No description provided for @permisosDenegadoReintento.
+  ///
+  /// In es, this message translates to:
+  /// **'Si cambias de idea, te lo volvemos a pedir cuando lo necesites.'**
+  String get permisosDenegadoReintento;
+
+  /// No description provided for @permisosAbrirAjustes.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir ajustes'**
+  String get permisosAbrirAjustes;
+
+  /// No description provided for @permisosCerrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get permisosCerrar;
 }
 
 class _AppLocalizationsDelegate
