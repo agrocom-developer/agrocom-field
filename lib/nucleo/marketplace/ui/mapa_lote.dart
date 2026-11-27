@@ -44,6 +44,7 @@ class MapaLote extends StatelessWidget {
     this.conTeselas,
     this.alSeleccionar,
     this.relleno = const EdgeInsets.all(40),
+    this.controlador,
     super.key,
   });
 
@@ -59,6 +60,11 @@ class MapaLote extends StatelessWidget {
   final bool? conTeselas;
   final ValueChanged<Lote>? alSeleccionar;
   final EdgeInsets relleno;
+
+  /// Para controlar el mapa desde fuera (zoom, recentrado) — lo usa
+  /// `MapaExpandibleCampo` para sus controles a pantalla completa. Sin él,
+  /// `FlutterMap` crea el suyo y solo responde a los gestos propios.
+  final MapController? controlador;
 
   @override
   Widget build(BuildContext context) {
@@ -77,6 +83,7 @@ class MapaLote extends StatelessWidget {
           : l10n.uiMapaLotes,
       child: ClipRect(
         child: FlutterMap(
+          mapController: controlador,
           options: MapOptions(
             backgroundColor: fondo,
             initialCameraFit: CameraFit.coordinates(
