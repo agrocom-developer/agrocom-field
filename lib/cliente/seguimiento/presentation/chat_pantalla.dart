@@ -17,6 +17,8 @@ import '../../solicitudes/domain/solicitudes_repositorio.dart';
 import '../domain/seguimiento.dart';
 import '../domain/seguimiento_repositorio.dart';
 import 'chat_cubit.dart';
+import '../../../nucleo/permisos/permiso_app.dart';
+import '../../../nucleo/permisos/presentation/asegurar_permiso.dart';
 
 /// Chat de texto con el piloto adjudicado. Los mensajes llegan por sondeo
 /// corto mientras la pantalla está abierta; el cliente escribe en línea y, si
@@ -193,6 +195,11 @@ class _CuerpoState extends State<_Cuerpo> {
       ),
     );
     if (origen == null || !mounted) return;
+    if (origen == OrigenFoto.camara &&
+        !await asegurarPermiso(context, PermisoApp.camara)) {
+      return;
+    }
+    if (!mounted) return;
     final cubit = context.read<ChatCubit>();
     final mensajes = ScaffoldMessenger.of(context);
     try {

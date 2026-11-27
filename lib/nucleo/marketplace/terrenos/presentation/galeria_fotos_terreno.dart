@@ -11,6 +11,8 @@ import 'casilla_agregar_foto.dart';
 import 'fotos_terreno_cubit.dart';
 import 'miniatura_foto_terreno.dart';
 import 'visor_fotos_terreno.dart';
+import '../../../permisos/permiso_app.dart';
+import '../../../permisos/presentation/asegurar_permiso.dart';
 
 /// Galería editable de las fotos del terreno (hasta 8): agregar desde la
 /// cámara o la galería, ver el avance de cada subida, reintentar una que
@@ -137,9 +139,11 @@ class GaleriaFotosTerreno extends StatelessWidget {
                 color: context.paleta.acentoTexto,
               ),
               title: Text(l10n.terrenosTomarUnaFoto),
-              onTap: () {
+              onTap: () async {
                 Navigator.pop(hoja);
-                cubit.agregar(OrigenFoto.camara);
+                if (await asegurarPermiso(context, PermisoApp.camara)) {
+                  cubit.agregar(OrigenFoto.camara);
+                }
               },
             ),
             ListTile(

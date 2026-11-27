@@ -9,6 +9,8 @@ import '../../ui/avatar_foto.dart';
 import '../../ui/aviso_marketplace.dart';
 import '../foto_perfil_repositorio.dart';
 import 'foto_perfil_cubit.dart';
+import '../../../permisos/permiso_app.dart';
+import '../../../permisos/presentation/asegurar_permiso.dart';
 
 /// Provee el [FotoPerfilCubit] a [child] (el avatar y las acciones de la
 /// foto de perfil). Lee [FotoPerfilRepositorio] y [PreparadorFoto] del
@@ -250,9 +252,11 @@ Future<void> mostrarOpcionesFotoPerfil(BuildContext context) {
             clave: const Key('foto-perfil-camara'),
             icono: Icons.photo_camera_outlined,
             texto: l10n.fotoPerfilTomarUnaFoto,
-            alToque: () {
+            alToque: () async {
               Navigator.pop(hoja);
-              cubit.elegir(OrigenFoto.camara);
+              if (await asegurarPermiso(context, PermisoApp.camara)) {
+                cubit.elegir(OrigenFoto.camara);
+              }
             },
           ),
           _OpcionHoja(
