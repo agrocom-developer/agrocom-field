@@ -22,4 +22,6 @@ Google Play y la App Store revisan los permisos declarados, el texto de propósi
 ## Consecuencias
 
 - `docs/seguridad/permisos.md` y `test/android/permisos_por_flavor_test.dart` reflejan lo anterior; la prueba exige `NSFaceIDUsageDescription`, limita `UIBackgroundModes` a `remote-notification` y mantiene el resto de las prohibiciones.
-- La solicitud «Registro inicial» y la lista de documentos usan la explicación previa de la cámara.
+- La lista de documentos del proveedor usa la explicación previa de la cámara; los avisos de nuevas solicitudes, la de notificaciones.
+- **Límites declarados del bloqueo biométrico.** Se pide solo al abrir la app en frío (antes de leer el token); no vuelve a bloquear al volver de segundo plano, porque eso destruiría la pantalla del lote que el piloto tiene abierta. Es un candado de la app sobre el token guardado, no un token protegido por el hardware; endurecerlo (clave con control de acceso biométrico del Keychain/Keystore) se evalúa aparte.
+- **Solo lectura hasta la aprobación (ADR 0024, punto 4).** `PuertaAprobacion` reemplaza el mapa por «En revisión» y lo que falta mientras `GET /api/proveedores/mi` no diga `aprobado`; se relee al volver de segundo plano. El contador de solicitudes abiertas aún no existe en el contrato.
