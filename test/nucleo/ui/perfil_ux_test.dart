@@ -218,4 +218,92 @@ void main() {
       expect(find.text('Cuenta'), findsNothing);
     });
   });
+
+  testWidgets('CabeceraPerfilCampo centra avatar, nombre y estrellas', (
+    t,
+  ) async {
+    t.view.physicalSize = const Size(390, 844);
+    t.view.devicePixelRatio = 1;
+    addTearDown(t.view.reset);
+    await t.pumpWidget(
+      _app(
+        const Scaffold(
+          body: CabeceraPerfilCampo(
+            avatar: SizedBox(key: Key('av'), width: 88, height: 88),
+            nombre: 'Rodrigo Sandoval Justiniano',
+            detalle: 'Piloto · Piloto de Agrocom',
+            extra: EstrellasPerfilCampo(key: Key('es'), valor: 4.8),
+            insignia: InsigniaCabeceraCampo(
+              icono: Icons.verified_rounded,
+              etiqueta: 'Aprobado',
+            ),
+            accion: Icon(Icons.more_vert_rounded),
+          ),
+        ),
+      ),
+    );
+    await t.pumpAndSettle();
+    const centro = 390 / 2;
+    expect(t.getCenter(find.byKey(const Key('av'))).dx, closeTo(centro, 1));
+    expect(
+      t.getCenter(find.text('Rodrigo Sandoval Justiniano')).dx,
+      closeTo(centro, 1),
+    );
+    expect(
+      t.getCenter(find.text('Piloto · Piloto de Agrocom')).dx,
+      closeTo(centro, 1),
+    );
+    expect(t.getCenter(find.byKey(const Key('es'))).dx, closeTo(centro, 1));
+    // La insignia queda a la izquierda y el menú a la derecha.
+    expect(t.getCenter(find.text('Aprobado')).dx, lessThan(centro));
+    expect(
+      t.getCenter(find.byIcon(Icons.more_vert_rounded)).dx,
+      greaterThan(centro),
+    );
+  });
+
+  testWidgets('CifrasPerfilCampo impone la misma etiqueta en minúscula', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      _app(
+        const Scaffold(
+          body: CifrasPerfilCampo(
+            cifras: [
+              (valor: '142', etiqueta: 'SERVICIOS'),
+              (valor: '11.847', etiqueta: 'Hectáreas'),
+              (valor: '2 %', etiqueta: 'cancelación'),
+            ],
+          ),
+        ),
+      ),
+    );
+    expect(find.text('servicios'), findsOneWidget);
+    expect(find.text('hectáreas'), findsOneWidget);
+    expect(find.text('cancelación'), findsOneWidget);
+    final estilos = {
+      for (final e in ['servicios', 'hectáreas', 'cancelación'])
+        t.widget<Text>(find.text(e)).style,
+    };
+    expect(estilos, hasLength(1));
+  });
+
+  testWidgets('el destello de las estrellas ocurre una vez y termina', (
+    t,
+  ) async {
+    await t.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('es'),
+        theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.claro),
+        home: const Scaffold(body: EstrellasPerfilCampo(valor: 5)),
+      ),
+    );
+    await t.pump(const Duration(milliseconds: 300));
+    expect(t.hasRunningAnimations, isTrue);
+    await t.pump(EstrellasPerfilCampo.duracionBrillo);
+    await t.pump();
+    expect(t.hasRunningAnimations, isFalse);
+  });
 }

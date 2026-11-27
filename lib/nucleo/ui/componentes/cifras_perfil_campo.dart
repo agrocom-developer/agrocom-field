@@ -53,8 +53,9 @@ class _Cifra extends StatelessWidget {
             style: TipografiaCampo.cifraMedia.copyWith(color: paleta.texto),
           ),
           const SizedBox(height: EspaciadoCampo.xs),
+          // Un solo estilo y siempre en minúscula, en las dos apps.
           Text(
-            etiqueta,
+            etiqueta.toLowerCase(),
             textAlign: TextAlign.center,
             style: Theme.of(
               context,

@@ -1230,8 +1230,6 @@
   "aparienciaTemaClaro": "Claro",
   "aparienciaTemaOscuro": "Oscuro",
   "perfilCliMetricas": "Métricas",
-  "perfilCliMisLotesDetalle": "{n, plural, one{1 lote registrado} other{{n} lotes registrados}}",
-  "@perfilCliMisLotesDetalle": {"placeholders": {"n": {"type": "int"}}},
   "perfilCliCalificacionesDetalle": "{promedio} · {n, plural, one{1 calificación} other{{n} calificaciones}}",
   "@perfilCliCalificacionesDetalle": {"placeholders": {"promedio": {"type": "String"}, "n": {"type": "int"}}},
   "perfilCliCalificacionesSinDatos": "Aún sin calificaciones",
@@ -1345,5 +1343,10 @@
   "bandejaVacioSistemaTitulo": "Sin avisos del sistema",
   "bandejaVacioSistemaDetalle": "Te avisamos aquí cuando cambie el estado de tus servicios o de tu cuenta.",
   "bandejaErrorTitulo": "No pudimos cargar tus notificaciones",
-  "bandejaErrorDetalle": "Revisa tu conexión y vuelve a intentarlo."
+  "bandejaErrorDetalle": "Revisa tu conexión y vuelve a intentarlo.",
+  "perfilR3MiCuenta": "Mi cuenta",
+  "perfilR3Servicios": "servicios",
+  "perfilR3Hectareas": "hectáreas",
+  "perfilR3Cancelacion": "cancelación",
+  "perfilR3DocumentosDetalle": "Licencia, matrícula, seguro y más"
 }

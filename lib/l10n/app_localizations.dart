@@ -6337,12 +6337,6 @@ abstract class AppLocalizations {
   /// **'Métricas'**
   String get perfilCliMetricas;
 
-  /// No description provided for @perfilCliMisLotesDetalle.
-  ///
-  /// In es, this message translates to:
-  /// **'{n, plural, one{1 lote registrado} other{{n} lotes registrados}}'**
-  String perfilCliMisLotesDetalle(int n);
-
   /// No description provided for @perfilCliCalificacionesDetalle.
   ///
   /// In es, this message translates to:
@@ -6984,6 +6978,36 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Revisa tu conexión y vuelve a intentarlo.'**
   String get bandejaErrorDetalle;
+
+  /// No description provided for @perfilR3MiCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi cuenta'**
+  String get perfilR3MiCuenta;
+
+  /// No description provided for @perfilR3Servicios.
+  ///
+  /// In es, this message translates to:
+  /// **'servicios'**
+  String get perfilR3Servicios;
+
+  /// No description provided for @perfilR3Hectareas.
+  ///
+  /// In es, this message translates to:
+  /// **'hectáreas'**
+  String get perfilR3Hectareas;
+
+  /// No description provided for @perfilR3Cancelacion.
+  ///
+  /// In es, this message translates to:
+  /// **'cancelación'**
+  String get perfilR3Cancelacion;
+
+  /// No description provided for @perfilR3DocumentosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia, matrícula, seguro y más'**
+  String get perfilR3DocumentosDetalle;
 }
 
 class _AppLocalizationsDelegate

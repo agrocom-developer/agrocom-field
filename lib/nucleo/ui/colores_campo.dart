@@ -62,6 +62,17 @@ abstract final class ColoresCampo {
   static const Color acentoAmbarTexto = Color(0xFFFFE3A3);
 
   /// Error / reintento. 9,92:1 sobre [fondoProfundo], 7,09:1 sobre la superficie 2 (AAA).
+  /// Oro de las estrellas de calificación: igual en claro y oscuro y distinto
+  /// del ámbar de los botones. Gradiente de tres paradas para el brillo.
+  static const Color doradoClaro = Color(0xFFFFE08A);
+  static const Color dorado = Color(0xFFFFC107);
+  static const Color doradoOscuro = Color(0xFFE0A100);
+  static const List<Color> gradienteDorado = [
+    doradoClaro,
+    dorado,
+    doradoOscuro,
+  ];
+
   static const Color acentoRojo = Color(0xFFFF9494);
 }
 

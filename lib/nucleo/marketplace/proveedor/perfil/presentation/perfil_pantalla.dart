@@ -209,6 +209,7 @@ class _Contenido extends StatelessWidget {
                 ),
               ],
             ),
+            insignia: _InsigniaAprobacion(proveedor: p),
             avatar: AvatarFotoPerfil(
               iniciales: p.iniciales,
               nombre: p.nombre,
@@ -232,28 +233,15 @@ class _Contenido extends StatelessWidget {
                 _Aprobacion(proveedor: p),
                 _Titulo(t.perfilProveedorMetricas),
                 _Metricas(metricas: datos.metricas),
-                const SizedBox(height: EspaciadoCampo.l),
-                if (conAvisos) ...[
-                  FilaAccionCampo(
-                    clave: const Key('perfil-avisos'),
-                    icono: Icons.notifications_active_outlined,
-                    titulo: t.perfilProveedorAvisos,
-                    detalle: t.perfilPil2BandejaDetalle,
-                    alToque: () =>
-                        _abrir(context, const BandejaNotificacionesPantalla()),
-                  ),
-                  const SizedBox(height: EspaciadoCampo.m),
-                ],
+                _Titulo(t.perfilR3MiCuenta),
                 if (onVerDrones != null) ...[
                   FilaAccionCampo(
                     clave: const Key('perfil-ver-drones'),
                     icono: Icons.flight_rounded,
                     titulo: t.perfilPilMisDrones,
-                    detalle: t.perfilPil2DronesDetalle(
-                      p.drones.length == 1
-                          ? t.perfilProveedorDronesUno
-                          : t.perfilProveedorDronesVarios(p.drones.length),
-                    ),
+                    detalle: p.drones.length == 1
+                        ? t.perfilProveedorDronesUno
+                        : t.perfilProveedorDronesVarios(p.drones.length),
                     alToque: onVerDrones!,
                   ),
                   const SizedBox(height: EspaciadoCampo.m),
@@ -262,14 +250,14 @@ class _Contenido extends StatelessWidget {
                   clave: const Key('perfil-documentos'),
                   icono: Icons.description_outlined,
                   titulo: t.perfilProveedorDocumentos,
-                  detalle: t.perfilPilDocumentosDetalle,
+                  detalle: t.perfilR3DocumentosDetalle,
                   alToque: () =>
                       _abrir(context, DocumentosPantalla(proveedor: p)),
                 ),
                 const SizedBox(height: EspaciadoCampo.m),
                 FilaAccionCampo(
                   clave: const Key('perfil-calificaciones'),
-                  icono: Icons.star_outline_rounded,
+                  icono: Icons.star_rounded,
                   titulo: t.perfilPilCalificaciones,
                   detalle: sinCalificaciones
                       ? t.perfilProveedorSinCalificaciones
@@ -279,6 +267,17 @@ class _Contenido extends StatelessWidget {
                         ),
                   alToque: verCalificaciones,
                 ),
+                if (conAvisos) ...[
+                  const SizedBox(height: EspaciadoCampo.m),
+                  FilaAccionCampo(
+                    clave: const Key('perfil-avisos'),
+                    icono: Icons.notifications_none_rounded,
+                    titulo: t.perfilProveedorAvisos,
+                    detalle: t.perfilPil2BandejaDetalle,
+                    alToque: () =>
+                        _abrir(context, const BandejaNotificacionesPantalla()),
+                  ),
+                ],
               ]),
             ),
           ),
@@ -302,11 +301,7 @@ class _Titulo extends StatelessWidget {
       ),
       child: Semantics(
         header: true,
-        child: Text(
-          texto,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
+        child: Text(texto, style: Theme.of(context).textTheme.titleLarge),
       ),
     );
   }
@@ -345,16 +340,9 @@ class _Aprobacion extends StatelessWidget {
       ),
     };
     final motivo = proveedor.motivoAprobacion;
-    // Aprobado no necesita explicación: solo el chip, centrado.
+    // Aprobado no necesita explicación: su insignia vive en la cabecera.
     if (proveedor.aprobacion == EstadoAprobacion.aprobado) {
-      return Center(
-        key: const Key('perfil-aprobacion'),
-        child: ChipEstadoMarketplace(
-          etiqueta: proveedor.aprobacion.etiqueta,
-          tono: tono,
-          icono: icono,
-        ),
-      );
+      return const SizedBox.shrink(key: Key('perfil-aprobacion'));
     }
     return SuperficieMarketplace(
       key: const Key('perfil-aprobacion'),
@@ -378,6 +366,31 @@ class _Aprobacion extends StatelessWidget {
   }
 }
 
+/// Insignia de aprobación de la cabecera, con el ícono del estado.
+class _InsigniaAprobacion extends StatelessWidget {
+  const _InsigniaAprobacion({required this.proveedor});
+
+  final Proveedor proveedor;
+
+  @override
+  Widget build(BuildContext context) {
+    final icono = switch (proveedor.aprobacion) {
+      EstadoAprobacion.aprobado => Icons.verified_rounded,
+      EstadoAprobacion.pendiente => Icons.hourglass_top_rounded,
+      EstadoAprobacion.suspendido => Icons.pause_circle_outline_rounded,
+      EstadoAprobacion.rechazado => Icons.cancel_outlined,
+    };
+    return InsigniaCabeceraCampo(
+      key: const Key('perfil-insignia-aprobacion'),
+      icono: icono,
+      etiqueta: proveedor.aprobacion.etiqueta,
+      etiquetaSemantica: AppLocalizations.of(
+        context,
+      ).uiEstado(proveedor.aprobacion.etiqueta),
+    );
+  }
+}
+
 class _Metricas extends StatelessWidget {
   const _Metricas({required this.metricas});
 
@@ -390,18 +403,18 @@ class _Metricas extends StatelessWidget {
       cifras: [
         (
           valor: '${metricas.serviciosCompletados}',
-          etiqueta: l10n.proveedorPerfilServicios,
+          etiqueta: l10n.perfilR3Servicios,
         ),
         (
           valor: FormatoMarketplace.numero(
             metricas.hectareasAtendidas,
             decimales: 0,
           ),
-          etiqueta: l10n.proveedorPerfilHectareas,
+          etiqueta: l10n.perfilR3Hectareas,
         ),
         (
           valor: '${metricas.tasaCancelacion} %',
-          etiqueta: l10n.proveedorPerfilCancelacion,
+          etiqueta: l10n.perfilR3Cancelacion,
         ),
       ],
     );

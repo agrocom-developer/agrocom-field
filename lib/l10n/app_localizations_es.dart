@@ -3889,17 +3889,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get perfilCliMetricas => 'Métricas';
 
   @override
-  String perfilCliMisLotesDetalle(int n) {
-    String _temp0 = intl.Intl.pluralLogic(
-      n,
-      locale: localeName,
-      other: '$n lotes registrados',
-      one: '1 lote registrado',
-    );
-    return '$_temp0';
-  }
-
-  @override
   String perfilCliCalificacionesDetalle(String promedio, int n) {
     String _temp0 = intl.Intl.pluralLogic(
       n,
@@ -4266,4 +4255,19 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get bandejaErrorDetalle => 'Revisa tu conexión y vuelve a intentarlo.';
+
+  @override
+  String get perfilR3MiCuenta => 'Mi cuenta';
+
+  @override
+  String get perfilR3Servicios => 'servicios';
+
+  @override
+  String get perfilR3Hectareas => 'hectáreas';
+
+  @override
+  String get perfilR3Cancelacion => 'cancelación';
+
+  @override
+  String get perfilR3DocumentosDetalle => 'Licencia, matrícula, seguro y más';
 }

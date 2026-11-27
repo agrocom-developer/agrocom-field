@@ -175,7 +175,7 @@ void main() {
       await montar(tester, PerfilPantalla(reloj: () => ahora));
       expect(find.text('Rodrigo Sandoval Justiniano'), findsOneWidget);
       expect(find.bySemanticsLabel('Estado: Aprobado'), findsWidgets);
-      // Aprobado es solo el chip: sin cuadro ni explicación.
+      // Aprobado es solo la insignia de la cabecera: sin cuadro ni texto.
       expect(find.text('Estás habilitado para recibir ofertas.'), findsNothing);
       // Lo que ya no vive en el perfil.
       expect(find.byKey(const Key('perfil-documentos-accion')), findsNothing);
@@ -263,7 +263,8 @@ void main() {
       await irA(tester, fila);
       expect(find.text('Mis drones'), findsOneWidget);
       // Subtexto de una sola línea con la cantidad, sin pastilla.
-      expect(find.text('2 drones · Dron y licencia'), findsOneWidget);
+      expect(find.text('2 drones'), findsOneWidget);
+      expect(find.textContaining('licencia'), findsNothing);
       expect(find.byType(PildoraContadorCampo), findsNothing);
       expect(tester.getSize(fila).height, greaterThanOrEqualTo(56));
       await tester.tap(fila);

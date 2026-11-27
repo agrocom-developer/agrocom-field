@@ -170,7 +170,10 @@ void main() {
     await tester.tap(find.text('Perfil').last);
     await tester.pumpAndSettle();
     expect(find.text('Hugo Antelo Suárez'), findsOneWidget);
-    expect(find.text('Mis lotes'), findsOneWidget);
+    // El perfil ya no lista los lotes (viven en su pestaña); sí las secciones.
+    expect(find.text('Métricas'), findsOneWidget);
+    expect(find.text('Mi cuenta'), findsOneWidget);
+    expect(find.text('Mis lotes'), findsNothing);
   });
 
   testWidgets('el perfil cambia el tema y lo guarda', (tester) async {

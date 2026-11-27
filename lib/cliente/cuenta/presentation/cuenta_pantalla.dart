@@ -15,7 +15,6 @@ import '../../calificar/domain/calificacion_repositorio.dart';
 import '../../contactos/domain/contacto.dart';
 import '../../contactos/domain/contactos_repositorio.dart';
 import '../../contactos/presentation/contactos_pantalla.dart';
-import '../../lotes/presentation/mis_lotes_pantalla.dart';
 import '../../solicitar/domain/solicitud_repositorio.dart';
 import '../domain/cuenta_repositorio.dart';
 
@@ -23,13 +22,10 @@ import '../domain/cuenta_repositorio.dart';
 /// accesos a Mis lotes, Contactos, Calificaciones y Ajustes. Cerrar sesión
 /// vive en el menú de tres puntos y en Ajustes.
 class CuentaPantalla extends StatefulWidget {
-  const CuentaPantalla({this.alCerrarSesion, this.alPublicar, super.key});
+  const CuentaPantalla({this.alCerrarSesion, super.key});
 
   /// Acción de cerrar sesión; sin ella el botón no se muestra.
   final VoidCallback? alCerrarSesion;
-
-  /// Abre el flujo de publicar un lote («+ Agregar» de «Mis campos»).
-  final VoidCallback? alPublicar;
 
   @override
   State<CuentaPantalla> createState() => _CuentaPantallaState();
@@ -40,7 +36,6 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
   int _intento = 0;
 
   VoidCallback? get alCerrarSesion => widget.alCerrarSesion;
-  VoidCallback? get alPublicar => widget.alPublicar;
 
   /// El repositorio de contactos existe solo si la app lo provee.
   bool get conContactos {
@@ -154,11 +149,7 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
                 children: EntradaCampo.escalonar([
                   Semantics(
                     header: true,
-                    child: Text(
-                      t.perfilCliMetricas,
-                      textAlign: TextAlign.center,
-                      style: texto.titleLarge,
-                    ),
+                    child: Text(t.perfilCliMetricas, style: texto.titleLarge),
                   ),
                   const SizedBox(height: EspaciadoCampo.m),
                   CifrasPerfilCampo(
@@ -178,14 +169,9 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
                     ],
                   ),
                   const SizedBox(height: EspaciadoCampo.l),
-                  FilaAccionCampo(
-                    clave: const Key('perfil-mis-lotes'),
-                    icono: Icons.landscape_rounded,
-                    titulo: t.perfilMisCampos,
-                    detalle: t.perfilCliMisLotesDetalle(d.lotes.length),
-                    alToque: () => abrir(
-                      MisLotesPantalla(lotes: d.lotes, alPublicar: alPublicar),
-                    ),
+                  Semantics(
+                    header: true,
+                    child: Text(t.perfilR3MiCuenta, style: texto.titleLarge),
                   ),
                   const SizedBox(height: EspaciadoCampo.m),
                   if (cuenta.empresa.isNotEmpty && conContactos) ...[
