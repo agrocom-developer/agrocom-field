@@ -25,7 +25,7 @@ class CalificacionPromedio extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.star_rounded, size: 18, color: paleta.alerta),
+            Icon(Icons.star_rounded, size: 20, color: paleta.ambar),
             const SizedBox(width: 4),
             Text(
               valor.toStringAsFixed(1).replaceAll('.', ','),

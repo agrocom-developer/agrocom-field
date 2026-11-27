@@ -3826,4 +3826,62 @@ class AppLocalizationsEs extends AppLocalizations {
   String proveedorEjecucionHectareasPorPrecio(String hectareas, String precio) {
     return '$hectareas × $precio por ha';
   }
+
+  @override
+  String perfilUxCalificacionSemantica(String valor) {
+    return 'Calificación $valor de 5, ver calificaciones';
+  }
+
+  @override
+  String get perfilUxCalificacionesTitulo => 'Calificaciones';
+
+  @override
+  String get perfilUxCalificacionesVacioTitulo => 'Aún no hay calificaciones';
+
+  @override
+  String get perfilUxCalificacionesVacioDetalle =>
+      'Cuando termines un servicio, aquí verás lo que opinan de ti.';
+
+  @override
+  String get perfilUxMenuMas => 'Más opciones';
+
+  @override
+  String get ajustesTitulo => 'Ajustes';
+
+  @override
+  String get ajustesApariencia => 'Apariencia';
+
+  @override
+  String get ajustesAparienciaDetalle => 'Tema claro u oscuro';
+
+  @override
+  String get ajustesCuenta => 'Cuenta';
+
+  @override
+  String get ajustesCerrarSesion => 'Cerrar sesión';
+
+  @override
+  String get ajustesCerrarSesionDetalle => 'Salir de este dispositivo';
+
+  @override
+  String get ajustesCerrarSesionPregunta => '¿Cerrar sesión?';
+
+  @override
+  String get ajustesCerrarSesionAviso =>
+      'Tendrás que volver a entrar para usar la app.';
+
+  @override
+  String get ajustesCancelar => 'Cancelar';
+
+  @override
+  String get aparienciaTitulo => 'Apariencia';
+
+  @override
+  String get aparienciaTema => 'Tema';
+
+  @override
+  String get aparienciaTemaClaro => 'Claro';
+
+  @override
+  String get aparienciaTemaOscuro => 'Oscuro';
 }

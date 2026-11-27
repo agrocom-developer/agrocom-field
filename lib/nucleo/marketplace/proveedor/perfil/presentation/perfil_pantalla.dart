@@ -141,137 +141,134 @@ class _Contenido extends StatelessWidget {
     return FotoPerfilProveedor(
       urlInicial: p.fotoUrl,
       child: ListView(
-        padding: const EdgeInsets.all(EspaciadoCampo.l),
         children: [
-          Row(
-            children: [
-              AvatarFotoPerfil(
-                iniciales: p.iniciales,
-                nombre: p.nombre,
-                tamano: 64,
-              ),
-              const SizedBox(width: EspaciadoCampo.l),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(p.nombre, style: texto.titleLarge),
-                    const SizedBox(height: EspaciadoCampo.xs),
-                    Text(
-                      '${t.perfilProveedorRolPiloto} · ${p.tipo.etiqueta}',
-                      style: texto.bodyMedium,
+          CabeceraPerfilCampo(
+            avatar: AvatarFotoPerfil(
+              iniciales: p.iniciales,
+              nombre: p.nombre,
+              tamano: 88,
+            ),
+            nombre: p.nombre,
+            detalle: '${t.perfilProveedorRolPiloto} · ${p.tipo.etiqueta}',
+            extra: datos.calificaciones.total == 0
+                ? Text(
+                    t.perfilProveedorSinCalificaciones,
+                    textAlign: TextAlign.center,
+                    style: texto.bodyMedium?.copyWith(
+                      color: context.paleta.sobreAcento.withValues(alpha: 0.85),
                     ),
-                    const SizedBox(height: EspaciadoCampo.xs),
-                    if (datos.calificaciones.total == 0)
-                      Text(
-                        t.perfilProveedorSinCalificaciones,
-                        style: texto.bodyMedium,
-                      )
-                    else
-                      CalificacionPromedio(
-                        valor: p.calificacion,
-                        detalle: t.perfilProveedorServicios(
-                          p.serviciosCompletados,
-                        ),
+                  )
+                : CalificacionPromedio(
+                    valor: p.calificacion,
+                    detalle: t.perfilProveedorServicios(p.serviciosCompletados),
+                  ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(EspaciadoCampo.l),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: EntradaCampo.escalonar([
+                const AccionesFotoPerfil(compacta: true),
+                const SizedBox(height: EspaciadoCampo.m),
+                _Aprobacion(proveedor: p),
+                if (conAccion.isNotEmpty && p.aprobacion.habilitado) ...[
+                  const SizedBox(height: EspaciadoCampo.m),
+                  AvisoMarketplace(
+                    key: const Key('perfil-documentos-accion'),
+                    tono: TonoAviso.alerta,
+                    mensaje: conAccion.length == 1
+                        ? t.perfilProveedorDocumentoAtencion(
+                            conAccion.first.nombre,
+                          )
+                        : t.perfilProveedorDocumentosAtencion(conAccion.length),
+                  ),
+                ],
+                _Titulo(t.perfilProveedorMetricas),
+                _Metricas(metricas: datos.metricas),
+                _Titulo(t.perfilProveedorAjustes),
+                for (final e in extras) ...[
+                  const SizedBox(height: EspaciadoCampo.m),
+                  e,
+                ],
+                if (onVerDrones != null) ...[
+                  const SizedBox(height: EspaciadoCampo.m),
+                  SuperficieMarketplace(
+                    key: const Key('perfil-ver-drones'),
+                    onTap: onVerDrones,
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(
+                        minHeight:
+                            ObjetivoTactilCampo.guantes - EspaciadoCampo.xxl,
+                      ),
+                      child: Row(
+                        children: [
+                          const IconoBurbujaCampo(Icons.flight_rounded),
+                          const SizedBox(width: EspaciadoCampo.m),
+                          Expanded(
+                            child: Text(
+                              '${t.perfilProveedorDronLicencia} · '
+                              '${p.drones.length == 1 ? t.perfilProveedorDronesUno : t.perfilProveedorDronesVarios(p.drones.length)}',
+                              style: texto.titleLarge,
+                            ),
+                          ),
+                          Icon(
+                            Icons.chevron_right_rounded,
+                            color: context.paleta.textoSecundario,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+                _Titulo(t.perfilProveedorHectareasMes),
+                if (datos.hectareasPorMes.every((m) => m.hectareas.sign <= 0))
+                  Text(
+                    t.perfilProveedorHectareasMesVacio,
+                    style: texto.bodyMedium,
+                  )
+                else
+                  SuperficieMarketplace(
+                    child: SizedBox(
+                      height: 180,
+                      child: _GraficoHectareas(meses: datos.hectareasPorMes),
+                    ),
+                  ),
+                _Titulo(t.perfilProveedorDocumentos),
+                if (p.documentos.isEmpty)
+                  Text(
+                    t.perfilProveedorDocumentosVacio,
+                    style: texto.bodyMedium,
+                  ),
+                for (final doc in p.documentos) ...[
+                  _FilaDocumento(documento: doc),
+                  const SizedBox(height: EspaciadoCampo.s),
+                ],
+                _Titulo(t.perfilProveedorZonas),
+                Wrap(
+                  spacing: EspaciadoCampo.s,
+                  runSpacing: EspaciadoCampo.s,
+                  children: [
+                    for (final z in p.zonas)
+                      ChipEstadoMarketplace(
+                        etiqueta: z,
+                        etiquetaSemantica: t.perfilProveedorZonaSemantica(z),
+                        tono: TonoEstado.neutro,
+                        icono: Icons.place_outlined,
                       ),
                   ],
                 ),
-              ),
-            ],
+                _Titulo(t.perfilProveedorCalificaciones),
+                ResumenCalificacionesCampo(resumen: datos.calificaciones),
+                const SizedBox(height: EspaciadoCampo.m),
+                if (datos.calificaciones.recientes.isEmpty)
+                  Text(t.perfilProveedorResenasVacio, style: texto.bodyMedium),
+                for (final c in datos.calificaciones.recientes) ...[
+                  ResenaCalificacionCampo(calificacion: c, ahora: ahora),
+                  const SizedBox(height: EspaciadoCampo.s),
+                ],
+              ]),
+            ),
           ),
-          const SizedBox(height: EspaciadoCampo.s),
-          const AccionesFotoPerfil(),
-          const SizedBox(height: EspaciadoCampo.m),
-          _Aprobacion(proveedor: p),
-          if (conAccion.isNotEmpty && p.aprobacion.habilitado) ...[
-            const SizedBox(height: EspaciadoCampo.m),
-            AvisoMarketplace(
-              key: const Key('perfil-documentos-accion'),
-              tono: TonoAviso.alerta,
-              mensaje: conAccion.length == 1
-                  ? t.perfilProveedorDocumentoAtencion(conAccion.first.nombre)
-                  : t.perfilProveedorDocumentosAtencion(conAccion.length),
-            ),
-          ],
-          _Titulo(t.perfilProveedorMetricas),
-          _Metricas(metricas: datos.metricas),
-          _Titulo(t.perfilProveedorAjustes),
-          for (final e in extras) ...[
-            const SizedBox(height: EspaciadoCampo.m),
-            e,
-          ],
-          if (onVerDrones != null) ...[
-            const SizedBox(height: EspaciadoCampo.m),
-            SuperficieMarketplace(
-              key: const Key('perfil-ver-drones'),
-              onTap: onVerDrones,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  minHeight: ObjetivoTactilCampo.guantes - EspaciadoCampo.xxl,
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.flight_rounded,
-                      color: context.paleta.acentoTexto,
-                    ),
-                    const SizedBox(width: EspaciadoCampo.m),
-                    Expanded(
-                      child: Text(
-                        '${t.perfilProveedorDronLicencia} · '
-                        '${p.drones.length == 1 ? t.perfilProveedorDronesUno : t.perfilProveedorDronesVarios(p.drones.length)}',
-                        style: texto.titleLarge,
-                      ),
-                    ),
-                    Icon(
-                      Icons.chevron_right_rounded,
-                      color: context.paleta.textoSecundario,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-          _Titulo(t.perfilProveedorHectareasMes),
-          if (datos.hectareasPorMes.every((m) => m.hectareas.sign <= 0))
-            Text(t.perfilProveedorHectareasMesVacio, style: texto.bodyMedium)
-          else
-            SuperficieMarketplace(
-              child: SizedBox(
-                height: 180,
-                child: _GraficoHectareas(meses: datos.hectareasPorMes),
-              ),
-            ),
-          _Titulo(t.perfilProveedorDocumentos),
-          if (p.documentos.isEmpty)
-            Text(t.perfilProveedorDocumentosVacio, style: texto.bodyMedium),
-          for (final doc in p.documentos) ...[
-            _FilaDocumento(documento: doc),
-            const SizedBox(height: EspaciadoCampo.s),
-          ],
-          _Titulo(t.perfilProveedorZonas),
-          Wrap(
-            spacing: EspaciadoCampo.s,
-            runSpacing: EspaciadoCampo.s,
-            children: [
-              for (final z in p.zonas)
-                ChipEstadoMarketplace(
-                  etiqueta: z,
-                  etiquetaSemantica: t.perfilProveedorZonaSemantica(z),
-                  tono: TonoEstado.neutro,
-                  icono: Icons.place_outlined,
-                ),
-            ],
-          ),
-          _Titulo(t.perfilProveedorCalificaciones),
-          _ResumenCalificaciones(resumen: datos.calificaciones),
-          const SizedBox(height: EspaciadoCampo.m),
-          if (datos.calificaciones.recientes.isEmpty)
-            Text(t.perfilProveedorResenasVacio, style: texto.bodyMedium),
-          for (final c in datos.calificaciones.recientes) ...[
-            _Resena(calificacion: c, ahora: ahora),
-            const SizedBox(height: EspaciadoCampo.s),
-          ],
         ],
       ),
     );
@@ -378,19 +375,21 @@ class _Metricas extends StatelessWidget {
         valor: '${metricas.tasaCancelacion} %',
       ),
     ];
-    return LayoutBuilder(
-      builder: (context, c) {
-        // Dos por fila; con el texto al 200 % cada métrica ocupa la suya.
-        final grande = MediaQuery.textScalerOf(context).scale(10) > 15;
-        final ancho = grande ? c.maxWidth : (c.maxWidth - EspaciadoCampo.m) / 2;
-        return Wrap(
-          spacing: EspaciadoCampo.m,
-          runSpacing: EspaciadoCampo.m,
-          children: [
-            for (final celda in celdas) SizedBox(width: ancho, child: celda),
-          ],
-        );
-      },
+    // Una sola fila de tres celdas iguales; con el texto al 200 % pasan a
+    // una columna para no cortar las etiquetas.
+    final grande = MediaQuery.textScalerOf(context).scale(10) > 15;
+    return SuperficieMarketplace(
+      child: grande
+          ? Column(
+              children: [
+                for (final celda in celdas) ...[
+                  celda,
+                  if (celda != celdas.last)
+                    const SizedBox(height: EspaciadoCampo.m),
+                ],
+              ],
+            )
+          : Row(children: [for (final celda in celdas) Expanded(child: celda)]),
     );
   }
 }
@@ -405,15 +404,12 @@ class _Metrica extends StatelessWidget {
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     return MergeSemantics(
-      child: SuperficieMarketplace(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(etiqueta, style: texto.labelSmall),
-            const SizedBox(height: EspaciadoCampo.xs),
-            Text(valor, style: texto.headlineSmall),
-          ],
-        ),
+      child: Column(
+        children: [
+          Text(valor, style: texto.headlineSmall),
+          const SizedBox(height: EspaciadoCampo.xs),
+          Text(etiqueta, textAlign: TextAlign.center, style: texto.labelSmall),
+        ],
       ),
     );
   }
@@ -472,167 +468,6 @@ class _FilaDocumento extends StatelessWidget {
           if (motivo != null) ...[
             const SizedBox(height: EspaciadoCampo.s),
             Text(l10n.proveedorPerfilMotivo(motivo), style: texto.bodyMedium),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-/// Promedio en grande y cuántas calificaciones hay de cada puntaje.
-class _ResumenCalificaciones extends StatelessWidget {
-  const _ResumenCalificaciones({required this.resumen});
-
-  final ResumenCalificaciones resumen;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final texto = Theme.of(context).textTheme;
-    final paleta = context.paleta;
-    final promedio = resumen.promedio.toStringAsFixed(1).replaceAll('.', ',');
-    final mayor = resumen.porPuntaje.values.fold<int>(
-      0,
-      (a, b) => a > b ? a : b,
-    );
-    return SuperficieMarketplace(
-      key: const Key('perfil-calificaciones'),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Semantics(
-            container: true,
-            label: l10n.proveedorPerfilCalificacionPromedioSobreCalificaciones(
-              promedio,
-              resumen.total,
-            ),
-            excludeSemantics: true,
-            child: Wrap(
-              crossAxisAlignment: WrapCrossAlignment.center,
-              spacing: EspaciadoCampo.m,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.star_rounded, size: 32, color: paleta.alerta),
-                    const SizedBox(width: EspaciadoCampo.xs),
-                    Text(promedio, style: texto.displaySmall),
-                  ],
-                ),
-                Text(
-                  resumen.total == 1
-                      ? l10n.proveedorPerfilCalificacion
-                      : l10n.proveedorPerfilCalificaciones(resumen.total),
-                  style: texto.bodyLarge,
-                ),
-              ],
-            ),
-          ),
-          if (mayor > 0) ...[
-            const SizedBox(height: EspaciadoCampo.m),
-            for (var puntaje = 5; puntaje >= 1; puntaje--)
-              _BarraPuntaje(
-                puntaje: puntaje,
-                cantidad: resumen.porPuntaje[puntaje] ?? 0,
-                mayor: mayor,
-              ),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _BarraPuntaje extends StatelessWidget {
-  const _BarraPuntaje({
-    required this.puntaje,
-    required this.cantidad,
-    required this.mayor,
-  });
-
-  final int puntaje;
-  final int cantidad;
-  final int mayor;
-
-  @override
-  Widget build(BuildContext context) {
-    final texto = Theme.of(context).textTheme;
-    final paleta = context.paleta;
-    final escala = MediaQuery.textScalerOf(context);
-    return Semantics(
-      container: true,
-      label:
-          '$puntaje ${puntaje == 1 ? 'estrella' : 'estrellas'}: '
-          '$cantidad',
-      excludeSemantics: true,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: EspaciadoCampo.xs),
-        child: Row(
-          children: [
-            SizedBox(
-              width: escala.scale(14),
-              child: Text('$puntaje', style: texto.bodyMedium),
-            ),
-            Icon(Icons.star_rounded, size: 14, color: paleta.textoSecundario),
-            const SizedBox(width: EspaciadoCampo.s),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(RadioCampo.capsula),
-                child: LinearProgressIndicator(
-                  value: cantidad / mayor,
-                  minHeight: 8,
-                  backgroundColor: paleta.borde,
-                  color: paleta.acentoTexto,
-                ),
-              ),
-            ),
-            const SizedBox(width: EspaciadoCampo.s),
-            SizedBox(
-              width: escala.scale(32),
-              child: Text(
-                '$cantidad',
-                style: texto.bodyMedium,
-                textAlign: TextAlign.end,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Resena extends StatelessWidget {
-  const _Resena({required this.calificacion, required this.ahora});
-
-  final CalificacionRecibida calificacion;
-  final DateTime ahora;
-
-  @override
-  Widget build(BuildContext context) {
-    final texto = Theme.of(context).textTheme;
-    final comentario = calificacion.comentario;
-    return SuperficieMarketplace(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(calificacion.autor, style: texto.titleLarge),
-          const SizedBox(height: EspaciadoCampo.xs),
-          Wrap(
-            spacing: EspaciadoCampo.m,
-            runSpacing: EspaciadoCampo.xs,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              CalificacionCampo(valor: calificacion.puntaje, tamano: 18),
-              Text(
-                FormatoMarketplace.hace(calificacion.fecha, ahora),
-                style: texto.bodyMedium,
-              ),
-            ],
-          ),
-          if (comentario != null) ...[
-            const SizedBox(height: EspaciadoCampo.s),
-            Text(comentario, style: texto.bodyLarge),
           ],
         ],
       ),

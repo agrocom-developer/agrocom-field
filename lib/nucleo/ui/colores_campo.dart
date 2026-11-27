@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 /// resuelve la opacidad (ver [OpacidadesCampo]), igual que el mockup de origen.
 abstract final class ColoresCampo {
   /// Verde agrícola: primario de marca en modo claro.
-  static const Color verdeHoja = Color(0xFF347A36);
+  static const Color verdeHoja = Color(0xFF3A7F26);
 
   /// Verde pasto: apoyo de marca (relleno de íconos y gráficos, no texto).
   static const Color verdePasto = Color(0xFF4C8C3A);

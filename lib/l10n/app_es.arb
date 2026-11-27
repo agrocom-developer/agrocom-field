@@ -1210,4 +1210,23 @@
   "@proveedorEjecucionDeTotal": {"placeholders": {"ejecutadas": {"type": "String"}, "total": {"type": "String"}}},
   "proveedorEjecucionHectareasPorPrecio": "{hectareas} × {precio} por ha",
   "@proveedorEjecucionHectareasPorPrecio": {"placeholders": {"hectareas": {"type": "String"}, "precio": {"type": "String"}}}
+  ,"perfilUxCalificacionSemantica": "Calificación {valor} de 5, ver calificaciones",
+  "@perfilUxCalificacionSemantica": {"placeholders": {"valor": {"type": "String"}}},
+  "perfilUxCalificacionesTitulo": "Calificaciones",
+  "perfilUxCalificacionesVacioTitulo": "Aún no hay calificaciones",
+  "perfilUxCalificacionesVacioDetalle": "Cuando termines un servicio, aquí verás lo que opinan de ti.",
+  "perfilUxMenuMas": "Más opciones",
+  "ajustesTitulo": "Ajustes",
+  "ajustesApariencia": "Apariencia",
+  "ajustesAparienciaDetalle": "Tema claro u oscuro",
+  "ajustesCuenta": "Cuenta",
+  "ajustesCerrarSesion": "Cerrar sesión",
+  "ajustesCerrarSesionDetalle": "Salir de este dispositivo",
+  "ajustesCerrarSesionPregunta": "¿Cerrar sesión?",
+  "ajustesCerrarSesionAviso": "Tendrás que volver a entrar para usar la app.",
+  "ajustesCancelar": "Cancelar",
+  "aparienciaTitulo": "Apariencia",
+  "aparienciaTema": "Tema",
+  "aparienciaTemaClaro": "Claro",
+  "aparienciaTemaOscuro": "Oscuro"
 }

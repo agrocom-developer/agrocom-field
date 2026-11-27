@@ -57,6 +57,8 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     required this.papel2,
     required this.papelDoblez,
     required this.sobrePapel,
+    required this.cabecera,
+    required this.sobreCabecera,
   });
 
   final Brightness brillo;
@@ -169,6 +171,13 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
   /// Texto sobre el post-it.
   final Color sobrePapel;
 
+  /// Banda de cabecera de perfil. En el oscuro es un verde profundo, no el
+  /// acento vivo de los botones, que encandila a pantalla completa.
+  final Color cabecera;
+
+  /// Texto e íconos sobre [cabecera] (AAA).
+  final Color sobreCabecera;
+
   static const PaletaCampo claro = PaletaCampo(
     brillo: Brightness.light,
     fondo: Color(0xFFF3F5F1),
@@ -187,9 +196,9 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     error: Color(0xFFA12727),
     info: Color(0xFF14577F),
     superficie2: Color(0xFFE9EEE7),
-    acentoContenedor: Color(0xFFE1EEDD),
-    sobreAcentoContenedor: Color(0xFF22562A),
-    acentoHover: Color(0xFF28632C),
+    acentoContenedor: Color(0xFFE3F0D8),
+    sobreAcentoContenedor: Color(0xFF285A18),
+    acentoHover: Color(0xFF2F6B1D),
     grafito: Color(0xFF29343A),
     sobreGrafito: Color(0xFFFFFFFF),
     ambar: Color(0xFFF5A623),
@@ -206,6 +215,8 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     papel2: Color(0xFFFFDA55),
     papelDoblez: Color(0xFFE8C13E),
     sobrePapel: Color(0xFF29343A),
+    cabecera: ColoresCampo.verdeHoja,
+    sobreCabecera: Color(0xFFFFFFFF),
   );
 
   /// Modo oscuro: contraste AAA de texto y acentos (el antiguo «campo», ADR
@@ -247,6 +258,8 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     papel2: Color(0xFFFFDA55),
     papelDoblez: Color(0xFFE8C13E),
     sobrePapel: Color(0xFF000000),
+    cabecera: Color(0xFF24562F),
+    sobreCabecera: Color(0xFFFFFFFF),
   );
 
   /// Fondo tonal y texto de un chip para el rol de color [rol]
@@ -311,6 +324,8 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     Color? papel2,
     Color? papelDoblez,
     Color? sobrePapel,
+    Color? cabecera,
+    Color? sobreCabecera,
   }) {
     return PaletaCampo(
       brillo: brillo ?? this.brillo,
@@ -350,6 +365,8 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
       papel2: papel2 ?? this.papel2,
       papelDoblez: papelDoblez ?? this.papelDoblez,
       sobrePapel: sobrePapel ?? this.sobrePapel,
+      cabecera: cabecera ?? this.cabecera,
+      sobreCabecera: sobreCabecera ?? this.sobreCabecera,
     );
   }
 
@@ -406,6 +423,8 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
       papel2: mezcla(papel2, other.papel2),
       papelDoblez: mezcla(papelDoblez, other.papelDoblez),
       sobrePapel: mezcla(sobrePapel, other.sobrePapel),
+      cabecera: mezcla(cabecera, other.cabecera),
+      sobreCabecera: mezcla(sobreCabecera, other.sobreCabecera),
     );
   }
 }

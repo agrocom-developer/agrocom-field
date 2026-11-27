@@ -6222,6 +6222,114 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{hectareas} × {precio} por ha'**
   String proveedorEjecucionHectareasPorPrecio(String hectareas, String precio);
+
+  /// No description provided for @perfilUxCalificacionSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificación {valor} de 5, ver calificaciones'**
+  String perfilUxCalificacionSemantica(String valor);
+
+  /// No description provided for @perfilUxCalificacionesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificaciones'**
+  String get perfilUxCalificacionesTitulo;
+
+  /// No description provided for @perfilUxCalificacionesVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay calificaciones'**
+  String get perfilUxCalificacionesVacioTitulo;
+
+  /// No description provided for @perfilUxCalificacionesVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando termines un servicio, aquí verás lo que opinan de ti.'**
+  String get perfilUxCalificacionesVacioDetalle;
+
+  /// No description provided for @perfilUxMenuMas.
+  ///
+  /// In es, this message translates to:
+  /// **'Más opciones'**
+  String get perfilUxMenuMas;
+
+  /// No description provided for @ajustesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get ajustesTitulo;
+
+  /// No description provided for @ajustesApariencia.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get ajustesApariencia;
+
+  /// No description provided for @ajustesAparienciaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema claro u oscuro'**
+  String get ajustesAparienciaDetalle;
+
+  /// No description provided for @ajustesCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta'**
+  String get ajustesCuenta;
+
+  /// No description provided for @ajustesCerrarSesion.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión'**
+  String get ajustesCerrarSesion;
+
+  /// No description provided for @ajustesCerrarSesionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Salir de este dispositivo'**
+  String get ajustesCerrarSesionDetalle;
+
+  /// No description provided for @ajustesCerrarSesionPregunta.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cerrar sesión?'**
+  String get ajustesCerrarSesionPregunta;
+
+  /// No description provided for @ajustesCerrarSesionAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Tendrás que volver a entrar para usar la app.'**
+  String get ajustesCerrarSesionAviso;
+
+  /// No description provided for @ajustesCancelar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get ajustesCancelar;
+
+  /// No description provided for @aparienciaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get aparienciaTitulo;
+
+  /// No description provided for @aparienciaTema.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema'**
+  String get aparienciaTema;
+
+  /// No description provided for @aparienciaTemaClaro.
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get aparienciaTemaClaro;
+
+  /// No description provided for @aparienciaTemaOscuro.
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get aparienciaTemaOscuro;
 }
 
 class _AppLocalizationsDelegate

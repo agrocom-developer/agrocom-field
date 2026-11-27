@@ -12,18 +12,22 @@ class CalificacionCampo extends StatelessWidget {
   const CalificacionCampo({
     required this.valor,
     this.onCambio,
-    this.tamano = 28,
+    this.tamano,
     super.key,
   }) : assert(valor >= 0 && valor <= 5);
 
   final int valor;
   final ValueChanged<int>? onCambio;
-  final double tamano;
+
+  /// Lado de cada estrella; por defecto 22 en solo lectura y 28 si es
+  /// interactiva.
+  final double? tamano;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
+    final tamano = this.tamano ?? (onCambio == null ? 22.0 : 28.0);
     final lado = onCambio == null ? tamano : ObjetivoTactilCampo.minimo;
     return Semantics(
       container: true,

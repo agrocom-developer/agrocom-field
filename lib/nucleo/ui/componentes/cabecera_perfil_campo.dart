@@ -12,6 +12,8 @@ class CabeceraPerfilCampo extends StatelessWidget {
     required this.avatar,
     required this.nombre,
     this.detalle,
+    this.extra,
+    this.accion,
     super.key,
   });
 
@@ -20,6 +22,12 @@ class CabeceraPerfilCampo extends StatelessWidget {
 
   /// Rol, empresa o calificación; una sola línea de apoyo.
   final String? detalle;
+
+  /// Línea opcional bajo el detalle (calificación).
+  final Widget? extra;
+
+  /// Acción de la esquina superior derecha, normalmente [MenuPerfilCampo].
+  final Widget? accion;
 
   @override
   Widget build(BuildContext context) {
@@ -34,33 +42,50 @@ class CabeceraPerfilCampo extends StatelessWidget {
         EspaciadoCampo.xl,
       ),
       decoration: BoxDecoration(
-        color: paleta.acento,
+        color: paleta.cabecera,
         borderRadius: const BorderRadius.vertical(
           bottom: Radius.circular(RadioCampo.tarjeta),
         ),
       ),
-      child: Column(
+      child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          avatar,
-          const SizedBox(height: EspaciadoCampo.m),
-          Semantics(
-            header: true,
-            child: Text(
-              nombre,
-              textAlign: TextAlign.center,
-              style: texto.headlineSmall?.copyWith(color: paleta.sobreAcento),
-            ),
-          ),
-          if (detalle != null) ...[
-            const SizedBox(height: EspaciadoCampo.xs),
-            Text(
-              detalle!,
-              textAlign: TextAlign.center,
-              style: texto.bodyMedium?.copyWith(
-                color: paleta.sobreAcento.withValues(alpha: 0.85),
+          Column(
+            children: [
+              avatar,
+              const SizedBox(height: EspaciadoCampo.m),
+              Semantics(
+                header: true,
+                child: Text(
+                  nombre,
+                  textAlign: TextAlign.center,
+                  style: texto.headlineSmall?.copyWith(
+                    color: paleta.sobreCabecera,
+                  ),
+                ),
               ),
+              if (detalle != null) ...[
+                const SizedBox(height: EspaciadoCampo.xs),
+                Text(
+                  detalle!,
+                  textAlign: TextAlign.center,
+                  style: texto.bodyMedium?.copyWith(
+                    color: paleta.sobreCabecera.withValues(alpha: 0.85),
+                  ),
+                ),
+              ],
+              if (extra != null) ...[
+                const SizedBox(height: EspaciadoCampo.s),
+                extra!,
+              ],
+            ],
+          ),
+          if (accion != null)
+            Positioned(
+              top: -EspaciadoCampo.m,
+              right: -EspaciadoCampo.s,
+              child: accion!,
             ),
-          ],
         ],
       ),
     );
