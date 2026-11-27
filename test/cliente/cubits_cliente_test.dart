@@ -324,11 +324,18 @@ void main() {
       intervalo: null,
     );
 
-    test('carga las ofertas vigentes de menor a mayor precio', () async {
+    test('carga las ofertas vigentes en el orden recomendado', () async {
       final cubit = crear();
       expect(cubit.state.fase, FaseOfertas.cargando);
       await cubit.cargar();
       expect(cubit.state.fase, FaseOfertas.lista);
+      expect(cubit.state.orden, OrdenOfertas.recomendado);
+      expect(cubit.state.vigentes(ahora).map((o) => o.precioHa), [
+        Decimal.parse('110'),
+        Decimal.parse('121'),
+        Decimal.parse('104'),
+      ]);
+      await cubit.ordenar(OrdenOfertas.precio);
       expect(cubit.state.vigentes(ahora).map((o) => o.precioHa), [
         Decimal.parse('104'),
         Decimal.parse('110'),
@@ -348,6 +355,12 @@ void main() {
       ]);
       await cubit.ordenar(OrdenOfertas.reciente);
       expect(cubit.state.orden, OrdenOfertas.reciente);
+      final fechas = cubit.state
+          .vigentes(ahora)
+          .map((o) => o.creadaEn!)
+          .toList();
+      expect(fechas, hasLength(3));
+      expect(fechas, [...fechas]..sort((a, b) => b.compareTo(a)));
       await cubit.close();
     });
 

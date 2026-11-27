@@ -52,6 +52,14 @@ class _Intermitente extends BandejaDemo {
   Future<Bandeja> leer() => cae ? throw const SinConexion() : super.leer();
 }
 
+/// Pantalla amplia: las listas construyen solo lo visible y los chips de
+/// grupo y las tarjetas de canal quedarían fuera del viewport por defecto.
+void _pantallaAmplia(WidgetTester tester) {
+  tester.view.devicePixelRatio = 1;
+  tester.view.physicalSize = const Size(2400, 1800);
+  addTearDown(tester.view.reset);
+}
+
 Widget _app(Widget hijo) => MaterialApp(
   localizationsDelegates: AppLocalizations.localizationsDelegates,
   supportedLocales: AppLocalizations.supportedLocales,
@@ -106,6 +114,7 @@ void main() {
   });
 
   testWidgets('muestra los avisos, los grupos y el contador', (tester) async {
+    _pantallaAmplia(tester);
     final demo = BandejaDemo([
       _aviso(1, 'mensaje_nuevo'),
       _aviso(2, 'oferta_recibida'),
@@ -120,6 +129,7 @@ void main() {
   });
 
   testWidgets('un grupo filtra por canal', (tester) async {
+    _pantallaAmplia(tester);
     final demo = BandejaDemo([
       _aviso(1, 'mensaje_nuevo'),
       _aviso(2, 'oferta_recibida'),
@@ -181,6 +191,7 @@ void main() {
     testWidgets('silenciar un canal lo guarda; el de cuenta no se apaga', (
       tester,
     ) async {
+      _pantallaAmplia(tester);
       final store = PreferenciasCanalesMemoria();
       await tester.pumpWidget(_app(CanalesPantalla(store: store)));
       await tester.pumpAndSettle();

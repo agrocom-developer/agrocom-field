@@ -176,7 +176,10 @@ void main() {
       final gps = _Gps(PermisoUbicacion.denegado);
       await tester.pumpWidget(app(gps));
       await tester.tap(find.byKey(const ValueKey('distancia-calcular')));
-      await tester.pumpAndSettle();
+      // Detrás de la hoja el indicador de «calculando» gira sin parar: no se
+      // puede esperar a que se aquiete; basta dejar abrir la hoja.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
       expect(find.text('Calcular la distancia al lote'), findsOneWidget);
       expect(gps.pedidos, 0);
       await tester.tap(find.byKey(const ValueKey('distancia-continuar')));
@@ -190,7 +193,10 @@ void main() {
       final gps = _Gps(PermisoUbicacion.denegado);
       await tester.pumpWidget(app(gps));
       await tester.tap(find.byKey(const ValueKey('distancia-calcular')));
-      await tester.pumpAndSettle();
+      // Detrás de la hoja el indicador de «calculando» gira sin parar: no se
+      // puede esperar a que se aquiete; basta dejar abrir la hoja.
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
       await tester.tap(find.byKey(const ValueKey('distancia-ahora-no')));
       await tester.pumpAndSettle();
       expect(gps.pedidos, 0);
