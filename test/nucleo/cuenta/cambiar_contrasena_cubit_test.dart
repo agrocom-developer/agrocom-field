@@ -31,7 +31,11 @@ class _Falso implements ContrasenaRepositorio {
 
 void main() {
   CambiarContrasenaCubit crear(ContrasenaRepositorio r) =>
-      CambiarContrasenaCubit(r);
+      CambiarContrasenaCubit(
+        r,
+        textoSinRed: 'sin red',
+        textoCanalNoDisponible: 'canal no disponible',
+      );
 
   test('empieza en el canal de WhatsApp, sin error ni envío', () {
     final cubit = crear(_Falso());
@@ -61,7 +65,7 @@ void main() {
       await cubit.pedirCodigo();
       expect(cubit.state.paso, PasoContrasena.canal);
       expect(cubit.state.sinConexion, isTrue);
-      expect(cubit.state.mensaje, contains('conexión'));
+      expect(cubit.state.mensaje, 'sin red');
     },
   );
 
@@ -77,7 +81,7 @@ void main() {
     );
     await cubit.pedirCodigo();
     expect(cubit.state.paso, PasoContrasena.canal);
-    expect(cubit.state.mensaje, contains('Elige otro'));
+    expect(cubit.state.mensaje, 'canal no disponible');
   });
 
   test('sin destino muestra el mensaje del servidor', () async {

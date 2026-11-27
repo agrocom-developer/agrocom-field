@@ -55,10 +55,18 @@ class CambiarContrasenaEstado {
 /// contraseña nueva. La contraseña y el código pasan por parámetro y no se
 /// guardan en el estado.
 class CambiarContrasenaCubit extends Cubit<CambiarContrasenaEstado> {
-  CambiarContrasenaCubit(this._repositorio)
-    : super(const CambiarContrasenaEstado());
+  CambiarContrasenaCubit(
+    this._repositorio, {
+    required this.textoSinRed,
+    required this.textoCanalNoDisponible,
+  }) : super(const CambiarContrasenaEstado());
 
   final ContrasenaRepositorio _repositorio;
+
+  /// Textos que el cubit no puede leer solo (viven en el ARB): los entrega la
+  /// pantalla al crearlo.
+  final String textoSinRed;
+  final String textoCanalNoDisponible;
 
   void elegirCanal(CanalCodigo canal) =>
       emit(state.copiar(canal: canal, quitarMensaje: true, sinConexion: false));
@@ -77,7 +85,9 @@ class CambiarContrasenaCubit extends Cubit<CambiarContrasenaEstado> {
         ),
       );
     } on SinConexion {
-      emit(state.copiar(enviando: false, sinConexion: true, mensaje: _sinRed));
+      emit(
+        state.copiar(enviando: false, sinConexion: true, mensaje: textoSinRed),
+      );
     } on OperacionRechazada catch (e) {
       emit(state.copiar(enviando: false, mensaje: _paraCanal(e)));
     }
@@ -103,7 +113,9 @@ class CambiarContrasenaCubit extends Cubit<CambiarContrasenaEstado> {
       );
       emit(state.copiar(paso: PasoContrasena.listo, enviando: false));
     } on SinConexion {
-      emit(state.copiar(enviando: false, sinConexion: true, mensaje: _sinRed));
+      emit(
+        state.copiar(enviando: false, sinConexion: true, mensaje: textoSinRed),
+      );
     } on OperacionRechazada catch (e) {
       emit(
         state.copiar(
@@ -125,14 +137,8 @@ class CambiarContrasenaCubit extends Cubit<CambiarContrasenaEstado> {
     ),
   );
 
-  static const _sinRed =
-      'No hay conexión. Revisa tu señal y vuelve a intentarlo: lo que '
-      'escribiste se conserva.';
-
   /// El `503` no trae mensaje propio en [OperacionRechazada]: se cambia por
   /// uno que diga qué hacer.
-  static String _paraCanal(OperacionRechazada e) =>
-      e.motivo == 'canal_no_disponible'
-      ? 'Ese medio no está disponible ahora. Elige otro para recibir el código.'
-      : e.mensaje;
+  String _paraCanal(OperacionRechazada e) =>
+      e.motivo == 'canal_no_disponible' ? textoCanalNoDisponible : e.mensaje;
 }

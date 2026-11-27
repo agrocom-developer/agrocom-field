@@ -6298,7 +6298,7 @@ abstract class AppLocalizations {
   /// No description provided for @ajustesCerrarSesionAviso.
   ///
   /// In es, this message translates to:
-  /// **'Tendrás que volver a entrar para usar la app.'**
+  /// **'Tendrás que volver a ingresar para usar la app.'**
   String get ajustesCerrarSesionAviso;
 
   /// No description provided for @ajustesCancelar.
@@ -6532,13 +6532,13 @@ abstract class AppLocalizations {
   /// No description provided for @datosPersonalesErrorDetalle.
   ///
   /// In es, this message translates to:
-  /// **'Revisa tu conexión e inténtalo de nuevo.'**
+  /// **'Revisa tu conexión y vuelve a intentarlo.'**
   String get datosPersonalesErrorDetalle;
 
   /// No description provided for @datosPersonalesErrorGuardar.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos guardar tus datos. Inténtalo de nuevo.'**
+  /// **'No pudimos guardar tus datos. Vuelve a intentarlo.'**
   String get datosPersonalesErrorGuardar;
 
   /// No description provided for @datosPersonalesErrorSinConexion.
@@ -6598,7 +6598,7 @@ abstract class AppLocalizations {
   /// No description provided for @datosPersonalesErrorEnviar.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos enviar tu solicitud. Inténtalo de nuevo.'**
+  /// **'No pudimos enviar tu solicitud. Vuelve a intentarlo.'**
   String get datosPersonalesErrorEnviar;
 
   /// No description provided for @datosPersonalesSolicitudAbierta.
@@ -6754,7 +6754,7 @@ abstract class AppLocalizations {
   /// No description provided for @permisosNotificacionesTitulo.
   ///
   /// In es, this message translates to:
-  /// **'Avisos de solicitudes nuevas'**
+  /// **'Notificaciones de solicitudes nuevas'**
   String get permisosNotificacionesTitulo;
 
   /// No description provided for @permisosNotificacionesMotivo.
@@ -6958,7 +6958,7 @@ abstract class AppLocalizations {
   /// No description provided for @bandejaVacioSistemaTitulo.
   ///
   /// In es, this message translates to:
-  /// **'Sin avisos del sistema'**
+  /// **'Sin notificaciones del sistema'**
   String get bandejaVacioSistemaTitulo;
 
   /// No description provided for @bandejaVacioSistemaDetalle.
@@ -7008,6 +7008,18 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Licencia, matrícula, seguro y más'**
   String get perfilR3DocumentosDetalle;
+
+  /// No description provided for @contrasenaErrorSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay conexión. Revisa tu señal y vuelve a intentarlo: lo que escribiste se conserva.'**
+  String get contrasenaErrorSinRed;
+
+  /// No description provided for @contrasenaErrorCanalNoDisponible.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese medio no está disponible ahora. Elige otro para recibir el código.'**
+  String get contrasenaErrorCanalNoDisponible;
 }
 
 class _AppLocalizationsDelegate

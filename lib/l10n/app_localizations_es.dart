@@ -3868,7 +3868,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get ajustesCerrarSesionAviso =>
-      'Tendrás que volver a entrar para usar la app.';
+      'Tendrás que volver a ingresar para usar la app.';
 
   @override
   String get ajustesCancelar => 'Cancelar';
@@ -4006,11 +4006,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get datosPersonalesErrorDetalle =>
-      'Revisa tu conexión e inténtalo de nuevo.';
+      'Revisa tu conexión y vuelve a intentarlo.';
 
   @override
   String get datosPersonalesErrorGuardar =>
-      'No pudimos guardar tus datos. Inténtalo de nuevo.';
+      'No pudimos guardar tus datos. Vuelve a intentarlo.';
 
   @override
   String get datosPersonalesErrorSinConexion =>
@@ -4046,7 +4046,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get datosPersonalesErrorEnviar =>
-      'No pudimos enviar tu solicitud. Inténtalo de nuevo.';
+      'No pudimos enviar tu solicitud. Vuelve a intentarlo.';
 
   @override
   String get datosPersonalesSolicitudAbierta =>
@@ -4131,7 +4131,8 @@ class AppLocalizationsEs extends AppLocalizations {
       'Para centrar el mapa en donde estás y mostrarte las solicitudes cercanas. Solo se usa mientras miras el mapa y no se guarda.';
 
   @override
-  String get permisosNotificacionesTitulo => 'Avisos de solicitudes nuevas';
+  String get permisosNotificacionesTitulo =>
+      'Notificaciones de solicitudes nuevas';
 
   @override
   String get permisosNotificacionesMotivo =>
@@ -4244,7 +4245,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Cuando alguien te escriba por un servicio, lo verás aquí.';
 
   @override
-  String get bandejaVacioSistemaTitulo => 'Sin avisos del sistema';
+  String get bandejaVacioSistemaTitulo => 'Sin notificaciones del sistema';
 
   @override
   String get bandejaVacioSistemaDetalle =>
@@ -4270,4 +4271,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get perfilR3DocumentosDetalle => 'Licencia, matrícula, seguro y más';
+
+  @override
+  String get contrasenaErrorSinRed =>
+      'No hay conexión. Revisa tu señal y vuelve a intentarlo: lo que escribiste se conserva.';
+
+  @override
+  String get contrasenaErrorCanalNoDisponible =>
+      'Ese medio no está disponible ahora. Elige otro para recibir el código.';
 }

@@ -24,8 +24,11 @@ class CambiarContrasenaPantalla extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     return BlocProvider(
-      create: (context) =>
-          CambiarContrasenaCubit(context.read<ContrasenaRepositorio>()),
+      create: (context) => CambiarContrasenaCubit(
+        context.read<ContrasenaRepositorio>(),
+        textoSinRed: t.contrasenaErrorSinRed,
+        textoCanalNoDisponible: t.contrasenaErrorCanalNoDisponible,
+      ),
       child: Scaffold(
         appBar: AppBar(title: Text(t.contrasenaTitulo)),
         body: SafeArea(
