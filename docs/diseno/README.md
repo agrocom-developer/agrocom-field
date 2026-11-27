@@ -4,6 +4,7 @@
 |---|---|
 | Guía de diseño viva (principios, color, tipografía, componentes) | [`../../DESIGN.md`](../../DESIGN.md) |
 | Sistema visual implementado en código | [`sistema-visual.md`](sistema-visual.md) |
+| API y ejemplos de los componentes nuevos (listas paginadas, envío, avisos, íconos, transiciones, mapa expandible) | [`componentes.md`](componentes.md) |
 | Cómo se escriben los textos de las apps (español neutro, vocabulario, ejemplos) | [`guia-de-textos.md`](guia-de-textos.md) |
 | Especificación de las 21 pantallas (medidas, comportamiento) | [`especificacion-pantallas.md`](especificacion-pantallas.md) |
 | Tokens: fuente de verdad `tokens.json`, más `tokens.css` y `agrocom_tokens.dart` | [`tokens/`](tokens/) |
