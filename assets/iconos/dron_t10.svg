@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Silueta genérica del dron agrícola más chico de la flota (cuatro brazos, tanque angosto). -->
+  <rect x="10" y="10" width="4" height="4" rx="1" fill="#101418"/>
+  <path d="M10 10 L7 7 M14 10 L17 7 M10 14 L7 17 M14 14 L17 17"
+        stroke="#101418" stroke-width="1.5" stroke-linecap="round"/>
+  <circle cx="7" cy="7" r="1.6" fill="#101418"/>
+  <circle cx="17" cy="7" r="1.6" fill="#101418"/>
+  <circle cx="7" cy="17" r="1.6" fill="#101418"/>
+  <circle cx="17" cy="17" r="1.6" fill="#101418"/>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Mismos cuatro brazos; tanque notoriamente más grande que el T20. -->
+  <rect x="8" y="8" width="8" height="8" rx="1.4" fill="#101418"/>
+  <path d="M8 8 L5 5 M16 8 L19 5 M8 16 L5 19 M16 16 L19 19"
+        stroke="#101418" stroke-width="1.7" stroke-linecap="round"/>
+  <circle cx="5" cy="5" r="1.8" fill="#101418"/>
+  <circle cx="19" cy="5" r="1.8" fill="#101418"/>
+  <circle cx="5" cy="19" r="1.8" fill="#101418"/>
+  <circle cx="19" cy="19" r="1.8" fill="#101418"/>
+</svg>

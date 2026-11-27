@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Mando de radiocontrol: cuerpo, dos joysticks y antena. -->
+  <rect x="4" y="6" width="16" height="13" rx="3"
+        stroke="#101418" stroke-width="1.6"/>
+  <path d="M18 6 L21 2" stroke="#101418" stroke-width="1.6" stroke-linecap="round"/>
+  <circle cx="9" cy="11.5" r="2.4" stroke="#101418" stroke-width="1.4"/>
+  <circle cx="9" cy="11.5" r="0.9" fill="#101418"/>
+  <circle cx="15" cy="14.5" r="2.4" stroke="#101418" stroke-width="1.4"/>
+  <circle cx="15" cy="14.5" r="0.9" fill="#101418"/>
+</svg>

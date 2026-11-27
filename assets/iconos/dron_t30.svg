@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Seis brazos (hexacóptero): salto de familia respecto del T10-T25. -->
+  <rect x="7" y="9" width="10" height="6" rx="1.4" fill="#101418"/>
+  <path d="M9 9 L5 4 M15 9 L19 4 M7 12 L3 12 M17 12 L21 12 M9 15 L5 20 M15 15 L19 20"
+        stroke="#101418" stroke-width="1.6" stroke-linecap="round"/>
+  <circle cx="5" cy="4" r="1.6" fill="#101418"/>
+  <circle cx="19" cy="4" r="1.6" fill="#101418"/>
+  <circle cx="3" cy="12" r="1.6" fill="#101418"/>
+  <circle cx="21" cy="12" r="1.6" fill="#101418"/>
+  <circle cx="5" cy="20" r="1.6" fill="#101418"/>
+  <circle cx="19" cy="20" r="1.6" fill="#101418"/>
+</svg>

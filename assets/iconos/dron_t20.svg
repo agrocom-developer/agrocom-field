@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Cuatro brazos, tanque y envergadura algo mayores que el T10. -->
+  <rect x="9" y="9" width="6" height="6" rx="1.2" fill="#101418"/>
+  <path d="M9 9 L6 6 M15 9 L18 6 M9 15 L6 18 M15 15 L18 18"
+        stroke="#101418" stroke-width="1.6" stroke-linecap="round"/>
+  <circle cx="6" cy="6" r="1.7" fill="#101418"/>
+  <circle cx="18" cy="6" r="1.7" fill="#101418"/>
+  <circle cx="6" cy="18" r="1.7" fill="#101418"/>
+  <circle cx="18" cy="18" r="1.7" fill="#101418"/>
+</svg>

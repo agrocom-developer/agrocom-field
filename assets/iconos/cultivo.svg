@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Brote con dos hojas sobre la línea del suelo — cultivo genérico. -->
+  <path d="M6 20 L18 20" stroke="#101418" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M12 20 L12 10" stroke="#101418" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M12 13 C9 13 7 11 7 8 C10 8 12 10 12 13 Z" fill="#101418"/>
+  <path d="M12 11 C15 11 17 9 17 6 C14 6 12 8 12 11 Z" fill="#101418"/>
+</svg>
