@@ -6834,6 +6834,156 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'No pudimos leer tu ubicación. Revisa que la ubicación del teléfono esté activa.'**
   String get permisosUbicacionNoDisponible;
+
+  /// No description provided for @perfilCli2Notificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get perfilCli2Notificaciones;
+
+  /// No description provided for @perfilCli2NotificacionesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes de pilotos y de Agrocom'**
+  String get perfilCli2NotificacionesDetalle;
+
+  /// No description provided for @perfilCli2EstadHectareas.
+  ///
+  /// In es, this message translates to:
+  /// **'hectáreas'**
+  String get perfilCli2EstadHectareas;
+
+  /// No description provided for @perfilPil2BandejaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes de clientes y de Agrocom'**
+  String get perfilPil2BandejaDetalle;
+
+  /// No description provided for @perfilPil2AvisosConfigDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevas solicitudes por zona'**
+  String get perfilPil2AvisosConfigDetalle;
+
+  /// No description provided for @perfilPil2DronesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'{cantidad} · Dron y licencia'**
+  String perfilPil2DronesDetalle(String cantidad);
+
+  /// No description provided for @perfilPil2Cobertura.
+  ///
+  /// In es, this message translates to:
+  /// **'Cobertura'**
+  String get perfilPil2Cobertura;
+
+  /// No description provided for @bandejaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get bandejaTitulo;
+
+  /// No description provided for @bandejaFiltroTodas.
+  ///
+  /// In es, this message translates to:
+  /// **'Todas'**
+  String get bandejaFiltroTodas;
+
+  /// No description provided for @bandejaFiltroMensajes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes'**
+  String get bandejaFiltroMensajes;
+
+  /// No description provided for @bandejaFiltroSistema.
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema'**
+  String get bandejaFiltroSistema;
+
+  /// No description provided for @bandejaGrupoHoy.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy'**
+  String get bandejaGrupoHoy;
+
+  /// No description provided for @bandejaGrupoAyer.
+  ///
+  /// In es, this message translates to:
+  /// **'Ayer'**
+  String get bandejaGrupoAyer;
+
+  /// No description provided for @bandejaGrupoAntes.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes'**
+  String get bandejaGrupoAntes;
+
+  /// No description provided for @bandejaMarcarTodas.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar todas como leídas'**
+  String get bandejaMarcarTodas;
+
+  /// No description provided for @bandejaNoLeida.
+  ///
+  /// In es, this message translates to:
+  /// **'No leída'**
+  String get bandejaNoLeida;
+
+  /// No description provided for @bandejaOrigenSistema.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrocom'**
+  String get bandejaOrigenSistema;
+
+  /// No description provided for @bandejaVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí te avisamos lo importante'**
+  String get bandejaVacioTitulo;
+
+  /// No description provided for @bandejaVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas nuevas, mensajes de la otra parte y cambios en tus servicios aparecerán en esta lista.'**
+  String get bandejaVacioDetalle;
+
+  /// No description provided for @bandejaVacioMensajesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay mensajes'**
+  String get bandejaVacioMensajesTitulo;
+
+  /// No description provided for @bandejaVacioMensajesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando alguien te escriba por un servicio, lo verás aquí.'**
+  String get bandejaVacioMensajesDetalle;
+
+  /// No description provided for @bandejaVacioSistemaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin avisos del sistema'**
+  String get bandejaVacioSistemaTitulo;
+
+  /// No description provided for @bandejaVacioSistemaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te avisamos aquí cuando cambie el estado de tus servicios o de tu cuenta.'**
+  String get bandejaVacioSistemaDetalle;
+
+  /// No description provided for @bandejaErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus notificaciones'**
+  String get bandejaErrorTitulo;
+
+  /// No description provided for @bandejaErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentarlo.'**
+  String get bandejaErrorDetalle;
 }
 
 class _AppLocalizationsDelegate

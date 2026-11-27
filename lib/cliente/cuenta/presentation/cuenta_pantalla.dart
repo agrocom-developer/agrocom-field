@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -5,6 +6,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/foto_perfil/presentation/foto_perfil_widgets.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
+import '../../../nucleo/notificaciones/bandeja/presentation/bandeja_notificaciones_pantalla.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
 import '../../../nucleo/ui/ajustes/ajustes_pantalla.dart';
 import '../../../nucleo/ui/ajustes/apariencia_pantalla.dart';
@@ -101,6 +103,10 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
         final promedio = resumen.promedio
             .toStringAsFixed(1)
             .replaceAll('.', ',');
+        final hectareas = d.lotes.fold<Decimal>(
+          Decimal.zero,
+          (suma, lote) => suma + lote.hectareas,
+        );
         void abrir(Widget pantalla) => Navigator.of(
           context,
         ).push(MaterialPageRoute<void>(builder: (_) => pantalla));
@@ -148,7 +154,11 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
                 children: EntradaCampo.escalonar([
                   Semantics(
                     header: true,
-                    child: Text(t.perfilCliMetricas, style: texto.titleLarge),
+                    child: Text(
+                      t.perfilCliMetricas,
+                      textAlign: TextAlign.center,
+                      style: texto.titleLarge,
+                    ),
                   ),
                   const SizedBox(height: EspaciadoCampo.m),
                   CifrasPerfilCampo(
@@ -162,8 +172,8 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
                         etiqueta: t.perfilClienteEstadServicios,
                       ),
                       (
-                        valor: promedio,
-                        etiqueta: t.perfilClienteEstadCalificacion,
+                        valor: FormatoMarketplace.hectareasNumero(hectareas),
+                        etiqueta: t.perfilCli2EstadHectareas,
                       ),
                     ],
                   ),
@@ -196,11 +206,11 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
                   ),
                   const SizedBox(height: EspaciadoCampo.m),
                   FilaAccionCampo(
-                    clave: const Key('perfil-ajustes'),
-                    icono: Icons.settings_rounded,
-                    titulo: t.ajustesTitulo,
-                    detalle: t.ajustesAparienciaDetalle,
-                    alToque: abrirAjustes,
+                    clave: const Key('perfil-notificaciones'),
+                    icono: Icons.notifications_none_rounded,
+                    titulo: t.perfilCli2Notificaciones,
+                    detalle: t.perfilCli2NotificacionesDetalle,
+                    alToque: () => abrir(const BandejaNotificacionesPantalla()),
                   ),
                 ]),
               ),

@@ -4185,4 +4185,85 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get permisosUbicacionNoDisponible =>
       'No pudimos leer tu ubicación. Revisa que la ubicación del teléfono esté activa.';
+
+  @override
+  String get perfilCli2Notificaciones => 'Notificaciones';
+
+  @override
+  String get perfilCli2NotificacionesDetalle =>
+      'Mensajes de pilotos y de Agrocom';
+
+  @override
+  String get perfilCli2EstadHectareas => 'hectáreas';
+
+  @override
+  String get perfilPil2BandejaDetalle => 'Mensajes de clientes y de Agrocom';
+
+  @override
+  String get perfilPil2AvisosConfigDetalle => 'Nuevas solicitudes por zona';
+
+  @override
+  String perfilPil2DronesDetalle(String cantidad) {
+    return '$cantidad · Dron y licencia';
+  }
+
+  @override
+  String get perfilPil2Cobertura => 'Cobertura';
+
+  @override
+  String get bandejaTitulo => 'Notificaciones';
+
+  @override
+  String get bandejaFiltroTodas => 'Todas';
+
+  @override
+  String get bandejaFiltroMensajes => 'Mensajes';
+
+  @override
+  String get bandejaFiltroSistema => 'Sistema';
+
+  @override
+  String get bandejaGrupoHoy => 'Hoy';
+
+  @override
+  String get bandejaGrupoAyer => 'Ayer';
+
+  @override
+  String get bandejaGrupoAntes => 'Antes';
+
+  @override
+  String get bandejaMarcarTodas => 'Marcar todas como leídas';
+
+  @override
+  String get bandejaNoLeida => 'No leída';
+
+  @override
+  String get bandejaOrigenSistema => 'Agrocom';
+
+  @override
+  String get bandejaVacioTitulo => 'Aquí te avisamos lo importante';
+
+  @override
+  String get bandejaVacioDetalle =>
+      'Ofertas nuevas, mensajes de la otra parte y cambios en tus servicios aparecerán en esta lista.';
+
+  @override
+  String get bandejaVacioMensajesTitulo => 'Todavía no hay mensajes';
+
+  @override
+  String get bandejaVacioMensajesDetalle =>
+      'Cuando alguien te escriba por un servicio, lo verás aquí.';
+
+  @override
+  String get bandejaVacioSistemaTitulo => 'Sin avisos del sistema';
+
+  @override
+  String get bandejaVacioSistemaDetalle =>
+      'Te avisamos aquí cuando cambie el estado de tus servicios o de tu cuenta.';
+
+  @override
+  String get bandejaErrorTitulo => 'No pudimos cargar tus notificaciones';
+
+  @override
+  String get bandejaErrorDetalle => 'Revisa tu conexión y vuelve a intentarlo.';
 }

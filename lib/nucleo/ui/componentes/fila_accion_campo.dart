@@ -56,6 +56,8 @@ class FilaAccionCampo extends StatelessWidget {
                     if (detalle != null)
                       Text(
                         detalle!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: texto.bodyMedium?.copyWith(
                           color: paleta.textoSecundario,
                         ),

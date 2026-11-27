@@ -211,9 +211,9 @@ void main() {
 
     await tester.tap(find.text('Perfil').last);
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.byKey(const Key('perfil-ajustes')));
+    await tester.tap(find.byIcon(Icons.more_vert_rounded));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const Key('perfil-ajustes')));
+    await tester.tap(find.text('Ajustes'));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('ajustes-cerrar-sesion')));
     await tester.pumpAndSettle();
