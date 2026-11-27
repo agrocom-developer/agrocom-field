@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
+import '../../../nucleo/ui/componentes/icono_burbuja_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tipografia_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
@@ -32,18 +33,7 @@ class FilaLote extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: EspaciadoCampo.m),
         child: Row(
           children: [
-            Container(
-              width: ObjetivoTactilCampo.minimo,
-              height: ObjetivoTactilCampo.minimo,
-              decoration: BoxDecoration(
-                color: paleta.acentoContenedor,
-                borderRadius: BorderRadius.circular(RadioCampo.media),
-              ),
-              child: Icon(
-                Icons.landscape_rounded,
-                color: paleta.sobreAcentoContenedor,
-              ),
-            ),
+            const IconoBurbujaCampo(Icons.landscape_rounded),
             const SizedBox(width: EspaciadoCampo.m),
             Expanded(
               child: Column(

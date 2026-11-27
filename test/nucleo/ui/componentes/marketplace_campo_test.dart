@@ -131,7 +131,7 @@ void main() {
       await tester.pumpWidget(
         _envolver(
           SingleChildScrollView(child: _oferta()),
-          modo: ModoVisualCampo.campo,
+          modo: ModoVisualCampo.oscuro,
         ),
       );
       await expectLater(
@@ -192,7 +192,7 @@ void main() {
               Expanded(child: EsqueletoCampo.texto(lineas: 3)),
             ],
           ),
-          modo: ModoVisualCampo.campo,
+          modo: ModoVisualCampo.oscuro,
         ),
       );
       await expectLater(

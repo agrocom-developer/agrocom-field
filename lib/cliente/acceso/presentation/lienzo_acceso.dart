@@ -63,7 +63,7 @@ class PanelMarcaAcceso extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
-    const sobreFoto = PaletaCampo.campo;
+    const sobreFoto = PaletaCampo.oscuro;
     return FondoFotoCampo(
       imagen: ImagenesCampo.dronPulverizandoVertical,
       child: SafeArea(

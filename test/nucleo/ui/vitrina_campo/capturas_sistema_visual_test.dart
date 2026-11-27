@@ -46,7 +46,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         debugShowCheckedModeBanner: false,
-        theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.campo),
+        theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.oscuro),
         home: const Scaffold(
           body: SafeArea(child: SistemaVisualCampoVitrina()),
         ),

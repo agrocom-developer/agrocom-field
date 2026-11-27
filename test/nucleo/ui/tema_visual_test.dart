@@ -15,20 +15,20 @@ class _AlmacenQueFalla implements AlmacenTemaVisual {
 
 void main() {
   test('sin elección el cubit queda en null y carga lo guardado', () async {
-    final almacen = AlmacenTemaVisualMemoria(ModoVisualCampo.campo);
+    final almacen = AlmacenTemaVisualMemoria(ModoVisualCampo.oscuro);
     final cubit = TemaVisualCubit(almacen);
     expect(cubit.state, isNull);
     await cubit.cargar();
-    expect(cubit.state, ModoVisualCampo.campo);
+    expect(cubit.state, ModoVisualCampo.oscuro);
     await cubit.close();
   });
 
   test('elegir cambia el tema y lo guarda', () async {
     final almacen = AlmacenTemaVisualMemoria();
     final cubit = TemaVisualCubit(almacen);
-    await cubit.elegir(ModoVisualCampo.campo);
-    expect(cubit.state, ModoVisualCampo.campo);
-    expect(almacen.modo, ModoVisualCampo.campo);
+    await cubit.elegir(ModoVisualCampo.oscuro);
+    expect(cubit.state, ModoVisualCampo.oscuro);
+    expect(almacen.modo, ModoVisualCampo.oscuro);
     await cubit.close();
   });
 
@@ -56,7 +56,7 @@ void main() {
 
   test('una elección fija el tema aunque el sistema sea otro', () {
     final t = ConfiguracionTema.de(
-      elegido: ModoVisualCampo.campo,
+      elegido: ModoVisualCampo.oscuro,
       predeterminado: ModoVisualCampo.claro,
     );
     expect(t.modo, ThemeMode.light);

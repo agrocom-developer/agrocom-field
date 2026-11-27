@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'colores_campo.dart';
 import 'paleta_campo.dart';
 
 /// Escala de espaciado en múltiplos de 4. Ninguna pantalla usa un número
@@ -65,7 +64,7 @@ abstract final class ObjetivoTactilCampo {
 abstract final class ElevacionCampo {
   /// Niveles 0 (plano), 1 (tarjeta), 2 (oferta/menú), 3 (modal).
   static List<BoxShadow> sombras(PaletaCampo paleta, int nivel) {
-    if (nivel <= 0 || paleta.fondo == ColoresCampo.fondoProfundo) {
+    if (nivel <= 0 || paleta.esCampo) {
       return const [];
     }
     final oscuro = paleta.brillo == Brightness.dark;

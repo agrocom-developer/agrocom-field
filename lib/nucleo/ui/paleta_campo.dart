@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'colores_campo.dart';
 
 /// Los dos modos visuales del marketplace: [claro] (ciudad, el predeterminado
-/// de los dos flavors) y [campo] (alto contraste para sol directo y guantes).
+/// de los dos flavors) y [oscuro] (alto contraste AAA sobre verde profundo, no negro puro).
 /// Cualquier modo es válido en cualquier flavor y se elige en el perfil.
-enum ModoVisualCampo { claro, campo }
+enum ModoVisualCampo { claro, oscuro }
 
 /// Paleta semántica del sistema visual Industrial AgTech (DESIGN.md y
 /// docs/diseno/sistema-visual.md); la fuente de los valores es
@@ -61,8 +61,8 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
 
   final Brightness brillo;
 
-  /// Es la paleta del modo campo (alto contraste): objetivos táctiles de 72.
-  bool get esCampo => fondo == ColoresCampo.fondoProfundo;
+  /// Es la paleta oscura de alto contraste: objetivos táctiles de 72.
+  bool get esCampo => brillo == Brightness.dark;
 
   /// Fondo de pantalla.
   final Color fondo;
@@ -208,13 +208,14 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     sobrePapel: Color(0xFF29343A),
   );
 
-  /// Modo campo: alto contraste AAA para sol directo y guantes (ADR 0008).
-  static const PaletaCampo campo = PaletaCampo(
+  /// Modo oscuro: contraste AAA de texto y acentos (el antiguo «campo», ADR
+  /// 0008) sobre un verde profundo en vez de negro puro (el antiguo «oscuro»).
+  static const PaletaCampo oscuro = PaletaCampo(
     brillo: Brightness.dark,
-    fondo: ColoresCampo.fondoProfundo,
-    superficie: ColoresCampo.superficie,
-    superficieElevada: Color(0xFF1B2A20),
-    borde: Color(0xFF2C4034),
+    fondo: Color(0xFF0F1A13),
+    superficie: Color(0xFF16241B),
+    superficieElevada: Color(0xFF1A2A20),
+    borde: Color(0xFF34493B),
     bordeFuerte: Color(0xFF6B8272),
     texto: ColoresCampo.textoPrincipal,
     textoSecundario: Color(0xFFD7E2D9),
@@ -226,11 +227,11 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     alerta: ColoresCampo.acentoAmbar,
     error: ColoresCampo.acentoRojo,
     info: Color(0xFF8CCBF2),
-    superficie2: Color(0xFF1B2A20),
+    superficie2: Color(0xFF1A2A20),
     acentoContenedor: Color(0xFF1B3A22),
     sobreAcentoContenedor: Color(0xFFCBF5CB),
     acentoHover: Color(0xFFA8EBA8),
-    grafito: Color(0xFF1B2A20),
+    grafito: Color(0xFF1A2A20),
     sobreGrafito: Color(0xFFFFFFFF),
     ambar: ColoresCampo.acentoAmbar,
     sobreAmbar: Color(0xFF000000),
@@ -269,7 +270,7 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
 
   static PaletaCampo deModo(ModoVisualCampo modo) => switch (modo) {
     ModoVisualCampo.claro => claro,
-    ModoVisualCampo.campo => campo,
+    ModoVisualCampo.oscuro => oscuro,
   };
 
   @override
@@ -413,5 +414,5 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
 /// (un `MaterialApp` pelado en un test) cae en la paleta de modo campo.
 extension PaletaContextoCampo on BuildContext {
   PaletaCampo get paleta =>
-      Theme.of(this).extension<PaletaCampo>() ?? PaletaCampo.campo;
+      Theme.of(this).extension<PaletaCampo>() ?? PaletaCampo.oscuro;
 }

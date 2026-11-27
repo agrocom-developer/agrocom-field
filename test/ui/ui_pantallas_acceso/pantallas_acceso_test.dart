@@ -359,7 +359,7 @@ void main() {
 
       for (final (modo, nombre) in [
         (ModoVisualCampo.claro, 'claro'),
-        (ModoVisualCampo.campo, 'campo'),
+        (ModoVisualCampo.oscuro, 'campo'),
       ]) {
         testWidgets('elegir rol, $nombre $t', (tester) async {
           await _montar(
@@ -379,7 +379,7 @@ void main() {
         await _montar(
           tester,
           _registro(),
-          modo: ModoVisualCampo.campo,
+          modo: ModoVisualCampo.oscuro,
           tamano: tamano,
         );
         expect(find.text('PASO 1 DE 4'), findsOneWidget);
@@ -395,7 +395,7 @@ void main() {
     }
 
     for (final (modo, nombre) in [
-      (ModoVisualCampo.campo, 'campo'),
+      (ModoVisualCampo.oscuro, 'campo'),
       (ModoVisualCampo.claro, 'claro'),
     ]) {
       testWidgets('registro del piloto: equipo (paso 3), $nombre', (

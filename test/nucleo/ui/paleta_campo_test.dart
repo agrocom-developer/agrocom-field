@@ -116,7 +116,7 @@ void main() {
   }
 
   test('el modo campo cumple AAA en todo texto y acento', () {
-    final p = PaletaCampo.campo;
+    final p = PaletaCampo.oscuro;
     for (final base in [
       p.fondo,
       p.superficie,
@@ -178,15 +178,15 @@ void main() {
     // Sin argumentos conserva el modo campo (tema de la app).
     expect(
       AgrocomThemeCampo.construir().extension<PaletaCampo>(),
-      PaletaCampo.campo,
+      PaletaCampo.oscuro,
     );
   });
 
   test('lerp interpola entre paletas', () {
-    final mitad = PaletaCampo.claro.lerp(PaletaCampo.campo, 0.5);
+    final mitad = PaletaCampo.claro.lerp(PaletaCampo.oscuro, 0.5);
     expect(
       mitad.fondo,
-      Color.lerp(PaletaCampo.claro.fondo, PaletaCampo.campo.fondo, 0.5),
+      Color.lerp(PaletaCampo.claro.fondo, PaletaCampo.oscuro.fondo, 0.5),
     );
   });
 

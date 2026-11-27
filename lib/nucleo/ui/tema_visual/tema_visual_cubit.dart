@@ -51,7 +51,7 @@ class AlmacenTemaVisualMemoria implements AlmacenTemaVisual {
   Future<void> guardar(ModoVisualCampo nuevo) async => modo = nuevo;
 }
 
-/// El tema que eligió la persona (Claro o Campo AAA). `null` es «sin
+/// El tema que eligió la persona (Claro o Oscuro). `null` es «sin
 /// elegir»: los dos flavors arrancan en claro.
 class TemaVisualCubit extends Cubit<ModoVisualCampo?> {
   TemaVisualCubit(this._almacen) : super(null);

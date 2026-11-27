@@ -57,12 +57,12 @@ class TemaCampo extends ThemeExtension<TemaCampo> {
 }
 
 /// Construye el `ThemeData` del sistema visual (docs/diseno/sistema-visual.md)
-/// para uno de los tres [ModoVisualCampo]. Sin argumentos devuelve el modo
+/// para uno de los dos [ModoVisualCampo]. Sin argumentos devuelve el modo
 /// campo, el tema de `app.dart` y de todo el catálogo `*Campo`.
 abstract final class AgrocomThemeCampo {
-  static ThemeData construir({ModoVisualCampo modo = ModoVisualCampo.campo}) {
+  static ThemeData construir({ModoVisualCampo modo = ModoVisualCampo.oscuro}) {
     final paleta = PaletaCampo.deModo(modo);
-    final guantes = modo == ModoVisualCampo.campo;
+    final guantes = modo == ModoVisualCampo.oscuro;
     final altoBoton = guantes
         ? ObjetivoTactilCampo.guantes
         : ObjetivoTactilCampo.minimo;

@@ -44,7 +44,7 @@
   "temaTitulo": "Tema",
   "@temaTitulo": {"description": "Selector del tema visual en el perfil."},
   "temaClaro": "Claro",
-  "temaCampo": "Campo AAA",
+  "temaOscuro": "Oscuro",
 
   "publicarLote": "Publicar lote",
   "publicarLoteCerrar": "Cerrar",

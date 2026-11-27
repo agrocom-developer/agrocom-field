@@ -101,171 +101,166 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
         final cuenta = d.cuenta;
         final resumen = d.resumen;
         return ListView(
-          padding: const EdgeInsets.all(EspaciadoCampo.l),
           children: [
             FotoPerfilProveedor(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      AvatarFotoPerfil(
-                        iniciales: _iniciales(cuenta.nombre),
-                        nombre: cuenta.nombre,
-                        tamano: 64,
-                      ),
-                      const SizedBox(width: EspaciadoCampo.l),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Semantics(
-                              header: true,
-                              child: Text(
-                                cuenta.nombre,
-                                style: texto.headlineSmall,
+                  CabeceraPerfilCampo(
+                    avatar: AvatarFotoPerfil(
+                      iniciales: _iniciales(cuenta.nombre),
+                      nombre: cuenta.nombre,
+                      tamano: 88,
+                    ),
+                    nombre: cuenta.nombre,
+                    detalle: cuenta.empresa.isEmpty
+                        ? t.perfilClienteRol
+                        : '${t.perfilClienteRol} · ${cuenta.empresa}',
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: EspaciadoCampo.l),
+                    child: AccionesFotoPerfil(compacta: true),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(EspaciadoCampo.l),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const SizedBox(height: EspaciadoCampo.l),
+                  SuperficieMarketplace(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: _Cifra(
+                            '${d.lotes.length}',
+                            t.perfilClienteEstadLotes,
+                          ),
+                        ),
+                        Expanded(
+                          child: _Cifra(
+                            '${cuenta.serviciosTotales}',
+                            t.perfilClienteEstadServicios,
+                          ),
+                        ),
+                        Expanded(
+                          child: _Cifra(
+                            resumen.promedio
+                                .toStringAsFixed(1)
+                                .replaceAll('.', ','),
+                            t.perfilClienteEstadCalificacion,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: EspaciadoCampo.l),
+                  SuperficieMarketplace(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: EspaciadoCampo.l,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: EspaciadoCampo.m),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Semantics(
+                                  header: true,
+                                  child: Text(
+                                    t.perfilMisCampos,
+                                    style: texto.titleLarge,
+                                  ),
+                                ),
                               ),
+                              if (alPublicar != null)
+                                TextButton(
+                                  key: const Key('perfil-agregar-campo'),
+                                  onPressed: alPublicar,
+                                  child: Text(t.perfilAgregarCampo),
+                                ),
+                            ],
+                          ),
+                        ),
+                        if (d.lotes.isEmpty)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: EspaciadoCampo.m,
                             ),
-                            Text(
-                              cuenta.empresa.isEmpty
-                                  ? t.perfilClienteRol
-                                  : '${t.perfilClienteRol} · ${cuenta.empresa}',
+                            child: Text(
+                              t.perfilMisCamposVacio,
                               style: texto.bodyMedium?.copyWith(
                                 color: paleta.textoSecundario,
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: EspaciadoCampo.s),
-                  const AccionesFotoPerfil(),
-                ],
-              ),
-            ),
-            const SizedBox(height: EspaciadoCampo.l),
-            SuperficieMarketplace(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _Cifra(
-                      '${d.lotes.length}',
-                      t.perfilClienteEstadLotes,
-                    ),
-                  ),
-                  Expanded(
-                    child: _Cifra(
-                      '${cuenta.serviciosTotales}',
-                      t.perfilClienteEstadServicios,
-                    ),
-                  ),
-                  Expanded(
-                    child: _Cifra(
-                      resumen.promedio.toStringAsFixed(1).replaceAll('.', ','),
-                      t.perfilClienteEstadCalificacion,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: EspaciadoCampo.l),
-            SuperficieMarketplace(
-              padding: const EdgeInsets.symmetric(horizontal: EspaciadoCampo.l),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: EspaciadoCampo.m),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Semantics(
-                            header: true,
-                            child: Text(
-                              t.perfilMisCampos,
-                              style: texto.titleLarge,
-                            ),
                           ),
-                        ),
-                        if (alPublicar != null)
-                          TextButton(
-                            key: const Key('perfil-agregar-campo'),
-                            onPressed: alPublicar,
-                            child: Text(t.perfilAgregarCampo),
-                          ),
+                        for (final lote in d.lotes) FilaLote(lote: lote),
                       ],
                     ),
                   ),
-                  if (d.lotes.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: EspaciadoCampo.m,
-                      ),
-                      child: Text(
-                        t.perfilMisCamposVacio,
-                        style: texto.bodyMedium?.copyWith(
-                          color: paleta.textoSecundario,
-                        ),
-                      ),
+                  const SizedBox(height: EspaciadoCampo.l),
+                  const SuperficieMarketplace(
+                    child: SelectorTemaVisual(
+                      predeterminado: ModoVisualCampo.claro,
                     ),
-                  for (final lote in d.lotes) FilaLote(lote: lote),
-                ],
-              ),
-            ),
-            const SizedBox(height: EspaciadoCampo.l),
-            const SuperficieMarketplace(
-              child: SelectorTemaVisual(predeterminado: ModoVisualCampo.claro),
-            ),
-            if (cuenta.empresa.isNotEmpty && conContactos) ...[
-              const SizedBox(height: EspaciadoCampo.l),
-              _FilaContactos(),
-            ],
-            const SizedBox(height: EspaciadoCampo.xl),
-            Text(t.perfilLoDicen, style: texto.titleLarge),
-            const SizedBox(height: EspaciadoCampo.m),
-            for (final c in resumen.recientes) ...[
-              SuperficieMarketplace(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(child: Text(c.autor, style: texto.titleSmall)),
-                        CalificacionCampo(valor: c.puntaje, tamano: 18),
-                      ],
-                    ),
-                    if (c.comentario != null) ...[
-                      const SizedBox(height: 6),
-                      Text(c.comentario!, style: texto.bodyMedium),
-                    ],
+                  ),
+                  if (cuenta.empresa.isNotEmpty && conContactos) ...[
+                    const SizedBox(height: EspaciadoCampo.l),
+                    _FilaContactos(),
                   ],
-                ),
-              ),
-              const SizedBox(height: EspaciadoCampo.s),
-            ],
-            if (alCerrarSesion != null) ...[
-              const SizedBox(height: EspaciadoCampo.xl),
-              Center(
-                child: TextButton(
-                  key: const Key('cuenta-cerrar-sesion'),
-                  onPressed: alCerrarSesion,
-                  style: TextButton.styleFrom(
-                    foregroundColor: paleta.error,
-                    minimumSize: const Size(
-                      ObjetivoTactilCampo.minimo,
-                      ObjetivoTactilCampo.guantes,
+                  const SizedBox(height: EspaciadoCampo.xl),
+                  Text(t.perfilLoDicen, style: texto.titleLarge),
+                  const SizedBox(height: EspaciadoCampo.m),
+                  for (final c in resumen.recientes) ...[
+                    SuperficieMarketplace(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(c.autor, style: texto.titleSmall),
+                              ),
+                              CalificacionCampo(valor: c.puntaje, tamano: 18),
+                            ],
+                          ),
+                          if (c.comentario != null) ...[
+                            const SizedBox(height: 6),
+                            Text(c.comentario!, style: texto.bodyMedium),
+                          ],
+                        ],
+                      ),
                     ),
-                  ),
-                  child: Text(
-                    t.perfilCerrarSesion,
-                    style: TipografiaCampo.tituloTarjeta.copyWith(
-                      color: paleta.error,
+                    const SizedBox(height: EspaciadoCampo.s),
+                  ],
+                  if (alCerrarSesion != null) ...[
+                    const SizedBox(height: EspaciadoCampo.xl),
+                    Center(
+                      child: TextButton(
+                        key: const Key('cuenta-cerrar-sesion'),
+                        onPressed: alCerrarSesion,
+                        style: TextButton.styleFrom(
+                          foregroundColor: paleta.error,
+                          minimumSize: const Size(
+                            ObjetivoTactilCampo.minimo,
+                            ObjetivoTactilCampo.guantes,
+                          ),
+                        ),
+                        child: Text(
+                          t.perfilCerrarSesion,
+                          style: TipografiaCampo.tituloTarjeta.copyWith(
+                            color: paleta.error,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
+                  ],
+                ],
               ),
-            ],
+            ),
           ],
         );
       },

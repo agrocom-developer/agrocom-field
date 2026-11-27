@@ -7,7 +7,7 @@ import '../tipografia_campo.dart';
 import '../tokens_campo.dart';
 import 'tema_visual_cubit.dart';
 
-/// «Tema»: Claro o Campo AAA (alto contraste). Al elegir, la app cambia en el acto y
+/// «Tema»: Claro o Oscuro (alto contraste). Al elegir, la app cambia en el acto y
 /// la elección se guarda para el próximo arranque.
 class SelectorTemaVisual extends StatelessWidget {
   const SelectorTemaVisual({required this.predeterminado, super.key});
@@ -43,7 +43,7 @@ class SelectorTemaVisual extends StatelessWidget {
             children: [
               for (final (modo, etiqueta) in [
                 (ModoVisualCampo.claro, t.temaClaro),
-                (ModoVisualCampo.campo, t.temaCampo),
+                (ModoVisualCampo.oscuro, t.temaOscuro),
               ])
                 Expanded(
                   child: _Segmento(

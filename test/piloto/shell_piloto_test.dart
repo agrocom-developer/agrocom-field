@@ -107,18 +107,18 @@ void main() {
     expect(find.text('Drones'), findsNothing);
   });
 
-  testWidgets('el perfil ofrece Claro y Campo AAA', (tester) async {
+  testWidgets('el perfil ofrece Claro y Oscuro', (tester) async {
     await montar(tester);
     await tester.tap(find.text('Perfil').last);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
-    final campo = find.text('Campo AAA');
+    final campo = find.text('Oscuro');
     await tester.scrollUntilVisible(
       campo,
       200,
       scrollable: find.byType(Scrollable).first,
     );
     expect(find.text('Claro'), findsOneWidget);
-    expect(find.text('Campo AAA'), findsOneWidget);
+    expect(find.text('Oscuro'), findsOneWidget);
   });
 }

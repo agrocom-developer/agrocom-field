@@ -40,9 +40,9 @@ const matrizCliente = [
 
 /// El modo campo (alto contraste) de piloto y auxiliar.
 const matrizCampo = [
-  Variante('campo_360', ModoVisualCampo.campo, chico, 1),
-  Variante('campo_412', ModoVisualCampo.campo, grande, 1),
-  Variante('campo_360_texto200', ModoVisualCampo.campo, chico, 2),
+  Variante('campo_360', ModoVisualCampo.oscuro, chico, 1),
+  Variante('campo_412', ModoVisualCampo.oscuro, grande, 1),
+  Variante('campo_360_texto200', ModoVisualCampo.oscuro, chico, 2),
 ];
 
 Future<void> cargarFuentes() async {
