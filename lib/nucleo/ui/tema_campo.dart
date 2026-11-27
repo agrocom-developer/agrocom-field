@@ -118,8 +118,9 @@ abstract final class AgrocomThemeCampo {
       dividerColor: paleta.borde,
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
-          backgroundColor: paleta.acento,
-          foregroundColor: paleta.sobreAcento,
+          // El CTA es el 10 % de acento del sistema: ámbar en todo botón lleno.
+          backgroundColor: paleta.ambar,
+          foregroundColor: paleta.sobreAmbar,
           minimumSize: Size(64, altoBoton),
           shape: forma,
           textStyle: estiloBoton,
