@@ -6828,6 +6828,180 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ponte ocupado para no recibir avisos'**
   String get perfilCuentaDisponibilidadDetalle;
+
+  /// No description provided for @listaPaginadaSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Conéctate para ver esta lista.'**
+  String get listaPaginadaSinRed;
+
+  /// No description provided for @listaPaginadaReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get listaPaginadaReintentar;
+
+  /// No description provided for @listaPaginadaVacia.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay nada para mostrar aquí.'**
+  String get listaPaginadaVacia;
+
+  /// No description provided for @listaPaginadaFin.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay más resultados'**
+  String get listaPaginadaFin;
+
+  /// No description provided for @botonEnvioExito.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get botonEnvioExito;
+
+  /// No description provided for @botonEnvioError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo enviar. Toca para reintentar'**
+  String get botonEnvioError;
+
+  /// No description provided for @menuAccionesMas.
+  ///
+  /// In es, this message translates to:
+  /// **'Más acciones'**
+  String get menuAccionesMas;
+
+  /// No description provided for @mapaExpandibleAbrir.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver el mapa en pantalla completa'**
+  String get mapaExpandibleAbrir;
+
+  /// No description provided for @mapaExpandibleCerrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar el mapa'**
+  String get mapaExpandibleCerrar;
+
+  /// No description provided for @mapaExpandibleAcercar.
+  ///
+  /// In es, this message translates to:
+  /// **'Acercar'**
+  String get mapaExpandibleAcercar;
+
+  /// No description provided for @mapaExpandibleAlejar.
+  ///
+  /// In es, this message translates to:
+  /// **'Alejar'**
+  String get mapaExpandibleAlejar;
+
+  /// No description provided for @mapaExpandibleRecentrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Centrar en el lote'**
+  String get mapaExpandibleRecentrar;
+
+  /// No description provided for @iconoDronT10.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T10'**
+  String get iconoDronT10;
+
+  /// No description provided for @iconoDronT20.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T20'**
+  String get iconoDronT20;
+
+  /// No description provided for @iconoDronT25.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T25'**
+  String get iconoDronT25;
+
+  /// No description provided for @iconoDronT30.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T30'**
+  String get iconoDronT30;
+
+  /// No description provided for @iconoDronT40.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T40'**
+  String get iconoDronT40;
+
+  /// No description provided for @iconoDronT50.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T50'**
+  String get iconoDronT50;
+
+  /// No description provided for @iconoPulverizadorTanque.
+  ///
+  /// In es, this message translates to:
+  /// **'Tanque de pulverizado'**
+  String get iconoPulverizadorTanque;
+
+  /// No description provided for @iconoLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Lote'**
+  String get iconoLote;
+
+  /// No description provided for @iconoCultivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultivo'**
+  String get iconoCultivo;
+
+  /// No description provided for @iconoBateria.
+  ///
+  /// In es, this message translates to:
+  /// **'Batería'**
+  String get iconoBateria;
+
+  /// No description provided for @iconoMandoRc.
+  ///
+  /// In es, this message translates to:
+  /// **'Mando de radiocontrol'**
+  String get iconoMandoRc;
+
+  /// No description provided for @iconoHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectárea'**
+  String get iconoHectarea;
+
+  /// No description provided for @iconoCheckEquipo.
+  ///
+  /// In es, this message translates to:
+  /// **'Equipo aprobado'**
+  String get iconoCheckEquipo;
+
+  /// No description provided for @notificacionCanalOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas nuevas'**
+  String get notificacionCanalOfertas;
+
+  /// No description provided for @notificacionCanalServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado del servicio'**
+  String get notificacionCanalServicio;
+
+  /// No description provided for @notificacionCanalSincronizacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronización'**
+  String get notificacionCanalSincronizacion;
+
+  /// No description provided for @notificacionCanalSistema.
+  ///
+  /// In es, this message translates to:
+  /// **'Avisos de Agrocom'**
+  String get notificacionCanalSistema;
 }
 
 class _AppLocalizationsDelegate

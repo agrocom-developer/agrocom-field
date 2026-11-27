@@ -1319,5 +1319,40 @@
   "perfilCuentaDocumentos": "Mis documentos",
   "perfilCuentaDocumentosDetalle": "Licencia, matrícula y lo que falta para tu aprobación",
   "perfilCuentaDisponibilidad": "Disponibilidad",
-  "perfilCuentaDisponibilidadDetalle": "Ponte ocupado para no recibir avisos"
+  "perfilCuentaDisponibilidadDetalle": "Ponte ocupado para no recibir avisos",
+
+  "listaPaginadaSinRed": "Sin conexión. Conéctate para ver esta lista.",
+  "listaPaginadaReintentar": "Reintentar",
+  "listaPaginadaVacia": "Todavía no hay nada para mostrar aquí.",
+  "listaPaginadaFin": "No hay más resultados",
+
+  "botonEnvioExito": "Listo",
+  "botonEnvioError": "No se pudo enviar. Toca para reintentar",
+
+  "menuAccionesMas": "Más acciones",
+
+  "mapaExpandibleAbrir": "Ver el mapa en pantalla completa",
+  "mapaExpandibleCerrar": "Cerrar el mapa",
+  "mapaExpandibleAcercar": "Acercar",
+  "mapaExpandibleAlejar": "Alejar",
+  "mapaExpandibleRecentrar": "Centrar en el lote",
+
+  "iconoDronT10": "Dron Agras T10",
+  "iconoDronT20": "Dron Agras T20",
+  "iconoDronT25": "Dron Agras T25",
+  "iconoDronT30": "Dron Agras T30",
+  "iconoDronT40": "Dron Agras T40",
+  "iconoDronT50": "Dron Agras T50",
+  "iconoPulverizadorTanque": "Tanque de pulverizado",
+  "iconoLote": "Lote",
+  "iconoCultivo": "Cultivo",
+  "iconoBateria": "Batería",
+  "iconoMandoRc": "Mando de radiocontrol",
+  "iconoHectarea": "Hectárea",
+  "iconoCheckEquipo": "Equipo aprobado",
+
+  "notificacionCanalOfertas": "Ofertas nuevas",
+  "notificacionCanalServicio": "Estado del servicio",
+  "notificacionCanalSincronizacion": "Sincronización",
+  "notificacionCanalSistema": "Avisos de Agrocom"
 }

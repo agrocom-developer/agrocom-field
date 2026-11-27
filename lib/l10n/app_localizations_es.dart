@@ -4197,4 +4197,92 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get perfilCuentaDisponibilidadDetalle =>
       'Ponte ocupado para no recibir avisos';
+
+  @override
+  String get listaPaginadaSinRed =>
+      'Sin conexión. Conéctate para ver esta lista.';
+
+  @override
+  String get listaPaginadaReintentar => 'Reintentar';
+
+  @override
+  String get listaPaginadaVacia => 'Todavía no hay nada para mostrar aquí.';
+
+  @override
+  String get listaPaginadaFin => 'No hay más resultados';
+
+  @override
+  String get botonEnvioExito => 'Listo';
+
+  @override
+  String get botonEnvioError => 'No se pudo enviar. Toca para reintentar';
+
+  @override
+  String get menuAccionesMas => 'Más acciones';
+
+  @override
+  String get mapaExpandibleAbrir => 'Ver el mapa en pantalla completa';
+
+  @override
+  String get mapaExpandibleCerrar => 'Cerrar el mapa';
+
+  @override
+  String get mapaExpandibleAcercar => 'Acercar';
+
+  @override
+  String get mapaExpandibleAlejar => 'Alejar';
+
+  @override
+  String get mapaExpandibleRecentrar => 'Centrar en el lote';
+
+  @override
+  String get iconoDronT10 => 'Dron Agras T10';
+
+  @override
+  String get iconoDronT20 => 'Dron Agras T20';
+
+  @override
+  String get iconoDronT25 => 'Dron Agras T25';
+
+  @override
+  String get iconoDronT30 => 'Dron Agras T30';
+
+  @override
+  String get iconoDronT40 => 'Dron Agras T40';
+
+  @override
+  String get iconoDronT50 => 'Dron Agras T50';
+
+  @override
+  String get iconoPulverizadorTanque => 'Tanque de pulverizado';
+
+  @override
+  String get iconoLote => 'Lote';
+
+  @override
+  String get iconoCultivo => 'Cultivo';
+
+  @override
+  String get iconoBateria => 'Batería';
+
+  @override
+  String get iconoMandoRc => 'Mando de radiocontrol';
+
+  @override
+  String get iconoHectarea => 'Hectárea';
+
+  @override
+  String get iconoCheckEquipo => 'Equipo aprobado';
+
+  @override
+  String get notificacionCanalOfertas => 'Ofertas nuevas';
+
+  @override
+  String get notificacionCanalServicio => 'Estado del servicio';
+
+  @override
+  String get notificacionCanalSincronizacion => 'Sincronización';
+
+  @override
+  String get notificacionCanalSistema => 'Avisos de Agrocom';
 }
