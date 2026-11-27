@@ -43,4 +43,35 @@ void main() {
       expect(393 - icono.right, moreOrLessEquals(insignia.left));
     },
   );
+
+  testWidgets(
+    'el texto y el ícono de la insignia quedan centrados en vertical',
+    (tester) async {
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.claro),
+          home: const Scaffold(
+            body: Center(
+              child: InsigniaCabeceraCampo(
+                icono: Icons.verified_rounded,
+                etiqueta: 'Aprobado',
+                intensa: true,
+              ),
+            ),
+          ),
+        ),
+      );
+      final pildora = tester.getRect(find.byType(InsigniaCabeceraCampo));
+      final icono = tester.getRect(find.byIcon(Icons.verified_rounded));
+      final texto = tester.getRect(find.text('Aprobado'));
+      expect(
+        icono.center.dy,
+        moreOrLessEquals(pildora.center.dy, epsilon: 0.5),
+      );
+      expect(
+        texto.center.dy,
+        moreOrLessEquals(pildora.center.dy, epsilon: 0.5),
+      );
+    },
+  );
 }

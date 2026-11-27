@@ -217,6 +217,7 @@ class InsigniaCabeceraCampo extends StatelessWidget {
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(icono, size: 18, color: texto),
             const SizedBox(width: EspaciadoCampo.xs),
@@ -225,9 +226,17 @@ class InsigniaCabeceraCampo extends StatelessWidget {
                 etiqueta,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                // Interlineado repartido por igual arriba y abajo: sin esto
+                // la fuente deja el texto más bajo que el centro del ícono.
+                textHeightBehavior: const TextHeightBehavior(
+                  leadingDistribution: TextLeadingDistribution.even,
+                  applyHeightToFirstAscent: false,
+                  applyHeightToLastDescent: false,
+                ),
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   color: texto,
                   fontWeight: FontWeight.w700,
+                  height: 1,
                 ),
               ),
             ),
