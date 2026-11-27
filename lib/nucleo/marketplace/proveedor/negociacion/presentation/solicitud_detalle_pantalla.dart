@@ -11,6 +11,9 @@ import '../../../ui/boton_principal_marketplace.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
+import '../../ejecucion/di/dependencias_ejecucion.dart';
+import 'distancia_al_lote_vista.dart';
+import 'mapa_lote_completo_pantalla.dart';
 import 'negociacion_pantalla.dart';
 import 'ofertar_cubit.dart';
 
@@ -115,10 +118,33 @@ class _Contenido extends StatelessWidget {
                 borderRadius: BorderRadius.circular(RadioCampo.tarjetaCompacta),
                 child: SizedBox(
                   height: 200,
-                  child: MapaLote(
-                    lotes: [s.terreno!],
-                    seleccionado: s.terreno,
-                    interactivo: false,
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: MapaLote(
+                          lotes: [s.terreno!],
+                          seleccionado: s.terreno,
+                          interactivo: false,
+                        ),
+                      ),
+                      Positioned(
+                        top: EspaciadoCampo.s,
+                        right: EspaciadoCampo.s,
+                        child: IconButton.filledTonal(
+                          key: const ValueKey('mapa-expandir'),
+                          tooltip: l10n.mapaExpandir,
+                          icon: const Icon(Icons.open_in_full_rounded),
+                          onPressed: () => MapaLoteCompletoPantalla.abrir(
+                            context,
+                            lote: s.terreno!,
+                            centro: s.ubicacion,
+                            servicioUbicacion: context
+                                .read<DependenciasEjecucion>()
+                                .ubicacion,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               )
@@ -134,6 +160,11 @@ class _Contenido extends StatelessWidget {
             Text(
               [?s.zona, ?s.macrorregion?.etiqueta].join(' · '),
               style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
+            ),
+            const SizedBox(height: EspaciadoCampo.m),
+            DistanciaAlLoteVista(
+              lote: s.ubicacion,
+              servicio: context.read<DependenciasEjecucion>().ubicacion,
             ),
             const SizedBox(height: EspaciadoCampo.l),
             SuperficieMarketplace(
@@ -160,6 +191,20 @@ class _Contenido extends StatelessWidget {
                     ),
                     style: texto.bodyLarge,
                   ),
+                  if (s.justificacionPrecio != null) ...[
+                    const SizedBox(height: EspaciadoCampo.m),
+                    Text(
+                      l10n.proveedorNegociacionJustificacionCliente,
+                      style: texto.bodyMedium?.copyWith(
+                        color: paleta.textoSecundario,
+                      ),
+                    ),
+                    Text(
+                      s.justificacionPrecio!,
+                      key: const ValueKey('justificacion-cliente'),
+                      style: texto.bodyLarge,
+                    ),
+                  ],
                   const SizedBox(height: EspaciadoCampo.s),
                   Text(
                     s.ofertasVigentes == 0

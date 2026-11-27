@@ -11,7 +11,9 @@ import '../../../ui/boton_principal_marketplace.dart';
 import '../../../ui/campo_formulario_marketplace.dart';
 import '../../../../notificaciones/presentation/campana_avisos.dart';
 import '../../../ui/marketplace_ui.dart';
+import '../../ejecucion/di/dependencias_ejecucion.dart';
 import '../di/dependencias_negociacion.dart';
+import 'distancia_al_lote_vista.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
 import 'cifras_negociacion.dart';
@@ -557,6 +559,10 @@ class _SeleccionSolicitud extends StatelessWidget {
               icono: hoy ? Icons.schedule_rounded : Icons.check_circle_rounded,
             ),
           ],
+        ),
+        DistanciaAlLoteVista(
+          lote: s.ubicacion,
+          servicio: context.read<DependenciasEjecucion>().ubicacion,
         ),
         const SizedBox(height: EspaciadoCampo.xs),
         Text(

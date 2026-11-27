@@ -4438,4 +4438,79 @@ class AppLocalizationsEs extends AppLocalizations {
   String avisosVariosNuevos(int cantidad) {
     return '$cantidad notificaciones nuevas';
   }
+
+  @override
+  String get distanciaVer => 'Ver distancia';
+
+  @override
+  String get distanciaPregunta => '¿Qué tan lejos está el lote?';
+
+  @override
+  String get distanciaAyuda =>
+      'Se calcula en tu teléfono con tu posición actual';
+
+  @override
+  String get distanciaCalculando => 'Calculando la distancia';
+
+  @override
+  String distanciaResultado(String km) {
+    return 'A $km del lote';
+  }
+
+  @override
+  String get distanciaResultadoAyuda =>
+      'En línea recta desde donde estás ahora';
+
+  @override
+  String get distanciaActualizar => 'Actualizar';
+
+  @override
+  String get distanciaSinPermiso =>
+      'Sin el permiso de ubicación no podemos calcular la distancia.';
+
+  @override
+  String get distanciaDenegadoSiempre =>
+      'Activa la ubicación de la app en los ajustes del teléfono para ver la distancia.';
+
+  @override
+  String get distanciaServicioApagado =>
+      'El GPS de tu teléfono está apagado. Enciéndelo para ver la distancia.';
+
+  @override
+  String get distanciaSinPosicion =>
+      'No pudimos ubicarte. Sal a un lugar abierto e intenta de nuevo.';
+
+  @override
+  String get distanciaSinLote =>
+      'Esta solicitud no tiene un punto en el mapa para medir la distancia.';
+
+  @override
+  String get distanciaHojaTitulo => 'Calcular la distancia al lote';
+
+  @override
+  String get distanciaHojaMotivo =>
+      'Usamos tu posición una sola vez, en tu teléfono, para decirte cuántos kilómetros hay hasta el lote. Te ayuda a decidir tu precio.';
+
+  @override
+  String get distanciaHojaPrivacidad =>
+      'No se envía a nadie ni se guarda: se descarta apenas ves el resultado.';
+
+  @override
+  String get distanciaHojaContinuar => 'Continuar';
+
+  @override
+  String get distanciaHojaAhoraNo => 'Ahora no';
+
+  @override
+  String get mapaExpandir => 'Ver el mapa en pantalla completa';
+
+  @override
+  String get mapaCerrarCompleto => 'Cerrar el mapa';
+
+  @override
+  String get mapaCompletoTitulo => 'Lote en el mapa';
+
+  @override
+  String get proveedorNegociacionJustificacionCliente =>
+      'Por qué el cliente propone ese precio';
 }

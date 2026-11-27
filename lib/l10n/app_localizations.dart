@@ -7248,6 +7248,132 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{cantidad} notificaciones nuevas'**
   String avisosVariosNuevos(int cantidad);
+
+  /// No description provided for @distanciaVer.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver distancia'**
+  String get distanciaVer;
+
+  /// No description provided for @distanciaPregunta.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué tan lejos está el lote?'**
+  String get distanciaPregunta;
+
+  /// No description provided for @distanciaAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Se calcula en tu teléfono con tu posición actual'**
+  String get distanciaAyuda;
+
+  /// No description provided for @distanciaCalculando.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculando la distancia'**
+  String get distanciaCalculando;
+
+  /// No description provided for @distanciaResultado.
+  ///
+  /// In es, this message translates to:
+  /// **'A {km} del lote'**
+  String distanciaResultado(String km);
+
+  /// No description provided for @distanciaResultadoAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'En línea recta desde donde estás ahora'**
+  String get distanciaResultadoAyuda;
+
+  /// No description provided for @distanciaActualizar.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get distanciaActualizar;
+
+  /// No description provided for @distanciaSinPermiso.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin el permiso de ubicación no podemos calcular la distancia.'**
+  String get distanciaSinPermiso;
+
+  /// No description provided for @distanciaDenegadoSiempre.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa la ubicación de la app en los ajustes del teléfono para ver la distancia.'**
+  String get distanciaDenegadoSiempre;
+
+  /// No description provided for @distanciaServicioApagado.
+  ///
+  /// In es, this message translates to:
+  /// **'El GPS de tu teléfono está apagado. Enciéndelo para ver la distancia.'**
+  String get distanciaServicioApagado;
+
+  /// No description provided for @distanciaSinPosicion.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos ubicarte. Sal a un lugar abierto e intenta de nuevo.'**
+  String get distanciaSinPosicion;
+
+  /// No description provided for @distanciaSinLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta solicitud no tiene un punto en el mapa para medir la distancia.'**
+  String get distanciaSinLote;
+
+  /// No description provided for @distanciaHojaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Calcular la distancia al lote'**
+  String get distanciaHojaTitulo;
+
+  /// No description provided for @distanciaHojaMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Usamos tu posición una sola vez, en tu teléfono, para decirte cuántos kilómetros hay hasta el lote. Te ayuda a decidir tu precio.'**
+  String get distanciaHojaMotivo;
+
+  /// No description provided for @distanciaHojaPrivacidad.
+  ///
+  /// In es, this message translates to:
+  /// **'No se envía a nadie ni se guarda: se descarta apenas ves el resultado.'**
+  String get distanciaHojaPrivacidad;
+
+  /// No description provided for @distanciaHojaContinuar.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get distanciaHojaContinuar;
+
+  /// No description provided for @distanciaHojaAhoraNo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get distanciaHojaAhoraNo;
+
+  /// No description provided for @mapaExpandir.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver el mapa en pantalla completa'**
+  String get mapaExpandir;
+
+  /// No description provided for @mapaCerrarCompleto.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar el mapa'**
+  String get mapaCerrarCompleto;
+
+  /// No description provided for @mapaCompletoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Lote en el mapa'**
+  String get mapaCompletoTitulo;
+
+  /// No description provided for @proveedorNegociacionJustificacionCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Por qué el cliente propone ese precio'**
+  String get proveedorNegociacionJustificacionCliente;
 }
 
 class _AppLocalizationsDelegate
