@@ -24,6 +24,7 @@ import 'package:agrocom_field/nucleo/marketplace/proveedor/dron/presentation/dro
 import 'package:agrocom_field/nucleo/marketplace/proveedor/perfil/data/perfil_demo.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/perfil/presentation/perfil_pantalla.dart';
 import 'package:agrocom_field/nucleo/marketplace/ui/mapa_lote.dart';
+import 'package:agrocom_field/nucleo/ui/componentes/componentes_campo.dart';
 import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 
 final bool _conGoldens = Platform.isMacOS;
@@ -174,19 +175,46 @@ void main() {
       await montar(tester, PerfilPantalla(reloj: () => ahora));
       expect(find.text('Rodrigo Sandoval Justiniano'), findsOneWidget);
       expect(find.bySemanticsLabel('Estado: Aprobado'), findsWidgets);
-      expect(
-        find.text('Estás habilitado para recibir ofertas.'),
-        findsOneWidget,
-      );
-      expect(find.byKey(const Key('perfil-documentos-accion')), findsOneWidget);
+      // Aprobado es solo el chip: sin cuadro ni explicación.
+      expect(find.text('Estás habilitado para recibir ofertas.'), findsNothing);
+      // Lo que ya no vive en el perfil.
+      expect(find.byKey(const Key('perfil-documentos-accion')), findsNothing);
+      expect(find.text('Hectáreas por mes'), findsNothing);
+      expect(find.text('Zonas de cobertura'), findsNothing);
       expect(find.text('11.847'), findsOneWidget);
-
       expect(find.text('Mi equipo'), findsNothing);
-
-      await irA(tester, find.byKey(const Key('perfil-calificaciones')));
-      expect(find.text('128 calificaciones'), findsOneWidget);
-      expect(find.bySemanticsLabel('5 estrellas: 108'), findsOneWidget);
     });
+
+    testWidgets(
+      'Calificaciones, Documentos y Hectáreas y zonas abren su página',
+      (tester) async {
+        await montar(tester, PerfilPantalla(reloj: () => ahora));
+
+        await irA(tester, find.byKey(const Key('perfil-calificaciones')));
+        await tester.tap(find.byKey(const Key('perfil-calificaciones')));
+        await tester.pumpAndSettle();
+        expect(find.text('128 calificaciones'), findsOneWidget);
+        expect(find.bySemanticsLabel('5 estrellas: 108'), findsOneWidget);
+        Navigator.of(tester.element(find.byType(Scaffold).last)).pop();
+        await tester.pumpAndSettle();
+
+        await irA(tester, find.byKey(const Key('perfil-documentos')));
+        await tester.tap(find.byKey(const Key('perfil-documentos')));
+        await tester.pumpAndSettle();
+        expect(
+          find.byKey(const Key('perfil-documentos-accion')),
+          findsOneWidget,
+        );
+        Navigator.of(tester.element(find.byType(Scaffold).last)).pop();
+        await tester.pumpAndSettle();
+
+        await irA(tester, find.byKey(const Key('perfil-actividad')));
+        await tester.tap(find.byKey(const Key('perfil-actividad')));
+        await tester.pumpAndSettle();
+        expect(find.text('Hectáreas por mes'), findsOneWidget);
+        expect(find.text('Zonas de cobertura'), findsOneWidget);
+      },
+    );
 
     testWidgets('un perfil en revisión explica que todavía no opera', (
       tester,
@@ -229,7 +257,11 @@ void main() {
       );
       final fila = find.byKey(const Key('perfil-ver-drones'));
       await irA(tester, fila);
-      expect(find.text('Dron y licencia · 2 drones'), findsOneWidget);
+      expect(find.text('Mis drones'), findsOneWidget);
+      expect(find.text('Dron y licencia'), findsOneWidget);
+      // Con 2 o más drones, una pastilla con la cantidad.
+      expect(find.byType(PildoraContadorCampo), findsOneWidget);
+      expect(find.text('2'), findsOneWidget);
       expect(tester.getSize(fila).height, greaterThanOrEqualTo(56));
       await tester.tap(fila);
       expect(abiertos, 1);
@@ -253,8 +285,8 @@ void main() {
     testWidgets('golden: calificaciones', (tester) async {
       await montar(tester, PerfilPantalla(reloj: () => ahora));
       await irA(tester, find.byKey(const Key('perfil-calificaciones')));
-      await tester.drag(lista(), const Offset(0, -260));
-      await tester.pump();
+      await tester.tap(find.byKey(const Key('perfil-calificaciones')));
+      await tester.pumpAndSettle();
       await golden(tester, 'perfil_calificaciones_412x915_x1');
     });
   });

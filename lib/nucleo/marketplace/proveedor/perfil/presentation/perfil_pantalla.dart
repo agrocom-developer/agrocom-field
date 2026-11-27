@@ -1,15 +1,18 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
-import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../dominio/dominio.dart';
+import '../../../../ui/ajustes/ajustes_pantalla.dart';
+import '../../../../ui/ajustes/apariencia_pantalla.dart';
 import '../../../foto_perfil/presentation/foto_perfil_widgets.dart';
 import '../../../ui/marketplace_ui.dart';
+import '../../negociacion/presentation/avisos_pantalla.dart';
 import '../domain/perfil_repositorio.dart';
+import 'actividad_pantalla.dart';
+import 'documentos_pantalla.dart';
 import 'perfil_cubit.dart';
 import 'perfil_estado.dart';
 
@@ -20,7 +23,8 @@ class PerfilPantalla extends StatelessWidget {
   const PerfilPantalla({
     this.reloj = DateTime.now,
     this.onVerDrones,
-    this.extras = const [],
+    this.conAvisos = true,
+    this.alSalir,
     super.key,
   });
 
@@ -30,9 +34,12 @@ class PerfilPantalla extends StatelessWidget {
   /// tiene como destino de la navegación).
   final VoidCallback? onVerDrones;
 
-  /// Filas propias del flavor (avisos, cerrar sesión) que se muestran
-  /// después de las métricas.
-  final List<Widget> extras;
+  /// Muestra la fila y la entrada de menú de notificaciones (solo con
+  /// negociación).
+  final bool conAvisos;
+
+  /// Cierra la sesión (menú de tres puntos y Ajustes). Sin él no se ofrece.
+  final VoidCallback? alSalir;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +49,8 @@ class PerfilPantalla extends StatelessWidget {
       child: PerfilVista(
         reloj: reloj,
         onVerDrones: onVerDrones,
-        extras: extras,
+        conAvisos: conAvisos,
+        alSalir: alSalir,
       ),
     );
   }
@@ -53,13 +61,15 @@ class PerfilVista extends StatelessWidget {
   const PerfilVista({
     this.reloj = DateTime.now,
     this.onVerDrones,
-    this.extras = const [],
+    this.conAvisos = true,
+    this.alSalir,
     super.key,
   });
 
   final DateTime Function() reloj;
   final VoidCallback? onVerDrones;
-  final List<Widget> extras;
+  final bool conAvisos;
+  final VoidCallback? alSalir;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +92,8 @@ class PerfilVista extends StatelessWidget {
               datos: estado,
               ahora: reloj(),
               onVerDrones: onVerDrones,
-              extras: extras,
+              conAvisos: conAvisos,
+              alSalir: alSalir,
             ),
           },
         );
@@ -123,26 +134,71 @@ class _Contenido extends StatelessWidget {
     required this.datos,
     required this.ahora,
     required this.onVerDrones,
-    required this.extras,
+    required this.conAvisos,
+    required this.alSalir,
     super.key,
   });
 
   final PerfilListo datos;
   final DateTime ahora;
   final VoidCallback? onVerDrones;
-  final List<Widget> extras;
+  final bool conAvisos;
+  final VoidCallback? alSalir;
+
+  void _abrir(BuildContext context, Widget pantalla) {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute<void>(builder: (_) => pantalla));
+  }
 
   @override
   Widget build(BuildContext context) {
     final p = datos.proveedor;
-    final texto = Theme.of(context).textTheme;
     final t = AppLocalizations.of(context);
-    final conAccion = p.documentosConAccion;
+    final sinCalificaciones = datos.calificaciones.total == 0;
+    final promedio = datos.calificaciones.promedio
+        .toStringAsFixed(1)
+        .replaceAll('.', ',');
+    void verCalificaciones() => _abrir(
+      context,
+      CalificacionesPantalla(resumen: datos.calificaciones, reloj: () => ahora),
+    );
+    void verAvisos() => _abrir(context, const AvisosPantalla());
+    // Notificaciones también vive en Ajustes, con el estilo de esa pantalla.
+    void verAjustes() => _abrir(
+      context,
+      AjustesPantalla(
+        alSalir: alSalir,
+        filas: [
+          if (conAvisos)
+            FilaAjusteCampo(
+              clave: const Key('ajustes-avisos'),
+              icono: Icons.notifications_active_outlined,
+              titulo: t.perfilProveedorAvisos,
+              detalle: t.perfilProveedorAvisosDetalle,
+              alToque: verAvisos,
+            ),
+        ],
+      ),
+    );
     return FotoPerfilProveedor(
       urlInicial: p.fotoUrl,
       child: ListView(
         children: [
           CabeceraPerfilCampo(
+            accion: MenuPerfilCampo(
+              alAjustes: verAjustes,
+              alApariencia: () => _abrir(context, const AparienciaPantalla()),
+              alSalir: alSalir,
+              extras: [
+                if (conAvisos)
+                  (
+                    icono: Icons.notifications_active_outlined,
+                    etiqueta: t.perfilProveedorAvisos,
+                    alToque: verAvisos,
+                  ),
+              ],
+            ),
             avatar: AvatarFotoPerfil(
               iniciales: p.iniciales,
               nombre: p.nombre,
@@ -150,18 +206,12 @@ class _Contenido extends StatelessWidget {
             ),
             nombre: p.nombre,
             detalle: '${t.perfilProveedorRolPiloto} · ${p.tipo.etiqueta}',
-            extra: datos.calificaciones.total == 0
-                ? Text(
-                    t.perfilProveedorSinCalificaciones,
-                    textAlign: TextAlign.center,
-                    style: texto.bodyMedium?.copyWith(
-                      color: context.paleta.sobreAcento.withValues(alpha: 0.85),
-                    ),
-                  )
-                : CalificacionPromedio(
-                    valor: p.calificacion,
-                    detalle: t.perfilProveedorServicios(p.serviciosCompletados),
-                  ),
+            // Sin calificaciones el piloto empieza con 5 estrellas.
+            extra: EstrellasPerfilCampo(
+              valor: sinCalificaciones ? 5 : p.calificacion,
+              total: datos.calificaciones.total,
+              onTap: verCalificaciones,
+            ),
           ),
           Padding(
             padding: const EdgeInsets.all(EspaciadoCampo.l),
@@ -169,103 +219,76 @@ class _Contenido extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: EntradaCampo.escalonar([
                 const AccionesFotoPerfil(compacta: true),
-                const SizedBox(height: EspaciadoCampo.m),
                 _Aprobacion(proveedor: p),
-                if (conAccion.isNotEmpty && p.aprobacion.habilitado) ...[
-                  const SizedBox(height: EspaciadoCampo.m),
-                  AvisoMarketplace(
-                    key: const Key('perfil-documentos-accion'),
-                    tono: TonoAviso.alerta,
-                    mensaje: conAccion.length == 1
-                        ? t.perfilProveedorDocumentoAtencion(
-                            conAccion.first.nombre,
-                          )
-                        : t.perfilProveedorDocumentosAtencion(conAccion.length),
-                  ),
-                ],
                 _Titulo(t.perfilProveedorMetricas),
                 _Metricas(metricas: datos.metricas),
-                _Titulo(t.perfilProveedorAjustes),
-                for (final e in extras) ...[
+                const SizedBox(height: EspaciadoCampo.l),
+                if (conAvisos) ...[
+                  FilaAccionCampo(
+                    clave: const Key('perfil-avisos'),
+                    icono: Icons.notifications_active_outlined,
+                    titulo: t.perfilProveedorAvisos,
+                    detalle: t.perfilProveedorAvisosDetalle,
+                    alToque: verAvisos,
+                  ),
                   const SizedBox(height: EspaciadoCampo.m),
-                  e,
                 ],
                 if (onVerDrones != null) ...[
+                  FilaAccionCampo(
+                    clave: const Key('perfil-ver-drones'),
+                    icono: Icons.flight_rounded,
+                    titulo: t.perfilPilMisDrones,
+                    detalle: t.perfilProveedorDronLicencia,
+                    trailing: p.drones.length >= 2
+                        ? PildoraContadorCampo(p.drones.length)
+                        : null,
+                    alToque: onVerDrones!,
+                  ),
                   const SizedBox(height: EspaciadoCampo.m),
-                  SuperficieMarketplace(
-                    key: const Key('perfil-ver-drones'),
-                    onTap: onVerDrones,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minHeight:
-                            ObjetivoTactilCampo.guantes - EspaciadoCampo.xxl,
-                      ),
-                      child: Row(
-                        children: [
-                          const IconoBurbujaCampo(Icons.flight_rounded),
-                          const SizedBox(width: EspaciadoCampo.m),
-                          Expanded(
-                            child: Text(
-                              '${t.perfilProveedorDronLicencia} · '
-                              '${p.drones.length == 1 ? t.perfilProveedorDronesUno : t.perfilProveedorDronesVarios(p.drones.length)}',
-                              style: texto.titleLarge,
-                            ),
-                          ),
-                          Icon(
-                            Icons.chevron_right_rounded,
-                            color: context.paleta.textoSecundario,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ],
-                _Titulo(t.perfilProveedorHectareasMes),
-                if (datos.hectareasPorMes.every((m) => m.hectareas.sign <= 0))
-                  Text(
-                    t.perfilProveedorHectareasMesVacio,
-                    style: texto.bodyMedium,
-                  )
-                else
-                  SuperficieMarketplace(
-                    child: SizedBox(
-                      height: 180,
-                      child: _GraficoHectareas(meses: datos.hectareasPorMes),
-                    ),
-                  ),
-                _Titulo(t.perfilProveedorDocumentos),
-                if (p.documentos.isEmpty)
-                  Text(
-                    t.perfilProveedorDocumentosVacio,
-                    style: texto.bodyMedium,
-                  ),
-                for (final doc in p.documentos) ...[
-                  _FilaDocumento(documento: doc),
-                  const SizedBox(height: EspaciadoCampo.s),
-                ],
-                _Titulo(t.perfilProveedorZonas),
-                Wrap(
-                  spacing: EspaciadoCampo.s,
-                  runSpacing: EspaciadoCampo.s,
-                  children: [
-                    for (final z in p.zonas)
-                      ChipEstadoMarketplace(
-                        etiqueta: z,
-                        etiquetaSemantica: t.perfilProveedorZonaSemantica(z),
-                        tono: TonoEstado.neutro,
-                        icono: Icons.place_outlined,
-                      ),
-                  ],
+                FilaAccionCampo(
+                  clave: const Key('perfil-documentos'),
+                  icono: Icons.description_outlined,
+                  titulo: t.perfilProveedorDocumentos,
+                  detalle: t.perfilPilDocumentosDetalle,
+                  alToque: () =>
+                      _abrir(context, DocumentosPantalla(proveedor: p)),
                 ),
-                _Titulo(t.perfilProveedorCalificaciones),
-                ResumenCalificacionesCampo(resumen: datos.calificaciones),
                 const SizedBox(height: EspaciadoCampo.m),
-                if (datos.calificaciones.recientes.isEmpty)
-                  Text(t.perfilProveedorResenasVacio, style: texto.bodyMedium),
-                for (final c in datos.calificaciones.recientes) ...[
-                  ResenaCalificacionCampo(calificacion: c, ahora: ahora),
-                  const SizedBox(height: EspaciadoCampo.s),
-                ],
+                FilaAccionCampo(
+                  clave: const Key('perfil-calificaciones'),
+                  icono: Icons.star_outline_rounded,
+                  titulo: t.perfilPilCalificaciones,
+                  detalle: sinCalificaciones
+                      ? t.perfilProveedorSinCalificaciones
+                      : t.perfilPilCalificacionesDetalle(
+                          promedio,
+                          datos.calificaciones.total,
+                        ),
+                  alToque: verCalificaciones,
+                ),
+                const SizedBox(height: EspaciadoCampo.m),
+                FilaAccionCampo(
+                  clave: const Key('perfil-actividad'),
+                  icono: Icons.bar_chart_rounded,
+                  titulo: t.perfilPilActividad,
+                  detalle: t.perfilPilActividadDetalle,
+                  alToque: () => _abrir(
+                    context,
+                    ActividadPantalla(
+                      meses: datos.hectareasPorMes,
+                      zonas: p.zonas,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: EspaciadoCampo.m),
+                FilaAccionCampo(
+                  clave: const Key('perfil-ajustes'),
+                  icono: Icons.settings_outlined,
+                  titulo: t.ajustesTitulo,
+                  detalle: t.perfilPilAjustesDetalle,
+                  alToque: verAjustes,
+                ),
               ]),
             ),
           ),
@@ -328,6 +351,17 @@ class _Aprobacion extends StatelessWidget {
       ),
     };
     final motivo = proveedor.motivoAprobacion;
+    // Aprobado no necesita explicación: solo el chip, centrado.
+    if (proveedor.aprobacion == EstadoAprobacion.aprobado) {
+      return Center(
+        key: const Key('perfil-aprobacion'),
+        child: ChipEstadoMarketplace(
+          etiqueta: proveedor.aprobacion.etiqueta,
+          tono: tono,
+          icono: icono,
+        ),
+      );
+    }
     return SuperficieMarketplace(
       key: const Key('perfil-aprobacion'),
       child: Column(
@@ -358,188 +392,24 @@ class _Metricas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final celdas = [
-      _Metrica(
-        etiqueta: l10n.proveedorPerfilServicios,
-        valor: '${metricas.serviciosCompletados}',
-      ),
-      _Metrica(
-        etiqueta: l10n.proveedorPerfilHectareas,
-        valor: FormatoMarketplace.numero(
-          metricas.hectareasAtendidas,
-          decimales: 0,
+    return CifrasPerfilCampo(
+      cifras: [
+        (
+          valor: '${metricas.serviciosCompletados}',
+          etiqueta: l10n.proveedorPerfilServicios,
         ),
-      ),
-      _Metrica(
-        etiqueta: l10n.proveedorPerfilCancelacion,
-        valor: '${metricas.tasaCancelacion} %',
-      ),
-    ];
-    // Una sola fila de tres celdas iguales; con el texto al 200 % pasan a
-    // una columna para no cortar las etiquetas.
-    final grande = MediaQuery.textScalerOf(context).scale(10) > 15;
-    return SuperficieMarketplace(
-      child: grande
-          ? Column(
-              children: [
-                for (final celda in celdas) ...[
-                  celda,
-                  if (celda != celdas.last)
-                    const SizedBox(height: EspaciadoCampo.m),
-                ],
-              ],
-            )
-          : Row(children: [for (final celda in celdas) Expanded(child: celda)]),
-    );
-  }
-}
-
-class _Metrica extends StatelessWidget {
-  const _Metrica({required this.etiqueta, required this.valor});
-
-  final String etiqueta;
-  final String valor;
-
-  @override
-  Widget build(BuildContext context) {
-    final texto = Theme.of(context).textTheme;
-    return MergeSemantics(
-      child: Column(
-        children: [
-          Text(valor, style: texto.headlineSmall),
-          const SizedBox(height: EspaciadoCampo.xs),
-          Text(etiqueta, textAlign: TextAlign.center, style: texto.labelSmall),
-        ],
-      ),
-    );
-  }
-}
-
-class _FilaDocumento extends StatelessWidget {
-  const _FilaDocumento({required this.documento});
-
-  final DocumentoProveedor documento;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final texto = Theme.of(context).textTheme;
-    final (tono, icono) = switch (documento.estado) {
-      EstadoDocumento.vigente => (TonoEstado.exito, Icons.verified_rounded),
-      EstadoDocumento.porVencer => (TonoEstado.alerta, Icons.schedule_rounded),
-      EstadoDocumento.enRevision => (
-        TonoEstado.info,
-        Icons.hourglass_top_rounded,
-      ),
-      EstadoDocumento.rechazado => (TonoEstado.error, Icons.cancel_outlined),
-      EstadoDocumento.vencido => (TonoEstado.error, Icons.event_busy_outlined),
-    };
-    final vence = documento.vence;
-    final motivo = documento.motivoRechazo;
-    return SuperficieMarketplace(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(documento.nombre, style: texto.titleLarge),
-          const SizedBox(height: EspaciadoCampo.s),
-          Wrap(
-            spacing: EspaciadoCampo.m,
-            runSpacing: EspaciadoCampo.xs,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              ChipEstadoMarketplace(
-                etiqueta: documento.estado.etiqueta,
-                tono: tono,
-                icono: icono,
-              ),
-              if (vence != null)
-                Text(
-                  documento.estado == EstadoDocumento.vencido
-                      ? l10n.proveedorPerfilVencio(
-                          FormatoMarketplace.fechaLarga(vence),
-                        )
-                      : l10n.proveedorPerfilVence(
-                          FormatoMarketplace.fechaLarga(vence),
-                        ),
-                  style: texto.bodyMedium,
-                ),
-            ],
+        (
+          valor: FormatoMarketplace.numero(
+            metricas.hectareasAtendidas,
+            decimales: 0,
           ),
-          if (motivo != null) ...[
-            const SizedBox(height: EspaciadoCampo.s),
-            Text(l10n.proveedorPerfilMotivo(motivo), style: texto.bodyMedium),
-          ],
-        ],
-      ),
-    );
-  }
-}
-
-class _GraficoHectareas extends StatelessWidget {
-  const _GraficoHectareas({required this.meses});
-
-  final List<HectareasMensuales> meses;
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
-    final paleta = context.paleta;
-    final estilo = Theme.of(context).textTheme.labelSmall;
-    // Conversión a `double` solo para dibujar la barra: el valor mostrado
-    // sigue siendo el `Decimal` (ADR 0002).
-    final altos = [for (final m in meses) m.hectareas.toDouble()];
-    return Semantics(
-      container: true,
-      label: l10n.proveedorPerfilGraficoBarras(
-        [
-          for (final m in meses)
-            '${m.etiqueta} ${FormatoMarketplace.hectareas(m.hectareas)}',
-        ].join(', '),
-      ),
-      child: ExcludeSemantics(
-        child: BarChart(
-          BarChartData(
-            alignment: BarChartAlignment.spaceAround,
-            maxY: (altos.fold<double>(0, (a, b) => a > b ? a : b) * 1.15),
-            gridData: const FlGridData(show: false),
-            borderData: FlBorderData(show: false),
-            barTouchData: BarTouchData(enabled: false),
-            titlesData: FlTitlesData(
-              leftTitles: const AxisTitles(),
-              rightTitles: const AxisTitles(),
-              topTitles: const AxisTitles(),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: MediaQuery.textScalerOf(context).scale(24),
-                  getTitlesWidget: (v, _) => Padding(
-                    padding: const EdgeInsets.only(top: 6),
-                    child: Text(meses[v.toInt()].etiqueta, style: estilo),
-                  ),
-                ),
-              ),
-            ),
-            barGroups: [
-              for (var i = 0; i < altos.length; i++)
-                BarChartGroupData(
-                  x: i,
-                  barRods: [
-                    BarChartRodData(
-                      toY: altos[i],
-                      width: 22,
-                      color: i == altos.length - 1
-                          ? paleta.acentoTexto
-                          : paleta.acentoTexto.withValues(alpha: 0.45),
-                      borderRadius: const BorderRadius.vertical(
-                        top: Radius.circular(RadioCampo.xs),
-                      ),
-                    ),
-                  ],
-                ),
-            ],
-          ),
+          etiqueta: l10n.proveedorPerfilHectareas,
         ),
-      ),
+        (
+          valor: '${metricas.tasaCancelacion} %',
+          etiqueta: l10n.proveedorPerfilCancelacion,
+        ),
+      ],
     );
   }
 }
