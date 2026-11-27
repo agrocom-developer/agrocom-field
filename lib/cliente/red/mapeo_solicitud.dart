@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:decimal/decimal.dart';
 
 import '../../nucleo/marketplace/dominio/dominio.dart';
+import '../ofertas/domain/comparador_ofertas.dart';
 import '../ofertas/domain/oferta_recibida.dart';
 import '../solicitudes/domain/solicitud.dart';
 
@@ -279,6 +280,7 @@ abstract final class MapeoSolicitud {
       esDefinitiva: j['es_definitiva'] == true,
       aceptaPropuesta: j['tipo'] == 'acepta_propuesta',
       nota: j['nota'] as String?,
+      justificacionPrecio: j['justificacion_precio'] as String?,
       distanciaKm: decimalOpcional(j['distancia_km']),
       venceEn: fecha(j['vence_en']),
       creadaEn: fecha(j['creada_en']),
@@ -295,6 +297,7 @@ abstract final class MapeoSolicitud {
         capacidadLitros: decimalOpcional(d['capacidad_tanque_l']),
         fotosDron: fotos,
         fotoUrl: p['foto_url'] as String?,
+        tipo: CodigoTipoProveedor.deCodigo(p['tipo'] as String?),
       ),
     );
   }

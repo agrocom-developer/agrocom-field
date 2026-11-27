@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 
 import '../../../../api/marketplace_http.dart';
+import '../../../precio/justificacion_precio.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
 import 'mapeo_negociacion.dart';
@@ -71,6 +72,7 @@ class MercadoRed implements MercadoRepositorio {
     required TipoOferta tipo,
     Decimal? precioHa,
     String? nota,
+    String? justificacionPrecio,
   }) async {
     final cuerpo = await _http.enviar(
       '/api/solicitudes/$solicitudId/ofertas',
@@ -82,6 +84,10 @@ class MercadoRed implements MercadoRepositorio {
         if (tipo == TipoOferta.contraoferta && precioHa != null)
           'precio_ha': precioHa.toString(),
         if (nota != null && nota.trim().isNotEmpty) 'nota': nota.trim(),
+        // El total (`monto_estimado`) nunca se envía: lo calcula el servidor.
+        'justificacion_precio': ?JustificacionPrecio.normalizar(
+          justificacionPrecio,
+        ),
       },
     );
     return MapeoNegociacion.oferta(
@@ -118,10 +124,14 @@ class NegociacionRed implements NegociacionRepositorio {
     required Decimal precioHa,
     required String uuidCliente,
     String? nota,
+    String? justificacionPrecio,
   }) => _accion('/api/ofertas/$ofertaId/contraofertar', {
     'precio_ha': precioHa.toString(),
     'uuid_cliente': uuidCliente,
     if (nota != null && nota.trim().isNotEmpty) 'nota': nota.trim(),
+    'justificacion_precio': ?JustificacionPrecio.normalizar(
+      justificacionPrecio,
+    ),
   });
 
   @override

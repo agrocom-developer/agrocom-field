@@ -1,3 +1,5 @@
+import '../../../nucleo/marketplace/precio/justificacion_precio.dart';
+
 import 'package:decimal/decimal.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:uuid/uuid.dart';
@@ -210,6 +212,9 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
 
   void cambiarPrecio(String texto) => emit(state.copiarCon(precioTexto: texto));
 
+  void cambiarJustificacion(String texto) =>
+      emit(state.copiarCon(justificacion: texto));
+
   Future<void> publicar() async {
     final lote = state.lote;
     final hectareas = state.hectareas;
@@ -243,6 +248,9 @@ class SolicitarCubit extends Cubit<SolicitarEstado> {
           accesos: accesos.isEmpty ? null : accesos,
           observaciones: observaciones.isEmpty ? null : observaciones,
           contactoId: state.contactos.isEmpty ? null : state.contactoId,
+          justificacionPrecio: JustificacionPrecio.normalizar(
+            state.justificacion,
+          ),
         ),
       );
       if (isClosed) return;

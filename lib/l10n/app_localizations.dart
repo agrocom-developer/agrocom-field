@@ -2296,12 +2296,6 @@ abstract class AppLocalizations {
   /// **'Mejor calificación'**
   String get ofertasOrdenCalificacion;
 
-  /// No description provided for @ofertasOrdenDistancia.
-  ///
-  /// In es, this message translates to:
-  /// **'Más cerca'**
-  String get ofertasOrdenDistancia;
-
   /// No description provided for @ofertasOfertaCambio.
   ///
   /// In es, this message translates to:
@@ -7800,6 +7794,714 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Sube los documentos que faltan para que un administrador pueda aprobar tu cuenta.'**
   String get cuentaTerminaRegistroDetalle;
+
+  /// No description provided for @precioJustificacionEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Justificación del precio (opcional)'**
+  String get precioJustificacionEtiqueta;
+
+  /// No description provided for @precioJustificacionAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Explica por qué propones este precio. La otra parte lo verá.'**
+  String get precioJustificacionAyuda;
+
+  /// No description provided for @precioJustificacionContador.
+  ///
+  /// In es, this message translates to:
+  /// **'{usados} de {maximo}'**
+  String precioJustificacionContador(int usados, int maximo);
+
+  /// No description provided for @precioJustificacionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Justificación del precio'**
+  String get precioJustificacionTitulo;
+
+  /// No description provided for @precioTotalEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Total estimado'**
+  String get precioTotalEtiqueta;
+
+  /// No description provided for @precioTotalSinPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el precio'**
+  String get precioTotalSinPrecio;
+
+  /// No description provided for @precioTotalSoloLectura.
+  ///
+  /// In es, this message translates to:
+  /// **'Se calcula con las hectáreas; no se escribe'**
+  String get precioTotalSoloLectura;
+
+  /// No description provided for @precioTotalCalculo.
+  ///
+  /// In es, this message translates to:
+  /// **'{hectareas} × {precio}'**
+  String precioTotalCalculo(String hectareas, String precio);
+
+  /// No description provided for @ofertasOrdenRecomendado.
+  ///
+  /// In es, this message translates to:
+  /// **'Recomendado'**
+  String get ofertasOrdenRecomendado;
+
+  /// No description provided for @ofertasOrdenReciente.
+  ///
+  /// In es, this message translates to:
+  /// **'Más reciente'**
+  String get ofertasOrdenReciente;
+
+  /// No description provided for @ofertasFiltros.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros'**
+  String get ofertasFiltros;
+
+  /// No description provided for @ofertasFiltrosConActivos.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros ({cantidad})'**
+  String ofertasFiltrosConActivos(int cantidad);
+
+  /// No description provided for @ofertasFiltrosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ordenar y filtrar ofertas'**
+  String get ofertasFiltrosTitulo;
+
+  /// No description provided for @ofertasFiltrosOrdenarPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Ordenar por'**
+  String get ofertasFiltrosOrdenarPor;
+
+  /// No description provided for @ofertasFiltroPrecioMin.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio mínimo (Bs/ha)'**
+  String get ofertasFiltroPrecioMin;
+
+  /// No description provided for @ofertasFiltroPrecioMax.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio máximo (Bs/ha)'**
+  String get ofertasFiltroPrecioMax;
+
+  /// No description provided for @ofertasFiltroTotalMax.
+  ///
+  /// In es, this message translates to:
+  /// **'Total máximo (Bs)'**
+  String get ofertasFiltroTotalMax;
+
+  /// No description provided for @ofertasFiltroCalificacionMin.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificación mínima'**
+  String get ofertasFiltroCalificacionMin;
+
+  /// No description provided for @ofertasFiltroCalificacionCualquiera.
+  ///
+  /// In es, this message translates to:
+  /// **'Cualquiera'**
+  String get ofertasFiltroCalificacionCualquiera;
+
+  /// No description provided for @ofertasFiltroCalificacionDesde.
+  ///
+  /// In es, this message translates to:
+  /// **'{minima} o más'**
+  String ofertasFiltroCalificacionDesde(String minima);
+
+  /// No description provided for @ofertasFiltroTipo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de proveedor'**
+  String get ofertasFiltroTipo;
+
+  /// No description provided for @ofertasFiltroTipoTodos.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get ofertasFiltroTipoTodos;
+
+  /// No description provided for @ofertasFiltroTipoPropio.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrocom'**
+  String get ofertasFiltroTipoPropio;
+
+  /// No description provided for @ofertasFiltroTipoIndependiente.
+  ///
+  /// In es, this message translates to:
+  /// **'Independiente'**
+  String get ofertasFiltroTipoIndependiente;
+
+  /// No description provided for @ofertasFiltroTipoTercero.
+  ///
+  /// In es, this message translates to:
+  /// **'Dueño de drones'**
+  String get ofertasFiltroTipoTercero;
+
+  /// No description provided for @ofertasFiltroTanqueMin.
+  ///
+  /// In es, this message translates to:
+  /// **'Tanque mínimo (litros)'**
+  String get ofertasFiltroTanqueMin;
+
+  /// No description provided for @ofertasFiltrosAplicar.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver ofertas'**
+  String get ofertasFiltrosAplicar;
+
+  /// No description provided for @ofertasFiltrosQuitar.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar filtros'**
+  String get ofertasFiltrosQuitar;
+
+  /// No description provided for @ofertasFiltrosNumeroInvalido.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un número, por ejemplo 120'**
+  String get ofertasFiltrosNumeroInvalido;
+
+  /// No description provided for @ofertasFiltrosRangoInvalido.
+  ///
+  /// In es, this message translates to:
+  /// **'El máximo no puede ser menor que el mínimo'**
+  String get ofertasFiltrosRangoInvalido;
+
+  /// No description provided for @ofertasNuevaOferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegó una oferta nueva. Compárala con las demás.'**
+  String get ofertasNuevaOferta;
+
+  /// No description provided for @ofertasSinResultadosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguna oferta cumple tus filtros'**
+  String get ofertasSinResultadosTitulo;
+
+  /// No description provided for @ofertasSinResultadosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Quita algún filtro para ver las demás ofertas.'**
+  String get ofertasSinResultadosDetalle;
+
+  /// No description provided for @ofertasActualizandoLista.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizando ofertas'**
+  String get ofertasActualizandoLista;
+
+  /// No description provided for @ofertasPorQueEsePrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Por qué ese precio'**
+  String get ofertasPorQueEsePrecio;
+
+  /// No description provided for @avisosCanalNuevasSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevas solicitudes'**
+  String get avisosCanalNuevasSolicitudes;
+
+  /// No description provided for @avisosCanalNuevasSolicitudesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitudes abiertas que puedes ofertar'**
+  String get avisosCanalNuevasSolicitudesDetalle;
+
+  /// No description provided for @avisosCanalOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas y contraofertas'**
+  String get avisosCanalOfertas;
+
+  /// No description provided for @avisosCanalOfertasDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Precios que recibes, respuestas y adjudicaciones'**
+  String get avisosCanalOfertasDetalle;
+
+  /// No description provided for @avisosCanalMensajes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes'**
+  String get avisosCanalMensajes;
+
+  /// No description provided for @avisosCanalMensajesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Chat con la otra parte del servicio'**
+  String get avisosCanalMensajesDetalle;
+
+  /// No description provided for @avisosCanalEjecucion.
+  ///
+  /// In es, this message translates to:
+  /// **'Ejecución del servicio'**
+  String get avisosCanalEjecucion;
+
+  /// No description provided for @avisosCanalEjecucionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio, avance, cierre y precio final'**
+  String get avisosCanalEjecucionDetalle;
+
+  /// No description provided for @avisosCanalCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta y avisos'**
+  String get avisosCanalCuenta;
+
+  /// No description provided for @avisosCanalCuentaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobación, documentos, calificaciones y avisos del sistema'**
+  String get avisosCanalCuentaDetalle;
+
+  /// No description provided for @avisosTodos.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get avisosTodos;
+
+  /// No description provided for @avisosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis notificaciones'**
+  String get avisosTitulo;
+
+  /// No description provided for @avisosCampana.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get avisosCampana;
+
+  /// No description provided for @avisosCampanaConPendientes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones, {cantidad} sin leer'**
+  String avisosCampanaConPendientes(int cantidad);
+
+  /// No description provided for @avisosVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes notificaciones'**
+  String get avisosVacioTitulo;
+
+  /// No description provided for @avisosVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí verás lo que pase con tus solicitudes y ofertas, apenas ocurra.'**
+  String get avisosVacioDetalle;
+
+  /// No description provided for @avisosVacioCanal.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay notificaciones en este grupo'**
+  String get avisosVacioCanal;
+
+  /// No description provided for @avisosErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus notificaciones'**
+  String get avisosErrorTitulo;
+
+  /// No description provided for @avisosErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentar.'**
+  String get avisosErrorDetalle;
+
+  /// No description provided for @avisosSinLeer.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin leer'**
+  String get avisosSinLeer;
+
+  /// No description provided for @avisosLeida.
+  ///
+  /// In es, this message translates to:
+  /// **'Leída'**
+  String get avisosLeida;
+
+  /// No description provided for @avisosAjustesCanales.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes de notificaciones'**
+  String get avisosAjustesCanales;
+
+  /// No description provided for @avisosCanalesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Canales de notificación'**
+  String get avisosCanalesTitulo;
+
+  /// No description provided for @avisosCanalesIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige qué avisos suenan en este teléfono y a qué hora. Lo que se te avisa lo decide el servidor con tus preferencias.'**
+  String get avisosCanalesIntro;
+
+  /// No description provided for @avisosCanalObligatorio.
+  ///
+  /// In es, this message translates to:
+  /// **'Siempre activo: son avisos de tu cuenta'**
+  String get avisosCanalObligatorio;
+
+  /// No description provided for @avisosCanalActivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Activo'**
+  String get avisosCanalActivo;
+
+  /// No description provided for @avisosCanalSilenciado.
+  ///
+  /// In es, this message translates to:
+  /// **'Silenciado'**
+  String get avisosCanalSilenciado;
+
+  /// No description provided for @avisosHorarioSilencio.
+  ///
+  /// In es, this message translates to:
+  /// **'Horario de silencio'**
+  String get avisosHorarioSilencio;
+
+  /// No description provided for @avisosHorarioSilencioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'No suena entre {desde} y {hasta}'**
+  String avisosHorarioSilencioDetalle(String desde, String hasta);
+
+  /// No description provided for @avisosSinHorario.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin horario de silencio'**
+  String get avisosSinHorario;
+
+  /// No description provided for @avisosHorarioDesde.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde'**
+  String get avisosHorarioDesde;
+
+  /// No description provided for @avisosHorarioHasta.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta'**
+  String get avisosHorarioHasta;
+
+  /// No description provided for @avisosQuitarHorario.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar horario'**
+  String get avisosQuitarHorario;
+
+  /// No description provided for @avisosLlegaronNuevos.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegó una notificación nueva'**
+  String get avisosLlegaronNuevos;
+
+  /// No description provided for @avisosNotificacionDe.
+  ///
+  /// In es, this message translates to:
+  /// **'{canal}: {titulo}'**
+  String avisosNotificacionDe(String canal, String titulo);
+
+  /// No description provided for @avisosVariosNuevos.
+  ///
+  /// In es, this message translates to:
+  /// **'{cantidad} notificaciones nuevas'**
+  String avisosVariosNuevos(int cantidad);
+
+  /// No description provided for @distanciaVer.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver distancia'**
+  String get distanciaVer;
+
+  /// No description provided for @distanciaPregunta.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué tan lejos está el lote?'**
+  String get distanciaPregunta;
+
+  /// No description provided for @distanciaAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Se calcula en tu teléfono con tu posición actual'**
+  String get distanciaAyuda;
+
+  /// No description provided for @distanciaCalculando.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculando la distancia'**
+  String get distanciaCalculando;
+
+  /// No description provided for @distanciaResultado.
+  ///
+  /// In es, this message translates to:
+  /// **'A {km} del lote'**
+  String distanciaResultado(String km);
+
+  /// No description provided for @distanciaResultadoAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'En línea recta desde donde estás ahora'**
+  String get distanciaResultadoAyuda;
+
+  /// No description provided for @distanciaActualizar.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get distanciaActualizar;
+
+  /// No description provided for @distanciaSinPermiso.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin el permiso de ubicación no podemos calcular la distancia.'**
+  String get distanciaSinPermiso;
+
+  /// No description provided for @distanciaDenegadoSiempre.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa la ubicación de la app en los ajustes del teléfono para ver la distancia.'**
+  String get distanciaDenegadoSiempre;
+
+  /// No description provided for @distanciaServicioApagado.
+  ///
+  /// In es, this message translates to:
+  /// **'El GPS de tu teléfono está apagado. Enciéndelo para ver la distancia.'**
+  String get distanciaServicioApagado;
+
+  /// No description provided for @distanciaSinPosicion.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos ubicarte. Sal a un lugar abierto e intenta de nuevo.'**
+  String get distanciaSinPosicion;
+
+  /// No description provided for @distanciaSinLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta solicitud no tiene un punto en el mapa para medir la distancia.'**
+  String get distanciaSinLote;
+
+  /// No description provided for @distanciaHojaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Calcular la distancia al lote'**
+  String get distanciaHojaTitulo;
+
+  /// No description provided for @distanciaHojaMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Usamos tu posición una sola vez, en tu teléfono, para decirte cuántos kilómetros hay hasta el lote. Te ayuda a decidir tu precio.'**
+  String get distanciaHojaMotivo;
+
+  /// No description provided for @distanciaHojaPrivacidad.
+  ///
+  /// In es, this message translates to:
+  /// **'No se envía a nadie ni se guarda: se descarta apenas ves el resultado.'**
+  String get distanciaHojaPrivacidad;
+
+  /// No description provided for @distanciaHojaContinuar.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get distanciaHojaContinuar;
+
+  /// No description provided for @distanciaHojaAhoraNo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get distanciaHojaAhoraNo;
+
+  /// No description provided for @mapaExpandir.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver el mapa en pantalla completa'**
+  String get mapaExpandir;
+
+  /// No description provided for @mapaCerrarCompleto.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar el mapa'**
+  String get mapaCerrarCompleto;
+
+  /// No description provided for @mapaCompletoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Lote en el mapa'**
+  String get mapaCompletoTitulo;
+
+  /// No description provided for @proveedorNegociacionJustificacionCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Por qué el cliente propone ese precio'**
+  String get proveedorNegociacionJustificacionCliente;
+
+  /// No description provided for @preparacionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparación del equipo'**
+  String get preparacionTitulo;
+
+  /// No description provided for @preparacionIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu equipo antes de salir al lote. Es una guía tuya: no te impide ofertar ni iniciar un servicio.'**
+  String get preparacionIntro;
+
+  /// No description provided for @preparacionProgreso.
+  ///
+  /// In es, this message translates to:
+  /// **'{hechos} de {total} listos'**
+  String preparacionProgreso(int hechos, int total);
+
+  /// No description provided for @preparacionCompleta.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo listo para salir'**
+  String get preparacionCompleta;
+
+  /// No description provided for @preparacionReiniciar.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar de nuevo'**
+  String get preparacionReiniciar;
+
+  /// No description provided for @preparacionNoGuardo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardar el último cambio en tu teléfono. Lo ves aquí, pero puede perderse al cerrar la app.'**
+  String get preparacionNoGuardo;
+
+  /// No description provided for @preparacionAcceso.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes de salir'**
+  String get preparacionAcceso;
+
+  /// No description provided for @preparacionAccesoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa baterías, tanque, boquillas y clima'**
+  String get preparacionAccesoDetalle;
+
+  /// No description provided for @preparacionBaterias.
+  ///
+  /// In es, this message translates to:
+  /// **'Baterías cargadas'**
+  String get preparacionBaterias;
+
+  /// No description provided for @preparacionBateriasDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Las del dron y las de repuesto, con el cargador a mano'**
+  String get preparacionBateriasDetalle;
+
+  /// No description provided for @preparacionTanque.
+  ///
+  /// In es, this message translates to:
+  /// **'Tanque limpio y con el producto'**
+  String get preparacionTanque;
+
+  /// No description provided for @preparacionTanqueDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin residuos de otra aplicación y con la mezcla lista'**
+  String get preparacionTanqueDetalle;
+
+  /// No description provided for @preparacionBoquillas.
+  ///
+  /// In es, this message translates to:
+  /// **'Boquillas limpias'**
+  String get preparacionBoquillas;
+
+  /// No description provided for @preparacionBoquillasDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin tapones y con el caudal que pide la aplicación'**
+  String get preparacionBoquillasDetalle;
+
+  /// No description provided for @preparacionMandoRc.
+  ///
+  /// In es, this message translates to:
+  /// **'Mando RC cargado y enlazado'**
+  String get preparacionMandoRc;
+
+  /// No description provided for @preparacionMandoRcDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Con batería y conectado al dron'**
+  String get preparacionMandoRcDetalle;
+
+  /// No description provided for @preparacionDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron y hélices revisados'**
+  String get preparacionDron;
+
+  /// No description provided for @preparacionDronDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Hélices sin daño, brazos firmes y software al día'**
+  String get preparacionDronDetalle;
+
+  /// No description provided for @preparacionEpp.
+  ///
+  /// In es, this message translates to:
+  /// **'Equipo de protección puesto'**
+  String get preparacionEpp;
+
+  /// No description provided for @preparacionEppDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Guantes, mascarilla, lentes y ropa adecuada'**
+  String get preparacionEppDetalle;
+
+  /// No description provided for @preparacionDocumentos.
+  ///
+  /// In es, this message translates to:
+  /// **'Documentos al día'**
+  String get preparacionDocumentos;
+
+  /// No description provided for @preparacionDocumentosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia, registro del dron y seguro vigentes'**
+  String get preparacionDocumentosDetalle;
+
+  /// No description provided for @preparacionClima.
+  ///
+  /// In es, this message translates to:
+  /// **'Viento y lluvia revisados'**
+  String get preparacionClima;
+
+  /// No description provided for @preparacionClimaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin viento fuerte ni lluvia en el lote'**
+  String get preparacionClimaDetalle;
+
+  /// No description provided for @preparacionPronostico.
+  ///
+  /// In es, this message translates to:
+  /// **'Pronóstico de las próximas horas'**
+  String get preparacionPronostico;
+
+  /// No description provided for @preparacionPronosticoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Que el clima aguante lo que dura la aplicación'**
+  String get preparacionPronosticoDetalle;
 }
 
 class _AppLocalizationsDelegate

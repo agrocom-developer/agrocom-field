@@ -16,8 +16,10 @@ import '../../comun/presentation/hoja_precio.dart';
 import '../../seguimiento/presentation/seguimiento_pantalla.dart';
 import '../../solicitudes/domain/solicitud.dart';
 import '../../solicitudes/domain/solicitudes_repositorio.dart';
+import '../domain/comparador_ofertas.dart';
 import '../domain/oferta_recibida.dart';
 import '../domain/ofertas_repositorio.dart';
+import 'hoja_filtros_ofertas.dart';
 import 'ofertas_cubit.dart';
 import 'perfil_proveedor_pantalla.dart';
 import 'textos_orden.dart';
@@ -205,6 +207,12 @@ class _ListaState extends State<_Lista> {
     if (ok ?? false) await cubit.aceptar(o);
   }
 
+  Future<void> _filtrar(FiltrosOfertas actuales) async {
+    final cubit = context.read<OfertasCubit>();
+    final nuevos = await mostrarHojaFiltrosOfertas(context, inicial: actuales);
+    if (nuevos != null) await cubit.aplicarFiltros(nuevos);
+  }
+
   Future<void> _contraofertar(OfertaRecibida o, Solicitud solicitud) async {
     final l10n = AppLocalizations.of(context);
     final cubit = context.read<OfertasCubit>();
@@ -214,13 +222,17 @@ class _ListaState extends State<_Lista> {
       textoAccion: l10n.ofertasEnviarContraoferta,
       hectareas: solicitud.hectareas,
       inicial: o.precioHa,
-      conNota: true,
+      conJustificacion: true,
       apoyo: l10n.ofertasPideProponPrecioPiloto(
         FormatoMarketplace.bs(o.precioHa),
       ),
     );
     if (escrito != null) {
-      await cubit.contraofertar(o, escrito.precio, nota: escrito.nota);
+      await cubit.contraofertar(
+        o,
+        escrito.precio,
+        justificacionPrecio: escrito.justificacion,
+      );
     }
   }
 
@@ -229,7 +241,6 @@ class _ListaState extends State<_Lista> {
     final l10n = AppLocalizations.of(context);
     final estado = widget.estado;
     final cubit = context.read<OfertasCubit>();
-    final paleta = context.paleta;
     final s = estado.solicitud!;
     final ahora = widget.reloj();
     final vigentes = estado.vigentes(ahora);
@@ -306,22 +317,22 @@ class _ListaState extends State<_Lista> {
                         },
                       ),
                     ],
-                    if (vigentes.isNotEmpty && !cerradaLaSolicitud) ...[
+                    if (!cerradaLaSolicitud &&
+                        (vigentes.isNotEmpty || estado.filtros.hayFiltros)) ...[
                       const SizedBox(height: EspaciadoCampo.l),
-                      Text(
-                        l10n.ofertasOfertasOrden(
-                          estado.orden.etiquetaL10n(l10n).toUpperCase(),
-                        ),
-                        style: TipografiaCampo.etiquetaMono.copyWith(
-                          color: paleta.textoSecundario,
-                        ),
+                      _BarraComparador(
+                        filtros: estado.filtros,
+                        filtrando: estado.filtrando,
+                        alAbrir: () => _filtrar(estado.filtros),
                       ),
-                      const SizedBox(height: EspaciadoCampo.s),
-                      _Orden(orden: estado.orden, alCambiar: cubit.ordenar),
                     ],
                     const SizedBox(height: EspaciadoCampo.l),
                     if (vigentes.isEmpty && !cerradaLaSolicitud)
-                      const _SinOfertas()
+                      _SinOfertas(
+                        conFiltros: estado.filtros.hayFiltros,
+                        alQuitar: () =>
+                            cubit.aplicarFiltros(estado.filtros.sinFiltros()),
+                      )
                     else
                       for (final o in vigentes) ...[
                         Padding(
@@ -548,32 +559,62 @@ class TituloSeccionOfertas extends StatelessWidget {
   );
 }
 
-class _Orden extends StatelessWidget {
-  const _Orden({required this.orden, required this.alCambiar});
+/// El orden vigente y el botón de filtros del comparador. La hoja se abre
+/// desde aquí; mientras se vuelve a leer la lista se ve una barra fina.
+class _BarraComparador extends StatelessWidget {
+  const _BarraComparador({
+    required this.filtros,
+    required this.filtrando,
+    required this.alAbrir,
+  });
 
-  final OrdenOfertas orden;
-  final ValueChanged<OrdenOfertas> alCambiar;
+  final FiltrosOfertas filtros;
+  final bool filtrando;
+  final VoidCallback alAbrir;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    return SizedBox(
-      width: double.infinity,
-      child: SegmentedButton<OrdenOfertas>(
-        showSelectedIcon: false,
-        direction: MediaQuery.textScalerOf(context).scale(1) > 1.3
-            ? Axis.vertical
-            : Axis.horizontal,
-        segments: [
-          for (final o in OrdenOfertas.values)
-            ButtonSegment(value: o, label: Text(o.etiquetaL10n(l10n))),
-        ],
-        selected: {orden},
-        onSelectionChanged: (v) {
-          HapticaCampo.seleccion();
-          alCambiar(v.first);
-        },
-      ),
+    final paleta = context.paleta;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                l10n.ofertasOfertasOrden(
+                  filtros.orden.etiquetaL10n(l10n).toUpperCase(),
+                ),
+                style: TipografiaCampo.etiquetaMono.copyWith(
+                  color: paleta.textoSecundario,
+                ),
+              ),
+            ),
+            TextButton.icon(
+              key: const ValueKey('abrir-filtros'),
+              onPressed: alAbrir,
+              icon: const Icon(Icons.tune_rounded),
+              label: Text(
+                filtros.hayFiltros
+                    ? l10n.ofertasFiltrosConActivos(filtros.activos)
+                    : l10n.ofertasFiltros,
+              ),
+              style: TextButton.styleFrom(
+                minimumSize: const Size(0, ObjetivoTactilCampo.guantes),
+              ),
+            ),
+          ],
+        ),
+        if (filtrando)
+          Semantics(
+            liveRegion: true,
+            label: l10n.ofertasActualizandoLista,
+            child: const LinearProgressIndicator(
+              key: ValueKey('filtrando-ofertas'),
+            ),
+          ),
+      ],
     );
   }
 }
@@ -609,6 +650,11 @@ class _AvisoRespuesta extends StatelessWidget {
         Icons.wifi_off_rounded,
         l10n.ofertasSinConexionEnviamosRespuesta,
       ),
+      AvisoOfertas.nuevaOferta => (
+        TonoAviso.info,
+        Icons.notifications_active_outlined,
+        l10n.ofertasNuevaOferta,
+      ),
       AvisoOfertas.error => (
         TonoAviso.error,
         Icons.error_outline_rounded,
@@ -628,11 +674,24 @@ class _AvisoRespuesta extends StatelessWidget {
 }
 
 class _SinOfertas extends StatelessWidget {
-  const _SinOfertas();
+  const _SinOfertas({required this.conFiltros, required this.alQuitar});
+
+  final bool conFiltros;
+  final VoidCallback alQuitar;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    if (conFiltros) {
+      return EstadoVacioMarketplace(
+        key: const ValueKey('sin-resultados-filtros'),
+        icono: Icons.filter_alt_off_outlined,
+        titulo: l10n.ofertasSinResultadosTitulo,
+        detalle: l10n.ofertasSinResultadosDetalle,
+        etiquetaAccion: l10n.ofertasFiltrosQuitar,
+        alAccion: alQuitar,
+      );
+    }
     return EstadoVacioMarketplace(
       icono: Icons.hourglass_empty_rounded,
       titulo: l10n.ofertasTodaviaHayOfertas,
@@ -698,6 +757,21 @@ class _DetalleOferta extends StatelessWidget {
               ),
             ],
           ),
+          if (o.justificacionPrecio != null) ...[
+            const SizedBox(height: EspaciadoCampo.m),
+            Text(
+              l10n.ofertasPorQueEsePrecio,
+              style: TipografiaCampo.etiquetaMono.copyWith(
+                color: paleta.textoSecundario,
+              ),
+            ),
+            const SizedBox(height: EspaciadoCampo.xs),
+            Text(
+              key: const ValueKey('justificacion-oferta'),
+              o.justificacionPrecio!,
+              style: TipografiaCampo.cuerpo.copyWith(color: paleta.texto),
+            ),
+          ],
           if (o.nota != null) ...[
             const SizedBox(height: EspaciadoCampo.m),
             Text(

@@ -8,6 +8,7 @@ import '../../../../ui/tokens_campo.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../di/dependencias_ejecucion.dart';
 import '../domain/ejecucion.dart';
+import '../../preparacion/presentation/preparacion_pantalla.dart';
 import 'ejecucion_cubits.dart';
 import 'servicio_lote_pantalla.dart';
 
@@ -51,6 +52,8 @@ class ServiciosLoteVista extends StatelessWidget {
                 l10n.proveedorEjecucionServicio,
                 style: texto.headlineMedium,
               ),
+              const SizedBox(height: EspaciadoCampo.m),
+              const AccesoPreparacionEquipo(),
               const SizedBox(height: EspaciadoCampo.l),
               switch (estado) {
                 ServiciosLoteCargando() => const Column(

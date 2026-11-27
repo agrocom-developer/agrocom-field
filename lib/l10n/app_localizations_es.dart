@@ -1380,9 +1380,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ofertasOrdenCalificacion => 'Mejor calificación';
 
   @override
-  String get ofertasOrdenDistancia => 'Más cerca';
-
-  @override
   String get ofertasOfertaCambio => 'La oferta cambió.';
 
   @override
@@ -4786,4 +4783,414 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get cuentaTerminaRegistroDetalle =>
       'Sube los documentos que faltan para que un administrador pueda aprobar tu cuenta.';
+
+  @override
+  String get precioJustificacionEtiqueta =>
+      'Justificación del precio (opcional)';
+
+  @override
+  String get precioJustificacionAyuda =>
+      'Explica por qué propones este precio. La otra parte lo verá.';
+
+  @override
+  String precioJustificacionContador(int usados, int maximo) {
+    return '$usados de $maximo';
+  }
+
+  @override
+  String get precioJustificacionTitulo => 'Justificación del precio';
+
+  @override
+  String get precioTotalEtiqueta => 'Total estimado';
+
+  @override
+  String get precioTotalSinPrecio => 'Escribe el precio';
+
+  @override
+  String get precioTotalSoloLectura =>
+      'Se calcula con las hectáreas; no se escribe';
+
+  @override
+  String precioTotalCalculo(String hectareas, String precio) {
+    return '$hectareas × $precio';
+  }
+
+  @override
+  String get ofertasOrdenRecomendado => 'Recomendado';
+
+  @override
+  String get ofertasOrdenReciente => 'Más reciente';
+
+  @override
+  String get ofertasFiltros => 'Filtros';
+
+  @override
+  String ofertasFiltrosConActivos(int cantidad) {
+    return 'Filtros ($cantidad)';
+  }
+
+  @override
+  String get ofertasFiltrosTitulo => 'Ordenar y filtrar ofertas';
+
+  @override
+  String get ofertasFiltrosOrdenarPor => 'Ordenar por';
+
+  @override
+  String get ofertasFiltroPrecioMin => 'Precio mínimo (Bs/ha)';
+
+  @override
+  String get ofertasFiltroPrecioMax => 'Precio máximo (Bs/ha)';
+
+  @override
+  String get ofertasFiltroTotalMax => 'Total máximo (Bs)';
+
+  @override
+  String get ofertasFiltroCalificacionMin => 'Calificación mínima';
+
+  @override
+  String get ofertasFiltroCalificacionCualquiera => 'Cualquiera';
+
+  @override
+  String ofertasFiltroCalificacionDesde(String minima) {
+    return '$minima o más';
+  }
+
+  @override
+  String get ofertasFiltroTipo => 'Tipo de proveedor';
+
+  @override
+  String get ofertasFiltroTipoTodos => 'Todos';
+
+  @override
+  String get ofertasFiltroTipoPropio => 'Agrocom';
+
+  @override
+  String get ofertasFiltroTipoIndependiente => 'Independiente';
+
+  @override
+  String get ofertasFiltroTipoTercero => 'Dueño de drones';
+
+  @override
+  String get ofertasFiltroTanqueMin => 'Tanque mínimo (litros)';
+
+  @override
+  String get ofertasFiltrosAplicar => 'Ver ofertas';
+
+  @override
+  String get ofertasFiltrosQuitar => 'Quitar filtros';
+
+  @override
+  String get ofertasFiltrosNumeroInvalido =>
+      'Escribe un número, por ejemplo 120';
+
+  @override
+  String get ofertasFiltrosRangoInvalido =>
+      'El máximo no puede ser menor que el mínimo';
+
+  @override
+  String get ofertasNuevaOferta =>
+      'Llegó una oferta nueva. Compárala con las demás.';
+
+  @override
+  String get ofertasSinResultadosTitulo => 'Ninguna oferta cumple tus filtros';
+
+  @override
+  String get ofertasSinResultadosDetalle =>
+      'Quita algún filtro para ver las demás ofertas.';
+
+  @override
+  String get ofertasActualizandoLista => 'Actualizando ofertas';
+
+  @override
+  String get ofertasPorQueEsePrecio => 'Por qué ese precio';
+
+  @override
+  String get avisosCanalNuevasSolicitudes => 'Nuevas solicitudes';
+
+  @override
+  String get avisosCanalNuevasSolicitudesDetalle =>
+      'Solicitudes abiertas que puedes ofertar';
+
+  @override
+  String get avisosCanalOfertas => 'Ofertas y contraofertas';
+
+  @override
+  String get avisosCanalOfertasDetalle =>
+      'Precios que recibes, respuestas y adjudicaciones';
+
+  @override
+  String get avisosCanalMensajes => 'Mensajes';
+
+  @override
+  String get avisosCanalMensajesDetalle =>
+      'Chat con la otra parte del servicio';
+
+  @override
+  String get avisosCanalEjecucion => 'Ejecución del servicio';
+
+  @override
+  String get avisosCanalEjecucionDetalle =>
+      'Inicio, avance, cierre y precio final';
+
+  @override
+  String get avisosCanalCuenta => 'Cuenta y avisos';
+
+  @override
+  String get avisosCanalCuentaDetalle =>
+      'Aprobación, documentos, calificaciones y avisos del sistema';
+
+  @override
+  String get avisosTodos => 'Todos';
+
+  @override
+  String get avisosTitulo => 'Mis notificaciones';
+
+  @override
+  String get avisosCampana => 'Notificaciones';
+
+  @override
+  String avisosCampanaConPendientes(int cantidad) {
+    return 'Notificaciones, $cantidad sin leer';
+  }
+
+  @override
+  String get avisosVacioTitulo => 'Todavía no tienes notificaciones';
+
+  @override
+  String get avisosVacioDetalle =>
+      'Aquí verás lo que pase con tus solicitudes y ofertas, apenas ocurra.';
+
+  @override
+  String get avisosVacioCanal => 'No hay notificaciones en este grupo';
+
+  @override
+  String get avisosErrorTitulo => 'No pudimos cargar tus notificaciones';
+
+  @override
+  String get avisosErrorDetalle => 'Revisa tu conexión y vuelve a intentar.';
+
+  @override
+  String get avisosSinLeer => 'Sin leer';
+
+  @override
+  String get avisosLeida => 'Leída';
+
+  @override
+  String get avisosAjustesCanales => 'Ajustes de notificaciones';
+
+  @override
+  String get avisosCanalesTitulo => 'Canales de notificación';
+
+  @override
+  String get avisosCanalesIntro =>
+      'Elige qué avisos suenan en este teléfono y a qué hora. Lo que se te avisa lo decide el servidor con tus preferencias.';
+
+  @override
+  String get avisosCanalObligatorio =>
+      'Siempre activo: son avisos de tu cuenta';
+
+  @override
+  String get avisosCanalActivo => 'Activo';
+
+  @override
+  String get avisosCanalSilenciado => 'Silenciado';
+
+  @override
+  String get avisosHorarioSilencio => 'Horario de silencio';
+
+  @override
+  String avisosHorarioSilencioDetalle(String desde, String hasta) {
+    return 'No suena entre $desde y $hasta';
+  }
+
+  @override
+  String get avisosSinHorario => 'Sin horario de silencio';
+
+  @override
+  String get avisosHorarioDesde => 'Desde';
+
+  @override
+  String get avisosHorarioHasta => 'Hasta';
+
+  @override
+  String get avisosQuitarHorario => 'Quitar horario';
+
+  @override
+  String get avisosLlegaronNuevos => 'Llegó una notificación nueva';
+
+  @override
+  String avisosNotificacionDe(String canal, String titulo) {
+    return '$canal: $titulo';
+  }
+
+  @override
+  String avisosVariosNuevos(int cantidad) {
+    return '$cantidad notificaciones nuevas';
+  }
+
+  @override
+  String get distanciaVer => 'Ver distancia';
+
+  @override
+  String get distanciaPregunta => '¿Qué tan lejos está el lote?';
+
+  @override
+  String get distanciaAyuda =>
+      'Se calcula en tu teléfono con tu posición actual';
+
+  @override
+  String get distanciaCalculando => 'Calculando la distancia';
+
+  @override
+  String distanciaResultado(String km) {
+    return 'A $km del lote';
+  }
+
+  @override
+  String get distanciaResultadoAyuda =>
+      'En línea recta desde donde estás ahora';
+
+  @override
+  String get distanciaActualizar => 'Actualizar';
+
+  @override
+  String get distanciaSinPermiso =>
+      'Sin el permiso de ubicación no podemos calcular la distancia.';
+
+  @override
+  String get distanciaDenegadoSiempre =>
+      'Activa la ubicación de la app en los ajustes del teléfono para ver la distancia.';
+
+  @override
+  String get distanciaServicioApagado =>
+      'El GPS de tu teléfono está apagado. Enciéndelo para ver la distancia.';
+
+  @override
+  String get distanciaSinPosicion =>
+      'No pudimos ubicarte. Sal a un lugar abierto e intenta de nuevo.';
+
+  @override
+  String get distanciaSinLote =>
+      'Esta solicitud no tiene un punto en el mapa para medir la distancia.';
+
+  @override
+  String get distanciaHojaTitulo => 'Calcular la distancia al lote';
+
+  @override
+  String get distanciaHojaMotivo =>
+      'Usamos tu posición una sola vez, en tu teléfono, para decirte cuántos kilómetros hay hasta el lote. Te ayuda a decidir tu precio.';
+
+  @override
+  String get distanciaHojaPrivacidad =>
+      'No se envía a nadie ni se guarda: se descarta apenas ves el resultado.';
+
+  @override
+  String get distanciaHojaContinuar => 'Continuar';
+
+  @override
+  String get distanciaHojaAhoraNo => 'Ahora no';
+
+  @override
+  String get mapaExpandir => 'Ver el mapa en pantalla completa';
+
+  @override
+  String get mapaCerrarCompleto => 'Cerrar el mapa';
+
+  @override
+  String get mapaCompletoTitulo => 'Lote en el mapa';
+
+  @override
+  String get proveedorNegociacionJustificacionCliente =>
+      'Por qué el cliente propone ese precio';
+
+  @override
+  String get preparacionTitulo => 'Preparación del equipo';
+
+  @override
+  String get preparacionIntro =>
+      'Revisa tu equipo antes de salir al lote. Es una guía tuya: no te impide ofertar ni iniciar un servicio.';
+
+  @override
+  String preparacionProgreso(int hechos, int total) {
+    return '$hechos de $total listos';
+  }
+
+  @override
+  String get preparacionCompleta => 'Todo listo para salir';
+
+  @override
+  String get preparacionReiniciar => 'Empezar de nuevo';
+
+  @override
+  String get preparacionNoGuardo =>
+      'No pudimos guardar el último cambio en tu teléfono. Lo ves aquí, pero puede perderse al cerrar la app.';
+
+  @override
+  String get preparacionAcceso => 'Antes de salir';
+
+  @override
+  String get preparacionAccesoDetalle =>
+      'Revisa baterías, tanque, boquillas y clima';
+
+  @override
+  String get preparacionBaterias => 'Baterías cargadas';
+
+  @override
+  String get preparacionBateriasDetalle =>
+      'Las del dron y las de repuesto, con el cargador a mano';
+
+  @override
+  String get preparacionTanque => 'Tanque limpio y con el producto';
+
+  @override
+  String get preparacionTanqueDetalle =>
+      'Sin residuos de otra aplicación y con la mezcla lista';
+
+  @override
+  String get preparacionBoquillas => 'Boquillas limpias';
+
+  @override
+  String get preparacionBoquillasDetalle =>
+      'Sin tapones y con el caudal que pide la aplicación';
+
+  @override
+  String get preparacionMandoRc => 'Mando RC cargado y enlazado';
+
+  @override
+  String get preparacionMandoRcDetalle => 'Con batería y conectado al dron';
+
+  @override
+  String get preparacionDron => 'Dron y hélices revisados';
+
+  @override
+  String get preparacionDronDetalle =>
+      'Hélices sin daño, brazos firmes y software al día';
+
+  @override
+  String get preparacionEpp => 'Equipo de protección puesto';
+
+  @override
+  String get preparacionEppDetalle =>
+      'Guantes, mascarilla, lentes y ropa adecuada';
+
+  @override
+  String get preparacionDocumentos => 'Documentos al día';
+
+  @override
+  String get preparacionDocumentosDetalle =>
+      'Licencia, registro del dron y seguro vigentes';
+
+  @override
+  String get preparacionClima => 'Viento y lluvia revisados';
+
+  @override
+  String get preparacionClimaDetalle =>
+      'Sin viento fuerte ni lluvia en el lote';
+
+  @override
+  String get preparacionPronostico => 'Pronóstico de las próximas horas';
+
+  @override
+  String get preparacionPronosticoDetalle =>
+      'Que el clima aguante lo que dura la aplicación';
 }

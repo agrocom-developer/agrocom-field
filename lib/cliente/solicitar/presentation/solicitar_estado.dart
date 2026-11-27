@@ -43,6 +43,7 @@ class SolicitarEstado {
     this.accesos = '',
     this.observaciones = '',
     this.precioTexto = '',
+    this.justificacion = '',
     this.enviando = false,
     this.falloEnvio,
     this.mensajeRechazo,
@@ -83,6 +84,9 @@ class SolicitarEstado {
 
   /// Lo que hay escrito en el campo de precio por hectárea, tal cual.
   final String precioTexto;
+
+  /// La justificación opcional del precio, tal cual se escribió.
+  final String justificacion;
   final bool enviando;
   final FalloEnvio? falloEnvio;
 
@@ -184,6 +188,7 @@ class SolicitarEstado {
     String? accesos,
     String? observaciones,
     String? precioTexto,
+    String? justificacion,
     bool? enviando,
     Object? falloEnvio = _sinCambio,
     Object? mensajeRechazo = _sinCambio,
@@ -214,6 +219,7 @@ class SolicitarEstado {
     accesos: accesos ?? this.accesos,
     observaciones: observaciones ?? this.observaciones,
     precioTexto: precioTexto ?? this.precioTexto,
+    justificacion: justificacion ?? this.justificacion,
     enviando: enviando ?? this.enviando,
     falloEnvio: identical(falloEnvio, _sinCambio)
         ? this.falloEnvio

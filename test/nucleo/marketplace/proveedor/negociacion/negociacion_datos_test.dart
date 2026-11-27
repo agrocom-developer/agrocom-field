@@ -9,6 +9,7 @@ import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/data/nego
 import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/data/negociacion_red.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/domain/avisador_solicitudes.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/domain/negociacion.dart';
+import 'package:agrocom_field/nucleo/notificaciones/domain/canal_aviso.dart';
 import 'package:agrocom_field/nucleo/notificaciones/notificador_local.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -71,6 +72,8 @@ class _NotificadorFalso implements NotificadorLocal {
     required int id,
     required String titulo,
     required String cuerpo,
+    CanalAviso canal = CanalAviso.cuenta,
+    String? carga,
   }) async => mostradas.add((titulo, cuerpo));
 }
 

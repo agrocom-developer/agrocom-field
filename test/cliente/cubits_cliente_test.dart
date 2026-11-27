@@ -6,6 +6,7 @@ import 'package:agrocom_field/cliente/calificar/data/calificacion_demo.dart';
 import 'package:agrocom_field/cliente/calificar/presentation/calificar_cubit.dart';
 import 'package:agrocom_field/cliente/demo/almacen_demo_cliente.dart';
 import 'package:agrocom_field/cliente/ofertas/data/ofertas_demo.dart';
+import 'package:agrocom_field/cliente/ofertas/domain/comparador_ofertas.dart';
 import 'package:agrocom_field/cliente/ofertas/domain/oferta_recibida.dart';
 import 'package:agrocom_field/cliente/ofertas/presentation/ofertas_cubit.dart';
 import 'package:agrocom_field/cliente/problema/data/problema_demo.dart';
@@ -323,11 +324,18 @@ void main() {
       intervalo: null,
     );
 
-    test('carga las ofertas vigentes de menor a mayor precio', () async {
+    test('carga las ofertas vigentes en el orden recomendado', () async {
       final cubit = crear();
       expect(cubit.state.fase, FaseOfertas.cargando);
       await cubit.cargar();
       expect(cubit.state.fase, FaseOfertas.lista);
+      expect(cubit.state.orden, OrdenOfertas.recomendado);
+      expect(cubit.state.vigentes(ahora).map((o) => o.precioHa), [
+        Decimal.parse('110'),
+        Decimal.parse('121'),
+        Decimal.parse('104'),
+      ]);
+      await cubit.ordenar(OrdenOfertas.precio);
       expect(cubit.state.vigentes(ahora).map((o) => o.precioHa), [
         Decimal.parse('104'),
         Decimal.parse('110'),
@@ -336,21 +344,23 @@ void main() {
       await cubit.close();
     });
 
-    test('se pueden ordenar por calificación y por cercanía', () async {
+    test('se pueden ordenar por calificación y por lo más reciente', () async {
       final cubit = crear();
       await cubit.cargar();
-      cubit.ordenar(OrdenOfertas.calificacion);
+      await cubit.ordenar(OrdenOfertas.calificacion);
       expect(cubit.state.vigentes(ahora).map((o) => o.proveedor.calificacion), [
         4.9,
         4.8,
         4.7,
       ]);
-      cubit.ordenar(OrdenOfertas.distancia);
-      expect(cubit.state.vigentes(ahora).map((o) => o.distanciaKm), [
-        Decimal.parse('9.8'),
-        Decimal.parse('18.4'),
-        Decimal.parse('32.7'),
-      ]);
+      await cubit.ordenar(OrdenOfertas.reciente);
+      expect(cubit.state.orden, OrdenOfertas.reciente);
+      final fechas = cubit.state
+          .vigentes(ahora)
+          .map((o) => o.creadaEn!)
+          .toList();
+      expect(fechas, hasLength(3));
+      expect(fechas, [...fechas]..sort((a, b) => b.compareTo(a)));
       await cubit.close();
     });
 

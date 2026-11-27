@@ -1,5 +1,9 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../../l10n/app_localizations_es.dart';
+import 'domain/canal_aviso.dart';
+import 'presentation/textos_canal.dart';
+
 /// Notificaciones locales generadas por reglas que corren en el dispositivo
 /// (HU-62) — sin servidor push ni FCM. Abstracta para poder fakear en tests
 /// sin canal de plataforma real, mismo patrón que `nucleo/auth`.
@@ -8,32 +12,44 @@ abstract class NotificadorLocal {
   /// `POST_NOTIFICATIONS` en runtime). Devuelve si quedó concedido.
   Future<bool> pedirPermiso();
 
+  /// Muestra una notificación en el [canal] indicado (canal de Android y
+  /// categoría de iOS propios). [carga] dice qué abrir al tocarla
+  /// (`recurso_tipo:recurso_id`).
   Future<void> mostrar({
     required int id,
     required String titulo,
     required String cuerpo,
+    CanalAviso canal = CanalAviso.cuenta,
+    String? carga,
   });
 }
 
-/// Envuelve `FlutterLocalNotificationsPlugin` — solo Android (los dos
-/// flavors de este repo corren únicamente ahí, ver `docs/vision.md`).
+/// Envuelve `FlutterLocalNotificationsPlugin`. Cada [CanalAviso] tiene su
+/// canal de Android (que el sistema deja silenciar por separado) y su
+/// categoría de iOS. Funciona igual con Firebase apagado: las notificaciones
+/// salen de la bandeja del servidor y no de un push.
 class NotificadorLocalPlugin implements NotificadorLocal {
   NotificadorLocalPlugin([FlutterLocalNotificationsPlugin? plugin])
     : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
   final FlutterLocalNotificationsPlugin _plugin;
 
-  static const _canalId = 'avisos_locales';
-  static const _canalNombre = 'Notificaciones';
-  static const _canalDescripcion =
-      'Notificaciones generadas en el teléfono, sin conexión';
-
   bool _inicializado = false;
 
   Future<void> _asegurarInicializado() async {
     if (_inicializado) return;
-    const configuracion = InitializationSettings(
-      android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+    final configuracion = InitializationSettings(
+      android: const AndroidInitializationSettings('@mipmap/ic_launcher'),
+      // El permiso se pide en contexto (con su explicación), no al iniciar.
+      iOS: DarwinInitializationSettings(
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
+        notificationCategories: [
+          for (final c in CanalAviso.values)
+            DarwinNotificationCategory(c.codigo),
+        ],
+      ),
     );
     await _plugin.initialize(settings: configuracion);
     _inicializado = true;
@@ -55,13 +71,33 @@ class NotificadorLocalPlugin implements NotificadorLocal {
     required int id,
     required String titulo,
     required String cuerpo,
+    CanalAviso canal = CanalAviso.cuenta,
+    String? carga,
   }) async {
     await _asegurarInicializado();
-    const detalles = NotificationDetails(
+    final textos = AppLocalizationsEs();
+    final detalles = NotificationDetails(
       android: AndroidNotificationDetails(
-        _canalId,
-        _canalNombre,
-        channelDescription: _canalDescripcion,
+        canal.codigo,
+        canal.nombre(textos),
+        channelDescription: canal.descripcion(textos),
+        importance: switch (canal.nivel) {
+          NivelAviso.alto => Importance.high,
+          NivelAviso.medio => Importance.defaultImportance,
+        },
+        priority: switch (canal.nivel) {
+          NivelAviso.alto => Priority.high,
+          NivelAviso.medio => Priority.defaultPriority,
+        },
+        groupKey: canal.codigo,
+      ),
+      iOS: DarwinNotificationDetails(
+        categoryIdentifier: canal.codigo,
+        threadIdentifier: canal.codigo,
+        interruptionLevel: switch (canal.nivel) {
+          NivelAviso.alto => InterruptionLevel.active,
+          NivelAviso.medio => InterruptionLevel.active,
+        },
       ),
     );
     await _plugin.show(
@@ -69,6 +105,7 @@ class NotificadorLocalPlugin implements NotificadorLocal {
       title: titulo,
       body: cuerpo,
       notificationDetails: detalles,
+      payload: carga,
     );
   }
 }
