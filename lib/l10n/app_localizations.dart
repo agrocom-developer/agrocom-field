@@ -328,12 +328,6 @@ abstract class AppLocalizations {
   /// **'Oscuro'**
   String get temaOscuro;
 
-  /// No description provided for @temaCampo.
-  ///
-  /// In es, this message translates to:
-  /// **'Campo AAA'**
-  String get temaCampo;
-
   /// No description provided for @publicarLote.
   ///
   /// In es, this message translates to:
@@ -6228,6 +6222,804 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{hectareas} × {precio} por ha'**
   String proveedorEjecucionHectareasPorPrecio(String hectareas, String precio);
+
+  /// No description provided for @perfilUxCalificacionSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificación {valor} de 5, ver calificaciones'**
+  String perfilUxCalificacionSemantica(String valor);
+
+  /// No description provided for @perfilUxCalificacionesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificaciones'**
+  String get perfilUxCalificacionesTitulo;
+
+  /// No description provided for @perfilUxCalificacionesVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no hay calificaciones'**
+  String get perfilUxCalificacionesVacioTitulo;
+
+  /// No description provided for @perfilUxCalificacionesVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando termines un servicio, aquí verás lo que opinan de ti.'**
+  String get perfilUxCalificacionesVacioDetalle;
+
+  /// No description provided for @perfilUxMenuMas.
+  ///
+  /// In es, this message translates to:
+  /// **'Más opciones'**
+  String get perfilUxMenuMas;
+
+  /// No description provided for @ajustesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes'**
+  String get ajustesTitulo;
+
+  /// No description provided for @ajustesApariencia.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get ajustesApariencia;
+
+  /// No description provided for @ajustesAparienciaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema claro u oscuro'**
+  String get ajustesAparienciaDetalle;
+
+  /// No description provided for @ajustesCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta'**
+  String get ajustesCuenta;
+
+  /// No description provided for @ajustesCerrarSesion.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión'**
+  String get ajustesCerrarSesion;
+
+  /// No description provided for @ajustesCerrarSesionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Salir de este dispositivo'**
+  String get ajustesCerrarSesionDetalle;
+
+  /// No description provided for @ajustesCerrarSesionPregunta.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cerrar sesión?'**
+  String get ajustesCerrarSesionPregunta;
+
+  /// No description provided for @ajustesCerrarSesionAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Tendrás que volver a ingresar para usar la app.'**
+  String get ajustesCerrarSesionAviso;
+
+  /// No description provided for @ajustesCancelar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cancelar'**
+  String get ajustesCancelar;
+
+  /// No description provided for @aparienciaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia'**
+  String get aparienciaTitulo;
+
+  /// No description provided for @aparienciaTema.
+  ///
+  /// In es, this message translates to:
+  /// **'Tema'**
+  String get aparienciaTema;
+
+  /// No description provided for @aparienciaTemaClaro.
+  ///
+  /// In es, this message translates to:
+  /// **'Claro'**
+  String get aparienciaTemaClaro;
+
+  /// No description provided for @aparienciaTemaOscuro.
+  ///
+  /// In es, this message translates to:
+  /// **'Oscuro'**
+  String get aparienciaTemaOscuro;
+
+  /// No description provided for @perfilCliMetricas.
+  ///
+  /// In es, this message translates to:
+  /// **'Métricas'**
+  String get perfilCliMetricas;
+
+  /// No description provided for @perfilCliCalificacionesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'{promedio} · {n, plural, one{1 calificación} other{{n} calificaciones}}'**
+  String perfilCliCalificacionesDetalle(String promedio, int n);
+
+  /// No description provided for @perfilCliCalificacionesSinDatos.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún sin calificaciones'**
+  String get perfilCliCalificacionesSinDatos;
+
+  /// No description provided for @perfilPilMisDrones.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis drones'**
+  String get perfilPilMisDrones;
+
+  /// No description provided for @perfilPilDocumentosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia, matrícula, seguro y certificado'**
+  String get perfilPilDocumentosDetalle;
+
+  /// No description provided for @perfilPilCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificaciones'**
+  String get perfilPilCalificaciones;
+
+  /// No description provided for @perfilPilCalificacionesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'{promedio} · {total} calificaciones'**
+  String perfilPilCalificacionesDetalle(String promedio, int total);
+
+  /// No description provided for @perfilPilActividad.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas y zonas'**
+  String get perfilPilActividad;
+
+  /// No description provided for @perfilPilActividadDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas por mes y zonas de cobertura'**
+  String get perfilPilActividadDetalle;
+
+  /// No description provided for @perfilPilAjustesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia, notificaciones y cuenta'**
+  String get perfilPilAjustesDetalle;
+
+  /// No description provided for @datosPersonalesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Datos personales'**
+  String get datosPersonalesTitulo;
+
+  /// No description provided for @datosPersonalesAjustesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa o corrige tus datos'**
+  String get datosPersonalesAjustesDetalle;
+
+  /// No description provided for @datosPersonalesAvisoUnaVez.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes editar tus datos una sola vez. Revísalos bien antes de guardar.'**
+  String get datosPersonalesAvisoUnaVez;
+
+  /// No description provided for @datosPersonalesNombre.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre completo'**
+  String get datosPersonalesNombre;
+
+  /// No description provided for @datosPersonalesCorreo.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo electrónico'**
+  String get datosPersonalesCorreo;
+
+  /// No description provided for @datosPersonalesTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono'**
+  String get datosPersonalesTelefono;
+
+  /// No description provided for @datosPersonalesEmpresa.
+  ///
+  /// In es, this message translates to:
+  /// **'Empresa'**
+  String get datosPersonalesEmpresa;
+
+  /// No description provided for @datosPersonalesDocumento.
+  ///
+  /// In es, this message translates to:
+  /// **'Documento'**
+  String get datosPersonalesDocumento;
+
+  /// No description provided for @datosPersonalesNombreObligatorio.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe tu nombre.'**
+  String get datosPersonalesNombreObligatorio;
+
+  /// No description provided for @datosPersonalesEmpresaObligatoria.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el nombre de la empresa.'**
+  String get datosPersonalesEmpresaObligatoria;
+
+  /// No description provided for @datosPersonalesCorreoInvalido.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un correo válido, por ejemplo nombre@correo.com.'**
+  String get datosPersonalesCorreoInvalido;
+
+  /// No description provided for @datosPersonalesTelefonoInvalido.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un teléfono válido, con al menos 8 dígitos.'**
+  String get datosPersonalesTelefonoInvalido;
+
+  /// No description provided for @datosPersonalesGuardar.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar cambios'**
+  String get datosPersonalesGuardar;
+
+  /// No description provided for @datosPersonalesConfirmarTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Guardar tus datos?'**
+  String get datosPersonalesConfirmarTitulo;
+
+  /// No description provided for @datosPersonalesConfirmarAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Después solo podrás pedir cambios a atención al cliente.'**
+  String get datosPersonalesConfirmarAviso;
+
+  /// No description provided for @datosPersonalesRevisar.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisar'**
+  String get datosPersonalesRevisar;
+
+  /// No description provided for @datosPersonalesConfirmarSi.
+  ///
+  /// In es, this message translates to:
+  /// **'Sí, guardar'**
+  String get datosPersonalesConfirmarSi;
+
+  /// No description provided for @datosPersonalesGuardado.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardamos tus datos.'**
+  String get datosPersonalesGuardado;
+
+  /// No description provided for @datosPersonalesYaEditado.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya usaste tu edición. Para cambiar un dato, pide el cambio a atención al cliente.'**
+  String get datosPersonalesYaEditado;
+
+  /// No description provided for @datosPersonalesEdicionAgotada.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus datos ya se editaron desde otro dispositivo. Para cambiar algo, pide el cambio a atención al cliente.'**
+  String get datosPersonalesEdicionAgotada;
+
+  /// No description provided for @datosPersonalesSolicitar.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitar un cambio'**
+  String get datosPersonalesSolicitar;
+
+  /// No description provided for @datosPersonalesSolicitudEnRevision.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu solicitud de cambio está en revisión. Te avisamos cuando tengamos respuesta.'**
+  String get datosPersonalesSolicitudEnRevision;
+
+  /// No description provided for @datosPersonalesErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus datos'**
+  String get datosPersonalesErrorTitulo;
+
+  /// No description provided for @datosPersonalesErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentarlo.'**
+  String get datosPersonalesErrorDetalle;
+
+  /// No description provided for @datosPersonalesErrorGuardar.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardar tus datos. Vuelve a intentarlo.'**
+  String get datosPersonalesErrorGuardar;
+
+  /// No description provided for @datosPersonalesErrorSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Conéctate y vuelve a intentar.'**
+  String get datosPersonalesErrorSinConexion;
+
+  /// No description provided for @datosPersonalesSolicitarIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuéntanos qué dato quieres cambiar y por qué. Atención al cliente lo revisa y, si corresponde, lo corrige por ti.'**
+  String get datosPersonalesSolicitarIntro;
+
+  /// No description provided for @datosPersonalesMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué quieres cambiar y por qué?'**
+  String get datosPersonalesMotivo;
+
+  /// No description provided for @datosPersonalesMotivoAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Por ejemplo: mi teléfono cambió porque perdí el chip.'**
+  String get datosPersonalesMotivoAyuda;
+
+  /// No description provided for @datosPersonalesMotivoCorto.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuéntanos un poco más (mínimo 10 caracteres).'**
+  String get datosPersonalesMotivoCorto;
+
+  /// No description provided for @datosPersonalesEnviar.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar solicitud'**
+  String get datosPersonalesEnviar;
+
+  /// No description provided for @datosPersonalesEnviada.
+  ///
+  /// In es, this message translates to:
+  /// **'Recibimos tu solicitud'**
+  String get datosPersonalesEnviada;
+
+  /// No description provided for @datosPersonalesEnviadaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Atención al cliente la revisará y te responderá. Mientras tanto tus datos siguen igual.'**
+  String get datosPersonalesEnviadaDetalle;
+
+  /// No description provided for @datosPersonalesListo.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get datosPersonalesListo;
+
+  /// No description provided for @datosPersonalesErrorEnviar.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos enviar tu solicitud. Vuelve a intentarlo.'**
+  String get datosPersonalesErrorEnviar;
+
+  /// No description provided for @datosPersonalesSolicitudAbierta.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tienes una solicitud en revisión.'**
+  String get datosPersonalesSolicitudAbierta;
+
+  /// No description provided for @contrasenaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar contraseña'**
+  String get contrasenaTitulo;
+
+  /// No description provided for @contrasenaFilaAjustes.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar contraseña'**
+  String get contrasenaFilaAjustes;
+
+  /// No description provided for @contrasenaFilaAjustesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Con un código que te enviamos'**
+  String get contrasenaFilaAjustesDetalle;
+
+  /// No description provided for @contrasenaCanalTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Dónde te enviamos el código?'**
+  String get contrasenaCanalTitulo;
+
+  /// No description provided for @contrasenaCanalDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te mandamos un código de 6 números. Vale 10 minutos.'**
+  String get contrasenaCanalDetalle;
+
+  /// No description provided for @contrasenaCanalWhatsapp.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp'**
+  String get contrasenaCanalWhatsapp;
+
+  /// No description provided for @contrasenaCanalSms.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensaje de texto'**
+  String get contrasenaCanalSms;
+
+  /// No description provided for @contrasenaCanalCorreo.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo electrónico'**
+  String get contrasenaCanalCorreo;
+
+  /// No description provided for @contrasenaEnviarCodigo.
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar código'**
+  String get contrasenaEnviarCodigo;
+
+  /// No description provided for @contrasenaCodigoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el código'**
+  String get contrasenaCodigoTitulo;
+
+  /// No description provided for @contrasenaCodigoEnviadoA.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo enviamos a {destino}.'**
+  String contrasenaCodigoEnviadoA(String destino);
+
+  /// No description provided for @contrasenaCampoCodigo.
+  ///
+  /// In es, this message translates to:
+  /// **'Código de 6 números'**
+  String get contrasenaCampoCodigo;
+
+  /// No description provided for @contrasenaCampoNueva.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña nueva'**
+  String get contrasenaCampoNueva;
+
+  /// No description provided for @contrasenaCampoNuevaAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa al menos 4 caracteres.'**
+  String get contrasenaCampoNuevaAyuda;
+
+  /// No description provided for @contrasenaCampoRepetir.
+  ///
+  /// In es, this message translates to:
+  /// **'Repite la contraseña nueva'**
+  String get contrasenaCampoRepetir;
+
+  /// No description provided for @contrasenaPedirOtro.
+  ///
+  /// In es, this message translates to:
+  /// **'No me llegó, pedir otro código'**
+  String get contrasenaPedirOtro;
+
+  /// No description provided for @contrasenaGuardar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar contraseña'**
+  String get contrasenaGuardar;
+
+  /// No description provided for @contrasenaListoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo, cambiamos tu contraseña'**
+  String get contrasenaListoTitulo;
+
+  /// No description provided for @contrasenaListoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus otros dispositivos tendrán que iniciar sesión de nuevo.'**
+  String get contrasenaListoDetalle;
+
+  /// No description provided for @contrasenaVolverAjustes.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a Ajustes'**
+  String get contrasenaVolverAjustes;
+
+  /// No description provided for @permisosCamaraTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar la cámara'**
+  String get permisosCamaraTitulo;
+
+  /// No description provided for @permisosCamaraMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitamos la cámara para tomar la foto que vas a subir. Solo se abre cuando tú lo pides y la foto la ve quien participa del servicio.'**
+  String get permisosCamaraMotivo;
+
+  /// No description provided for @permisosUbicacionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar tu ubicación'**
+  String get permisosUbicacionTitulo;
+
+  /// No description provided for @permisosUbicacionMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Para centrar el mapa en donde estás y mostrarte las solicitudes cercanas. Solo se usa mientras miras el mapa y no se guarda.'**
+  String get permisosUbicacionMotivo;
+
+  /// No description provided for @permisosNotificacionesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones de solicitudes nuevas'**
+  String get permisosNotificacionesTitulo;
+
+  /// No description provided for @permisosNotificacionesMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Te avisamos cuando llegue una solicitud en tus zonas. Puedes desactivarlos cuando quieras.'**
+  String get permisosNotificacionesMotivo;
+
+  /// No description provided for @permisosContinuar.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get permisosContinuar;
+
+  /// No description provided for @permisosAhoraNo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get permisosAhoraNo;
+
+  /// No description provided for @permisosDenegadoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Permiso desactivado'**
+  String get permisosDenegadoTitulo;
+
+  /// No description provided for @permisosDenegadoCamara.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin la cámara no podemos tomar la foto. Puedes elegir una de tu galería o intentarlo de nuevo cuando quieras.'**
+  String get permisosDenegadoCamara;
+
+  /// No description provided for @permisosDenegadoUbicacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin tu ubicación el mapa sigue funcionando, pero no se centra donde estás. Puedes intentarlo de nuevo cuando quieras.'**
+  String get permisosDenegadoUbicacion;
+
+  /// No description provided for @permisosDenegadoNotificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin este permiso no te avisamos de solicitudes nuevas. Puedes activarlo cuando quieras.'**
+  String get permisosDenegadoNotificaciones;
+
+  /// No description provided for @permisosBloqueadoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo desactivaste en los ajustes del teléfono. Actívalo ahí para continuar.'**
+  String get permisosBloqueadoDetalle;
+
+  /// No description provided for @permisosAbrirAjustes.
+  ///
+  /// In es, this message translates to:
+  /// **'Abrir ajustes'**
+  String get permisosAbrirAjustes;
+
+  /// No description provided for @permisosEntendido.
+  ///
+  /// In es, this message translates to:
+  /// **'Entendido'**
+  String get permisosEntendido;
+
+  /// No description provided for @permisosMiUbicacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar mi ubicación'**
+  String get permisosMiUbicacion;
+
+  /// No description provided for @permisosUbicacionNoDisponible.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos leer tu ubicación. Revisa que la ubicación del teléfono esté activa.'**
+  String get permisosUbicacionNoDisponible;
+
+  /// No description provided for @perfilCli2Notificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get perfilCli2Notificaciones;
+
+  /// No description provided for @perfilCli2NotificacionesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes de pilotos y de Agrocom'**
+  String get perfilCli2NotificacionesDetalle;
+
+  /// No description provided for @perfilCli2EstadHectareas.
+  ///
+  /// In es, this message translates to:
+  /// **'hectáreas'**
+  String get perfilCli2EstadHectareas;
+
+  /// No description provided for @perfilPil2BandejaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes de clientes y de Agrocom'**
+  String get perfilPil2BandejaDetalle;
+
+  /// No description provided for @perfilPil2AvisosConfigDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevas solicitudes por zona'**
+  String get perfilPil2AvisosConfigDetalle;
+
+  /// No description provided for @perfilPil2DronesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'{cantidad} · Dron y licencia'**
+  String perfilPil2DronesDetalle(String cantidad);
+
+  /// No description provided for @perfilPil2Cobertura.
+  ///
+  /// In es, this message translates to:
+  /// **'Cobertura'**
+  String get perfilPil2Cobertura;
+
+  /// No description provided for @bandejaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get bandejaTitulo;
+
+  /// No description provided for @bandejaFiltroTodas.
+  ///
+  /// In es, this message translates to:
+  /// **'Todas'**
+  String get bandejaFiltroTodas;
+
+  /// No description provided for @bandejaFiltroMensajes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes'**
+  String get bandejaFiltroMensajes;
+
+  /// No description provided for @bandejaFiltroSistema.
+  ///
+  /// In es, this message translates to:
+  /// **'Sistema'**
+  String get bandejaFiltroSistema;
+
+  /// No description provided for @bandejaGrupoHoy.
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy'**
+  String get bandejaGrupoHoy;
+
+  /// No description provided for @bandejaGrupoAyer.
+  ///
+  /// In es, this message translates to:
+  /// **'Ayer'**
+  String get bandejaGrupoAyer;
+
+  /// No description provided for @bandejaGrupoAntes.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes'**
+  String get bandejaGrupoAntes;
+
+  /// No description provided for @bandejaMarcarTodas.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar todas como leídas'**
+  String get bandejaMarcarTodas;
+
+  /// No description provided for @bandejaNoLeida.
+  ///
+  /// In es, this message translates to:
+  /// **'No leída'**
+  String get bandejaNoLeida;
+
+  /// No description provided for @bandejaOrigenSistema.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrocom'**
+  String get bandejaOrigenSistema;
+
+  /// No description provided for @bandejaVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí te avisamos lo importante'**
+  String get bandejaVacioTitulo;
+
+  /// No description provided for @bandejaVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas nuevas, mensajes de la otra parte y cambios en tus servicios aparecerán en esta lista.'**
+  String get bandejaVacioDetalle;
+
+  /// No description provided for @bandejaVacioMensajesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay mensajes'**
+  String get bandejaVacioMensajesTitulo;
+
+  /// No description provided for @bandejaVacioMensajesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando alguien te escriba por un servicio, lo verás aquí.'**
+  String get bandejaVacioMensajesDetalle;
+
+  /// No description provided for @bandejaVacioSistemaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin notificaciones del sistema'**
+  String get bandejaVacioSistemaTitulo;
+
+  /// No description provided for @bandejaVacioSistemaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te avisamos aquí cuando cambie el estado de tus servicios o de tu cuenta.'**
+  String get bandejaVacioSistemaDetalle;
+
+  /// No description provided for @bandejaErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus notificaciones'**
+  String get bandejaErrorTitulo;
+
+  /// No description provided for @bandejaErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentarlo.'**
+  String get bandejaErrorDetalle;
+
+  /// No description provided for @perfilR3MiCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Mi cuenta'**
+  String get perfilR3MiCuenta;
+
+  /// No description provided for @perfilR3Servicios.
+  ///
+  /// In es, this message translates to:
+  /// **'servicios'**
+  String get perfilR3Servicios;
+
+  /// No description provided for @perfilR3Hectareas.
+  ///
+  /// In es, this message translates to:
+  /// **'hectáreas'**
+  String get perfilR3Hectareas;
+
+  /// No description provided for @perfilR3Cancelacion.
+  ///
+  /// In es, this message translates to:
+  /// **'cancelación'**
+  String get perfilR3Cancelacion;
+
+  /// No description provided for @perfilR3DocumentosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia, matrícula, seguro y más'**
+  String get perfilR3DocumentosDetalle;
+
+  /// No description provided for @contrasenaErrorSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay conexión. Revisa tu señal y vuelve a intentarlo: lo que escribiste se conserva.'**
+  String get contrasenaErrorSinRed;
+
+  /// No description provided for @contrasenaErrorCanalNoDisponible.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese medio no está disponible ahora. Elige otro para recibir el código.'**
+  String get contrasenaErrorCanalNoDisponible;
 }
 
 class _AppLocalizationsDelegate

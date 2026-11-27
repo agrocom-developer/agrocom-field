@@ -26,9 +26,9 @@ void main() {
   test('elegir cambia el tema y lo guarda', () async {
     final almacen = AlmacenTemaVisualMemoria();
     final cubit = TemaVisualCubit(almacen);
-    await cubit.elegir(ModoVisualCampo.campo);
-    expect(cubit.state, ModoVisualCampo.campo);
-    expect(almacen.modo, ModoVisualCampo.campo);
+    await cubit.elegir(ModoVisualCampo.oscuro);
+    expect(cubit.state, ModoVisualCampo.oscuro);
+    expect(almacen.modo, ModoVisualCampo.oscuro);
     await cubit.close();
   });
 
@@ -41,22 +41,18 @@ void main() {
     await cubit.close();
   });
 
-  test('el cliente sin elección sigue al sistema; el piloto usa campo', () {
-    final cliente = ConfiguracionTema.de(
-      elegido: null,
-      predeterminado: ModoVisualCampo.claro,
-    );
-    expect(cliente.modo, ThemeMode.system);
-    expect(cliente.claro.brightness, Brightness.light);
-    expect(cliente.oscuro.brightness, Brightness.dark);
-
-    final piloto = ConfiguracionTema.de(
-      elegido: null,
-      predeterminado: ModoVisualCampo.campo,
-    );
-    expect(piloto.modo, ThemeMode.light);
-    expect(piloto.claro, same(piloto.oscuro));
-  });
+  test(
+    'sin elección, los dos flavors arrancan en claro y no siguen al sistema',
+    () {
+      final t = ConfiguracionTema.de(
+        elegido: null,
+        predeterminado: ModoVisualCampo.claro,
+      );
+      expect(t.modo, ThemeMode.light);
+      expect(t.claro.brightness, Brightness.light);
+      expect(t.claro, same(t.oscuro));
+    },
+  );
 
   test('una elección fija el tema aunque el sistema sea otro', () {
     final t = ConfiguracionTema.de(

@@ -13,6 +13,8 @@ import '../../../ui/marketplace_ui.dart';
 import '../domain/acceso_proveedor.dart';
 import 'acceso_cubit.dart';
 import 'registro_cubit.dart';
+import '../../../../permisos/permiso_app.dart';
+import '../../../../permisos/presentation/asegurar_permiso.dart';
 
 /// Abre el alta del piloto independiente sobre el ingreso. Al terminar, la
 /// sesión ya quedó iniciada y la puerta de acceso muestra la app.
@@ -580,7 +582,11 @@ class _PasoFotos extends StatelessWidget {
             tipo: tipo,
             bytes: estado.fotos[tipo],
             cargando: estado.fotoCargando == tipo,
-            alCamara: () => cubit.elegirFoto(tipo, deGaleria: false),
+            alCamara: () async {
+              if (await asegurarPermiso(context, PermisoApp.camara)) {
+                cubit.elegirFoto(tipo, deGaleria: false);
+              }
+            },
             alGaleria: () => cubit.elegirFoto(tipo, deGaleria: true),
             alQuitar: () => cubit.quitarFoto(tipo),
           ),

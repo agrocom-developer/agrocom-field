@@ -56,6 +56,8 @@ flutter run --flavor cliente  -t lib/main_cliente.dart  --dart-define-from-file=
 flutter run --flavor piloto   -t lib/main_piloto.dart   --dart-define-from-file=config/env.demo.json
 ```
 
+`SESION_DEMO` (en `env.demo.json`) hace que el cliente arranque ya dentro de la app; con `"SESION_DEMO": "false"` arranca como recién instalado (presentación y acceso; cualquier usuario con una contraseña de 8 caracteres o más entra). El piloto no tiene acceso en la demo.
+
 En iOS, el esquema de Xcode lleva el nombre del flavor (`piloto`, `cliente`): `flutter run --flavor cliente -d <simulador>`.
 
 ## Comandos de desarrollo

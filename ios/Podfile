@@ -45,5 +45,16 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    # permission_handler compila solo los permisos que la app usa (Apple
+    # rechaza APIs protegidas sin texto de propósito). Fotos no se pide: se
+    # usa el selector del sistema.
+    target.build_configurations.each do |config|
+      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
+        '$(inherited)',
+        'PERMISSION_CAMERA=1',
+        'PERMISSION_LOCATION_WHENINUSE=1',
+        'PERMISSION_NOTIFICATIONS=1',
+      ]
+    end
   end
 end

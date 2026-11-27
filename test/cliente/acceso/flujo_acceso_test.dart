@@ -211,9 +211,13 @@ void main() {
 
     await tester.tap(find.text('Perfil').last);
     await tester.pumpAndSettle();
-    final cerrar = find.byKey(const Key('cuenta-cerrar-sesion'));
-    await tester.scrollUntilVisible(cerrar, 300);
-    await tester.tap(cerrar);
+    await tester.tap(find.byIcon(Icons.more_vert_rounded));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ajustes'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('ajustes-cerrar-sesion')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('ajustes-confirmar-salida')));
     await tester.pumpAndSettle();
     expect(find.text('Ingresa a tu cuenta'), findsOneWidget);
     expect(find.byType(BarraInferiorCampo), findsNothing);

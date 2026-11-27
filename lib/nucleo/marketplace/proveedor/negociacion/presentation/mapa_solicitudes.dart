@@ -42,6 +42,8 @@ class MapaSolicitudes extends StatelessWidget {
     this.conTeselas,
     this.ahora,
     this.relleno = const EdgeInsets.all(EspaciadoCampo.xxxl),
+    this.controlador,
+    this.miUbicacion,
     super.key,
   });
 
@@ -56,6 +58,13 @@ class MapaSolicitudes extends StatelessWidget {
   /// Margen que se reserva al encuadrar (la búsqueda y la hoja inferior
   /// tapan parte del mapa).
   final EdgeInsets relleno;
+
+  /// Para mover la cámara (p. ej. al centrar en la ubicación del piloto).
+  final MapController? controlador;
+
+  /// Dónde está el piloto, solo si lo pidió con «Usar mi ubicación». Vive en
+  /// memoria de la pantalla: no se guarda ni se envía.
+  final LatLng? miUbicacion;
 
   @override
   Widget build(BuildContext context) {
@@ -75,6 +84,7 @@ class MapaSolicitudes extends StatelessWidget {
       label: l10n.proveedorNegociacionMapaSemantica(ubicadas.length),
       child: ClipRect(
         child: FlutterMap(
+          mapController: controlador,
           options: MapOptions(
             backgroundColor: ConfiguracionMapa.fondo(paleta),
             initialCenter: _centroSantaCruz,
@@ -109,6 +119,18 @@ class MapaSolicitudes extends StatelessWidget {
                   _lote(s, paleta, venceHoy(s, hoy), s.id == seleccionada),
               ],
             ),
+            if (miUbicacion != null)
+              CircleLayer(
+                circles: [
+                  CircleMarker(
+                    point: miUbicacion!,
+                    radius: 9,
+                    color: paleta.rellenoInfo,
+                    borderColor: paleta.superficie,
+                    borderStrokeWidth: 3,
+                  ),
+                ],
+              ),
             _CapaMarcadores(
               solicitudes: ubicadas,
               seleccionada: seleccionada,

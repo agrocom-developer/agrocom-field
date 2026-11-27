@@ -21,7 +21,7 @@ Meta: una pantalla se entiende en dos segundos, se maneja con una mano, y se ve 
 | | `cliente` | `piloto` |
 |---|---|---|
 | Uso | Cotidiano, interior y exterior | Lote, sol directo, guantes, RC de gama media |
-| Modo | Claro por defecto, oscuro completo | Alto contraste "campo" (ADR 0008), sobre fondo profundo |
+| Modo | Claro por defecto; oscuro de alto contraste opcional | Claro por defecto; oscuro de alto contraste (ADR 0008) opcional |
 | Contraste mínimo | 4.5:1 texto normal | 7:1 en texto crítico |
 | Táctil | 48 dp | 56 dp o más |
 | Plataforma | iOS y Android, iPad adaptativo | Android |
@@ -30,7 +30,7 @@ Comparten forma (radios), espaciado, tipografía y movimiento. Cambia solo la pa
 
 ## Paleta
 
-- **Un acento primario** (el verde de la marca; en campo, el lima de `TemaCampo`) para acción principal y foco.
+- **Verde de marca** para identidad (cabeceras, navegación activa) y **ámbar** como el 10 % de acento: botón principal e íconos en burbuja. Más pautas en el skill `ux-buenas-practicas-movil`.
 - **Neutros** con tinte verde sutil para fondos y bordes; texto principal casi negro (claro) o casi blanco (oscuro). La jerarquía del texto se resuelve con opacidad del mismo color.
 - **Semánticos**: éxito, alerta, error e información. Siempre acompañados de ícono o texto; el color nunca es el único portador de significado.
 - Verificar cada par texto/fondo con la fórmula de luminancia relativa de WCAG y anotar el valor en el PR. Nada de gradientes decorativos ni más de un acento por pantalla.
@@ -60,6 +60,8 @@ Teléfono (menos de 600 dp): una columna, navegación inferior. Tableta e iPad (
 60 fps en el RC de gama media: constructores `const`, listas con `builder`, imágenes con tamaño decodificado acotado, sin `Opacity` ni `BackdropFilter` apilados en listas, `RepaintBoundary` solo donde el perfil lo justifique. Revisar con el perfilador antes de agregar un paquete de animación.
 
 ## Elegir librerías
+
+Antes de diseñar una pantalla, leer también `ux-buenas-practicas-movil` (zona del pulgar, simetría, héroes, vacíos, animación).
 
 Primero lo que trae Flutter y Material 3. Si hace falta un paquete, se busca con `find-skills`, se evalúa (mantenimiento, licencia, tamaño, soporte iOS, Android e iPad) y se documenta en un ADR de este repo. Un paquete visual nuevo sin ADR no entra.
 

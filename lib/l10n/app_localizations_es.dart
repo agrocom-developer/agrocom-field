@@ -141,9 +141,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get temaOscuro => 'Oscuro';
 
   @override
-  String get temaCampo => 'Campo AAA';
-
-  @override
   String get publicarLote => 'Publicar lote';
 
   @override
@@ -3829,4 +3826,457 @@ class AppLocalizationsEs extends AppLocalizations {
   String proveedorEjecucionHectareasPorPrecio(String hectareas, String precio) {
     return '$hectareas × $precio por ha';
   }
+
+  @override
+  String perfilUxCalificacionSemantica(String valor) {
+    return 'Calificación $valor de 5, ver calificaciones';
+  }
+
+  @override
+  String get perfilUxCalificacionesTitulo => 'Calificaciones';
+
+  @override
+  String get perfilUxCalificacionesVacioTitulo => 'Aún no hay calificaciones';
+
+  @override
+  String get perfilUxCalificacionesVacioDetalle =>
+      'Cuando termines un servicio, aquí verás lo que opinan de ti.';
+
+  @override
+  String get perfilUxMenuMas => 'Más opciones';
+
+  @override
+  String get ajustesTitulo => 'Ajustes';
+
+  @override
+  String get ajustesApariencia => 'Apariencia';
+
+  @override
+  String get ajustesAparienciaDetalle => 'Tema claro u oscuro';
+
+  @override
+  String get ajustesCuenta => 'Cuenta';
+
+  @override
+  String get ajustesCerrarSesion => 'Cerrar sesión';
+
+  @override
+  String get ajustesCerrarSesionDetalle => 'Salir de este dispositivo';
+
+  @override
+  String get ajustesCerrarSesionPregunta => '¿Cerrar sesión?';
+
+  @override
+  String get ajustesCerrarSesionAviso =>
+      'Tendrás que volver a ingresar para usar la app.';
+
+  @override
+  String get ajustesCancelar => 'Cancelar';
+
+  @override
+  String get aparienciaTitulo => 'Apariencia';
+
+  @override
+  String get aparienciaTema => 'Tema';
+
+  @override
+  String get aparienciaTemaClaro => 'Claro';
+
+  @override
+  String get aparienciaTemaOscuro => 'Oscuro';
+
+  @override
+  String get perfilCliMetricas => 'Métricas';
+
+  @override
+  String perfilCliCalificacionesDetalle(String promedio, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n calificaciones',
+      one: '1 calificación',
+    );
+    return '$promedio · $_temp0';
+  }
+
+  @override
+  String get perfilCliCalificacionesSinDatos => 'Aún sin calificaciones';
+
+  @override
+  String get perfilPilMisDrones => 'Mis drones';
+
+  @override
+  String get perfilPilDocumentosDetalle =>
+      'Licencia, matrícula, seguro y certificado';
+
+  @override
+  String get perfilPilCalificaciones => 'Calificaciones';
+
+  @override
+  String perfilPilCalificacionesDetalle(String promedio, int total) {
+    return '$promedio · $total calificaciones';
+  }
+
+  @override
+  String get perfilPilActividad => 'Hectáreas y zonas';
+
+  @override
+  String get perfilPilActividadDetalle =>
+      'Hectáreas por mes y zonas de cobertura';
+
+  @override
+  String get perfilPilAjustesDetalle => 'Apariencia, notificaciones y cuenta';
+
+  @override
+  String get datosPersonalesTitulo => 'Datos personales';
+
+  @override
+  String get datosPersonalesAjustesDetalle => 'Revisa o corrige tus datos';
+
+  @override
+  String get datosPersonalesAvisoUnaVez =>
+      'Puedes editar tus datos una sola vez. Revísalos bien antes de guardar.';
+
+  @override
+  String get datosPersonalesNombre => 'Nombre completo';
+
+  @override
+  String get datosPersonalesCorreo => 'Correo electrónico';
+
+  @override
+  String get datosPersonalesTelefono => 'Teléfono';
+
+  @override
+  String get datosPersonalesEmpresa => 'Empresa';
+
+  @override
+  String get datosPersonalesDocumento => 'Documento';
+
+  @override
+  String get datosPersonalesNombreObligatorio => 'Escribe tu nombre.';
+
+  @override
+  String get datosPersonalesEmpresaObligatoria =>
+      'Escribe el nombre de la empresa.';
+
+  @override
+  String get datosPersonalesCorreoInvalido =>
+      'Escribe un correo válido, por ejemplo nombre@correo.com.';
+
+  @override
+  String get datosPersonalesTelefonoInvalido =>
+      'Escribe un teléfono válido, con al menos 8 dígitos.';
+
+  @override
+  String get datosPersonalesGuardar => 'Guardar cambios';
+
+  @override
+  String get datosPersonalesConfirmarTitulo => '¿Guardar tus datos?';
+
+  @override
+  String get datosPersonalesConfirmarAviso =>
+      'Después solo podrás pedir cambios a atención al cliente.';
+
+  @override
+  String get datosPersonalesRevisar => 'Revisar';
+
+  @override
+  String get datosPersonalesConfirmarSi => 'Sí, guardar';
+
+  @override
+  String get datosPersonalesGuardado => 'Guardamos tus datos.';
+
+  @override
+  String get datosPersonalesYaEditado =>
+      'Ya usaste tu edición. Para cambiar un dato, pide el cambio a atención al cliente.';
+
+  @override
+  String get datosPersonalesEdicionAgotada =>
+      'Tus datos ya se editaron desde otro dispositivo. Para cambiar algo, pide el cambio a atención al cliente.';
+
+  @override
+  String get datosPersonalesSolicitar => 'Solicitar un cambio';
+
+  @override
+  String get datosPersonalesSolicitudEnRevision =>
+      'Tu solicitud de cambio está en revisión. Te avisamos cuando tengamos respuesta.';
+
+  @override
+  String get datosPersonalesErrorTitulo => 'No pudimos cargar tus datos';
+
+  @override
+  String get datosPersonalesErrorDetalle =>
+      'Revisa tu conexión y vuelve a intentarlo.';
+
+  @override
+  String get datosPersonalesErrorGuardar =>
+      'No pudimos guardar tus datos. Vuelve a intentarlo.';
+
+  @override
+  String get datosPersonalesErrorSinConexion =>
+      'Sin conexión. Conéctate y vuelve a intentar.';
+
+  @override
+  String get datosPersonalesSolicitarIntro =>
+      'Cuéntanos qué dato quieres cambiar y por qué. Atención al cliente lo revisa y, si corresponde, lo corrige por ti.';
+
+  @override
+  String get datosPersonalesMotivo => '¿Qué quieres cambiar y por qué?';
+
+  @override
+  String get datosPersonalesMotivoAyuda =>
+      'Por ejemplo: mi teléfono cambió porque perdí el chip.';
+
+  @override
+  String get datosPersonalesMotivoCorto =>
+      'Cuéntanos un poco más (mínimo 10 caracteres).';
+
+  @override
+  String get datosPersonalesEnviar => 'Enviar solicitud';
+
+  @override
+  String get datosPersonalesEnviada => 'Recibimos tu solicitud';
+
+  @override
+  String get datosPersonalesEnviadaDetalle =>
+      'Atención al cliente la revisará y te responderá. Mientras tanto tus datos siguen igual.';
+
+  @override
+  String get datosPersonalesListo => 'Listo';
+
+  @override
+  String get datosPersonalesErrorEnviar =>
+      'No pudimos enviar tu solicitud. Vuelve a intentarlo.';
+
+  @override
+  String get datosPersonalesSolicitudAbierta =>
+      'Ya tienes una solicitud en revisión.';
+
+  @override
+  String get contrasenaTitulo => 'Cambiar contraseña';
+
+  @override
+  String get contrasenaFilaAjustes => 'Cambiar contraseña';
+
+  @override
+  String get contrasenaFilaAjustesDetalle => 'Con un código que te enviamos';
+
+  @override
+  String get contrasenaCanalTitulo => '¿Dónde te enviamos el código?';
+
+  @override
+  String get contrasenaCanalDetalle =>
+      'Te mandamos un código de 6 números. Vale 10 minutos.';
+
+  @override
+  String get contrasenaCanalWhatsapp => 'WhatsApp';
+
+  @override
+  String get contrasenaCanalSms => 'Mensaje de texto';
+
+  @override
+  String get contrasenaCanalCorreo => 'Correo electrónico';
+
+  @override
+  String get contrasenaEnviarCodigo => 'Enviar código';
+
+  @override
+  String get contrasenaCodigoTitulo => 'Escribe el código';
+
+  @override
+  String contrasenaCodigoEnviadoA(String destino) {
+    return 'Lo enviamos a $destino.';
+  }
+
+  @override
+  String get contrasenaCampoCodigo => 'Código de 6 números';
+
+  @override
+  String get contrasenaCampoNueva => 'Contraseña nueva';
+
+  @override
+  String get contrasenaCampoNuevaAyuda => 'Usa al menos 4 caracteres.';
+
+  @override
+  String get contrasenaCampoRepetir => 'Repite la contraseña nueva';
+
+  @override
+  String get contrasenaPedirOtro => 'No me llegó, pedir otro código';
+
+  @override
+  String get contrasenaGuardar => 'Cambiar contraseña';
+
+  @override
+  String get contrasenaListoTitulo => 'Listo, cambiamos tu contraseña';
+
+  @override
+  String get contrasenaListoDetalle =>
+      'Tus otros dispositivos tendrán que iniciar sesión de nuevo.';
+
+  @override
+  String get contrasenaVolverAjustes => 'Volver a Ajustes';
+
+  @override
+  String get permisosCamaraTitulo => 'Usar la cámara';
+
+  @override
+  String get permisosCamaraMotivo =>
+      'Necesitamos la cámara para tomar la foto que vas a subir. Solo se abre cuando tú lo pides y la foto la ve quien participa del servicio.';
+
+  @override
+  String get permisosUbicacionTitulo => 'Usar tu ubicación';
+
+  @override
+  String get permisosUbicacionMotivo =>
+      'Para centrar el mapa en donde estás y mostrarte las solicitudes cercanas. Solo se usa mientras miras el mapa y no se guarda.';
+
+  @override
+  String get permisosNotificacionesTitulo =>
+      'Notificaciones de solicitudes nuevas';
+
+  @override
+  String get permisosNotificacionesMotivo =>
+      'Te avisamos cuando llegue una solicitud en tus zonas. Puedes desactivarlos cuando quieras.';
+
+  @override
+  String get permisosContinuar => 'Continuar';
+
+  @override
+  String get permisosAhoraNo => 'Ahora no';
+
+  @override
+  String get permisosDenegadoTitulo => 'Permiso desactivado';
+
+  @override
+  String get permisosDenegadoCamara =>
+      'Sin la cámara no podemos tomar la foto. Puedes elegir una de tu galería o intentarlo de nuevo cuando quieras.';
+
+  @override
+  String get permisosDenegadoUbicacion =>
+      'Sin tu ubicación el mapa sigue funcionando, pero no se centra donde estás. Puedes intentarlo de nuevo cuando quieras.';
+
+  @override
+  String get permisosDenegadoNotificaciones =>
+      'Sin este permiso no te avisamos de solicitudes nuevas. Puedes activarlo cuando quieras.';
+
+  @override
+  String get permisosBloqueadoDetalle =>
+      'Lo desactivaste en los ajustes del teléfono. Actívalo ahí para continuar.';
+
+  @override
+  String get permisosAbrirAjustes => 'Abrir ajustes';
+
+  @override
+  String get permisosEntendido => 'Entendido';
+
+  @override
+  String get permisosMiUbicacion => 'Usar mi ubicación';
+
+  @override
+  String get permisosUbicacionNoDisponible =>
+      'No pudimos leer tu ubicación. Revisa que la ubicación del teléfono esté activa.';
+
+  @override
+  String get perfilCli2Notificaciones => 'Notificaciones';
+
+  @override
+  String get perfilCli2NotificacionesDetalle =>
+      'Mensajes de pilotos y de Agrocom';
+
+  @override
+  String get perfilCli2EstadHectareas => 'hectáreas';
+
+  @override
+  String get perfilPil2BandejaDetalle => 'Mensajes de clientes y de Agrocom';
+
+  @override
+  String get perfilPil2AvisosConfigDetalle => 'Nuevas solicitudes por zona';
+
+  @override
+  String perfilPil2DronesDetalle(String cantidad) {
+    return '$cantidad · Dron y licencia';
+  }
+
+  @override
+  String get perfilPil2Cobertura => 'Cobertura';
+
+  @override
+  String get bandejaTitulo => 'Notificaciones';
+
+  @override
+  String get bandejaFiltroTodas => 'Todas';
+
+  @override
+  String get bandejaFiltroMensajes => 'Mensajes';
+
+  @override
+  String get bandejaFiltroSistema => 'Sistema';
+
+  @override
+  String get bandejaGrupoHoy => 'Hoy';
+
+  @override
+  String get bandejaGrupoAyer => 'Ayer';
+
+  @override
+  String get bandejaGrupoAntes => 'Antes';
+
+  @override
+  String get bandejaMarcarTodas => 'Marcar todas como leídas';
+
+  @override
+  String get bandejaNoLeida => 'No leída';
+
+  @override
+  String get bandejaOrigenSistema => 'Agrocom';
+
+  @override
+  String get bandejaVacioTitulo => 'Aquí te avisamos lo importante';
+
+  @override
+  String get bandejaVacioDetalle =>
+      'Ofertas nuevas, mensajes de la otra parte y cambios en tus servicios aparecerán en esta lista.';
+
+  @override
+  String get bandejaVacioMensajesTitulo => 'Todavía no hay mensajes';
+
+  @override
+  String get bandejaVacioMensajesDetalle =>
+      'Cuando alguien te escriba por un servicio, lo verás aquí.';
+
+  @override
+  String get bandejaVacioSistemaTitulo => 'Sin notificaciones del sistema';
+
+  @override
+  String get bandejaVacioSistemaDetalle =>
+      'Te avisamos aquí cuando cambie el estado de tus servicios o de tu cuenta.';
+
+  @override
+  String get bandejaErrorTitulo => 'No pudimos cargar tus notificaciones';
+
+  @override
+  String get bandejaErrorDetalle => 'Revisa tu conexión y vuelve a intentarlo.';
+
+  @override
+  String get perfilR3MiCuenta => 'Mi cuenta';
+
+  @override
+  String get perfilR3Servicios => 'servicios';
+
+  @override
+  String get perfilR3Hectareas => 'hectáreas';
+
+  @override
+  String get perfilR3Cancelacion => 'cancelación';
+
+  @override
+  String get perfilR3DocumentosDetalle => 'Licencia, matrícula, seguro y más';
+
+  @override
+  String get contrasenaErrorSinRed =>
+      'No hay conexión. Revisa tu señal y vuelve a intentarlo: lo que escribiste se conserva.';
+
+  @override
+  String get contrasenaErrorCanalNoDisponible =>
+      'Ese medio no está disponible ahora. Elige otro para recibir el código.';
 }

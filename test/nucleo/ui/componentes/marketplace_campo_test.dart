@@ -131,7 +131,7 @@ void main() {
       await tester.pumpWidget(
         _envolver(
           SingleChildScrollView(child: _oferta()),
-          modo: ModoVisualCampo.campo,
+          modo: ModoVisualCampo.oscuro,
         ),
       );
       await expectLater(
@@ -182,7 +182,7 @@ void main() {
       expect(find.byType(EsqueletoCampo), findsOneWidget);
     });
 
-    testWidgets('golden oscuro', skip: _saltarGolden != null, (tester) async {
+    testWidgets('golden campo', skip: _saltarGolden != null, (tester) async {
       await tester.pumpWidget(
         _envolver(
           Row(
@@ -197,7 +197,7 @@ void main() {
       );
       await expectLater(
         find.byType(Row).first,
-        matchesGoldenFile('../goldens/esqueleto_oscuro.png'),
+        matchesGoldenFile('../goldens/esqueleto_campo.png'),
       );
     });
   });

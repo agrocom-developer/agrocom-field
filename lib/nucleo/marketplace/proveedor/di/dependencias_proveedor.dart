@@ -6,6 +6,12 @@ import '../../../camara/selector_imagen.dart';
 import '../../../evidencias/compresor_adaptativo.dart';
 import '../../../notificaciones/push/dispositivos_push_repositorio.dart';
 import '../../../notificaciones/push/token_push_store.dart';
+import '../../../notificaciones/bandeja/data/bandeja_demo.dart';
+import '../../../notificaciones/bandeja/data/bandeja_red.dart';
+import '../../../notificaciones/bandeja/domain/bandeja_repositorio.dart';
+import '../../../cuenta/data/contrasena_demo.dart';
+import '../../../cuenta/data/contrasena_red.dart';
+import '../../../cuenta/domain/contrasena_repositorio.dart';
 import '../../foto_perfil/foto_perfil_repositorio.dart';
 import '../../foto_preparador.dart';
 import '../../pago/pagos_repositorio.dart';
@@ -16,6 +22,10 @@ import '../dron/data/drones_red.dart';
 import '../dron/domain/drones_repositorio.dart';
 import '../ejecucion/di/dependencias_ejecucion.dart';
 import '../negociacion/di/dependencias_negociacion.dart';
+import '../../../cuenta/datos/data/datos_personales_demo.dart';
+import '../../../cuenta/datos/data/datos_personales_red.dart';
+import '../../../cuenta/datos/domain/datos_personales.dart';
+import '../../../cuenta/datos/domain/datos_personales_repositorio.dart';
 import '../perfil/data/perfil_demo.dart';
 import '../perfil/data/perfil_red.dart';
 import '../perfil/domain/perfil_repositorio.dart';
@@ -34,6 +44,9 @@ class DependenciasProveedor {
     required this.pagos,
     required this.preparadorFoto,
     required this.push,
+    this.contrasena,
+    this.datosPersonales,
+    this.bandeja,
   });
 
   factory DependenciasProveedor.demo(
@@ -52,6 +65,16 @@ class DependenciasProveedor {
     drones: DronesDemo(almacen),
     perfil: PerfilDemo(almacen),
     fotoPerfil: FotoPerfilDemo(),
+    contrasena: ContrasenaDemo(),
+    bandeja: BandejaDemo(),
+    datosPersonales: DatosPersonalesDemo(
+      const DatosPersonales(
+        nombre: 'Mamani Agroservicios',
+        correo: 'contacto@mamani.example',
+        telefono: '+591 7654 3210',
+        documento: '4587123 SC',
+      ),
+    ),
     pagos:
         pagos ??
         PagosDemo(
@@ -78,6 +101,9 @@ class DependenciasProveedor {
     drones: DronesRed(http),
     perfil: PerfilRed(http),
     fotoPerfil: FotoPerfilRed(http),
+    datosPersonales: const DatosPersonalesRed(),
+    contrasena: ContrasenaRed(http),
+    bandeja: BandejaRed(http),
     pagos: PagosRed(http),
     preparadorFoto: PreparadorFoto(
       SelectorImagenImagePicker(),
@@ -93,6 +119,16 @@ class DependenciasProveedor {
 
   /// Foto de perfil de la cuenta del proveedor.
   final FotoPerfilRepositorio fotoPerfil;
+
+  /// Cambio de contraseña con código; sin él Ajustes no ofrece la fila.
+  final ContrasenaRepositorio? contrasena;
+
+  /// Notificaciones recibidas (mensajes y avisos del sistema).
+  final BandejaRepositorio? bandeja;
+
+  /// Edición única de datos personales y solicitud de cambio; sin él (o con
+  /// `disponible` falso) Ajustes no ofrece la fila.
+  final DatosPersonalesRepositorio? datosPersonales;
 
   /// «Ya recibí el pago» del titular en el servicio finalizado.
   final PagosRepositorio pagos;
@@ -112,6 +148,14 @@ class DependenciasProveedor {
     RepositoryProvider<FotoPerfilRepositorio>.value(value: fotoPerfil),
     RepositoryProvider<PagosRepositorio>.value(value: pagos),
     RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
+    if (contrasena != null)
+      RepositoryProvider<ContrasenaRepositorio>.value(value: contrasena!),
+    if (bandeja != null)
+      RepositoryProvider<BandejaRepositorio>.value(value: bandeja!),
+    if (datosPersonales != null)
+      RepositoryProvider<DatosPersonalesRepositorio>.value(
+        value: datosPersonales!,
+      ),
   ];
 
   Widget proveer({required Widget child}) =>

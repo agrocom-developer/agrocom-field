@@ -43,12 +43,6 @@ const _variantes = <_Variante>[
     escala: 1,
   ),
   (
-    nombre: 'oscuro_412',
-    tamano: _grande,
-    modo: ModoVisualCampo.oscuro,
-    escala: 1,
-  ),
-  (
     nombre: 'claro_360_texto200',
     tamano: _chico,
     modo: ModoVisualCampo.claro,
@@ -62,12 +56,6 @@ const _soloChico = <_Variante>[
 
 const _soloIpad = <_Variante>[
   (nombre: 'claro_ipad', tamano: _ipad, modo: ModoVisualCampo.claro, escala: 1),
-  (
-    nombre: 'oscuro_ipad',
-    tamano: _ipad,
-    modo: ModoVisualCampo.oscuro,
-    escala: 1,
-  ),
 ];
 
 /// Lleva el cubit al estado de la escena.

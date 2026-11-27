@@ -114,7 +114,8 @@ Archivos: `paleta_campo.dart` (roles por modo, `PaletaCampo`), `colores_campo.da
 - **Estados vacíos:** icono en contenedor de 88, título, una frase con un dato útil y un CTA.
 - **Errores:** dicen qué pasó, qué se guardó y qué hacer. Distingue lo que funciona sin red de lo que necesita red.
 - **Carrusel de portadas:** 3 slides con avance automático cada 3,5 s, deslizables, con puntos que se pueden tocar. Pausa al interactuar y respeta "reducir movimiento".
-- **Temas:** Claro, Oscuro o Campo AAA, elegido en Ajustes y persistido. El oscuro no es una inversión: usa fondo verde noche con superficies grafito.
+- **Temas:** Claro y Oscuro, elegido en Ajustes y persistido; los dos flavors arrancan en Claro. El Oscuro fusiona el alto contraste AAA del antiguo «Campo» con el verde profundo (no negro puro) del antiguo «Oscuro».
+- **Pautas de UX:** zona del pulgar, un solo CTA ámbar al pie, simetría de espaciado, héroes y animación con propósito están en el skill `ux-buenas-practicas-movil`.
 
 ## 8. Iconografía e imágenes
 - Una sola familia de iconos: hoy Material Icons redondeados (`Icons.*_rounded`), sin mezclar con otras. Pasar a Material Symbols Rounded de peso 500 requiere sumar la fuente variable; queda como deuda.

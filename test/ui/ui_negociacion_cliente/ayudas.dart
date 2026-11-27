@@ -105,13 +105,12 @@ class Variante {
   static const compacto = Size(360, 640);
   static const amplio = Size(412, 915);
 
-  /// Claro en teléfono chico y grande, oscuro en el grande, y el chico con
+  /// Claro en teléfono chico y grande, y el chico con
   /// el texto al 200 %.
   static const matriz = [
     Variante(ModoVisualCampo.claro, compacto, 1),
     Variante(ModoVisualCampo.claro, compacto, 2),
     Variante(ModoVisualCampo.claro, amplio, 1),
-    Variante(ModoVisualCampo.oscuro, amplio, 1),
   ];
 
   static const base = Variante(ModoVisualCampo.claro, amplio, 1);

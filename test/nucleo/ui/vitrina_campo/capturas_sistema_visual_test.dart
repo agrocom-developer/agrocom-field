@@ -46,7 +46,7 @@ void main() {
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         debugShowCheckedModeBanner: false,
-        theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.campo),
+        theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.oscuro),
         home: const Scaffold(
           body: SafeArea(child: SistemaVisualCampoVitrina()),
         ),
@@ -70,15 +70,6 @@ void main() {
       tester,
       tamano: const Size(402, 1500),
       archivo: 'iphone17pro_claro.png',
-    );
-  });
-
-  testWidgets('iPhone 17 Pro, modo oscuro', skip: saltar, (tester) async {
-    await capturar(
-      tester,
-      tamano: const Size(402, 1500),
-      archivo: 'iphone17pro_oscuro.png',
-      modo: 'Oscuro',
     );
   });
 

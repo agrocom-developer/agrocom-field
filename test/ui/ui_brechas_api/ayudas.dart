@@ -31,19 +31,18 @@ class Variante {
 const chico = Size(360, 640);
 const grande = Size(412, 915);
 
-/// Claro en chico y grande, oscuro en grande y el chico con el texto al 200 %.
+/// Claro en chico y grande y el chico con el texto al 200 %.
 const matrizCliente = [
   Variante('claro_360', ModoVisualCampo.claro, chico, 1),
   Variante('claro_412', ModoVisualCampo.claro, grande, 1),
-  Variante('oscuro_412', ModoVisualCampo.oscuro, grande, 1),
   Variante('claro_360_texto200', ModoVisualCampo.claro, chico, 2),
 ];
 
 /// El modo campo (alto contraste) de piloto y auxiliar.
 const matrizCampo = [
-  Variante('campo_360', ModoVisualCampo.campo, chico, 1),
-  Variante('campo_412', ModoVisualCampo.campo, grande, 1),
-  Variante('campo_360_texto200', ModoVisualCampo.campo, chico, 2),
+  Variante('campo_360', ModoVisualCampo.oscuro, chico, 1),
+  Variante('campo_412', ModoVisualCampo.oscuro, grande, 1),
+  Variante('campo_360_texto200', ModoVisualCampo.oscuro, chico, 2),
 ];
 
 Future<void> cargarFuentes() async {

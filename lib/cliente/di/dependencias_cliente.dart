@@ -23,10 +23,21 @@ import '../../nucleo/notificaciones/push/token_push_store.dart';
 import '../acceso/data/acceso_demo.dart';
 import '../acceso/data/acceso_red.dart';
 import '../acceso/domain/acceso_repositorio.dart';
+import '../../nucleo/cuenta/datos/data/datos_personales_demo.dart';
+import '../../nucleo/cuenta/datos/data/datos_personales_red.dart';
+import '../../nucleo/cuenta/datos/domain/datos_personales.dart';
+import '../../nucleo/cuenta/datos/domain/datos_personales_repositorio.dart';
+import '../../nucleo/marketplace/demo/datos_demo.dart';
 import '../calificar/data/calificacion_demo.dart';
 import '../calificar/data/calificacion_red.dart';
 import '../calificar/domain/calificacion_repositorio.dart';
 import '../comun/presentation/foto_remota.dart';
+import '../../nucleo/notificaciones/bandeja/data/bandeja_demo.dart';
+import '../../nucleo/notificaciones/bandeja/data/bandeja_red.dart';
+import '../../nucleo/notificaciones/bandeja/domain/bandeja_repositorio.dart';
+import '../../nucleo/cuenta/data/contrasena_demo.dart';
+import '../../nucleo/cuenta/data/contrasena_red.dart';
+import '../../nucleo/cuenta/domain/contrasena_repositorio.dart';
 import '../contactos/data/contactos_demo.dart';
 import '../contactos/data/contactos_red.dart';
 import '../contactos/domain/contactos_repositorio.dart';
@@ -82,6 +93,9 @@ class DependenciasCliente {
     required this.push,
     this.contactos,
     this.precioFinal,
+    this.contrasena,
+    this.datosPersonales,
+    this.bandeja,
     this.notaAcceso,
     this.sesionExpirada,
     ConectividadServicio? conectividad,
@@ -93,10 +107,12 @@ class DependenciasCliente {
   /// [primerUso] arranca como recién instalada: presentación, acceso y
   /// después el inicio (así corre `main_cliente.dart` en modo demo), y los
   /// pilotos simulados responden: ofertan, contraofertan y contestan el chat.
-  /// Con [almacen] y [latencia] las pruebas fijan los datos y quitan la
+  /// Con [conSesion] sigue con los pilotos simulados pero ya dentro de la app
+  /// (`SESION_DEMO`). Con [almacen] y [latencia] las pruebas fijan los datos y quitan la
   /// espera simulada.
   factory DependenciasCliente.demo({
     bool primerUso = false,
+    bool conSesion = false,
     AlmacenDemoCliente? almacen,
     Duration? latencia,
     SelectorImagen? selectorImagen,
@@ -126,8 +142,8 @@ class DependenciasCliente {
       cuenta: CuentaDemo(almacen),
       acceso: AccesoDemo(
         almacen,
-        onboardingVisto: !primerUso,
-        sesionIniciada: !primerUso,
+        onboardingVisto: !primerUso || conSesion,
+        sesionIniciada: !primerUso || conSesion,
       ),
       inicio: InicioClienteDemo(almacen),
       fotoPerfil: FotoPerfilDemo(),
@@ -141,6 +157,16 @@ class DependenciasCliente {
           ),
       push: DispositivosPushDemo(TokenPushEnMemoria()),
       contactos: ContactosDemo(),
+      contrasena: ContrasenaDemo(),
+      bandeja: BandejaDemo(),
+      datosPersonales: DatosPersonalesDemo(
+        const DatosPersonales(
+          nombre: DatosDemo.clienteNombre,
+          correo: 'hugo.antelo@ejemplo.com',
+          telefono: '+591 7712 3456',
+          empresa: DatosDemo.clienteEmpresa,
+        ),
+      ),
       precioFinal: PrecioFinalDemo(almacen),
       notaAcceso:
           'Modo demo: ingresa con cualquier usuario y una contraseña de 8 '
@@ -219,6 +245,9 @@ class DependenciasCliente {
       ),
       push: push,
       contactos: ContactosRed(http),
+      contrasena: ContrasenaRed(marketplace),
+      bandeja: BandejaRed(marketplace),
+      datosPersonales: const DatosPersonalesRed(),
       precioFinal: PrecioFinalRed(http),
       notaAcceso: notaAcceso,
       sesionExpirada: expiracion.stream,
@@ -254,6 +283,16 @@ class DependenciasCliente {
   /// Contactos de referencia del cliente empresa; sin él, el cliente no los
   /// gestiona (las pruebas que no los necesitan lo omiten).
   final ContactosRepositorio? contactos;
+
+  /// Cambio de contraseña con código; sin él Ajustes no ofrece la fila.
+  final ContrasenaRepositorio? contrasena;
+
+  /// Notificaciones recibidas (mensajes y avisos del sistema).
+  final BandejaRepositorio? bandeja;
+
+  /// Edición única de datos personales y solicitud de cambio; sin él (o con
+  /// `disponible` falso) Ajustes no ofrece la fila.
+  final DatosPersonalesRepositorio? datosPersonales;
 
   /// Precio final y su confirmación; sin él la pantalla muestra solo lo de
   /// la solicitud.
@@ -291,6 +330,14 @@ class DependenciasCliente {
         RepositoryProvider<PrecioFinalRepositorio>.value(value: precioFinal!),
       if (contactos != null)
         RepositoryProvider<ContactosRepositorio>.value(value: contactos!),
+      if (contrasena != null)
+        RepositoryProvider<ContrasenaRepositorio>.value(value: contrasena!),
+      if (bandeja != null)
+        RepositoryProvider<BandejaRepositorio>.value(value: bandeja!),
+      if (datosPersonales != null)
+        RepositoryProvider<DatosPersonalesRepositorio>.value(
+          value: datosPersonales!,
+        ),
     ],
     child: child,
   );

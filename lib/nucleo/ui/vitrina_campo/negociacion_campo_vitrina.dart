@@ -48,10 +48,6 @@ class _NegociacionCampoVitrinaState extends State<NegociacionCampoVitrina> {
                       ),
                       ButtonSegment(
                         value: ModoVisualCampo.oscuro,
-                        label: Text('Oscuro'),
-                      ),
-                      ButtonSegment(
-                        value: ModoVisualCampo.campo,
                         label: Text('Campo'),
                       ),
                     ],
@@ -181,7 +177,7 @@ class _NegociacionCampoVitrinaState extends State<NegociacionCampoVitrina> {
                     maximo: 5,
                     unidad: 'de 5 rondas',
                     etiqueta: 'Ronda',
-                    alturaCampo: modo == ModoVisualCampo.campo,
+                    alturaCampo: modo == ModoVisualCampo.oscuro,
                     onCambio: (v) => setState(() => _ronda = v),
                   ),
                 ),

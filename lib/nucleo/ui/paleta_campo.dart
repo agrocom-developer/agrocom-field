@@ -2,17 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'colores_campo.dart';
 
-/// Los tres modos visuales del marketplace. El flavor decide el modo por
-/// defecto (cliente: claro u oscuro según el sistema; piloto:
-/// [campo], alto contraste para sol directo), pero cualquier modo es válido
-/// en cualquier flavor.
-enum ModoVisualCampo { claro, oscuro, campo }
+/// Los dos modos visuales del marketplace: [claro] (ciudad, el predeterminado
+/// de los dos flavors) y [oscuro] (alto contraste AAA sobre verde profundo, no negro puro).
+/// Cualquier modo es válido en cualquier flavor y se elige en el perfil.
+enum ModoVisualCampo { claro, oscuro }
 
 /// Paleta semántica del sistema visual Industrial AgTech (DESIGN.md y
 /// docs/diseno/sistema-visual.md); la fuente de los valores es
 /// `docs/diseno/tokens/tokens.json`.
 ///
-/// Cada rol existe en los tres modos y cumple WCAG 2.2 AA como mínimo, AAA en
+/// Cada rol existe en los dos modos y cumple WCAG 2.2 AA como mínimo, AAA en
 /// campo (verificado en `test/nucleo/ui/paleta_campo_test.dart`). Las
 /// pantallas leen roles (`context.paleta.texto`), nunca valores hexadecimales.
 ///
@@ -58,12 +57,14 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     required this.papel2,
     required this.papelDoblez,
     required this.sobrePapel,
+    required this.cabecera,
+    required this.sobreCabecera,
   });
 
   final Brightness brillo;
 
-  /// Es la paleta del modo campo (alto contraste): objetivos táctiles de 72.
-  bool get esCampo => fondo == ColoresCampo.fondoProfundo;
+  /// Es la paleta oscura de alto contraste: objetivos táctiles de 72.
+  bool get esCampo => brillo == Brightness.dark;
 
   /// Fondo de pantalla.
   final Color fondo;
@@ -170,6 +171,13 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
   /// Texto sobre el post-it.
   final Color sobrePapel;
 
+  /// Banda de cabecera de perfil. En el oscuro es un verde profundo, no el
+  /// acento vivo de los botones, que encandila a pantalla completa.
+  final Color cabecera;
+
+  /// Texto e íconos sobre [cabecera] (AAA).
+  final Color sobreCabecera;
+
   static const PaletaCampo claro = PaletaCampo(
     brillo: Brightness.light,
     fondo: Color(0xFFF3F5F1),
@@ -188,9 +196,9 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     error: Color(0xFFA12727),
     info: Color(0xFF14577F),
     superficie2: Color(0xFFE9EEE7),
-    acentoContenedor: Color(0xFFE1EEDD),
-    sobreAcentoContenedor: Color(0xFF22562A),
-    acentoHover: Color(0xFF28632C),
+    acentoContenedor: Color(0xFFE3F0D8),
+    sobreAcentoContenedor: Color(0xFF285A18),
+    acentoHover: Color(0xFF2F6B1D),
     grafito: Color(0xFF29343A),
     sobreGrafito: Color(0xFFFFFFFF),
     ambar: Color(0xFFF5A623),
@@ -207,54 +215,18 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     papel2: Color(0xFFFFDA55),
     papelDoblez: Color(0xFFE8C13E),
     sobrePapel: Color(0xFF29343A),
+    cabecera: ColoresCampo.verdeHoja,
+    sobreCabecera: Color(0xFFFFFFFF),
   );
 
+  /// Modo oscuro: contraste AAA de texto y acentos (el antiguo «campo», ADR
+  /// 0008) sobre un verde profundo en vez de negro puro (el antiguo «oscuro»).
   static const PaletaCampo oscuro = PaletaCampo(
     brillo: Brightness.dark,
-    fondo: Color(0xFF17251C),
-    superficie: Color(0xFF293832),
-    superficieElevada: Color(0xFF34443B),
-    borde: Color(0xFF405247),
-    bordeFuerte: Color(0xFF8A9C90),
-    texto: Color(0xFFEDF3EC),
-    textoSecundario: Color(0xFFAAB8AC),
-    acento: ColoresCampo.acentoHojaOscuro,
-    apoyo: ColoresCampo.acentoHojaOscuro,
-    sobreAcento: Color(0xFF0F1F12),
-    acentoTexto: ColoresCampo.acentoTextoOscuro,
-    exito: ColoresCampo.acentoTextoOscuro,
-    alerta: Color(0xFFFFB52E),
-    error: Color(0xFFFF8080),
-    info: Color(0xFF5BADDF),
-    superficie2: Color(0xFF34443B),
-    acentoContenedor: Color(0xFF2E4A35),
-    sobreAcentoContenedor: Color(0xFFA8DCAC),
-    acentoHover: Color(0xFF79CA80),
-    grafito: Color(0xFF34443B),
-    sobreGrafito: Color(0xFFEDF3EC),
-    ambar: Color(0xFFFFB52E),
-    sobreAmbar: Color(0xFF17251C),
-    ambarContenedor: Color(0xFF4A3A17),
-    sobreAmbarContenedor: Color(0xFFFFD488),
-    rellenoInfo: Color(0xFF50A5D8),
-    infoContenedor: Color(0xFF1E3A4C),
-    sobreInfoContenedor: Color(0xFFA6D4F0),
-    rellenoError: Color(0xFFFF6868),
-    errorContenedor: Color(0xFF4A2326),
-    sobreErrorContenedor: Color(0xFFFFB4B4),
-    papel: Color(0xFFF2D56E),
-    papel2: Color(0xFFE6C552),
-    papelDoblez: Color(0xFFC9A83A),
-    sobrePapel: Color(0xFF1E2A22),
-  );
-
-  /// Modo campo: alto contraste AAA para sol directo y guantes (ADR 0008).
-  static const PaletaCampo campo = PaletaCampo(
-    brillo: Brightness.dark,
-    fondo: ColoresCampo.fondoProfundo,
-    superficie: ColoresCampo.superficie,
-    superficieElevada: Color(0xFF1B2A20),
-    borde: Color(0xFF2C4034),
+    fondo: Color(0xFF0F1A13),
+    superficie: Color(0xFF16241B),
+    superficieElevada: Color(0xFF1A2A20),
+    borde: Color(0xFF34493B),
     bordeFuerte: Color(0xFF6B8272),
     texto: ColoresCampo.textoPrincipal,
     textoSecundario: Color(0xFFD7E2D9),
@@ -266,11 +238,11 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     alerta: ColoresCampo.acentoAmbar,
     error: ColoresCampo.acentoRojo,
     info: Color(0xFF8CCBF2),
-    superficie2: Color(0xFF1B2A20),
+    superficie2: Color(0xFF1A2A20),
     acentoContenedor: Color(0xFF1B3A22),
     sobreAcentoContenedor: Color(0xFFCBF5CB),
     acentoHover: Color(0xFFA8EBA8),
-    grafito: Color(0xFF1B2A20),
+    grafito: Color(0xFF1A2A20),
     sobreGrafito: Color(0xFFFFFFFF),
     ambar: ColoresCampo.acentoAmbar,
     sobreAmbar: Color(0xFF000000),
@@ -286,6 +258,8 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     papel2: Color(0xFFFFDA55),
     papelDoblez: Color(0xFFE8C13E),
     sobrePapel: Color(0xFF000000),
+    cabecera: Color(0xFF24562F),
+    sobreCabecera: Color(0xFFFFFFFF),
   );
 
   /// Fondo tonal y texto de un chip para el rol de color [rol]
@@ -310,7 +284,6 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
   static PaletaCampo deModo(ModoVisualCampo modo) => switch (modo) {
     ModoVisualCampo.claro => claro,
     ModoVisualCampo.oscuro => oscuro,
-    ModoVisualCampo.campo => campo,
   };
 
   @override
@@ -351,6 +324,8 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
     Color? papel2,
     Color? papelDoblez,
     Color? sobrePapel,
+    Color? cabecera,
+    Color? sobreCabecera,
   }) {
     return PaletaCampo(
       brillo: brillo ?? this.brillo,
@@ -390,6 +365,8 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
       papel2: papel2 ?? this.papel2,
       papelDoblez: papelDoblez ?? this.papelDoblez,
       sobrePapel: sobrePapel ?? this.sobrePapel,
+      cabecera: cabecera ?? this.cabecera,
+      sobreCabecera: sobreCabecera ?? this.sobreCabecera,
     );
   }
 
@@ -446,6 +423,8 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
       papel2: mezcla(papel2, other.papel2),
       papelDoblez: mezcla(papelDoblez, other.papelDoblez),
       sobrePapel: mezcla(sobrePapel, other.sobrePapel),
+      cabecera: mezcla(cabecera, other.cabecera),
+      sobreCabecera: mezcla(sobreCabecera, other.sobreCabecera),
     );
   }
 }
@@ -454,5 +433,5 @@ class PaletaCampo extends ThemeExtension<PaletaCampo> {
 /// (un `MaterialApp` pelado en un test) cae en la paleta de modo campo.
 extension PaletaContextoCampo on BuildContext {
   PaletaCampo get paleta =>
-      Theme.of(this).extension<PaletaCampo>() ?? PaletaCampo.campo;
+      Theme.of(this).extension<PaletaCampo>() ?? PaletaCampo.oscuro;
 }
