@@ -26,6 +26,8 @@ class CampoFormularioMarketplace extends StatefulWidget {
     this.inputFormatters,
     this.obscureText = false,
     this.enabled = true,
+    this.minLines,
+    this.maxLines = 1,
     this.onChanged,
     this.onFieldSubmitted,
     super.key,
@@ -43,6 +45,10 @@ class CampoFormularioMarketplace extends StatefulWidget {
   final List<TextInputFormatter>? inputFormatters;
   final bool obscureText;
   final bool enabled;
+
+  /// Para campos de texto largo (un motivo): alto mínimo y máximo en líneas.
+  final int? minLines;
+  final int? maxLines;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onFieldSubmitted;
 
@@ -96,6 +102,8 @@ class _CampoFormularioMarketplaceState
             autofillHints: widget.autofillHints,
             inputFormatters: widget.inputFormatters,
             obscureText: _oculto,
+            minLines: widget.obscureText ? 1 : widget.minLines,
+            maxLines: widget.obscureText ? 1 : widget.maxLines,
             enableSuggestions: !widget.obscureText,
             autocorrect: false,
             onChanged: widget.onChanged,

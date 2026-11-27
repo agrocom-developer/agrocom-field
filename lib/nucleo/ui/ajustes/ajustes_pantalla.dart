@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../cuenta/datos/domain/datos_personales_repositorio.dart';
+import '../../cuenta/datos/presentation/datos_personales_pantalla.dart';
 import '../../cuenta/domain/contrasena_repositorio.dart';
 import '../../cuenta/presentation/cambiar_contrasena_pantalla.dart';
 import '../../marketplace/ui/superficie_marketplace.dart';
@@ -25,6 +27,9 @@ class AjustesPantalla extends StatelessWidget {
     final t = AppLocalizations.of(context);
     // La fila solo existe si la app compuso el repositorio (demo y red sí).
     final conContrasena = context.read<ContrasenaRepositorio?>() != null;
+    // «Datos personales» solo si el servidor ya ofrece la función.
+    final conDatos =
+        context.read<DatosPersonalesRepositorio?>()?.disponible ?? false;
     return Scaffold(
       appBar: AppBar(title: Text(t.ajustesTitulo)),
       body: ListView(
@@ -46,7 +51,7 @@ class AjustesPantalla extends StatelessWidget {
               ...filas,
             ],
           ),
-          if (alSalir != null || conContrasena) ...[
+          if (alSalir != null || conContrasena || conDatos) ...[
             const SizedBox(height: EspaciadoCampo.xl),
             Semantics(
               header: true,
@@ -60,6 +65,18 @@ class AjustesPantalla extends StatelessWidget {
             ),
             _Grupo(
               children: [
+                if (conDatos)
+                  FilaAjusteCampo(
+                    clave: const Key('ajustes-datos-personales'),
+                    icono: Icons.badge_outlined,
+                    titulo: t.datosPersonalesTitulo,
+                    detalle: t.datosPersonalesAjustesDetalle,
+                    alToque: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const DatosPersonalesPantalla(),
+                      ),
+                    ),
+                  ),
                 if (conContrasena)
                   FilaAjusteCampo(
                     clave: const Key('ajustes-cambiar-contrasena'),

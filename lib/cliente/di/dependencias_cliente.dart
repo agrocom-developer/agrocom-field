@@ -23,6 +23,11 @@ import '../../nucleo/notificaciones/push/token_push_store.dart';
 import '../acceso/data/acceso_demo.dart';
 import '../acceso/data/acceso_red.dart';
 import '../acceso/domain/acceso_repositorio.dart';
+import '../../nucleo/cuenta/datos/data/datos_personales_demo.dart';
+import '../../nucleo/cuenta/datos/data/datos_personales_red.dart';
+import '../../nucleo/cuenta/datos/domain/datos_personales.dart';
+import '../../nucleo/cuenta/datos/domain/datos_personales_repositorio.dart';
+import '../../nucleo/marketplace/demo/datos_demo.dart';
 import '../calificar/data/calificacion_demo.dart';
 import '../calificar/data/calificacion_red.dart';
 import '../calificar/domain/calificacion_repositorio.dart';
@@ -86,6 +91,7 @@ class DependenciasCliente {
     this.contactos,
     this.precioFinal,
     this.contrasena,
+    this.datosPersonales,
     this.notaAcceso,
     this.sesionExpirada,
     ConectividadServicio? conectividad,
@@ -146,6 +152,14 @@ class DependenciasCliente {
       push: DispositivosPushDemo(TokenPushEnMemoria()),
       contactos: ContactosDemo(),
       contrasena: ContrasenaDemo(),
+      datosPersonales: DatosPersonalesDemo(
+        const DatosPersonales(
+          nombre: DatosDemo.clienteNombre,
+          correo: 'hugo.antelo@ejemplo.com',
+          telefono: '+591 7712 3456',
+          empresa: DatosDemo.clienteEmpresa,
+        ),
+      ),
       precioFinal: PrecioFinalDemo(almacen),
       notaAcceso:
           'Modo demo: ingresa con cualquier usuario y una contraseña de 8 '
@@ -225,6 +239,7 @@ class DependenciasCliente {
       push: push,
       contactos: ContactosRed(http),
       contrasena: ContrasenaRed(marketplace),
+      datosPersonales: const DatosPersonalesRed(),
       precioFinal: PrecioFinalRed(http),
       notaAcceso: notaAcceso,
       sesionExpirada: expiracion.stream,
@@ -264,6 +279,10 @@ class DependenciasCliente {
   /// Cambio de contraseña con código; sin él Ajustes no ofrece la fila.
   final ContrasenaRepositorio? contrasena;
 
+  /// Edición única de datos personales y solicitud de cambio; sin él (o con
+  /// `disponible` falso) Ajustes no ofrece la fila.
+  final DatosPersonalesRepositorio? datosPersonales;
+
   /// Precio final y su confirmación; sin él la pantalla muestra solo lo de
   /// la solicitud.
   final PrecioFinalRepositorio? precioFinal;
@@ -302,6 +321,10 @@ class DependenciasCliente {
         RepositoryProvider<ContactosRepositorio>.value(value: contactos!),
       if (contrasena != null)
         RepositoryProvider<ContrasenaRepositorio>.value(value: contrasena!),
+      if (datosPersonales != null)
+        RepositoryProvider<DatosPersonalesRepositorio>.value(
+          value: datosPersonales!,
+        ),
     ],
     child: child,
   );

@@ -19,6 +19,10 @@ import '../dron/data/drones_red.dart';
 import '../dron/domain/drones_repositorio.dart';
 import '../ejecucion/di/dependencias_ejecucion.dart';
 import '../negociacion/di/dependencias_negociacion.dart';
+import '../../../cuenta/datos/data/datos_personales_demo.dart';
+import '../../../cuenta/datos/data/datos_personales_red.dart';
+import '../../../cuenta/datos/domain/datos_personales.dart';
+import '../../../cuenta/datos/domain/datos_personales_repositorio.dart';
 import '../perfil/data/perfil_demo.dart';
 import '../perfil/data/perfil_red.dart';
 import '../perfil/domain/perfil_repositorio.dart';
@@ -38,6 +42,7 @@ class DependenciasProveedor {
     required this.preparadorFoto,
     required this.push,
     this.contrasena,
+    this.datosPersonales,
   });
 
   factory DependenciasProveedor.demo(
@@ -57,6 +62,14 @@ class DependenciasProveedor {
     perfil: PerfilDemo(almacen),
     fotoPerfil: FotoPerfilDemo(),
     contrasena: ContrasenaDemo(),
+    datosPersonales: DatosPersonalesDemo(
+      const DatosPersonales(
+        nombre: 'Mamani Agroservicios',
+        correo: 'contacto@mamani.example',
+        telefono: '+591 7654 3210',
+        documento: '4587123 SC',
+      ),
+    ),
     pagos:
         pagos ??
         PagosDemo(
@@ -83,6 +96,7 @@ class DependenciasProveedor {
     drones: DronesRed(http),
     perfil: PerfilRed(http),
     fotoPerfil: FotoPerfilRed(http),
+    datosPersonales: const DatosPersonalesRed(),
     contrasena: ContrasenaRed(http),
     pagos: PagosRed(http),
     preparadorFoto: PreparadorFoto(
@@ -102,6 +116,10 @@ class DependenciasProveedor {
 
   /// Cambio de contraseña con código; sin él Ajustes no ofrece la fila.
   final ContrasenaRepositorio? contrasena;
+
+  /// Edición única de datos personales y solicitud de cambio; sin él (o con
+  /// `disponible` falso) Ajustes no ofrece la fila.
+  final DatosPersonalesRepositorio? datosPersonales;
 
   /// «Ya recibí el pago» del titular en el servicio finalizado.
   final PagosRepositorio pagos;
@@ -123,6 +141,10 @@ class DependenciasProveedor {
     RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
     if (contrasena != null)
       RepositoryProvider<ContrasenaRepositorio>.value(value: contrasena!),
+    if (datosPersonales != null)
+      RepositoryProvider<DatosPersonalesRepositorio>.value(
+        value: datosPersonales!,
+      ),
   ];
 
   Widget proveer({required Widget child}) =>
