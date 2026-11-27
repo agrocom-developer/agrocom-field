@@ -4513,4 +4513,95 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get proveedorNegociacionJustificacionCliente =>
       'Por qué el cliente propone ese precio';
+
+  @override
+  String get preparacionTitulo => 'Preparación del equipo';
+
+  @override
+  String get preparacionIntro =>
+      'Revisa tu equipo antes de salir al lote. Es una guía tuya: no te impide ofertar ni iniciar un servicio.';
+
+  @override
+  String preparacionProgreso(int hechos, int total) {
+    return '$hechos de $total listos';
+  }
+
+  @override
+  String get preparacionCompleta => 'Todo listo para salir';
+
+  @override
+  String get preparacionReiniciar => 'Empezar de nuevo';
+
+  @override
+  String get preparacionNoGuardo =>
+      'No pudimos guardar el último cambio en tu teléfono. Lo ves aquí, pero puede perderse al cerrar la app.';
+
+  @override
+  String get preparacionAcceso => 'Antes de salir';
+
+  @override
+  String get preparacionAccesoDetalle =>
+      'Revisa baterías, tanque, boquillas y clima';
+
+  @override
+  String get preparacionBaterias => 'Baterías cargadas';
+
+  @override
+  String get preparacionBateriasDetalle =>
+      'Las del dron y las de repuesto, con el cargador a mano';
+
+  @override
+  String get preparacionTanque => 'Tanque limpio y con el producto';
+
+  @override
+  String get preparacionTanqueDetalle =>
+      'Sin residuos de otra aplicación y con la mezcla lista';
+
+  @override
+  String get preparacionBoquillas => 'Boquillas limpias';
+
+  @override
+  String get preparacionBoquillasDetalle =>
+      'Sin tapones y con el caudal que pide la aplicación';
+
+  @override
+  String get preparacionMandoRc => 'Mando RC cargado y enlazado';
+
+  @override
+  String get preparacionMandoRcDetalle => 'Con batería y conectado al dron';
+
+  @override
+  String get preparacionDron => 'Dron y hélices revisados';
+
+  @override
+  String get preparacionDronDetalle =>
+      'Hélices sin daño, brazos firmes y software al día';
+
+  @override
+  String get preparacionEpp => 'Equipo de protección puesto';
+
+  @override
+  String get preparacionEppDetalle =>
+      'Guantes, mascarilla, lentes y ropa adecuada';
+
+  @override
+  String get preparacionDocumentos => 'Documentos al día';
+
+  @override
+  String get preparacionDocumentosDetalle =>
+      'Licencia, registro del dron y seguro vigentes';
+
+  @override
+  String get preparacionClima => 'Viento y lluvia revisados';
+
+  @override
+  String get preparacionClimaDetalle =>
+      'Sin viento fuerte ni lluvia en el lote';
+
+  @override
+  String get preparacionPronostico => 'Pronóstico de las próximas horas';
+
+  @override
+  String get preparacionPronosticoDetalle =>
+      'Que el clima aguante lo que dura la aplicación';
 }

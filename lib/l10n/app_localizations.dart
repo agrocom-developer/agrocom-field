@@ -7374,6 +7374,162 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Por qué el cliente propone ese precio'**
   String get proveedorNegociacionJustificacionCliente;
+
+  /// No description provided for @preparacionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparación del equipo'**
+  String get preparacionTitulo;
+
+  /// No description provided for @preparacionIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu equipo antes de salir al lote. Es una guía tuya: no te impide ofertar ni iniciar un servicio.'**
+  String get preparacionIntro;
+
+  /// No description provided for @preparacionProgreso.
+  ///
+  /// In es, this message translates to:
+  /// **'{hechos} de {total} listos'**
+  String preparacionProgreso(int hechos, int total);
+
+  /// No description provided for @preparacionCompleta.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo listo para salir'**
+  String get preparacionCompleta;
+
+  /// No description provided for @preparacionReiniciar.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar de nuevo'**
+  String get preparacionReiniciar;
+
+  /// No description provided for @preparacionNoGuardo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardar el último cambio en tu teléfono. Lo ves aquí, pero puede perderse al cerrar la app.'**
+  String get preparacionNoGuardo;
+
+  /// No description provided for @preparacionAcceso.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes de salir'**
+  String get preparacionAcceso;
+
+  /// No description provided for @preparacionAccesoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa baterías, tanque, boquillas y clima'**
+  String get preparacionAccesoDetalle;
+
+  /// No description provided for @preparacionBaterias.
+  ///
+  /// In es, this message translates to:
+  /// **'Baterías cargadas'**
+  String get preparacionBaterias;
+
+  /// No description provided for @preparacionBateriasDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Las del dron y las de repuesto, con el cargador a mano'**
+  String get preparacionBateriasDetalle;
+
+  /// No description provided for @preparacionTanque.
+  ///
+  /// In es, this message translates to:
+  /// **'Tanque limpio y con el producto'**
+  String get preparacionTanque;
+
+  /// No description provided for @preparacionTanqueDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin residuos de otra aplicación y con la mezcla lista'**
+  String get preparacionTanqueDetalle;
+
+  /// No description provided for @preparacionBoquillas.
+  ///
+  /// In es, this message translates to:
+  /// **'Boquillas limpias'**
+  String get preparacionBoquillas;
+
+  /// No description provided for @preparacionBoquillasDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin tapones y con el caudal que pide la aplicación'**
+  String get preparacionBoquillasDetalle;
+
+  /// No description provided for @preparacionMandoRc.
+  ///
+  /// In es, this message translates to:
+  /// **'Mando RC cargado y enlazado'**
+  String get preparacionMandoRc;
+
+  /// No description provided for @preparacionMandoRcDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Con batería y conectado al dron'**
+  String get preparacionMandoRcDetalle;
+
+  /// No description provided for @preparacionDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron y hélices revisados'**
+  String get preparacionDron;
+
+  /// No description provided for @preparacionDronDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Hélices sin daño, brazos firmes y software al día'**
+  String get preparacionDronDetalle;
+
+  /// No description provided for @preparacionEpp.
+  ///
+  /// In es, this message translates to:
+  /// **'Equipo de protección puesto'**
+  String get preparacionEpp;
+
+  /// No description provided for @preparacionEppDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Guantes, mascarilla, lentes y ropa adecuada'**
+  String get preparacionEppDetalle;
+
+  /// No description provided for @preparacionDocumentos.
+  ///
+  /// In es, this message translates to:
+  /// **'Documentos al día'**
+  String get preparacionDocumentos;
+
+  /// No description provided for @preparacionDocumentosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia, registro del dron y seguro vigentes'**
+  String get preparacionDocumentosDetalle;
+
+  /// No description provided for @preparacionClima.
+  ///
+  /// In es, this message translates to:
+  /// **'Viento y lluvia revisados'**
+  String get preparacionClima;
+
+  /// No description provided for @preparacionClimaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin viento fuerte ni lluvia en el lote'**
+  String get preparacionClimaDetalle;
+
+  /// No description provided for @preparacionPronostico.
+  ///
+  /// In es, this message translates to:
+  /// **'Pronóstico de las próximas horas'**
+  String get preparacionPronostico;
+
+  /// No description provided for @preparacionPronosticoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Que el clima aguante lo que dura la aplicación'**
+  String get preparacionPronosticoDetalle;
 }
 
 class _AppLocalizationsDelegate
