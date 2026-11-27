@@ -6,6 +6,7 @@ import '../tema_campo.dart';
 import 'cola_sync_campo_vitrina.dart';
 import 'condiciones_campo_vitrina.dart';
 import 'crear_aplicacion_campo_vitrina.dart';
+import 'iconos_campo_vitrina.dart';
 import 'inicio_decision_campo_vitrina.dart';
 import 'inicio_piloto_campo_vitrina.dart';
 import 'login_dispositivo_campo_vitrina.dart';
@@ -50,6 +51,7 @@ class _VitrinaCampoPantallaState extends State<VitrinaCampoPantalla> {
     (8, 'Sync'),
     (9, 'Sistema'),
     (10, 'Negociar'),
+    (11, 'Íconos'),
   ];
 
   @override
@@ -98,6 +100,7 @@ class _VitrinaCampoPantallaState extends State<VitrinaCampoPantalla> {
                     ColaSyncCampoVitrina(),
                     SistemaVisualCampoVitrina(),
                     NegociacionCampoVitrina(),
+                    IconosCampoVitrina(),
                   ],
                 ),
               ),
