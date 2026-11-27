@@ -179,8 +179,8 @@ class InsigniaCabeceraCampo extends StatelessWidget {
     super.key,
   });
 
-  /// Relleno sólido contrastado para «Aprobado»: grafito con letras blancas
-  /// en el claro, ceniza con letras negras en el oscuro.
+  /// Relleno sólido contrastado para «Aprobado»: verde petróleo con letras
+  /// blancas en el claro, verde suave cielo con letras negras en el oscuro.
   final bool intensa;
 
   final IconData icono;
