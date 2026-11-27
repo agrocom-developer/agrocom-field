@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../marketplace/ui/boton_principal_marketplace.dart';
@@ -33,6 +34,25 @@ Future<ResultadoPermiso> pedirPermisoConExplicacion(
         ) ??
         false,
   );
+}
+
+/// La cámara se pide en el punto de uso, nunca al abrir la app: antes del
+/// aviso del sistema sale la hoja que explica para qué (ADR 0026). Devuelve
+/// `true` si se puede abrir la cámara. Si la app no provee un
+/// [GestorPermisos] (pruebas, demos mínimas), no interpone nada.
+Future<bool> permitirCamaraConExplicacion(BuildContext context) async {
+  final GestorPermisos gestor;
+  try {
+    gestor = context.read<GestorPermisos>();
+  } on ProviderNotFoundException {
+    return true;
+  }
+  final resultado = await pedirPermisoConExplicacion(
+    context,
+    gestor,
+    PermisoApp.camara,
+  );
+  return resultado == ResultadoPermiso.concedido;
 }
 
 class HojaExplicacionPermiso extends StatelessWidget {

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../nucleo/auth/cuenta/domain/cuenta_seguridad.dart';
+import '../../../nucleo/auth/cuenta/presentation/recuperar_acceso_pantalla.dart';
 import '../../../nucleo/marketplace/ui/aviso_marketplace.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/marketplace/ui/campo_formulario_marketplace.dart';
@@ -81,6 +83,20 @@ class _FormularioState extends State<_Formulario> {
     );
   }
 
+  /// «Olvidé mi contraseña»: al terminar, deja el usuario en el campo para
+  /// que solo falte escribir la contraseña nueva.
+  Future<void> _recuperarAcceso() async {
+    final usuario = await abrirRecuperarAcceso(
+      context,
+      app: AppCuenta.cliente,
+      identificador: _usuario.text,
+    );
+    if (usuario != null && usuario.isNotEmpty && mounted) {
+      _usuario.text = usuario;
+      _contrasena.clear();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -147,7 +163,7 @@ class _FormularioState extends State<_Formulario> {
                   keyboardType: TextInputType.text,
                   textInputAction: TextInputAction.next,
                   autofillHints: const [AutofillHints.username],
-                  validator: ReglasAcceso.usuario,
+                  validator: ReglasAcceso.usuarioOTelefono,
                   errorServidor: estado.porCampo[CampoAcceso.usuario],
                   onChanged: (_) => cubit.limpiarFallo(),
                 ),
@@ -171,7 +187,22 @@ class _FormularioState extends State<_Formulario> {
                   key: const Key('login-ingresar'),
                   texto: l10n.accesoIngresar,
                   cargando: estado.enviando,
-                  onPressed: _enviar,
+                  onPressed: estado.enEspera ? null : _enviar,
+                ),
+                const SizedBox(height: EspaciadoCampo.xs),
+                Center(
+                  child: TextButton(
+                    key: const Key('login-recuperar'),
+                    onPressed: estado.enviando ? null : _recuperarAcceso,
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(
+                        ObjetivoTactilCampo.minimo,
+                        ObjetivoTactilCampo.minimo,
+                      ),
+                      foregroundColor: paleta.acentoTexto,
+                    ),
+                    child: Text(l10n.cuentaOlvideContrasena),
+                  ),
                 ),
                 const SizedBox(height: EspaciadoCampo.s),
                 Center(

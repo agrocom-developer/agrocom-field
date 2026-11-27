@@ -102,15 +102,18 @@ void main() {
 
     await tester.tap(find.byKey(const Key('login-ingresar')));
     await tester.pumpAndSettle();
-    expect(find.text('Escribe tu usuario'), findsOneWidget);
+    expect(find.text('Escribe tu usuario o teléfono'), findsOneWidget);
     expect(find.text('Escribe tu contraseña'), findsOneWidget);
 
     await tester.enterText(find.bySemanticsLabel('Usuario'), 'ana finca');
     await tester.pumpAndSettle();
+    // Al ingresar se acepta usuario o teléfono y decide el servidor: el
+    // formato del usuario solo se exige al registrarse.
     expect(
       find.text('Usa de 3 a 40 letras, números, punto o guion'),
-      findsOneWidget,
+      findsNothing,
     );
+    expect(find.text('Escribe tu usuario o teléfono'), findsNothing);
 
     await tester.enterText(find.bySemanticsLabel('Usuario'), 'ana.finca');
     await tester.enterText(find.bySemanticsLabel('Contraseña'), 'segura123');
@@ -180,12 +183,12 @@ void main() {
       find.bySemanticsLabel('Usuario'),
       AccesoDemo.usuarioOcupado,
     );
-    await tester.enterText(find.bySemanticsLabel('Contraseña'), 'corta');
+    await tester.enterText(find.bySemanticsLabel('Contraseña'), 'abc');
     final crear = find.byKey(const Key('registro-crear'));
     await tester.ensureVisible(crear);
     await tester.tap(crear);
     await tester.pumpAndSettle();
-    expect(find.text('Usa al menos 8 caracteres'), findsOneWidget);
+    expect(find.text('Usa al menos 4 caracteres'), findsOneWidget);
 
     await tester.enterText(find.bySemanticsLabel('Contraseña'), 'segura123');
     await tester.ensureVisible(crear);
@@ -199,6 +202,10 @@ void main() {
     expect(find.text('Ese usuario ya existe. Elige otro'), findsNothing);
     await tester.ensureVisible(crear);
     await tester.tap(crear);
+    await tester.pumpAndSettle();
+    // Con la cuenta creada se ofrece verificar el teléfono; es opcional.
+    expect(find.text('Verifica tu teléfono'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('verificar-mas-tarde')));
     await tester.pumpAndSettle();
     expect(find.text('Hola, Ana'), findsOneWidget);
   });

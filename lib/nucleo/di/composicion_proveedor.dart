@@ -22,6 +22,7 @@ import '../marketplace/proveedor/negociacion/di/dependencias_negociacion.dart';
 import '../auth/biometria.dart';
 import '../auth/bloqueo_biometrico.dart';
 import '../auth/bloqueo_biometrico_store.dart';
+import '../auth/cuenta/data/cuenta_seguridad_red.dart';
 import '../notificaciones/notificador_local.dart';
 
 /// Todo lo que la app real de `piloto` necesita: la superficie
@@ -95,10 +96,12 @@ Future<ComposicionProveedor> componerProveedor(
     });
   }
 
+  final seguridad = CuentaSeguridadRed(api: api, tokenStore: tokenStore);
   final proveedor = DependenciasProveedor.red(
     http,
     negociacion: negociacion,
     ejecucion: ejecucion,
+    seguridad: seguridad,
   );
 
   return ComposicionProveedor(
@@ -115,6 +118,7 @@ Future<ComposicionProveedor> componerProveedor(
       ),
       registroDrones: RegistroDronesRed(http),
       sesionExpirada: expiracion.stream,
+      renovarSesion: seguridad.renovarSiCorresponde,
       bloqueo: BloqueoBiometrico(
         BiometriaLocalAuth(),
         BloqueoBiometricoStoreSeguro(),

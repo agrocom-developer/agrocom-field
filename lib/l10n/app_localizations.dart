@@ -7002,6 +7002,804 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Avisos de Agrocom'**
   String get notificacionCanalSistema;
+
+  /// No description provided for @cuentaCanalWhatsApp.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp'**
+  String get cuentaCanalWhatsApp;
+
+  /// No description provided for @cuentaCanalSms.
+  ///
+  /// In es, this message translates to:
+  /// **'SMS'**
+  String get cuentaCanalSms;
+
+  /// No description provided for @cuentaCanalCorreo.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo'**
+  String get cuentaCanalCorreo;
+
+  /// No description provided for @cuentaCanalWhatsAppDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Al teléfono de tu cuenta'**
+  String get cuentaCanalWhatsAppDetalle;
+
+  /// No description provided for @cuentaCanalSmsDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensaje de texto al teléfono de tu cuenta'**
+  String get cuentaCanalSmsDetalle;
+
+  /// No description provided for @cuentaCanalCorreoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Al correo de respaldo de tu cuenta'**
+  String get cuentaCanalCorreoDetalle;
+
+  /// No description provided for @cuentaCanalNoDisponible.
+  ///
+  /// In es, this message translates to:
+  /// **'No disponible por ahora'**
+  String get cuentaCanalNoDisponible;
+
+  /// No description provided for @cuentaFallaSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay conexión. Revisa tu señal y vuelve a intentarlo: lo que escribiste se conserva.'**
+  String get cuentaFallaSinConexion;
+
+  /// No description provided for @cuentaFallaCodigoInvalido.
+  ///
+  /// In es, this message translates to:
+  /// **'El código no es válido o ya venció. Revisa los 6 dígitos o pide uno nuevo.'**
+  String get cuentaFallaCodigoInvalido;
+
+  /// No description provided for @cuentaFallaContrasenaIncorrecta.
+  ///
+  /// In es, this message translates to:
+  /// **'Esa contraseña no es la de tu cuenta. Revísala o confirma con un código.'**
+  String get cuentaFallaContrasenaIncorrecta;
+
+  /// No description provided for @cuentaFallaSinCorreo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta no tiene un correo de respaldo. Elige otro medio.'**
+  String get cuentaFallaSinCorreo;
+
+  /// No description provided for @cuentaFallaSinTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta no tiene un teléfono para ese medio. Elige otro.'**
+  String get cuentaFallaSinTelefono;
+
+  /// No description provided for @cuentaFallaEseMedio.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese medio'**
+  String get cuentaFallaEseMedio;
+
+  /// No description provided for @cuentaFallaCanalNoDisponible.
+  ///
+  /// In es, this message translates to:
+  /// **'{medio} no está disponible por ahora; no es un problema de tu cuenta. {sugerencia}'**
+  String cuentaFallaCanalNoDisponible(String medio, String sugerencia);
+
+  /// No description provided for @cuentaFallaReintentarEnUnMomento.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a intentarlo en un momento.'**
+  String get cuentaFallaReintentarEnUnMomento;
+
+  /// No description provided for @cuentaFallaRecibirPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Recibe el código por {medios}.'**
+  String cuentaFallaRecibirPor(String medios);
+
+  /// No description provided for @cuentaListaMediosO.
+  ///
+  /// In es, this message translates to:
+  /// **'{anteriores} o {ultimo}'**
+  String cuentaListaMediosO(String anteriores, String ultimo);
+
+  /// No description provided for @cuentaFallaLimiteExcedido.
+  ///
+  /// In es, this message translates to:
+  /// **'Pediste varios códigos seguidos. Espera un momento antes de pedir otro.'**
+  String get cuentaFallaLimiteExcedido;
+
+  /// No description provided for @cuentaFallaTelefonoYaVerificado.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu teléfono ya está verificado.'**
+  String get cuentaFallaTelefonoYaVerificado;
+
+  /// No description provided for @cuentaFallaEliminacionBloqueada.
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes eliminar tu cuenta todavía. Resuelve lo pendiente y vuelve a intentarlo.'**
+  String get cuentaFallaEliminacionBloqueada;
+
+  /// No description provided for @cuentaFallaDatosInvalidos.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa los datos e inténtalo de nuevo.'**
+  String get cuentaFallaDatosInvalidos;
+
+  /// No description provided for @cuentaFallaSesionVencida.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión venció. Ingresa de nuevo.'**
+  String get cuentaFallaSesionVencida;
+
+  /// No description provided for @cuentaFallaEnEliminacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta está en proceso de eliminación. Puedes conservarla desde aquí.'**
+  String get cuentaFallaEnEliminacion;
+
+  /// No description provided for @cuentaFallaDesconocida.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos completar esto. Inténtalo de nuevo en un momento.'**
+  String get cuentaFallaDesconocida;
+
+  /// No description provided for @cuentaImpedimentoServicioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes un servicio adjudicado o en ejecución'**
+  String get cuentaImpedimentoServicioTitulo;
+
+  /// No description provided for @cuentaImpedimentoServicioSalida.
+  ///
+  /// In es, this message translates to:
+  /// **'Termínalo o cancélalo desde Servicios y vuelve a esta pantalla.'**
+  String get cuentaImpedimentoServicioSalida;
+
+  /// No description provided for @cuentaImpedimentoReclamoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Hay un reclamo abierto en el que participas'**
+  String get cuentaImpedimentoReclamoTitulo;
+
+  /// No description provided for @cuentaImpedimentoReclamoSalida.
+  ///
+  /// In es, this message translates to:
+  /// **'Espera a que se resuelva; después podrás eliminar tu cuenta.'**
+  String get cuentaImpedimentoReclamoSalida;
+
+  /// No description provided for @cuentaImpedimentoPilotosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu empresa tiene pilotos vinculados'**
+  String get cuentaImpedimentoPilotosTitulo;
+
+  /// No description provided for @cuentaImpedimentoPilotosSalida.
+  ///
+  /// In es, this message translates to:
+  /// **'Libéralos o pide a un administrador de Agrocom el cambio de encargado.'**
+  String get cuentaImpedimentoPilotosSalida;
+
+  /// No description provided for @cuentaSeBorra1.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu nombre, usuario, teléfono y correo.'**
+  String get cuentaSeBorra1;
+
+  /// No description provided for @cuentaSeBorra2.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu foto de perfil.'**
+  String get cuentaSeBorra2;
+
+  /// No description provided for @cuentaSeBorra3.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus lotes, fotos de terreno y datos de empresa que no estén en un servicio vigente.'**
+  String get cuentaSeBorra3;
+
+  /// No description provided for @cuentaSeBorra4.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus sesiones en todos los dispositivos.'**
+  String get cuentaSeBorra4;
+
+  /// No description provided for @cuentaSeBorra5.
+  ///
+  /// In es, this message translates to:
+  /// **'El texto de los mensajes que escribiste.'**
+  String get cuentaSeBorra5;
+
+  /// No description provided for @cuentaSeConserva1.
+  ///
+  /// In es, this message translates to:
+  /// **'El registro de cada servicio: precio acordado, hectáreas y fechas. Tu nombre aparece como «Cuenta eliminada».'**
+  String get cuentaSeConserva1;
+
+  /// No description provided for @cuentaSeConserva2.
+  ///
+  /// In es, this message translates to:
+  /// **'El puntaje de las calificaciones, sin tu nombre y sin comentarios.'**
+  String get cuentaSeConserva2;
+
+  /// No description provided for @cuentaSeConserva3.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que la ley o la prevención de fraude exigen, por un plazo limitado y declarado.'**
+  String get cuentaSeConserva3;
+
+  /// No description provided for @cuentaEfectosInmediatos.
+  ///
+  /// In es, this message translates to:
+  /// **'Al confirmar, se cierran tus sesiones, se cancelan tus solicitudes abiertas y se retiran tus ofertas vigentes. Eso no se restaura si cambias de opinión.'**
+  String get cuentaEfectosInmediatos;
+
+  /// No description provided for @cuentaGraciaDias.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes 7 días para arrepentirte. En ese plazo puedes iniciar sesión solo para conservar tu cuenta. Pasado el plazo, tus datos personales se borran y no se pueden recuperar.'**
+  String get cuentaGraciaDias;
+
+  /// No description provided for @cuentaCodigoPodrasPedirEn.
+  ///
+  /// In es, this message translates to:
+  /// **'Podrás pedir otro código en {tiempo}'**
+  String cuentaCodigoPodrasPedirEn(String tiempo);
+
+  /// No description provided for @cuentaCodigoEnvioA.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un código de 6 dígitos a {destino}.'**
+  String cuentaCodigoEnvioA(String destino);
+
+  /// No description provided for @cuentaCodigoEnvioPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un código de 6 dígitos por {medio}.'**
+  String cuentaCodigoEnvioPor(String medio);
+
+  /// No description provided for @cuentaCodigoEnvio.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un código de 6 dígitos.'**
+  String get cuentaCodigoEnvio;
+
+  /// No description provided for @cuentaCodigoEnvioCondicionalA.
+  ///
+  /// In es, this message translates to:
+  /// **'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos a {destino}.'**
+  String cuentaCodigoEnvioCondicionalA(String destino);
+
+  /// No description provided for @cuentaCodigoEnvioCondicionalPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos por {medio}.'**
+  String cuentaCodigoEnvioCondicionalPor(String medio);
+
+  /// No description provided for @cuentaCodigoEnvioCondicional.
+  ///
+  /// In es, this message translates to:
+  /// **'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos.'**
+  String get cuentaCodigoEnvioCondicional;
+
+  /// No description provided for @cuentaCodigoVence.
+  ///
+  /// In es, this message translates to:
+  /// **'{envio} Vence en 10 minutos.'**
+  String cuentaCodigoVence(String envio);
+
+  /// No description provided for @cuentaCodigoEscribe.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el código'**
+  String get cuentaCodigoEscribe;
+
+  /// No description provided for @cuentaCodigoEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Código'**
+  String get cuentaCodigoEtiqueta;
+
+  /// No description provided for @cuentaCodigoEscribeSeisDigitos.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el código de 6 dígitos'**
+  String get cuentaCodigoEscribeSeisDigitos;
+
+  /// No description provided for @cuentaCodigoTieneSeisDigitos.
+  ///
+  /// In es, this message translates to:
+  /// **'El código tiene 6 dígitos'**
+  String get cuentaCodigoTieneSeisDigitos;
+
+  /// No description provided for @cuentaContrasenaNuevaEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña nueva'**
+  String get cuentaContrasenaNuevaEtiqueta;
+
+  /// No description provided for @cuentaContrasenaMinimo.
+  ///
+  /// In es, this message translates to:
+  /// **'Mínimo {cantidad} caracteres.'**
+  String cuentaContrasenaMinimo(int cantidad);
+
+  /// No description provided for @cuentaCodigoReenviarEn.
+  ///
+  /// In es, this message translates to:
+  /// **'Reenviar código en {tiempo}'**
+  String cuentaCodigoReenviarEn(String tiempo);
+
+  /// No description provided for @cuentaCodigoReenviar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reenviar código'**
+  String get cuentaCodigoReenviar;
+
+  /// No description provided for @cuentaCodigoOtroMedio.
+  ///
+  /// In es, this message translates to:
+  /// **'No me llegó: probar por otro medio'**
+  String get cuentaCodigoOtroMedio;
+
+  /// No description provided for @cuentaCambiarContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar contraseña'**
+  String get cuentaCambiarContrasena;
+
+  /// No description provided for @cuentaIniciarSesion.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar sesión'**
+  String get cuentaIniciarSesion;
+
+  /// No description provided for @cuentaListo.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get cuentaListo;
+
+  /// No description provided for @cuentaCerrarSesion.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión'**
+  String get cuentaCerrarSesion;
+
+  /// No description provided for @cuentaOlvideContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Olvidé mi contraseña'**
+  String get cuentaOlvideContrasena;
+
+  /// No description provided for @cuentaRecuperarTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Recuperar acceso'**
+  String get cuentaRecuperarTitulo;
+
+  /// No description provided for @cuentaRecuperarComoRecibir.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo quieres recibir el código?'**
+  String get cuentaRecuperarComoRecibir;
+
+  /// No description provided for @cuentaRecuperarDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe tu usuario, teléfono o correo. Te enviaremos un código de 6 dígitos para crear una contraseña nueva.'**
+  String get cuentaRecuperarDetalle;
+
+  /// No description provided for @cuentaRecuperarIdentificador.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario, teléfono o correo'**
+  String get cuentaRecuperarIdentificador;
+
+  /// No description provided for @cuentaRecuperarEscribeIdentificador.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe tu usuario, teléfono o correo'**
+  String get cuentaRecuperarEscribeIdentificador;
+
+  /// No description provided for @cuentaRecuperarExitoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiaste tu contraseña'**
+  String get cuentaRecuperarExitoTitulo;
+
+  /// No description provided for @cuentaRecuperarExitoSinUsuario.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya puedes iniciar sesión con tu usuario y la contraseña nueva.'**
+  String get cuentaRecuperarExitoSinUsuario;
+
+  /// No description provided for @cuentaRecuperarExitoConUsuario.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu usuario es {usuario}. Ya puedes iniciar sesión con la contraseña nueva.'**
+  String cuentaRecuperarExitoConUsuario(String usuario);
+
+  /// No description provided for @cuentaCambiarConfirmaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma que eres tú'**
+  String get cuentaCambiarConfirmaTitulo;
+
+  /// No description provided for @cuentaCambiarConfirmaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un código de 6 dígitos. Elige por dónde lo quieres recibir.'**
+  String get cuentaCambiarConfirmaDetalle;
+
+  /// No description provided for @cuentaCambiarExitoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu contraseña se cambió'**
+  String get cuentaCambiarExitoTitulo;
+
+  /// No description provided for @cuentaCambiarExitoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus otros dispositivos deberán iniciar sesión de nuevo. Este sigue con la sesión abierta.'**
+  String get cuentaCambiarExitoDetalle;
+
+  /// No description provided for @cuentaSeguridadTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguridad y cuenta'**
+  String get cuentaSeguridadTitulo;
+
+  /// No description provided for @cuentaTelefonoVerificado.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono verificado'**
+  String get cuentaTelefonoVerificado;
+
+  /// No description provided for @cuentaVerificaTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'Verifica tu teléfono'**
+  String get cuentaVerificaTelefono;
+
+  /// No description provided for @cuentaTelefonoFaltaVerificar.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta verificar tu teléfono'**
+  String get cuentaTelefonoFaltaVerificar;
+
+  /// No description provided for @cuentaSeguridadFilaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña, huella y datos de tu cuenta'**
+  String get cuentaSeguridadFilaDetalle;
+
+  /// No description provided for @cuentaVerificarDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Así sabemos que el número es tuyo y podemos ayudarte a recuperar tu cuenta.'**
+  String get cuentaVerificarDetalle;
+
+  /// No description provided for @cuentaVerificar.
+  ///
+  /// In es, this message translates to:
+  /// **'Verificar'**
+  String get cuentaVerificar;
+
+  /// No description provided for @cuentaMasTarde.
+  ///
+  /// In es, this message translates to:
+  /// **'Más tarde'**
+  String get cuentaMasTarde;
+
+  /// No description provided for @cuentaTelefonoQuedoVerificado.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu teléfono quedó verificado'**
+  String get cuentaTelefonoQuedoVerificado;
+
+  /// No description provided for @cuentaAjustesErrorTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos revisar tu teléfono'**
+  String get cuentaAjustesErrorTelefono;
+
+  /// No description provided for @cuentaAjustesTelefonoVerificadoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Podemos ayudarte a recuperar tu cuenta.'**
+  String get cuentaAjustesTelefonoVerificadoDetalle;
+
+  /// No description provided for @cuentaAjustesTelefonoPendienteDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma que el número es tuyo con un código.'**
+  String get cuentaAjustesTelefonoPendienteDetalle;
+
+  /// No description provided for @cuentaAjustesContrasenaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un código para confirmar que eres tú.'**
+  String get cuentaAjustesContrasenaDetalle;
+
+  /// No description provided for @cuentaAjustesCerrarSesionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Este dispositivo dejará de tener acceso a tu cuenta.'**
+  String get cuentaAjustesCerrarSesionDetalle;
+
+  /// No description provided for @cuentaAjustesPrivacidad.
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad y datos'**
+  String get cuentaAjustesPrivacidad;
+
+  /// No description provided for @cuentaEliminarMiCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar mi cuenta'**
+  String get cuentaEliminarMiCuenta;
+
+  /// No description provided for @cuentaAjustesEliminarDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Borra tus datos personales. Tienes 7 días para arrepentirte.'**
+  String get cuentaAjustesEliminarDetalle;
+
+  /// No description provided for @cuentaYaRegistradaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tienes una cuenta'**
+  String get cuentaYaRegistradaTitulo;
+
+  /// No description provided for @cuentaYaRegistradaComoPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese teléfono o documento ya está registrado como piloto. Usa la app de Agrocom que le corresponde.'**
+  String get cuentaYaRegistradaComoPiloto;
+
+  /// No description provided for @cuentaYaRegistradaComoCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese teléfono o documento ya está registrado como cliente. Usa la app de Agrocom que le corresponde.'**
+  String get cuentaYaRegistradaComoCliente;
+
+  /// No description provided for @cuentaYaRegistradaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese teléfono o documento ya está registrado en Agrocom, así que no creamos otra cuenta. Inicia sesión o recupera tu acceso.'**
+  String get cuentaYaRegistradaDetalle;
+
+  /// No description provided for @cuentaYaRegistradaRegistroIncompleto.
+  ///
+  /// In es, this message translates to:
+  /// **'Si no terminaste tu registro, al iniciar sesión continuarás donde lo dejaste.'**
+  String get cuentaYaRegistradaRegistroIncompleto;
+
+  /// No description provided for @cuentaVolver.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get cuentaVolver;
+
+  /// No description provided for @cuentaEnEliminacionErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos revisar tu cuenta'**
+  String get cuentaEnEliminacionErrorTitulo;
+
+  /// No description provided for @cuentaEnEliminacionYaNoEnProceso.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta ya no está en proceso de eliminación.'**
+  String get cuentaEnEliminacionYaNoEnProceso;
+
+  /// No description provided for @cuentaEnEliminacionPospuesta.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu plazo ya terminó, pero algo pendiente frena la eliminación. Se reintenta cada día. Mientras tanto puedes conservar tu cuenta.'**
+  String get cuentaEnEliminacionPospuesta;
+
+  /// No description provided for @cuentaEnEliminacionSeBorrara.
+  ///
+  /// In es, this message translates to:
+  /// **'Se borrará el {fecha} ({dias, plural, =1{queda 1 día} other{quedan {dias} días}}). Hasta entonces puedes arrepentirte.'**
+  String cuentaEnEliminacionSeBorrara(String fecha, int dias);
+
+  /// No description provided for @cuentaEnEliminacionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta se está eliminando'**
+  String get cuentaEnEliminacionTitulo;
+
+  /// No description provided for @cuentaEnEliminacionSigueActiva.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta sigue activa'**
+  String get cuentaEnEliminacionSigueActiva;
+
+  /// No description provided for @cuentaEnEliminacionAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Mientras tanto no puedes usar la app. Si conservas tu cuenta, las solicitudes y ofertas que se cancelaron al pedir la eliminación no se restauran.'**
+  String get cuentaEnEliminacionAviso;
+
+  /// No description provided for @cuentaConservarMiCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Conservar mi cuenta'**
+  String get cuentaConservarMiCuenta;
+
+  /// No description provided for @cuentaContinuar.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get cuentaContinuar;
+
+  /// No description provided for @cuentaEliminarBloqueadaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no puedes eliminar tu cuenta'**
+  String get cuentaEliminarBloqueadaTitulo;
+
+  /// No description provided for @cuentaEliminarBloqueadaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Hay algo pendiente. Resuélvelo y vuelve a esta pantalla.'**
+  String get cuentaEliminarBloqueadaDetalle;
+
+  /// No description provided for @cuentaEliminarAntesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes de eliminar tu cuenta'**
+  String get cuentaEliminarAntesTitulo;
+
+  /// No description provided for @cuentaEliminarQueSeBorra.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué se borra'**
+  String get cuentaEliminarQueSeBorra;
+
+  /// No description provided for @cuentaEliminarQueSeConserva.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué se conserva'**
+  String get cuentaEliminarQueSeConserva;
+
+  /// No description provided for @cuentaEliminarPendientes.
+  ///
+  /// In es, this message translates to:
+  /// **'Primero sincroniza lo que registraste en el lote: tienes {cantidad, plural, =1{1 registro} other{{cantidad} registros}} sin subir. Hazlo con señal y vuelve aquí.'**
+  String cuentaEliminarPendientes(int cantidad);
+
+  /// No description provided for @cuentaEliminarSincronizarAhora.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizar ahora'**
+  String get cuentaEliminarSincronizarAhora;
+
+  /// No description provided for @cuentaBotonEnCurso.
+  ///
+  /// In es, this message translates to:
+  /// **'{texto}, en curso'**
+  String cuentaBotonEnCurso(String texto);
+
+  /// No description provided for @cuentaEliminarConfirmaContrasenaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma con tu contraseña'**
+  String get cuentaEliminarConfirmaContrasenaTitulo;
+
+  /// No description provided for @cuentaEliminarConfirmaContrasenaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta se cerrará en todos tus dispositivos y quedará en espera 7 días antes de borrarse.'**
+  String get cuentaEliminarConfirmaContrasenaDetalle;
+
+  /// No description provided for @cuentaContrasenaEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña'**
+  String get cuentaContrasenaEtiqueta;
+
+  /// No description provided for @cuentaEliminarUsarCodigo.
+  ///
+  /// In es, this message translates to:
+  /// **'Olvidé mi contraseña: usar un código'**
+  String get cuentaEliminarUsarCodigo;
+
+  /// No description provided for @cuentaEliminarConfirmaCodigoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma con un código'**
+  String get cuentaEliminarConfirmaCodigoTitulo;
+
+  /// No description provided for @cuentaEliminarConfirmaCodigoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige por dónde recibir un código de 6 dígitos. Con él confirmas que eres tú, sin la contraseña.'**
+  String get cuentaEliminarConfirmaCodigoDetalle;
+
+  /// No description provided for @cuentaEliminarUsarContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar mi contraseña'**
+  String get cuentaEliminarUsarContrasena;
+
+  /// No description provided for @cuentaEliminarSolicitadaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta quedó en espera de eliminación'**
+  String get cuentaEliminarSolicitadaTitulo;
+
+  /// No description provided for @cuentaEliminarSolicitadaSinFecha.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes 7 días para arrepentirte.'**
+  String get cuentaEliminarSolicitadaSinFecha;
+
+  /// No description provided for @cuentaEliminarSolicitadaConFecha.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes hasta el {fecha} para arrepentirte. Inicia sesión y toca «Conservar mi cuenta».'**
+  String cuentaEliminarSolicitadaConFecha(String fecha);
+
+  /// No description provided for @cuentaEntendido.
+  ///
+  /// In es, this message translates to:
+  /// **'Entendido'**
+  String get cuentaEntendido;
+
+  /// No description provided for @cuentaConservadaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Conservamos tu cuenta'**
+  String get cuentaConservadaTitulo;
+
+  /// No description provided for @cuentaConservadaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya puedes volver a usarla. Las solicitudes y ofertas que se cancelaron al pedir la eliminación no se restauran.'**
+  String get cuentaConservadaDetalle;
+
+  /// No description provided for @cuentaDemasiadosIntentosEn.
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Podrás volver a intentarlo en {tiempo}.'**
+  String cuentaDemasiadosIntentosEn(String tiempo);
+
+  /// No description provided for @cuentaDemasiadosIntentosEspera.
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Espera un momento y vuelve a intentarlo.'**
+  String get cuentaDemasiadosIntentosEspera;
+
+  /// No description provided for @cuentaDemasiadosIntentosBreve.
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Espera un momento.'**
+  String get cuentaDemasiadosIntentosBreve;
+
+  /// No description provided for @cuentaVerificarMiTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'Verificar mi teléfono'**
+  String get cuentaVerificarMiTelefono;
+
+  /// No description provided for @cuentaTerminaRegistroTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Termina tu registro'**
+  String get cuentaTerminaRegistroTitulo;
+
+  /// No description provided for @cuentaTerminaRegistroDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sube los documentos que faltan para que un administrador pueda aprobar tu cuenta.'**
+  String get cuentaTerminaRegistroDetalle;
 }
 
 class _AppLocalizationsDelegate

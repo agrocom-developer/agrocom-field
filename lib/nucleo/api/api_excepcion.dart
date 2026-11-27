@@ -12,10 +12,14 @@ final class ApiExcepcionRed extends ApiExcepcion {
 }
 
 final class ApiExcepcionServidor extends ApiExcepcion {
-  const ApiExcepcionServidor(this.codigo, this.cuerpo);
+  const ApiExcepcionServidor(this.codigo, this.cuerpo, {this.reintentarEn});
 
   final int codigo;
   final Object? cuerpo;
+
+  /// Espera que pidió el servidor con `Retry-After` (en segundos), si vino.
+  /// Lo usan los `429` de las pantallas de código y de ingreso.
+  final Duration? reintentarEn;
 }
 
 final class ApiExcepcionDesconocida extends ApiExcepcion {
@@ -33,7 +37,19 @@ ApiExcepcion mapearExcepcionDio(DioException e) {
   }
   final codigo = e.response?.statusCode;
   if (codigo != null) {
-    return ApiExcepcionServidor(codigo, e.response?.data);
+    return ApiExcepcionServidor(
+      codigo,
+      e.response?.data,
+      reintentarEn: _esperaDe(e.response?.headers.value('retry-after')),
+    );
   }
   return ApiExcepcionDesconocida(e);
+}
+
+/// `Retry-After` en segundos; una fecha HTTP o un valor ilegible se ignoran
+/// (la pantalla usa una espera por defecto).
+Duration? _esperaDe(String? valor) {
+  final segundos = int.tryParse(valor?.trim() ?? '');
+  if (segundos == null || segundos <= 0) return null;
+  return Duration(seconds: segundos);
 }

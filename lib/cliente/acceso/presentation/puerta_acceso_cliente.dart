@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../l10n/app_localizations_es.dart';
 import '../../../nucleo/auth/bloqueo_biometrico.dart';
+import '../../../nucleo/auth/cuenta/domain/cuenta_seguridad.dart';
+import '../../../nucleo/auth/cuenta/presentation/cuenta_en_eliminacion_pantalla.dart';
 import '../../../nucleo/auth/presentation/bloqueo_biometrico_widgets.dart';
 import '../../../nucleo/marketplace/ui/estado_vacio_marketplace.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
@@ -49,10 +51,22 @@ class _PuertaAccesoClienteState extends State<PuertaAccesoCliente> {
   late final ArranqueCubit _arranque = ArranqueCubit(
     context.read<AccesoRepositorio>(),
     bloqueo: widget.bloqueo,
+    renovarSesion: _renovador(context),
     // Este estado vive antes de que haya localizaciones en el árbol; la app
     // va fija en español.
     l10n: AppLocalizationsEs(),
   );
+
+  /// La renovación de la sesión existe solo si la app provee la seguridad de
+  /// la cuenta (la demo y algunas pruebas no).
+  static RenovadorSesion? _renovador(BuildContext context) {
+    try {
+      return context.read<CuentaSeguridadRepositorio>().renovarSiCorresponde;
+    } on ProviderNotFoundException {
+      return null;
+    }
+  }
+
   bool _splashLista = false;
   bool _registro = false;
   bool _vencida = false;
@@ -139,6 +153,13 @@ class _PuertaAccesoClienteState extends State<PuertaAccesoCliente> {
                 desbloqueando: estado.desbloqueando,
                 alDesbloquear: _arranque.desbloquear,
                 alUsarContrasena: _arranque.usarContrasena,
+              ),
+            ),
+            EtapaArranque.enEliminacion => (
+              'en-eliminacion',
+              CuentaEnEliminacionPantalla(
+                alConservada: _arranque.cuentaConservada,
+                alCerrarSesion: _arranque.cerrarSesion,
               ),
             ),
             EtapaArranque.dentro => ('dentro', widget.dentro(context)),

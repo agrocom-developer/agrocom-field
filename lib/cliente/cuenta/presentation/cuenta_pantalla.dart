@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/auth/bloqueo_biometrico.dart';
+import '../../../nucleo/auth/cuenta/presentation/fila_seguridad_perfil.dart';
 import '../../../nucleo/auth/presentation/bloqueo_biometrico_widgets.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/foto_perfil/presentation/foto_perfil_widgets.dart';
@@ -228,7 +229,18 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
             const SuperficieMarketplace(
               child: SelectorTemaVisual(predeterminado: ModoVisualCampo.claro),
             ),
-            if (bloqueo != null) ...[
+            if (alCerrarSesion != null &&
+                FilaSeguridadPerfil.disponible(context)) ...[
+              const SizedBox(height: EspaciadoCampo.l),
+              FilaSeguridadPerfil(
+                bloqueo: bloqueo,
+                alCerrarSesion: () {
+                  // Se cierra la pantalla de ajustes antes de salir.
+                  Navigator.of(context).popUntil((r) => r.isFirst);
+                  alCerrarSesion!();
+                },
+              ),
+            ] else if (bloqueo != null) ...[
               const SizedBox(height: EspaciadoCampo.l),
               FilaBloqueoBiometrico(
                 bloqueo: bloqueo!,

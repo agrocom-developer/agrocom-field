@@ -21,6 +21,8 @@ class RegistroEstado {
     this.erroresPorCampo = const {},
     this.fotoCargando,
     this.fotoError,
+    this.cuentaExistente = false,
+    this.tipoCuentaExistente,
   });
 
   /// Fotos elegidas, ya comprimidas a menos de 300 KB, por tipo.
@@ -34,6 +36,11 @@ class RegistroEstado {
   final Map<String, String> erroresPorCampo;
   final TipoFotoDron? fotoCargando;
   final String? fotoError;
+
+  /// `409 cuenta_ya_registrada`: ese teléfono o documento ya tiene cuenta; la
+  /// pantalla lo explica y manda a iniciar sesión (no se crea otra).
+  final bool cuentaExistente;
+  final String? tipoCuentaExistente;
 
   bool get fotosObligatoriasListas => TipoFotoDron.values
       .where((t) => t.obligatoria)
@@ -49,6 +56,8 @@ class RegistroEstado {
     Map<String, String>? erroresPorCampo,
     TipoFotoDron? Function()? fotoCargando,
     String? Function()? fotoError,
+    bool? cuentaExistente,
+    String? Function()? tipoCuentaExistente,
   }) => RegistroEstado(
     fotos: fotos ?? this.fotos,
     enviando: enviando ?? this.enviando,
@@ -57,6 +66,10 @@ class RegistroEstado {
     erroresPorCampo: erroresPorCampo ?? this.erroresPorCampo,
     fotoCargando: fotoCargando != null ? fotoCargando() : this.fotoCargando,
     fotoError: fotoError != null ? fotoError() : this.fotoError,
+    cuentaExistente: cuentaExistente ?? this.cuentaExistente,
+    tipoCuentaExistente: tipoCuentaExistente != null
+        ? tipoCuentaExistente()
+        : this.tipoCuentaExistente,
   );
 }
 
@@ -125,6 +138,7 @@ class RegistroCubit extends Cubit<RegistroEstado> {
         enviando: true,
         mensaje: () => null,
         erroresPorCampo: const {},
+        cuentaExistente: false,
       ),
     );
     try {
@@ -156,8 +170,12 @@ class RegistroCubit extends Cubit<RegistroEstado> {
       emit(
         state.copiarCon(
           enviando: false,
-          mensaje: () => _mensajeAcceso(e),
+          mensaje: () => e.motivo == MotivoFalloAcceso.cuentaYaRegistrada
+              ? null
+              : _mensajeAcceso(e),
           erroresPorCampo: e.porCampo,
+          cuentaExistente: e.motivo == MotivoFalloAcceso.cuentaYaRegistrada,
+          tipoCuentaExistente: () => e.tipoCuenta,
         ),
       );
     } on SinConexion {
