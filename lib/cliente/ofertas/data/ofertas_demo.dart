@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:decimal/decimal.dart';
 
 import '../../demo/almacen_demo_cliente.dart';
+import '../../../nucleo/marketplace/precio/justificacion_precio.dart';
+import '../domain/comparador_ofertas.dart';
 import '../domain/oferta_recibida.dart';
 import '../domain/ofertas_repositorio.dart';
 
@@ -32,17 +34,13 @@ class OfertasDemo implements OfertasRepositorio {
   }
 
   @override
-  Future<List<OfertaRecibida>> deLaSolicitud(String solicitudId) async {
+  Future<List<OfertaRecibida>> deLaSolicitud(
+    String solicitudId, {
+    FiltrosOfertas filtros = const FiltrosOfertas(),
+  }) async {
     await Future<void>.delayed(latencia);
     _almacen.exigirRed();
-    final lista = [..._almacen.ofertasDe(solicitudId)];
-    lista.sort((a, b) {
-      final va = a.estado == EstadoOferta.vigente ? 0 : 1;
-      final vb = b.estado == EstadoOferta.vigente ? 0 : 1;
-      if (va != vb) return va - vb;
-      return a.precioHa.compareTo(b.precioHa);
-    });
-    return lista;
+    return ComparadorOfertas.aplicar(_almacen.ofertasDe(solicitudId), filtros);
   }
 
   @override
@@ -63,6 +61,7 @@ class OfertasDemo implements OfertasRepositorio {
     required Decimal precioHa,
     required String claveIdempotencia,
     String? nota,
+    String? justificacionPrecio,
   }) async {
     await Future<void>.delayed(latencia);
     _almacen.exigirRed();
@@ -77,6 +76,7 @@ class OfertasDemo implements OfertasRepositorio {
       AutorOferta.cliente,
       precioHa,
       nota: nota,
+      justificacionPrecio: JustificacionPrecio.normalizar(justificacionPrecio),
     );
     _almacen.responderContraoferta(nueva, oferta.precioHa);
   }

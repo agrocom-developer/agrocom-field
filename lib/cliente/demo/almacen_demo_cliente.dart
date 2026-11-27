@@ -168,6 +168,7 @@ class AlmacenDemoCliente {
         esDefinitiva: o.esDefinitiva,
         aceptaPropuesta: o.aceptaPropuesta,
         nota: o.nota,
+        justificacionPrecio: o.justificacionPrecio,
         distanciaKm: o.distanciaKm,
         venceEn: o.venceEn,
         creadaEn: o.creadaEn,
@@ -248,6 +249,7 @@ class AlmacenDemoCliente {
     AutorOferta autor,
     Decimal precioHa, {
     String? nota,
+    String? justificacionPrecio,
   }) {
     _cambiarOferta(anterior.id, (x) => _copiar(x, EstadoOferta.reemplazada));
     final numero = anterior.numero + 1;
@@ -263,6 +265,7 @@ class AlmacenDemoCliente {
       proveedor: anterior.proveedor,
       esDefinitiva: numero >= 5,
       nota: nota,
+      justificacionPrecio: justificacionPrecio,
       distanciaKm: anterior.distanciaKm,
       venceEn: ahora.add(const Duration(hours: 24)),
       creadaEn: ahora,
@@ -322,6 +325,7 @@ class AlmacenDemoCliente {
       modeloDron: dron.modelo.replaceFirst('DJI ', ''),
       anioDron: 2024,
       capacidadLitros: dron.capacidadLitros,
+      tipo: p.tipo,
     );
   }
 
@@ -488,6 +492,7 @@ class AlmacenDemoCliente {
       bool acepta = false,
       int numero = 1,
       String? nota,
+      String? justificacion,
     }) => OfertaRecibida(
       id: 'of-$n',
       solicitudId: abierta.id,
@@ -498,6 +503,7 @@ class AlmacenDemoCliente {
       estado: EstadoOferta.vigente,
       aceptaPropuesta: acepta,
       nota: nota,
+      justificacionPrecio: justificacion,
       proveedor: ofertante(proveedor, dron),
       distanciaKm: _d(km),
       venceEn: ahora.add(const Duration(hours: 22)),
@@ -512,6 +518,8 @@ class AlmacenDemoCliente {
         '104',
         '32.7',
         nota: 'Puedo ir el jueves en la mañana.',
+        justificacion:
+            'Incluye el traslado del dron y dos pasadas sobre el lote.',
       ),
       oferta('4101-c', 'prov-daniela', drones[2 % drones.length], '121', '9.8'),
     ];

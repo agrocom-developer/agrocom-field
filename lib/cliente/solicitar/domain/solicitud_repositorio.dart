@@ -25,6 +25,7 @@ class NuevaSolicitud {
     this.accesos,
     this.observaciones,
     this.contactoId,
+    this.justificacionPrecio,
   });
 
   final Lote lote;
@@ -44,6 +45,10 @@ class NuevaSolicitud {
   /// Persona de contacto de un cliente empresa (`contacto_id` del contrato);
   /// `null` si el cliente es una persona o no eligió.
   final int? contactoId;
+
+  /// Por qué el cliente propone ese precio (opcional, hasta 500
+  /// caracteres); el piloto lo lee antes de ofertar.
+  final String? justificacionPrecio;
 
   /// Total estimado con el precio propuesto.
   Decimal get total => hectareas * precioHa;

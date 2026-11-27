@@ -2296,12 +2296,6 @@ abstract class AppLocalizations {
   /// **'Mejor calificación'**
   String get ofertasOrdenCalificacion;
 
-  /// No description provided for @ofertasOrdenDistancia.
-  ///
-  /// In es, this message translates to:
-  /// **'Más cerca'**
-  String get ofertasOrdenDistancia;
-
   /// No description provided for @ofertasOfertaCambio.
   ///
   /// In es, this message translates to:
@@ -6828,6 +6822,216 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Ponte ocupado para no recibir avisos'**
   String get perfilCuentaDisponibilidadDetalle;
+
+  /// No description provided for @precioJustificacionEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Justificación del precio (opcional)'**
+  String get precioJustificacionEtiqueta;
+
+  /// No description provided for @precioJustificacionAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Explica por qué propones este precio. La otra parte lo verá.'**
+  String get precioJustificacionAyuda;
+
+  /// No description provided for @precioJustificacionContador.
+  ///
+  /// In es, this message translates to:
+  /// **'{usados} de {maximo}'**
+  String precioJustificacionContador(int usados, int maximo);
+
+  /// No description provided for @precioJustificacionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Justificación del precio'**
+  String get precioJustificacionTitulo;
+
+  /// No description provided for @precioTotalEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Total estimado'**
+  String get precioTotalEtiqueta;
+
+  /// No description provided for @precioTotalSinPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el precio'**
+  String get precioTotalSinPrecio;
+
+  /// No description provided for @precioTotalSoloLectura.
+  ///
+  /// In es, this message translates to:
+  /// **'Se calcula con las hectáreas; no se escribe'**
+  String get precioTotalSoloLectura;
+
+  /// No description provided for @precioTotalCalculo.
+  ///
+  /// In es, this message translates to:
+  /// **'{hectareas} × {precio}'**
+  String precioTotalCalculo(String hectareas, String precio);
+
+  /// No description provided for @ofertasOrdenRecomendado.
+  ///
+  /// In es, this message translates to:
+  /// **'Recomendado'**
+  String get ofertasOrdenRecomendado;
+
+  /// No description provided for @ofertasOrdenReciente.
+  ///
+  /// In es, this message translates to:
+  /// **'Más reciente'**
+  String get ofertasOrdenReciente;
+
+  /// No description provided for @ofertasFiltros.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros'**
+  String get ofertasFiltros;
+
+  /// No description provided for @ofertasFiltrosConActivos.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros ({cantidad})'**
+  String ofertasFiltrosConActivos(int cantidad);
+
+  /// No description provided for @ofertasFiltrosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ordenar y filtrar ofertas'**
+  String get ofertasFiltrosTitulo;
+
+  /// No description provided for @ofertasFiltrosOrdenarPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Ordenar por'**
+  String get ofertasFiltrosOrdenarPor;
+
+  /// No description provided for @ofertasFiltroPrecioMin.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio mínimo (Bs/ha)'**
+  String get ofertasFiltroPrecioMin;
+
+  /// No description provided for @ofertasFiltroPrecioMax.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio máximo (Bs/ha)'**
+  String get ofertasFiltroPrecioMax;
+
+  /// No description provided for @ofertasFiltroTotalMax.
+  ///
+  /// In es, this message translates to:
+  /// **'Total máximo (Bs)'**
+  String get ofertasFiltroTotalMax;
+
+  /// No description provided for @ofertasFiltroCalificacionMin.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificación mínima'**
+  String get ofertasFiltroCalificacionMin;
+
+  /// No description provided for @ofertasFiltroCalificacionCualquiera.
+  ///
+  /// In es, this message translates to:
+  /// **'Cualquiera'**
+  String get ofertasFiltroCalificacionCualquiera;
+
+  /// No description provided for @ofertasFiltroCalificacionDesde.
+  ///
+  /// In es, this message translates to:
+  /// **'{minima} o más'**
+  String ofertasFiltroCalificacionDesde(String minima);
+
+  /// No description provided for @ofertasFiltroTipo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de proveedor'**
+  String get ofertasFiltroTipo;
+
+  /// No description provided for @ofertasFiltroTipoTodos.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get ofertasFiltroTipoTodos;
+
+  /// No description provided for @ofertasFiltroTipoPropio.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrocom'**
+  String get ofertasFiltroTipoPropio;
+
+  /// No description provided for @ofertasFiltroTipoIndependiente.
+  ///
+  /// In es, this message translates to:
+  /// **'Independiente'**
+  String get ofertasFiltroTipoIndependiente;
+
+  /// No description provided for @ofertasFiltroTipoTercero.
+  ///
+  /// In es, this message translates to:
+  /// **'Dueño de drones'**
+  String get ofertasFiltroTipoTercero;
+
+  /// No description provided for @ofertasFiltroTanqueMin.
+  ///
+  /// In es, this message translates to:
+  /// **'Tanque mínimo (litros)'**
+  String get ofertasFiltroTanqueMin;
+
+  /// No description provided for @ofertasFiltrosAplicar.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver ofertas'**
+  String get ofertasFiltrosAplicar;
+
+  /// No description provided for @ofertasFiltrosQuitar.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar filtros'**
+  String get ofertasFiltrosQuitar;
+
+  /// No description provided for @ofertasFiltrosNumeroInvalido.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un número, por ejemplo 120'**
+  String get ofertasFiltrosNumeroInvalido;
+
+  /// No description provided for @ofertasFiltrosRangoInvalido.
+  ///
+  /// In es, this message translates to:
+  /// **'El máximo no puede ser menor que el mínimo'**
+  String get ofertasFiltrosRangoInvalido;
+
+  /// No description provided for @ofertasNuevaOferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegó una oferta nueva. Compárala con las demás.'**
+  String get ofertasNuevaOferta;
+
+  /// No description provided for @ofertasSinResultadosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguna oferta cumple tus filtros'**
+  String get ofertasSinResultadosTitulo;
+
+  /// No description provided for @ofertasSinResultadosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Quita algún filtro para ver las demás ofertas.'**
+  String get ofertasSinResultadosDetalle;
+
+  /// No description provided for @ofertasActualizandoLista.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizando ofertas'**
+  String get ofertasActualizandoLista;
+
+  /// No description provided for @ofertasPorQueEsePrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Por qué ese precio'**
+  String get ofertasPorQueEsePrecio;
 }
 
 class _AppLocalizationsDelegate

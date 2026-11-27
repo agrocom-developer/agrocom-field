@@ -18,6 +18,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:agrocom_field/cliente/demo/almacen_demo_cliente.dart';
 import 'package:agrocom_field/cliente/di/dependencias_cliente.dart';
+import 'package:agrocom_field/cliente/ofertas/domain/comparador_ofertas.dart';
 import 'package:agrocom_field/cliente/ofertas/domain/oferta_recibida.dart';
 import 'package:agrocom_field/cliente/ofertas/domain/ofertas_repositorio.dart';
 import 'package:agrocom_field/cliente/ofertas/presentation/ofertas_pantalla.dart';
@@ -56,8 +57,10 @@ class _SolicitudesFijas implements SolicitudesRepositorio {
 /// Ofertas que nunca terminan de cargar.
 class _OfertasPendientes implements OfertasRepositorio {
   @override
-  Future<List<OfertaRecibida>> deLaSolicitud(String solicitudId) =>
-      Completer<List<OfertaRecibida>>().future;
+  Future<List<OfertaRecibida>> deLaSolicitud(
+    String solicitudId, {
+    FiltrosOfertas filtros = const FiltrosOfertas(),
+  }) => Completer<List<OfertaRecibida>>().future;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

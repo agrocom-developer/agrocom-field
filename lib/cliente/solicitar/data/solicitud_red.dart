@@ -1,3 +1,5 @@
+import '../../../nucleo/marketplace/precio/justificacion_precio.dart';
+
 import 'dart:async';
 
 import 'package:uuid/uuid.dart';
@@ -124,6 +126,10 @@ class SolicitudRed implements SolicitudRepositorio {
         'observaciones': ?s.observaciones,
         'contacto_id': ?s.contactoId,
         'precio_ha_propuesto': '${s.precioHa}',
+        // El total (`monto_estimado`) no se envía: lo calcula el servidor.
+        'justificacion_precio': ?JustificacionPrecio.normalizar(
+          s.justificacionPrecio,
+        ),
       },
     );
     final creada = r['solicitud'];

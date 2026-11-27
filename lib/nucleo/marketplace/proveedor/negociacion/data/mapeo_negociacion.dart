@@ -90,6 +90,7 @@ abstract final class MapeoNegociacion {
       colindantesSensibles: terreno is Map
           ? terreno['colindantes_sensibles'] as String?
           : null,
+      justificacionPrecio: j['justificacion_precio'] as String?,
     );
   }
 
@@ -128,6 +129,7 @@ abstract final class MapeoNegociacion {
     esDefinitiva: j['es_definitiva'] == true,
     venceEn: fecha(j['vence_en']) ?? DateTime.fromMillisecondsSinceEpoch(0),
     nota: j['nota'] as String?,
+    justificacionPrecio: j['justificacion_precio'] as String?,
     distanciaKm: decimalOpcional(j['distancia_km']),
     creadaEn: fecha(j['creada_en']),
     respondidaEn: fecha(j['respondida_en']),

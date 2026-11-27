@@ -196,6 +196,7 @@ class MisOfertasCubit extends Cubit<MisOfertasEstado> {
     OfertaNegociada o, {
     required Decimal precioHa,
     String? nota,
+    String? justificacionPrecio,
   }) {
     final clave = _claves.putIfAbsent(o.id, _uuid.v4);
     return _ejecutar(
@@ -205,6 +206,7 @@ class MisOfertasCubit extends Cubit<MisOfertasEstado> {
         precioHa: precioHa,
         uuidCliente: clave,
         nota: nota,
+        justificacionPrecio: justificacionPrecio,
       ),
       exito: _l10n.proveedorNegociacionEnviasteContraoferta,
       alTerminar: () => _claves.remove(o.id),

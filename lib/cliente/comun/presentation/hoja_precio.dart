@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../nucleo/marketplace/precio/justificacion_precio.dart';
+import '../../../nucleo/marketplace/precio/presentation/campo_justificacion_precio.dart';
+import '../../../nucleo/marketplace/precio/presentation/total_solo_lectura.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
@@ -10,9 +13,10 @@ import '../../solicitar/domain/reglas_solicitud.dart';
 import '../../solicitar/presentation/textos_errores_solicitud.dart';
 import 'boton_principal.dart';
 
-/// Precio por hectárea que el cliente escribió en la hoja, con una nota
-/// opcional para el piloto.
-typedef PrecioEscrito = ({Decimal precio, String? nota});
+/// Precio por hectárea que el cliente escribió en la hoja, con la
+/// justificación opcional que verá el piloto. El total no forma parte de lo
+/// escrito: se calcula y se muestra de solo lectura.
+typedef PrecioEscrito = ({Decimal precio, String? justificacion});
 
 /// Abre una hoja para escribir un precio por hectárea (cambiar el precio de
 /// la solicitud o contraofertar). Devuelve `null` si se cierra sin enviar. El
@@ -25,7 +29,7 @@ Future<PrecioEscrito?> mostrarHojaPrecio(
   required Decimal hectareas,
   String? apoyo,
   Decimal? inicial,
-  bool conNota = false,
+  bool conJustificacion = false,
 }) => showModalBottomSheet<PrecioEscrito>(
   context: context,
   isScrollControlled: true,
@@ -37,7 +41,7 @@ Future<PrecioEscrito?> mostrarHojaPrecio(
     hectareas: hectareas,
     apoyo: apoyo,
     inicial: inicial,
-    conNota: conNota,
+    conJustificacion: conJustificacion,
   ),
 );
 
@@ -48,7 +52,7 @@ class HojaPrecio extends StatefulWidget {
     required this.hectareas,
     this.apoyo,
     this.inicial,
-    this.conNota = false,
+    this.conJustificacion = false,
     super.key,
   });
 
@@ -57,7 +61,7 @@ class HojaPrecio extends StatefulWidget {
   final Decimal hectareas;
   final String? apoyo;
   final Decimal? inicial;
-  final bool conNota;
+  final bool conJustificacion;
 
   @override
   State<HojaPrecio> createState() => _HojaPrecioState();
@@ -72,12 +76,12 @@ class _HojaPrecioState extends State<HojaPrecio> {
             decimales: widget.inicial!.scale > 0 ? 2 : 0,
           ).replaceAll('.', ''),
   );
-  final _nota = TextEditingController();
+  final _justificacion = TextEditingController();
 
   @override
   void dispose() {
     _precio.dispose();
-    _nota.dispose();
+    _justificacion.dispose();
     super.dispose();
   }
 
@@ -142,32 +146,10 @@ class _HojaPrecioState extends State<HojaPrecio> {
               ),
             ),
             const SizedBox(height: EspaciadoCampo.s),
-            Semantics(
-              liveRegion: true,
-              child: Text(
-                valor == null
-                    ? l10n.comunEscribePrecioParaVer
-                    : l10n.comunTotalEstimadoPor(
-                        FormatoMarketplace.bs(widget.hectareas * valor),
-                        FormatoMarketplace.hectareas(widget.hectareas),
-                      ),
-                style: texto.bodyMedium?.copyWith(
-                  color: paleta.textoSecundario,
-                ),
-              ),
-            ),
-            if (widget.conNota) ...[
+            TotalSoloLectura(hectareas: widget.hectareas, precioHa: valor),
+            if (widget.conJustificacion) ...[
               const SizedBox(height: EspaciadoCampo.l),
-              TextField(
-                key: const ValueKey('hoja-nota'),
-                controller: _nota,
-                maxLength: 200,
-                maxLines: 2,
-                textCapitalization: TextCapitalization.sentences,
-                decoration: InputDecoration(
-                  labelText: l10n.comunMensajeParaPilotoOpcional,
-                ),
-              ),
+              CampoJustificacionPrecio(controller: _justificacion),
             ],
             const SizedBox(height: EspaciadoCampo.l),
             BotonPrincipal(
@@ -177,9 +159,9 @@ class _HojaPrecioState extends State<HojaPrecio> {
                   ? null
                   : () => Navigator.of(context).pop((
                       precio: valor,
-                      nota: _nota.text.trim().isEmpty
-                          ? null
-                          : _nota.text.trim(),
+                      justificacion: JustificacionPrecio.normalizar(
+                        _justificacion.text,
+                      ),
                     )),
             ),
           ],

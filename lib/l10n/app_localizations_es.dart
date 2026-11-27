@@ -1380,9 +1380,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ofertasOrdenCalificacion => 'Mejor calificación';
 
   @override
-  String get ofertasOrdenDistancia => 'Más cerca';
-
-  @override
   String get ofertasOfertaCambio => 'La oferta cambió.';
 
   @override
@@ -4197,4 +4194,124 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get perfilCuentaDisponibilidadDetalle =>
       'Ponte ocupado para no recibir avisos';
+
+  @override
+  String get precioJustificacionEtiqueta =>
+      'Justificación del precio (opcional)';
+
+  @override
+  String get precioJustificacionAyuda =>
+      'Explica por qué propones este precio. La otra parte lo verá.';
+
+  @override
+  String precioJustificacionContador(int usados, int maximo) {
+    return '$usados de $maximo';
+  }
+
+  @override
+  String get precioJustificacionTitulo => 'Justificación del precio';
+
+  @override
+  String get precioTotalEtiqueta => 'Total estimado';
+
+  @override
+  String get precioTotalSinPrecio => 'Escribe el precio';
+
+  @override
+  String get precioTotalSoloLectura =>
+      'Se calcula con las hectáreas; no se escribe';
+
+  @override
+  String precioTotalCalculo(String hectareas, String precio) {
+    return '$hectareas × $precio';
+  }
+
+  @override
+  String get ofertasOrdenRecomendado => 'Recomendado';
+
+  @override
+  String get ofertasOrdenReciente => 'Más reciente';
+
+  @override
+  String get ofertasFiltros => 'Filtros';
+
+  @override
+  String ofertasFiltrosConActivos(int cantidad) {
+    return 'Filtros ($cantidad)';
+  }
+
+  @override
+  String get ofertasFiltrosTitulo => 'Ordenar y filtrar ofertas';
+
+  @override
+  String get ofertasFiltrosOrdenarPor => 'Ordenar por';
+
+  @override
+  String get ofertasFiltroPrecioMin => 'Precio mínimo (Bs/ha)';
+
+  @override
+  String get ofertasFiltroPrecioMax => 'Precio máximo (Bs/ha)';
+
+  @override
+  String get ofertasFiltroTotalMax => 'Total máximo (Bs)';
+
+  @override
+  String get ofertasFiltroCalificacionMin => 'Calificación mínima';
+
+  @override
+  String get ofertasFiltroCalificacionCualquiera => 'Cualquiera';
+
+  @override
+  String ofertasFiltroCalificacionDesde(String minima) {
+    return '$minima o más';
+  }
+
+  @override
+  String get ofertasFiltroTipo => 'Tipo de proveedor';
+
+  @override
+  String get ofertasFiltroTipoTodos => 'Todos';
+
+  @override
+  String get ofertasFiltroTipoPropio => 'Agrocom';
+
+  @override
+  String get ofertasFiltroTipoIndependiente => 'Independiente';
+
+  @override
+  String get ofertasFiltroTipoTercero => 'Dueño de drones';
+
+  @override
+  String get ofertasFiltroTanqueMin => 'Tanque mínimo (litros)';
+
+  @override
+  String get ofertasFiltrosAplicar => 'Ver ofertas';
+
+  @override
+  String get ofertasFiltrosQuitar => 'Quitar filtros';
+
+  @override
+  String get ofertasFiltrosNumeroInvalido =>
+      'Escribe un número, por ejemplo 120';
+
+  @override
+  String get ofertasFiltrosRangoInvalido =>
+      'El máximo no puede ser menor que el mínimo';
+
+  @override
+  String get ofertasNuevaOferta =>
+      'Llegó una oferta nueva. Compárala con las demás.';
+
+  @override
+  String get ofertasSinResultadosTitulo => 'Ninguna oferta cumple tus filtros';
+
+  @override
+  String get ofertasSinResultadosDetalle =>
+      'Quita algún filtro para ver las demás ofertas.';
+
+  @override
+  String get ofertasActualizandoLista => 'Actualizando ofertas';
+
+  @override
+  String get ofertasPorQueEsePrecio => 'Por qué ese precio';
 }

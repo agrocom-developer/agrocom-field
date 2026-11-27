@@ -1,5 +1,7 @@
 import 'package:decimal/decimal.dart';
 
+import '../../../nucleo/marketplace/dominio/proveedor.dart' show TipoProveedor;
+
 /// Quién escribió una oferta. En cada ronda alterna: el piloto abre y el
 /// cliente responde.
 enum AutorOferta { proveedor, cliente }
@@ -52,6 +54,7 @@ class ProveedorOfertante {
     this.capacidadLitros,
     this.fotosDron = const [],
     this.fotoUrl,
+    this.tipo,
   });
 
   final String id;
@@ -72,6 +75,10 @@ class ProveedorOfertante {
   /// Foto de perfil del piloto: URL firmada de corta vida (15 minutos), que
   /// se pide sin token; `null` si no tiene.
   final String? fotoUrl;
+
+  /// Propio de Agrocom, independiente o dueño de drones; `null` si el
+  /// servidor no lo informó.
+  final TipoProveedor? tipo;
 
   String get dron => [?marcaDron, ?modeloDron].join(' ');
 
@@ -101,6 +108,7 @@ class OfertaRecibida {
     this.esDefinitiva = false,
     this.aceptaPropuesta = false,
     this.nota,
+    this.justificacionPrecio,
     this.distanciaKm,
     this.venceEn,
     this.creadaEn,
@@ -126,6 +134,10 @@ class OfertaRecibida {
   /// El piloto acepta exactamente el precio que propuso el cliente.
   final bool aceptaPropuesta;
   final String? nota;
+
+  /// Por qué su autor propone ese precio (hasta 500 caracteres); lo escribe
+  /// solo el autor y no se edita.
+  final String? justificacionPrecio;
   final Decimal? distanciaKm;
   final DateTime? venceEn;
   final DateTime? creadaEn;

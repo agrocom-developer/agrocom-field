@@ -79,6 +79,7 @@ class SolicitudAbierta {
     this.accesoDificil = false,
     this.referenciasAcceso,
     this.colindantesSensibles,
+    this.justificacionPrecio,
   });
 
   final int id;
@@ -112,6 +113,10 @@ class SolicitudAbierta {
   final bool accesoDificil;
   final String? referenciasAcceso;
   final String? colindantesSensibles;
+
+  /// Por qué el cliente propone ese precio (opcional, hasta 500 caracteres);
+  /// solo viene en el detalle.
+  final String? justificacionPrecio;
 
   /// Monto estimado al precio propuesto: hectáreas por precio.
   Decimal get montoPropuesto => hectareas * precioHaPropuesto;
@@ -269,6 +274,7 @@ class OfertaNegociada {
     required this.esDefinitiva,
     required this.venceEn,
     this.nota,
+    this.justificacionPrecio,
     this.distanciaKm,
     this.creadaEn,
     this.respondidaEn,
@@ -292,6 +298,9 @@ class OfertaNegociada {
   final bool esDefinitiva;
   final DateTime venceEn;
   final String? nota;
+
+  /// Por qué su autor propone ese precio; lo escribe solo el autor.
+  final String? justificacionPrecio;
   final Decimal? distanciaKm;
   final DateTime? creadaEn;
   final DateTime? respondidaEn;

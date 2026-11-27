@@ -6,6 +6,7 @@ import 'package:agrocom_field/cliente/calificar/data/calificacion_demo.dart';
 import 'package:agrocom_field/cliente/calificar/presentation/calificar_cubit.dart';
 import 'package:agrocom_field/cliente/demo/almacen_demo_cliente.dart';
 import 'package:agrocom_field/cliente/ofertas/data/ofertas_demo.dart';
+import 'package:agrocom_field/cliente/ofertas/domain/comparador_ofertas.dart';
 import 'package:agrocom_field/cliente/ofertas/domain/oferta_recibida.dart';
 import 'package:agrocom_field/cliente/ofertas/presentation/ofertas_cubit.dart';
 import 'package:agrocom_field/cliente/problema/data/problema_demo.dart';
@@ -336,21 +337,17 @@ void main() {
       await cubit.close();
     });
 
-    test('se pueden ordenar por calificación y por cercanía', () async {
+    test('se pueden ordenar por calificación y por lo más reciente', () async {
       final cubit = crear();
       await cubit.cargar();
-      cubit.ordenar(OrdenOfertas.calificacion);
+      await cubit.ordenar(OrdenOfertas.calificacion);
       expect(cubit.state.vigentes(ahora).map((o) => o.proveedor.calificacion), [
         4.9,
         4.8,
         4.7,
       ]);
-      cubit.ordenar(OrdenOfertas.distancia);
-      expect(cubit.state.vigentes(ahora).map((o) => o.distanciaKm), [
-        Decimal.parse('9.8'),
-        Decimal.parse('18.4'),
-        Decimal.parse('32.7'),
-      ]);
+      await cubit.ordenar(OrdenOfertas.reciente);
+      expect(cubit.state.orden, OrdenOfertas.reciente);
       await cubit.close();
     });
 

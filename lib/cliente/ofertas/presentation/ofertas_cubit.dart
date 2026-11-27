@@ -7,23 +7,31 @@ import 'package:uuid/uuid.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../solicitudes/domain/solicitud.dart';
 import '../../solicitudes/domain/solicitudes_repositorio.dart';
+import '../domain/comparador_ofertas.dart';
 import '../domain/oferta_recibida.dart';
 import '../domain/ofertas_repositorio.dart';
 
 enum FaseOfertas { cargando, lista, noEncontrada, error }
 
-/// Cómo se ordenan las ofertas vigentes para compararlas.
-enum OrdenOfertas { precio, calificacion, distancia }
-
 /// Qué pasó con la última respuesta, para que la pantalla lo diga.
-enum AvisoOfertas { contraofertaEnviada, rechazada, cambio, sinConexion, error }
+enum AvisoOfertas {
+  contraofertaEnviada,
+  rechazada,
+  cambio,
+  sinConexion,
+  error,
+
+  /// Llegó una oferta que el cliente todavía no había visto.
+  nuevaOferta,
+}
 
 class OfertasEstado {
   const OfertasEstado({
     required this.fase,
     this.solicitud,
     this.ofertas = const [],
-    this.orden = OrdenOfertas.precio,
+    this.filtros = const FiltrosOfertas(),
+    this.filtrando = false,
     this.sinConexion = false,
     this.respondiendo,
     this.aviso,
@@ -34,7 +42,12 @@ class OfertasEstado {
   final FaseOfertas fase;
   final Solicitud? solicitud;
   final List<OfertaRecibida> ofertas;
-  final OrdenOfertas orden;
+
+  /// El orden y los filtros del comparador; los aplica el servidor.
+  final FiltrosOfertas filtros;
+
+  /// Se está leyendo la lista con otro orden o filtro.
+  final bool filtrando;
   final bool sinConexion;
 
   /// Id de la oferta cuya respuesta viaja al servidor.
@@ -45,24 +58,13 @@ class OfertasEstado {
   /// El cliente eligió una oferta: la solicitud quedó adjudicada.
   final bool adjudicada;
 
-  /// Las ofertas que siguen abiertas, en el orden elegido.
-  List<OfertaRecibida> vigentes(DateTime ahora) {
-    final lista = [
-      for (final o in ofertas)
-        if (o.vigenteA(ahora)) o,
-    ];
-    lista.sort(switch (orden) {
-      OrdenOfertas.precio => (a, b) => a.precioHa.compareTo(b.precioHa),
-      OrdenOfertas.calificacion => (a, b) => b.proveedor.calificacion.compareTo(
-        a.proveedor.calificacion,
-      ),
-      OrdenOfertas.distancia =>
-        (a, b) => (a.distanciaKm ?? Decimal.fromInt(9999)).compareTo(
-          b.distanciaKm ?? Decimal.fromInt(9999),
-        ),
-    });
-    return lista;
-  }
+  OrdenOfertas get orden => filtros.orden;
+
+  /// Las ofertas que siguen abiertas, en el orden que devolvió el servidor.
+  List<OfertaRecibida> vigentes(DateTime ahora) => [
+    for (final o in ofertas)
+      if (o.vigenteA(ahora)) o,
+  ];
 
   /// Las que ya no se pueden responder (cerradas, vencidas, retiradas).
   List<OfertaRecibida> cerradas(DateTime ahora) => [
@@ -74,7 +76,8 @@ class OfertasEstado {
     FaseOfertas? fase,
     Solicitud? solicitud,
     List<OfertaRecibida>? ofertas,
-    OrdenOfertas? orden,
+    FiltrosOfertas? filtros,
+    bool? filtrando,
     bool? sinConexion,
     Object? respondiendo = _igual,
     Object? aviso = _igual,
@@ -84,7 +87,8 @@ class OfertasEstado {
     fase: fase ?? this.fase,
     solicitud: solicitud ?? this.solicitud,
     ofertas: ofertas ?? this.ofertas,
-    orden: orden ?? this.orden,
+    filtros: filtros ?? this.filtros,
+    filtrando: filtrando ?? this.filtrando,
     sinConexion: sinConexion ?? this.sinConexion,
     respondiendo: identical(respondiendo, _igual)
         ? this.respondiendo
@@ -132,6 +136,10 @@ class OfertasCubit extends Cubit<OfertasEstado> {
   /// perder la respuesta crea una sola oferta (ADR 0016).
   final _claves = <String, String>{};
 
+  /// Ofertas del piloto ya vistas: una distinta avisa que llegó una nueva.
+  final _vistas = <String>{};
+  bool _leyoUnaVez = false;
+
   Future<void> cargar() async {
     emit(
       state.copiarCon(
@@ -146,24 +154,44 @@ class OfertasCubit extends Cubit<OfertasEstado> {
     if (isClosed || state.respondiendo != null) return;
     try {
       final solicitud = await _solicitudes.porId(solicitudId);
-      final ofertas = await _ofertas.deLaSolicitud(solicitudId);
+      final ofertas = await _ofertas.deLaSolicitud(
+        solicitudId,
+        filtros: state.filtros,
+      );
       if (isClosed) return;
       if (solicitud == null) {
         emit(state.copiarCon(fase: FaseOfertas.noEncontrada));
         return;
       }
+      final ids = {
+        for (final o in ofertas)
+          if (o.estado == EstadoOferta.vigente &&
+              o.autor == AutorOferta.proveedor)
+            o.id,
+      };
+      // Con filtros activos la lista cambia por el filtro, no por llegadas.
+      final llegoNueva =
+          _leyoUnaVez &&
+          !state.filtros.hayFiltros &&
+          ids.any((id) => !_vistas.contains(id));
+      _vistas.addAll(ids);
+      _leyoUnaVez = true;
       emit(
         state.copiarCon(
           fase: FaseOfertas.lista,
           solicitud: solicitud,
           ofertas: ofertas,
+          filtrando: false,
           sinConexion: false,
+          aviso: llegoNueva ? AvisoOfertas.nuevaOferta : state.aviso,
+          mensajeAviso: llegoNueva ? null : state.mensajeAviso,
         ),
       );
     } on Object catch (e) {
       if (isClosed) return;
       emit(
         state.copiarCon(
+          filtrando: false,
           // Con ofertas ya a la vista se conservan; solo se avisa.
           fase: state.solicitud == null ? FaseOfertas.error : state.fase,
           sinConexion: e is SinConexion,
@@ -174,7 +202,15 @@ class OfertasCubit extends Cubit<OfertasEstado> {
 
   Future<void> actualizar() => _leer();
 
-  void ordenar(OrdenOfertas orden) => emit(state.copiarCon(orden: orden));
+  /// Cambia el orden y los filtros del comparador y vuelve a leer la lista.
+  Future<void> aplicarFiltros(FiltrosOfertas filtros) {
+    if (filtros == state.filtros) return Future.value();
+    emit(state.copiarCon(filtros: filtros, filtrando: true));
+    return _leer();
+  }
+
+  Future<void> ordenar(OrdenOfertas orden) =>
+      aplicarFiltros(state.filtros.copiarCon(orden: orden));
 
   void descartarAviso() =>
       emit(state.copiarCon(aviso: null, mensajeAviso: null));
@@ -191,6 +227,7 @@ class OfertasCubit extends Cubit<OfertasEstado> {
     OfertaRecibida oferta,
     Decimal precioHa, {
     String? nota,
+    String? justificacionPrecio,
   }) => _responder(
     oferta,
     () => _ofertas.contraofertar(
@@ -201,6 +238,7 @@ class OfertasCubit extends Cubit<OfertasEstado> {
         _uuid.v4,
       ),
       nota: nota,
+      justificacionPrecio: justificacionPrecio,
     ),
     aviso: AvisoOfertas.contraofertaEnviada,
   );
