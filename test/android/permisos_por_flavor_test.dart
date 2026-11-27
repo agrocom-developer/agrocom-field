@@ -117,7 +117,7 @@ void main() {
         expect(texto, isNotNull);
         expect(texto!.length, greaterThan(40));
         expect(texto, isNot(contains('Agrocom Field')));
-        expect(texto, startsWith('Agrocom'));
+        expect(texto, startsWith('DronAgro'));
       });
     }
 

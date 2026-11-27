@@ -31,7 +31,7 @@ class AppPilotoDemo extends StatelessWidget {
     return TemaVisualApp(
       predeterminado: ModoVisualCampo.campo,
       construir: (context, tema) => MaterialApp(
-        title: 'Agrocom',
+        title: 'DronAgro Piloto',
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('es'),

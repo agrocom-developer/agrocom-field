@@ -36,12 +36,12 @@ android {
         create("piloto") {
             dimension = "rol"
             applicationIdSuffix = ".piloto"
-            resValue(type = "string", name = "app_name", value = "Agrocom Piloto")
+            resValue(type = "string", name = "app_name", value = "DronAgro Piloto")
         }
         create("cliente") {
             dimension = "rol"
             applicationIdSuffix = ".cliente"
-            resValue(type = "string", name = "app_name", value = "Agrocom")
+            resValue(type = "string", name = "app_name", value = "DronAgro")
         }
     }
 

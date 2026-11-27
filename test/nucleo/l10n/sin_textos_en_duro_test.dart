@@ -98,7 +98,14 @@ final tipo = 'cliente';
 }
 
 /// Literales que no son texto de pantalla: la marca y atribuciones propias.
-const _literalesPermitidos = {'Agrocom', 'AGROCOM', 'OpenStreetMap', 'Bs'};
+const _literalesPermitidos = {
+  'Agrocom',
+  'AGROCOM',
+  'DronAgro',
+  'DronAgro Piloto',
+  'OpenStreetMap',
+  'Bs',
+};
 
 /// Literales exentos (`archivo::literal`), con su motivo.
 const _literalesExentos = <String, String>{

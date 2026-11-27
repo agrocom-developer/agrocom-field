@@ -486,7 +486,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9D6270CADC61566027C60023 /* Profile-piloto.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = "Agrocom Piloto";
+				APP_DISPLAY_NAME = "DronAgro Piloto";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -632,7 +632,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = Agrocom;
+				APP_DISPLAY_NAME = DronAgro;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -654,7 +654,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 98CB13C0AB4B30CEC4028CCE /* Debug-cliente.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = Agrocom;
+				APP_DISPLAY_NAME = DronAgro;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -821,7 +821,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 024FBC1AD90512596BDD6EFD /* Profile-cliente.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = Agrocom;
+				APP_DISPLAY_NAME = DronAgro;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -967,7 +967,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 44872F004CA2F9E5EFDF2B1C /* Debug-piloto.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = "Agrocom Piloto";
+				APP_DISPLAY_NAME = "DronAgro Piloto";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -990,7 +990,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 50FEA3A430A8FFC10AC1471B /* Release-cliente.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = Agrocom;
+				APP_DISPLAY_NAME = DronAgro;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -1141,7 +1141,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = Agrocom;
+				APP_DISPLAY_NAME = DronAgro;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -1164,7 +1164,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = Agrocom;
+				APP_DISPLAY_NAME = DronAgro;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -1239,7 +1239,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 6DB4BA1546518BF6F59AFA86 /* Release-piloto.xcconfig */;
 			buildSettings = {
-				APP_DISPLAY_NAME = "Agrocom Piloto";
+				APP_DISPLAY_NAME = "DronAgro Piloto";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";

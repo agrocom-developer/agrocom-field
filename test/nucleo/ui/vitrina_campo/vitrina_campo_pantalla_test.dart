@@ -56,7 +56,7 @@ void main() {
 
     await _ir(tester, 'Login');
     expect(find.text('Vincular dispositivo'), findsOneWidget);
-    expect(find.bySemanticsLabel('Agrocom'), findsOneWidget);
+    expect(find.bySemanticsLabel('DronAgro'), findsOneWidget);
 
     await _ir(tester, 'Inicio B');
     expect(find.text('Iniciar aplicación'), findsOneWidget);

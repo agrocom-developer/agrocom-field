@@ -65,7 +65,7 @@ class AccesoRed implements AccesoRepositorio {
   static const rolCliente = 'cliente';
 
   static const _noEsCliente =
-      'Esta cuenta no es de cliente. Usa la app de Agrocom que le corresponde.';
+      'Esta cuenta no es de cliente. Usa la app de DronAgro que le corresponde.';
 
   @override
   Future<bool> onboardingVisto() => _onboarding.visto();

@@ -45,7 +45,7 @@ class AccesoProveedorRed implements AccesoProveedorRepositorio {
   final String nombreDispositivo;
 
   static const _cuentaAjena =
-      'Esta cuenta no es de esta app. Usa la app de Agrocom que le corresponde.';
+      'Esta cuenta no es de esta app. Usa la app de DronAgro que le corresponde.';
 
   @override
   Future<SesionProveedor?> sesionActual() async {
