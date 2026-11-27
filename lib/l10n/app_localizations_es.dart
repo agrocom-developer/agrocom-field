@@ -680,7 +680,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get componentesArrastraParaVerMas => 'Arrastra para ver más o menos';
 
   @override
-  String get componentesAgrocom => 'Agrocom';
+  String get componentesAgrocom => 'DronAgro';
 
   @override
   String componentesOfertaServicioQuedanPara(
@@ -814,7 +814,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accesoIngresar => 'Ingresar';
 
   @override
-  String get accesoPrimeraVezAgrocom => '¿Primera vez en Agrocom?';
+  String get accesoPrimeraVezAgrocom => '¿Primera vez en DronAgro?';
 
   @override
   String get accesoCrearCuenta => 'Crear cuenta';
@@ -1617,7 +1617,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get solicitudesListos => 'Terminadas';
 
   @override
-  String get solicitudesFumigadoConAgrocom => 'Fumigado con Agrocom';
+  String get solicitudesFumigadoConAgrocom => 'Fumigado con DronAgro';
 
   @override
   String get solicitarQueLoteFumigamos => '¿Qué lote fumigamos?';
@@ -2170,7 +2170,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get pagoPilotoConfirmoQueRecibio =>
-      'El piloto confirmó que recibió el pago. Gracias por usar Agrocom.';
+      'El piloto confirmó que recibió el pago. Gracias por usar DronAgro.';
 
   @override
   String get pagoPudimosRevisarPago => 'No pudimos revisar el pago.';
@@ -2227,7 +2227,8 @@ class AppLocalizationsEs extends AppLocalizations {
       'Publica tu lote, recibe ofertas de pilotos y elige. El pago es directo con el piloto.';
 
   @override
-  String get marketplaceAccesoComoVasUsarAgrocom => '¿Cómo vas a usar Agrocom?';
+  String get marketplaceAccesoComoVasUsarAgrocom =>
+      '¿Cómo vas a usar DronAgro?';
 
   @override
   String get marketplaceAccesoEligeRol => 'Elige tu rol';
@@ -3910,7 +3911,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get biometriaMotivoDesbloqueo =>
-      'Confirma que eres tú para abrir Agrocom';
+      'Confirma que eres tú para abrir DronAgro';
 
   @override
   String get biometriaMotivoActivar =>
@@ -4272,6 +4273,79 @@ class AppLocalizationsEs extends AppLocalizations {
   String get iconoCheckEquipo => 'Equipo aprobado';
 
   @override
+  String get iconoPiloto => 'Piloto con control remoto';
+
+  @override
+  String get marcaNombre => 'DronAgro';
+
+  @override
+  String get marcaDistintivoPiloto => 'Piloto';
+
+  @override
+  String get marcaDistintivoCliente => 'Cliente';
+
+  @override
+  String get marcaEtiquetaPiloto => 'DronAgro, app para pilotos';
+
+  @override
+  String get marcaEtiquetaCliente => 'DronAgro, app para clientes';
+
+  @override
+  String get portadaPilotoLema =>
+      'Tu trabajo como piloto, también en el lote sin señal';
+
+  @override
+  String get portadaPilotoEntrar => 'Entrar a mi cuenta';
+
+  @override
+  String get capacidadesTituloPiloto => 'Qué puedes hacer como piloto';
+
+  @override
+  String get capacidadesPilotoMapa =>
+      'Mira en el mapa las solicitudes abiertas, con el lote, las hectáreas y las fotos del terreno.';
+
+  @override
+  String get capacidadesPilotoOfertar =>
+      'Ofrece tu precio por hectárea con tu dron, o contraoferta al cliente.';
+
+  @override
+  String get capacidadesPilotoSinSenal =>
+      'Trabaja sin señal en el lote: lo que registras se envía cuando vuelve la red.';
+
+  @override
+  String get capacidadesPilotoRegistro =>
+      'Marca el inicio, el avance y el cierre con fotos y las hectáreas ejecutadas.';
+
+  @override
+  String get capacidadesPilotoCalificaciones =>
+      'Consulta las calificaciones que recibes y califica al cliente.';
+
+  @override
+  String get capacidadesTituloCliente => 'Qué puedes hacer como cliente';
+
+  @override
+  String get capacidadesVerCliente => 'Qué puedes hacer';
+
+  @override
+  String get capacidadesClientePublicar =>
+      'Publica una solicitud con tu precio por hectárea.';
+
+  @override
+  String get capacidadesClienteComparar =>
+      'Compara las ofertas de los pilotos.';
+
+  @override
+  String get capacidadesClienteElegir =>
+      'Elige, contraoferta o acepta la oferta que te convenga.';
+
+  @override
+  String get capacidadesClienteSeguir =>
+      'Sigue el servicio con fotos, avance y chat.';
+
+  @override
+  String get capacidadesClienteCalificar => 'Califica al piloto al terminar.';
+
+  @override
   String get notificacionCanalOfertas => 'Ofertas nuevas';
 
   @override
@@ -4281,7 +4355,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notificacionCanalSincronizacion => 'Sincronización';
 
   @override
-  String get notificacionCanalSistema => 'Avisos de Agrocom';
+  String get notificacionCanalSistema => 'Avisos de DronAgro';
 
   @override
   String get cuentaCanalWhatsApp => 'WhatsApp';
@@ -4623,15 +4697,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cuentaYaRegistradaComoPiloto =>
-      'Ese teléfono o documento ya está registrado como piloto. Usa la app de Agrocom que le corresponde.';
+      'Ese teléfono o documento ya está registrado como piloto. Usa la app de DronAgro que le corresponde.';
 
   @override
   String get cuentaYaRegistradaComoCliente =>
-      'Ese teléfono o documento ya está registrado como cliente. Usa la app de Agrocom que le corresponde.';
+      'Ese teléfono o documento ya está registrado como cliente. Usa la app de DronAgro que le corresponde.';
 
   @override
   String get cuentaYaRegistradaDetalle =>
-      'Ese teléfono o documento ya está registrado en Agrocom, así que no creamos otra cuenta. Inicia sesión o recupera tu acceso.';
+      'Ese teléfono o documento ya está registrado en DronAgro, así que no creamos otra cuenta. Inicia sesión o recupera tu acceso.';
 
   @override
   String get cuentaYaRegistradaRegistroIncompleto =>

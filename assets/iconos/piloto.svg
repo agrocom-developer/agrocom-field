@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Piloto: persona con el mando de radiocontrol al frente y un dron
+       en el aire, arriba a la derecha. -->
+  <circle cx="8" cy="8" r="3" stroke="#101418" stroke-width="1.6"/>
+  <path d="M2.5 21 V18 C2.5 15.6 4.5 13.8 7 13.8 H9 C10.4 13.8 11.6 14.4 12.4 15.4"
+        stroke="#101418" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="9.5" y="17" width="8" height="4.5" rx="1.4" fill="#101418"/>
+  <path d="M12.5 17 L14 14.5" stroke="#101418" stroke-width="1.4" stroke-linecap="round"/>
+  <path d="M15 4 L21 4 M16 4 V6.2 M20 4 V6.2" stroke="#101418" stroke-width="1.4" stroke-linecap="round"/>
+  <rect x="16" y="6.2" width="4" height="2.4" rx="0.8" fill="#101418"/>
+  <path d="M14 9.5 L16 8.6 M22 9.5 L20 8.6" stroke="#101418" stroke-width="1.2" stroke-linecap="round"/>
+</svg>

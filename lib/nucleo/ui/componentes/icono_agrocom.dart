@@ -37,7 +37,8 @@ enum IconoAgrocomId {
   bateria('assets/iconos/bateria.svg'),
   mandoRc('assets/iconos/mando_rc.svg'),
   hectarea('assets/iconos/hectarea.svg'),
-  checkEquipo('assets/iconos/check_equipo.svg');
+  checkEquipo('assets/iconos/check_equipo.svg'),
+  piloto('assets/iconos/piloto.svg');
 
   const IconoAgrocomId(this.asset);
 
@@ -61,6 +62,7 @@ enum IconoAgrocomId {
     mandoRc => l10n.iconoMandoRc,
     hectarea => l10n.iconoHectarea,
     checkEquipo => l10n.iconoCheckEquipo,
+    piloto => l10n.iconoPiloto,
   };
 
   /// El ícono del modelo cuyo código ("T10", "T20"…) aparece en [modelo]

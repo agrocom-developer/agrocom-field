@@ -90,10 +90,10 @@ void main() {
     }
   });
 
-  testWidgets('los 13 íconos tienen etiqueta semántica en español', (
+  testWidgets('los 14 íconos tienen etiqueta semántica en español', (
     tester,
   ) async {
-    expect(IconoAgrocomId.values, hasLength(13));
+    expect(IconoAgrocomId.values, hasLength(14));
     late AppLocalizations l10n;
     await tester.pumpWidget(
       _envolver(

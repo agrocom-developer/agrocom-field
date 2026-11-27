@@ -1225,7 +1225,7 @@ abstract class AppLocalizations {
   /// No description provided for @componentesAgrocom.
   ///
   /// In es, this message translates to:
-  /// **'Agrocom'**
+  /// **'DronAgro'**
   String get componentesAgrocom;
 
   /// No description provided for @componentesOfertaServicioQuedanPara.
@@ -1426,7 +1426,7 @@ abstract class AppLocalizations {
   /// No description provided for @accesoPrimeraVezAgrocom.
   ///
   /// In es, this message translates to:
-  /// **'¿Primera vez en Agrocom?'**
+  /// **'¿Primera vez en DronAgro?'**
   String get accesoPrimeraVezAgrocom;
 
   /// No description provided for @accesoCrearCuenta.
@@ -2705,7 +2705,7 @@ abstract class AppLocalizations {
   /// No description provided for @solicitudesFumigadoConAgrocom.
   ///
   /// In es, this message translates to:
-  /// **'Fumigado con Agrocom'**
+  /// **'Fumigado con DronAgro'**
   String get solicitudesFumigadoConAgrocom;
 
   /// No description provided for @solicitarQueLoteFumigamos.
@@ -3605,7 +3605,7 @@ abstract class AppLocalizations {
   /// No description provided for @pagoPilotoConfirmoQueRecibio.
   ///
   /// In es, this message translates to:
-  /// **'El piloto confirmó que recibió el pago. Gracias por usar Agrocom.'**
+  /// **'El piloto confirmó que recibió el pago. Gracias por usar DronAgro.'**
   String get pagoPilotoConfirmoQueRecibio;
 
   /// No description provided for @pagoPudimosRevisarPago.
@@ -3707,7 +3707,7 @@ abstract class AppLocalizations {
   /// No description provided for @marketplaceAccesoComoVasUsarAgrocom.
   ///
   /// In es, this message translates to:
-  /// **'¿Cómo vas a usar Agrocom?'**
+  /// **'¿Cómo vas a usar DronAgro?'**
   String get marketplaceAccesoComoVasUsarAgrocom;
 
   /// No description provided for @marketplaceAccesoEligeRol.
@@ -6364,7 +6364,7 @@ abstract class AppLocalizations {
   /// No description provided for @biometriaMotivoDesbloqueo.
   ///
   /// In es, this message translates to:
-  /// **'Confirma que eres tú para abrir Agrocom'**
+  /// **'Confirma que eres tú para abrir DronAgro'**
   String get biometriaMotivoDesbloqueo;
 
   /// No description provided for @biometriaMotivoActivar.
@@ -6973,6 +6973,132 @@ abstract class AppLocalizations {
   /// **'Equipo aprobado'**
   String get iconoCheckEquipo;
 
+  /// No description provided for @iconoPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Piloto con control remoto'**
+  String get iconoPiloto;
+
+  /// No description provided for @marcaNombre.
+  ///
+  /// In es, this message translates to:
+  /// **'DronAgro'**
+  String get marcaNombre;
+
+  /// No description provided for @marcaDistintivoPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Piloto'**
+  String get marcaDistintivoPiloto;
+
+  /// No description provided for @marcaDistintivoCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente'**
+  String get marcaDistintivoCliente;
+
+  /// No description provided for @marcaEtiquetaPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'DronAgro, app para pilotos'**
+  String get marcaEtiquetaPiloto;
+
+  /// No description provided for @marcaEtiquetaCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'DronAgro, app para clientes'**
+  String get marcaEtiquetaCliente;
+
+  /// No description provided for @portadaPilotoLema.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu trabajo como piloto, también en el lote sin señal'**
+  String get portadaPilotoLema;
+
+  /// No description provided for @portadaPilotoEntrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Entrar a mi cuenta'**
+  String get portadaPilotoEntrar;
+
+  /// No description provided for @capacidadesTituloPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué puedes hacer como piloto'**
+  String get capacidadesTituloPiloto;
+
+  /// No description provided for @capacidadesPilotoMapa.
+  ///
+  /// In es, this message translates to:
+  /// **'Mira en el mapa las solicitudes abiertas, con el lote, las hectáreas y las fotos del terreno.'**
+  String get capacidadesPilotoMapa;
+
+  /// No description provided for @capacidadesPilotoOfertar.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofrece tu precio por hectárea con tu dron, o contraoferta al cliente.'**
+  String get capacidadesPilotoOfertar;
+
+  /// No description provided for @capacidadesPilotoSinSenal.
+  ///
+  /// In es, this message translates to:
+  /// **'Trabaja sin señal en el lote: lo que registras se envía cuando vuelve la red.'**
+  String get capacidadesPilotoSinSenal;
+
+  /// No description provided for @capacidadesPilotoRegistro.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca el inicio, el avance y el cierre con fotos y las hectáreas ejecutadas.'**
+  String get capacidadesPilotoRegistro;
+
+  /// No description provided for @capacidadesPilotoCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Consulta las calificaciones que recibes y califica al cliente.'**
+  String get capacidadesPilotoCalificaciones;
+
+  /// No description provided for @capacidadesTituloCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué puedes hacer como cliente'**
+  String get capacidadesTituloCliente;
+
+  /// No description provided for @capacidadesVerCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué puedes hacer'**
+  String get capacidadesVerCliente;
+
+  /// No description provided for @capacidadesClientePublicar.
+  ///
+  /// In es, this message translates to:
+  /// **'Publica una solicitud con tu precio por hectárea.'**
+  String get capacidadesClientePublicar;
+
+  /// No description provided for @capacidadesClienteComparar.
+  ///
+  /// In es, this message translates to:
+  /// **'Compara las ofertas de los pilotos.'**
+  String get capacidadesClienteComparar;
+
+  /// No description provided for @capacidadesClienteElegir.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige, contraoferta o acepta la oferta que te convenga.'**
+  String get capacidadesClienteElegir;
+
+  /// No description provided for @capacidadesClienteSeguir.
+  ///
+  /// In es, this message translates to:
+  /// **'Sigue el servicio con fotos, avance y chat.'**
+  String get capacidadesClienteSeguir;
+
+  /// No description provided for @capacidadesClienteCalificar.
+  ///
+  /// In es, this message translates to:
+  /// **'Califica al piloto al terminar.'**
+  String get capacidadesClienteCalificar;
+
   /// No description provided for @notificacionCanalOfertas.
   ///
   /// In es, this message translates to:
@@ -6994,7 +7120,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificacionCanalSistema.
   ///
   /// In es, this message translates to:
-  /// **'Avisos de Agrocom'**
+  /// **'Avisos de DronAgro'**
   String get notificacionCanalSistema;
 
   /// No description provided for @cuentaCanalWhatsApp.
@@ -7552,19 +7678,19 @@ abstract class AppLocalizations {
   /// No description provided for @cuentaYaRegistradaComoPiloto.
   ///
   /// In es, this message translates to:
-  /// **'Ese teléfono o documento ya está registrado como piloto. Usa la app de Agrocom que le corresponde.'**
+  /// **'Ese teléfono o documento ya está registrado como piloto. Usa la app de DronAgro que le corresponde.'**
   String get cuentaYaRegistradaComoPiloto;
 
   /// No description provided for @cuentaYaRegistradaComoCliente.
   ///
   /// In es, this message translates to:
-  /// **'Ese teléfono o documento ya está registrado como cliente. Usa la app de Agrocom que le corresponde.'**
+  /// **'Ese teléfono o documento ya está registrado como cliente. Usa la app de DronAgro que le corresponde.'**
   String get cuentaYaRegistradaComoCliente;
 
   /// No description provided for @cuentaYaRegistradaDetalle.
   ///
   /// In es, this message translates to:
-  /// **'Ese teléfono o documento ya está registrado en Agrocom, así que no creamos otra cuenta. Inicia sesión o recupera tu acceso.'**
+  /// **'Ese teléfono o documento ya está registrado en DronAgro, así que no creamos otra cuenta. Inicia sesión o recupera tu acceso.'**
   String get cuentaYaRegistradaDetalle;
 
   /// No description provided for @cuentaYaRegistradaRegistroIncompleto.
