@@ -61,7 +61,6 @@ class ResumenCalificacionesCampo extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
-    final paleta = context.paleta;
     final promedio = resumen.promedio.toStringAsFixed(1).replaceAll('.', ',');
     final mayor = resumen.porPuntaje.values.fold<int>(
       0,
@@ -86,7 +85,7 @@ class ResumenCalificacionesCampo extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.star_rounded, size: 36, color: paleta.ambar),
+                    const EstrellaCampo(tamano: 36),
                     const SizedBox(width: EspaciadoCampo.xs),
                     Text(promedio, style: texto.displaySmall),
                   ],
@@ -145,7 +144,7 @@ class _BarraPuntaje extends StatelessWidget {
               width: escala.scale(14),
               child: Text('$puntaje', style: texto.bodyMedium),
             ),
-            Icon(Icons.star_rounded, size: 14, color: paleta.textoSecundario),
+            EstrellaCampo(tamano: 14, color: paleta.textoSecundario),
             const SizedBox(width: EspaciadoCampo.s),
             Expanded(
               child: ClipRRect(

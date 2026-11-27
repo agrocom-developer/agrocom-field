@@ -32,6 +32,9 @@ import '../calificar/data/calificacion_demo.dart';
 import '../calificar/data/calificacion_red.dart';
 import '../calificar/domain/calificacion_repositorio.dart';
 import '../comun/presentation/foto_remota.dart';
+import '../../nucleo/notificaciones/bandeja/data/bandeja_demo.dart';
+import '../../nucleo/notificaciones/bandeja/data/bandeja_red.dart';
+import '../../nucleo/notificaciones/bandeja/domain/bandeja_repositorio.dart';
 import '../../nucleo/cuenta/data/contrasena_demo.dart';
 import '../../nucleo/cuenta/data/contrasena_red.dart';
 import '../../nucleo/cuenta/domain/contrasena_repositorio.dart';
@@ -92,6 +95,7 @@ class DependenciasCliente {
     this.precioFinal,
     this.contrasena,
     this.datosPersonales,
+    this.bandeja,
     this.notaAcceso,
     this.sesionExpirada,
     ConectividadServicio? conectividad,
@@ -152,6 +156,7 @@ class DependenciasCliente {
       push: DispositivosPushDemo(TokenPushEnMemoria()),
       contactos: ContactosDemo(),
       contrasena: ContrasenaDemo(),
+      bandeja: BandejaDemo(),
       datosPersonales: DatosPersonalesDemo(
         const DatosPersonales(
           nombre: DatosDemo.clienteNombre,
@@ -239,6 +244,7 @@ class DependenciasCliente {
       push: push,
       contactos: ContactosRed(http),
       contrasena: ContrasenaRed(marketplace),
+      bandeja: BandejaRed(marketplace),
       datosPersonales: const DatosPersonalesRed(),
       precioFinal: PrecioFinalRed(http),
       notaAcceso: notaAcceso,
@@ -278,6 +284,9 @@ class DependenciasCliente {
 
   /// Cambio de contraseña con código; sin él Ajustes no ofrece la fila.
   final ContrasenaRepositorio? contrasena;
+
+  /// Notificaciones recibidas (mensajes y avisos del sistema).
+  final BandejaRepositorio? bandeja;
 
   /// Edición única de datos personales y solicitud de cambio; sin él (o con
   /// `disponible` falso) Ajustes no ofrece la fila.
@@ -321,6 +330,8 @@ class DependenciasCliente {
         RepositoryProvider<ContactosRepositorio>.value(value: contactos!),
       if (contrasena != null)
         RepositoryProvider<ContrasenaRepositorio>.value(value: contrasena!),
+      if (bandeja != null)
+        RepositoryProvider<BandejaRepositorio>.value(value: bandeja!),
       if (datosPersonales != null)
         RepositoryProvider<DatosPersonalesRepositorio>.value(
           value: datosPersonales!,

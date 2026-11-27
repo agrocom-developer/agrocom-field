@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
+import 'estrella_campo.dart';
 import '../tokens_campo.dart';
 
 /// Calificación de 1 a 5 estrellas. Con [onCambio] es interactiva (la
@@ -78,11 +79,7 @@ class _Estrella extends StatelessWidget {
       scale: llena ? 1 : 0.88,
       duration: MovimientoCampo.duracion(context, MovimientoCampo.rapida),
       curve: MovimientoCampo.entrada,
-      child: Icon(
-        llena ? Icons.star_rounded : Icons.star_outline_rounded,
-        size: tamano,
-        color: llena ? paleta.ambar : paleta.bordeFuerte,
-      ),
+      child: EstrellaCampo(tamano: tamano, llena: llena),
     );
     if (onTap == null) {
       return SizedBox(width: lado, height: tamano, child: icono);

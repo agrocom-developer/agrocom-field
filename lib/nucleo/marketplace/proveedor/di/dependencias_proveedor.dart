@@ -6,6 +6,9 @@ import '../../../camara/selector_imagen.dart';
 import '../../../evidencias/compresor_adaptativo.dart';
 import '../../../notificaciones/push/dispositivos_push_repositorio.dart';
 import '../../../notificaciones/push/token_push_store.dart';
+import '../../../notificaciones/bandeja/data/bandeja_demo.dart';
+import '../../../notificaciones/bandeja/data/bandeja_red.dart';
+import '../../../notificaciones/bandeja/domain/bandeja_repositorio.dart';
 import '../../../cuenta/data/contrasena_demo.dart';
 import '../../../cuenta/data/contrasena_red.dart';
 import '../../../cuenta/domain/contrasena_repositorio.dart';
@@ -43,6 +46,7 @@ class DependenciasProveedor {
     required this.push,
     this.contrasena,
     this.datosPersonales,
+    this.bandeja,
   });
 
   factory DependenciasProveedor.demo(
@@ -62,6 +66,7 @@ class DependenciasProveedor {
     perfil: PerfilDemo(almacen),
     fotoPerfil: FotoPerfilDemo(),
     contrasena: ContrasenaDemo(),
+    bandeja: BandejaDemo(),
     datosPersonales: DatosPersonalesDemo(
       const DatosPersonales(
         nombre: 'Mamani Agroservicios',
@@ -98,6 +103,7 @@ class DependenciasProveedor {
     fotoPerfil: FotoPerfilRed(http),
     datosPersonales: const DatosPersonalesRed(),
     contrasena: ContrasenaRed(http),
+    bandeja: BandejaRed(http),
     pagos: PagosRed(http),
     preparadorFoto: PreparadorFoto(
       SelectorImagenImagePicker(),
@@ -116,6 +122,9 @@ class DependenciasProveedor {
 
   /// Cambio de contraseña con código; sin él Ajustes no ofrece la fila.
   final ContrasenaRepositorio? contrasena;
+
+  /// Notificaciones recibidas (mensajes y avisos del sistema).
+  final BandejaRepositorio? bandeja;
 
   /// Edición única de datos personales y solicitud de cambio; sin él (o con
   /// `disponible` falso) Ajustes no ofrece la fila.
@@ -141,6 +150,8 @@ class DependenciasProveedor {
     RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
     if (contrasena != null)
       RepositoryProvider<ContrasenaRepositorio>.value(value: contrasena!),
+    if (bandeja != null)
+      RepositoryProvider<BandejaRepositorio>.value(value: bandeja!),
     if (datosPersonales != null)
       RepositoryProvider<DatosPersonalesRepositorio>.value(
         value: datosPersonales!,

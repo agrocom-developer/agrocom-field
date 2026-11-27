@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
+import 'estrella_campo.dart';
 import '../tokens_campo.dart';
 
 /// Las cinco estrellas doradas del perfil, con media estrella y el promedio
@@ -38,14 +39,10 @@ class EstrellasPerfilCampo extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           for (var i = 1; i <= 5; i++)
-            Icon(
-              valor >= i - 0.25
-                  ? Icons.star_rounded
-                  : valor >= i - 0.75
-                  ? Icons.star_half_rounded
-                  : Icons.star_outline_rounded,
-              size: tamanoEstrella,
-              color: paleta.ambar,
+            EstrellaCampo(
+              tamano: tamanoEstrella,
+              llena: valor >= i - 0.25,
+              media: valor < i - 0.25 && valor >= i - 0.75,
             ),
           const SizedBox(width: EspaciadoCampo.s),
           Text(

@@ -26,6 +26,7 @@ export 'collage_fotos_campo.dart';
 export 'encabezado_campo.dart';
 export 'cifras_perfil_campo.dart';
 export 'entrada_campo.dart';
+export 'estrella_campo.dart';
 export 'esqueleto_campo.dart';
 export 'estrellas_perfil_campo.dart';
 export 'esqueleto_lista_campo.dart';
