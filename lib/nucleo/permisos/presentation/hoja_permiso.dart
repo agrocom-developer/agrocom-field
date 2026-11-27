@@ -47,11 +47,10 @@ class HojaExplicacionPermiso extends StatelessWidget {
     final paleta = context.paleta;
     return Semantics(
       scopesRoute: true,
+      explicitChildNodes: true,
       namesRoute: true,
       label: permiso.titulo(l10n),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: _ContenidoDesplazable(
         children: [
           ExcludeSemantics(
             child: Icon(permiso.icono, size: 36, color: paleta.acentoTexto),
@@ -106,11 +105,10 @@ class HojaPermisoDenegado extends StatelessWidget {
     final paleta = context.paleta;
     return Semantics(
       scopesRoute: true,
+      explicitChildNodes: true,
       namesRoute: true,
       label: l10n.permisosDenegadoTitulo,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: _ContenidoDesplazable(
         children: [
           ExcludeSemantics(
             child: Icon(
@@ -148,6 +146,29 @@ class HojaPermisoDenegado extends StatelessWidget {
             child: Text(l10n.permisosCerrar),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Contenido de una hoja de permiso: con el texto al 200 % puede no caber en
+/// pantalla, así que se desplaza dentro de un alto acotado en vez de desbordar.
+class _ContenidoDesplazable extends StatelessWidget {
+  const _ContenidoDesplazable({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    final alto = MediaQuery.sizeOf(context).height * 0.7;
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxHeight: alto),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: children,
+        ),
       ),
     );
   }
