@@ -10,7 +10,7 @@ El orden respeta dependencias: primero el flavor y el esquema local, después el
 
 | Id | Tarea | Crítica | Criterio de aceptación (comando) | Estado |
 |---|---|---|---|---|
-| 30 | Flavor `cliente`: Gradle, `main_cliente.dart`, `applicationId` `com.agrocom.agrocom_field.cliente` | no | `./bin/verify`; `flutter build apk --debug --flavor cliente -t lib/main_cliente.dart`; test de reglas de importación | Hecha (#81) |
+| 30 | Flavor `cliente`: Gradle, `main_cliente.dart`, `applicationId` `com.agrocom.dronagro.cliente` | no | `./bin/verify`; `flutter build apk --debug --flavor cliente -t lib/main_cliente.dart`; test de reglas de importación | Hecha (#81) |
 | 31 | Adaptación del esquema `drift` al servicio asignado (migración sin pérdida de datos) | **sí** | `./bin/verify`; test de migración con datos; prueba de replay | Hecha para la ejecución del piloto (ADR 0018): esquema v15 con `servicio_adjudicado`, `registro_ejecucion` y `foto_ejecucion`; migración sin pérdida y prueba de replay |
 | 32 | Sistema de diseño: tokens, tema del cliente, componentes y base de golden tests | no | `./bin/verify`; `flutter test test/ui`; test de tokens | Hecha (#79) |
 | 33 | Registro e inicio de sesión de cliente y de proveedor | no | `./bin/verify`; tests de `auth` por flavor | Hecha para `piloto`: ingreso por usuario y alta del piloto independiente contra la API (ADR 0018); acceso del cliente contra la API (ADR 0015) |

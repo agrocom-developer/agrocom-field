@@ -21,7 +21,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.agrocom.agrocom_field"
+        applicationId = "com.agrocom.dronagro"
         // Android 10 — el RC del dron DJI Agras (flavor piloto) no sube de acá.
         // No bajar sin confirmar hardware; no subir sin confirmar que el RC lo tolera.
         minSdk = 29
