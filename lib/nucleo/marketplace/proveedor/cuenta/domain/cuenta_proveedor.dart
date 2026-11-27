@@ -96,6 +96,30 @@ class EstadoDisponibilidad {
       cambiadaPorPropia == false && valor != Disponibilidad.disponible;
 }
 
+/// Qué sigue del registro (`siguiente_paso` de `GET /api/proveedores/mi`,
+/// ADR 0046). Quien inicia sesión con el alta a medias continúa desde acá, sin
+/// crear otra cuenta.
+enum SiguientePasoProveedor {
+  subirDocumentos('subir_documentos'),
+  enRevision('en_revision'),
+  corregir('corregir'),
+  suspendido('suspendido'),
+  baja('baja'),
+  listo('listo');
+
+  const SiguientePasoProveedor(this.codigo);
+  final String codigo;
+
+  /// `null` si el servidor manda un valor que esta versión no conoce: la app
+  /// cae al estado de aprobación.
+  static SiguientePasoProveedor? deCodigo(Object? codigo) {
+    for (final p in values) {
+      if (p.codigo == codigo) return p;
+    }
+    return null;
+  }
+}
+
 /// Lo que `GET /api/proveedores/mi` dice de la cuenta.
 class EstadoCuentaProveedor {
   const EstadoCuentaProveedor({
@@ -106,6 +130,7 @@ class EstadoCuentaProveedor {
     required this.disponibilidad,
     required this.disponibilidadEmpresa,
     this.motivo,
+    this.siguientePaso,
   });
 
   final int proveedorId;
@@ -119,6 +144,19 @@ class EstadoCuentaProveedor {
   final bool aptoParaOfertas;
   final EstadoDisponibilidad disponibilidad;
   final EstadoDisponibilidad disponibilidadEmpresa;
+
+  /// Qué sigue del registro según el servidor; `null` si no lo informó.
+  final SiguientePasoProveedor? siguientePaso;
+
+  /// Hay que corregir y reenviar a revisión (rechazado).
+  bool get debeCorregir =>
+      siguientePaso == SiguientePasoProveedor.corregir ||
+      (siguientePaso == null && aprobacion == EstadoAprobacion.rechazado);
+
+  /// Faltan documentos por subir (registro a medias).
+  bool get debeSubirDocumentos =>
+      siguientePaso == SiguientePasoProveedor.subirDocumentos ||
+      (siguientePaso == null && documentosFaltantes.isNotEmpty);
 
   /// Solo un proveedor aprobado ve el mapa de solicitudes (CLAUDE.md,
   /// «Alta de proveedores»): mientras no, la app queda en solo lectura. El

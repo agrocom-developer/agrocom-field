@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../permisos/presentation/hoja_permiso.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../foto_preparador.dart';
@@ -245,9 +246,13 @@ Future<void> mostrarOpcionesFotoPerfil(BuildContext context) {
             clave: const Key('foto-perfil-camara'),
             icono: Icons.photo_camera_outlined,
             texto: l10n.fotoPerfilTomarUnaFoto,
-            alToque: () {
+            alToque: () async {
               Navigator.pop(hoja);
-              cubit.elegir(OrigenFoto.camara);
+              // Primero se explica para qué se usa la cámara.
+              if (!context.mounted) return;
+              if (await permitirCamaraConExplicacion(context)) {
+                await cubit.elegir(OrigenFoto.camara);
+              }
             },
           ),
           _OpcionHoja(

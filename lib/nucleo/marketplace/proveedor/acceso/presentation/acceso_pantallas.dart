@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../auth/cuenta/domain/cuenta_seguridad.dart';
+import '../../../../auth/cuenta/presentation/cuenta_en_eliminacion_pantalla.dart';
+import '../../../../auth/cuenta/presentation/recuperar_acceso_pantalla.dart';
 import '../../../../auth/presentation/bloqueo_biometrico_widgets.dart';
 import '../../../../ui/componentes/logo_agrocom_campo.dart';
 import '../../../../ui/paleta_campo.dart';
@@ -49,6 +52,10 @@ class PuertaAcceso extends StatelessWidget {
           alDesbloquear: context.read<AccesoCubit>().desbloquear,
           alUsarContrasena: () => context.read<AccesoCubit>().usarContrasena(),
         ),
+        AccesoEnEliminacion() => CuentaEnEliminacionPantalla(
+          alConservada: context.read<AccesoCubit>().cuentaConservada,
+          alCerrarSesion: context.read<AccesoCubit>().salir,
+        ),
         AccesoDentro(:final sesion) => construir(context, sesion),
       },
     );
@@ -82,6 +89,19 @@ class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
     _usuario.dispose();
     _contrasena.dispose();
     super.dispose();
+  }
+
+  /// «Olvidé mi contraseña»: al terminar deja el usuario en el campo.
+  Future<void> _recuperarAcceso() async {
+    final usuario = await abrirRecuperarAcceso(
+      context,
+      app: AppCuenta.proveedor,
+      identificador: _usuario.text,
+    );
+    if (usuario != null && usuario.isNotEmpty && mounted) {
+      _usuario.text = usuario;
+      _contrasena.clear();
+    }
   }
 
   void _entrar() {
@@ -161,7 +181,18 @@ class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
                 BotonPrincipalMarketplace(
                   texto: l10n.proveedorAccesoEntrar,
                   cargando: e.enviando,
-                  onPressed: _entrar,
+                  onPressed: e.enEspera ? null : _entrar,
+                ),
+                const SizedBox(height: EspaciadoCampo.s),
+                TextButton(
+                  key: const Key('ingreso-recuperar'),
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size.fromHeight(
+                      ObjetivoTactilCampo.guantes,
+                    ),
+                  ),
+                  onPressed: e.enviando ? null : _recuperarAcceso,
+                  child: const Text('Olvidé mi contraseña'),
                 ),
                 if (widget.permiteRegistro) ...[
                   const SizedBox(height: EspaciadoCampo.l),

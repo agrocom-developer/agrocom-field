@@ -52,6 +52,7 @@ class AppProveedor extends StatelessWidget {
           AppLocalizationsEs(),
           sesionExpirada: acceso.sesionExpirada,
           bloqueo: acceso.bloqueo,
+          renovarSesion: acceso.renovarSesion,
         )..iniciar(),
         child: TemaVisualApp(
           predeterminado: ModoVisualCampo.campo,

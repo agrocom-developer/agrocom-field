@@ -52,6 +52,7 @@ class CuentaProveedorRed implements CuentaProveedorRepositorio {
         for (final d in (mi['documentos_faltantes'] as List? ?? const []))
           ?TipoDocumentoProveedor.deCodigo('$d'),
       ],
+      siguientePaso: SiguientePasoProveedor.deCodigo(mi['siguiente_paso']),
       aptoParaOfertas: mi['apto_para_ofertas'] == true,
       disponibilidad: disponibilidad(mi['disponibilidad']),
       disponibilidadEmpresa: disponibilidad(mi['disponibilidad_empresa']),

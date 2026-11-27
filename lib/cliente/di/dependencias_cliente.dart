@@ -19,6 +19,8 @@ import '../../nucleo/marketplace/pago/pago_confirmado.dart';
 import '../../nucleo/marketplace/pago/pagos_repositorio.dart';
 import '../../nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
 import '../../nucleo/notificaciones/push/dispositivos_push_repositorio.dart';
+import '../../nucleo/permisos/data/gestor_permisos_plataforma.dart';
+import '../../nucleo/permisos/domain/permiso.dart';
 import '../../nucleo/notificaciones/push/token_push_store.dart';
 import '../acceso/data/acceso_demo.dart';
 import '../acceso/data/acceso_red.dart';
@@ -93,8 +95,10 @@ class DependenciasCliente {
     this.bloqueo,
     ConectividadServicio? conectividad,
     CuentaSeguridadRepositorio? seguridad,
+    GestorPermisos? permisos,
   }) : conectividad = conectividad ?? ConectividadFalsa(),
-       seguridad = seguridad ?? CuentaSeguridadDemo();
+       seguridad = seguridad ?? CuentaSeguridadDemo(),
+       permisos = permisos ?? GestorPermisosEnMemoria();
 
   /// Repositorios en memoria con datos ficticios (`MODO_DEMO`, ADR 0010).
   ///
@@ -238,6 +242,7 @@ class DependenciasCliente {
       ),
       conectividad: ConectividadReal(),
       seguridad: CuentaSeguridadRed(api: api, tokenStore: tokenStore),
+      permisos: GestorPermisosPlataforma(),
     );
   }
 
@@ -278,6 +283,10 @@ class DependenciasCliente {
   /// eliminar la cuenta (códigos por WhatsApp, SMS o correo).
   final CuentaSeguridadRepositorio seguridad;
 
+  /// Permisos del sistema con su explicación previa (ADR 0026): la cámara se
+  /// pide al tomar una foto, nunca al abrir la app.
+  final GestorPermisos permisos;
+
   /// Desbloqueo con huella o rostro (ADR 0026). Solo en la app real: la demo
   /// no guarda sesión.
   final BloqueoBiometrico? bloqueo;
@@ -308,6 +317,7 @@ class DependenciasCliente {
       RepositoryProvider<InicioClienteRepositorio>.value(value: inicio),
       RepositoryProvider<FotoPerfilRepositorio>.value(value: fotoPerfil),
       RepositoryProvider<CuentaSeguridadRepositorio>.value(value: seguridad),
+      RepositoryProvider<GestorPermisos>.value(value: permisos),
       RepositoryProvider<FotosTerrenoRepositorio>.value(value: fotosTerreno),
       RepositoryProvider<PagosRepositorio>.value(value: pagos),
       RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),

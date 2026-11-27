@@ -100,6 +100,14 @@ class EstadoCuentaPantalla extends StatelessWidget {
     if (estado is! EstadoCuentaListo) return const SizedBox.shrink();
     final cuenta = estado.cuenta;
     final (titulo, detalle, icono) = switch (cuenta.aprobacion) {
+      EstadoAprobacion.pendiente
+          when cuenta.siguientePaso == SiguientePasoProveedor.subirDocumentos =>
+        (
+          'Termina tu registro',
+          'Sube los documentos que faltan para que un administrador pueda '
+              'aprobar tu cuenta.',
+          Icons.upload_file_rounded,
+        ),
       EstadoAprobacion.rechazado => (
         l10n.cuentaRechazadaTitulo,
         l10n.cuentaRechazadaDetalle,
@@ -188,7 +196,7 @@ class EstadoCuentaPantalla extends StatelessWidget {
                 ),
               ),
           const SizedBox(height: EspaciadoCampo.xl),
-          if (cuenta.aprobacion == EstadoAprobacion.rechazado)
+          if (cuenta.debeCorregir)
             BotonPrincipalMarketplace(
               key: const Key('cuenta-reenviar'),
               texto: l10n.cuentaReenviar,
@@ -196,7 +204,7 @@ class EstadoCuentaPantalla extends StatelessWidget {
               cargando: estado.reenviando,
               onPressed: () => cubit.reenviar(mensajeSinRed: l10n.cuentaSinRed),
             )
-          else if (cuenta.documentosFaltantes.isNotEmpty)
+          else if (cuenta.debeSubirDocumentos)
             BotonPrincipalMarketplace(
               key: const Key('cuenta-subir-documentos'),
               texto: l10n.cuentaSubirDocumentos,

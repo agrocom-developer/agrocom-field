@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../auth/bloqueo_biometrico.dart';
+import '../../../../auth/cuenta/presentation/fila_seguridad_perfil.dart';
 import '../../../../auth/presentation/bloqueo_biometrico_widgets.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tema_visual/selector_tema_visual.dart';
@@ -56,7 +57,16 @@ List<Widget> extrasDePerfil(
           context,
         ).push(MaterialPageRoute<void>(builder: (_) => const AvisosPantalla())),
       ),
-    if (bloqueo != null)
+    if (alSalir != null && FilaSeguridadPerfil.disponible(context))
+      FilaSeguridadPerfil(
+        bloqueo: bloqueo,
+        alCerrarSesion: () {
+          // Se cierra la pantalla de ajustes antes de salir.
+          Navigator.of(context).popUntil((r) => r.isFirst);
+          alSalir();
+        },
+      )
+    else if (bloqueo != null)
       FilaBloqueoBiometrico(
         bloqueo: bloqueo,
         motivoActivacion: t.biometriaMotivoActivar,

@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../camara/selector_imagen.dart';
 import '../../../evidencias/compresor_adaptativo.dart';
 import '../../../auth/bloqueo_biometrico.dart';
+import '../../../auth/cuenta/data/cuenta_seguridad_demo.dart';
+import '../../../auth/cuenta/domain/cuenta_seguridad.dart';
 import '../../../notificaciones/push/dispositivos_push_repositorio.dart';
 import '../../../permisos/data/gestor_permisos_plataforma.dart';
 import '../../../permisos/domain/permiso.dart';
@@ -42,8 +44,10 @@ class DependenciasProveedor {
     required this.push,
     CuentaProveedorRepositorio? cuenta,
     GestorPermisos? permisos,
+    CuentaSeguridadRepositorio? seguridad,
   }) : cuenta = cuenta ?? CuentaProveedorDemo(),
-       permisos = permisos ?? GestorPermisosEnMemoria();
+       permisos = permisos ?? GestorPermisosEnMemoria(),
+       seguridad = seguridad ?? CuentaSeguridadDemo();
 
   factory DependenciasProveedor.demo(
     AlmacenDemoProveedor almacen, {
@@ -81,6 +85,7 @@ class DependenciasProveedor {
     MarketplaceHttp http, {
     required DependenciasNegociacion negociacion,
     required DependenciasEjecucion ejecucion,
+    CuentaSeguridadRepositorio? seguridad,
   }) => DependenciasProveedor(
     negociacion: negociacion,
     ejecucion: ejecucion,
@@ -95,6 +100,7 @@ class DependenciasProveedor {
     push: DispositivosPushRed(http, TokenPushStoreSeguro()),
     cuenta: CuentaProveedorRed(http),
     permisos: GestorPermisosPlataforma(),
+    seguridad: seguridad,
   );
 
   final DependenciasNegociacion negociacion;
@@ -120,6 +126,10 @@ class DependenciasProveedor {
   /// Permisos del sistema con su explicación previa (ADR 0026).
   final GestorPermisos permisos;
 
+  /// Seguridad de la cuenta: recuperar el acceso, contraseña, teléfono y
+  /// eliminar la cuenta (códigos por WhatsApp, SMS o correo).
+  final CuentaSeguridadRepositorio seguridad;
+
   /// Para sumarlos al `MultiRepositoryProvider` del flavor.
   List<RepositoryProvider<Object>> get proveedores => [
     ...negociacion.proveedores,
@@ -131,6 +141,7 @@ class DependenciasProveedor {
     RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
     RepositoryProvider<CuentaProveedorRepositorio>.value(value: cuenta),
     RepositoryProvider<GestorPermisos>.value(value: permisos),
+    RepositoryProvider<CuentaSeguridadRepositorio>.value(value: seguridad),
   ];
 
   Widget proveer({required Widget child}) =>
@@ -145,6 +156,7 @@ class DependenciasAccesoProveedor {
     this.sesionExpirada,
     this.nota,
     this.bloqueo,
+    this.renovarSesion,
   });
 
   final AccesoProveedorRepositorio acceso;
@@ -159,4 +171,8 @@ class DependenciasAccesoProveedor {
   /// Desbloqueo con huella o rostro (ADR 0026); sin él, la app entra directo
   /// con la sesión guardada.
   final BloqueoBiometrico? bloqueo;
+
+  /// Renueva el token al desbloquear con la biometría si le quedan pocos
+  /// días (`POST /api/auth/renovar`).
+  final RenovadorSesion? renovarSesion;
 }
