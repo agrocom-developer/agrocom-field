@@ -203,10 +203,7 @@ class _Explicacion extends StatelessWidget {
           TextosCuentaSeguridad.graciaDias,
           style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
         ),
-        if (estado.falla != null) ...[
-          const SizedBox(height: EspaciadoCampo.l),
-          AvisoFallaCuenta(falla: estado.falla!),
-        ],
+        // Las fallas de la confirmación las muestra la propia hoja.
         const SizedBox(height: EspaciadoCampo.xl),
         BotonDestructivoCuenta(
           key: const Key('eliminar-continuar'),
