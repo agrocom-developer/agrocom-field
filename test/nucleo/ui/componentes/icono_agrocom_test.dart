@@ -60,6 +60,62 @@ void main() {
     );
   });
 
+  group('IconoAgrocomId.deModeloDron mapea los seis modelos', () {
+    const casos = <String, IconoAgrocomId>{
+      'T10': IconoAgrocomId.dronT10,
+      'T10 ': IconoAgrocomId.dronT10,
+      'dji agras t10': IconoAgrocomId.dronT10,
+      'DJI-T20': IconoAgrocomId.dronT20,
+      'Agras T20P': IconoAgrocomId.dronT20,
+      'Agras T25': IconoAgrocomId.dronT25,
+      '  t25 ': IconoAgrocomId.dronT25,
+      'DJI Agras T30': IconoAgrocomId.dronT30,
+      'T30': IconoAgrocomId.dronT30,
+      't40': IconoAgrocomId.dronT40,
+      'DJI Agras T40': IconoAgrocomId.dronT40,
+      'T-50': IconoAgrocomId.dronT50,
+      'DJI Agras T50': IconoAgrocomId.dronT50,
+      't50': IconoAgrocomId.dronT50,
+    };
+    casos.forEach((modelo, esperado) {
+      test('«$modelo» es ${esperado.name}', () {
+        expect(IconoAgrocomId.deModeloDron(modelo), esperado);
+      });
+    });
+
+    for (final modelo in ['', '   ', 'Mavic 3', 'T2', 'modelo desconocido']) {
+      test('«$modelo» cae en el T30', () {
+        expect(IconoAgrocomId.deModeloDron(modelo), IconoAgrocomId.dronT30);
+      });
+    }
+  });
+
+  testWidgets('los 13 íconos tienen etiqueta semántica en español', (
+    tester,
+  ) async {
+    expect(IconoAgrocomId.values, hasLength(13));
+    late AppLocalizations l10n;
+    await tester.pumpWidget(
+      _envolver(
+        Builder(
+          builder: (context) {
+            l10n = AppLocalizations.of(context);
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
+    final etiquetas = <String>{};
+    for (final id in IconoAgrocomId.values) {
+      final etiqueta = id.etiquetaPorDefecto(l10n);
+      expect(etiqueta.trim(), isNotEmpty, reason: id.name);
+      expect(etiquetas.add(etiqueta), isTrue, reason: 'repetida: ${id.name}');
+      await tester.pumpWidget(_envolver(IconoAgrocom(id)));
+      await tester.pumpAndSettle();
+      expect(find.bySemanticsLabel(etiqueta), findsOneWidget, reason: id.name);
+    }
+  });
+
   testWidgets('cada ícono de la flota carga sin lanzar errores', (
     tester,
   ) async {

@@ -67,7 +67,8 @@ enum IconoAgrocomId {
   /// (p. ej. "DJI Agras T30"). Sin coincidencia, cae en el T30 (el modelo
   /// más común de la flota) para no dejar la fila sin ícono.
   static IconoAgrocomId deModeloDron(String modelo) {
-    final clave = modelo.trim().toUpperCase();
+    // Sin espacios ni guiones: «T-50» y «T 50» son el mismo modelo que «T50».
+    final clave = modelo.toUpperCase().replaceAll(RegExp(r'[\s\-_]'), '');
     for (final id in [dronT10, dronT20, dronT25, dronT30, dronT40, dronT50]) {
       if (clave.contains(id.name.substring(4))) return id;
     }

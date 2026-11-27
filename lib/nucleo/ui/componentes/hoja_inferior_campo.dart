@@ -20,7 +20,10 @@ class HojaInferiorCampo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
-    final altoMaximo = MediaQuery.sizeOf(context).height * 0.9;
+    // Sin tamaño de pantalla conocido (MediaQuery vacío) no se acota: un
+    // máximo de 0 colapsaría la hoja entera.
+    final alto = MediaQuery.sizeOf(context).height;
+    final altoMaximo = alto > 0 ? alto * 0.9 : double.infinity;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: ElevacionCampo.superficie(paleta, 2),
