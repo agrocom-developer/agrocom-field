@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../marketplace/ui/boton_principal_marketplace.dart';
 import '../../../marketplace/ui/campo_formulario_marketplace.dart';
 import '../../../ui/paleta_campo.dart';
@@ -74,10 +75,11 @@ class _RecuperarAccesoPantallaState extends State<RecuperarAccesoPantalla> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return BlocProvider.value(
       value: _flujo,
       child: Scaffold(
-        appBar: AppBar(title: const Text('Recuperar acceso')),
+        appBar: AppBar(title: Text(l10n.cuentaRecuperarTitulo)),
         body: SafeArea(
           child: Center(
             child: ConstrainedBox(
@@ -90,12 +92,9 @@ class _RecuperarAccesoPantallaState extends State<RecuperarAccesoPantalla> {
                       _Exito(usuario: '${estado.resultado ?? ''}')
                     else
                       FlujoCodigoVista(
-                        tituloElegir: '¿Cómo quieres recibir el código?',
-                        detalleElegir:
-                            'Escribe tu usuario, teléfono o correo. Te '
-                            'enviaremos un código de 6 dígitos para crear una '
-                            'contraseña nueva.',
-                        textoConfirmar: 'Cambiar contraseña',
+                        tituloElegir: l10n.cuentaRecuperarComoRecibir,
+                        detalleElegir: l10n.cuentaRecuperarDetalle,
+                        textoConfirmar: l10n.cuentaCambiarContrasena,
                         pideContrasenaNueva: true,
                         envioCondicional: true,
                         validarAntesDeEnviar: _validar,
@@ -103,14 +102,14 @@ class _RecuperarAccesoPantallaState extends State<RecuperarAccesoPantalla> {
                           key: _formulario,
                           child: CampoFormularioMarketplace(
                             key: const Key('recuperar-identificador'),
-                            etiqueta: 'Usuario, teléfono o correo',
+                            etiqueta: l10n.cuentaRecuperarIdentificador,
                             controller: _identificador,
                             enabled: !estado.ocupado,
                             keyboardType: TextInputType.emailAddress,
                             textInputAction: TextInputAction.done,
                             autofillHints: const [AutofillHints.username],
                             validator: (v) => (v ?? '').trim().isEmpty
-                                ? 'Escribe tu usuario, teléfono o correo'
+                                ? l10n.cuentaRecuperarEscribeIdentificador
                                 : null,
                           ),
                         ),
@@ -135,6 +134,7 @@ class _Exito extends StatelessWidget {
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -150,7 +150,7 @@ class _Exito extends StatelessWidget {
           header: true,
           liveRegion: true,
           child: Text(
-            'Cambiaste tu contraseña',
+            l10n.cuentaRecuperarExitoTitulo,
             style: texto.headlineSmall,
             textAlign: TextAlign.center,
           ),
@@ -158,17 +158,15 @@ class _Exito extends StatelessWidget {
         const SizedBox(height: EspaciadoCampo.s),
         Text(
           usuario.isEmpty
-              ? 'Ya puedes iniciar sesión con tu usuario y la contraseña '
-                    'nueva.'
-              : 'Tu usuario es $usuario. Ya puedes iniciar sesión con la '
-                    'contraseña nueva.',
+              ? l10n.cuentaRecuperarExitoSinUsuario
+              : l10n.cuentaRecuperarExitoConUsuario(usuario),
           style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: EspaciadoCampo.xl),
         BotonPrincipalMarketplace(
           key: const Key('recuperar-ir-al-ingreso'),
-          texto: 'Iniciar sesión',
+          texto: l10n.cuentaIniciarSesion,
           alto: ObjetivoTactilCampo.guantes,
           onPressed: () => Navigator.of(context).pop(usuario),
         ),

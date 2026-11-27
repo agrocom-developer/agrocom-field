@@ -16,6 +16,9 @@ enum EtapaCodigo {
   listo,
 }
 
+/// Por qué un código escrito no pasa la validación local.
+enum MotivoCodigoInvalido { vacio, formato }
+
 /// Valida el formato local del código; el servidor decide si es el correcto.
 abstract final class ReglasCodigo {
   static const int largo = 6;
@@ -23,10 +26,10 @@ abstract final class ReglasCodigo {
   static bool formatoValido(String? valor) =>
       RegExp(r'^\d{6}$').hasMatch((valor ?? '').trim());
 
-  static String? validar(String? valor) {
+  static MotivoCodigoInvalido? validar(String? valor) {
     final v = (valor ?? '').trim();
-    if (v.isEmpty) return 'Escribe el código de 6 dígitos';
-    if (!formatoValido(v)) return 'El código tiene 6 dígitos';
+    if (v.isEmpty) return MotivoCodigoInvalido.vacio;
+    if (!formatoValido(v)) return MotivoCodigoInvalido.formato;
     return null;
   }
 }

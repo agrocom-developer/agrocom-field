@@ -38,9 +38,10 @@ class FormularioAccesoEstado {
     MotivoFalloAcceso.cuentaYaRegistrada => null,
     MotivoFalloAcceso.demasiadosIntentos =>
       esperaSegundos > 0
-          ? 'Demasiados intentos. Podrás volver a intentarlo en '
-                '${TextosCuentaSeguridad.espera(esperaSegundos)}.'
-          : 'Demasiados intentos. Espera un momento y vuelve a intentarlo.',
+          ? l10n.cuentaDemasiadosIntentosEn(
+              TextosCuentaSeguridad.espera(esperaSegundos),
+            )
+          : l10n.cuentaDemasiadosIntentosEspera,
     MotivoFalloAcceso.credencialesInvalidas => l10n.accesoErrorCredenciales,
     MotivoFalloAcceso.sinConexion => l10n.accesoErrorSinConexion,
     MotivoFalloAcceso.desconocido => l10n.accesoErrorDesconocido,

@@ -333,8 +333,9 @@ class _FormularioState extends State<_Formulario> {
                   keyboardType: TextInputType.visiblePassword,
                   textInputAction: TextInputAction.done,
                   autofillHints: const [AutofillHints.newPassword],
-                  ayuda:
-                      'Mínimo ${ReglasAcceso.largoMinimoContrasena} caracteres.',
+                  ayuda: l10n.cuentaContrasenaMinimo(
+                    ReglasAcceso.largoMinimoContrasena,
+                  ),
                   validator: ReglasAcceso.contrasenaNueva,
                   errorServidor: estado.porCampo[CampoAcceso.contrasena],
                   onChanged: (_) => cubit.campoEditado(CampoAcceso.contrasena),

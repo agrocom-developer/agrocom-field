@@ -190,9 +190,9 @@ class AccesoCubit extends Cubit<AccesoEstado> {
     _reloj?.cancel();
     AccesoSinSesion conEspera(int resto) => AccesoSinSesion(
       esperaSegundos: resto,
-      mensaje:
-          'Demasiados intentos. Podrás volver a intentarlo en '
-          '${TextosCuentaSeguridad.espera(resto)}.',
+      mensaje: _l10n.cuentaDemasiadosIntentosEn(
+        TextosCuentaSeguridad.espera(resto),
+      ),
     );
     emit(conEspera(segundos));
     _reloj = Timer.periodic(pasoEspera, (t) {
@@ -229,7 +229,7 @@ class AccesoCubit extends Cubit<AccesoEstado> {
     MotivoFalloAcceso.cuentaAjena =>
       e.mensaje ?? _l10n.proveedorAccesoEstaCuentaEstaApp,
     MotivoFalloAcceso.demasiadosIntentos =>
-      e.mensaje ?? 'Demasiados intentos. Espera un momento.',
+      e.mensaje ?? _l10n.cuentaDemasiadosIntentosBreve,
     _ => e.mensaje ?? _l10n.proveedorAccesoPudimosEntrarIntentaNuevo,
   };
 

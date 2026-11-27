@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../marketplace/ui/boton_principal_marketplace.dart';
 import '../../../ui/componentes/hoja_inferior_campo.dart';
 import '../../../ui/paleta_campo.dart';
@@ -50,6 +51,7 @@ class HojaVerificarTelefono extends StatelessWidget {
       ),
       child: BlocBuilder<FlujoCodigoCubit, FlujoCodigoEstado>(
         builder: (context, estado) {
+          final l10n = AppLocalizations.of(context);
           final alto = MediaQuery.sizeOf(context).height * 0.85;
           return ConstrainedBox(
             constraints: BoxConstraints(maxHeight: alto),
@@ -63,12 +65,10 @@ class HojaVerificarTelefono extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const FlujoCodigoVista(
-                          tituloElegir: 'Verifica tu teléfono',
-                          detalleElegir:
-                              'Así sabemos que el número es tuyo y podemos '
-                              'ayudarte a recuperar tu cuenta.',
-                          textoConfirmar: 'Verificar',
+                        FlujoCodigoVista(
+                          tituloElegir: l10n.cuentaVerificaTelefono,
+                          detalleElegir: l10n.cuentaVerificarDetalle,
+                          textoConfirmar: l10n.cuentaVerificar,
                         ),
                         const SizedBox(height: EspaciadoCampo.s),
                         TextButton(
@@ -79,7 +79,7 @@ class HojaVerificarTelefono extends StatelessWidget {
                             ),
                           ),
                           onPressed: () => Navigator.of(context).pop(false),
-                          child: const Text('Más tarde'),
+                          child: Text(l10n.cuentaMasTarde),
                         ),
                       ],
                     ),
@@ -98,6 +98,7 @@ class _Verificado extends StatelessWidget {
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
+    final l10n = AppLocalizations.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -110,7 +111,7 @@ class _Verificado extends StatelessWidget {
           header: true,
           liveRegion: true,
           child: Text(
-            'Tu teléfono quedó verificado',
+            l10n.cuentaTelefonoQuedoVerificado,
             style: texto.titleLarge,
             textAlign: TextAlign.center,
           ),
@@ -118,7 +119,7 @@ class _Verificado extends StatelessWidget {
         const SizedBox(height: EspaciadoCampo.l),
         BotonPrincipalMarketplace(
           key: const Key('telefono-listo'),
-          texto: 'Listo',
+          texto: l10n.cuentaListo,
           alto: ObjetivoTactilCampo.guantes,
           onPressed: () => Navigator.of(context).pop(true),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../marketplace/ui/aviso_marketplace.dart';
 import '../../../marketplace/ui/boton_principal_marketplace.dart';
 import '../../../marketplace/ui/campo_formulario_marketplace.dart';
@@ -38,7 +39,11 @@ class AvisoFallaCuenta extends StatelessWidget {
     return Semantics(
       liveRegion: true,
       child: AvisoMarketplace(
-        mensaje: TextosCuentaSeguridad.falla(falla, alternativas: alternativas),
+        mensaje: TextosCuentaSeguridad.falla(
+          AppLocalizations.of(context),
+          falla,
+          alternativas: alternativas,
+        ),
         tono: alerta ? TonoAviso.alerta : TonoAviso.error,
         icono: falla is CuentaSinConexion ? Icons.wifi_off_rounded : null,
       ),
@@ -118,10 +123,11 @@ class _OpcionCanal extends StatelessWidget {
   Widget build(BuildContext context) {
     final paleta = context.paleta;
     final apagado = caido || deshabilitado;
-    final nombre = TextosCuentaSeguridad.canal(canal);
+    final l10n = AppLocalizations.of(context);
+    final nombre = TextosCuentaSeguridad.canal(l10n, canal);
     final detalle = caido
-        ? 'No disponible por ahora'
-        : TextosCuentaSeguridad.detalleCanal(canal);
+        ? l10n.cuentaCanalNoDisponible
+        : TextosCuentaSeguridad.detalleCanal(l10n, canal);
     return Semantics(
       button: true,
       enabled: !apagado,
@@ -315,8 +321,9 @@ class _FlujoCodigoVistaState extends State<FlujoCodigoVista> {
           Padding(
             padding: const EdgeInsets.only(top: EspaciadoCampo.s),
             child: Text(
-              'Podrás pedir otro código en '
-              '${TextosCuentaSeguridad.espera(estado.reenvioEn)}',
+              AppLocalizations.of(context).cuentaCodigoPodrasPedirEn(
+                TextosCuentaSeguridad.espera(estado.reenvioEn),
+              ),
               key: const Key('espera-limite'),
               textAlign: TextAlign.center,
               style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
@@ -334,13 +341,24 @@ class _FlujoCodigoVistaState extends State<FlujoCodigoVista> {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
     final canal = estado.canal;
-    final donde = estado.destino != null
-        ? 'a ${estado.destino}'
-        : (canal == null ? '' : 'por ${TextosCuentaSeguridad.canal(canal)}');
-    final envio = widget.envioCondicional
-        ? 'Si existe una cuenta con esos datos, enviamos un código de 6 '
-              'dígitos${donde.isEmpty ? '' : ' $donde'}.'
-        : 'Te enviamos un código de 6 dígitos $donde.';
+    final l10n = AppLocalizations.of(context);
+    final destino = estado.destino;
+    final condicional = widget.envioCondicional;
+    final envio = destino != null
+        ? (condicional
+              ? l10n.cuentaCodigoEnvioCondicionalA(destino)
+              : l10n.cuentaCodigoEnvioA(destino))
+        : canal != null
+        ? (condicional
+              ? l10n.cuentaCodigoEnvioCondicionalPor(
+                  TextosCuentaSeguridad.canal(l10n, canal),
+                )
+              : l10n.cuentaCodigoEnvioPor(
+                  TextosCuentaSeguridad.canal(l10n, canal),
+                ))
+        : (condicional
+              ? l10n.cuentaCodigoEnvioCondicional
+              : l10n.cuentaCodigoEnvio);
     return Form(
       key: _formulario,
       child: Column(
@@ -349,11 +367,11 @@ class _FlujoCodigoVistaState extends State<FlujoCodigoVista> {
         children: [
           Semantics(
             header: true,
-            child: Text('Escribe el código', style: texto.titleLarge),
+            child: Text(l10n.cuentaCodigoEscribe, style: texto.titleLarge),
           ),
           const SizedBox(height: EspaciadoCampo.s),
           Text(
-            '$envio Vence en 10 minutos.',
+            l10n.cuentaCodigoVence(envio),
             style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
           ),
           const SizedBox(height: EspaciadoCampo.l),
@@ -363,7 +381,7 @@ class _FlujoCodigoVistaState extends State<FlujoCodigoVista> {
           ],
           CampoFormularioMarketplace(
             key: const Key('campo-codigo'),
-            etiqueta: 'Código',
+            etiqueta: l10n.cuentaCodigoEtiqueta,
             controller: _codigo,
             enabled: !estado.ocupado,
             keyboardType: TextInputType.number,
@@ -375,7 +393,11 @@ class _FlujoCodigoVistaState extends State<FlujoCodigoVista> {
               FilteringTextInputFormatter.digitsOnly,
               LengthLimitingTextInputFormatter(ReglasCodigo.largo),
             ],
-            validator: ReglasCodigo.validar,
+            validator: (valor) => switch (ReglasCodigo.validar(valor)) {
+              null => null,
+              MotivoCodigoInvalido.vacio => l10n.cuentaCodigoEscribeSeisDigitos,
+              MotivoCodigoInvalido.formato => l10n.cuentaCodigoTieneSeisDigitos,
+            },
             onChanged: (_) => cubit.limpiarFalla(),
             onFieldSubmitted: widget.pideContrasenaNueva
                 ? null
@@ -385,14 +407,14 @@ class _FlujoCodigoVistaState extends State<FlujoCodigoVista> {
             const SizedBox(height: EspaciadoCampo.l),
             CampoFormularioMarketplace(
               key: const Key('campo-contrasena-nueva'),
-              etiqueta: 'Contraseña nueva',
+              etiqueta: l10n.cuentaContrasenaNuevaEtiqueta,
               controller: _contrasena,
               enabled: !estado.ocupado,
               obscureText: true,
               keyboardType: TextInputType.visiblePassword,
               textInputAction: TextInputAction.done,
               autofillHints: const [AutofillHints.newPassword],
-              ayuda: 'Mínimo ${ReglasContrasena.largoMinimo} caracteres.',
+              ayuda: l10n.cuentaContrasenaMinimo(ReglasContrasena.largoMinimo),
               validator: ReglasContrasena.validarNueva,
               errorServidor: estado.falla is CuentaDatosInvalidos
                   ? (estado.falla! as CuentaDatosInvalidos)
@@ -427,6 +449,7 @@ class _Reenvio extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
+    final l10n = AppLocalizations.of(context);
     final espera = estado.reenvioEn > 0;
     return Column(
       children: [
@@ -438,9 +461,10 @@ class _Reenvio extends StatelessWidget {
           onPressed: estado.puedeReenviar ? cubit.reenviar : null,
           child: Text(
             espera
-                ? 'Reenviar código en '
-                      '${TextosCuentaSeguridad.espera(estado.reenvioEn)}'
-                : 'Reenviar código',
+                ? l10n.cuentaCodigoReenviarEn(
+                    TextosCuentaSeguridad.espera(estado.reenvioEn),
+                  )
+                : l10n.cuentaCodigoReenviar,
           ),
         ),
         TextButton(
@@ -450,7 +474,7 @@ class _Reenvio extends StatelessWidget {
             minimumSize: const Size.fromHeight(ObjetivoTactilCampo.minimo),
           ),
           onPressed: estado.ocupado ? null : cubit.cambiarCanal,
-          child: const Text('No me llegó: probar por otro medio'),
+          child: Text(l10n.cuentaCodigoOtroMedio),
         ),
       ],
     );

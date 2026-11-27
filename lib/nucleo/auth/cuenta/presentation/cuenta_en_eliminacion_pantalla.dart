@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../marketplace/ui/aviso_marketplace.dart';
 import '../../../marketplace/ui/boton_principal_marketplace.dart';
 import '../../../marketplace/ui/estado_error_marketplace.dart';
@@ -55,6 +56,7 @@ class CuentaEnEliminacionPantalla extends StatelessWidget {
 
   Widget _contenido(BuildContext context, EliminarCuentaEstado estado) {
     final cubit = context.read<EliminarCuentaCubit>();
+    final l10n = AppLocalizations.of(context);
     switch (estado.etapa) {
       case EtapaEliminar.cargando:
         return const Padding(
@@ -64,11 +66,11 @@ class CuentaEnEliminacionPantalla extends StatelessWidget {
       case EtapaEliminar.error:
         final falla = estado.falla ?? const CuentaErrorDesconocido();
         return EstadoErrorMarketplace(
-          titulo: 'No pudimos revisar tu cuenta',
-          detalle: TextosCuentaSeguridad.falla(falla),
+          titulo: l10n.cuentaEnEliminacionErrorTitulo,
+          detalle: TextosCuentaSeguridad.falla(l10n, falla),
           sinConexion: falla is CuentaSinConexion,
           onReintentar: cubit.cargar,
-          etiquetaSecundaria: 'Cerrar sesión',
+          etiquetaSecundaria: l10n.cuentaCerrarSesion,
           onSecundaria: alCerrarSesion,
         );
       case EtapaEliminar.conservada:
@@ -115,21 +117,18 @@ class _Estado extends StatelessWidget {
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
+    final l10n = AppLocalizations.of(context);
     final vigente = eliminacion?.vigente ?? false;
     final e = eliminacion;
     final String detalle;
     if (!vigente || e == null) {
-      detalle = 'Tu cuenta ya no está en proceso de eliminación.';
+      detalle = l10n.cuentaEnEliminacionYaNoEnProceso;
     } else if (e.estado == EstadoEliminacion.pospuesta) {
-      detalle =
-          'Tu plazo ya terminó, pero algo pendiente frena la eliminación. '
-          'Se reintenta cada día. Mientras tanto puedes conservar tu cuenta.';
+      detalle = l10n.cuentaEnEliminacionPospuesta;
     } else {
       final dias = e.diasRestantes(ahora);
       final hasta = FormatoMarketplace.fechaLarga(e.ejecutarDesde.toLocal());
-      detalle =
-          'Se borrará el $hasta (${dias == 1 ? 'queda 1 día' : 'quedan $dias días'}). '
-          'Hasta entonces puedes arrepentirte.';
+      detalle = l10n.cuentaEnEliminacionSeBorrara(hasta, dias);
     }
     return ListView(
       padding: const EdgeInsets.all(EspaciadoCampo.l),
@@ -146,7 +145,9 @@ class _Estado extends StatelessWidget {
         Semantics(
           header: true,
           child: Text(
-            vigente ? 'Tu cuenta se está eliminando' : 'Tu cuenta sigue activa',
+            vigente
+                ? l10n.cuentaEnEliminacionTitulo
+                : l10n.cuentaEnEliminacionSigueActiva,
             style: texto.headlineSmall,
             textAlign: TextAlign.center,
           ),
@@ -160,12 +161,7 @@ class _Estado extends StatelessWidget {
         ),
         if (vigente) ...[
           const SizedBox(height: EspaciadoCampo.l),
-          const AvisoMarketplace(
-            mensaje:
-                'Mientras tanto no puedes usar la app. Si conservas tu '
-                'cuenta, las solicitudes y ofertas que se cancelaron al '
-                'pedir la eliminación no se restauran.',
-          ),
+          AvisoMarketplace(mensaje: l10n.cuentaEnEliminacionAviso),
         ],
         if (falla != null) ...[
           const SizedBox(height: EspaciadoCampo.l),
@@ -174,7 +170,7 @@ class _Estado extends StatelessWidget {
         const SizedBox(height: EspaciadoCampo.xl),
         BotonPrincipalMarketplace(
           key: const Key('eliminacion-conservar'),
-          texto: vigente ? 'Conservar mi cuenta' : 'Continuar',
+          texto: vigente ? l10n.cuentaConservarMiCuenta : l10n.cuentaContinuar,
           alto: ObjetivoTactilCampo.guantes,
           cargando: enviando,
           onPressed: vigente ? alConservar : alContinuar,
@@ -186,7 +182,7 @@ class _Estado extends StatelessWidget {
             minimumSize: const Size.fromHeight(ObjetivoTactilCampo.guantes),
           ),
           onPressed: enviando ? null : alCerrarSesion,
-          child: const Text('Cerrar sesión'),
+          child: Text(l10n.cuentaCerrarSesion),
         ),
       ],
     );

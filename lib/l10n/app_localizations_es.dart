@@ -4197,4 +4197,505 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get perfilCuentaDisponibilidadDetalle =>
       'Ponte ocupado para no recibir avisos';
+
+  @override
+  String get cuentaCanalWhatsApp => 'WhatsApp';
+
+  @override
+  String get cuentaCanalSms => 'SMS';
+
+  @override
+  String get cuentaCanalCorreo => 'Correo';
+
+  @override
+  String get cuentaCanalWhatsAppDetalle => 'Al teléfono de tu cuenta';
+
+  @override
+  String get cuentaCanalSmsDetalle =>
+      'Mensaje de texto al teléfono de tu cuenta';
+
+  @override
+  String get cuentaCanalCorreoDetalle => 'Al correo de respaldo de tu cuenta';
+
+  @override
+  String get cuentaCanalNoDisponible => 'No disponible por ahora';
+
+  @override
+  String get cuentaFallaSinConexion =>
+      'No hay conexión. Revisa tu señal y vuelve a intentarlo: lo que escribiste se conserva.';
+
+  @override
+  String get cuentaFallaCodigoInvalido =>
+      'El código no es válido o ya venció. Revisa los 6 dígitos o pide uno nuevo.';
+
+  @override
+  String get cuentaFallaContrasenaIncorrecta =>
+      'Esa contraseña no es la de tu cuenta. Revísala o confirma con un código.';
+
+  @override
+  String get cuentaFallaSinCorreo =>
+      'Tu cuenta no tiene un correo de respaldo. Elige otro medio.';
+
+  @override
+  String get cuentaFallaSinTelefono =>
+      'Tu cuenta no tiene un teléfono para ese medio. Elige otro.';
+
+  @override
+  String get cuentaFallaEseMedio => 'Ese medio';
+
+  @override
+  String cuentaFallaCanalNoDisponible(String medio, String sugerencia) {
+    return '$medio no está disponible por ahora; no es un problema de tu cuenta. $sugerencia';
+  }
+
+  @override
+  String get cuentaFallaReintentarEnUnMomento =>
+      'Vuelve a intentarlo en un momento.';
+
+  @override
+  String cuentaFallaRecibirPor(String medios) {
+    return 'Recibe el código por $medios.';
+  }
+
+  @override
+  String cuentaListaMediosO(String anteriores, String ultimo) {
+    return '$anteriores o $ultimo';
+  }
+
+  @override
+  String get cuentaFallaLimiteExcedido =>
+      'Pediste varios códigos seguidos. Espera un momento antes de pedir otro.';
+
+  @override
+  String get cuentaFallaTelefonoYaVerificado =>
+      'Tu teléfono ya está verificado.';
+
+  @override
+  String get cuentaFallaEliminacionBloqueada =>
+      'No puedes eliminar tu cuenta todavía. Resuelve lo pendiente y vuelve a intentarlo.';
+
+  @override
+  String get cuentaFallaDatosInvalidos =>
+      'Revisa los datos e inténtalo de nuevo.';
+
+  @override
+  String get cuentaFallaSesionVencida => 'Tu sesión venció. Ingresa de nuevo.';
+
+  @override
+  String get cuentaFallaEnEliminacion =>
+      'Tu cuenta está en proceso de eliminación. Puedes conservarla desde aquí.';
+
+  @override
+  String get cuentaFallaDesconocida =>
+      'No pudimos completar esto. Inténtalo de nuevo en un momento.';
+
+  @override
+  String get cuentaImpedimentoServicioTitulo =>
+      'Tienes un servicio adjudicado o en ejecución';
+
+  @override
+  String get cuentaImpedimentoServicioSalida =>
+      'Termínalo o cancélalo desde Servicios y vuelve a esta pantalla.';
+
+  @override
+  String get cuentaImpedimentoReclamoTitulo =>
+      'Hay un reclamo abierto en el que participas';
+
+  @override
+  String get cuentaImpedimentoReclamoSalida =>
+      'Espera a que se resuelva; después podrás eliminar tu cuenta.';
+
+  @override
+  String get cuentaImpedimentoPilotosTitulo =>
+      'Tu empresa tiene pilotos vinculados';
+
+  @override
+  String get cuentaImpedimentoPilotosSalida =>
+      'Libéralos o pide a un administrador de Agrocom el cambio de encargado.';
+
+  @override
+  String get cuentaSeBorra1 => 'Tu nombre, usuario, teléfono y correo.';
+
+  @override
+  String get cuentaSeBorra2 => 'Tu foto de perfil.';
+
+  @override
+  String get cuentaSeBorra3 =>
+      'Tus lotes, fotos de terreno y datos de empresa que no estén en un servicio vigente.';
+
+  @override
+  String get cuentaSeBorra4 => 'Tus sesiones en todos los dispositivos.';
+
+  @override
+  String get cuentaSeBorra5 => 'El texto de los mensajes que escribiste.';
+
+  @override
+  String get cuentaSeConserva1 =>
+      'El registro de cada servicio: precio acordado, hectáreas y fechas. Tu nombre aparece como «Cuenta eliminada».';
+
+  @override
+  String get cuentaSeConserva2 =>
+      'El puntaje de las calificaciones, sin tu nombre y sin comentarios.';
+
+  @override
+  String get cuentaSeConserva3 =>
+      'Lo que la ley o la prevención de fraude exigen, por un plazo limitado y declarado.';
+
+  @override
+  String get cuentaEfectosInmediatos =>
+      'Al confirmar, se cierran tus sesiones, se cancelan tus solicitudes abiertas y se retiran tus ofertas vigentes. Eso no se restaura si cambias de opinión.';
+
+  @override
+  String get cuentaGraciaDias =>
+      'Tienes 7 días para arrepentirte. En ese plazo puedes iniciar sesión solo para conservar tu cuenta. Pasado el plazo, tus datos personales se borran y no se pueden recuperar.';
+
+  @override
+  String cuentaCodigoPodrasPedirEn(String tiempo) {
+    return 'Podrás pedir otro código en $tiempo';
+  }
+
+  @override
+  String cuentaCodigoEnvioA(String destino) {
+    return 'Te enviamos un código de 6 dígitos a $destino.';
+  }
+
+  @override
+  String cuentaCodigoEnvioPor(String medio) {
+    return 'Te enviamos un código de 6 dígitos por $medio.';
+  }
+
+  @override
+  String get cuentaCodigoEnvio => 'Te enviamos un código de 6 dígitos.';
+
+  @override
+  String cuentaCodigoEnvioCondicionalA(String destino) {
+    return 'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos a $destino.';
+  }
+
+  @override
+  String cuentaCodigoEnvioCondicionalPor(String medio) {
+    return 'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos por $medio.';
+  }
+
+  @override
+  String get cuentaCodigoEnvioCondicional =>
+      'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos.';
+
+  @override
+  String cuentaCodigoVence(String envio) {
+    return '$envio Vence en 10 minutos.';
+  }
+
+  @override
+  String get cuentaCodigoEscribe => 'Escribe el código';
+
+  @override
+  String get cuentaCodigoEtiqueta => 'Código';
+
+  @override
+  String get cuentaCodigoEscribeSeisDigitos => 'Escribe el código de 6 dígitos';
+
+  @override
+  String get cuentaCodigoTieneSeisDigitos => 'El código tiene 6 dígitos';
+
+  @override
+  String get cuentaContrasenaNuevaEtiqueta => 'Contraseña nueva';
+
+  @override
+  String cuentaContrasenaMinimo(int cantidad) {
+    return 'Mínimo $cantidad caracteres.';
+  }
+
+  @override
+  String cuentaCodigoReenviarEn(String tiempo) {
+    return 'Reenviar código en $tiempo';
+  }
+
+  @override
+  String get cuentaCodigoReenviar => 'Reenviar código';
+
+  @override
+  String get cuentaCodigoOtroMedio => 'No me llegó: probar por otro medio';
+
+  @override
+  String get cuentaCambiarContrasena => 'Cambiar contraseña';
+
+  @override
+  String get cuentaIniciarSesion => 'Iniciar sesión';
+
+  @override
+  String get cuentaListo => 'Listo';
+
+  @override
+  String get cuentaCerrarSesion => 'Cerrar sesión';
+
+  @override
+  String get cuentaOlvideContrasena => 'Olvidé mi contraseña';
+
+  @override
+  String get cuentaRecuperarTitulo => 'Recuperar acceso';
+
+  @override
+  String get cuentaRecuperarComoRecibir => '¿Cómo quieres recibir el código?';
+
+  @override
+  String get cuentaRecuperarDetalle =>
+      'Escribe tu usuario, teléfono o correo. Te enviaremos un código de 6 dígitos para crear una contraseña nueva.';
+
+  @override
+  String get cuentaRecuperarIdentificador => 'Usuario, teléfono o correo';
+
+  @override
+  String get cuentaRecuperarEscribeIdentificador =>
+      'Escribe tu usuario, teléfono o correo';
+
+  @override
+  String get cuentaRecuperarExitoTitulo => 'Cambiaste tu contraseña';
+
+  @override
+  String get cuentaRecuperarExitoSinUsuario =>
+      'Ya puedes iniciar sesión con tu usuario y la contraseña nueva.';
+
+  @override
+  String cuentaRecuperarExitoConUsuario(String usuario) {
+    return 'Tu usuario es $usuario. Ya puedes iniciar sesión con la contraseña nueva.';
+  }
+
+  @override
+  String get cuentaCambiarConfirmaTitulo => 'Confirma que eres tú';
+
+  @override
+  String get cuentaCambiarConfirmaDetalle =>
+      'Te enviamos un código de 6 dígitos. Elige por dónde lo quieres recibir.';
+
+  @override
+  String get cuentaCambiarExitoTitulo => 'Tu contraseña se cambió';
+
+  @override
+  String get cuentaCambiarExitoDetalle =>
+      'Tus otros dispositivos deberán iniciar sesión de nuevo. Este sigue con la sesión abierta.';
+
+  @override
+  String get cuentaSeguridadTitulo => 'Seguridad y cuenta';
+
+  @override
+  String get cuentaTelefonoVerificado => 'Teléfono verificado';
+
+  @override
+  String get cuentaVerificaTelefono => 'Verifica tu teléfono';
+
+  @override
+  String get cuentaTelefonoFaltaVerificar => 'Falta verificar tu teléfono';
+
+  @override
+  String get cuentaSeguridadFilaDetalle =>
+      'Contraseña, huella y datos de tu cuenta';
+
+  @override
+  String get cuentaVerificarDetalle =>
+      'Así sabemos que el número es tuyo y podemos ayudarte a recuperar tu cuenta.';
+
+  @override
+  String get cuentaVerificar => 'Verificar';
+
+  @override
+  String get cuentaMasTarde => 'Más tarde';
+
+  @override
+  String get cuentaTelefonoQuedoVerificado => 'Tu teléfono quedó verificado';
+
+  @override
+  String get cuentaAjustesErrorTelefono => 'No pudimos revisar tu teléfono';
+
+  @override
+  String get cuentaAjustesTelefonoVerificadoDetalle =>
+      'Podemos ayudarte a recuperar tu cuenta.';
+
+  @override
+  String get cuentaAjustesTelefonoPendienteDetalle =>
+      'Confirma que el número es tuyo con un código.';
+
+  @override
+  String get cuentaAjustesContrasenaDetalle =>
+      'Te enviamos un código para confirmar que eres tú.';
+
+  @override
+  String get cuentaAjustesCerrarSesionDetalle =>
+      'Este dispositivo dejará de tener acceso a tu cuenta.';
+
+  @override
+  String get cuentaAjustesPrivacidad => 'Privacidad y datos';
+
+  @override
+  String get cuentaEliminarMiCuenta => 'Eliminar mi cuenta';
+
+  @override
+  String get cuentaAjustesEliminarDetalle =>
+      'Borra tus datos personales. Tienes 7 días para arrepentirte.';
+
+  @override
+  String get cuentaYaRegistradaTitulo => 'Ya tienes una cuenta';
+
+  @override
+  String get cuentaYaRegistradaComoPiloto =>
+      'Ese teléfono o documento ya está registrado como piloto. Usa la app de Agrocom que le corresponde.';
+
+  @override
+  String get cuentaYaRegistradaComoCliente =>
+      'Ese teléfono o documento ya está registrado como cliente. Usa la app de Agrocom que le corresponde.';
+
+  @override
+  String get cuentaYaRegistradaDetalle =>
+      'Ese teléfono o documento ya está registrado en Agrocom, así que no creamos otra cuenta. Inicia sesión o recupera tu acceso.';
+
+  @override
+  String get cuentaYaRegistradaRegistroIncompleto =>
+      'Si no terminaste tu registro, al iniciar sesión continuarás donde lo dejaste.';
+
+  @override
+  String get cuentaVolver => 'Volver';
+
+  @override
+  String get cuentaEnEliminacionErrorTitulo => 'No pudimos revisar tu cuenta';
+
+  @override
+  String get cuentaEnEliminacionYaNoEnProceso =>
+      'Tu cuenta ya no está en proceso de eliminación.';
+
+  @override
+  String get cuentaEnEliminacionPospuesta =>
+      'Tu plazo ya terminó, pero algo pendiente frena la eliminación. Se reintenta cada día. Mientras tanto puedes conservar tu cuenta.';
+
+  @override
+  String cuentaEnEliminacionSeBorrara(String fecha, int dias) {
+    String _temp0 = intl.Intl.pluralLogic(
+      dias,
+      locale: localeName,
+      other: 'quedan $dias días',
+      one: 'queda 1 día',
+    );
+    return 'Se borrará el $fecha ($_temp0). Hasta entonces puedes arrepentirte.';
+  }
+
+  @override
+  String get cuentaEnEliminacionTitulo => 'Tu cuenta se está eliminando';
+
+  @override
+  String get cuentaEnEliminacionSigueActiva => 'Tu cuenta sigue activa';
+
+  @override
+  String get cuentaEnEliminacionAviso =>
+      'Mientras tanto no puedes usar la app. Si conservas tu cuenta, las solicitudes y ofertas que se cancelaron al pedir la eliminación no se restauran.';
+
+  @override
+  String get cuentaConservarMiCuenta => 'Conservar mi cuenta';
+
+  @override
+  String get cuentaContinuar => 'Continuar';
+
+  @override
+  String get cuentaEliminarBloqueadaTitulo =>
+      'Todavía no puedes eliminar tu cuenta';
+
+  @override
+  String get cuentaEliminarBloqueadaDetalle =>
+      'Hay algo pendiente. Resuélvelo y vuelve a esta pantalla.';
+
+  @override
+  String get cuentaEliminarAntesTitulo => 'Antes de eliminar tu cuenta';
+
+  @override
+  String get cuentaEliminarQueSeBorra => 'Qué se borra';
+
+  @override
+  String get cuentaEliminarQueSeConserva => 'Qué se conserva';
+
+  @override
+  String cuentaEliminarPendientes(int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad registros',
+      one: '1 registro',
+    );
+    return 'Primero sincroniza lo que registraste en el lote: tienes $_temp0 sin subir. Hazlo con señal y vuelve aquí.';
+  }
+
+  @override
+  String get cuentaEliminarSincronizarAhora => 'Sincronizar ahora';
+
+  @override
+  String cuentaBotonEnCurso(String texto) {
+    return '$texto, en curso';
+  }
+
+  @override
+  String get cuentaEliminarConfirmaContrasenaTitulo =>
+      'Confirma con tu contraseña';
+
+  @override
+  String get cuentaEliminarConfirmaContrasenaDetalle =>
+      'Tu cuenta se cerrará en todos tus dispositivos y quedará en espera 7 días antes de borrarse.';
+
+  @override
+  String get cuentaContrasenaEtiqueta => 'Contraseña';
+
+  @override
+  String get cuentaEliminarUsarCodigo => 'Olvidé mi contraseña: usar un código';
+
+  @override
+  String get cuentaEliminarConfirmaCodigoTitulo => 'Confirma con un código';
+
+  @override
+  String get cuentaEliminarConfirmaCodigoDetalle =>
+      'Elige por dónde recibir un código de 6 dígitos. Con él confirmas que eres tú, sin la contraseña.';
+
+  @override
+  String get cuentaEliminarUsarContrasena => 'Usar mi contraseña';
+
+  @override
+  String get cuentaEliminarSolicitadaTitulo =>
+      'Tu cuenta quedó en espera de eliminación';
+
+  @override
+  String get cuentaEliminarSolicitadaSinFecha =>
+      'Tienes 7 días para arrepentirte.';
+
+  @override
+  String cuentaEliminarSolicitadaConFecha(String fecha) {
+    return 'Tienes hasta el $fecha para arrepentirte. Inicia sesión y toca «Conservar mi cuenta».';
+  }
+
+  @override
+  String get cuentaEntendido => 'Entendido';
+
+  @override
+  String get cuentaConservadaTitulo => 'Conservamos tu cuenta';
+
+  @override
+  String get cuentaConservadaDetalle =>
+      'Ya puedes volver a usarla. Las solicitudes y ofertas que se cancelaron al pedir la eliminación no se restauran.';
+
+  @override
+  String cuentaDemasiadosIntentosEn(String tiempo) {
+    return 'Demasiados intentos. Podrás volver a intentarlo en $tiempo.';
+  }
+
+  @override
+  String get cuentaDemasiadosIntentosEspera =>
+      'Demasiados intentos. Espera un momento y vuelve a intentarlo.';
+
+  @override
+  String get cuentaDemasiadosIntentosBreve =>
+      'Demasiados intentos. Espera un momento.';
+
+  @override
+  String get cuentaVerificarMiTelefono => 'Verificar mi teléfono';
+
+  @override
+  String get cuentaTerminaRegistroTitulo => 'Termina tu registro';
+
+  @override
+  String get cuentaTerminaRegistroDetalle =>
+      'Sube los documentos que faltan para que un administrador pueda aprobar tu cuenta.';
 }

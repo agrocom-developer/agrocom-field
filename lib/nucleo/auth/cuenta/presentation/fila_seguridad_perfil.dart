@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../bloqueo_biometrico.dart';
 import '../domain/cuenta_seguridad.dart';
 import 'ajustes_seguridad_cubit.dart';
@@ -50,6 +51,7 @@ class _Fila extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AjustesSeguridadCubit>();
+    final l10n = AppLocalizations.of(context);
     return BlocBuilder<AjustesSeguridadCubit, AjustesSeguridadEstado>(
       builder: (context, estado) {
         final verificado =
@@ -62,12 +64,12 @@ class _Fila extends StatelessWidget {
           icono: pendiente
               ? Icons.shield_outlined
               : Icons.verified_user_outlined,
-          titulo: 'Seguridad y cuenta',
+          titulo: l10n.cuentaSeguridadTitulo,
           detalle: pendiente
-              ? 'Falta verificar tu teléfono'
+              ? l10n.cuentaTelefonoFaltaVerificar
               : verificado
-              ? 'Teléfono verificado'
-              : 'Contraseña, huella y datos de tu cuenta',
+              ? l10n.cuentaTelefonoVerificado
+              : l10n.cuentaSeguridadFilaDetalle,
           alToque: () async {
             await Navigator.of(context).push(
               MaterialPageRoute<void>(

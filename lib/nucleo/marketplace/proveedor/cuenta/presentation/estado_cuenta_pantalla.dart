@@ -103,9 +103,8 @@ class EstadoCuentaPantalla extends StatelessWidget {
       EstadoAprobacion.pendiente
           when cuenta.siguientePaso == SiguientePasoProveedor.subirDocumentos =>
         (
-          'Termina tu registro',
-          'Sube los documentos que faltan para que un administrador pueda '
-              'aprobar tu cuenta.',
+          l10n.cuentaTerminaRegistroTitulo,
+          l10n.cuentaTerminaRegistroDetalle,
           Icons.upload_file_rounded,
         ),
       EstadoAprobacion.rechazado => (

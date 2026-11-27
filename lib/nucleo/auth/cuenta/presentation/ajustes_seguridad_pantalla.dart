@@ -38,7 +38,9 @@ class AjustesSeguridadPantalla extends StatelessWidget {
           AjustesSeguridadCubit(context.read<CuentaSeguridadRepositorio>())
             ..cargar(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Seguridad y cuenta')),
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context).cuentaSeguridadTitulo),
+        ),
         body: SafeArea(
           child: Center(
             child: ConstrainedBox(
@@ -74,8 +76,8 @@ class _Cuerpo extends StatelessWidget {
               AjustesSeguridadCargando() => const EsqueletoCampo(alto: 72),
               AjustesSeguridadError(:final falla) => EstadoErrorMarketplace(
                 compacto: true,
-                titulo: 'No pudimos revisar tu teléfono',
-                detalle: TextosCuentaSeguridad.falla(falla),
+                titulo: l10n.cuentaAjustesErrorTelefono,
+                detalle: TextosCuentaSeguridad.falla(l10n, falla),
                 sinConexion: falla is CuentaSinConexion,
                 onReintentar: cubit.cargar,
               ),
@@ -85,11 +87,11 @@ class _Cuerpo extends StatelessWidget {
                     ? Icons.verified_outlined
                     : Icons.phone_android_rounded,
                 titulo: perfil.telefonoVerificado
-                    ? 'Teléfono verificado'
-                    : 'Verifica tu teléfono',
+                    ? l10n.cuentaTelefonoVerificado
+                    : l10n.cuentaVerificaTelefono,
                 detalle: perfil.telefonoVerificado
-                    ? 'Podemos ayudarte a recuperar tu cuenta.'
-                    : 'Confirma que el número es tuyo con un código.',
+                    ? l10n.cuentaAjustesTelefonoVerificadoDetalle
+                    : l10n.cuentaAjustesTelefonoPendienteDetalle,
                 alToque: perfil.telefonoVerificado
                     ? null
                     : () async {
@@ -103,8 +105,8 @@ class _Cuerpo extends StatelessWidget {
           FilaAjusteCuenta(
             key: const Key('ajuste-contrasena'),
             icono: Icons.lock_outline_rounded,
-            titulo: 'Cambiar contraseña',
-            detalle: 'Te enviamos un código para confirmar que eres tú.',
+            titulo: l10n.cuentaCambiarContrasena,
+            detalle: l10n.cuentaAjustesContrasenaDetalle,
             alToque: () => Navigator.of(context).push(
               MaterialPageRoute<bool>(
                 builder: (_) => const CambiarContrasenaPantalla(),
@@ -122,24 +124,22 @@ class _Cuerpo extends StatelessWidget {
           FilaAjusteCuenta(
             key: const Key('ajuste-cerrar-sesion'),
             icono: Icons.logout_rounded,
-            titulo: 'Cerrar sesión',
-            detalle: 'Este dispositivo dejará de tener acceso a tu cuenta.',
+            titulo: l10n.cuentaCerrarSesion,
+            detalle: l10n.cuentaAjustesCerrarSesionDetalle,
             alToque: alCerrarSesion,
           ),
           const SizedBox(height: EspaciadoCampo.xl),
           Semantics(
             header: true,
-            child: Text('Privacidad y datos', style: texto.titleMedium),
+            child: Text(l10n.cuentaAjustesPrivacidad, style: texto.titleMedium),
           ),
           const SizedBox(height: EspaciadoCampo.s),
           FilaAjusteCuenta(
             key: const Key('ajuste-eliminar-cuenta'),
             icono: Icons.delete_outline_rounded,
             colorIcono: paleta.error,
-            titulo: 'Eliminar mi cuenta',
-            detalle:
-                'Borra tus datos personales. Tienes 7 días para '
-                'arrepentirte.',
+            titulo: l10n.cuentaEliminarMiCuenta,
+            detalle: l10n.cuentaAjustesEliminarDetalle,
             alToque: () => Navigator.of(context).push(
               MaterialPageRoute<void>(
                 builder: (_) =>

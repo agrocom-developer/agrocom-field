@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../marketplace/ui/boton_principal_marketplace.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
@@ -29,6 +30,7 @@ class CuentaYaRegistradaPantalla extends StatelessWidget {
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
+    final l10n = AppLocalizations.of(context);
     final deOtraApp = tipoCuenta != null && tipoCuenta != app.codigo;
     return Scaffold(
       appBar: AppBar(),
@@ -51,7 +53,7 @@ class CuentaYaRegistradaPantalla extends StatelessWidget {
                 Semantics(
                   header: true,
                   child: Text(
-                    'Ya tienes una cuenta',
+                    l10n.cuentaYaRegistradaTitulo,
                     style: texto.headlineSmall,
                     textAlign: TextAlign.center,
                   ),
@@ -59,12 +61,10 @@ class CuentaYaRegistradaPantalla extends StatelessWidget {
                 const SizedBox(height: EspaciadoCampo.m),
                 Text(
                   deOtraApp
-                      ? 'Ese teléfono o documento ya está registrado como '
-                            '${tipoCuenta == 'proveedor' ? 'piloto' : 'cliente'}'
-                            '. Usa la app de Agrocom que le corresponde.'
-                      : 'Ese teléfono o documento ya está registrado en '
-                            'Agrocom, así que no creamos otra cuenta. Inicia '
-                            'sesión o recupera tu acceso.',
+                      ? (tipoCuenta == 'proveedor'
+                            ? l10n.cuentaYaRegistradaComoPiloto
+                            : l10n.cuentaYaRegistradaComoCliente)
+                      : l10n.cuentaYaRegistradaDetalle,
                   style: texto.bodyLarge?.copyWith(
                     color: paleta.textoSecundario,
                   ),
@@ -73,8 +73,7 @@ class CuentaYaRegistradaPantalla extends StatelessWidget {
                 if (app == AppCuenta.proveedor && !deOtraApp) ...[
                   const SizedBox(height: EspaciadoCampo.m),
                   Text(
-                    'Si no terminaste tu registro, al iniciar sesión '
-                    'continuarás donde lo dejaste.',
+                    l10n.cuentaYaRegistradaRegistroIncompleto,
                     style: texto.bodyMedium?.copyWith(
                       color: paleta.textoSecundario,
                     ),
@@ -85,7 +84,7 @@ class CuentaYaRegistradaPantalla extends StatelessWidget {
                 if (!deOtraApp) ...[
                   BotonPrincipalMarketplace(
                     key: const Key('ya-registrada-iniciar-sesion'),
-                    texto: 'Iniciar sesión',
+                    texto: l10n.cuentaIniciarSesion,
                     alto: ObjetivoTactilCampo.guantes,
                     onPressed: alIniciarSesion,
                   ),
@@ -98,12 +97,12 @@ class CuentaYaRegistradaPantalla extends StatelessWidget {
                       ),
                     ),
                     onPressed: alRecuperarAcceso,
-                    child: const Text('Olvidé mi contraseña'),
+                    child: Text(l10n.cuentaOlvideContrasena),
                   ),
                 ] else
                   BotonPrincipalMarketplace(
                     key: const Key('ya-registrada-volver'),
-                    texto: 'Volver',
+                    texto: l10n.cuentaVolver,
                     alto: ObjetivoTactilCampo.guantes,
                     onPressed: alIniciarSesion,
                   ),

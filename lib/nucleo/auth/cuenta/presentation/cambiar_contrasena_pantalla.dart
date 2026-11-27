@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../marketplace/ui/boton_principal_marketplace.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
@@ -17,6 +18,7 @@ class CambiarContrasenaPantalla extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final repositorio = context.read<CuentaSeguridadRepositorio>();
+    final l10n = AppLocalizations.of(context);
     return BlocProvider(
       create: (_) => FlujoCodigoCubit(
         pedir: (canal) => repositorio.pedirCodigoContrasena(canal),
@@ -29,7 +31,7 @@ class CambiarContrasenaPantalla extends StatelessWidget {
         },
       ),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Cambiar contraseña')),
+        appBar: AppBar(title: Text(l10n.cuentaCambiarContrasena)),
         body: SafeArea(
           child: Center(
             child: ConstrainedBox(
@@ -41,12 +43,10 @@ class CambiarContrasenaPantalla extends StatelessWidget {
                     if (estado.etapa == EtapaCodigo.listo)
                       const _Exito()
                     else
-                      const FlujoCodigoVista(
-                        tituloElegir: 'Confirma que eres tú',
-                        detalleElegir:
-                            'Te enviamos un código de 6 dígitos. Elige por '
-                            'dónde lo quieres recibir.',
-                        textoConfirmar: 'Cambiar contraseña',
+                      FlujoCodigoVista(
+                        tituloElegir: l10n.cuentaCambiarConfirmaTitulo,
+                        detalleElegir: l10n.cuentaCambiarConfirmaDetalle,
+                        textoConfirmar: l10n.cuentaCambiarContrasena,
                         pideContrasenaNueva: true,
                       ),
                   ],
@@ -67,6 +67,7 @@ class _Exito extends StatelessWidget {
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
+    final l10n = AppLocalizations.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -82,22 +83,21 @@ class _Exito extends StatelessWidget {
           header: true,
           liveRegion: true,
           child: Text(
-            'Tu contraseña se cambió',
+            l10n.cuentaCambiarExitoTitulo,
             style: texto.headlineSmall,
             textAlign: TextAlign.center,
           ),
         ),
         const SizedBox(height: EspaciadoCampo.s),
         Text(
-          'Tus otros dispositivos deberán iniciar sesión de nuevo. Este '
-          'sigue con la sesión abierta.',
+          l10n.cuentaCambiarExitoDetalle,
           style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: EspaciadoCampo.xl),
         BotonPrincipalMarketplace(
           key: const Key('contrasena-listo'),
-          texto: 'Listo',
+          texto: l10n.cuentaListo,
           alto: ObjetivoTactilCampo.guantes,
           onPressed: () => Navigator.of(context).pop(true),
         ),

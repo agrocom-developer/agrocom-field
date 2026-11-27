@@ -201,7 +201,7 @@ class _FormularioState extends State<_Formulario> {
                       ),
                       foregroundColor: paleta.acentoTexto,
                     ),
-                    child: const Text('Olvidé mi contraseña'),
+                    child: Text(l10n.cuentaOlvideContrasena),
                   ),
                 ),
                 const SizedBox(height: EspaciadoCampo.s),

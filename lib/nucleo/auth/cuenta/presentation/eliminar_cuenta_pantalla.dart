@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../marketplace/ui/aviso_marketplace.dart';
 import '../../../marketplace/ui/boton_principal_marketplace.dart';
 import '../../../marketplace/ui/campo_formulario_marketplace.dart';
@@ -36,7 +37,9 @@ class EliminarCuentaPantalla extends StatelessWidget {
         pendientes: _pendientesDe(context),
       )..cargar(),
       child: Scaffold(
-        appBar: AppBar(title: const Text('Eliminar mi cuenta')),
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context).cuentaEliminarMiCuenta),
+        ),
         body: SafeArea(
           child: Center(
             child: ConstrainedBox(
@@ -69,6 +72,7 @@ class _Cuerpo extends StatelessWidget {
     return BlocBuilder<EliminarCuentaCubit, EliminarCuentaEstado>(
       builder: (context, estado) {
         final cubit = context.read<EliminarCuentaCubit>();
+        final l10n = AppLocalizations.of(context);
         switch (estado.etapa) {
           case EtapaEliminar.cargando:
             return const Padding(
@@ -78,8 +82,9 @@ class _Cuerpo extends StatelessWidget {
           case EtapaEliminar.error:
             final sinRed = estado.falla is CuentaSinConexion;
             return EstadoErrorMarketplace(
-              titulo: 'No pudimos revisar tu cuenta',
+              titulo: l10n.cuentaEnEliminacionErrorTitulo,
               detalle: TextosCuentaSeguridad.falla(
+                l10n,
                 estado.falla ?? const CuentaErrorDesconocido(),
               ),
               sinConexion: sinRed,
@@ -116,19 +121,20 @@ class _Bloqueada extends StatelessWidget {
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.all(EspaciadoCampo.l),
       children: [
         Semantics(
           header: true,
           child: Text(
-            'Todavía no puedes eliminar tu cuenta',
+            l10n.cuentaEliminarBloqueadaTitulo,
             style: texto.headlineSmall,
           ),
         ),
         const SizedBox(height: EspaciadoCampo.s),
         Text(
-          'Hay algo pendiente. Resuélvelo y vuelve a esta pantalla.',
+          l10n.cuentaEliminarBloqueadaDetalle,
           style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
         ),
         const SizedBox(height: EspaciadoCampo.l),
@@ -149,12 +155,12 @@ class _Bloqueada extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          TextosCuentaSeguridad.impedimento(i).titulo,
+                          TextosCuentaSeguridad.impedimento(l10n, i).titulo,
                           style: texto.titleMedium,
                         ),
                         const SizedBox(height: EspaciadoCampo.xs),
                         Text(
-                          TextosCuentaSeguridad.impedimento(i).salida,
+                          TextosCuentaSeguridad.impedimento(l10n, i).salida,
                           style: texto.bodyMedium?.copyWith(
                             color: paleta.textoSecundario,
                           ),
@@ -181,36 +187,37 @@ class _Explicacion extends StatelessWidget {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
     final cubit = context.read<EliminarCuentaCubit>();
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.all(EspaciadoCampo.l),
       children: [
         Semantics(
           header: true,
           child: Text(
-            'Antes de eliminar tu cuenta',
+            l10n.cuentaEliminarAntesTitulo,
             style: texto.headlineSmall,
           ),
         ),
         const SizedBox(height: EspaciadoCampo.l),
         _Lista(
-          titulo: 'Qué se borra',
+          titulo: l10n.cuentaEliminarQueSeBorra,
           icono: Icons.delete_outline_rounded,
-          lineas: TextosCuentaSeguridad.seBorra,
+          lineas: TextosCuentaSeguridad.seBorra(l10n),
         ),
         const SizedBox(height: EspaciadoCampo.l),
         _Lista(
-          titulo: 'Qué se conserva',
+          titulo: l10n.cuentaEliminarQueSeConserva,
           icono: Icons.inventory_2_outlined,
-          lineas: TextosCuentaSeguridad.seConserva,
+          lineas: TextosCuentaSeguridad.seConserva(l10n),
         ),
         const SizedBox(height: EspaciadoCampo.l),
-        const AvisoMarketplace(
-          mensaje: TextosCuentaSeguridad.efectosInmediatos,
+        AvisoMarketplace(
+          mensaje: TextosCuentaSeguridad.efectosInmediatos(l10n),
           tono: TonoAviso.alerta,
         ),
         const SizedBox(height: EspaciadoCampo.m),
         Text(
-          TextosCuentaSeguridad.graciaDias,
+          TextosCuentaSeguridad.graciaDias(l10n),
           style: texto.bodyMedium?.copyWith(color: paleta.textoSecundario),
         ),
         // Las fallas de la confirmación las muestra la propia hoja.
@@ -220,17 +227,13 @@ class _Explicacion extends StatelessWidget {
           // se perdería: primero se sube lo del lote.
           AvisoMarketplace(
             key: const Key('eliminar-pendientes'),
-            mensaje:
-                'Primero sincroniza lo que registraste en el lote: tienes '
-                '${estado.pendientesPorSubir} '
-                '${estado.pendientesPorSubir == 1 ? 'registro' : 'registros'} '
-                'sin subir. Hazlo con señal y vuelve aquí.',
+            mensaje: l10n.cuentaEliminarPendientes(estado.pendientesPorSubir),
             tono: TonoAviso.alerta,
           ),
           const SizedBox(height: EspaciadoCampo.m),
           BotonPrincipalMarketplace(
             key: const Key('eliminar-sincronizar'),
-            texto: 'Sincronizar ahora',
+            texto: l10n.cuentaEliminarSincronizarAhora,
             icono: Icons.sync_rounded,
             alto: ObjetivoTactilCampo.guantes,
             cargando: estado.sincronizando,
@@ -239,7 +242,7 @@ class _Explicacion extends StatelessWidget {
         ] else
           BotonDestructivoCuenta(
             key: const Key('eliminar-continuar'),
-            texto: 'Continuar',
+            texto: l10n.cuentaContinuar,
             cargando: estado.etapa == EtapaEliminar.enviando,
             onPressed: () => _confirmar(context, cubit),
           ),
@@ -326,7 +329,9 @@ class BotonDestructivoCuenta extends StatelessWidget {
     final paleta = context.paleta;
     return Semantics(
       button: true,
-      label: cargando ? '$texto, en curso' : null,
+      label: cargando
+          ? AppLocalizations.of(context).cuentaBotonEnCurso(texto)
+          : null,
       child: SizedBox(
         width: double.infinity,
         child: FilledButton(
@@ -453,6 +458,7 @@ class _HojaConfirmarEliminacionState extends State<HojaConfirmarEliminacion> {
   Widget _conContrasena(BuildContext context, EliminarCuentaCubit cubit) {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
+    final l10n = AppLocalizations.of(context);
     return BlocBuilder<EliminarCuentaCubit, EliminarCuentaEstado>(
       builder: (context, estado) {
         final enviando = estado.etapa == EtapaEliminar.enviando;
@@ -466,14 +472,13 @@ class _HojaConfirmarEliminacionState extends State<HojaConfirmarEliminacion> {
               Semantics(
                 header: true,
                 child: Text(
-                  'Confirma con tu contraseña',
+                  l10n.cuentaEliminarConfirmaContrasenaTitulo,
                   style: texto.titleLarge,
                 ),
               ),
               const SizedBox(height: EspaciadoCampo.s),
               Text(
-                'Tu cuenta se cerrará en todos tus dispositivos y quedará '
-                'en espera 7 días antes de borrarse.',
+                l10n.cuentaEliminarConfirmaContrasenaDetalle,
                 style: texto.bodyMedium?.copyWith(
                   color: paleta.textoSecundario,
                 ),
@@ -485,7 +490,7 @@ class _HojaConfirmarEliminacionState extends State<HojaConfirmarEliminacion> {
               ],
               CampoFormularioMarketplace(
                 key: const Key('eliminar-contrasena'),
-                etiqueta: 'Contraseña',
+                etiqueta: l10n.cuentaContrasenaEtiqueta,
                 controller: _contrasena,
                 enabled: !enviando,
                 obscureText: true,
@@ -498,7 +503,7 @@ class _HojaConfirmarEliminacionState extends State<HojaConfirmarEliminacion> {
               const SizedBox(height: EspaciadoCampo.xl),
               BotonDestructivoCuenta(
                 key: const Key('eliminar-confirmar'),
-                texto: 'Eliminar mi cuenta',
+                texto: l10n.cuentaEliminarMiCuenta,
                 cargando: enviando,
                 onPressed: () => _enviar(cubit),
               ),
@@ -513,7 +518,7 @@ class _HojaConfirmarEliminacionState extends State<HojaConfirmarEliminacion> {
                 onPressed: enviando
                     ? null
                     : () => setState(() => _metodo = _Metodo.codigo),
-                child: const Text('Olvidé mi contraseña: usar un código'),
+                child: Text(l10n.cuentaEliminarUsarCodigo),
               ),
               TextButton(
                 key: const Key('eliminar-cancelar'),
@@ -523,7 +528,7 @@ class _HojaConfirmarEliminacionState extends State<HojaConfirmarEliminacion> {
                   ),
                 ),
                 onPressed: enviando ? null : () => Navigator.of(context).pop(),
-                child: const Text('Conservar mi cuenta'),
+                child: Text(l10n.cuentaConservarMiCuenta),
               ),
             ],
           ),
@@ -533,16 +538,15 @@ class _HojaConfirmarEliminacionState extends State<HojaConfirmarEliminacion> {
   }
 
   Widget _conCodigo(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const FlujoCodigoVista(
-          tituloElegir: 'Confirma con un código',
-          detalleElegir:
-              'Elige por dónde recibir un código de 6 dígitos. Con él '
-              'confirmas que eres tú, sin la contraseña.',
-          textoConfirmar: 'Eliminar mi cuenta',
+        FlujoCodigoVista(
+          tituloElegir: l10n.cuentaEliminarConfirmaCodigoTitulo,
+          detalleElegir: l10n.cuentaEliminarConfirmaCodigoDetalle,
+          textoConfirmar: l10n.cuentaEliminarMiCuenta,
         ),
         TextButton(
           key: const Key('eliminar-usar-contrasena'),
@@ -550,7 +554,7 @@ class _HojaConfirmarEliminacionState extends State<HojaConfirmarEliminacion> {
             minimumSize: const Size.fromHeight(ObjetivoTactilCampo.minimo),
           ),
           onPressed: () => setState(() => _metodo = _Metodo.contrasena),
-          child: const Text('Usar mi contraseña'),
+          child: Text(l10n.cuentaEliminarUsarContrasena),
         ),
       ],
     );
@@ -567,6 +571,7 @@ class _Solicitada extends StatelessWidget {
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
+    final l10n = AppLocalizations.of(context);
     final hasta = eliminacion?.ejecutarDesde.toLocal();
     return ListView(
       padding: const EdgeInsets.all(EspaciadoCampo.l),
@@ -583,7 +588,7 @@ class _Solicitada extends StatelessWidget {
           header: true,
           liveRegion: true,
           child: Text(
-            'Tu cuenta quedó en espera de eliminación',
+            l10n.cuentaEliminarSolicitadaTitulo,
             style: texto.headlineSmall,
             textAlign: TextAlign.center,
           ),
@@ -591,17 +596,17 @@ class _Solicitada extends StatelessWidget {
         const SizedBox(height: EspaciadoCampo.m),
         Text(
           hasta == null
-              ? 'Tienes 7 días para arrepentirte.'
-              : 'Tienes hasta el ${FormatoMarketplace.fechaLarga(hasta)} para '
-                    'arrepentirte. Inicia sesión y toca «Conservar mi '
-                    'cuenta».',
+              ? l10n.cuentaEliminarSolicitadaSinFecha
+              : l10n.cuentaEliminarSolicitadaConFecha(
+                  FormatoMarketplace.fechaLarga(hasta),
+                ),
           style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: EspaciadoCampo.xl),
         BotonPrincipalMarketplace(
           key: const Key('eliminar-entendido'),
-          texto: 'Entendido',
+          texto: l10n.cuentaEntendido,
           alto: ObjetivoTactilCampo.guantes,
           onPressed: () {
             // La sesión ya no vale: se cierra y se vuelve al ingreso.
@@ -624,6 +629,7 @@ class VistaCuentaConservada extends StatelessWidget {
   Widget build(BuildContext context) {
     final texto = Theme.of(context).textTheme;
     final paleta = context.paleta;
+    final l10n = AppLocalizations.of(context);
     return ListView(
       padding: const EdgeInsets.all(EspaciadoCampo.l),
       children: [
@@ -639,22 +645,21 @@ class VistaCuentaConservada extends StatelessWidget {
           header: true,
           liveRegion: true,
           child: Text(
-            'Conservamos tu cuenta',
+            l10n.cuentaConservadaTitulo,
             style: texto.headlineSmall,
             textAlign: TextAlign.center,
           ),
         ),
         const SizedBox(height: EspaciadoCampo.m),
         Text(
-          'Ya puedes volver a usarla. Las solicitudes y ofertas que se '
-          'cancelaron al pedir la eliminación no se restauran.',
+          l10n.cuentaConservadaDetalle,
           style: texto.bodyLarge?.copyWith(color: paleta.textoSecundario),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: EspaciadoCampo.xl),
         BotonPrincipalMarketplace(
           key: const Key('conservada-listo'),
-          texto: 'Listo',
+          texto: l10n.cuentaListo,
           alto: ObjetivoTactilCampo.guantes,
           onPressed: alListo,
         ),

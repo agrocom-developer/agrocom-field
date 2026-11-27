@@ -192,7 +192,7 @@ class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
                     ),
                   ),
                   onPressed: e.enviando ? null : _recuperarAcceso,
-                  child: const Text('Olvidé mi contraseña'),
+                  child: Text(l10n.cuentaOlvideContrasena),
                 ),
                 if (widget.permiteRegistro) ...[
                   const SizedBox(height: EspaciadoCampo.l),
