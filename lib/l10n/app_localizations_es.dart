@@ -3884,4 +3884,57 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get aparienciaTemaOscuro => 'Oscuro';
+
+  @override
+  String get perfilCliMetricas => 'Métricas';
+
+  @override
+  String perfilCliMisLotesDetalle(int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n lotes registrados',
+      one: '1 lote registrado',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String perfilCliCalificacionesDetalle(String promedio, int n) {
+    String _temp0 = intl.Intl.pluralLogic(
+      n,
+      locale: localeName,
+      other: '$n calificaciones',
+      one: '1 calificación',
+    );
+    return '$promedio · $_temp0';
+  }
+
+  @override
+  String get perfilCliCalificacionesSinDatos => 'Aún sin calificaciones';
+
+  @override
+  String get perfilPilMisDrones => 'Mis drones';
+
+  @override
+  String get perfilPilDocumentosDetalle =>
+      'Licencia, matrícula, seguro y certificado';
+
+  @override
+  String get perfilPilCalificaciones => 'Calificaciones';
+
+  @override
+  String perfilPilCalificacionesDetalle(String promedio, int total) {
+    return '$promedio · $total calificaciones';
+  }
+
+  @override
+  String get perfilPilActividad => 'Hectáreas y zonas';
+
+  @override
+  String get perfilPilActividadDetalle =>
+      'Hectáreas por mes y zonas de cobertura';
+
+  @override
+  String get perfilPilAjustesDetalle => 'Apariencia, notificaciones y cuenta';
 }

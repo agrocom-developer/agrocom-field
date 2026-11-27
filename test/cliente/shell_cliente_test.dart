@@ -182,8 +182,13 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Perfil').last);
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const Key('perfil-ajustes')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('perfil-ajustes')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('ajustes-apariencia')));
+    await tester.pumpAndSettle();
     final campo = find.text('Oscuro');
-    await tester.scrollUntilVisible(campo, 200);
     await tester.ensureVisible(campo);
     await tester.pumpAndSettle();
     await tester.tap(campo);

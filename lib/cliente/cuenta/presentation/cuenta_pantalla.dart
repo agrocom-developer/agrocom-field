@@ -6,21 +6,20 @@ import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/foto_perfil/presentation/foto_perfil_widgets.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
 import '../../../nucleo/ui/componentes/componentes_campo.dart';
-import '../../../nucleo/ui/paleta_campo.dart';
-import '../../../nucleo/ui/tema_visual/selector_tema_visual.dart';
-import '../../../nucleo/ui/tipografia_campo.dart';
+import '../../../nucleo/ui/ajustes/ajustes_pantalla.dart';
+import '../../../nucleo/ui/ajustes/apariencia_pantalla.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../../calificar/domain/calificacion_repositorio.dart';
 import '../../contactos/domain/contacto.dart';
 import '../../contactos/domain/contactos_repositorio.dart';
 import '../../contactos/presentation/contactos_pantalla.dart';
-import '../../lotes/presentation/fila_lote.dart';
+import '../../lotes/presentation/mis_lotes_pantalla.dart';
 import '../../solicitar/domain/solicitud_repositorio.dart';
 import '../domain/cuenta_repositorio.dart';
 
-/// Perfil del cliente (pantalla 17): quién es, sus cifras, «Mis campos», los
-/// ajustes (tema) y cerrar sesión; debajo, lo que los proveedores dijeron de
-/// él.
+/// Perfil del cliente (pantalla 17): cabecera con su calificación, métricas y
+/// accesos a Mis lotes, Contactos, Calificaciones y Ajustes. Cerrar sesión
+/// vive en el menú de tres puntos y en Ajustes.
 class CuentaPantalla extends StatefulWidget {
   const CuentaPantalla({this.alCerrarSesion, this.alPublicar, super.key});
 
@@ -74,7 +73,6 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
-    final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
     return FuturoEstable<_Datos>(
       key: ValueKey(_intento),
@@ -100,12 +98,26 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
         }
         final cuenta = d.cuenta;
         final resumen = d.resumen;
+        final promedio = resumen.promedio
+            .toStringAsFixed(1)
+            .replaceAll('.', ',');
+        void abrir(Widget pantalla) => Navigator.of(
+          context,
+        ).push(MaterialPageRoute<void>(builder: (_) => pantalla));
+        void abrirCalificaciones() =>
+            abrir(CalificacionesPantalla(resumen: resumen));
+        void abrirAjustes() => abrir(AjustesPantalla(alSalir: alCerrarSesion));
         return ListView(
           children: [
             FotoPerfilProveedor(
               child: Column(
                 children: [
                   CabeceraPerfilCampo(
+                    accion: MenuPerfilCampo(
+                      alAjustes: abrirAjustes,
+                      alApariencia: () => abrir(const AparienciaPantalla()),
+                      alSalir: alCerrarSesion,
+                    ),
                     avatar: AvatarFotoPerfil(
                       iniciales: _iniciales(cuenta.nombre),
                       nombre: cuenta.nombre,
@@ -115,6 +127,12 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
                     detalle: cuenta.empresa.isEmpty
                         ? t.perfilClienteRol
                         : '${t.perfilClienteRol} · ${cuenta.empresa}',
+                    extra: EstrellasPerfilCampo(
+                      key: const Key('perfil-estrellas'),
+                      valor: resumen.total == 0 ? 5 : resumen.promedio,
+                      total: resumen.total,
+                      onTap: abrirCalificaciones,
+                    ),
                   ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: EspaciadoCampo.l),
@@ -127,138 +145,64 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
               padding: const EdgeInsets.all(EspaciadoCampo.l),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: EspaciadoCampo.l),
-                  SuperficieMarketplace(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _Cifra(
-                            '${d.lotes.length}',
-                            t.perfilClienteEstadLotes,
-                          ),
-                        ),
-                        Expanded(
-                          child: _Cifra(
-                            '${cuenta.serviciosTotales}',
-                            t.perfilClienteEstadServicios,
-                          ),
-                        ),
-                        Expanded(
-                          child: _Cifra(
-                            resumen.promedio
-                                .toStringAsFixed(1)
-                                .replaceAll('.', ','),
-                            t.perfilClienteEstadCalificacion,
-                          ),
-                        ),
-                      ],
-                    ),
+                children: EntradaCampo.escalonar([
+                  Semantics(
+                    header: true,
+                    child: Text(t.perfilCliMetricas, style: texto.titleLarge),
                   ),
-                  const SizedBox(height: EspaciadoCampo.l),
-                  SuperficieMarketplace(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: EspaciadoCampo.l,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: EspaciadoCampo.m),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Semantics(
-                                  header: true,
-                                  child: Text(
-                                    t.perfilMisCampos,
-                                    style: texto.titleLarge,
-                                  ),
-                                ),
-                              ),
-                              if (alPublicar != null)
-                                TextButton(
-                                  key: const Key('perfil-agregar-campo'),
-                                  onPressed: alPublicar,
-                                  child: Text(t.perfilAgregarCampo),
-                                ),
-                            ],
-                          ),
-                        ),
-                        if (d.lotes.isEmpty)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: EspaciadoCampo.m,
-                            ),
-                            child: Text(
-                              t.perfilMisCamposVacio,
-                              style: texto.bodyMedium?.copyWith(
-                                color: paleta.textoSecundario,
-                              ),
-                            ),
-                          ),
-                        for (final lote in d.lotes) FilaLote(lote: lote),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: EspaciadoCampo.l),
-                  const SuperficieMarketplace(
-                    child: SelectorTemaVisual(
-                      predeterminado: ModoVisualCampo.claro,
-                    ),
-                  ),
-                  if (cuenta.empresa.isNotEmpty && conContactos) ...[
-                    const SizedBox(height: EspaciadoCampo.l),
-                    _FilaContactos(),
-                  ],
-                  const SizedBox(height: EspaciadoCampo.xl),
-                  Text(t.perfilLoDicen, style: texto.titleLarge),
                   const SizedBox(height: EspaciadoCampo.m),
-                  for (final c in resumen.recientes) ...[
-                    SuperficieMarketplace(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Text(c.autor, style: texto.titleSmall),
-                              ),
-                              CalificacionCampo(valor: c.puntaje, tamano: 18),
-                            ],
-                          ),
-                          if (c.comentario != null) ...[
-                            const SizedBox(height: 6),
-                            Text(c.comentario!, style: texto.bodyMedium),
-                          ],
-                        ],
+                  CifrasPerfilCampo(
+                    cifras: [
+                      (
+                        valor: '${d.lotes.length}',
+                        etiqueta: t.perfilClienteEstadLotes,
                       ),
-                    ),
-                    const SizedBox(height: EspaciadoCampo.s),
-                  ],
-                  if (alCerrarSesion != null) ...[
-                    const SizedBox(height: EspaciadoCampo.xl),
-                    Center(
-                      child: TextButton(
-                        key: const Key('cuenta-cerrar-sesion'),
-                        onPressed: alCerrarSesion,
-                        style: TextButton.styleFrom(
-                          foregroundColor: paleta.error,
-                          minimumSize: const Size(
-                            ObjetivoTactilCampo.minimo,
-                            ObjetivoTactilCampo.guantes,
-                          ),
-                        ),
-                        child: Text(
-                          t.perfilCerrarSesion,
-                          style: TipografiaCampo.tituloTarjeta.copyWith(
-                            color: paleta.error,
-                          ),
-                        ),
+                      (
+                        valor: '${cuenta.serviciosTotales}',
+                        etiqueta: t.perfilClienteEstadServicios,
                       ),
+                      (
+                        valor: promedio,
+                        etiqueta: t.perfilClienteEstadCalificacion,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: EspaciadoCampo.l),
+                  FilaAccionCampo(
+                    clave: const Key('perfil-mis-lotes'),
+                    icono: Icons.landscape_rounded,
+                    titulo: t.perfilMisCampos,
+                    detalle: t.perfilCliMisLotesDetalle(d.lotes.length),
+                    alToque: () => abrir(
+                      MisLotesPantalla(lotes: d.lotes, alPublicar: alPublicar),
                     ),
+                  ),
+                  const SizedBox(height: EspaciadoCampo.m),
+                  if (cuenta.empresa.isNotEmpty && conContactos) ...[
+                    _FilaContactos(),
+                    const SizedBox(height: EspaciadoCampo.m),
                   ],
-                ],
+                  FilaAccionCampo(
+                    clave: const Key('perfil-calificaciones'),
+                    icono: Icons.star_rounded,
+                    titulo: t.perfilUxCalificacionesTitulo,
+                    detalle: resumen.total == 0
+                        ? t.perfilCliCalificacionesSinDatos
+                        : t.perfilCliCalificacionesDetalle(
+                            promedio,
+                            resumen.total,
+                          ),
+                    alToque: abrirCalificaciones,
+                  ),
+                  const SizedBox(height: EspaciadoCampo.m),
+                  FilaAccionCampo(
+                    clave: const Key('perfil-ajustes'),
+                    icono: Icons.settings_rounded,
+                    titulo: t.ajustesTitulo,
+                    detalle: t.ajustesAparienciaDetalle,
+                    alToque: abrirAjustes,
+                  ),
+                ]),
               ),
             ),
           ],
@@ -273,38 +217,17 @@ class _FilaContactos extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
-    final texto = Theme.of(context).textTheme;
     return FuturoEstable<List<ContactoCliente>>(
       crear: () => context.read<ContactosRepositorio>().listar(),
-      builder: (context, snap) => SuperficieMarketplace(
-        key: const Key('perfil-contactos'),
-        onTap: () => Navigator.of(context).push(
+      builder: (context, snap) => FilaAccionCampo(
+        clave: const Key('perfil-contactos'),
+        icono: Icons.groups_outlined,
+        titulo: t.contactosPerfilFila,
+        detalle: snap.data == null
+            ? null
+            : t.contactosPerfilDetalle(snap.data!.length),
+        alToque: () => Navigator.of(context).push(
           MaterialPageRoute<void>(builder: (_) => const ContactosPantalla()),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.groups_outlined, color: context.paleta.acentoTexto),
-            const SizedBox(width: EspaciadoCampo.m),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(t.contactosPerfilFila, style: texto.titleMedium),
-                  if (snap.data != null)
-                    Text(
-                      t.contactosPerfilDetalle(snap.data!.length),
-                      style: texto.bodyMedium?.copyWith(
-                        color: context.paleta.textoSecundario,
-                      ),
-                    ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.chevron_right_rounded,
-              color: context.paleta.textoSecundario,
-            ),
-          ],
         ),
       ),
     );
@@ -317,33 +240,4 @@ class _Datos {
   final CuentaCliente cuenta;
   final ResumenCalificaciones resumen;
   final List<Lote> lotes;
-}
-
-class _Cifra extends StatelessWidget {
-  const _Cifra(this.valor, this.etiqueta);
-
-  final String valor;
-  final String etiqueta;
-
-  @override
-  Widget build(BuildContext context) {
-    final texto = Theme.of(context).textTheme;
-    return Column(
-      children: [
-        Text(
-          valor,
-          style: TipografiaCampo.cifraMedia.copyWith(
-            color: context.paleta.texto,
-          ),
-        ),
-        Text(
-          etiqueta,
-          textAlign: TextAlign.center,
-          style: texto.bodySmall?.copyWith(
-            color: context.paleta.textoSecundario,
-          ),
-        ),
-      ],
-    );
-  }
 }

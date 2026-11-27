@@ -1228,5 +1228,19 @@
   "aparienciaTitulo": "Apariencia",
   "aparienciaTema": "Tema",
   "aparienciaTemaClaro": "Claro",
-  "aparienciaTemaOscuro": "Oscuro"
+  "aparienciaTemaOscuro": "Oscuro",
+  "perfilCliMetricas": "Métricas",
+  "perfilCliMisLotesDetalle": "{n, plural, one{1 lote registrado} other{{n} lotes registrados}}",
+  "@perfilCliMisLotesDetalle": {"placeholders": {"n": {"type": "int"}}},
+  "perfilCliCalificacionesDetalle": "{promedio} · {n, plural, one{1 calificación} other{{n} calificaciones}}",
+  "@perfilCliCalificacionesDetalle": {"placeholders": {"promedio": {"type": "String"}, "n": {"type": "int"}}},
+  "perfilCliCalificacionesSinDatos": "Aún sin calificaciones",
+  "perfilPilMisDrones": "Mis drones",
+  "perfilPilDocumentosDetalle": "Licencia, matrícula, seguro y certificado",
+  "perfilPilCalificaciones": "Calificaciones",
+  "perfilPilCalificacionesDetalle": "{promedio} · {total} calificaciones",
+  "@perfilPilCalificacionesDetalle": {"placeholders": {"promedio": {"type": "String"}, "total": {"type": "int"}}},
+  "perfilPilActividad": "Hectáreas y zonas",
+  "perfilPilActividadDetalle": "Hectáreas por mes y zonas de cobertura",
+  "perfilPilAjustesDetalle": "Apariencia, notificaciones y cuenta"
 }

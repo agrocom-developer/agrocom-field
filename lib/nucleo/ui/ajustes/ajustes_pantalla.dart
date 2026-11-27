@@ -91,7 +91,11 @@ class AjustesPantalla extends StatelessWidget {
         ],
       ),
     );
-    if (ok == true) alSalir?.call();
+    if (ok != true || !context.mounted) return;
+    // Ajustes está apilada sobre la navegación principal: se cierra antes de
+    // salir para que no quede encima de la pantalla de ingreso.
+    Navigator.of(context).popUntil((ruta) => ruta.isFirst);
+    alSalir?.call();
   }
 }
 

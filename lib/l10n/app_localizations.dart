@@ -6330,6 +6330,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Oscuro'**
   String get aparienciaTemaOscuro;
+
+  /// No description provided for @perfilCliMetricas.
+  ///
+  /// In es, this message translates to:
+  /// **'Métricas'**
+  String get perfilCliMetricas;
+
+  /// No description provided for @perfilCliMisLotesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'{n, plural, one{1 lote registrado} other{{n} lotes registrados}}'**
+  String perfilCliMisLotesDetalle(int n);
+
+  /// No description provided for @perfilCliCalificacionesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'{promedio} · {n, plural, one{1 calificación} other{{n} calificaciones}}'**
+  String perfilCliCalificacionesDetalle(String promedio, int n);
+
+  /// No description provided for @perfilCliCalificacionesSinDatos.
+  ///
+  /// In es, this message translates to:
+  /// **'Aún sin calificaciones'**
+  String get perfilCliCalificacionesSinDatos;
+
+  /// No description provided for @perfilPilMisDrones.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis drones'**
+  String get perfilPilMisDrones;
+
+  /// No description provided for @perfilPilDocumentosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia, matrícula, seguro y certificado'**
+  String get perfilPilDocumentosDetalle;
+
+  /// No description provided for @perfilPilCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificaciones'**
+  String get perfilPilCalificaciones;
+
+  /// No description provided for @perfilPilCalificacionesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'{promedio} · {total} calificaciones'**
+  String perfilPilCalificacionesDetalle(String promedio, int total);
+
+  /// No description provided for @perfilPilActividad.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas y zonas'**
+  String get perfilPilActividad;
+
+  /// No description provided for @perfilPilActividadDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas por mes y zonas de cobertura'**
+  String get perfilPilActividadDetalle;
+
+  /// No description provided for @perfilPilAjustesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Apariencia, notificaciones y cuenta'**
+  String get perfilPilAjustesDetalle;
 }
 
 class _AppLocalizationsDelegate
