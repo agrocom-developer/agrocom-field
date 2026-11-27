@@ -30,4 +30,4 @@ El servidor ya publica los códigos de 6 dígitos por WhatsApp, SMS o correo, la
 
 - Pantallas nuevas con los cinco estados: Recuperar acceso, Cambiar contraseña, hoja de verificación del teléfono, Seguridad y cuenta, Eliminar mi cuenta, Cuenta en eliminación y Ya tienes una cuenta. El diseño vigente está en `docs/diseno/especificacion-pantallas.md`; los goldens se generan al terminar cada pantalla.
 - `nucleo/sync` y `nucleo/db` no cambian; el replay sigue verde.
-- **Revisable:** los 7 días de margen de renovación y los 30 s de espera de reenvío. Hallazgos de contrato en el informe del PR: el servidor no distingue en el login una cuenta en eliminación y `siguiente_paso` no incluye «registrar el dron».
+- **Revisable:** los 7 días de margen de renovación y los 30 s de espera de reenvío. Contrato: el login no informa que la cuenta está en eliminación (por eso la consulta extra del piloto) y `siguiente_paso` no incluye «registrar el dron».
