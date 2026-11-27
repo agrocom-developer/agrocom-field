@@ -10,11 +10,16 @@ class DestinoCampo {
     required this.icono,
     required this.iconoActivo,
     required this.etiqueta,
+    this.bajoBarraEstado = false,
   });
 
   final IconData icono;
   final IconData iconoActivo;
   final String etiqueta;
+
+  /// La pantalla pinta bajo la barra de estado (hora, batería) y se ocupa de
+  /// su propio margen superior; el teléfono no le recorta el borde de arriba.
+  final bool bajoBarraEstado;
 }
 
 /// Navegación raíz que se adapta al ancho: barra inferior en teléfono
@@ -62,7 +67,11 @@ class NavegacionAdaptativaCampo extends StatelessWidget {
 
     if (clase == ClasePantallaCampo.compacto) {
       return Scaffold(
-        body: SafeArea(bottom: false, child: contenido),
+        body: SafeArea(
+          top: !destinos[indice].bajoBarraEstado,
+          bottom: false,
+          child: contenido,
+        ),
         bottomNavigationBar: BarraInferiorCampo(
           destinos: destinos,
           indice: indice,

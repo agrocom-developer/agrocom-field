@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import '../colores_campo.dart';
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
 
@@ -16,6 +18,8 @@ class CabeceraPerfilCampo extends StatelessWidget {
     this.extra,
     this.accion,
     this.insignia,
+    this.imagen,
+    this.alineacionImagen = Alignment.center,
     super.key,
   });
 
@@ -34,23 +38,29 @@ class CabeceraPerfilCampo extends StatelessWidget {
   /// Insignia de la esquina superior izquierda (p. ej. «Aprobado»).
   final Widget? insignia;
 
+  /// Foto de fondo (ruta del asset). Se pinta bajo un velo verde que es
+  /// traslúcido arriba y se vuelve el verde sólido de la cabecera abajo, donde
+  /// están el nombre y las estrellas, para que el texto conserve su contraste.
+  final String? imagen;
+
+  /// Qué parte de la foto queda visible al recortarla para llenar la banda.
+  final AlignmentGeometry alineacionImagen;
+
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
     final texto = Theme.of(context).textTheme;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(
+    final forma = const BorderRadius.vertical(
+      bottom: Radius.circular(RadioCampo.tarjeta),
+    );
+    final contenido = Padding(
+      // El alto de la barra de estado se suma arriba: la foto pasa por debajo
+      // de la hora y la batería en vez de dejar una franja.
+      padding: EdgeInsets.fromLTRB(
         EspaciadoCampo.l,
-        EspaciadoCampo.s,
+        EspaciadoCampo.s + MediaQuery.paddingOf(context).top,
         EspaciadoCampo.l,
         EspaciadoCampo.xl,
-      ),
-      decoration: BoxDecoration(
-        color: paleta.cabecera,
-        borderRadius: const BorderRadius.vertical(
-          bottom: Radius.circular(RadioCampo.tarjeta),
-        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -59,11 +69,22 @@ class CabeceraPerfilCampo extends StatelessWidget {
           // Alto fijo para que el centrado de abajo no dependa de ninguno.
           SizedBox(
             height: ObjetivoTactilCampo.minimo,
-            child: Row(
+            child: Stack(
               children: [
-                if (insignia case final i?) Flexible(child: i),
-                const Spacer(),
-                ?accion,
+                // Cada extremo se ancla a su lado con el mismo margen: la
+                // insignia al borde izquierdo y el ícono del menú al derecho.
+                if (insignia case final i?)
+                  Align(alignment: AlignmentDirectional.centerStart, child: i),
+                if (accion case final a?)
+                  Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    // El botón mide 48 y su ícono 28: se corre la mitad de lo
+                    // que sobra (10) para que el ícono quede al ras del margen.
+                    child: Transform.translate(
+                      offset: const Offset(10, 0),
+                      child: a,
+                    ),
+                  ),
               ],
             ),
           ),
@@ -98,18 +119,69 @@ class CabeceraPerfilCampo extends StatelessWidget {
         ],
       ),
     );
+    // Íconos claros de la barra de estado sobre la banda verde.
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(color: paleta.cabecera, borderRadius: forma),
+        child: ClipRRect(
+          borderRadius: forma,
+          child: Stack(
+            children: [
+              if (imagen != null) ...[
+                Positioned.fill(
+                  child: ExcludeSemantics(
+                    child: Image.asset(
+                      imagen!,
+                      fit: BoxFit.cover,
+                      alignment: alineacionImagen,
+                      cacheWidth: 1000,
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          paleta.cabecera.withValues(alpha: 0.16),
+                          paleta.cabecera.withValues(alpha: 0.5),
+                          paleta.cabecera.withValues(alpha: 0.93),
+                          paleta.cabecera,
+                        ],
+                        stops: const [0, 0.38, 0.62, 0.8],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+              contenido,
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
 /// Píldora compacta de la cabecera: ícono y texto sobre un fondo claro
-/// translúcido (p. ej. «Aprobado»).
+/// translúcido oscuro, que conserva el contraste sobre la foto (p. ej.
+/// «Aprobado»).
 class InsigniaCabeceraCampo extends StatelessWidget {
   const InsigniaCabeceraCampo({
     required this.icono,
     required this.etiqueta,
     this.etiquetaSemantica,
+    this.intensa = false,
     super.key,
   });
+
+  /// Relleno sólido contrastado para «Aprobado»: grafito con letras blancas
+  /// en el claro, ceniza con letras negras en el oscuro.
+  final bool intensa;
 
   final IconData icono;
   final String etiqueta;
@@ -120,6 +192,16 @@ class InsigniaCabeceraCampo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
+    final fondo = intensa
+        ? (paleta.brillo == Brightness.dark
+              ? ColoresCampo.insigniaAprobadoOscuro
+              : ColoresCampo.insigniaAprobadoClaro)
+        : paleta.cabecera.withValues(alpha: 0.7);
+    final texto = intensa
+        ? (paleta.brillo == Brightness.dark
+              ? ColoresCampo.sobreInsigniaAprobadoOscuro
+              : ColoresCampo.sobreInsigniaAprobadoClaro)
+        : paleta.sobreCabecera;
     return Semantics(
       container: true,
       label: etiquetaSemantica ?? etiqueta,
@@ -130,13 +212,13 @@ class InsigniaCabeceraCampo extends StatelessWidget {
           vertical: EspaciadoCampo.xs + 2,
         ),
         decoration: BoxDecoration(
-          color: paleta.sobreCabecera.withValues(alpha: 0.18),
+          color: fondo,
           borderRadius: BorderRadius.circular(RadioCampo.capsula),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icono, size: 18, color: paleta.sobreCabecera),
+            Icon(icono, size: 18, color: texto),
             const SizedBox(width: EspaciadoCampo.xs),
             Flexible(
               child: Text(
@@ -144,7 +226,7 @@ class InsigniaCabeceraCampo extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  color: paleta.sobreCabecera,
+                  color: texto,
                   fontWeight: FontWeight.w700,
                 ),
               ),

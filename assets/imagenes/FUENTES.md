@@ -11,6 +11,8 @@ Registro de origen/licencia — para poder mostrarlo si alguna vez se cuestiona 
 | `fondo_dron_agras_t50.jpg` | `Drone-DJI-Agras-T50.jpg` | _a completar_ | Franja superior de inicio |
 | `fondo_dron_sobre_agua.jpg` | `0S3B9601-scaled.webp` | _a completar_ | Franja superior de vinculación de dispositivo (vitrina) |
 | `fondo_equipo_dron.jpg` | `NuWay_Ag-Merch_Update-55389_-_Square.webp` | _a completar_ | Reservada: pantallas de equipos/baterías (HU-80) |
+| `perfil_piloto_dron.jpg` | `T-20-2.jpg` (aportada por el dueño el 27/11/2026) | _a completar_ | Fondo de la cabecera del perfil del piloto |
+| `perfil_cliente_campo.jpg` | `como-conquistar-a-un-nuevo-cliente-en-el-agro.jpg` (aportada por el dueño el 27/11/2026) | _a completar_ | Fondo de la cabecera del perfil del cliente |
 | `agrocom_logo.png` | — | Marca propia de Agrocom SRL | Logo en pantalla y origen del ícono del launcher |
 
 Uso: fondos decorativos de pantallas del modo campo (ADR 0008) — nunca como evidencia de un trabajo real ("sin captura no cierra", invariante 8 de `CLAUDE.md`: la evidencia siempre la captura el piloto/auxiliar en el momento).

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../../../../ui/imagenes_campo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
@@ -189,8 +191,11 @@ class _Contenido extends StatelessWidget {
     return FotoPerfilProveedor(
       urlInicial: p.fotoUrl,
       child: ListView(
+        padding: EdgeInsets.zero,
         children: [
           CabeceraPerfilCampo(
+            imagen: ImagenesCampo.perfilPiloto,
+            alineacionImagen: const Alignment(-0.2, -0.3),
             accion: MenuPerfilCampo(
               alAjustes: verAjustes,
               alApariencia: () => _abrir(context, const AparienciaPantalla()),
@@ -382,6 +387,7 @@ class _InsigniaAprobacion extends StatelessWidget {
     };
     return InsigniaCabeceraCampo(
       key: const Key('perfil-insignia-aprobacion'),
+      intensa: proveedor.aprobacion.habilitado,
       icono: icono,
       etiqueta: proveedor.aprobacion.etiqueta,
       etiquetaSemantica: AppLocalizations.of(

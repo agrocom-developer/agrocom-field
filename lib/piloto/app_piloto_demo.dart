@@ -126,6 +126,7 @@ class _ShellPilotoState extends State<ShellPiloto> {
           icono: Icons.person_outline_rounded,
           iconoActivo: Icons.person_rounded,
           etiqueta: t.navPerfil,
+          bajoBarraEstado: true,
         ),
       ],
       indice: _indice,

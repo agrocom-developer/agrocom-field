@@ -21,6 +21,12 @@ abstract final class ColoresCampo {
   /// superficie elevada (4,54:1), donde el relleno [acentoHojaOscuro] no llega.
   static const Color acentoTextoOscuro = Color(0xFF6BBE73);
 
+  /// Píldora «Aprobado» de la cabecera de perfil: grafito con letras blancas
+  /// en el claro; ceniza con letras negras en el oscuro.
+  static const Color insigniaAprobadoClaro = Color(0xFF29343A);
+  static const Color sobreInsigniaAprobadoClaro = Color(0xFFFFFFFF);
+  static const Color insigniaAprobadoOscuro = Color(0xFFD4DAD6);
+  static const Color sobreInsigniaAprobadoOscuro = Color(0xFF000000);
   static const Color fondoProfundo = Color(0xFF000000);
   static const Color superficie = Color(0xFF0F1A13);
 

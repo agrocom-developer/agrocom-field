@@ -1,5 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
+
+import '../../../nucleo/ui/imagenes_campo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
@@ -109,11 +111,14 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
             abrir(CalificacionesPantalla(resumen: resumen));
         void abrirAjustes() => abrir(AjustesPantalla(alSalir: alCerrarSesion));
         return ListView(
+          padding: EdgeInsets.zero,
           children: [
             FotoPerfilProveedor(
               child: Column(
                 children: [
                   CabeceraPerfilCampo(
+                    imagen: ImagenesCampo.perfilCliente,
+                    alineacionImagen: const Alignment(-0.6, 0),
                     accion: MenuPerfilCampo(
                       alAjustes: abrirAjustes,
                       alApariencia: () => abrir(const AparienciaPantalla()),
