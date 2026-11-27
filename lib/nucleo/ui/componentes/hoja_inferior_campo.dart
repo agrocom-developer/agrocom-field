@@ -6,6 +6,12 @@ import '../tokens_campo.dart';
 
 /// Contenido de una hoja inferior: radio 32 arriba, manija de 36×4 y el
 /// [child] debajo. Es el patrón de todo lo que va sobre el mapa.
+///
+/// El contenido va dentro de un scroll acotado a la altura disponible: con
+/// el texto del sistema al 200 % (o un [child] con más líneas de las que
+/// caben) la hoja se desplaza en vez de desbordar o recortar la última
+/// fila — nunca agranda la pantalla más allá de lo que el dedo puede
+/// arrastrar.
 class HojaInferiorCampo extends StatelessWidget {
   const HojaInferiorCampo({required this.child, super.key});
 
@@ -14,6 +20,7 @@ class HojaInferiorCampo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paleta = context.paleta;
+    final altoMaximo = MediaQuery.sizeOf(context).height * 0.9;
     return DecoratedBox(
       decoration: BoxDecoration(
         color: ElevacionCampo.superficie(paleta, 2),
@@ -25,31 +32,36 @@ class HojaInferiorCampo extends StatelessWidget {
       ),
       child: SafeArea(
         top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const SizedBox(height: EspaciadoCampo.m),
-            Center(
-              child: Container(
-                width: 36,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: paleta.bordeFuerte,
-                  borderRadius: BorderRadius.circular(RadioCampo.capsula),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: altoMaximo),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const SizedBox(height: EspaciadoCampo.m),
+                Center(
+                  child: Container(
+                    width: 36,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: paleta.bordeFuerte,
+                      borderRadius: BorderRadius.circular(RadioCampo.capsula),
+                    ),
+                  ),
                 ),
-              ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    EspaciadoCampo.l,
+                    EspaciadoCampo.l,
+                    EspaciadoCampo.l,
+                    EspaciadoCampo.xl,
+                  ),
+                  child: child,
+                ),
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                EspaciadoCampo.l,
-                EspaciadoCampo.l,
-                EspaciadoCampo.l,
-                EspaciadoCampo.xl,
-              ),
-              child: child,
-            ),
-          ],
+          ),
         ),
       ),
     );
