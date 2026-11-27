@@ -55,6 +55,9 @@ import '../solicitar/data/solicitud_demo.dart';
 import '../solicitar/data/solicitud_red.dart';
 import '../solicitar/domain/solicitud_repositorio.dart';
 import '../../nucleo/auth/biometria.dart';
+import '../../nucleo/auth/cuenta/data/cuenta_seguridad_demo.dart';
+import '../../nucleo/auth/cuenta/data/cuenta_seguridad_red.dart';
+import '../../nucleo/auth/cuenta/domain/cuenta_seguridad.dart';
 import '../../nucleo/auth/bloqueo_biometrico.dart';
 import '../../nucleo/auth/bloqueo_biometrico_store.dart';
 import '../solicitudes/data/solicitudes_demo.dart';
@@ -89,7 +92,9 @@ class DependenciasCliente {
     this.sesionExpirada,
     this.bloqueo,
     ConectividadServicio? conectividad,
-  }) : conectividad = conectividad ?? ConectividadFalsa();
+    CuentaSeguridadRepositorio? seguridad,
+  }) : conectividad = conectividad ?? ConectividadFalsa(),
+       seguridad = seguridad ?? CuentaSeguridadDemo();
 
   /// Repositorios en memoria con datos ficticios (`MODO_DEMO`, ADR 0010).
   ///
@@ -146,8 +151,9 @@ class DependenciasCliente {
       push: DispositivosPushDemo(TokenPushEnMemoria()),
       contactos: ContactosDemo(),
       precioFinal: PrecioFinalDemo(almacen),
+      seguridad: CuentaSeguridadDemo(),
       notaAcceso:
-          'Modo demo: ingresa con cualquier usuario y una contraseña de 8 '
+          'Modo demo: ingresa con cualquier usuario y una contraseña de 4 '
           'caracteres o más. Los datos son ficticios.',
     );
   }
@@ -231,6 +237,7 @@ class DependenciasCliente {
         BloqueoBiometricoStoreSeguro(),
       ),
       conectividad: ConectividadReal(),
+      seguridad: CuentaSeguridadRed(api: api, tokenStore: tokenStore),
     );
   }
 
@@ -267,6 +274,10 @@ class DependenciasCliente {
   /// la solicitud.
   final PrecioFinalRepositorio? precioFinal;
 
+  /// Seguridad de la cuenta: recuperar el acceso, contraseña, teléfono y
+  /// eliminar la cuenta (códigos por WhatsApp, SMS o correo).
+  final CuentaSeguridadRepositorio seguridad;
+
   /// Desbloqueo con huella o rostro (ADR 0026). Solo en la app real: la demo
   /// no guarda sesión.
   final BloqueoBiometrico? bloqueo;
@@ -296,6 +307,7 @@ class DependenciasCliente {
       RepositoryProvider<AccesoRepositorio>.value(value: acceso),
       RepositoryProvider<InicioClienteRepositorio>.value(value: inicio),
       RepositoryProvider<FotoPerfilRepositorio>.value(value: fotoPerfil),
+      RepositoryProvider<CuentaSeguridadRepositorio>.value(value: seguridad),
       RepositoryProvider<FotosTerrenoRepositorio>.value(value: fotosTerreno),
       RepositoryProvider<PagosRepositorio>.value(value: pagos),
       RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),

@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/auth/bloqueo_biometrico.dart';
+import '../../../nucleo/auth/cuenta/domain/cuenta_seguridad.dart';
 import '../domain/acceso_repositorio.dart';
 
 /// En qué punto del recorrido de entrada está la app.
@@ -24,6 +25,10 @@ enum EtapaArranque {
 
   /// No se pudo leer el estado guardado.
   error,
+
+  /// La cuenta está en los 7 días de gracia de su eliminación: la sesión
+  /// solo permite conservarla o cerrar sesión.
+  enEliminacion,
 }
 
 class ArranqueEstado {
@@ -55,13 +60,19 @@ class ArranqueCubit extends Cubit<ArranqueEstado> {
     this._acceso, {
     BloqueoBiometrico? bloqueo,
     AppLocalizations? l10n,
+    RenovadorSesion? renovarSesion,
   }) : _bloqueo = bloqueo,
        _l10n = l10n,
+       _renovarSesion = renovarSesion,
        super(const ArranqueEstado(EtapaArranque.resolviendo));
 
   final AccesoRepositorio _acceso;
   final BloqueoBiometrico? _bloqueo;
   final AppLocalizations? _l10n;
+
+  /// `POST /api/auth/renovar` cuando al token le quedan pocos días; se pide
+  /// solo tras reconocer a la persona con la biometría.
+  final RenovadorSesion? _renovarSesion;
 
   Future<void> resolver() async {
     emit(const ArranqueEstado(EtapaArranque.resolviendo));
@@ -85,7 +96,16 @@ class ArranqueCubit extends Cubit<ArranqueEstado> {
     if (isClosed) return;
     switch (resultado) {
       case ResultadoDesbloqueo.noAplica:
+        await _leerSesion();
       case ResultadoDesbloqueo.desbloqueado:
+        // La biometría nunca llega al servidor: reutiliza el token guardado
+        // y, si le quedan pocos días, lo renueva. Una falla no impide entrar.
+        try {
+          await _renovarSesion?.call();
+        } on Object {
+          // La sesión sigue con el token guardado.
+        }
+        if (isClosed) return;
         await _leerSesion();
       case ResultadoDesbloqueo.cancelado:
         emit(const ArranqueEstado(EtapaArranque.bloqueada));
@@ -101,7 +121,7 @@ class ArranqueCubit extends Cubit<ArranqueEstado> {
     try {
       final sesion = await _acceso.sesionActual();
       if (sesion != null) {
-        emit(ArranqueEstado(EtapaArranque.dentro, sesion: sesion));
+        emit(_estadoDe(sesion));
         return;
       }
       final visto = await _acceso.onboardingVisto();
@@ -116,8 +136,16 @@ class ArranqueCubit extends Cubit<ArranqueEstado> {
   void onboardingTerminado() =>
       emit(const ArranqueEstado(EtapaArranque.acceso));
 
-  void sesionIniciada(SesionCliente sesion) =>
-      emit(ArranqueEstado(EtapaArranque.dentro, sesion: sesion));
+  void sesionIniciada(SesionCliente sesion) => emit(_estadoDe(sesion));
+
+  ArranqueEstado _estadoDe(SesionCliente sesion) => ArranqueEstado(
+    sesion.enEliminacion ? EtapaArranque.enEliminacion : EtapaArranque.dentro,
+    sesion: sesion,
+  );
+
+  /// «Conservar mi cuenta» funcionó: se vuelve a leer la sesión, ya sin
+  /// restricción.
+  Future<void> cuentaConservada() => _leerSesion();
 
   /// El servidor rechazó el token (venció o lo revocaron): se vuelve al
   /// ingreso sin llamar al servidor.

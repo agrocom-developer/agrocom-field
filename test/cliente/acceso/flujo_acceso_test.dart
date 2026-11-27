@@ -180,12 +180,12 @@ void main() {
       find.bySemanticsLabel('Usuario'),
       AccesoDemo.usuarioOcupado,
     );
-    await tester.enterText(find.bySemanticsLabel('Contraseña'), 'corta');
+    await tester.enterText(find.bySemanticsLabel('Contraseña'), 'abc');
     final crear = find.byKey(const Key('registro-crear'));
     await tester.ensureVisible(crear);
     await tester.tap(crear);
     await tester.pumpAndSettle();
-    expect(find.text('Usa al menos 8 caracteres'), findsOneWidget);
+    expect(find.text('Usa al menos 4 caracteres'), findsOneWidget);
 
     await tester.enterText(find.bySemanticsLabel('Contraseña'), 'segura123');
     await tester.ensureVisible(crear);
@@ -199,6 +199,10 @@ void main() {
     expect(find.text('Ese usuario ya existe. Elige otro'), findsNothing);
     await tester.ensureVisible(crear);
     await tester.tap(crear);
+    await tester.pumpAndSettle();
+    // Con la cuenta creada se ofrece verificar el teléfono; es opcional.
+    expect(find.text('Verifica tu teléfono'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('verificar-mas-tarde')));
     await tester.pumpAndSettle();
     expect(find.text('Hola, Ana'), findsOneWidget);
   });

@@ -6,12 +6,17 @@ class SesionCliente {
     required this.usuario,
     this.empresa,
     this.telefono,
+    this.enEliminacion = false,
   });
 
   final String nombre;
   final String usuario;
   final String? empresa;
   final String? telefono;
+
+  /// La cuenta está en los 7 días de gracia de su eliminación: la sesión es
+  /// restringida (solo ve el estado, conserva la cuenta o cierra sesión).
+  final bool enEliminacion;
 
   /// Primer nombre, para el saludo.
   String get primerNombre => nombre.trim().split(RegExp(r'\s+')).first;
@@ -22,10 +27,12 @@ class SesionCliente {
       other.nombre == nombre &&
       other.usuario == usuario &&
       other.empresa == empresa &&
-      other.telefono == telefono;
+      other.telefono == telefono &&
+      other.enEliminacion == enEliminacion;
 
   @override
-  int get hashCode => Object.hash(nombre, usuario, empresa, telefono);
+  int get hashCode =>
+      Object.hash(nombre, usuario, empresa, telefono, enEliminacion);
 }
 
 /// Quién es el cliente ante Agrocom (`tipo` del contrato).
@@ -83,13 +90,30 @@ enum MotivoFalloAcceso {
 
   /// Cualquier otra respuesta inesperada.
   desconocido,
+
+  /// `409 cuenta_ya_registrada`: ese teléfono o documento ya tiene cuenta.
+  cuentaYaRegistrada,
+
+  /// `429`: demasiados intentos; ver `AccesoExcepcion.esperaSegundos`.
+  demasiadosIntentos,
 }
 
 class AccesoExcepcion implements Exception {
-  const AccesoExcepcion(this.motivo, {this.porCampo = const {}});
+  const AccesoExcepcion(
+    this.motivo, {
+    this.porCampo = const {},
+    this.esperaSegundos,
+    this.tipoCuenta,
+  });
 
   final MotivoFalloAcceso motivo;
   final Map<CampoAcceso, String> porCampo;
+
+  /// `Retry-After` de un `429`, en segundos.
+  final int? esperaSegundos;
+
+  /// `tipo_cuenta` de un `409 cuenta_ya_registrada` (`cliente`, `proveedor`).
+  final String? tipoCuenta;
 
   @override
   String toString() => 'AccesoExcepcion(${motivo.name})';
