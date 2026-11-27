@@ -11,6 +11,7 @@ import '../../../nucleo/marketplace/ui/aviso_marketplace.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/marketplace/ui/campo_formulario_marketplace.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
+import '../../../nucleo/ui/componentes/encabezado_de_marca.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../domain/acceso_repositorio.dart';
 import '../domain/reglas_acceso.dart';
@@ -192,6 +193,8 @@ class _FormularioState extends State<_Formulario> {
                   ),
                 ),
                 const SizedBox(height: EspaciadoCampo.s),
+                const DistintivoRol(rol: RolApp.cliente),
+                const SizedBox(height: EspaciadoCampo.m),
                 Text(l10n.accesoCreaCuenta, style: texto.headlineMedium),
                 const SizedBox(height: EspaciadoCampo.s),
                 Text(

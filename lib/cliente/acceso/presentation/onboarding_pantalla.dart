@@ -7,6 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/ui/colores_campo.dart';
+import '../../../nucleo/ui/componentes/encabezado_de_marca.dart';
+import '../../../nucleo/ui/componentes/hoja_inferior_campo.dart';
+import '../../../nucleo/ui/componentes/lista_de_capacidades.dart';
 import '../../../nucleo/ui/componentes/logo_agrocom_campo.dart';
 import '../../../nucleo/ui/imagenes_campo.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
@@ -197,6 +200,18 @@ class _VistaState extends State<_Vista> {
   final _clave = GlobalKey();
   double _altoControles = 0;
 
+  /// «Qué puedes hacer como cliente», en una hoja: la portada sigue siendo
+  /// de tres fotos y la lista se abre a pedido. Pausa el autoavance mientras
+  /// está abierta.
+  Future<void> _verCapacidades(BuildContext context) async {
+    _pausar(true);
+    await mostrarHojaInferiorCampo<void>(
+      context: context,
+      builder: (_) => const ListaDeCapacidades(rol: RolApp.cliente),
+    );
+    _pausar(false);
+  }
+
   /// Mide los controles para que el texto de cada portada quede justo encima,
   /// también con letra grande.
   void _medirControles() {
@@ -258,13 +273,28 @@ class _VistaState extends State<_Vista> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: BlocBuilder<OnboardingCubit, OnboardingEstado>(
-                      buildWhen: (a, b) => a.paso != b.paso,
-                      builder: (context, estado) =>
-                          _Puntos(paso: estado.paso, alElegir: _irPorPunto),
-                    ),
+                  Row(
+                    children: [
+                      BlocBuilder<OnboardingCubit, OnboardingEstado>(
+                        buildWhen: (a, b) => a.paso != b.paso,
+                        builder: (context, estado) =>
+                            _Puntos(paso: estado.paso, alElegir: _irPorPunto),
+                      ),
+                      const Spacer(),
+                      TextButton.icon(
+                        key: const Key('onboarding-capacidades'),
+                        onPressed: () => _verCapacidades(context),
+                        icon: const Icon(Icons.info_outline_rounded),
+                        label: Text(l10n.capacidadesVerCliente),
+                        style: TextButton.styleFrom(
+                          minimumSize: const Size(
+                            0,
+                            ObjetivoTactilCampo.minimo,
+                          ),
+                          foregroundColor: _textoSobreFoto,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: EspaciadoCampo.s),
                   BotonPrincipalMarketplace(
@@ -472,7 +502,15 @@ class _SelloAgrocom extends StatelessWidget {
   const _SelloAgrocom();
 
   @override
-  Widget build(BuildContext context) => const LogoAgrocomCampo(ancho: 112);
+  Widget build(BuildContext context) => const Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      LogoAgrocomCampo(ancho: 112),
+      SizedBox(height: EspaciadoCampo.xs),
+      DistintivoRol(rol: RolApp.cliente, sobreFoto: true),
+    ],
+  );
 }
 
 class _PastillaSaltar extends StatelessWidget {

@@ -43,7 +43,7 @@ class AppCliente extends StatelessWidget {
       predeterminado: ModoVisualCampo.claro,
       almacen: almacenTema,
       construir: (context, tema) => MaterialApp(
-        title: 'Agrocom',
+        title: 'DronAgro',
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('es'),

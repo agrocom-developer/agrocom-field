@@ -117,6 +117,8 @@ class _FormularioState extends State<_Formulario> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const LogoAgrocomCampo(ancho: 104, sombra: false),
+                const SizedBox(height: EspaciadoCampo.s),
+                const DistintivoRol(rol: RolApp.cliente),
                 const SizedBox(height: EspaciadoCampo.xl),
                 Text(l10n.accesoIngresaCuenta, style: texto.headlineMedium),
                 const SizedBox(height: EspaciadoCampo.s),
