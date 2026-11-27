@@ -4089,10 +4089,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get disponibilidadTitulo => 'Disponibilidad';
 
   @override
-  String get disponibilidadAyudaFila =>
-      'Ponte ocupado para no recibir avisos de solicitudes nuevas';
-
-  @override
   String get disponibilidadIntro =>
       'Ocupado o en trabajo, dejas de recibir avisos de solicitudes nuevas. Sigues viendo el mapa y puedes ofertar.';
 

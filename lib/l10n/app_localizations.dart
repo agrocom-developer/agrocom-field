@@ -6679,12 +6679,6 @@ abstract class AppLocalizations {
   /// **'Disponibilidad'**
   String get disponibilidadTitulo;
 
-  /// No description provided for @disponibilidadAyudaFila.
-  ///
-  /// In es, this message translates to:
-  /// **'Ponte ocupado para no recibir avisos de solicitudes nuevas'**
-  String get disponibilidadAyudaFila;
-
   /// No description provided for @disponibilidadIntro.
   ///
   /// In es, this message translates to:
