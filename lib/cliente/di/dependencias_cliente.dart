@@ -27,6 +27,9 @@ import '../calificar/data/calificacion_demo.dart';
 import '../calificar/data/calificacion_red.dart';
 import '../calificar/domain/calificacion_repositorio.dart';
 import '../comun/presentation/foto_remota.dart';
+import '../../nucleo/cuenta/data/contrasena_demo.dart';
+import '../../nucleo/cuenta/data/contrasena_red.dart';
+import '../../nucleo/cuenta/domain/contrasena_repositorio.dart';
 import '../contactos/data/contactos_demo.dart';
 import '../contactos/data/contactos_red.dart';
 import '../contactos/domain/contactos_repositorio.dart';
@@ -82,6 +85,7 @@ class DependenciasCliente {
     required this.push,
     this.contactos,
     this.precioFinal,
+    this.contrasena,
     this.notaAcceso,
     this.sesionExpirada,
     ConectividadServicio? conectividad,
@@ -141,6 +145,7 @@ class DependenciasCliente {
           ),
       push: DispositivosPushDemo(TokenPushEnMemoria()),
       contactos: ContactosDemo(),
+      contrasena: ContrasenaDemo(),
       precioFinal: PrecioFinalDemo(almacen),
       notaAcceso:
           'Modo demo: ingresa con cualquier usuario y una contraseña de 8 '
@@ -219,6 +224,7 @@ class DependenciasCliente {
       ),
       push: push,
       contactos: ContactosRed(http),
+      contrasena: ContrasenaRed(marketplace),
       precioFinal: PrecioFinalRed(http),
       notaAcceso: notaAcceso,
       sesionExpirada: expiracion.stream,
@@ -254,6 +260,9 @@ class DependenciasCliente {
   /// Contactos de referencia del cliente empresa; sin él, el cliente no los
   /// gestiona (las pruebas que no los necesitan lo omiten).
   final ContactosRepositorio? contactos;
+
+  /// Cambio de contraseña con código; sin él Ajustes no ofrece la fila.
+  final ContrasenaRepositorio? contrasena;
 
   /// Precio final y su confirmación; sin él la pantalla muestra solo lo de
   /// la solicitud.
@@ -291,6 +300,8 @@ class DependenciasCliente {
         RepositoryProvider<PrecioFinalRepositorio>.value(value: precioFinal!),
       if (contactos != null)
         RepositoryProvider<ContactosRepositorio>.value(value: contactos!),
+      if (contrasena != null)
+        RepositoryProvider<ContrasenaRepositorio>.value(value: contrasena!),
     ],
     child: child,
   );

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../cuenta/domain/contrasena_repositorio.dart';
+import '../../cuenta/presentation/cambiar_contrasena_pantalla.dart';
 import '../../marketplace/ui/superficie_marketplace.dart';
 import '../componentes/fila_accion_campo.dart';
 import '../paleta_campo.dart';
@@ -20,6 +23,8 @@ class AjustesPantalla extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
+    // La fila solo existe si la app compuso el repositorio (demo y red sí).
+    final conContrasena = context.read<ContrasenaRepositorio?>() != null;
     return Scaffold(
       appBar: AppBar(title: Text(t.ajustesTitulo)),
       body: ListView(
@@ -41,7 +46,7 @@ class AjustesPantalla extends StatelessWidget {
               ...filas,
             ],
           ),
-          if (alSalir != null) ...[
+          if (alSalir != null || conContrasena) ...[
             const SizedBox(height: EspaciadoCampo.xl),
             Semantics(
               header: true,
@@ -55,13 +60,26 @@ class AjustesPantalla extends StatelessWidget {
             ),
             _Grupo(
               children: [
-                FilaAjusteCampo(
-                  clave: const Key('ajustes-cerrar-sesion'),
-                  icono: Icons.logout_rounded,
-                  titulo: t.ajustesCerrarSesion,
-                  detalle: t.ajustesCerrarSesionDetalle,
-                  alToque: () => _confirmarSalida(context),
-                ),
+                if (conContrasena)
+                  FilaAjusteCampo(
+                    clave: const Key('ajustes-cambiar-contrasena'),
+                    icono: Icons.lock_outline_rounded,
+                    titulo: t.contrasenaFilaAjustes,
+                    detalle: t.contrasenaFilaAjustesDetalle,
+                    alToque: () => Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const CambiarContrasenaPantalla(),
+                      ),
+                    ),
+                  ),
+                if (alSalir != null)
+                  FilaAjusteCampo(
+                    clave: const Key('ajustes-cerrar-sesion'),
+                    icono: Icons.logout_rounded,
+                    titulo: t.ajustesCerrarSesion,
+                    detalle: t.ajustesCerrarSesionDetalle,
+                    alToque: () => _confirmarSalida(context),
+                  ),
               ],
             ),
           ],

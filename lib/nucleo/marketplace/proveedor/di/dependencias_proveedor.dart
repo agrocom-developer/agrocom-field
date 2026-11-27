@@ -6,6 +6,9 @@ import '../../../camara/selector_imagen.dart';
 import '../../../evidencias/compresor_adaptativo.dart';
 import '../../../notificaciones/push/dispositivos_push_repositorio.dart';
 import '../../../notificaciones/push/token_push_store.dart';
+import '../../../cuenta/data/contrasena_demo.dart';
+import '../../../cuenta/data/contrasena_red.dart';
+import '../../../cuenta/domain/contrasena_repositorio.dart';
 import '../../foto_perfil/foto_perfil_repositorio.dart';
 import '../../foto_preparador.dart';
 import '../../pago/pagos_repositorio.dart';
@@ -34,6 +37,7 @@ class DependenciasProveedor {
     required this.pagos,
     required this.preparadorFoto,
     required this.push,
+    this.contrasena,
   });
 
   factory DependenciasProveedor.demo(
@@ -52,6 +56,7 @@ class DependenciasProveedor {
     drones: DronesDemo(almacen),
     perfil: PerfilDemo(almacen),
     fotoPerfil: FotoPerfilDemo(),
+    contrasena: ContrasenaDemo(),
     pagos:
         pagos ??
         PagosDemo(
@@ -78,6 +83,7 @@ class DependenciasProveedor {
     drones: DronesRed(http),
     perfil: PerfilRed(http),
     fotoPerfil: FotoPerfilRed(http),
+    contrasena: ContrasenaRed(http),
     pagos: PagosRed(http),
     preparadorFoto: PreparadorFoto(
       SelectorImagenImagePicker(),
@@ -93,6 +99,9 @@ class DependenciasProveedor {
 
   /// Foto de perfil de la cuenta del proveedor.
   final FotoPerfilRepositorio fotoPerfil;
+
+  /// Cambio de contraseña con código; sin él Ajustes no ofrece la fila.
+  final ContrasenaRepositorio? contrasena;
 
   /// «Ya recibí el pago» del titular en el servicio finalizado.
   final PagosRepositorio pagos;
@@ -112,6 +121,8 @@ class DependenciasProveedor {
     RepositoryProvider<FotoPerfilRepositorio>.value(value: fotoPerfil),
     RepositoryProvider<PagosRepositorio>.value(value: pagos),
     RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
+    if (contrasena != null)
+      RepositoryProvider<ContrasenaRepositorio>.value(value: contrasena!),
   ];
 
   Widget proveer({required Widget child}) =>
