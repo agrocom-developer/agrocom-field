@@ -57,7 +57,7 @@ class AppProveedor extends StatelessWidget {
         child: TemaVisualApp(
           predeterminado: ModoVisualCampo.campo,
           construir: (context, tema) => MaterialApp(
-            title: 'Agrocom',
+            title: 'DronAgro Piloto',
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             locale: const Locale('es'),
@@ -68,6 +68,7 @@ class AppProveedor extends StatelessWidget {
             builder: (context, child) => proveedor.proveer(child: child!),
             home: Builder(
               builder: (context) => PuertaAcceso(
+                conPortada: true,
                 permiteRegistro: permiteRegistro,
                 nota: acceso.nota,
                 construir: (context, sesion) => construirShell(

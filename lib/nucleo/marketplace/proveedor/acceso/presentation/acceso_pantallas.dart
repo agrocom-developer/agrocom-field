@@ -6,7 +6,7 @@ import '../../../../auth/cuenta/domain/cuenta_seguridad.dart';
 import '../../../../auth/cuenta/presentation/cuenta_en_eliminacion_pantalla.dart';
 import '../../../../auth/cuenta/presentation/recuperar_acceso_pantalla.dart';
 import '../../../../auth/presentation/bloqueo_biometrico_widgets.dart';
-import '../../../../ui/componentes/logo_agrocom_campo.dart';
+import '../../../../ui/componentes/encabezado_de_marca.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../ui/boton_principal_marketplace.dart';
@@ -14,14 +14,16 @@ import '../../../ui/campo_formulario_marketplace.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../domain/acceso_proveedor.dart';
 import 'acceso_cubit.dart';
+import 'portada_piloto_pantalla.dart';
 import 'registro_proveedor_pantalla.dart';
 
 /// La puerta de la app real del piloto: mientras no hay
 /// sesión muestra el ingreso; con sesión, [construir] arma la superficie.
-class PuertaAcceso extends StatelessWidget {
+class PuertaAcceso extends StatefulWidget {
   const PuertaAcceso({
     required this.construir,
     this.permiteRegistro = true,
+    this.conPortada = false,
     this.nota,
     super.key,
   });
@@ -35,12 +37,32 @@ class PuertaAcceso extends StatelessWidget {
   /// antes de operar (ADR 0004).
   final String? nota;
 
+  /// Antes del ingreso muestra la portada del piloto («Qué puedes hacer como
+  /// piloto»). Se ve una vez por arranque, mientras no hay sesión.
+  final bool conPortada;
+
+  @override
+  State<PuertaAcceso> createState() => _PuertaAccesoState();
+}
+
+class _PuertaAccesoState extends State<PuertaAcceso> {
+  late bool _verPortada = widget.conPortada;
+
+  Widget Function(BuildContext, SesionProveedor) get construir =>
+      widget.construir;
+  bool get permiteRegistro => widget.permiteRegistro;
+  String? get nota => widget.nota;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AccesoCubit, AccesoEstado>(
       builder: (context, estado) => switch (estado) {
         AccesoVerificando() => const Scaffold(
           body: Center(child: CircularProgressIndicator()),
+        ),
+        AccesoSinSesion() when _verPortada => PortadaPilotoPantalla(
+          alEntrar: () => setState(() => _verPortada = false),
+          alRegistrarse: permiteRegistro ? () => abrirRegistro(context) : null,
         ),
         AccesoSinSesion() => IngresoProveedorPantalla(
           estado: estado,
@@ -123,7 +145,7 @@ class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
             child: ListView(
               padding: const EdgeInsets.all(EspaciadoCampo.xl),
               children: [
-                const Align(child: LogoAgrocomCampo(ancho: 150)),
+                const EncabezadoDeMarca(rol: RolApp.piloto),
                 const SizedBox(height: EspaciadoCampo.xl),
                 Text(
                   l10n.proveedorAccesoEntraCuenta,

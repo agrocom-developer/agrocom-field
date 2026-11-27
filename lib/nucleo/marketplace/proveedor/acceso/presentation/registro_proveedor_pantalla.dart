@@ -10,6 +10,7 @@ import '../../../../auth/cuenta/presentation/recuperar_acceso_pantalla.dart';
 import '../../../../auth/cuenta/presentation/verificar_telefono_hoja.dart';
 import '../../../../camara/selector_imagen.dart';
 import '../../../../permisos/presentation/hoja_permiso.dart';
+import '../../../../ui/componentes/encabezado_de_marca.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../ui/boton_principal_marketplace.dart';
@@ -468,6 +469,11 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
                   child: ListView(
                     padding: const EdgeInsets.all(EspaciadoCampo.l),
                     children: [
+                      const EncabezadoDeMarca(
+                        rol: RolApp.piloto,
+                        compacto: true,
+                      ),
+                      const SizedBox(height: EspaciadoCampo.l),
                       _Encabezado(
                         paso: _paso,
                         total: _titulos(context).length,
