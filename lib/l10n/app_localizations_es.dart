@@ -4314,4 +4314,128 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get ofertasPorQueEsePrecio => 'Por qué ese precio';
+
+  @override
+  String get avisosCanalNuevasSolicitudes => 'Nuevas solicitudes';
+
+  @override
+  String get avisosCanalNuevasSolicitudesDetalle =>
+      'Solicitudes abiertas que puedes ofertar';
+
+  @override
+  String get avisosCanalOfertas => 'Ofertas y contraofertas';
+
+  @override
+  String get avisosCanalOfertasDetalle =>
+      'Precios que recibes, respuestas y adjudicaciones';
+
+  @override
+  String get avisosCanalMensajes => 'Mensajes';
+
+  @override
+  String get avisosCanalMensajesDetalle =>
+      'Chat con la otra parte del servicio';
+
+  @override
+  String get avisosCanalEjecucion => 'Ejecución del servicio';
+
+  @override
+  String get avisosCanalEjecucionDetalle =>
+      'Inicio, avance, cierre y precio final';
+
+  @override
+  String get avisosCanalCuenta => 'Cuenta y avisos';
+
+  @override
+  String get avisosCanalCuentaDetalle =>
+      'Aprobación, documentos, calificaciones y avisos del sistema';
+
+  @override
+  String get avisosTodos => 'Todos';
+
+  @override
+  String get avisosTitulo => 'Mis notificaciones';
+
+  @override
+  String get avisosCampana => 'Notificaciones';
+
+  @override
+  String avisosCampanaConPendientes(int cantidad) {
+    return 'Notificaciones, $cantidad sin leer';
+  }
+
+  @override
+  String get avisosVacioTitulo => 'Todavía no tienes notificaciones';
+
+  @override
+  String get avisosVacioDetalle =>
+      'Aquí verás lo que pase con tus solicitudes y ofertas, apenas ocurra.';
+
+  @override
+  String get avisosVacioCanal => 'No hay notificaciones en este grupo';
+
+  @override
+  String get avisosErrorTitulo => 'No pudimos cargar tus notificaciones';
+
+  @override
+  String get avisosErrorDetalle => 'Revisa tu conexión y vuelve a intentar.';
+
+  @override
+  String get avisosSinLeer => 'Sin leer';
+
+  @override
+  String get avisosLeida => 'Leída';
+
+  @override
+  String get avisosAjustesCanales => 'Ajustes de notificaciones';
+
+  @override
+  String get avisosCanalesTitulo => 'Canales de notificación';
+
+  @override
+  String get avisosCanalesIntro =>
+      'Elige qué avisos suenan en este teléfono y a qué hora. Lo que se te avisa lo decide el servidor con tus preferencias.';
+
+  @override
+  String get avisosCanalObligatorio =>
+      'Siempre activo: son avisos de tu cuenta';
+
+  @override
+  String get avisosCanalActivo => 'Activo';
+
+  @override
+  String get avisosCanalSilenciado => 'Silenciado';
+
+  @override
+  String get avisosHorarioSilencio => 'Horario de silencio';
+
+  @override
+  String avisosHorarioSilencioDetalle(String desde, String hasta) {
+    return 'No suena entre $desde y $hasta';
+  }
+
+  @override
+  String get avisosSinHorario => 'Sin horario de silencio';
+
+  @override
+  String get avisosHorarioDesde => 'Desde';
+
+  @override
+  String get avisosHorarioHasta => 'Hasta';
+
+  @override
+  String get avisosQuitarHorario => 'Quitar horario';
+
+  @override
+  String get avisosLlegaronNuevos => 'Llegó una notificación nueva';
+
+  @override
+  String avisosNotificacionDe(String canal, String titulo) {
+    return '$canal: $titulo';
+  }
+
+  @override
+  String avisosVariosNuevos(int cantidad) {
+    return '$cantidad notificaciones nuevas';
+  }
 }

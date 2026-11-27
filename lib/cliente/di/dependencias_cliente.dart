@@ -18,6 +18,11 @@ import '../../nucleo/marketplace/foto_preparador.dart';
 import '../../nucleo/marketplace/pago/pago_confirmado.dart';
 import '../../nucleo/marketplace/pago/pagos_repositorio.dart';
 import '../../nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
+import '../../nucleo/notificaciones/data/almacenes_locales.dart';
+import '../../nucleo/notificaciones/data/bandeja_red.dart';
+import '../../nucleo/notificaciones/domain/avisos_de_la_cuenta.dart';
+import '../../nucleo/notificaciones/domain/presentador_avisos.dart';
+import '../../nucleo/notificaciones/notificador_local.dart';
 import '../../nucleo/notificaciones/push/dispositivos_push_repositorio.dart';
 import '../../nucleo/notificaciones/push/token_push_store.dart';
 import '../acceso/data/acceso_demo.dart';
@@ -83,6 +88,7 @@ class DependenciasCliente {
     required this.pagos,
     required this.preparadorFoto,
     required this.push,
+    this.avisos,
     this.contactos,
     this.precioFinal,
     this.notaAcceso,
@@ -222,6 +228,17 @@ class DependenciasCliente {
         CompresorEvidenciaAdaptativo(),
       ),
       push: push,
+      avisos: AvisosDeLaCuenta(
+        bandeja: BandejaRed(
+          obtener: (ruta) => http.obtener(ruta),
+          enviar: (ruta) => http.enviar(ruta),
+        ),
+        presentador: PresentadorAvisos(
+          notificador: NotificadorLocalPlugin(),
+          preferencias: PreferenciasCanalesLocal(),
+          presentados: AvisosPresentadosLocal(),
+        ),
+      ),
       contactos: ContactosRed(http),
       precioFinal: PrecioFinalRed(http),
       notaAcceso: notaAcceso,
@@ -258,6 +275,10 @@ class DependenciasCliente {
 
   /// Token de push del aparato; se retira al cerrar sesión.
   final DispositivosPushRepositorio push;
+
+  /// La bandeja «Mis notificaciones» y su presentación local; sin él, la app
+  /// no muestra la campana.
+  final AvisosDeLaCuenta? avisos;
 
   /// Contactos de referencia del cliente empresa; sin él, el cliente no los
   /// gestiona (las pruebas que no los necesitan lo omiten).
@@ -299,6 +320,8 @@ class DependenciasCliente {
       RepositoryProvider<FotosTerrenoRepositorio>.value(value: fotosTerreno),
       RepositoryProvider<PagosRepositorio>.value(value: pagos),
       RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
+      if (avisos != null)
+        RepositoryProvider<AvisosDeLaCuenta>.value(value: avisos!),
       if (precioFinal != null)
         RepositoryProvider<PrecioFinalRepositorio>.value(value: precioFinal!),
       if (contactos != null)

@@ -7032,6 +7032,222 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Por qué ese precio'**
   String get ofertasPorQueEsePrecio;
+
+  /// No description provided for @avisosCanalNuevasSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevas solicitudes'**
+  String get avisosCanalNuevasSolicitudes;
+
+  /// No description provided for @avisosCanalNuevasSolicitudesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitudes abiertas que puedes ofertar'**
+  String get avisosCanalNuevasSolicitudesDetalle;
+
+  /// No description provided for @avisosCanalOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas y contraofertas'**
+  String get avisosCanalOfertas;
+
+  /// No description provided for @avisosCanalOfertasDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Precios que recibes, respuestas y adjudicaciones'**
+  String get avisosCanalOfertasDetalle;
+
+  /// No description provided for @avisosCanalMensajes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes'**
+  String get avisosCanalMensajes;
+
+  /// No description provided for @avisosCanalMensajesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Chat con la otra parte del servicio'**
+  String get avisosCanalMensajesDetalle;
+
+  /// No description provided for @avisosCanalEjecucion.
+  ///
+  /// In es, this message translates to:
+  /// **'Ejecución del servicio'**
+  String get avisosCanalEjecucion;
+
+  /// No description provided for @avisosCanalEjecucionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio, avance, cierre y precio final'**
+  String get avisosCanalEjecucionDetalle;
+
+  /// No description provided for @avisosCanalCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta y avisos'**
+  String get avisosCanalCuenta;
+
+  /// No description provided for @avisosCanalCuentaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobación, documentos, calificaciones y avisos del sistema'**
+  String get avisosCanalCuentaDetalle;
+
+  /// No description provided for @avisosTodos.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get avisosTodos;
+
+  /// No description provided for @avisosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis notificaciones'**
+  String get avisosTitulo;
+
+  /// No description provided for @avisosCampana.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get avisosCampana;
+
+  /// No description provided for @avisosCampanaConPendientes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones, {cantidad} sin leer'**
+  String avisosCampanaConPendientes(int cantidad);
+
+  /// No description provided for @avisosVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes notificaciones'**
+  String get avisosVacioTitulo;
+
+  /// No description provided for @avisosVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí verás lo que pase con tus solicitudes y ofertas, apenas ocurra.'**
+  String get avisosVacioDetalle;
+
+  /// No description provided for @avisosVacioCanal.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay notificaciones en este grupo'**
+  String get avisosVacioCanal;
+
+  /// No description provided for @avisosErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus notificaciones'**
+  String get avisosErrorTitulo;
+
+  /// No description provided for @avisosErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentar.'**
+  String get avisosErrorDetalle;
+
+  /// No description provided for @avisosSinLeer.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin leer'**
+  String get avisosSinLeer;
+
+  /// No description provided for @avisosLeida.
+  ///
+  /// In es, this message translates to:
+  /// **'Leída'**
+  String get avisosLeida;
+
+  /// No description provided for @avisosAjustesCanales.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes de notificaciones'**
+  String get avisosAjustesCanales;
+
+  /// No description provided for @avisosCanalesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Canales de notificación'**
+  String get avisosCanalesTitulo;
+
+  /// No description provided for @avisosCanalesIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige qué avisos suenan en este teléfono y a qué hora. Lo que se te avisa lo decide el servidor con tus preferencias.'**
+  String get avisosCanalesIntro;
+
+  /// No description provided for @avisosCanalObligatorio.
+  ///
+  /// In es, this message translates to:
+  /// **'Siempre activo: son avisos de tu cuenta'**
+  String get avisosCanalObligatorio;
+
+  /// No description provided for @avisosCanalActivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Activo'**
+  String get avisosCanalActivo;
+
+  /// No description provided for @avisosCanalSilenciado.
+  ///
+  /// In es, this message translates to:
+  /// **'Silenciado'**
+  String get avisosCanalSilenciado;
+
+  /// No description provided for @avisosHorarioSilencio.
+  ///
+  /// In es, this message translates to:
+  /// **'Horario de silencio'**
+  String get avisosHorarioSilencio;
+
+  /// No description provided for @avisosHorarioSilencioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'No suena entre {desde} y {hasta}'**
+  String avisosHorarioSilencioDetalle(String desde, String hasta);
+
+  /// No description provided for @avisosSinHorario.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin horario de silencio'**
+  String get avisosSinHorario;
+
+  /// No description provided for @avisosHorarioDesde.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde'**
+  String get avisosHorarioDesde;
+
+  /// No description provided for @avisosHorarioHasta.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta'**
+  String get avisosHorarioHasta;
+
+  /// No description provided for @avisosQuitarHorario.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar horario'**
+  String get avisosQuitarHorario;
+
+  /// No description provided for @avisosLlegaronNuevos.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegó una notificación nueva'**
+  String get avisosLlegaronNuevos;
+
+  /// No description provided for @avisosNotificacionDe.
+  ///
+  /// In es, this message translates to:
+  /// **'{canal}: {titulo}'**
+  String avisosNotificacionDe(String canal, String titulo);
+
+  /// No description provided for @avisosVariosNuevos.
+  ///
+  /// In es, this message translates to:
+  /// **'{cantidad} notificaciones nuevas'**
+  String avisosVariosNuevos(int cantidad);
 }
 
 class _AppLocalizationsDelegate

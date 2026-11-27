@@ -9,6 +9,7 @@ import '../../../../ui/tipografia_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../ui/boton_principal_marketplace.dart';
 import '../../../ui/campo_formulario_marketplace.dart';
+import '../../../../notificaciones/presentation/campana_avisos.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../di/dependencias_negociacion.dart';
 import '../domain/negociacion.dart';
@@ -189,11 +190,19 @@ class _MapaSolicitudesVistaState extends State<MapaSolicitudesVista> {
                           EspaciadoCampo.l,
                           0,
                         ),
-                        child: _Busqueda(
-                          controlador: _consulta,
-                          hayFiltros: estado.filtros.hayFiltros,
-                          alCambiar: () => setState(() {}),
-                          alFiltrar: _filtrar,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: _Busqueda(
+                                controlador: _consulta,
+                                hayFiltros: estado.filtros.hayFiltros,
+                                alCambiar: () => setState(() {}),
+                                alFiltrar: _filtrar,
+                              ),
+                            ),
+                            const SizedBox(width: EspaciadoCampo.s),
+                            _Campana(),
+                          ],
                         ),
                       ),
                       const SizedBox(height: EspaciadoCampo.s),
@@ -1079,6 +1088,20 @@ class _HojaFiltrosState extends State<_HojaFiltros> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// La campana de «Mis notificaciones», junto a la búsqueda. Con el
+/// presentador de la composición, lo nuevo sale también como notificación
+/// del sistema.
+class _Campana extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final deps = context.read<DependenciasNegociacion>();
+    return CampanaAvisos(
+      repositorio: deps.bandeja,
+      presentador: deps.presentador,
     );
   }
 }
