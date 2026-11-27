@@ -1,4 +1,4 @@
-# ADR 0027 — Íconos dedicados del dominio en SVG con `flutter_svg`
+# ADR 0028 — Íconos dedicados del dominio en SVG con `flutter_svg`
 
 **Estado:** Aceptada · **Serie:** ADR propios de `agrocom-field` (ver nota de numeración en ADR 0001).
 

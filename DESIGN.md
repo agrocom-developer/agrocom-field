@@ -118,7 +118,7 @@ Archivos: `paleta_campo.dart` (roles por modo, `PaletaCampo`), `colores_campo.da
 
 ## 8. Iconografía e imágenes
 - Material Icons redondeados (`Icons.*_rounded`) para todo lo genérico, sin mezclar con otras fuentes de íconos. Pasar a Material Symbols Rounded de peso 500 requiere sumar la fuente variable; queda como deuda.
-- Íconos dedicados del dominio en SVG (ADR 0027), para lo que Material no cubre: la flota de drones Agras (T10 a T50), tanque de pulverizado, lote, cultivo, batería, mando RC, hectárea y check de equipo. Viven en `assets/iconos/`, se pintan con `IconoAgrocom` (`lib/nucleo/ui/componentes/icono_agrocom.dart`) y comparten trazo (2 px, cuadrícula 24×24) entre sí y con el estilo "outlined" de Material. Son siluetas genéricas por categoría; nunca copian el isotipo real de un fabricante.
+- Íconos dedicados del dominio en SVG (ADR 0028), para lo que Material no cubre: la flota de drones Agras (T10 a T50), tanque de pulverizado, lote, cultivo, batería, mando RC, hectárea y check de equipo. Viven en `assets/iconos/`, se pintan con `IconoAgrocom` (`lib/nucleo/ui/componentes/icono_agrocom.dart`) y comparten trazo (2 px, cuadrícula 24×24) entre sí y con el estilo "outlined" de Material. Son siluetas genéricas por categoría; nunca copian el isotipo real de un fabricante.
 - Fotos reales del servicio (avance, dron, lote). En la demo se usan fotos de Unsplash, y en producción vienen del backend.
 - Los mapas usan el SDK del proyecto; la captura satelital del handoff es solo de demo.
 
@@ -134,4 +134,4 @@ Archivos: `paleta_campo.dart` (roles por modo, `PaletaCampo`), `colores_campo.da
 - Si cambia un token, se actualizan `tokens.json`, `PaletaCampo` (o el archivo de `nucleo/ui` que lo lleve), el test de contraste y esta guía en el mismo cambio.
 - Registro de decisiones:
   - 2026-11-25: se adopta Industrial AgTech, que reemplaza el verde hoja #1F5F2E.
-  - 2026-11-27: se agregan íconos dedicados del dominio en SVG (`flutter_svg`, ADR 0027), listas paginadas, el ciclo de envío (`BotonEnvioCampo`), avisos jerarquizados (`ChipNotaCampo`), transiciones de página (`TransicionesCampo`) y el mapa expandible (`MapaExpandibleCampo`). Detalle y ejemplos en `docs/diseno/componentes.md`.
+  - 2026-11-27: se agregan íconos dedicados del dominio en SVG (`flutter_svg`, ADR 0028), listas paginadas, el ciclo de envío (`BotonEnvioCampo`), avisos jerarquizados (`ChipNotaCampo`), transiciones de página (`TransicionesCampo`) y el mapa expandible (`MapaExpandibleCampo`). Detalle y ejemplos en `docs/diseno/componentes.md`.

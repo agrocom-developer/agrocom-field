@@ -99,7 +99,7 @@ Una sola sombra sutil (`ElevacionCampo`): en claro `0 1 2 / 6 %` más `0 4 14 / 
 
 Material Icons redondeados (`Icons.*_rounded` y `_outlined` para el estado inactivo) como base, 24 px por defecto, 28 px en barras de calificación. El estado activo cambia de contorno a relleno. Un ícono solo, sin texto, lleva `tooltip` o `Semantics.label`. El isotipo de Agrocom se usa únicamente como marca (launcher, encabezado de sesión).
 
-**Íconos dedicados del dominio** (ADR 0027): lo que Material no cubre — la flota de drones Agras (T10 a T50), el tanque de pulverizado, el lote, el cultivo, la batería, el mando RC, la hectárea y el check de equipo — son SVG propios en `assets/iconos/`, con el mismo trazo (2 px, cuadrícula 24×24) y pintados con `IconoAgrocom`, misma API que `Icon` (`semanticLabel`, `color` de `PaletaCampo`, tamaño de `TamanoIconoCampo`). Son siluetas genéricas por categoría, nunca una copia del isotipo real de un fabricante. Vitrina en la pestaña **Íconos**.
+**Íconos dedicados del dominio** (ADR 0028): lo que Material no cubre — la flota de drones Agras (T10 a T50), el tanque de pulverizado, el lote, el cultivo, la batería, el mando RC, la hectárea y el check de equipo — son SVG propios en `assets/iconos/`, con el mismo trazo (2 px, cuadrícula 24×24) y pintados con `IconoAgrocom`, misma API que `Icon` (`semanticLabel`, `color` de `PaletaCampo`, tamaño de `TamanoIconoCampo`). Son siluetas genéricas por categoría, nunca una copia del isotipo real de un fabricante. Vitrina en la pestaña **Íconos**.
 
 ## 7. Motion
 

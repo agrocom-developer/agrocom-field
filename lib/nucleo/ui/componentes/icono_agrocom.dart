@@ -20,7 +20,7 @@ abstract final class TamanoIconoCampo {
   static const double destacado = 48;
 }
 
-/// Catálogo de íconos dedicados del dominio (ADR 0027) — todo lo que
+/// Catálogo de íconos dedicados del dominio (ADR 0028) — todo lo que
 /// Material no cubre: los modelos de dron de la flota, el equipo en tierra y
 /// las medidas propias del marketplace. Siluetas genéricas dibujadas a mano
 /// para este repo, en `assets/iconos/`, sin copiar material de un tercero.

@@ -175,7 +175,7 @@ MapaExpandibleCampo(
 
 No guarda ninguna posición: solo pinta lo que ya recibió (invariante de privacidad de ubicación de `CLAUDE.md`).
 
-## 7. Íconos dedicados — `IconoAgrocom` (`icono_agrocom.dart`, ADR 0027)
+## 7. Íconos dedicados — `IconoAgrocom` (`icono_agrocom.dart`, ADR 0028)
 
 Misma API que `Icon`: `color`, tamaño (`TamanoIconoCampo.chico|estandar|grande|destacado`) y `semanticLabel`. El SVG se retiñe entero con `ColorFilter` (`BlendMode.srcIn`), así que nunca hace falta declarar un segundo color dentro del archivo.
 
@@ -214,7 +214,7 @@ Canales: `ofertas`, `servicio`, `sincronizacion`, `sistema`. `EstiloCanalNotific
 
 ## Dependencia nueva
 
-`flutter_svg: ^2.5.1` — solo la usa `lib/nucleo/ui/componentes/icono_agrocom.dart`. Motivo y alternativas descartadas en `docs/decisiones/0027-iconos-dedicados-en-svg.md`.
+`flutter_svg: ^2.5.1` — solo la usa `lib/nucleo/ui/componentes/icono_agrocom.dart`. Motivo y alternativas descartadas en `docs/decisiones/0028-iconos-dedicados-en-svg.md`.
 
 ## Pruebas
 

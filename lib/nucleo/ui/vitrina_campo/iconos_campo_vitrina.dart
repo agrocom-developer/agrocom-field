@@ -5,7 +5,7 @@ import '../componentes/icono_agrocom.dart';
 import '../paleta_campo.dart';
 import '../tokens_campo.dart';
 
-/// Vitrina del catálogo de íconos dedicados (ADR 0027): toda la flota de
+/// Vitrina del catálogo de íconos dedicados (ADR 0028): toda la flota de
 /// drones en fila para comparar la silueta, y el resto del catálogo en
 /// grilla. Datos constantes, como el resto de la vitrina.
 class IconosCampoVitrina extends StatelessWidget {
