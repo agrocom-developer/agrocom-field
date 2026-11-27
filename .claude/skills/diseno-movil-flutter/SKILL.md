@@ -1,6 +1,6 @@
 ---
 name: diseno-movil-flutter
-description: Principios, paleta, tipografía, movimiento, componentes y checklist de pantalla excelente para las apps Flutter de Agrocom (Android, iOS, iPad), con diseño limpio y sin sobrecarga visual. Usar antes de crear o rediseñar cualquier pantalla o componente, y al revisar una.
+description: Principios, paleta, tipografía, movimiento, componentes y checklist de pantalla excelente para las apps Flutter de DronAgro (Android, iOS, iPad), con diseño limpio y sin sobrecarga visual. Usar antes de crear o rediseñar cualquier pantalla o componente, y al revisar una.
 ---
 
 # Diseño móvil en Flutter — agrocom-field
@@ -14,7 +14,7 @@ Meta: una pantalla se entiende en dos segundos, se maneja con una mano, y se ve 
 3. **Espacio en blanco como herramienta.** Escala de espaciado fija de 4 dp (4, 8, 12, 16, 24, 32); gutter lateral de 16 dp en teléfono, 24 dp o más en tableta.
 4. **Honestidad de estado.** Cargando, vacío, error, sin conexión y éxito se diseñan antes que el caso feliz.
 5. **Consistencia antes que creatividad.** Si existe un componente en `lib/nucleo/ui/`, se usa; si falta, se agrega al catálogo, no se improvisa en la pantalla.
-6. **Texto corto, en español con acentos y tuteo.** El nombre visible de la app es «Agrocom».
+6. **Texto corto, en español con acentos y tuteo.** El nombre visible de la app es «DronAgro» (Agrocom es el titular); cada flavor lleva su distintivo «Piloto» o «Cliente» (`EncabezadoDeMarca`).
 
 ## Dos registros, un sistema
 

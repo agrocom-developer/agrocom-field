@@ -37,7 +37,7 @@ Responden al hecho de que el lote no tiene señal; no aplican al flavor `cliente
 - BLoC feature-first en tres capas por feature: `presentation/`, `domain/`, `data/` (ADR 0009).
 - `cliente/` y `piloto/` no se importan entre sí; solo importan de `nucleo/`. Lo que dos flavors necesitan va a `nucleo/`.
 - **Dominio en español, infraestructura en inglés**: `Servicio`, `Oferta`, `Proveedor`, `Dron`, `Calificacion`, pero `SyncEngine`, `Repository`, `Outbox`.
-- El nombre visible de la app es «Agrocom», nunca «Agrocom Field». `agrocom_field` es el nombre del paquete Dart y no aparece en texto visible; el flavor se distingue solo en el label del launcher (`Agrocom`, `Agrocom Piloto`).
+- El nombre visible de la app es «DronAgro»; Agrocom es el titular y la empresa detrás, no el nombre de la app. Nunca se escribe «Agrocom Field» ni «Agrocom Móvil» como nombre de la app. `agrocom_field` es el nombre del paquete Dart (y `com.agrocom.dronagro.*` los identificadores de paquete): no aparecen en texto visible. El flavor se distingue en el label del launcher (`DronAgro` para `cliente`, `DronAgro Piloto` para `piloto`) y, dentro de la app, en la portada, el ingreso y el registro: el encabezado de marca (`EncabezadoDeMarca`) muestra «DronAgro» con el distintivo «Piloto» o «Cliente», y la lista «Qué puedes hacer como piloto / cliente» (`ListaDeCapacidades`) dice qué hace cada app. No hay selector de rol (ADR 0021).
 
 ## Política de calidad de UI
 

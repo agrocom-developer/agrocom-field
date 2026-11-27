@@ -2,9 +2,9 @@
 
 Este documento orienta a quien empieza a trabajar en este repo. Describe el producto, las dos superficies móviles y lo que cada una hace. Las reglas de trabajo están en `CLAUDE.md`; las decisiones de arquitectura, en `docs/decisiones/`; el contrato de API, en `docs/api/openapi.yaml` de `agrocom-api` (ruta local: `/Applications/MAMP/htdocs/agrocom-api`), con los estados, reglas y recursos de la negociación en `docs/especificacion/negociacion-contrato.md` de ese repo. Si este documento y el contrato no coinciden, manda el contrato.
 
-## Qué es Agrocom
+## Qué es DronAgro
 
-Agrocom es un **marketplace de servicio de fumigación con drones** donde el precio se negocia entre quien pide el servicio y quien lo hace. Un cliente publica una solicitud sobre su propiedad con un precio por hectárea; los pilotos la ven en un mapa y aceptan ese precio o proponen el suyo; el cliente compara las ofertas y elige. Los drones son los «vehículos».
+DronAgro (producto de Agrocom) es un **marketplace de servicio de fumigación con drones** donde el precio se negocia entre quien pide el servicio y quien lo hace. Un cliente publica una solicitud sobre su propiedad con un precio por hectárea; los pilotos la ven en un mapa y aceptan ese precio o proponen el suyo; el cliente compara las ofertas y elige. Los drones son los «vehículos».
 
 - **Clientes**: dueños de campo o sus encargados. Publican, negocian, siguen y califican servicios.
 - **Proveedores**: pilotos de Agrocom, pilotos independientes y dueños de drones. Compiten en igualdad.

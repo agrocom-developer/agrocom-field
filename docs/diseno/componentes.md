@@ -189,7 +189,7 @@ IconoAgrocom(
 const IconoAgrocom(IconoAgrocomId.hectarea, semanticLabel: '42,5 hectáreas');
 ```
 
-Catálogo completo: `dronT10` … `dronT50`, `pulverizadorTanque`, `lote`, `cultivo`, `bateria`, `mandoRc`, `hectarea`, `checkEquipo`. Vitrina en la pestaña **Íconos** de `VitrinaCampoPantalla`. Un ícono nuevo se agrega en `assets/iconos/`, se registra en `IconoAgrocomId` y se documenta aquí.
+Catálogo completo: `dronT10` … `dronT50`, `pulverizadorTanque`, `lote`, `cultivo`, `bateria`, `mandoRc`, `hectarea`, `checkEquipo`, `piloto` (distintivo de la app del piloto). Vitrina en la pestaña **Íconos** de `VitrinaCampoPantalla`. Un ícono nuevo se agrega en `assets/iconos/`, se registra en `IconoAgrocomId` y se documenta aquí.
 
 ## 8. Plantilla de notificación — `TarjetaNotificacionCampo` (`tarjeta_notificacion_campo.dart`)
 
@@ -211,6 +211,14 @@ final nombreCanal = CanalNotificacionCampo.ofertas.nombre(AppLocalizations.of(co
 ```
 
 Canales: `ofertas`, `servicio`, `sincronizacion`, `sistema`. `EstiloCanalNotificacionCampo.de(canal)` da el ícono y el color semántico (`PaletaCampo`) de cada uno, para que la bandeja dentro de la app y el canal nativo se vean igual.
+
+## 9. Identidad por app — `EncabezadoDeMarca`, `DistintivoRol`, `ListaDeCapacidades`
+
+`encabezado_de_marca.dart` y `lista_de_capacidades.dart`. Una misma pieza parametrizada por `RolApp` (`piloto` o `cliente`) rotula cada app sin selector de rol (ADR 0021).
+
+- `EncabezadoDeMarca(rol:, compacto:, sobreFoto:)`: ícono del rol, wordmark «DronAgro» y debajo el distintivo («Piloto» o «Cliente»). Encabeza la portada, el ingreso y el registro del piloto. Un lector de pantalla lo anuncia como «DronAgro, app para pilotos / clientes».
+- `DistintivoRol(rol:, sobreFoto:)`: la píldora con ícono y texto; en el cliente va bajo el logo en la portada, el ingreso y el registro. Nunca depende solo del color.
+- `ListaDeCapacidades(rol:, sobreFoto:)`: «Qué puedes hacer como piloto / cliente», cinco renglones con ícono; solo lo que la app hace. En el piloto va dentro de la portada (`PortadaPilotoPantalla`); en el cliente se abre desde «Qué puedes hacer» en la portada, en una hoja inferior.
 
 ## Dependencia nueva
 

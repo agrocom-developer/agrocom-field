@@ -1,6 +1,6 @@
-# Sistema visual de Agrocom
+# Sistema visual de DronAgro
 
-Agrocom es un marketplace de fumigación con drones: el cliente solicita un servicio, los proveedores (pilotos y dueños de drones) ofertan y lo ejecutan. La interfaz móvil es la fortaleza del producto y se publica en Android, iOS y iPad con dos flavors: `cliente` (online-first) y `piloto` (offline en el lote).
+DronAgro (titular: Agrocom) es un marketplace de fumigación con drones: el cliente solicita un servicio, los proveedores (pilotos y dueños de drones) ofertan y lo ejecutan. La interfaz móvil es la fortaleza del producto y se publica en Android, iOS y iPad con dos flavors: `cliente` (online-first) y `piloto` (offline en el lote).
 
 Este documento fija el lenguaje visual común. El código vive en `lib/nucleo/ui/`; la vitrina (`lib/nucleo/ui/vitrina_campo/`, pestaña **Sistema**) lo muestra corriendo; las capturas están en `docs/diseno/capturas/`. Las decisiones de librerías están en `docs/decisiones/0009-sistema-visual-y-librerias-ui.md`.
 
@@ -97,9 +97,9 @@ Una sola sombra sutil (`ElevacionCampo`): en claro `0 1 2 / 6 %` más `0 4 14 / 
 
 ## 6. Iconografía
 
-Material Icons redondeados (`Icons.*_rounded` y `_outlined` para el estado inactivo) como base, 24 px por defecto, 28 px en barras de calificación. El estado activo cambia de contorno a relleno. Un ícono solo, sin texto, lleva `tooltip` o `Semantics.label`. El isotipo de Agrocom se usa únicamente como marca (launcher, encabezado de sesión).
+Material Icons redondeados (`Icons.*_rounded` y `_outlined` para el estado inactivo) como base, 24 px por defecto, 28 px en barras de calificación. El estado activo cambia de contorno a relleno. Un ícono solo, sin texto, lleva `tooltip` o `Semantics.label`. El isotipo de la marca se usa únicamente como marca (launcher, encabezado de sesión).
 
-**Íconos dedicados del dominio** (ADR 0028): lo que Material no cubre — la flota de drones Agras (T10 a T50), el tanque de pulverizado, el lote, el cultivo, la batería, el mando RC, la hectárea y el check de equipo — son SVG propios en `assets/iconos/`, con el mismo trazo (2 px, cuadrícula 24×24) y pintados con `IconoAgrocom`, misma API que `Icon` (`semanticLabel`, `color` de `PaletaCampo`, tamaño de `TamanoIconoCampo`). Son siluetas genéricas por categoría, nunca una copia del isotipo real de un fabricante. Vitrina en la pestaña **Íconos**.
+**Íconos dedicados del dominio** (ADR 0028): lo que Material no cubre — la flota de drones Agras (T10 a T50), el tanque de pulverizado, el lote, el cultivo, la batería, el mando RC, la hectárea, el check de equipo y el piloto (persona con mando y dron, distintivo de la app del piloto) — son SVG propios en `assets/iconos/`, con el mismo trazo (2 px, cuadrícula 24×24) y pintados con `IconoAgrocom`, misma API que `Icon` (`semanticLabel`, `color` de `PaletaCampo`, tamaño de `TamanoIconoCampo`). Son siluetas genéricas por categoría, nunca una copia del isotipo real de un fabricante. Vitrina en la pestaña **Íconos**.
 
 ## 7. Motion
 

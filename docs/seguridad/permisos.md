@@ -31,7 +31,7 @@ Para ver el manifest fusionado de un flavor: `bin/probar flutter build apk --deb
 | --- | --- | --- |
 | `NSCameraUsageDescription` | ambos | Selfie de verificación, documento, fotos del terreno y del avance del servicio, y quién las ve |
 | `NSPhotoLibraryUsageDescription` | ambos | Fotos que la persona elige (perfil, logo, documentos, terreno); no se lee el resto de la galería |
-| `NSLocationWhenInUseUsageDescription` | `piloto` (el cliente nunca la pide) | Nombra «Agrocom Piloto»: la última ubicación se comparte con el cliente solo durante un servicio en ejecución y puede desactivarse; **debe agregar** que también se usa, solo si pulsa el botón de auxilio o reporta una incidencia, para avisar a soporte dónde está (ADR 0025, punto 15) |
+| `NSLocationWhenInUseUsageDescription` | `piloto` (el cliente nunca la pide) | Nombra «DronAgro Piloto»: la última ubicación se comparte con el cliente solo durante un servicio en ejecución y puede desactivarse; **debe agregar** que también se usa, solo si pulsa el botón de auxilio o reporta una incidencia, para avisar a soporte dónde está (ADR 0025, punto 15) |
 
 | `NSFaceIDUsageDescription` | ambos | Desbloquear la sesión en este teléfono si la persona lo activa; la biometría no sale del teléfono (ADR 0026) |
 | `UIBackgroundModes` = `remote-notification` | ambos | Reservado para el push remoto; no hace nada hasta que exista el entitlement `aps-environment` (ADR 0026, punto 5) |

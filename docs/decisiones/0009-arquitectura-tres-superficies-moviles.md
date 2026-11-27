@@ -16,7 +16,7 @@ Agrocom es un marketplace de servicio de fumigación con drones. La app móvil a
 | `piloto` | `lib/main_piloto.dart` | `com.agrocom.agrocom_field.piloto` | offline-first en el lote | `drift` + outbox |
 | `auxiliar` | `lib/main_auxiliar.dart` | `com.agrocom.agrocom_field.auxiliar` | offline-first en el lote | `drift` + outbox |
 
-Cada flavor define su `Flavor` en `nucleo/flavor.dart`, su `applicationIdSuffix` y su label de launcher en `android/app/build.gradle.kts`, y su entrypoint. El nombre visible es «Agrocom» (ADR 0003 y `CLAUDE.md`).
+Cada flavor define su `Flavor` en `nucleo/flavor.dart`, su `applicationIdSuffix` y su label de launcher en `android/app/build.gradle.kts`, y su entrypoint. El nombre visible es «DronAgro» (titular Agrocom; `CLAUDE.md`).
 
 ### El flavor `cliente` es online-first
 
