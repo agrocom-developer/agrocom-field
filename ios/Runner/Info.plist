@@ -25,7 +25,13 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Agrocom Piloto comparte tu última ubicación con el cliente solo mientras tienes un servicio en ejecución. Puedes desactivarlo cuando quieras.</string>
+	<string>Agrocom Piloto comparte tu última ubicación con el cliente solo mientras tienes un servicio en ejecución, y puedes desactivarlo cuando quieras. También la usa una sola vez, si pulsas el botón de auxilio o reportas una incidencia, para avisar a soporte dónde estás.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Agrocom usa Face ID para desbloquear tu sesión en este teléfono si lo activas. La huella o el rostro no salen del teléfono: Agrocom nunca los recibe.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Agrocom usa la cámara para tomarte una selfie y fotografiar tu documento, y para tomar fotos del terreno y del avance del servicio. Solo las ve quien tiene que verificarlas o quien participa del servicio.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

@@ -110,6 +110,7 @@ void main() {
       'NSCameraUsageDescription',
       'NSPhotoLibraryUsageDescription',
       'NSLocationWhenInUseUsageDescription',
+      'NSFaceIDUsageDescription',
     ]) {
       test('$clave tiene texto de propósito en español', () {
         final texto = valor(clave);
@@ -120,11 +121,50 @@ void main() {
       });
     }
 
-    test('no pide ubicación permanente, micrófono ni segundo plano', () {
+    test('no pide ubicación permanente ni micrófono', () {
       expect(plist, isNot(contains('NSLocationAlwaysAndWhenInUse')));
       expect(plist, isNot(contains('NSLocationAlwaysUsageDescription')));
       expect(plist, isNot(contains('NSMicrophoneUsageDescription')));
-      expect(plist, isNot(contains('UIBackgroundModes')));
     });
+
+    test('el único modo en segundo plano es remote-notification', () {
+      final modos = RegExp(
+        r'<key>UIBackgroundModes</key>\s*<array>(.*?)</array>',
+        dotAll: true,
+      ).firstMatch(plist)?.group(1);
+      expect(modos, isNotNull);
+      final valores = RegExp(
+        r'<string>([^<]*)</string>',
+      ).allMatches(modos!).map((m) => m.group(1)).toList();
+      expect(valores, ['remote-notification']);
+    });
+
+    test(
+      'el texto de ubicación declara también el uso puntual del auxilio',
+      () {
+        expect(
+          valor('NSLocationWhenInUseUsageDescription'),
+          contains('auxilio'),
+        );
+      },
+    );
+
+    test(
+      'el manifiesto de privacidad existe, no rastrea y está en el proyecto',
+      () {
+        final privacidad = leer('ios/Runner/PrivacyInfo.xcprivacy');
+        expect(
+          RegExp(
+            r'<key>NSPrivacyTracking</key>\s*<false/>',
+          ).hasMatch(privacidad),
+          isTrue,
+        );
+        expect(privacidad, contains('NSPrivacyAccessedAPITypes'));
+        expect(
+          leer('ios/Runner.xcodeproj/project.pbxproj'),
+          contains('PrivacyInfo.xcprivacy in Resources'),
+        );
+      },
+    );
   });
 }
