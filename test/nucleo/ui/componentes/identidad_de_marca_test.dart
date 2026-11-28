@@ -8,7 +8,10 @@ import 'package:agrocom_field/nucleo/ui/tema_campo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-Widget _envolver(Widget child, {ModoVisualCampo modo = ModoVisualCampo.campo}) {
+Widget _envolver(
+  Widget child, {
+  ModoVisualCampo modo = ModoVisualCampo.oscuro,
+}) {
   return MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,

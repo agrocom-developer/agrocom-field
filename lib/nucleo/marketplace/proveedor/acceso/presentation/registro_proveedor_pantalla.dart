@@ -9,7 +9,6 @@ import '../../../../auth/cuenta/presentation/cuenta_ya_registrada_pantalla.dart'
 import '../../../../auth/cuenta/presentation/recuperar_acceso_pantalla.dart';
 import '../../../../auth/cuenta/presentation/verificar_telefono_hoja.dart';
 import '../../../../camara/selector_imagen.dart';
-import '../../../../permisos/presentation/hoja_permiso.dart';
 import '../../../../ui/componentes/encabezado_de_marca.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -19,6 +18,8 @@ import '../../../ui/marketplace_ui.dart';
 import '../domain/acceso_proveedor.dart';
 import 'acceso_cubit.dart';
 import 'registro_cubit.dart';
+import '../../../../permisos/permiso_app.dart';
+import '../../../../permisos/presentation/asegurar_permiso.dart';
 
 /// Abre el alta del piloto independiente sobre el ingreso. Al terminar, la
 /// sesión ya quedó iniciada y la puerta de acceso muestra la app.
@@ -618,8 +619,8 @@ class _PasoFotos extends StatelessWidget {
             bytes: estado.fotos[tipo],
             cargando: estado.fotoCargando == tipo,
             alCamara: () async {
-              if (await permitirCamaraConExplicacion(context)) {
-                await cubit.elegirFoto(tipo, deGaleria: false);
+              if (await asegurarPermiso(context, PermisoApp.camara)) {
+                cubit.elegirFoto(tipo, deGaleria: false);
               }
             },
             alGaleria: () => cubit.elegirFoto(tipo, deGaleria: true),

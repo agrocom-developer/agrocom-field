@@ -74,28 +74,41 @@ void main() {
     },
   );
 
-  testWidgets(
-    'el perfil ofrece los avisos y, en demo, no hay sesión que cerrar',
-    (tester) async {
-      await montar(tester);
-      await tester.tap(find.text('Perfil').last);
-      await tester.pump();
-      await tester.pump(const Duration(milliseconds: 500));
-      final avisos = find.byKey(const Key('perfil-avisos'));
-      await tester.scrollUntilVisible(
-        avisos,
-        200,
-        scrollable: find.byType(Scrollable).first,
-      );
-      expect(avisos, findsOneWidget);
-      expect(find.byKey(const Key('perfil-salir')), findsNothing);
-      await Scrollable.ensureVisible(tester.element(avisos), alignment: 0.5);
-      await tester.pump();
-      await tester.tap(avisos);
-      await tester.pumpAndSettle();
-      expect(find.text('Nuevas solicitudes'), findsOneWidget);
-    },
-  );
+  testWidgets('el perfil ofrece los avisos', (tester) async {
+    await montar(tester);
+    await tester.tap(find.text('Perfil').last);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    final avisos = find.byKey(const Key('perfil-avisos'));
+    await tester.scrollUntilVisible(
+      avisos,
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(avisos, findsOneWidget);
+    await Scrollable.ensureVisible(tester.element(avisos), alignment: 0.5);
+    await tester.pump();
+    await tester.tap(avisos);
+    await tester.pumpAndSettle();
+    // La fila del perfil abre la bandeja de mensajes, no la configuración.
+    expect(find.text('Nuevas solicitudes'), findsNothing);
+    expect(find.byType(AppBar), findsOneWidget);
+  });
+
+  testWidgets('el menú ofrece Notificaciones (configuración) y Cobertura', (
+    tester,
+  ) async {
+    await montar(tester);
+    await tester.tap(find.text('Perfil').last);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.tap(find.byKey(const Key('perfil-menu')));
+    await tester.pumpAndSettle();
+    expect(find.text('Cobertura'), findsOneWidget);
+    await tester.tap(find.text('Notificaciones').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Nuevas solicitudes'), findsOneWidget);
+  });
 
   testWidgets('la navegación tiene los cuatro destinos del piloto', (
     tester,
@@ -107,18 +120,41 @@ void main() {
     expect(find.text('Drones'), findsNothing);
   });
 
-  testWidgets('el perfil ofrece Claro, Oscuro y Campo AAA', (tester) async {
+  testWidgets('cerrar sesión está en el menú del perfil y en Ajustes (demo)', (
+    tester,
+  ) async {
     await montar(tester);
     await tester.tap(find.text('Perfil').last);
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
-    final oscuro = find.text('Oscuro');
-    await tester.scrollUntilVisible(
-      oscuro,
-      200,
-      scrollable: find.byType(Scrollable).first,
-    );
-    expect(find.text('Claro'), findsOneWidget);
-    expect(find.text('Campo AAA'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('perfil-menu')));
+    await tester.pumpAndSettle();
+    expect(find.text('Cerrar sesión'), findsOneWidget);
+    await tester.tapAt(const Offset(5, 5));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('perfil-menu')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ajustes').last);
+    await tester.pumpAndSettle();
+    expect(find.text('Cerrar sesión'), findsOneWidget);
+    await tester.tap(find.text('Cerrar sesión'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('ajustes-confirmar-salida')));
+    await tester.pumpAndSettle();
+    // La demo vuelve al inicio: el mapa de solicitudes.
+    expect(find.text('Buscar zona o lote'), findsOneWidget);
+  });
+
+  testWidgets('el perfil ya no muestra el selector de tema (vive en Ajustes)', (
+    tester,
+  ) async {
+    await montar(tester);
+    await tester.tap(find.text('Perfil').last);
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('Oscuro'), findsNothing);
+    expect(find.byKey(const Key('perfil-tema')), findsNothing);
   });
 }

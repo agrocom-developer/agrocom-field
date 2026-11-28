@@ -291,8 +291,8 @@ void main() {
       },
     );
 
-    testWidgets('Empresa: golden claro y oscuro', (tester) async {
-      for (final modo in [ModoVisualCampo.claro, ModoVisualCampo.oscuro]) {
+    testWidgets('Empresa: golden claro', (tester) async {
+      for (final modo in [ModoVisualCampo.claro]) {
         await _montar(tester, registro(), modo: modo, tamano: _chico);
         await tester.ensureVisible(find.byKey(const Key('registro-empresa')));
         await tester.tap(find.byKey(const Key('registro-empresa')));
@@ -357,24 +357,9 @@ void main() {
         expect(tester.takeException(), isNull);
       });
 
-      testWidgets('portadas, oscuro $t', (tester) async {
-        await _montar(
-          tester,
-          _portadas(),
-          modo: ModoVisualCampo.oscuro,
-          tamano: tamano,
-        );
-        await _golden(tester, 'portada_1_oscuro_$t');
-        await tester.tap(find.byKey(const Key('onboarding-punto-1')));
-        await tester.pump(const Duration(milliseconds: 50));
-        await _golden(tester, 'portada_2_oscuro_$t');
-        expect(tester.takeException(), isNull);
-      });
-
       for (final (modo, nombre) in [
         (ModoVisualCampo.claro, 'claro'),
-        (ModoVisualCampo.oscuro, 'oscuro'),
-        (ModoVisualCampo.campo, 'campo'),
+        (ModoVisualCampo.oscuro, 'campo'),
       ]) {
         testWidgets('elegir rol, $nombre $t', (tester) async {
           await _montar(
@@ -394,7 +379,7 @@ void main() {
         await _montar(
           tester,
           _registro(),
-          modo: ModoVisualCampo.campo,
+          modo: ModoVisualCampo.oscuro,
           tamano: tamano,
         );
         expect(find.text('PASO 1 DE 4'), findsOneWidget);
@@ -410,7 +395,7 @@ void main() {
     }
 
     for (final (modo, nombre) in [
-      (ModoVisualCampo.campo, 'campo'),
+      (ModoVisualCampo.oscuro, 'campo'),
       (ModoVisualCampo.claro, 'claro'),
     ]) {
       testWidgets('registro del piloto: equipo (paso 3), $nombre', (

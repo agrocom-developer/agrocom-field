@@ -5,6 +5,7 @@ export 'aviso_marketplace.dart';
 export 'avatar_foto.dart';
 export 'avatar_proveedor.dart';
 export 'calificacion_promedio.dart';
+export 'calificaciones_pantalla.dart';
 export 'chip_estado_marketplace.dart';
 export 'estado_error_marketplace.dart';
 export 'estado_vacio_marketplace.dart';

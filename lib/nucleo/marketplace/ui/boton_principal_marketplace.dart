@@ -4,7 +4,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../ui/paleta_campo.dart';
 import '../../ui/tokens_campo.dart';
 
-/// Acción principal de una pantalla del marketplace: botón verde del tema a
+/// Acción principal de una pantalla del marketplace: botón ámbar del tema a
 /// ancho completo, con estado de envío. Mientras [cargando] no acepta toques
 /// y lo anuncia a los lectores de pantalla.
 ///
@@ -70,13 +70,13 @@ class _BotonPrincipalMarketplaceState extends State<BotonPrincipalMarketplace> {
               onPressed: activo ? widget.onPressed : null,
               style: FilledButton.styleFrom(
                 minimumSize: Size(64, widget.alto),
-                // Enviando conserva el verde: un botón gris parecería
+                // Enviando conserva el ámbar: un botón gris parecería
                 // deshabilitado por un error.
                 disabledBackgroundColor: widget.cargando
-                    ? paleta.acento
+                    ? paleta.ambar
                     : paleta.texto.withValues(alpha: 0.12),
                 disabledForegroundColor: widget.cargando
-                    ? paleta.sobreAcento
+                    ? paleta.sobreAmbar
                     : paleta.textoSecundario,
               ),
               child: widget.cargando
@@ -85,7 +85,7 @@ class _BotonPrincipalMarketplaceState extends State<BotonPrincipalMarketplace> {
                         dimension: 22,
                         child: CircularProgressIndicator(
                           strokeWidth: 2.5,
-                          color: paleta.sobreAcento,
+                          color: paleta.sobreAmbar,
                         ),
                       ),
                     )

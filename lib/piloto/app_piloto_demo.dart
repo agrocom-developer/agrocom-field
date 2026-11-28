@@ -10,7 +10,6 @@ import '../nucleo/marketplace/proveedor/dron/presentation/drones_pantalla.dart';
 import '../nucleo/marketplace/proveedor/ejecucion/presentation/servicios_lote_pantalla.dart';
 import '../nucleo/marketplace/proveedor/negociacion/presentation/mapa_solicitudes_pantalla.dart';
 import '../nucleo/marketplace/proveedor/negociacion/presentation/mis_ofertas_pantalla.dart';
-import '../nucleo/marketplace/proveedor/perfil/presentation/extras_perfil.dart';
 import '../nucleo/marketplace/proveedor/perfil/presentation/perfil_pantalla.dart';
 import '../nucleo/ui/componentes/componentes_campo.dart';
 import '../nucleo/ui/paleta_campo.dart';
@@ -21,16 +20,38 @@ import 'di/dependencias_piloto.dart';
 /// (`MODO_DEMO`, ADR 0010). Tema modo campo (alto contraste, objetivos de
 /// 56 px). La misma [ShellPiloto] la monta la app real (`AppPiloto`) con los
 /// repositorios de red.
-class AppPilotoDemo extends StatelessWidget {
+class AppPilotoDemo extends StatefulWidget {
   const AppPilotoDemo({required this.dependencias, super.key});
 
   final DependenciasPiloto dependencias;
 
   @override
+  State<AppPilotoDemo> createState() => _AppPilotoDemoState();
+}
+
+class _AppPilotoDemoState extends State<AppPilotoDemo> {
+  final _navegador = GlobalKey<NavigatorState>();
+
+  DependenciasPiloto get dependencias => widget.dependencias;
+
+  /// La demo no tiene sesión: «Cerrar sesión» vuelve al inicio con un shell
+  /// nuevo, para poder ver el flujo.
+  void _reiniciar() {
+    _navegador.currentState?.pushAndRemoveUntil(
+      MaterialPageRoute<void>(builder: (_) => _shell()),
+      (_) => false,
+    );
+  }
+
+  Widget _shell() =>
+      ShellPiloto(conectividad: dependencias.conectividad, alSalir: _reiniciar);
+
+  @override
   Widget build(BuildContext context) {
     return TemaVisualApp(
-      predeterminado: ModoVisualCampo.campo,
+      predeterminado: ModoVisualCampo.claro,
       construir: (context, tema) => MaterialApp(
+        navigatorKey: _navegador,
         title: 'DronAgro Piloto',
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
@@ -42,7 +63,7 @@ class AppPilotoDemo extends StatelessWidget {
         // Los repositorios van por encima del `Navigator`: las rutas que se
         // apilan (detalle, seguimiento) los heredan.
         builder: (context, child) => dependencias.proveer(child: child!),
-        home: ShellPiloto(conectividad: dependencias.conectividad),
+        home: _shell(),
       ),
     );
   }
@@ -69,7 +90,7 @@ class ShellPiloto extends StatefulWidget {
   /// Estado de la red para el banner «Sin señal»; sin él, siempre hay red.
   final ConectividadServicio? conectividad;
 
-  /// Cierra la sesión. Solo existe en la app real: la demo no tiene sesión.
+  /// Cierra la sesión. En la demo reinicia el recorrido.
   final VoidCallback? alSalir;
 
   @override
@@ -120,6 +141,7 @@ class _ShellPilotoState extends State<ShellPiloto> {
           icono: Icons.person_outline_rounded,
           iconoActivo: Icons.person_rounded,
           etiqueta: t.navPerfil,
+          bajoBarraEstado: true,
         ),
       ],
       indice: _indice,
@@ -139,13 +161,9 @@ class _ShellPilotoState extends State<ShellPiloto> {
           ),
           _ => PerfilPantalla(
             onVerDrones: _verDrones,
-            extras: extrasDePerfil(
-              context,
-              conAvisos: true,
-              alSalir: widget.alSalir,
-              bloqueo: widget.bloqueo,
-              conCuenta: widget.conCuenta,
-            ),
+            alSalir: widget.alSalir,
+            bloqueo: widget.bloqueo,
+            conCuenta: widget.conCuenta,
           ),
         },
       ),

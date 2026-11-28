@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../colores_campo.dart';
+import '../paleta_campo.dart';
 import '../tema_campo.dart';
 
-/// CTA pill en verde — alto mínimo 56 (mismo criterio de touch target que
+/// CTA pill en ámbar (el 10 % de acento del sistema 60/30/10) — alto mínimo 56 (mismo criterio de touch target que
 /// ADR 0003: guantes, sol directo). Único botón "lleno" del catálogo de
 /// campo; para acciones secundarias, `BotonSecundarioCampo`.
 ///
@@ -27,6 +27,7 @@ class BotonPrimarioCampo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final paleta = context.paleta;
     final radio = Theme.of(context).extension<TemaCampo>()?.radioPill ?? 999;
     const etiqueta = TextStyle(fontWeight: FontWeight.w700, fontSize: 16);
     return ConstrainedBox(
@@ -34,23 +35,21 @@ class BotonPrimarioCampo extends StatelessWidget {
       child: FilledButton(
         onPressed: cargando ? null : onPressed,
         style: FilledButton.styleFrom(
-          backgroundColor: ColoresCampo.acentoHoja,
-          disabledBackgroundColor: ColoresCampo.acentoHoja.withValues(
-            alpha: 0.4,
-          ),
-          foregroundColor: ColoresCampo.fondoProfundo,
+          backgroundColor: paleta.ambar,
+          disabledBackgroundColor: paleta.ambar.withValues(alpha: 0.4),
+          foregroundColor: paleta.sobreAmbar,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(radio),
           ),
         ),
         child: cargando
-            ? const SizedBox(
+            ? SizedBox(
                 height: 20,
                 width: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: ColoresCampo.fondoProfundo,
+                  color: paleta.sobreAmbar,
                 ),
               )
             : icono == null

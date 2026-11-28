@@ -147,7 +147,7 @@ class TarjetaSolicitud extends StatelessWidget {
             const SizedBox(height: EspaciadoCampo.s),
             Row(
               children: [
-                Icon(Icons.star_rounded, size: 16, color: paleta.alerta),
+                const EstrellaCampo(tamano: 16),
                 const SizedBox(width: EspaciadoCampo.xs),
                 Text(
                   l10n.solicitudesCalificasteCon(s.puntajeDelCliente!),

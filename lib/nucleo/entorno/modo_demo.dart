@@ -5,3 +5,8 @@
 ///
 /// Nunca se activa por defecto: un build sin el flag es un build real.
 const bool modoDemo = bool.fromEnvironment('MODO_DEMO');
+
+/// Con `SESION_DEMO` el flavor cliente arranca con la sesión iniciada y la
+/// presentación vista, para no repetir el ingreso en cada reinicio. Sin él, la
+/// demo arranca como recién instalada (presentación, acceso e inicio).
+const bool sesionDemo = bool.fromEnvironment('SESION_DEMO');

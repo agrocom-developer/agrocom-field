@@ -219,7 +219,7 @@ void main() {
         tester,
         AjustesSeguridadPantalla(alCerrarSesion: () {}),
         CuentaSeguridadDemo(telefonoVerificado: true),
-        modo: ModoVisualCampo.campo,
+        modo: ModoVisualCampo.oscuro,
       );
       await _asentar(tester);
       expect(find.text('Teléfono verificado'), findsOneWidget);
@@ -300,7 +300,7 @@ void main() {
           child: EliminarCuentaPantalla(alCerrarSesion: () {}),
         ),
         CuentaSeguridadDemo(),
-        modo: ModoVisualCampo.campo,
+        modo: ModoVisualCampo.oscuro,
         tamano: _tamanoLargo,
       );
       await _asentar(tester);
@@ -399,7 +399,7 @@ void main() {
           alRecuperarAcceso: () => recuperar++,
         ),
         CuentaSeguridadDemo(),
-        modo: ModoVisualCampo.campo,
+        modo: ModoVisualCampo.oscuro,
         tamano: _tamanoLargo,
       );
       expect(find.text('Ya tienes una cuenta'), findsOneWidget);

@@ -170,7 +170,10 @@ void main() {
     await tester.tap(find.text('Perfil').last);
     await tester.pumpAndSettle();
     expect(find.text('Hugo Antelo Suárez'), findsOneWidget);
-    expect(find.text('Mis lotes'), findsOneWidget);
+    // El perfil ya no lista los lotes (viven en su pestaña); sí las secciones.
+    expect(find.text('Métricas'), findsOneWidget);
+    expect(find.text('Mi cuenta'), findsOneWidget);
+    expect(find.text('Mis lotes'), findsNothing);
   });
 
   testWidgets('el perfil cambia el tema y lo guarda', (tester) async {
@@ -182,13 +185,20 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.text('Perfil').last);
     await tester.pumpAndSettle();
-    final campo = find.text('Campo AAA');
-    await tester.scrollUntilVisible(campo, 200);
+    await tester.tap(find.byIcon(Icons.more_vert_rounded));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ajustes'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('ajustes-apariencia')));
+    await tester.pumpAndSettle();
+    final campo = find.text('Oscuro');
+    await tester.ensureVisible(campo);
+    await tester.pumpAndSettle();
     await tester.tap(campo);
     await tester.pumpAndSettle();
-    expect(almacen.modo, ModoVisualCampo.campo);
+    expect(almacen.modo, ModoVisualCampo.oscuro);
     final app = tester.widget<MaterialApp>(find.byType(MaterialApp));
     expect(app.themeMode, ThemeMode.light);
-    expect(app.theme?.scaffoldBackgroundColor, const Color(0xFF000000));
+    expect(app.theme?.scaffoldBackgroundColor, const Color(0xFF0F1A13));
   });
 }

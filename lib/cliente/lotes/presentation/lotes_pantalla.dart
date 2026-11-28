@@ -49,7 +49,7 @@ class _Vista extends StatelessWidget {
           alReintentar: context.read<LotesCubit>().cargar,
         ),
         LotesListos(:final lotes) when lotes.isEmpty => EstadoVacioMarketplace(
-          icono: Icons.crop_square_rounded,
+          icono: Icons.landscape_rounded,
           titulo: t.lotesVacioTitulo,
           detalle: t.lotesVacioDetalle,
           etiquetaAccion: t.publicarLote,

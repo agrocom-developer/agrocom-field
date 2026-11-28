@@ -170,7 +170,7 @@ class _Contenido extends StatelessWidget {
                   acciones: [
                     OutlinedButton.icon(
                       onPressed: () => abrirCalificar(context, s),
-                      icon: const Icon(Icons.star_outline_rounded),
+                      icon: const EstrellaCampo(tamano: 24, llena: false),
                       label: Text(l10n.inicioCalificar),
                     ),
                   ],
@@ -615,11 +615,7 @@ class _ListaRecientes extends StatelessWidget {
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(
-                                  Icons.star_rounded,
-                                  size: 18,
-                                  color: paleta.ambar,
-                                ),
+                                const EstrellaCampo(tamano: 18),
                                 const SizedBox(width: EspaciadoCampo.xs),
                                 Text(
                                   '${solicitudes[i].puntajeDelCliente}',

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 /// resuelve la opacidad (ver [OpacidadesCampo]), igual que el mockup de origen.
 abstract final class ColoresCampo {
   /// Verde agrícola: primario de marca en modo claro.
-  static const Color verdeHoja = Color(0xFF347A36);
+  static const Color verdeHoja = Color(0xFF3A7F26);
 
   /// Verde pasto: apoyo de marca (relleno de íconos y gráficos, no texto).
   static const Color verdePasto = Color(0xFF4C8C3A);
@@ -21,6 +21,13 @@ abstract final class ColoresCampo {
   /// superficie elevada (4,54:1), donde el relleno [acentoHojaOscuro] no llega.
   static const Color acentoTextoOscuro = Color(0xFF6BBE73);
 
+  /// Píldora «Aprobado» de la cabecera de perfil: verde petróleo oscuro con
+  /// letras blancas en el claro; verde suave cielo con letras negras en el
+  /// oscuro. Ninguno es un verde vivo.
+  static const Color insigniaAprobadoClaro = Color(0xFF0F4A47);
+  static const Color sobreInsigniaAprobadoClaro = Color(0xFFFFFFFF);
+  static const Color insigniaAprobadoOscuro = Color(0xFFBFE0D3);
+  static const Color sobreInsigniaAprobadoOscuro = Color(0xFF000000);
   static const Color fondoProfundo = Color(0xFF000000);
   static const Color superficie = Color(0xFF0F1A13);
 
@@ -62,6 +69,17 @@ abstract final class ColoresCampo {
   static const Color acentoAmbarTexto = Color(0xFFFFE3A3);
 
   /// Error / reintento. 9,92:1 sobre [fondoProfundo], 7,09:1 sobre la superficie 2 (AAA).
+  /// Oro de las estrellas de calificación: igual en claro y oscuro y distinto
+  /// del ámbar de los botones. Gradiente de tres paradas para el brillo.
+  static const Color doradoClaro = Color(0xFFFFE08A);
+  static const Color dorado = Color(0xFFFFC107);
+  static const Color doradoOscuro = Color(0xFFE0A100);
+  static const List<Color> gradienteDorado = [
+    doradoClaro,
+    dorado,
+    doradoOscuro,
+  ];
+
   static const Color acentoRojo = Color(0xFFFF9494);
 }
 

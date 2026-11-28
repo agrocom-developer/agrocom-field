@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../paleta_campo.dart';
+import 'estrella_campo.dart';
 import '../tokens_campo.dart';
 
 /// Calificación de 1 a 5 estrellas. Con [onCambio] es interactiva (la
@@ -12,18 +13,22 @@ class CalificacionCampo extends StatelessWidget {
   const CalificacionCampo({
     required this.valor,
     this.onCambio,
-    this.tamano = 28,
+    this.tamano,
     super.key,
   }) : assert(valor >= 0 && valor <= 5);
 
   final int valor;
   final ValueChanged<int>? onCambio;
-  final double tamano;
+
+  /// Lado de cada estrella; por defecto 22 en solo lectura y 28 si es
+  /// interactiva.
+  final double? tamano;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
+    final tamano = this.tamano ?? (onCambio == null ? 22.0 : 28.0);
     final lado = onCambio == null ? tamano : ObjetivoTactilCampo.minimo;
     return Semantics(
       container: true,
@@ -74,11 +79,7 @@ class _Estrella extends StatelessWidget {
       scale: llena ? 1 : 0.88,
       duration: MovimientoCampo.duracion(context, MovimientoCampo.rapida),
       curve: MovimientoCampo.entrada,
-      child: Icon(
-        llena ? Icons.star_rounded : Icons.star_outline_rounded,
-        size: tamano,
-        color: llena ? paleta.ambar : paleta.bordeFuerte,
-      ),
+      child: EstrellaCampo(tamano: tamano, llena: llena),
     );
     if (onTap == null) {
       return SizedBox(width: lado, height: tamano, child: icono);

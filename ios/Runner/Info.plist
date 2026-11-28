@@ -25,7 +25,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>DronAgro Piloto comparte tu última ubicación con el cliente solo mientras tienes un servicio en ejecución, y puedes desactivarlo cuando quieras. También la usa una sola vez, si pulsas el botón de auxilio o reportas una incidencia, para avisar a soporte dónde estás.</string>
+	<string>DronAgro Piloto usa tu ubicación para centrar el mapa de solicitudes donde estás y, si lo activas, para compartir tu última posición con el cliente solo mientras tienes un servicio en ejecución; puedes desactivarlo cuando quieras. También la usa una sola vez, si pulsas el botón de auxilio o reportas una incidencia, para avisar a soporte dónde estás.</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>DronAgro usa Face ID para desbloquear tu sesión en este teléfono si lo activas. La huella o el rostro no salen del teléfono: DronAgro nunca los recibe.</string>
 	<key>UIBackgroundModes</key>

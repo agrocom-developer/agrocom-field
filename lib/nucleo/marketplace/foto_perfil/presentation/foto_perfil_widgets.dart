@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../permisos/presentation/hoja_permiso.dart';
 import '../../../ui/paleta_campo.dart';
 import '../../../ui/tokens_campo.dart';
 import '../../foto_preparador.dart';
@@ -10,6 +9,8 @@ import '../../ui/avatar_foto.dart';
 import '../../ui/aviso_marketplace.dart';
 import '../foto_perfil_repositorio.dart';
 import 'foto_perfil_cubit.dart';
+import '../../../permisos/permiso_app.dart';
+import '../../../permisos/presentation/asegurar_permiso.dart';
 
 /// Provee el [FotoPerfilCubit] a [child] (el avatar y las acciones de la
 /// foto de perfil). Lee [FotoPerfilRepositorio] y [PreparadorFoto] del
@@ -131,7 +132,11 @@ class AvatarFotoPerfil extends StatelessWidget {
 /// Botones de la foto de perfil (agregar o cambiar, quitar) y el resultado
 /// de la última acción: éxito, error o sin red, con salida clara.
 class AccionesFotoPerfil extends StatelessWidget {
-  const AccionesFotoPerfil({super.key});
+  const AccionesFotoPerfil({this.compacta = false, super.key});
+
+  /// Sin botones ni texto de ayuda: el avatar ya abre las opciones y aquí
+  /// solo se muestra el resultado de la última acción.
+  final bool compacta;
 
   @override
   Widget build(BuildContext context) {
@@ -143,45 +148,46 @@ class AccionesFotoPerfil extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Wrap(
-              spacing: EspaciadoCampo.s,
-              children: [
-                TextButton.icon(
-                  key: const Key('foto-perfil-cambiar'),
-                  style: TextButton.styleFrom(
-                    minimumSize: const Size(
-                      ObjetivoTactilCampo.minimo,
-                      ObjetivoTactilCampo.guantes,
-                    ),
-                  ),
-                  onPressed: estado.trabajando
-                      ? null
-                      : () => mostrarOpcionesFotoPerfil(context),
-                  icon: const Icon(Icons.photo_camera_outlined),
-                  label: Text(
-                    estado.trabajando
-                        ? l10n.fotoPerfilSubiendoFoto
-                        : estado.tieneFoto
-                        ? l10n.fotoPerfilCambiarFoto
-                        : l10n.fotoPerfilAgregarFoto,
-                  ),
-                ),
-                if (estado.tieneFoto && !estado.trabajando)
+            if (!compacta)
+              Wrap(
+                spacing: EspaciadoCampo.s,
+                children: [
                   TextButton.icon(
-                    key: const Key('foto-perfil-quitar'),
+                    key: const Key('foto-perfil-cambiar'),
                     style: TextButton.styleFrom(
                       minimumSize: const Size(
                         ObjetivoTactilCampo.minimo,
                         ObjetivoTactilCampo.guantes,
                       ),
                     ),
-                    onPressed: cubit.quitar,
-                    icon: const Icon(Icons.delete_outline_rounded),
-                    label: Text(l10n.fotoPerfilQuitar),
+                    onPressed: estado.trabajando
+                        ? null
+                        : () => mostrarOpcionesFotoPerfil(context),
+                    icon: const Icon(Icons.photo_camera_outlined),
+                    label: Text(
+                      estado.trabajando
+                          ? l10n.fotoPerfilSubiendoFoto
+                          : estado.tieneFoto
+                          ? l10n.fotoPerfilCambiarFoto
+                          : l10n.fotoPerfilAgregarFoto,
+                    ),
                   ),
-              ],
-            ),
-            if (!estado.tieneFoto && estado.mensaje == null)
+                  if (estado.tieneFoto && !estado.trabajando)
+                    TextButton.icon(
+                      key: const Key('foto-perfil-quitar'),
+                      style: TextButton.styleFrom(
+                        minimumSize: const Size(
+                          ObjetivoTactilCampo.minimo,
+                          ObjetivoTactilCampo.guantes,
+                        ),
+                      ),
+                      onPressed: cubit.quitar,
+                      icon: const Icon(Icons.delete_outline_rounded),
+                      label: Text(l10n.fotoPerfilQuitar),
+                    ),
+                ],
+              ),
+            if (!compacta && !estado.tieneFoto && estado.mensaje == null)
               Text(
                 l10n.fotoPerfilConUnaFotoCliente,
                 style: texto.bodySmall?.copyWith(
@@ -248,10 +254,8 @@ Future<void> mostrarOpcionesFotoPerfil(BuildContext context) {
             texto: l10n.fotoPerfilTomarUnaFoto,
             alToque: () async {
               Navigator.pop(hoja);
-              // Primero se explica para qué se usa la cámara.
-              if (!context.mounted) return;
-              if (await permitirCamaraConExplicacion(context)) {
-                await cubit.elegir(OrigenFoto.camara);
+              if (await asegurarPermiso(context, PermisoApp.camara)) {
+                cubit.elegir(OrigenFoto.camara);
               }
             },
           ),

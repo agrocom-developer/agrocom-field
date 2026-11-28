@@ -32,4 +32,11 @@ abstract final class ImagenesCampo {
   /// Equipo en tierra: dron, generador, baterías y RC — reservada para las
   /// pantallas de equipos y baterías (HU-80).
   static const String equipoDron = 'assets/imagenes/fondo_equipo_dron.jpg';
+
+  /// Fondo de la cabecera del perfil del piloto (dron y control remoto).
+  static const String perfilPiloto = 'assets/imagenes/perfil_piloto_dron.jpg';
+
+  /// Fondo de la cabecera del perfil del cliente (productor en su cultivo).
+  static const String perfilCliente =
+      'assets/imagenes/perfil_cliente_campo.jpg';
 }

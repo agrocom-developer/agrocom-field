@@ -55,7 +55,7 @@ class AppProveedor extends StatelessWidget {
           renovarSesion: acceso.renovarSesion,
         )..iniciar(),
         child: TemaVisualApp(
-          predeterminado: ModoVisualCampo.campo,
+          predeterminado: ModoVisualCampo.claro,
           construir: (context, tema) => MaterialApp(
             title: 'DronAgro Piloto',
             localizationsDelegates: AppLocalizations.localizationsDelegates,

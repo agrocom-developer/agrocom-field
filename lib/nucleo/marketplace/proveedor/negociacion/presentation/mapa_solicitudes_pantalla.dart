@@ -1,9 +1,14 @@
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_map/flutter_map.dart' show MapController;
+import 'package:latlong2/latlong.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
+import '../../../../permisos/permiso_app.dart';
+import '../../../../permisos/presentation/asegurar_permiso.dart';
+import '../../../../permisos/ubicacion_puntual.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tipografia_campo.dart';
 import '../../../../ui/tokens_campo.dart';
@@ -61,6 +66,9 @@ class MapaSolicitudesVista extends StatefulWidget {
 class _MapaSolicitudesVistaState extends State<MapaSolicitudesVista> {
   final _consulta = TextEditingController();
   final _hoja = DraggableScrollableController();
+  final _mapa = MapController();
+  LatLng? _miUbicacion;
+  bool _buscandoUbicacion = false;
   bool _soloHoy = false;
 
   DateTime get _ahora => (widget.reloj ?? DateTime.now)();
@@ -69,7 +77,31 @@ class _MapaSolicitudesVistaState extends State<MapaSolicitudesVista> {
   void dispose() {
     _consulta.dispose();
     _hoja.dispose();
+    _mapa.dispose();
     super.dispose();
+  }
+
+  /// «Usar mi ubicación»: el permiso se pide aquí, al tocar el botón, con el
+  /// motivo explicado antes. El mapa funciona igual sin él.
+  Future<void> _centrarEnMiUbicacion() async {
+    if (_buscandoUbicacion) return;
+    final t = AppLocalizations.of(context);
+    final mensajes = ScaffoldMessenger.of(context);
+    if (!await asegurarPermiso(context, PermisoApp.ubicacion)) return;
+    setState(() => _buscandoUbicacion = true);
+    final punto = await UbicacionPuntual.instancia.obtener();
+    if (!mounted) return;
+    setState(() {
+      _buscandoUbicacion = false;
+      if (punto != null) _miUbicacion = LatLng(punto.latitud, punto.longitud);
+    });
+    if (punto == null) {
+      mensajes.showSnackBar(
+        SnackBar(content: Text(t.permisosUbicacionNoDisponible)),
+      );
+      return;
+    }
+    _mapa.move(LatLng(punto.latitud, punto.longitud), 11);
   }
 
   /// Lo que se ve: lo cargado, acotado por la búsqueda y por «Vence hoy».
@@ -159,6 +191,8 @@ class _MapaSolicitudesVistaState extends State<MapaSolicitudesVista> {
               children: [
                 Positioned.fill(
                   child: MapaSolicitudes(
+                    controlador: _mapa,
+                    miUbicacion: _miUbicacion,
                     solicitudes: visibles,
                     seleccionada: estado.seleccionada,
                     ahora: _ahora,
@@ -216,6 +250,25 @@ class _MapaSolicitudesVistaState extends State<MapaSolicitudesVista> {
                         alCambiarFiltros: cubit.aplicarFiltros,
                       ),
                     ],
+                  ),
+                ),
+                Positioned(
+                  right: EspaciadoCampo.l,
+                  bottom:
+                      caja.maxHeight * _tamanoInicialHoja + EspaciadoCampo.m,
+                  child: FloatingActionButton.small(
+                    key: const Key('mapa-mi-ubicacion'),
+                    heroTag: null,
+                    tooltip: l10n.permisosMiUbicacion,
+                    backgroundColor: paleta.superficie,
+                    foregroundColor: paleta.acentoTexto,
+                    onPressed: _centrarEnMiUbicacion,
+                    child: _buscandoUbicacion
+                        ? const SizedBox.square(
+                            dimension: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.my_location_rounded),
                   ),
                 ),
                 Positioned.fill(

@@ -98,7 +98,7 @@ void main() {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: const Locale('es'),
-      theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.campo),
+      theme: AgrocomThemeCampo.construir(modo: ModoVisualCampo.oscuro),
       home: hijo,
     );
 

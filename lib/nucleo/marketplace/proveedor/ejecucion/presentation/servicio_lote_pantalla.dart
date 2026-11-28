@@ -17,6 +17,8 @@ import '../di/dependencias_ejecucion.dart';
 import '../domain/ejecucion.dart';
 import 'ejecucion_cubits.dart';
 import 'servicios_lote_pantalla.dart';
+import '../../../../permisos/permiso_app.dart';
+import '../../../../permisos/presentation/asegurar_permiso.dart';
 
 /// Un servicio adjudicado en el lote. Todo lo que se hace aquí se guarda en
 /// el dispositivo y se sube cuando hay señal; la pantalla nunca espera al
@@ -304,7 +306,11 @@ Widget? _accionPrincipal(BuildContext context, ServicioEnLote s, bool ocupado) {
       texto: l10n.proveedorEjecucionSubirFotoAvance,
       icono: Icons.photo_camera_rounded,
       cargando: ocupado,
-      onPressed: cubit.tomarFotoDeAvance,
+      onPressed: () async {
+        if (await asegurarPermiso(context, PermisoApp.camara)) {
+          cubit.tomarFotoDeAvance();
+        }
+      },
     ),
     EstadoServicioLote.finalizada => null,
   };

@@ -116,7 +116,7 @@ void main() {
   }
 
   test('el modo campo cumple AAA en todo texto y acento', () {
-    final p = PaletaCampo.campo;
+    final p = PaletaCampo.oscuro;
     for (final base in [
       p.fondo,
       p.superficie,
@@ -171,21 +171,6 @@ void main() {
     }
   });
 
-  test('el modo campo supera el contraste del modo oscuro en texto', () {
-    expect(
-      ContrasteWcag.ratio(
-        PaletaCampo.campo.textoSecundario,
-        PaletaCampo.campo.fondo,
-      ),
-      greaterThan(
-        ContrasteWcag.ratio(
-          PaletaCampo.oscuro.textoSecundario,
-          PaletaCampo.oscuro.fondo,
-        ),
-      ),
-    );
-  });
-
   test('construir() instala la paleta del modo en el tema', () {
     final tema = AgrocomThemeCampo.construir(modo: ModoVisualCampo.claro);
     expect(tema.extension<PaletaCampo>(), PaletaCampo.claro);
@@ -193,7 +178,7 @@ void main() {
     // Sin argumentos conserva el modo campo (tema de la app).
     expect(
       AgrocomThemeCampo.construir().extension<PaletaCampo>(),
-      PaletaCampo.campo,
+      PaletaCampo.oscuro,
     );
   });
 

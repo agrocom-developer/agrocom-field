@@ -44,8 +44,14 @@ void main() {
     'android.permission.ACCESS_BACKGROUND_LOCATION',
   };
 
-  test('el manifest común solo declara INTERNET', () {
-    expect(declarados(principal), {'android.permission.INTERNET'});
+  test('el manifest común solo declara INTERNET y CAMERA', () {
+    expect(declarados(principal), {
+      'android.permission.INTERNET',
+      'android.permission.CAMERA',
+    });
+    // Declarar CAMERA no debe excluir dispositivos sin cámara de Play Store.
+    expect(principal, contains('android.hardware.camera"'));
+    expect(principal, contains('android.hardware.camera.autofocus'));
     expect(principal, isNot(contains('android.hardware.camera.flash')));
   });
 
@@ -86,18 +92,27 @@ void main() {
     expect(piloto, contains('android:required="false"'));
   });
 
-  test('ningún flavor declara CAMERA ni almacenamiento amplio', () {
-    for (final conComentarios in [principal, cliente, piloto]) {
-      final manifest = conComentarios.replaceAll(
-        RegExp(r'<!--.*?-->', dotAll: true),
-        '',
-      );
-      expect(manifest, isNot(contains('android.permission.CAMERA')));
-      expect(manifest, isNot(contains('READ_EXTERNAL_STORAGE')));
-      expect(manifest, isNot(contains('WRITE_EXTERNAL_STORAGE')));
-      expect(manifest, isNot(contains('READ_MEDIA_')));
-    }
-  });
+  test(
+    'CAMERA solo está en el manifest común; nadie declara almacenamiento amplio',
+    () {
+      for (final conComentarios in [cliente, piloto]) {
+        final manifest = conComentarios.replaceAll(
+          RegExp(r'<!--.*?-->', dotAll: true),
+          '',
+        );
+        expect(manifest, isNot(contains('android.permission.CAMERA')));
+      }
+      for (final conComentarios in [principal, cliente, piloto]) {
+        final manifest = conComentarios.replaceAll(
+          RegExp(r'<!--.*?-->', dotAll: true),
+          '',
+        );
+        expect(manifest, isNot(contains('READ_EXTERNAL_STORAGE')));
+        expect(manifest, isNot(contains('WRITE_EXTERNAL_STORAGE')));
+        expect(manifest, isNot(contains('READ_MEDIA_')));
+      }
+    },
+  );
 
   group('iOS (Info.plist compartido por los dos flavors)', () {
     final plist = leer('ios/Runner/Info.plist');

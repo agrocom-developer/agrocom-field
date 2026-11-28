@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../ui/componentes/estrella_campo.dart';
 import '../../ui/paleta_campo.dart';
 
 /// «★ 4,8 · 142 servicios» — estrella con ícono y número, para que no dependa
@@ -25,7 +26,7 @@ class CalificacionPromedio extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.star_rounded, size: 18, color: paleta.alerta),
+            const EstrellaCampo(),
             const SizedBox(width: 4),
             Text(
               valor.toStringAsFixed(1).replaceAll('.', ','),
