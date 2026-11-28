@@ -14,8 +14,11 @@ import '../../../../ui/tipografia_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../ui/boton_principal_marketplace.dart';
 import '../../../ui/campo_formulario_marketplace.dart';
+import '../../../../notificaciones/presentation/campana_avisos.dart';
 import '../../../ui/marketplace_ui.dart';
+import '../../ejecucion/di/dependencias_ejecucion.dart';
 import '../di/dependencias_negociacion.dart';
+import 'distancia_al_lote_vista.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
 import 'cifras_negociacion.dart';
@@ -223,11 +226,19 @@ class _MapaSolicitudesVistaState extends State<MapaSolicitudesVista> {
                           EspaciadoCampo.l,
                           0,
                         ),
-                        child: _Busqueda(
-                          controlador: _consulta,
-                          hayFiltros: estado.filtros.hayFiltros,
-                          alCambiar: () => setState(() {}),
-                          alFiltrar: _filtrar,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: _Busqueda(
+                                controlador: _consulta,
+                                hayFiltros: estado.filtros.hayFiltros,
+                                alCambiar: () => setState(() {}),
+                                alFiltrar: _filtrar,
+                              ),
+                            ),
+                            const SizedBox(width: EspaciadoCampo.s),
+                            _Campana(),
+                          ],
                         ),
                       ),
                       const SizedBox(height: EspaciadoCampo.s),
@@ -601,6 +612,10 @@ class _SeleccionSolicitud extends StatelessWidget {
               icono: hoy ? Icons.schedule_rounded : Icons.check_circle_rounded,
             ),
           ],
+        ),
+        DistanciaAlLoteVista(
+          lote: s.ubicacion,
+          servicio: context.read<DependenciasEjecucion>().ubicacion,
         ),
         const SizedBox(height: EspaciadoCampo.xs),
         Text(
@@ -1132,6 +1147,20 @@ class _HojaFiltrosState extends State<_HojaFiltros> {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// La campana de «Mis notificaciones», junto a la búsqueda. Con el
+/// presentador de la composición, lo nuevo sale también como notificación
+/// del sistema.
+class _Campana extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final deps = context.read<DependenciasNegociacion>();
+    return CampanaAvisos(
+      repositorio: deps.bandeja,
+      presentador: deps.presentador,
     );
   }
 }

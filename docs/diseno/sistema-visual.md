@@ -1,6 +1,6 @@
-# Sistema visual de Agrocom
+# Sistema visual de DronAgro
 
-Agrocom es un marketplace de fumigación con drones: el cliente solicita un servicio, los proveedores (pilotos y dueños de drones) ofertan y lo ejecutan. La interfaz móvil es la fortaleza del producto y se publica en Android, iOS y iPad con dos flavors: `cliente` (online-first) y `piloto` (offline en el lote).
+DronAgro (titular: Agrocom) es un marketplace de fumigación con drones: el cliente solicita un servicio, los proveedores (pilotos y dueños de drones) ofertan y lo ejecutan. La interfaz móvil es la fortaleza del producto y se publica en Android, iOS y iPad con dos flavors: `cliente` (online-first) y `piloto` (offline en el lote).
 
 Este documento fija el lenguaje visual común. El código vive en `lib/nucleo/ui/`; la vitrina (`lib/nucleo/ui/vitrina_campo/`, pestaña **Sistema**) lo muestra corriendo; las capturas están en `docs/diseno/capturas/`. Las decisiones de librerías están en `docs/decisiones/0009-sistema-visual-y-librerias-ui.md`.
 
@@ -97,7 +97,9 @@ Una sola sombra sutil (`ElevacionCampo`): en claro `0 1 2 / 6 %` más `0 4 14 / 
 
 ## 6. Iconografía
 
-Una sola familia, Material Icons redondeados (`Icons.*_rounded` y `_outlined` para el estado inactivo), 24 px por defecto, 28 px en barras de calificación. El estado activo cambia de contorno a relleno. Un ícono solo, sin texto, lleva `tooltip` o `Semantics.label`. El isotipo de Agrocom se usa únicamente como marca (launcher, encabezado de sesión).
+Material Icons redondeados (`Icons.*_rounded` y `_outlined` para el estado inactivo) como base, 24 px por defecto, 28 px en barras de calificación. El estado activo cambia de contorno a relleno. Un ícono solo, sin texto, lleva `tooltip` o `Semantics.label`. El isotipo de la marca se usa únicamente como marca (launcher, encabezado de sesión).
+
+**Íconos dedicados del dominio** (ADR 0028): lo que Material no cubre — la flota de drones Agras (T10 a T50), el tanque de pulverizado, el lote, el cultivo, la batería, el mando RC, la hectárea, el check de equipo y el piloto (persona con mando y dron, distintivo de la app del piloto) — son SVG propios en `assets/iconos/`, con el mismo trazo (2 px, cuadrícula 24×24) y pintados con `IconoAgrocom`, misma API que `Icon` (`semanticLabel`, `color` de `PaletaCampo`, tamaño de `TamanoIconoCampo`). Son siluetas genéricas por categoría, nunca una copia del isotipo real de un fabricante. Vitrina en la pestaña **Íconos**.
 
 ## 7. Motion
 
@@ -122,6 +124,8 @@ Reglas:
 5. Háptica (`HapticaCampo`): `seleccion` al cambiar una selección o tomar una foto, `confirmacion` al aceptar una oferta o confirmar un cierre o una incidencia, `alerta` en una oferta por vencer y en un error. Nunca es el único canal de feedback.
 6. Ningún elemento anima en bucle salvo el esqueleto de carga y el indicador de sincronización activa. Con movimiento reducido los dos quedan quietos.
 
+**Transiciones de página** (`TransicionesCampo`, `lib/nucleo/ui/transiciones_campo.dart`): `.detalle()` para navegación maestro→detalle (la página nueva entra desde la derecha, la actual se atenúa un poco) y `.modal()` para una pantalla completa que se apila (entra desde abajo con un fundido, como el mapa expandido). Ninguna pantalla construye su propia `PageRouteBuilder`; las dos respetan "reducir movimiento" cayendo a un fundido simple.
+
 ## 8. Componentes
 
 Catálogo `*Campo` en `lib/nucleo/ui/componentes/` (un solo import: `componentes_campo.dart`).
@@ -143,8 +147,17 @@ Catálogo `*Campo` en `lib/nucleo/ui/componentes/` (un solo import: `componentes
 | `CollageFotosCampo` | Foto grande, foto y bloque ámbar con el dato de avance, con la hora en mono sobre cada foto. |
 | `BannerSinSenalCampo` | Franja ámbar superior «Sin señal · …» con ícono. |
 | `StepperCampo` | Entero ±1 con la cifra en mono y botones de 56 px (72 px en campo). |
-| `HojaInferiorCampo` | Hoja inferior de radio 32 con manija de 36×4; `mostrarHojaInferiorCampo` la abre como modal. |
+| `HojaInferiorCampo` | Hoja inferior de radio 32 con manija de 36×4; `mostrarHojaInferiorCampo` la abre como modal. El contenido va en un scroll acotado al 90 % del alto: con el texto al 200 % se desplaza, nunca desborda. |
 | `CifraCampo` | Cifra de negocio en mono con su unidad. |
+| `ListaPaginadaCampo<T>` | Lista con paginación por páginas y `pull-to-refresh`, lista para un bloc: esqueleto de carga inicial, esqueleto al pie al pedir la página siguiente, fin real, error (inicial y de página) con reintentar, vacío y sin red. |
+| `EsqueletoTarjetaOfertaCampo`, `EsqueletoFilaListaCampo`, `EsqueletoPerfilCampo`, `EsqueletoMapaCampo` | Variantes de `EsqueletoCampo` recortadas a la forma real del componente que van a reemplazar. |
+| `BotonEnvioCampo` | Botón con el ciclo de un envío al servidor: inactivo → enviando → éxito (tilde, con háptica de confirmación) o error (contorno rojo con "reintentar", con háptica de alerta). |
+| `MenuAccionesCampo` | Menú de acciones (⋯) para el encabezado — agrupa lo secundario de una pantalla en vez de sumar botones sueltos. |
+| `ChipNotaCampo` | Aviso jerarquizado (información, éxito, advertencia, error, solo lectura), en variante chip compacta o banner de ancho completo con acción; cada tipo lleva su propio ícono, nunca solo color. |
+| `mostrarSelectorOpcionesCampo` | Abre una hoja inferior con una lista de opciones de elección única (con la tilde en la elegida) en vez de un diálogo con radios. |
+| `TarjetaNotificacionCampo` | Notificación de la bandeja dentro de la app: ícono del canal, título, cuerpo (dos líneas), cuándo llegó y punto de "no leída"; comparte estilo con el canal nativo vía `CanalNotificacionCampo`. |
+| `IconoAgrocom` | Ícono dedicado del dominio (ver §6); misma API que `Icon`. |
+| `MapaExpandibleCampo` (`lib/nucleo/marketplace/ui/`) | Miniatura de `MapaLote` que al tocarla apila una página con el mapa completo, controles de zoom/recentrado de 48 px y cierre; transición con `TransicionesCampo.modal`. |
 | Botones, tarjetas, badges, campos, listas, banners | Catálogo base (ADR 0008), modo campo. |
 
 Los botones principales y secundarios del tema (`FilledButton`, `OutlinedButton`) están configurados por modo con el alto táctil correspondiente. `BotonPrimarioCampo` y `BotonSecundarioCampo` tienen 56 px de alto mínimo y crecen con el texto escalado; aceptan un ícono que acompaña a la etiqueta.

@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
-import '../../../../ui/componentes/logo_agrocom_campo.dart';
+import '../../../../auth/cuenta/domain/cuenta_seguridad.dart';
+import '../../../../auth/cuenta/presentation/cuenta_en_eliminacion_pantalla.dart';
+import '../../../../auth/cuenta/presentation/recuperar_acceso_pantalla.dart';
+import '../../../../auth/presentation/bloqueo_biometrico_widgets.dart';
+import '../../../../ui/componentes/encabezado_de_marca.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../ui/boton_principal_marketplace.dart';
@@ -10,14 +14,16 @@ import '../../../ui/campo_formulario_marketplace.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../domain/acceso_proveedor.dart';
 import 'acceso_cubit.dart';
+import 'portada_piloto_pantalla.dart';
 import 'registro_proveedor_pantalla.dart';
 
 /// La puerta de la app real del piloto: mientras no hay
 /// sesión muestra el ingreso; con sesión, [construir] arma la superficie.
-class PuertaAcceso extends StatelessWidget {
+class PuertaAcceso extends StatefulWidget {
   const PuertaAcceso({
     required this.construir,
     this.permiteRegistro = true,
+    this.conPortada = false,
     this.nota,
     super.key,
   });
@@ -31,6 +37,22 @@ class PuertaAcceso extends StatelessWidget {
   /// antes de operar (ADR 0004).
   final String? nota;
 
+  /// Antes del ingreso muestra la portada del piloto («Qué puedes hacer como
+  /// piloto»). Se ve una vez por arranque, mientras no hay sesión.
+  final bool conPortada;
+
+  @override
+  State<PuertaAcceso> createState() => _PuertaAccesoState();
+}
+
+class _PuertaAccesoState extends State<PuertaAcceso> {
+  late bool _verPortada = widget.conPortada;
+
+  Widget Function(BuildContext, SesionProveedor) get construir =>
+      widget.construir;
+  bool get permiteRegistro => widget.permiteRegistro;
+  String? get nota => widget.nota;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AccesoCubit, AccesoEstado>(
@@ -38,10 +60,23 @@ class PuertaAcceso extends StatelessWidget {
         AccesoVerificando() => const Scaffold(
           body: Center(child: CircularProgressIndicator()),
         ),
+        AccesoSinSesion() when _verPortada => PortadaPilotoPantalla(
+          alEntrar: () => setState(() => _verPortada = false),
+          alRegistrarse: permiteRegistro ? () => abrirRegistro(context) : null,
+        ),
         AccesoSinSesion() => IngresoProveedorPantalla(
           estado: estado,
           permiteRegistro: permiteRegistro,
           nota: nota,
+        ),
+        AccesoBloqueado(:final desbloqueando) => PantallaBloqueoBiometrico(
+          desbloqueando: desbloqueando,
+          alDesbloquear: context.read<AccesoCubit>().desbloquear,
+          alUsarContrasena: () => context.read<AccesoCubit>().usarContrasena(),
+        ),
+        AccesoEnEliminacion() => CuentaEnEliminacionPantalla(
+          alConservada: context.read<AccesoCubit>().cuentaConservada,
+          alCerrarSesion: context.read<AccesoCubit>().salir,
         ),
         AccesoDentro(:final sesion) => construir(context, sesion),
       },
@@ -78,6 +113,19 @@ class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
     super.dispose();
   }
 
+  /// «Olvidé mi contraseña»: al terminar deja el usuario en el campo.
+  Future<void> _recuperarAcceso() async {
+    final usuario = await abrirRecuperarAcceso(
+      context,
+      app: AppCuenta.proveedor,
+      identificador: _usuario.text,
+    );
+    if (usuario != null && usuario.isNotEmpty && mounted) {
+      _usuario.text = usuario;
+      _contrasena.clear();
+    }
+  }
+
   void _entrar() {
     if (!(_clave.currentState?.validate() ?? false)) return;
     context.read<AccesoCubit>().ingresar(_usuario.text, _contrasena.text);
@@ -97,7 +145,7 @@ class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
             child: ListView(
               padding: const EdgeInsets.all(EspaciadoCampo.xl),
               children: [
-                const Align(child: LogoAgrocomCampo(ancho: 150)),
+                const EncabezadoDeMarca(rol: RolApp.piloto),
                 const SizedBox(height: EspaciadoCampo.xl),
                 Text(
                   l10n.proveedorAccesoEntraCuenta,
@@ -155,7 +203,18 @@ class _IngresoProveedorPantallaState extends State<IngresoProveedorPantalla> {
                 BotonPrincipalMarketplace(
                   texto: l10n.proveedorAccesoEntrar,
                   cargando: e.enviando,
-                  onPressed: _entrar,
+                  onPressed: e.enEspera ? null : _entrar,
+                ),
+                const SizedBox(height: EspaciadoCampo.s),
+                TextButton(
+                  key: const Key('ingreso-recuperar'),
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size.fromHeight(
+                      ObjetivoTactilCampo.guantes,
+                    ),
+                  ),
+                  onPressed: e.enviando ? null : _recuperarAcceso,
+                  child: Text(l10n.cuentaOlvideContrasena),
                 ),
                 if (widget.permiteRegistro) ...[
                   const SizedBox(height: EspaciadoCampo.l),

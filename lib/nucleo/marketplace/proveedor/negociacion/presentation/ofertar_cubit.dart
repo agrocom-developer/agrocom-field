@@ -44,6 +44,7 @@ class OfertarCubit extends Cubit<OfertarEstado> {
     required TipoOferta tipo,
     Decimal? precioHa,
     String? nota,
+    String? justificacionPrecio,
   }) async {
     if (state.enviando) return;
     final clave = _clave ??= _uuid.v4();
@@ -55,6 +56,7 @@ class OfertarCubit extends Cubit<OfertarEstado> {
         tipo: tipo,
         precioHa: precioHa,
         nota: nota,
+        justificacionPrecio: justificacionPrecio,
       );
       _clave = null;
       emit(OfertarEstado(estado: FaseOferta.enviada, oferta: oferta));

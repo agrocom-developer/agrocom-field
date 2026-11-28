@@ -7,6 +7,7 @@ import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tipografia_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../ui/boton_principal_marketplace.dart';
+import '../../../precio/presentation/campo_justificacion_precio.dart';
 import '../../../ui/marketplace_ui.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
@@ -280,8 +281,11 @@ class _Cuerpo extends StatelessWidget {
                   precioPorHectarea: CifrasNegociacion.bsHa(r.precioHa),
                   total: CifrasNegociacion.bs(r.total),
                   nota: r.publicado
-                      ? l10n.proveedorNegociacionPublicado
-                      : r.nota,
+                      ? [
+                          l10n.proveedorNegociacionPublicado,
+                          ?r.justificacion,
+                        ].join(' · ')
+                      : r.justificacion ?? r.nota,
                   conBarra: false,
                 ),
               ),
@@ -391,13 +395,27 @@ class _AvisoTurno extends StatelessWidget {
 
 /// El panel de abajo: el stepper y las dos salidas (aceptar o enviar), o lo
 /// que corresponde si ya no es tu turno.
-class _Panel extends StatelessWidget {
+class _Panel extends StatefulWidget {
   const _Panel({required this.estado});
 
   final NegociacionEstado estado;
 
   @override
+  State<_Panel> createState() => _PanelState();
+}
+
+class _PanelState extends State<_Panel> {
+  final justificacion = TextEditingController();
+
+  @override
+  void dispose() {
+    justificacion.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final estado = widget.estado;
     final l10n = AppLocalizations.of(context);
     final paleta = context.paleta;
     final cubit = context.read<NegociacionCubit>();
@@ -488,6 +506,12 @@ class _Panel extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+            const SizedBox(height: EspaciadoCampo.m),
+            CampoJustificacionPrecio(
+              controller: justificacion,
+              enabled: !estado.enviando,
+              onChanged: cubit.cambiarJustificacion,
             ),
             const SizedBox(height: EspaciadoCampo.m),
           ],

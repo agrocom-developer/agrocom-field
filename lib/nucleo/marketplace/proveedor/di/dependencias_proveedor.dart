@@ -4,7 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../camara/selector_imagen.dart';
 import '../../../evidencias/compresor_adaptativo.dart';
+import '../../../auth/bloqueo_biometrico.dart';
+import '../../../auth/cuenta/data/cuenta_seguridad_demo.dart';
+import '../../../auth/cuenta/domain/cuenta_seguridad.dart';
 import '../../../notificaciones/push/dispositivos_push_repositorio.dart';
+import '../../../permisos/data/gestor_permisos_plataforma.dart';
+import '../../../permisos/domain/permiso.dart';
 import '../../../notificaciones/push/token_push_store.dart';
 import '../../../notificaciones/bandeja/data/bandeja_demo.dart';
 import '../../../notificaciones/bandeja/data/bandeja_red.dart';
@@ -16,11 +21,15 @@ import '../../foto_perfil/foto_perfil_repositorio.dart';
 import '../../foto_preparador.dart';
 import '../../pago/pagos_repositorio.dart';
 import '../acceso/domain/acceso_proveedor.dart';
+import '../cuenta/data/cuenta_proveedor_demo.dart';
+import '../cuenta/data/cuenta_proveedor_red.dart';
+import '../cuenta/domain/cuenta_proveedor.dart';
 import '../demo/almacen_demo_proveedor.dart';
 import '../dron/data/drones_demo.dart';
 import '../dron/data/drones_red.dart';
 import '../dron/domain/drones_repositorio.dart';
 import '../ejecucion/di/dependencias_ejecucion.dart';
+import '../ejecucion/domain/ejecucion.dart';
 import '../negociacion/di/dependencias_negociacion.dart';
 import '../../../cuenta/datos/data/datos_personales_demo.dart';
 import '../../../cuenta/datos/data/datos_personales_red.dart';
@@ -35,7 +44,7 @@ import '../../../api/marketplace_http.dart';
 /// solicitudes, mis ofertas, chat y avisos), la ejecución del servicio
 /// adjudicado, el perfil y los drones. La monta el flavor `piloto` (ADR 0012).
 class DependenciasProveedor {
-  const DependenciasProveedor({
+  DependenciasProveedor({
     required this.negociacion,
     required this.ejecucion,
     required this.drones,
@@ -44,10 +53,15 @@ class DependenciasProveedor {
     required this.pagos,
     required this.preparadorFoto,
     required this.push,
+    CuentaProveedorRepositorio? cuenta,
+    GestorPermisos? permisos,
+    CuentaSeguridadRepositorio? seguridad,
     this.contrasena,
     this.datosPersonales,
     this.bandeja,
-  });
+  }) : cuenta = cuenta ?? CuentaProveedorDemo(),
+       permisos = permisos ?? GestorPermisosEnMemoria(),
+       seguridad = seguridad ?? CuentaSeguridadDemo();
 
   factory DependenciasProveedor.demo(
     AlmacenDemoProveedor almacen, {
@@ -95,6 +109,7 @@ class DependenciasProveedor {
     MarketplaceHttp http, {
     required DependenciasNegociacion negociacion,
     required DependenciasEjecucion ejecucion,
+    CuentaSeguridadRepositorio? seguridad,
   }) => DependenciasProveedor(
     negociacion: negociacion,
     ejecucion: ejecucion,
@@ -110,6 +125,9 @@ class DependenciasProveedor {
       CompresorEvidenciaAdaptativo(),
     ),
     push: DispositivosPushRed(http, TokenPushStoreSeguro()),
+    cuenta: CuentaProveedorRed(http),
+    permisos: GestorPermisosPlataforma(),
+    seguridad: seguridad,
   );
 
   final DependenciasNegociacion negociacion;
@@ -139,6 +157,16 @@ class DependenciasProveedor {
   /// Token de push del aparato; se retira al cerrar sesión.
   final DispositivosPushRepositorio push;
 
+  /// Estado de aprobación, documentos y disponibilidad (ADR 0024).
+  final CuentaProveedorRepositorio cuenta;
+
+  /// Permisos del sistema con su explicación previa (ADR 0026).
+  final GestorPermisos permisos;
+
+  /// Seguridad de la cuenta: recuperar el acceso, contraseña, teléfono y
+  /// eliminar la cuenta (códigos por WhatsApp, SMS o correo).
+  final CuentaSeguridadRepositorio seguridad;
+
   /// Para sumarlos al `MultiRepositoryProvider` del flavor.
   List<RepositoryProvider<Object>> get proveedores => [
     ...negociacion.proveedores,
@@ -148,6 +176,13 @@ class DependenciasProveedor {
     RepositoryProvider<FotoPerfilRepositorio>.value(value: fotoPerfil),
     RepositoryProvider<PagosRepositorio>.value(value: pagos),
     RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
+    RepositoryProvider<CuentaProveedorRepositorio>.value(value: cuenta),
+    RepositoryProvider<GestorPermisos>.value(value: permisos),
+    RepositoryProvider<CuentaSeguridadRepositorio>.value(value: seguridad),
+    // Antes de eliminar la cuenta hay que subir lo del lote.
+    RepositoryProvider<PendientesDeSincronizacion>.value(
+      value: _PendientesDelLote(ejecucion.repositorio),
+    ),
     if (contrasena != null)
       RepositoryProvider<ContrasenaRepositorio>.value(value: contrasena!),
     if (bandeja != null)
@@ -169,6 +204,8 @@ class DependenciasAccesoProveedor {
     required this.registroDrones,
     this.sesionExpirada,
     this.nota,
+    this.bloqueo,
+    this.renovarSesion,
   });
 
   final AccesoProveedorRepositorio acceso;
@@ -179,4 +216,33 @@ class DependenciasAccesoProveedor {
 
   /// Host y versión al pie del ingreso.
   final String? nota;
+
+  /// Desbloqueo con huella o rostro (ADR 0026); sin él, la app entra directo
+  /// con la sesión guardada.
+  final BloqueoBiometrico? bloqueo;
+
+  /// Renueva el token al desbloquear con la biometría si le quedan pocos
+  /// días (`POST /api/auth/renovar`).
+  final RenovadorSesion? renovarSesion;
+}
+
+/// Lo que el lote tiene sin subir, visto desde la eliminación de la cuenta.
+class _PendientesDelLote implements PendientesDeSincronizacion {
+  _PendientesDelLote(this._repositorio);
+
+  final EjecucionRepositorio _repositorio;
+
+  @override
+  Future<int> cantidad() async {
+    // Si la base no responde pronto, no se bloquea la pantalla: el servidor
+    // sigue decidiendo.
+    final servicios = await _repositorio.observar().first.timeout(
+      const Duration(seconds: 3),
+      onTimeout: () => const <ServicioEnLote>[],
+    );
+    return servicios.fold<int>(0, (suma, s) => suma + s.pendientes);
+  }
+
+  @override
+  Future<void> sincronizar() => _repositorio.sincronizarAhora();
 }

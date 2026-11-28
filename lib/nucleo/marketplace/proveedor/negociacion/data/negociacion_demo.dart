@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 
 import '../../../dominio/dominio.dart';
+import '../../../precio/justificacion_precio.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
 
@@ -27,6 +28,8 @@ class AlmacenNegociacionDemo {
         esDefinitiva: false,
         venceEn: ahora.add(const Duration(hours: 20)),
         nota: 'Tengo otra oferta más baja. ¿Te acercas a este precio?',
+        justificacionPrecio:
+            'El lote es parejo y el acceso es bueno; por eso propongo este precio.',
         distanciaKm: Decimal.parse('3.3'),
         creadaEn: ahora.subtract(const Duration(hours: 2)),
       ),
@@ -371,6 +374,7 @@ class MercadoDemo implements MercadoRepositorio {
     required TipoOferta tipo,
     Decimal? precioHa,
     String? nota,
+    String? justificacionPrecio,
   }) => _conRed(_a, () async {
     for (final o in _a.ofertas) {
       if (o.uuidCliente == uuidCliente) return o;
@@ -392,6 +396,7 @@ class MercadoDemo implements MercadoRepositorio {
       esDefinitiva: false,
       venceEn: _a.reloj().add(const Duration(hours: 48)),
       nota: nota,
+      justificacionPrecio: JustificacionPrecio.normalizar(justificacionPrecio),
       creadaEn: _a.reloj(),
     );
     _a.agregarOferta(oferta);
@@ -425,6 +430,7 @@ class NegociacionDemo implements NegociacionRepositorio {
             esDefinitiva: o.esDefinitiva,
             venceEn: o.venceEn,
             nota: o.nota,
+            justificacionPrecio: o.justificacionPrecio,
             distanciaKm: o.distanciaKm,
             creadaEn: o.creadaEn,
             respondidaEn: o.respondidaEn,
@@ -449,6 +455,7 @@ class NegociacionDemo implements NegociacionRepositorio {
       esDefinitiva: o.esDefinitiva,
       venceEn: o.venceEn,
       nota: o.nota,
+      justificacionPrecio: o.justificacionPrecio,
       distanciaKm: o.distanciaKm,
       creadaEn: o.creadaEn,
       respondidaEn: _a.reloj(),
@@ -469,6 +476,7 @@ class NegociacionDemo implements NegociacionRepositorio {
     required Decimal precioHa,
     required String uuidCliente,
     String? nota,
+    String? justificacionPrecio,
   }) => _conRed(_a, () async {
     final anterior = _buscar(ofertaId);
     _con(anterior, EstadoOferta.reemplazada);
@@ -486,6 +494,7 @@ class NegociacionDemo implements NegociacionRepositorio {
       esDefinitiva: false,
       venceEn: _a.reloj().add(const Duration(hours: 48)),
       nota: nota,
+      justificacionPrecio: JustificacionPrecio.normalizar(justificacionPrecio),
       creadaEn: _a.reloj(),
     );
     _a.agregarOferta(nueva);

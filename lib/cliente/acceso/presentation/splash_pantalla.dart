@@ -89,6 +89,11 @@ class _SplashPantallaState extends State<SplashPantalla>
                     child: const LogoAgrocomCampo(ancho: 190, sombra: false),
                   ),
                 ),
+                const SizedBox(height: EspaciadoCampo.m),
+                FadeTransition(
+                  opacity: _logo,
+                  child: const DistintivoRol(rol: RolApp.cliente),
+                ),
                 const SizedBox(height: EspaciadoCampo.xl),
                 ScaleTransition(
                   scale: _linea,

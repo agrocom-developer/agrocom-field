@@ -18,6 +18,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:agrocom_field/cliente/demo/almacen_demo_cliente.dart';
 import 'package:agrocom_field/cliente/di/dependencias_cliente.dart';
+import 'package:agrocom_field/cliente/ofertas/domain/comparador_ofertas.dart';
 import 'package:agrocom_field/cliente/ofertas/domain/oferta_recibida.dart';
 import 'package:agrocom_field/cliente/ofertas/domain/ofertas_repositorio.dart';
 import 'package:agrocom_field/cliente/ofertas/presentation/ofertas_pantalla.dart';
@@ -56,8 +57,10 @@ class _SolicitudesFijas implements SolicitudesRepositorio {
 /// Ofertas que nunca terminan de cargar.
 class _OfertasPendientes implements OfertasRepositorio {
   @override
-  Future<List<OfertaRecibida>> deLaSolicitud(String solicitudId) =>
-      Completer<List<OfertaRecibida>>().future;
+  Future<List<OfertaRecibida>> deLaSolicitud(
+    String solicitudId, {
+    FiltrosOfertas filtros = const FiltrosOfertas(),
+  }) => Completer<List<OfertaRecibida>>().future;
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
@@ -380,6 +383,8 @@ void main() {
     unica('ofertas_contraoferta_enviada', (tester, v) async {
       final almacen = almacenDePrueba();
       await abrir(tester, almacen, _ofertas('4101'), v);
+      await tester.tap(find.byKey(const ValueKey('oferta-of-4101-b')));
+      await asentar(tester);
       await tester.tap(find.byKey(const ValueKey('contraofertar-of-4101-b')));
       await asentar(tester);
       await tester.enterText(find.byKey(const ValueKey('hoja-precio')), '107');
@@ -391,6 +396,8 @@ void main() {
     unica('ofertas_hoja_contraoferta', (tester, v) async {
       final almacen = almacenDePrueba();
       await abrir(tester, almacen, _ofertas('4101'), v);
+      await tester.tap(find.byKey(const ValueKey('oferta-of-4101-b')));
+      await asentar(tester);
       await tester.tap(find.byKey(const ValueKey('contraofertar-of-4101-b')));
       await asentar(tester);
       await tester.enterText(find.byKey(const ValueKey('hoja-precio')), '107');
@@ -400,6 +407,8 @@ void main() {
     unica('ofertas_confirmar_eleccion', (tester, v) async {
       final almacen = almacenDePrueba();
       await abrir(tester, almacen, _ofertas('4101'), v);
+      await tester.tap(find.byKey(const ValueKey('oferta-of-4101-b')));
+      await asentar(tester);
       await tester.tap(find.byKey(const ValueKey('aceptar-of-4101-b')));
       await asentar(tester);
     });
@@ -419,6 +428,8 @@ void main() {
     unica('ofertas_cambio_mientras_decidia', (tester, v) async {
       final almacen = almacenDePrueba();
       await abrir(tester, almacen, _ofertas('4101'), v);
+      await tester.tap(find.byKey(const ValueKey('oferta-of-4101-b')));
+      await asentar(tester);
       // El piloto retiró su oferta mientras el cliente la miraba.
       almacen.rechazarOferta(almacen.ofertaPorId('of-4101-b')!);
       await tester.tap(find.byKey(const ValueKey('aceptar-of-4101-b')));

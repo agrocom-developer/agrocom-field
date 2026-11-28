@@ -6,6 +6,9 @@ import 'package:flutter/painting.dart';
 abstract final class SobreFotoCampo {
   static const Color texto = Color(0xFFFFFFFF);
   static const Color textoSecundario = Color(0xFFE6EBE7);
+
+  /// Fondo oscuro translúcido del distintivo de rol sobre una foto.
+  static const Color fondoDistintivo = Color(0x99101418);
   static const Color puntoInactivo = Color(0x80FFFFFF);
 
   /// Velo superior: oscurece la barra de estado.

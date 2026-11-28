@@ -117,7 +117,16 @@ void main() {
     await tester.tap(find.text('Comparar ofertas'));
     await tester.pumpAndSettle();
     expect(find.text('Comparar ofertas'), findsWidgets);
-    // Las tres ofertas, la de menor precio primero y marcada.
+    // El orden predeterminado es «Recomendado»; se ordena por precio para que
+    // la de menor precio vaya primera y marcada.
+    await tester.tap(find.byKey(const ValueKey('abrir-filtros')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('orden-precio')));
+    await tester.tap(find.byKey(const ValueKey('orden-precio')));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.byKey(const ValueKey('aplicar-filtros')));
+    await tester.tap(find.byKey(const ValueKey('aplicar-filtros')));
+    await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('oferta-of-4101-b')), findsOneWidget);
     expect(find.text('ELEGIDO'), findsOneWidget);
     expect(find.textContaining('104', findRichText: true), findsWidgets);

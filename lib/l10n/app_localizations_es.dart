@@ -677,7 +677,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get componentesArrastraParaVerMas => 'Arrastra para ver más o menos';
 
   @override
-  String get componentesAgrocom => 'Agrocom';
+  String get componentesAgrocom => 'DronAgro';
 
   @override
   String componentesOfertaServicioQuedanPara(
@@ -811,7 +811,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get accesoIngresar => 'Ingresar';
 
   @override
-  String get accesoPrimeraVezAgrocom => '¿Primera vez en Agrocom?';
+  String get accesoPrimeraVezAgrocom => '¿Primera vez en DronAgro?';
 
   @override
   String get accesoCrearCuenta => 'Crear cuenta';
@@ -1377,9 +1377,6 @@ class AppLocalizationsEs extends AppLocalizations {
   String get ofertasOrdenCalificacion => 'Mejor calificación';
 
   @override
-  String get ofertasOrdenDistancia => 'Más cerca';
-
-  @override
   String get ofertasOfertaCambio => 'La oferta cambió.';
 
   @override
@@ -1617,7 +1614,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get solicitudesListos => 'Terminadas';
 
   @override
-  String get solicitudesFumigadoConAgrocom => 'Fumigado con Agrocom';
+  String get solicitudesFumigadoConAgrocom => 'Fumigado con DronAgro';
 
   @override
   String get solicitarQueLoteFumigamos => '¿Qué lote fumigamos?';
@@ -2170,7 +2167,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get pagoPilotoConfirmoQueRecibio =>
-      'El piloto confirmó que recibió el pago. Gracias por usar Agrocom.';
+      'El piloto confirmó que recibió el pago. Gracias por usar DronAgro.';
 
   @override
   String get pagoPudimosRevisarPago => 'No pudimos revisar el pago.';
@@ -2227,7 +2224,8 @@ class AppLocalizationsEs extends AppLocalizations {
       'Publica tu lote, recibe ofertas de pilotos y elige. El pago es directo con el piloto.';
 
   @override
-  String get marketplaceAccesoComoVasUsarAgrocom => '¿Cómo vas a usar Agrocom?';
+  String get marketplaceAccesoComoVasUsarAgrocom =>
+      '¿Cómo vas a usar DronAgro?';
 
   @override
   String get marketplaceAccesoEligeRol => 'Elige tu rol';
@@ -3828,6 +3826,1413 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
+  String get permisosCamaraQuienVe =>
+      'Solo las ve el equipo de Agrocom que las revisa y, en las fotos de avance, el cliente del servicio.';
+
+  @override
+  String get permisosCamaraSin =>
+      'Sin la cámara no puedes enviar fotos desde la app.';
+
+  @override
+  String get permisosUbicacionQuienVe =>
+      'La ve el cliente del servicio en curso y, solo en un auxilio, soporte de Agrocom. Puedes desactivarla cuando quieras.';
+
+  @override
+  String get permisosUbicacionSin =>
+      'Sin la ubicación no puedes compartir tu posición con el cliente ni avisar dónde estás en un auxilio.';
+
+  @override
+  String get permisosNotificacionesQuienVe =>
+      'Las notificaciones solo llegan a este teléfono. En Notificaciones puedes apagar las que no quieras.';
+
+  @override
+  String get permisosNotificacionesSin =>
+      'Sin notificaciones solo te enteras de las novedades al abrir la app.';
+
+  @override
+  String get permisosDenegadoAjustes =>
+      'Puedes activarlo en los ajustes del teléfono. Al volver, la app lo toma al instante.';
+
+  @override
+  String get permisosDenegadoReintento =>
+      'Si cambias de idea, te lo volvemos a pedir cuando lo necesites.';
+
+  @override
+  String get permisosCerrar => 'Cerrar';
+
+  @override
+  String get biometriaBloqueadaTitulo => 'Sesión bloqueada';
+
+  @override
+  String get biometriaBloqueadaDetalle =>
+      'Usa tu huella o tu rostro para ingresar. Lo que hayas guardado en el teléfono sigue a salvo.';
+
+  @override
+  String get biometriaDesbloquear => 'Desbloquear';
+
+  @override
+  String get biometriaUsarContrasena => 'Ingresar con mi contraseña';
+
+  @override
+  String get biometriaMotivoDesbloqueo =>
+      'Confirma que eres tú para abrir DronAgro';
+
+  @override
+  String get biometriaMotivoActivar =>
+      'Confirma tu huella o rostro para activar el desbloqueo';
+
+  @override
+  String get biometriaUsaContrasena =>
+      'No pudimos usar la huella o el rostro. Ingresa con tu contraseña.';
+
+  @override
+  String get biometriaAjusteTitulo => 'Desbloquear con huella o rostro';
+
+  @override
+  String get biometriaAjusteDetalle =>
+      'Al abrir la app te pedimos tu huella o rostro en vez de ingresar directo. No se envía a DronAgro.';
+
+  @override
+  String get biometriaAjusteSinRegistrar =>
+      'Registra una huella o un rostro en los ajustes del teléfono para activarlo.';
+
+  @override
+  String get biometriaAjusteSinHardware =>
+      'Este teléfono no tiene lector de huella ni de rostro.';
+
+  @override
+  String get biometriaNoConfirmada =>
+      'No pudimos confirmar tu huella o rostro. El desbloqueo sigue desactivado.';
+
+  @override
+  String get cuentaEnRevisionTitulo => 'Tu cuenta está en revisión';
+
+  @override
+  String get cuentaRechazadaTitulo => 'Tu cuenta fue rechazada';
+
+  @override
+  String get cuentaSuspendidaTitulo => 'Tu cuenta está suspendida';
+
+  @override
+  String get cuentaEnRevisionDetalle =>
+      'Un administrador revisa tus datos y documentos. Mientras tanto puedes ver tu perfil y tu dron, pero todavía no ves el mapa de solicitudes ni puedes ofertar.';
+
+  @override
+  String get cuentaRechazadaDetalle =>
+      'Corrige lo que te indicamos, vuelve a subir lo que haga falta y envíala otra vez a revisión.';
+
+  @override
+  String get cuentaSuspendidaDetalle =>
+      'No puedes ver el mapa ni ofertar mientras dure la suspensión. Escríbenos si necesitas ayuda.';
+
+  @override
+  String cuentaMotivo(String motivo) {
+    return 'Motivo: $motivo';
+  }
+
+  @override
+  String get cuentaQueFalta => 'Qué falta';
+
+  @override
+  String get cuentaNadaFalta =>
+      'No te falta ningún documento. Te avisamos cuando te aprueben.';
+
+  @override
+  String get cuentaSubirDocumentos => 'Subir documentos';
+
+  @override
+  String get cuentaReenviar => 'Volver a enviar a revisión';
+
+  @override
+  String get cuentaActualizar => 'Actualizar';
+
+  @override
+  String get cuentaErrorCarga => 'No pudimos revisar el estado de tu cuenta';
+
+  @override
+  String get cuentaErrorDetalle => 'Vuelve a intentarlo en un momento.';
+
+  @override
+  String get cuentaSinRed =>
+      'Sin conexión. Necesitamos señal para revisar tu cuenta.';
+
+  @override
+  String get cuentaActualizandoSemantica =>
+      'Actualizando el estado de tu cuenta';
+
+  @override
+  String get documentosTitulo => 'Mis documentos';
+
+  @override
+  String get documentosIntro =>
+      'Toma una foto de cada documento con la cámara. Se envían por conexión segura y no se guardan en tu teléfono.';
+
+  @override
+  String get documentosTipoIdentidad => 'Documento de identidad';
+
+  @override
+  String get documentosTipoLicenciaPiloto => 'Licencia de piloto';
+
+  @override
+  String get documentosTipoHabilitacionDron => 'Habilitación del dron';
+
+  @override
+  String get documentosTipoSeguroResponsabilidad => 'Seguro de responsabilidad';
+
+  @override
+  String get documentosTipoRegistroDron => 'Matrícula del dron';
+
+  @override
+  String get documentosTipoCertificadoFumigacion => 'Certificado de fumigación';
+
+  @override
+  String get documentosTipoAntecedentes => 'Antecedentes';
+
+  @override
+  String get documentosTipoOtro => 'Otro documento';
+
+  @override
+  String get documentosEtapaFaltante => 'Falta';
+
+  @override
+  String get documentosEtapaSubiendo => 'Subiendo';
+
+  @override
+  String get documentosEtapaEnRevision => 'En revisión';
+
+  @override
+  String get documentosEtapaAprobado => 'Aprobado';
+
+  @override
+  String get documentosEtapaRechazado => 'Rechazado';
+
+  @override
+  String get documentosEtapaVencido => 'Vencido';
+
+  @override
+  String get documentosEtapaError => 'No se envió';
+
+  @override
+  String get documentosTomarFoto => 'Tomar foto';
+
+  @override
+  String get documentosVolverATomar => 'Volver a tomar';
+
+  @override
+  String get documentosReintentar => 'Reintentar';
+
+  @override
+  String documentosVence(String fecha) {
+    return 'Vence el $fecha';
+  }
+
+  @override
+  String get documentosPreguntaVence => '¿Cuándo vence este documento?';
+
+  @override
+  String get documentosErrorSinRed =>
+      'Sin conexión. La foto sigue aquí: vuelve a intentarlo cuando tengas señal.';
+
+  @override
+  String get documentosErrorCarga => 'No pudimos abrir tus documentos';
+
+  @override
+  String get documentosVacio => 'No te pedimos ningún documento por ahora.';
+
+  @override
+  String get documentosVacioDetalle => 'Si falta algo, te lo mostramos aquí.';
+
+  @override
+  String documentosSemantica(String documento, String estado) {
+    return '$documento, $estado';
+  }
+
+  @override
+  String get disponibilidadTitulo => 'Disponibilidad';
+
+  @override
+  String get disponibilidadIntro =>
+      'Ocupado o en trabajo, dejas de recibir notificaciones de solicitudes nuevas. Sigues viendo el mapa y puedes ofertar.';
+
+  @override
+  String get disponibilidadDisponible => 'Disponible';
+
+  @override
+  String get disponibilidadDisponibleDetalle =>
+      'Te avisamos de las solicitudes nuevas.';
+
+  @override
+  String get disponibilidadOcupado => 'Ocupado';
+
+  @override
+  String get disponibilidadOcupadoDetalle =>
+      'No te avisamos de solicitudes nuevas.';
+
+  @override
+  String get disponibilidadEnTrabajo => 'En trabajo';
+
+  @override
+  String get disponibilidadEnTrabajoDetalle =>
+      'No te avisamos mientras estás trabajando.';
+
+  @override
+  String disponibilidadEmpresaTeMarco(String estado) {
+    return 'Tu empresa te marcó como $estado';
+  }
+
+  @override
+  String disponibilidadEmpresaOcupada(String estado) {
+    return 'Tu empresa está $estado: no recibes notificaciones de solicitudes nuevas aunque tú estés disponible.';
+  }
+
+  @override
+  String get disponibilidadSinRed =>
+      'Sin conexión. Tu disponibilidad no cambió: vuelve a intentarlo cuando tengas señal.';
+
+  @override
+  String get disponibilidadErrorCarga => 'No pudimos cargar tu disponibilidad';
+
+  @override
+  String get disponibilidadErrorDetalle => 'Vuelve a intentarlo en un momento.';
+
+  @override
+  String get disponibilidadTusAvisos => 'Tus notificaciones';
+
+  @override
+  String get disponibilidadAvisosActivos =>
+      'Notificaciones de solicitudes nuevas: activadas';
+
+  @override
+  String get disponibilidadAvisosApagados =>
+      'Notificaciones de solicitudes nuevas: desactivadas';
+
+  @override
+  String disponibilidadHectareasMinimas(String hectareas) {
+    return 'Hectáreas mínimas: $hectareas';
+  }
+
+  @override
+  String get disponibilidadCualquiera => 'cualquiera';
+
+  @override
+  String disponibilidadDepartamentosExcluidos(int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad departamentos excluidos',
+      one: '1 departamento excluido',
+      zero: 'Sin departamentos excluidos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String disponibilidadTiposExcluidos(int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad tipos de aplicación excluidos',
+      one: '1 tipo de aplicación excluido',
+      zero: 'Sin tipos de aplicación excluidos',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get disponibilidadAjustarAvisos => 'Ajustar notificaciones';
+
+  @override
+  String disponibilidadEstadoActual(String estado) {
+    return 'Estado actual: $estado';
+  }
+
+  @override
+  String get perfilCuentaDocumentos => 'Mis documentos';
+
+  @override
+  String get perfilCuentaDocumentosDetalle =>
+      'Licencia, matrícula y lo que falta para tu aprobación';
+
+  @override
+  String get perfilCuentaDisponibilidad => 'Disponibilidad';
+
+  @override
+  String get perfilCuentaDisponibilidadDetalle =>
+      'Ponte ocupado para no recibir notificaciones';
+
+  @override
+  String get listaPaginadaSinRed =>
+      'Sin conexión. Conéctate para ver esta lista.';
+
+  @override
+  String get listaPaginadaReintentar => 'Reintentar';
+
+  @override
+  String get listaPaginadaVacia => 'Todavía no hay nada para mostrar aquí.';
+
+  @override
+  String get listaPaginadaFin => 'No hay más resultados';
+
+  @override
+  String get botonEnvioExito => 'Listo';
+
+  @override
+  String get botonEnvioError => 'No se pudo enviar. Toca para reintentar';
+
+  @override
+  String get menuAccionesMas => 'Más acciones';
+
+  @override
+  String get mapaExpandibleAbrir => 'Ver el mapa en pantalla completa';
+
+  @override
+  String get mapaExpandibleCerrar => 'Cerrar el mapa';
+
+  @override
+  String get mapaExpandibleAcercar => 'Acercar';
+
+  @override
+  String get mapaExpandibleAlejar => 'Alejar';
+
+  @override
+  String get mapaExpandibleRecentrar => 'Centrar en el lote';
+
+  @override
+  String get iconoDronT10 => 'Dron Agras T10';
+
+  @override
+  String get iconoDronT20 => 'Dron Agras T20';
+
+  @override
+  String get iconoDronT25 => 'Dron Agras T25';
+
+  @override
+  String get iconoDronT30 => 'Dron Agras T30';
+
+  @override
+  String get iconoDronT40 => 'Dron Agras T40';
+
+  @override
+  String get iconoDronT50 => 'Dron Agras T50';
+
+  @override
+  String get iconoPulverizadorTanque => 'Tanque de pulverizado';
+
+  @override
+  String get iconoLote => 'Lote';
+
+  @override
+  String get iconoCultivo => 'Cultivo';
+
+  @override
+  String get iconoBateria => 'Batería';
+
+  @override
+  String get iconoMandoRc => 'Mando de radiocontrol';
+
+  @override
+  String get iconoHectarea => 'Hectárea';
+
+  @override
+  String get iconoCheckEquipo => 'Equipo aprobado';
+
+  @override
+  String get iconoPiloto => 'Piloto con control remoto';
+
+  @override
+  String get marcaNombre => 'DronAgro';
+
+  @override
+  String get marcaDistintivoPiloto => 'Piloto';
+
+  @override
+  String get marcaDistintivoCliente => 'Cliente';
+
+  @override
+  String get marcaEtiquetaPiloto => 'DronAgro, app para pilotos';
+
+  @override
+  String get marcaEtiquetaCliente => 'DronAgro, app para clientes';
+
+  @override
+  String get portadaPilotoLema =>
+      'Tu trabajo como piloto, también en el lote sin señal';
+
+  @override
+  String get portadaPilotoEntrar => 'Ingresar a mi cuenta';
+
+  @override
+  String get capacidadesTituloPiloto => 'Qué puedes hacer como piloto';
+
+  @override
+  String get capacidadesPilotoMapa =>
+      'Mira en el mapa las solicitudes abiertas, con el lote, las hectáreas y las fotos del terreno.';
+
+  @override
+  String get capacidadesPilotoOfertar =>
+      'Ofrece tu precio por hectárea con tu dron, o contraoferta al cliente.';
+
+  @override
+  String get capacidadesPilotoSinSenal =>
+      'Trabaja sin señal en el lote: lo que registras se envía cuando vuelve la red.';
+
+  @override
+  String get capacidadesPilotoRegistro =>
+      'Marca el inicio, el avance y el cierre con fotos y las hectáreas ejecutadas.';
+
+  @override
+  String get capacidadesPilotoCalificaciones =>
+      'Consulta las calificaciones que recibes y califica al cliente.';
+
+  @override
+  String get capacidadesTituloCliente => 'Qué puedes hacer como cliente';
+
+  @override
+  String get capacidadesVerCliente => 'Qué puedes hacer';
+
+  @override
+  String get capacidadesClientePublicar =>
+      'Publica una solicitud con tu precio por hectárea.';
+
+  @override
+  String get capacidadesClienteComparar =>
+      'Compara las ofertas de los pilotos.';
+
+  @override
+  String get capacidadesClienteElegir =>
+      'Elige, contraoferta o acepta la oferta que te convenga.';
+
+  @override
+  String get capacidadesClienteSeguir =>
+      'Sigue el servicio con fotos, avance y chat.';
+
+  @override
+  String get capacidadesClienteCalificar => 'Califica al piloto al terminar.';
+
+  @override
+  String get notificacionCanalOfertas => 'Ofertas nuevas';
+
+  @override
+  String get notificacionCanalServicio => 'Estado del servicio';
+
+  @override
+  String get notificacionCanalSincronizacion => 'Sincronización';
+
+  @override
+  String get notificacionCanalSistema => 'Notificaciones de DronAgro';
+
+  @override
+  String get cuentaCanalWhatsApp => 'WhatsApp';
+
+  @override
+  String get cuentaCanalSms => 'SMS';
+
+  @override
+  String get cuentaCanalCorreo => 'Correo';
+
+  @override
+  String get cuentaCanalWhatsAppDetalle => 'Al teléfono de tu cuenta';
+
+  @override
+  String get cuentaCanalSmsDetalle =>
+      'Mensaje de texto al teléfono de tu cuenta';
+
+  @override
+  String get cuentaCanalCorreoDetalle => 'Al correo de respaldo de tu cuenta';
+
+  @override
+  String get cuentaCanalNoDisponible => 'No disponible por ahora';
+
+  @override
+  String get cuentaFallaSinConexion =>
+      'No hay conexión. Revisa tu señal y vuelve a intentarlo: lo que escribiste se conserva.';
+
+  @override
+  String get cuentaFallaCodigoInvalido =>
+      'El código no es válido o ya venció. Revisa los 6 dígitos o pide uno nuevo.';
+
+  @override
+  String get cuentaFallaContrasenaIncorrecta =>
+      'Esa contraseña no es la de tu cuenta. Revísala o confirma con un código.';
+
+  @override
+  String get cuentaFallaSinCorreo =>
+      'Tu cuenta no tiene un correo de respaldo. Elige otro medio.';
+
+  @override
+  String get cuentaFallaSinTelefono =>
+      'Tu cuenta no tiene un teléfono para ese medio. Elige otro.';
+
+  @override
+  String get cuentaFallaEseMedio => 'Ese medio';
+
+  @override
+  String cuentaFallaCanalNoDisponible(String medio, String sugerencia) {
+    return '$medio no está disponible por ahora; no es un problema de tu cuenta. $sugerencia';
+  }
+
+  @override
+  String get cuentaFallaReintentarEnUnMomento =>
+      'Vuelve a intentarlo en un momento.';
+
+  @override
+  String cuentaFallaRecibirPor(String medios) {
+    return 'Recibe el código por $medios.';
+  }
+
+  @override
+  String cuentaListaMediosO(String anteriores, String ultimo) {
+    return '$anteriores o $ultimo';
+  }
+
+  @override
+  String get cuentaFallaLimiteExcedido =>
+      'Pediste varios códigos seguidos. Espera un momento antes de pedir otro.';
+
+  @override
+  String get cuentaFallaTelefonoYaVerificado =>
+      'Tu teléfono ya está verificado.';
+
+  @override
+  String get cuentaFallaEliminacionBloqueada =>
+      'No puedes eliminar tu cuenta todavía. Resuelve lo pendiente y vuelve a intentarlo.';
+
+  @override
+  String get cuentaFallaDatosInvalidos =>
+      'Revisa los datos y vuelve a intentarlo.';
+
+  @override
+  String get cuentaFallaSesionVencida => 'Tu sesión venció. Ingresa de nuevo.';
+
+  @override
+  String get cuentaFallaEnEliminacion =>
+      'Tu cuenta está en proceso de eliminación. Puedes conservarla desde aquí.';
+
+  @override
+  String get cuentaFallaDesconocida =>
+      'No pudimos completar esto. Vuelve a intentarlo en un momento.';
+
+  @override
+  String get cuentaImpedimentoServicioTitulo =>
+      'Tienes un servicio adjudicado o en ejecución';
+
+  @override
+  String get cuentaImpedimentoServicioSalida =>
+      'Termínalo o cancélalo desde Servicios y vuelve a esta pantalla.';
+
+  @override
+  String get cuentaImpedimentoReclamoTitulo =>
+      'Hay un reclamo abierto en el que participas';
+
+  @override
+  String get cuentaImpedimentoReclamoSalida =>
+      'Espera a que se resuelva; después podrás eliminar tu cuenta.';
+
+  @override
+  String get cuentaImpedimentoPilotosTitulo =>
+      'Tu empresa tiene pilotos vinculados';
+
+  @override
+  String get cuentaImpedimentoPilotosSalida =>
+      'Libéralos o pide a un administrador de Agrocom el cambio de encargado.';
+
+  @override
+  String get cuentaSeBorra1 => 'Tu nombre, usuario, teléfono y correo.';
+
+  @override
+  String get cuentaSeBorra2 => 'Tu foto de perfil.';
+
+  @override
+  String get cuentaSeBorra3 =>
+      'Tus lotes, fotos de terreno y datos de empresa que no estén en un servicio vigente.';
+
+  @override
+  String get cuentaSeBorra4 => 'Tus sesiones en todos los dispositivos.';
+
+  @override
+  String get cuentaSeBorra5 => 'El texto de los mensajes que escribiste.';
+
+  @override
+  String get cuentaSeConserva1 =>
+      'El registro de cada servicio: precio acordado, hectáreas y fechas. Tu nombre aparece como «Cuenta eliminada».';
+
+  @override
+  String get cuentaSeConserva2 =>
+      'El puntaje de las calificaciones, sin tu nombre y sin comentarios.';
+
+  @override
+  String get cuentaSeConserva3 =>
+      'Lo que la ley o la prevención de fraude exigen, por un plazo limitado y declarado.';
+
+  @override
+  String get cuentaEfectosInmediatos =>
+      'Al confirmar, se cierran tus sesiones, se cancelan tus solicitudes abiertas y se retiran tus ofertas vigentes. Eso no se restaura si cambias de opinión.';
+
+  @override
+  String get cuentaGraciaDias =>
+      'Tienes 7 días para arrepentirte. En ese plazo puedes iniciar sesión solo para conservar tu cuenta. Pasado el plazo, tus datos personales se borran y no se pueden recuperar.';
+
+  @override
+  String cuentaCodigoPodrasPedirEn(String tiempo) {
+    return 'Podrás pedir otro código en $tiempo';
+  }
+
+  @override
+  String cuentaCodigoEnvioA(String destino) {
+    return 'Te enviamos un código de 6 dígitos a $destino.';
+  }
+
+  @override
+  String cuentaCodigoEnvioPor(String medio) {
+    return 'Te enviamos un código de 6 dígitos por $medio.';
+  }
+
+  @override
+  String get cuentaCodigoEnvio => 'Te enviamos un código de 6 dígitos.';
+
+  @override
+  String cuentaCodigoEnvioCondicionalA(String destino) {
+    return 'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos a $destino.';
+  }
+
+  @override
+  String cuentaCodigoEnvioCondicionalPor(String medio) {
+    return 'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos por $medio.';
+  }
+
+  @override
+  String get cuentaCodigoEnvioCondicional =>
+      'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos.';
+
+  @override
+  String cuentaCodigoVence(String envio) {
+    return '$envio Vence en 10 minutos.';
+  }
+
+  @override
+  String get cuentaCodigoEscribe => 'Escribe el código';
+
+  @override
+  String get cuentaCodigoEtiqueta => 'Código';
+
+  @override
+  String get cuentaCodigoEscribeSeisDigitos => 'Escribe el código de 6 dígitos';
+
+  @override
+  String get cuentaCodigoTieneSeisDigitos => 'El código tiene 6 dígitos';
+
+  @override
+  String get cuentaContrasenaNuevaEtiqueta => 'Contraseña nueva';
+
+  @override
+  String cuentaContrasenaMinimo(int cantidad) {
+    return 'Mínimo $cantidad caracteres.';
+  }
+
+  @override
+  String cuentaCodigoReenviarEn(String tiempo) {
+    return 'Reenviar código en $tiempo';
+  }
+
+  @override
+  String get cuentaCodigoReenviar => 'Reenviar código';
+
+  @override
+  String get cuentaCodigoOtroMedio => 'No me llegó: probar por otro medio';
+
+  @override
+  String get cuentaCambiarContrasena => 'Cambiar contraseña';
+
+  @override
+  String get cuentaIniciarSesion => 'Iniciar sesión';
+
+  @override
+  String get cuentaListo => 'Listo';
+
+  @override
+  String get cuentaCerrarSesion => 'Cerrar sesión';
+
+  @override
+  String get cuentaOlvideContrasena => 'Olvidé mi contraseña';
+
+  @override
+  String get cuentaRecuperarTitulo => 'Recuperar acceso';
+
+  @override
+  String get cuentaRecuperarComoRecibir => '¿Cómo quieres recibir el código?';
+
+  @override
+  String get cuentaRecuperarDetalle =>
+      'Escribe tu usuario, teléfono o correo. Te enviaremos un código de 6 dígitos para crear una contraseña nueva.';
+
+  @override
+  String get cuentaRecuperarIdentificador => 'Usuario, teléfono o correo';
+
+  @override
+  String get cuentaRecuperarEscribeIdentificador =>
+      'Escribe tu usuario, teléfono o correo';
+
+  @override
+  String get cuentaRecuperarExitoTitulo => 'Cambiaste tu contraseña';
+
+  @override
+  String get cuentaRecuperarExitoSinUsuario =>
+      'Ya puedes iniciar sesión con tu usuario y la contraseña nueva.';
+
+  @override
+  String cuentaRecuperarExitoConUsuario(String usuario) {
+    return 'Tu usuario es $usuario. Ya puedes iniciar sesión con la contraseña nueva.';
+  }
+
+  @override
+  String get cuentaCambiarConfirmaTitulo => 'Confirma que eres tú';
+
+  @override
+  String get cuentaCambiarConfirmaDetalle =>
+      'Te enviamos un código de 6 dígitos. Elige por dónde lo quieres recibir.';
+
+  @override
+  String get cuentaCambiarExitoTitulo => 'Tu contraseña se cambió';
+
+  @override
+  String get cuentaCambiarExitoDetalle =>
+      'Tus otros dispositivos deberán iniciar sesión de nuevo. Este sigue con la sesión abierta.';
+
+  @override
+  String get cuentaSeguridadTitulo => 'Seguridad y cuenta';
+
+  @override
+  String get cuentaTelefonoVerificado => 'Teléfono verificado';
+
+  @override
+  String get cuentaVerificaTelefono => 'Verifica tu teléfono';
+
+  @override
+  String get cuentaTelefonoFaltaVerificar => 'Falta verificar tu teléfono';
+
+  @override
+  String get cuentaSeguridadFilaDetalle =>
+      'Contraseña, huella y datos de tu cuenta';
+
+  @override
+  String get cuentaVerificarDetalle =>
+      'Así sabemos que el número es tuyo y podemos ayudarte a recuperar tu cuenta.';
+
+  @override
+  String get cuentaVerificar => 'Verificar';
+
+  @override
+  String get cuentaMasTarde => 'Más tarde';
+
+  @override
+  String get cuentaTelefonoQuedoVerificado => 'Tu teléfono quedó verificado';
+
+  @override
+  String get cuentaAjustesErrorTelefono => 'No pudimos revisar tu teléfono';
+
+  @override
+  String get cuentaAjustesTelefonoVerificadoDetalle =>
+      'Podemos ayudarte a recuperar tu cuenta.';
+
+  @override
+  String get cuentaAjustesTelefonoPendienteDetalle =>
+      'Confirma que el número es tuyo con un código.';
+
+  @override
+  String get cuentaAjustesContrasenaDetalle =>
+      'Te enviamos un código para confirmar que eres tú.';
+
+  @override
+  String get cuentaAjustesCerrarSesionDetalle =>
+      'Este dispositivo dejará de tener acceso a tu cuenta.';
+
+  @override
+  String get cuentaAjustesPrivacidad => 'Privacidad y datos';
+
+  @override
+  String get cuentaEliminarMiCuenta => 'Eliminar mi cuenta';
+
+  @override
+  String get cuentaAjustesEliminarDetalle =>
+      'Borra tus datos personales. Tienes 7 días para arrepentirte.';
+
+  @override
+  String get cuentaYaRegistradaTitulo => 'Ya tienes una cuenta';
+
+  @override
+  String get cuentaYaRegistradaComoPiloto =>
+      'Ese teléfono o documento ya está registrado como piloto. Usa la app de DronAgro que le corresponde.';
+
+  @override
+  String get cuentaYaRegistradaComoCliente =>
+      'Ese teléfono o documento ya está registrado como cliente. Usa la app de DronAgro que le corresponde.';
+
+  @override
+  String get cuentaYaRegistradaDetalle =>
+      'Ese teléfono o documento ya está registrado en DronAgro, así que no creamos otra cuenta. Inicia sesión o recupera tu acceso.';
+
+  @override
+  String get cuentaYaRegistradaRegistroIncompleto =>
+      'Si no terminaste tu registro, al iniciar sesión continuarás donde lo dejaste.';
+
+  @override
+  String get cuentaVolver => 'Volver';
+
+  @override
+  String get cuentaEnEliminacionErrorTitulo => 'No pudimos revisar tu cuenta';
+
+  @override
+  String get cuentaEnEliminacionYaNoEnProceso =>
+      'Tu cuenta ya no está en proceso de eliminación.';
+
+  @override
+  String get cuentaEnEliminacionPospuesta =>
+      'Tu plazo ya terminó, pero algo pendiente frena la eliminación. Se vuelve a intentar cada día. Mientras tanto puedes conservar tu cuenta.';
+
+  @override
+  String cuentaEnEliminacionSeBorrara(String fecha, int dias) {
+    String _temp0 = intl.Intl.pluralLogic(
+      dias,
+      locale: localeName,
+      other: 'quedan $dias días',
+      one: 'queda 1 día',
+    );
+    return 'Se borrará el $fecha ($_temp0). Hasta entonces puedes arrepentirte.';
+  }
+
+  @override
+  String get cuentaEnEliminacionTitulo => 'Tu cuenta se está eliminando';
+
+  @override
+  String get cuentaEnEliminacionSigueActiva => 'Tu cuenta sigue activa';
+
+  @override
+  String get cuentaEnEliminacionAviso =>
+      'Mientras tanto no puedes usar la app. Si conservas tu cuenta, las solicitudes y ofertas que se cancelaron al pedir la eliminación no se restauran.';
+
+  @override
+  String get cuentaConservarMiCuenta => 'Conservar mi cuenta';
+
+  @override
+  String get cuentaContinuar => 'Continuar';
+
+  @override
+  String get cuentaEliminarBloqueadaTitulo =>
+      'Todavía no puedes eliminar tu cuenta';
+
+  @override
+  String get cuentaEliminarBloqueadaDetalle =>
+      'Hay algo pendiente. Resuélvelo y vuelve a esta pantalla.';
+
+  @override
+  String get cuentaEliminarAntesTitulo => 'Antes de eliminar tu cuenta';
+
+  @override
+  String get cuentaEliminarQueSeBorra => 'Qué se borra';
+
+  @override
+  String get cuentaEliminarQueSeConserva => 'Qué se conserva';
+
+  @override
+  String cuentaEliminarPendientes(int cantidad) {
+    String _temp0 = intl.Intl.pluralLogic(
+      cantidad,
+      locale: localeName,
+      other: '$cantidad registros',
+      one: '1 registro',
+    );
+    return 'Primero sincroniza lo que registraste en el lote: tienes $_temp0 sin subir. Hazlo con señal y vuelve aquí.';
+  }
+
+  @override
+  String get cuentaEliminarSincronizarAhora => 'Sincronizar ahora';
+
+  @override
+  String cuentaBotonEnCurso(String texto) {
+    return '$texto, en curso';
+  }
+
+  @override
+  String get cuentaEliminarConfirmaContrasenaTitulo =>
+      'Confirma con tu contraseña';
+
+  @override
+  String get cuentaEliminarConfirmaContrasenaDetalle =>
+      'Tu cuenta se cerrará en todos tus dispositivos y quedará en espera 7 días antes de borrarse.';
+
+  @override
+  String get cuentaContrasenaEtiqueta => 'Contraseña';
+
+  @override
+  String get cuentaEliminarUsarCodigo => 'Olvidé mi contraseña: usar un código';
+
+  @override
+  String get cuentaEliminarConfirmaCodigoTitulo => 'Confirma con un código';
+
+  @override
+  String get cuentaEliminarConfirmaCodigoDetalle =>
+      'Elige por dónde recibir un código de 6 dígitos. Con él confirmas que eres tú, sin la contraseña.';
+
+  @override
+  String get cuentaEliminarUsarContrasena => 'Usar mi contraseña';
+
+  @override
+  String get cuentaEliminarSolicitadaTitulo =>
+      'Tu cuenta quedó en espera de eliminación';
+
+  @override
+  String get cuentaEliminarSolicitadaSinFecha =>
+      'Tienes 7 días para arrepentirte.';
+
+  @override
+  String cuentaEliminarSolicitadaConFecha(String fecha) {
+    return 'Tienes hasta el $fecha para arrepentirte. Inicia sesión y toca «Conservar mi cuenta».';
+  }
+
+  @override
+  String get cuentaEntendido => 'Entendido';
+
+  @override
+  String get cuentaConservadaTitulo => 'Conservamos tu cuenta';
+
+  @override
+  String get cuentaConservadaDetalle =>
+      'Ya puedes volver a usarla. Las solicitudes y ofertas que se cancelaron al pedir la eliminación no se restauran.';
+
+  @override
+  String cuentaDemasiadosIntentosEn(String tiempo) {
+    return 'Demasiados intentos. Podrás volver a intentarlo en $tiempo.';
+  }
+
+  @override
+  String get cuentaDemasiadosIntentosEspera =>
+      'Demasiados intentos. Espera un momento y vuelve a intentarlo.';
+
+  @override
+  String get cuentaDemasiadosIntentosBreve =>
+      'Demasiados intentos. Espera un momento.';
+
+  @override
+  String get cuentaVerificarMiTelefono => 'Verificar mi teléfono';
+
+  @override
+  String get cuentaTerminaRegistroTitulo => 'Termina tu registro';
+
+  @override
+  String get cuentaTerminaRegistroDetalle =>
+      'Sube los documentos que faltan para que un administrador pueda aprobar tu cuenta.';
+
+  @override
+  String get precioJustificacionEtiqueta =>
+      'Justificación del precio (opcional)';
+
+  @override
+  String get precioJustificacionAyuda =>
+      'Explica por qué propones este precio. La otra parte lo verá.';
+
+  @override
+  String precioJustificacionContador(int usados, int maximo) {
+    return '$usados de $maximo';
+  }
+
+  @override
+  String get precioJustificacionTitulo => 'Justificación del precio';
+
+  @override
+  String get precioTotalEtiqueta => 'Total estimado';
+
+  @override
+  String get precioTotalSinPrecio => 'Escribe el precio';
+
+  @override
+  String get precioTotalSoloLectura =>
+      'Se calcula con las hectáreas; no se escribe';
+
+  @override
+  String precioTotalCalculo(String hectareas, String precio) {
+    return '$hectareas × $precio';
+  }
+
+  @override
+  String get ofertasOrdenRecomendado => 'Recomendado';
+
+  @override
+  String get ofertasOrdenReciente => 'Más reciente';
+
+  @override
+  String get ofertasFiltros => 'Filtros';
+
+  @override
+  String ofertasFiltrosConActivos(int cantidad) {
+    return 'Filtros ($cantidad)';
+  }
+
+  @override
+  String get ofertasFiltrosTitulo => 'Ordenar y filtrar ofertas';
+
+  @override
+  String get ofertasFiltrosOrdenarPor => 'Ordenar por';
+
+  @override
+  String get ofertasFiltroPrecioMin => 'Precio mínimo (Bs/ha)';
+
+  @override
+  String get ofertasFiltroPrecioMax => 'Precio máximo (Bs/ha)';
+
+  @override
+  String get ofertasFiltroTotalMax => 'Total máximo (Bs)';
+
+  @override
+  String get ofertasFiltroCalificacionMin => 'Calificación mínima';
+
+  @override
+  String get ofertasFiltroCalificacionCualquiera => 'Cualquiera';
+
+  @override
+  String ofertasFiltroCalificacionDesde(String minima) {
+    return '$minima o más';
+  }
+
+  @override
+  String get ofertasFiltroTipo => 'Tipo de proveedor';
+
+  @override
+  String get ofertasFiltroTipoTodos => 'Todos';
+
+  @override
+  String get ofertasFiltroTipoPropio => 'Agrocom';
+
+  @override
+  String get ofertasFiltroTipoIndependiente => 'Independiente';
+
+  @override
+  String get ofertasFiltroTipoTercero => 'Dueño de drones';
+
+  @override
+  String get ofertasFiltroTanqueMin => 'Tanque mínimo (litros)';
+
+  @override
+  String get ofertasFiltrosAplicar => 'Ver ofertas';
+
+  @override
+  String get ofertasFiltrosQuitar => 'Quitar filtros';
+
+  @override
+  String get ofertasFiltrosNumeroInvalido =>
+      'Escribe un número, por ejemplo 120';
+
+  @override
+  String get ofertasFiltrosRangoInvalido =>
+      'El máximo no puede ser menor que el mínimo';
+
+  @override
+  String get ofertasNuevaOferta =>
+      'Llegó una oferta nueva. Compárala con las demás.';
+
+  @override
+  String get ofertasSinResultadosTitulo => 'Ninguna oferta cumple tus filtros';
+
+  @override
+  String get ofertasSinResultadosDetalle =>
+      'Quita algún filtro para ver las demás ofertas.';
+
+  @override
+  String get ofertasActualizandoLista => 'Actualizando ofertas';
+
+  @override
+  String get ofertasPorQueEsePrecio => 'Por qué ese precio';
+
+  @override
+  String get avisosCanalNuevasSolicitudes => 'Nuevas solicitudes';
+
+  @override
+  String get avisosCanalNuevasSolicitudesDetalle =>
+      'Solicitudes abiertas que puedes ofertar';
+
+  @override
+  String get avisosCanalOfertas => 'Ofertas y contraofertas';
+
+  @override
+  String get avisosCanalOfertasDetalle =>
+      'Precios que recibes, respuestas y adjudicaciones';
+
+  @override
+  String get avisosCanalMensajes => 'Mensajes';
+
+  @override
+  String get avisosCanalMensajesDetalle =>
+      'Chat con la otra parte del servicio';
+
+  @override
+  String get avisosCanalEjecucion => 'Ejecución del servicio';
+
+  @override
+  String get avisosCanalEjecucionDetalle =>
+      'Inicio, avance, cierre y precio final';
+
+  @override
+  String get avisosCanalCuenta => 'Cuenta y notificaciones';
+
+  @override
+  String get avisosCanalCuentaDetalle =>
+      'Aprobación, documentos, calificaciones y notificaciones del sistema';
+
+  @override
+  String get avisosTodos => 'Todos';
+
+  @override
+  String get avisosTitulo => 'Mis notificaciones';
+
+  @override
+  String get avisosCampana => 'Notificaciones';
+
+  @override
+  String avisosCampanaConPendientes(int cantidad) {
+    return 'Notificaciones, $cantidad sin leer';
+  }
+
+  @override
+  String get avisosVacioTitulo => 'Todavía no tienes notificaciones';
+
+  @override
+  String get avisosVacioDetalle =>
+      'Aquí verás lo que pase con tus solicitudes y ofertas, apenas ocurra.';
+
+  @override
+  String get avisosVacioCanal => 'No hay notificaciones en este grupo';
+
+  @override
+  String get avisosErrorTitulo => 'No pudimos cargar tus notificaciones';
+
+  @override
+  String get avisosErrorDetalle => 'Revisa tu conexión y vuelve a intentar.';
+
+  @override
+  String get avisosSinLeer => 'Sin leer';
+
+  @override
+  String get avisosLeida => 'Leída';
+
+  @override
+  String get avisosAjustesCanales => 'Ajustes de notificaciones';
+
+  @override
+  String get avisosCanalesTitulo => 'Canales de notificación';
+
+  @override
+  String get avisosCanalesIntro =>
+      'Elige qué notificaciones suenan en este teléfono y a qué hora. Lo que se te avisa lo decide el servidor con tus preferencias.';
+
+  @override
+  String get avisosCanalObligatorio =>
+      'Siempre activo: son notificaciones de tu cuenta';
+
+  @override
+  String get avisosCanalActivo => 'Activo';
+
+  @override
+  String get avisosCanalSilenciado => 'Silenciado';
+
+  @override
+  String get avisosHorarioSilencio => 'Horario de silencio';
+
+  @override
+  String avisosHorarioSilencioDetalle(String desde, String hasta) {
+    return 'No suena entre $desde y $hasta';
+  }
+
+  @override
+  String get avisosSinHorario => 'Sin horario de silencio';
+
+  @override
+  String get avisosHorarioDesde => 'Desde';
+
+  @override
+  String get avisosHorarioHasta => 'Hasta';
+
+  @override
+  String get avisosQuitarHorario => 'Quitar horario';
+
+  @override
+  String get avisosLlegaronNuevos => 'Llegó una notificación nueva';
+
+  @override
+  String avisosNotificacionDe(String canal, String titulo) {
+    return '$canal: $titulo';
+  }
+
+  @override
+  String avisosVariosNuevos(int cantidad) {
+    return '$cantidad notificaciones nuevas';
+  }
+
+  @override
+  String get distanciaVer => 'Ver distancia';
+
+  @override
+  String get distanciaPregunta => '¿Qué tan lejos está el lote?';
+
+  @override
+  String get distanciaAyuda =>
+      'Se calcula en tu teléfono con tu posición actual';
+
+  @override
+  String get distanciaCalculando => 'Calculando la distancia';
+
+  @override
+  String distanciaResultado(String km) {
+    return 'A $km del lote';
+  }
+
+  @override
+  String get distanciaResultadoAyuda =>
+      'En línea recta desde donde estás ahora';
+
+  @override
+  String get distanciaActualizar => 'Actualizar';
+
+  @override
+  String get distanciaSinPermiso =>
+      'Sin el permiso de ubicación no podemos calcular la distancia.';
+
+  @override
+  String get distanciaDenegadoSiempre =>
+      'Activa la ubicación de la app en los ajustes del teléfono para ver la distancia.';
+
+  @override
+  String get distanciaServicioApagado =>
+      'El GPS de tu teléfono está apagado. Enciéndelo para ver la distancia.';
+
+  @override
+  String get distanciaSinPosicion =>
+      'No pudimos ubicarte. Sal a un lugar abierto y vuelve a intentarlo.';
+
+  @override
+  String get distanciaSinLote =>
+      'Esta solicitud no tiene un punto en el mapa para medir la distancia.';
+
+  @override
+  String get distanciaHojaTitulo => 'Calcular la distancia al lote';
+
+  @override
+  String get distanciaHojaMotivo =>
+      'Usamos tu posición una sola vez, en tu teléfono, para decirte cuántos kilómetros hay hasta el lote. Te ayuda a decidir tu precio.';
+
+  @override
+  String get distanciaHojaPrivacidad =>
+      'No se envía a nadie ni se guarda: se descarta apenas ves el resultado.';
+
+  @override
+  String get distanciaHojaContinuar => 'Continuar';
+
+  @override
+  String get distanciaHojaAhoraNo => 'Ahora no';
+
+  @override
+  String get mapaExpandir => 'Ver el mapa en pantalla completa';
+
+  @override
+  String get mapaCerrarCompleto => 'Cerrar el mapa';
+
+  @override
+  String get mapaCompletoTitulo => 'Lote en el mapa';
+
+  @override
+  String get proveedorNegociacionJustificacionCliente =>
+      'Por qué el cliente propone ese precio';
+
+  @override
+  String get preparacionTitulo => 'Preparación del equipo';
+
+  @override
+  String get preparacionIntro =>
+      'Revisa tu equipo antes de salir al lote. Es una guía tuya: no te impide ofertar ni iniciar un servicio.';
+
+  @override
+  String preparacionProgreso(int hechos, int total) {
+    return '$hechos de $total listos';
+  }
+
+  @override
+  String get preparacionCompleta => 'Todo listo para salir';
+
+  @override
+  String get preparacionReiniciar => 'Empezar de nuevo';
+
+  @override
+  String get preparacionNoGuardo =>
+      'No pudimos guardar el último cambio en tu teléfono. Lo ves aquí, pero puede perderse al cerrar la app.';
+
+  @override
+  String get preparacionAcceso => 'Antes de salir';
+
+  @override
+  String get preparacionAccesoDetalle =>
+      'Revisa baterías, tanque, boquillas y clima';
+
+  @override
+  String get preparacionBaterias => 'Baterías cargadas';
+
+  @override
+  String get preparacionBateriasDetalle =>
+      'Las del dron y las de repuesto, con el cargador a mano';
+
+  @override
+  String get preparacionTanque => 'Tanque limpio y con el producto';
+
+  @override
+  String get preparacionTanqueDetalle =>
+      'Sin residuos de otra aplicación y con la mezcla lista';
+
+  @override
+  String get preparacionBoquillas => 'Boquillas limpias';
+
+  @override
+  String get preparacionBoquillasDetalle =>
+      'Sin tapones y con el caudal que pide la aplicación';
+
+  @override
+  String get preparacionMandoRc => 'Mando RC cargado y enlazado';
+
+  @override
+  String get preparacionMandoRcDetalle => 'Con batería y conectado al dron';
+
+  @override
+  String get preparacionDron => 'Dron y hélices revisados';
+
+  @override
+  String get preparacionDronDetalle =>
+      'Hélices sin daño, brazos firmes y software al día';
+
+  @override
+  String get preparacionEpp => 'Equipo de protección puesto';
+
+  @override
+  String get preparacionEppDetalle =>
+      'Guantes, mascarilla, lentes y ropa adecuada';
+
+  @override
+  String get preparacionDocumentos => 'Documentos al día';
+
+  @override
+  String get preparacionDocumentosDetalle =>
+      'Licencia, registro del dron y seguro vigentes';
+
+  @override
+  String get preparacionClima => 'Viento y lluvia revisados';
+
+  @override
+  String get preparacionClimaDetalle =>
+      'Sin viento fuerte ni lluvia en el lote';
+
+  @override
+  String get preparacionPronostico => 'Pronóstico de las próximas horas';
+
+  @override
+  String get preparacionPronosticoDetalle =>
+      'Que el clima aguante lo que dura la aplicación';
+
+  @override
   String perfilUxCalificacionSemantica(String valor) {
     return 'Calificación $valor de 5, ver calificaciones';
   }
@@ -4131,12 +5536,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Para centrar el mapa en donde estás y mostrarte las solicitudes cercanas. Solo se usa mientras miras el mapa y no se guarda.';
 
   @override
-  String get permisosNotificacionesTitulo =>
-      'Notificaciones de solicitudes nuevas';
+  String get permisosNotificacionesTitulo => 'Recibir notificaciones';
 
   @override
   String get permisosNotificacionesMotivo =>
-      'Te avisamos cuando llegue una solicitud en tus zonas. Puedes desactivarlos cuando quieras.';
+      'Te avisamos cuando hay una solicitud nueva, cuando el cliente responde tu oferta o cuando te escribe.';
 
   @override
   String get permisosContinuar => 'Continuar';

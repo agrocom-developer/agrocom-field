@@ -27,12 +27,17 @@ dependencies:
   flutter_local_notifications: ^22.3.0
   flutter_map: ^8.3.2
   flutter_secure_storage: ^11.1.0
+  # Íconos dedicados del dominio en SVG (ADR 0028): mantenido por el equipo
+  # de Flutter (`flutter/packages`), BSD-3, soporta Android/iOS/iPad y no
+  # agrega red en tiempo de ejecución (assets locales).
+  flutter_svg: ^2.5.1
   freezed_annotation: ^3.1.0
   geolocator: ^14.0.1
   get_it: ^9.2.1
   image_picker: ^1.2.1
   intl: ^0.20.3
   json_annotation: ^4.12.0
+  local_auth: ^3.0.0
   latlong2: ^0.9.1
   lottie: ^3.8.2
   package_info_plus: ^10.2.1
@@ -65,6 +70,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/imagenes/
+    - assets/iconos/
   # Manrope/JetBrains Mono (ADR 0008, ampliación 14/9/2026) — fuentes
   # variables: un solo archivo por familia cubre todos los pesos vía el eje
   # `wght`, repetido acá una vez por peso realmente usado en

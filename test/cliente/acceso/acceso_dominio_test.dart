@@ -20,16 +20,18 @@ void main() {
 
     test('contraseña nueva exige el largo mínimo', () {
       expect(ReglasAcceso.contrasenaNueva(''), 'Crea una contraseña');
-      expect(ReglasAcceso.contrasenaNueva('1234567'), contains('8'));
-      expect(
-        ReglasAcceso.contrasenaNueva('12345678'),
-        'Combina letras y números',
-      );
-      expect(
-        ReglasAcceso.contrasenaNueva('abcdefgh'),
-        'Combina letras y números',
-      );
+      expect(ReglasAcceso.contrasenaNueva('abc'), contains('4'));
+      // Sin reglas de composición: solo el largo (igual que el servidor).
+      expect(ReglasAcceso.contrasenaNueva('1234'), isNull);
+      expect(ReglasAcceso.contrasenaNueva('abcd'), isNull);
       expect(ReglasAcceso.contrasenaNueva('abcd1234'), isNull);
+      expect(ReglasAcceso.contrasenaNueva('a' * 101), isNotNull);
+    });
+
+    test('al ingresar se acepta usuario o teléfono', () {
+      expect(ReglasAcceso.usuarioOTelefono(' '), isNotNull);
+      expect(ReglasAcceso.usuarioOTelefono('+591 70012345'), isNull);
+      expect(ReglasAcceso.usuarioOTelefono('hugo.finca'), isNull);
     });
 
     test('al ingresar la contraseña solo no puede estar vacía', () {

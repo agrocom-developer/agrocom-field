@@ -45,24 +45,72 @@ class AccesoProveedorRed implements AccesoProveedorRepositorio {
   final String nombreDispositivo;
 
   static const _cuentaAjena =
-      'Esta cuenta no es de esta app. Usa la app de Agrocom que le corresponde.';
+      'Esta cuenta no es de esta app. Usa la app de DronAgro que le corresponde.';
 
   @override
   Future<SesionProveedor?> sesionActual() async {
     if (await _tokenStore.leerToken() == null) return null;
     try {
-      return _desdeSesion(
+      final sesion = _desdeSesion(
         Map<String, dynamic>.from(
           (await _api.get('/api/auth/sesion')).data as Map,
         ),
       );
+      return await _enEliminacion()
+          ? _restringida(sesion.nombre, sesion.usuario, sesion.rol)
+          : sesion;
     } on ApiExcepcionServidor catch (e) {
+      if (_esCuentaEnEliminacion(e)) {
+        // La sesión sigue viva pero restringida: solo ve el estado de la
+        // eliminación, la cancela o cierra sesión.
+        return _restringida('', '', '');
+      }
       if (e.codigo == 401 || e.codigo == 403) {
         await _tokenStore.borrarToken();
         return null;
       }
       rethrow;
     }
+  }
+
+  static SesionProveedor _restringida(
+    String nombre,
+    String usuario,
+    String rol,
+  ) => SesionProveedor(
+    nombre: nombre,
+    usuario: usuario,
+    rol: rol,
+    enEliminacion: true,
+  );
+
+  /// `GET /api/cuenta/eliminacion` es una de las pocas rutas que una cuenta
+  /// en eliminación puede usar: si hay una solicitud vigente, la sesión es
+  /// restringida. Una falla (sin red, ruta ausente) cuenta como «no».
+  Future<bool> _enEliminacion() async {
+    try {
+      final cuerpo = (await _api.get('/api/cuenta/eliminacion')).data;
+      final e = cuerpo is Map ? cuerpo['eliminacion'] : null;
+      final estado = e is Map ? e['estado'] : null;
+      return estado == 'solicitada' || estado == 'pospuesta';
+    } on Object {
+      return false;
+    }
+  }
+
+  static bool _esCuentaEnEliminacion(ApiExcepcionServidor e) =>
+      e.codigo == 403 &&
+      e.cuerpo is Map &&
+      (e.cuerpo as Map)['codigo'] == 'cuenta_en_eliminacion';
+
+  /// El texto del servidor para `tipo_de_cuenta_incorrecto` («Esta cuenta es
+  /// de cliente: ingresa en la app Agrocom»); si no viene, el genérico.
+  static String _mensajeCuentaAjena(Object? cuerpo) {
+    if (cuerpo is Map && cuerpo['message'] is String) {
+      final m = (cuerpo['message'] as String).trim();
+      if (m.isNotEmpty) return m;
+    }
+    return _cuentaAjena;
   }
 
   SesionProveedor _desdeSesion(Map<String, dynamic> cuerpo) {
@@ -83,6 +131,8 @@ class AccesoProveedorRed implements AccesoProveedorRepositorio {
     final uuid = await _dispositivo.obtenerUuidDispositivo();
     final cuerpo = await _pedirToken(usuario.trim(), contrasena, uuid);
     final sesion = _desdeSesion(cuerpo);
+    // Una cuenta en eliminación entra con el rol que ya tenía (el token se
+    // emite igual); el servidor restringe todo lo demás con `403`.
     if (!rolesPreferidos.contains(sesion.rol)) {
       await _descartarToken();
       throw const AccesoProveedorExcepcion(
@@ -91,7 +141,9 @@ class AccesoProveedorRed implements AccesoProveedorRepositorio {
       );
     }
     await _tokenStore.guardarToken('${cuerpo['token']}');
-    return sesion;
+    return await _enEliminacion()
+        ? _restringida(sesion.nombre, sesion.usuario, sesion.rol)
+        : sesion;
   }
 
   Future<Map<String, dynamic>> _pedirToken(
@@ -108,6 +160,7 @@ class AccesoProveedorRed implements AccesoProveedorRepositorio {
           'password': contrasena,
           'uuid_dispositivo': uuid,
           'nombre_dispositivo': nombreDispositivo,
+          'app': 'piloto',
           'role_id': ?rolId,
         },
       );
@@ -144,9 +197,13 @@ class AccesoProveedorRed implements AccesoProveedorRepositorio {
         401 || 422 => const AccesoProveedorExcepcion(
           MotivoFalloAcceso.credencialesInvalidas,
         ),
-        403 => const AccesoProveedorExcepcion(
+        429 => AccesoProveedorExcepcion(
+          MotivoFalloAcceso.demasiadosIntentos,
+          esperaSegundos: e.reintentarEn?.inSeconds,
+        ),
+        403 => AccesoProveedorExcepcion(
           MotivoFalloAcceso.cuentaAjena,
-          mensaje: _cuentaAjena,
+          mensaje: _mensajeCuentaAjena(e.cuerpo),
         ),
         _ => const AccesoProveedorExcepcion(MotivoFalloAcceso.desconocido),
       };
@@ -188,6 +245,14 @@ class AccesoProveedorRed implements AccesoProveedorRepositorio {
     } on ApiExcepcionRed {
       throw const AccesoProveedorExcepcion(MotivoFalloAcceso.sinConexion);
     } on ApiExcepcionServidor catch (e) {
+      if (e.codigo == 409 &&
+          e.cuerpo is Map &&
+          (e.cuerpo as Map)['codigo'] == 'cuenta_ya_registrada') {
+        throw AccesoProveedorExcepcion(
+          MotivoFalloAcceso.cuentaYaRegistrada,
+          tipoCuenta: (e.cuerpo as Map)['tipo_cuenta'] as String?,
+        );
+      }
       if (e.codigo == 422) {
         throw AccesoProveedorExcepcion(
           MotivoFalloAcceso.validacion,
@@ -196,10 +261,12 @@ class AccesoProveedorRed implements AccesoProveedorRepositorio {
         );
       }
       if (e.codigo == 429) {
-        throw const AccesoProveedorExcepcion(
-          MotivoFalloAcceso.desconocido,
+        throw AccesoProveedorExcepcion(
+          MotivoFalloAcceso.demasiadosIntentos,
+          esperaSegundos: e.reintentarEn?.inSeconds,
           mensaje:
-              'Hiciste demasiados intentos de registro desde esta red. Espera un rato.',
+              'Hiciste demasiados intentos de registro desde esta red. '
+              'Espera un rato.',
         );
       }
       throw const AccesoProveedorExcepcion(MotivoFalloAcceso.desconocido);

@@ -1,5 +1,6 @@
 import 'package:decimal/decimal.dart';
 
+import 'comparador_ofertas.dart';
 import 'oferta_recibida.dart';
 
 /// Ofertas que los pilotos hacen a una solicitud del cliente y sus
@@ -10,8 +11,12 @@ import 'oferta_recibida.dart';
 /// Los fallos de red llegan como `SinConexion`; si la oferta cambió
 /// (venció, la retiraron, la solicitud ya se adjudicó), como [OfertaCambio].
 abstract interface class OfertasRepositorio {
-  /// Ofertas de la solicitud, la vigente primero y luego las cerradas.
-  Future<List<OfertaRecibida>> deLaSolicitud(String solicitudId);
+  /// Ofertas de la solicitud, la vigente primero y luego las cerradas, con el
+  /// orden y los filtros del comparador (los aplica el servidor).
+  Future<List<OfertaRecibida>> deLaSolicitud(
+    String solicitudId, {
+    FiltrosOfertas filtros = const FiltrosOfertas(),
+  });
 
   /// Acepta la oferta vigente del piloto: adjudica la solicitud.
   Future<void> aceptar(String ofertaId);
@@ -23,6 +28,7 @@ abstract interface class OfertasRepositorio {
     required Decimal precioHa,
     required String claveIdempotencia,
     String? nota,
+    String? justificacionPrecio,
   });
 
   /// Rechaza la oferta: cierra esa negociación.

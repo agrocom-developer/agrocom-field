@@ -8,6 +8,7 @@ class SesionProveedor {
     required this.nombre,
     required this.usuario,
     required this.rol,
+    this.enEliminacion = false,
   });
 
   final String nombre;
@@ -16,6 +17,10 @@ class SesionProveedor {
   /// `piloto` o `proveedor`.
   final String rol;
 
+  /// La cuenta está en los 7 días de gracia de su eliminación: la sesión es
+  /// restringida (solo ve el estado, conserva la cuenta o cierra sesión).
+  final bool enEliminacion;
+
   String get primerNombre => nombre.trim().split(RegExp(r'\s+')).first;
 
   @override
@@ -23,10 +28,11 @@ class SesionProveedor {
       other is SesionProveedor &&
       other.nombre == nombre &&
       other.usuario == usuario &&
-      other.rol == rol;
+      other.rol == rol &&
+      other.enEliminacion == enEliminacion;
 
   @override
-  int get hashCode => Object.hash(nombre, usuario, rol);
+  int get hashCode => Object.hash(nombre, usuario, rol, enEliminacion);
 }
 
 enum MotivoFalloAcceso {
@@ -37,6 +43,12 @@ enum MotivoFalloAcceso {
   /// La cuenta existe pero no es de este flavor.
   cuentaAjena,
   desconocido,
+
+  /// `409 cuenta_ya_registrada`: ese teléfono o documento ya tiene cuenta.
+  cuentaYaRegistrada,
+
+  /// `429`: demasiados intentos; ver `AccesoProveedorExcepcion.esperaSegundos`.
+  demasiadosIntentos,
 }
 
 class AccesoProveedorExcepcion implements Exception {
@@ -44,10 +56,18 @@ class AccesoProveedorExcepcion implements Exception {
     this.motivo, {
     this.mensaje,
     this.porCampo = const {},
+    this.esperaSegundos,
+    this.tipoCuenta,
   });
 
   final MotivoFalloAcceso motivo;
   final String? mensaje;
+
+  /// `Retry-After` de un `429`, en segundos.
+  final int? esperaSegundos;
+
+  /// `tipo_cuenta` de un `409 cuenta_ya_registrada` (`cliente`, `proveedor`).
+  final String? tipoCuenta;
 
   /// Errores `422` por campo de la API (`username`, `telefono`...).
   final Map<String, String> porCampo;

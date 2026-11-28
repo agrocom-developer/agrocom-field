@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
+import '../nucleo/auth/bloqueo_biometrico.dart';
 import '../nucleo/conectividad/data/conectividad_falsa.dart';
 import '../nucleo/conectividad/domain/conectividad_servicio.dart';
 import '../nucleo/conectividad/presentation/con_banner_de_red.dart';
+import '../nucleo/marketplace/proveedor/cuenta/presentation/estado_cuenta_pantalla.dart';
 import '../nucleo/marketplace/proveedor/dron/presentation/drones_pantalla.dart';
 import '../nucleo/marketplace/proveedor/ejecucion/presentation/servicios_lote_pantalla.dart';
 import '../nucleo/marketplace/proveedor/negociacion/presentation/mapa_solicitudes_pantalla.dart';
@@ -50,7 +52,7 @@ class _AppPilotoDemoState extends State<AppPilotoDemo> {
       predeterminado: ModoVisualCampo.claro,
       construir: (context, tema) => MaterialApp(
         navigatorKey: _navegador,
-        title: 'Agrocom',
+        title: 'DronAgro Piloto',
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: const Locale('es'),
@@ -70,7 +72,20 @@ class _AppPilotoDemoState extends State<AppPilotoDemo> {
 /// Navegación del piloto: el mapa de solicitudes abiertas, sus ofertas, sus
 /// servicios adjudicados y el perfil (que lleva el dron y la licencia).
 class ShellPiloto extends StatefulWidget {
-  const ShellPiloto({this.conectividad, this.alSalir, super.key});
+  const ShellPiloto({
+    this.conectividad,
+    this.alSalir,
+    this.bloqueo,
+    this.conCuenta = false,
+    super.key,
+  });
+
+  /// App real: el mapa solo se abre a un proveedor aprobado, y el perfil
+  /// ofrece documentos y disponibilidad (ADR 0024). La demo no lo usa.
+  final bool conCuenta;
+
+  /// Si está, el perfil ofrece activar el desbloqueo con huella o rostro.
+  final BloqueoBiometrico? bloqueo;
 
   /// Estado de la red para el banner «Sin señal»; sin él, siempre hay red.
   final ConectividadServicio? conectividad;
@@ -134,14 +149,22 @@ class _ShellPilotoState extends State<ShellPiloto> {
       cuerpo: ConBannerDeRed(
         servicio: _conectividad,
         child: switch (_indice) {
-          0 => const MapaSolicitudesPantalla(),
+          0 =>
+            widget.conCuenta
+                ? const PuertaAprobacion(child: MapaSolicitudesPantalla())
+                : const MapaSolicitudesPantalla(),
           1 => MisOfertasPantalla(
             alIrAlMapa: () => setState(() => _indice = 0),
           ),
           2 => ServiciosLotePantalla(
             alIrAlMapa: () => setState(() => _indice = 0),
           ),
-          _ => PerfilPantalla(onVerDrones: _verDrones, alSalir: widget.alSalir),
+          _ => PerfilPantalla(
+            onVerDrones: _verDrones,
+            alSalir: widget.alSalir,
+            bloqueo: widget.bloqueo,
+            conCuenta: widget.conCuenta,
+          ),
         },
       ),
     );

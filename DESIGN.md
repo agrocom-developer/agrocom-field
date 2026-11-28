@@ -1,9 +1,9 @@
-# DESIGN.md · Agrocom Móvil
+# DESIGN.md · DronAgro
 
 Guía de diseño viva del proyecto. Cualquier cambio de UI la consulta antes y la actualiza después. Los valores exactos están en `docs/diseno/tokens/tokens.json`, y la especificación por pantalla está en `docs/diseno/especificacion-pantallas.md`.
 
 ## 1. Producto
-- Marketplace de fumigación con drones por negociación, con tres apps: cliente, piloto y auxiliar.
+- DronAgro (titular: Agrocom) es un marketplace de fumigación con drones por negociación, con dos apps: cliente y piloto. Cada una se rotula a primera vista con el distintivo «Cliente» o «Piloto» junto al nombre (`EncabezadoDeMarca`, `DistintivoRol`) y lista lo que su rol puede hacer (`ListaDeCapacidades`).
 - Flujo: publicar lote → ofertas → hasta 5 rondas → elegir piloto → ejecución con fotos → precio final (ha ejecutadas × precio acordado) → calificación o reclamo.
 - Sin cobro dentro de la app: el pago es directo entre cliente y piloto. Todos los textos van en español (Bolivia, moneda Bs) y neutro; la redacción sigue [`docs/diseno/guia-de-textos.md`](docs/diseno/guia-de-textos.md).
 - Contexto de uso: en el lote, a pleno sol, muchas veces sin señal y con una mano.
@@ -118,7 +118,8 @@ Archivos: `paleta_campo.dart` (roles por modo, `PaletaCampo`), `colores_campo.da
 - **Pautas de UX:** zona del pulgar, un solo CTA ámbar al pie, simetría de espaciado, héroes y animación con propósito están en el skill `ux-buenas-practicas-movil`.
 
 ## 8. Iconografía e imágenes
-- Una sola familia de iconos: hoy Material Icons redondeados (`Icons.*_rounded`), sin mezclar con otras. Pasar a Material Symbols Rounded de peso 500 requiere sumar la fuente variable; queda como deuda.
+- Material Icons redondeados (`Icons.*_rounded`) para todo lo genérico, sin mezclar con otras fuentes de íconos. Pasar a Material Symbols Rounded de peso 500 requiere sumar la fuente variable; queda como deuda.
+- Íconos dedicados del dominio en SVG (ADR 0028), para lo que Material no cubre: la flota de drones Agras (T10 a T50), tanque de pulverizado, lote, cultivo, batería, mando RC, hectárea, check de equipo y piloto (persona con mando y dron). Viven en `assets/iconos/`, se pintan con `IconoAgrocom` (`lib/nucleo/ui/componentes/icono_agrocom.dart`) y comparten trazo (2 px, cuadrícula 24×24) entre sí y con el estilo "outlined" de Material. Son siluetas genéricas por categoría; nunca copian el isotipo real de un fabricante.
 - Fotos reales del servicio (avance, dron, lote). En la demo se usan fotos de Unsplash, y en producción vienen del backend.
 - Los mapas usan el SDK del proyecto; la captura satelital del handoff es solo de demo.
 
@@ -134,3 +135,4 @@ Archivos: `paleta_campo.dart` (roles por modo, `PaletaCampo`), `colores_campo.da
 - Si cambia un token, se actualizan `tokens.json`, `PaletaCampo` (o el archivo de `nucleo/ui` que lo lleve), el test de contraste y esta guía en el mismo cambio.
 - Registro de decisiones:
   - 2026-11-25: se adopta Industrial AgTech, que reemplaza el verde hoja #1F5F2E.
+  - 2026-11-27: se agregan íconos dedicados del dominio en SVG (`flutter_svg`, ADR 0028), listas paginadas, el ciclo de envío (`BotonEnvioCampo`), avisos jerarquizados (`ChipNotaCampo`), transiciones de página (`TransicionesCampo`) y el mapa expandible (`MapaExpandibleCampo`). Detalle y ejemplos en `docs/diseno/componentes.md`.

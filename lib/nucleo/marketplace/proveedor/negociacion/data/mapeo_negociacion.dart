@@ -90,6 +90,7 @@ abstract final class MapeoNegociacion {
       colindantesSensibles: terreno is Map
           ? terreno['colindantes_sensibles'] as String?
           : null,
+      justificacionPrecio: j['justificacion_precio'] as String?,
     );
   }
 
@@ -128,6 +129,7 @@ abstract final class MapeoNegociacion {
     esDefinitiva: j['es_definitiva'] == true,
     venceEn: fecha(j['vence_en']) ?? DateTime.fromMillisecondsSinceEpoch(0),
     nota: j['nota'] as String?,
+    justificacionPrecio: j['justificacion_precio'] as String?,
     distanciaKm: decimalOpcional(j['distancia_km']),
     creadaEn: fecha(j['creada_en']),
     respondidaEn: fecha(j['respondida_en']),
@@ -155,6 +157,15 @@ abstract final class MapeoNegociacion {
           ?Macrorregion.deCodigo('$m'),
       ],
       hectareasMinimas: decimalOpcional(mapa['hectareas_minimas']),
+      departamentosExcluidos: [
+        for (final d in (mapa['departamentos_excluidos'] as List? ?? const []))
+          '$d',
+      ],
+      tiposAplicacionExcluidos: [
+        for (final t
+            in (mapa['tipos_aplicacion_excluidos'] as List? ?? const []))
+          '$t',
+      ],
       ofertas: j['ofertas'] != false,
       mensajes: j['mensajes'] != false,
       avance: j['avance'] != false,
@@ -165,8 +176,11 @@ abstract final class MapeoNegociacion {
   static Map<String, dynamic> preferenciasAJson(PreferenciasAviso p) => {
     'nuevas_solicitudes': {
       'activo': p.nuevasSolicitudes,
-      'macrorregiones': [for (final m in p.macrorregiones) m.codigo],
+      // El contrato vigente no conoce `macrorregiones` (un 422 rechazaría
+      // todo el guardado); los filtros son por departamento y tipo.
       'hectareas_minimas': p.hectareasMinimas?.toString(),
+      'departamentos_excluidos': p.departamentosExcluidos,
+      'tipos_aplicacion_excluidos': p.tiposAplicacionExcluidos,
     },
     'ofertas': p.ofertas,
     'mensajes': p.mensajes,

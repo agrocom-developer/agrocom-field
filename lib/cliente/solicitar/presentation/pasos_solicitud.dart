@@ -1,3 +1,5 @@
+import '../../../nucleo/marketplace/precio/presentation/campo_justificacion_precio.dart';
+
 import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -669,10 +671,14 @@ class _PasoPrecioState extends State<PasoPrecio> {
       precio == null ? 1 : precio.truncate().toBigInt().toInt().clamp(1, 99999);
 
   late final _precio = TextEditingController(text: widget.estado.precioTexto);
+  late final _justificacion = TextEditingController(
+    text: widget.estado.justificacion,
+  );
 
   @override
   void dispose() {
     _precio.dispose();
+    _justificacion.dispose();
     super.dispose();
   }
 
@@ -816,6 +822,11 @@ class _PasoPrecioState extends State<PasoPrecio> {
               ),
             ],
           ),
+        ),
+        const SizedBox(height: EspaciadoCampo.m),
+        CampoJustificacionPrecio(
+          controller: _justificacion,
+          onChanged: cubit.cambiarJustificacion,
         ),
         const SizedBox(height: EspaciadoCampo.l),
         SuperficieMarketplace(

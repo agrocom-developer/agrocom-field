@@ -4,7 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../auth/cuenta/domain/cuenta_seguridad.dart';
+import '../../../../auth/cuenta/presentation/cuenta_ya_registrada_pantalla.dart';
+import '../../../../auth/cuenta/presentation/recuperar_acceso_pantalla.dart';
+import '../../../../auth/cuenta/presentation/verificar_telefono_hoja.dart';
 import '../../../../camara/selector_imagen.dart';
+import '../../../../ui/componentes/encabezado_de_marca.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../ui/boton_principal_marketplace.dart';
@@ -315,9 +320,8 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
           oculto: true,
           errorServidor: errores['password'],
           mayusculas: TextCapitalization.none,
-          validator: (v) => (v ?? '').length < 8
-              ? l10n.proveedorAccesoUsaMenosCaracteres
-              : null,
+          ayuda: l10n.cuentaContrasenaMinimo(ReglasContrasena.largoMinimo),
+          validator: ReglasContrasena.validarNueva,
         ),
       ],
     ),
@@ -407,8 +411,35 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
     ),
   );
 
+  /// `409 cuenta_ya_registrada`: explica que ya existe una cuenta y manda al
+  /// ingreso (o a recuperar el acceso). Al iniciar sesión, la app continúa
+  /// donde quedó el registro según `siguiente_paso`.
+  void _avisarCuentaExistente(String? tipoCuenta) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (rutaContext) => CuentaYaRegistradaPantalla(
+          app: AppCuenta.proveedor,
+          tipoCuenta: tipoCuenta,
+          alIniciarSesion: () =>
+              Navigator.of(rutaContext).popUntil((r) => r.isFirst),
+          alRecuperarAcceso: () async {
+            await abrirRecuperarAcceso(rutaContext, app: AppCuenta.proveedor);
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    return BlocListener<RegistroCubit, RegistroEstado>(
+      listenWhen: (a, b) => b.cuentaExistente && !a.cuentaExistente,
+      listener: (context, e) => _avisarCuentaExistente(e.tipoCuentaExistente),
+      child: _consumidor(context),
+    );
+  }
+
+  Widget _consumidor(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final texto = Theme.of(context).textTheme;
     return BlocConsumer<RegistroCubit, RegistroEstado>(
@@ -439,6 +470,11 @@ class _RegistroProveedorPantallaState extends State<RegistroProveedorPantalla> {
                   child: ListView(
                     padding: const EdgeInsets.all(EspaciadoCampo.l),
                     children: [
+                      const EncabezadoDeMarca(
+                        rol: RolApp.piloto,
+                        compacto: true,
+                      ),
+                      const SizedBox(height: EspaciadoCampo.l),
                       _Encabezado(
                         paso: _paso,
                         total: _titulos(context).length,
@@ -701,6 +737,17 @@ class _Listo extends StatelessWidget {
 
   final VoidCallback alTerminar;
 
+  /// La sesión ya está abierta tras el alta: se ofrece verificar el teléfono
+  /// con un código (opcional; también está en Seguridad del perfil).
+  static bool _puedeVerificarTelefono(BuildContext context) {
+    try {
+      context.read<CuentaSeguridadRepositorio>();
+      return true;
+    } on ProviderNotFoundException {
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -734,6 +781,20 @@ class _Listo extends StatelessWidget {
               texto: l10n.proveedorAccesoEntrarApp,
               onPressed: alTerminar,
             ),
+            if (_puedeVerificarTelefono(context)) ...[
+              const SizedBox(height: EspaciadoCampo.s),
+              TextButton.icon(
+                key: const Key('registro-verificar-telefono'),
+                style: TextButton.styleFrom(
+                  minimumSize: const Size.fromHeight(
+                    ObjetivoTactilCampo.guantes,
+                  ),
+                ),
+                onPressed: () => mostrarVerificarTelefono(context),
+                icon: const Icon(Icons.phone_android_rounded),
+                label: Text(l10n.cuentaVerificarMiTelefono),
+              ),
+            ],
           ],
         ),
       ),

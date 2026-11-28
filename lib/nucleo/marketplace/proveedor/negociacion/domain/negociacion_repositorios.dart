@@ -32,6 +32,7 @@ abstract interface class MercadoRepositorio {
     required TipoOferta tipo,
     Decimal? precioHa,
     String? nota,
+    String? justificacionPrecio,
   });
 }
 
@@ -46,6 +47,7 @@ abstract interface class NegociacionRepositorio {
     required Decimal precioHa,
     required String uuidCliente,
     String? nota,
+    String? justificacionPrecio,
   });
 
   /// Acepta la contraoferta vigente del cliente: adjudica la solicitud.

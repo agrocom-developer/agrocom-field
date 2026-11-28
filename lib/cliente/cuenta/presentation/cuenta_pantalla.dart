@@ -5,6 +5,9 @@ import '../../../nucleo/ui/imagenes_campo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../nucleo/auth/bloqueo_biometrico.dart';
+import '../../../nucleo/auth/cuenta/presentation/fila_seguridad_perfil.dart';
+import '../../../nucleo/auth/presentation/bloqueo_biometrico_widgets.dart';
 import '../../../nucleo/marketplace/dominio/dominio.dart';
 import '../../../nucleo/marketplace/foto_perfil/presentation/foto_perfil_widgets.dart';
 import '../../../nucleo/marketplace/ui/marketplace_ui.dart';
@@ -24,7 +27,10 @@ import '../domain/cuenta_repositorio.dart';
 /// accesos a Mis lotes, Contactos, Calificaciones y Ajustes. Cerrar sesión
 /// vive en el menú de tres puntos y en Ajustes.
 class CuentaPantalla extends StatefulWidget {
-  const CuentaPantalla({this.alCerrarSesion, super.key});
+  const CuentaPantalla({this.alCerrarSesion, this.bloqueo, super.key});
+
+  /// Si está, ofrece activar el desbloqueo con huella o rostro (ADR 0026).
+  final BloqueoBiometrico? bloqueo;
 
   /// Acción de cerrar sesión; sin ella el botón no se muestra.
   final VoidCallback? alCerrarSesion;
@@ -38,6 +44,7 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
   int _intento = 0;
 
   VoidCallback? get alCerrarSesion => widget.alCerrarSesion;
+  BloqueoBiometrico? get bloqueo => widget.bloqueo;
 
   /// El repositorio de contactos existe solo si la app lo provee.
   bool get conContactos {
@@ -203,6 +210,24 @@ class _CuentaPantallaState extends State<CuentaPantalla> {
                     detalle: t.perfilCli2NotificacionesDetalle,
                     alToque: () => abrir(const BandejaNotificacionesPantalla()),
                   ),
+                  if (alCerrarSesion != null &&
+                      FilaSeguridadPerfil.disponible(context)) ...[
+                    const SizedBox(height: EspaciadoCampo.m),
+                    FilaSeguridadPerfil(
+                      bloqueo: bloqueo,
+                      alCerrarSesion: () {
+                        // Se cierra la pantalla de ajustes antes de salir.
+                        Navigator.of(context).popUntil((r) => r.isFirst);
+                        alCerrarSesion!();
+                      },
+                    ),
+                  ] else if (bloqueo != null) ...[
+                    const SizedBox(height: EspaciadoCampo.m),
+                    FilaBloqueoBiometrico(
+                      bloqueo: bloqueo!,
+                      motivoActivacion: t.biometriaMotivoActivar,
+                    ),
+                  ],
                 ]),
               ),
             ),

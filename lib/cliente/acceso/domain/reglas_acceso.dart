@@ -1,8 +1,12 @@
+import '../../../nucleo/auth/cuenta/domain/cuenta_seguridad.dart';
+
 /// Validación local de los formularios de acceso. Devuelve el mensaje a
 /// mostrar junto al campo, o `null` si el valor es aceptable. El servidor
 /// vuelve a validar: estas reglas solo evitan un viaje de red inútil.
 abstract final class ReglasAcceso {
-  static const int largoMinimoContrasena = 8;
+  /// Mínimo de la contraseña: el mismo del servidor, sin reglas de
+  /// composición (letras, números ni símbolos).
+  static const int largoMinimoContrasena = ReglasContrasena.largoMinimo;
 
   /// Usuario de acceso: letras, números, punto, guion y guion bajo; nunca un
   /// correo.
@@ -51,15 +55,13 @@ abstract final class ReglasAcceso {
     return null;
   }
 
-  static String? contrasenaNueva(String? valor) {
-    final v = valor ?? '';
-    if (v.isEmpty) return 'Crea una contraseña';
-    if (v.length < largoMinimoContrasena) {
-      return 'Usa al menos $largoMinimoContrasena caracteres';
-    }
-    if (!RegExp(r'[A-Za-z]').hasMatch(v) || !RegExp(r'\d').hasMatch(v)) {
-      return 'Combina letras y números';
-    }
+  static String? contrasenaNueva(String? valor) =>
+      ReglasContrasena.validarNueva(valor);
+
+  /// Al iniciar sesión se puede escribir el usuario o el teléfono de la
+  /// cuenta; el servidor decide cuál es.
+  static String? usuarioOTelefono(String? valor) {
+    if ((valor ?? '').trim().isEmpty) return 'Escribe tu usuario o teléfono';
     return null;
   }
 }

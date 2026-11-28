@@ -491,7 +491,7 @@ void main() {
       ),
     );
 
-    expect(find.bySemanticsLabel('Agrocom'), findsNWidgets(2));
+    expect(find.bySemanticsLabel('DronAgro'), findsNWidgets(2));
     // Con sombra: la copia teñida + el logo; sin sombra: solo el logo.
     expect(find.byType(Image), findsNWidgets(3));
   });

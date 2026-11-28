@@ -79,6 +79,7 @@ class SolicitudAbierta {
     this.accesoDificil = false,
     this.referenciasAcceso,
     this.colindantesSensibles,
+    this.justificacionPrecio,
   });
 
   final int id;
@@ -112,6 +113,10 @@ class SolicitudAbierta {
   final bool accesoDificil;
   final String? referenciasAcceso;
   final String? colindantesSensibles;
+
+  /// Por qué el cliente propone ese precio (opcional, hasta 500 caracteres);
+  /// solo viene en el detalle.
+  final String? justificacionPrecio;
 
   /// Monto estimado al precio propuesto: hectáreas por precio.
   Decimal get montoPropuesto => hectareas * precioHaPropuesto;
@@ -269,6 +274,7 @@ class OfertaNegociada {
     required this.esDefinitiva,
     required this.venceEn,
     this.nota,
+    this.justificacionPrecio,
     this.distanciaKm,
     this.creadaEn,
     this.respondidaEn,
@@ -292,6 +298,9 @@ class OfertaNegociada {
   final bool esDefinitiva;
   final DateTime venceEn;
   final String? nota;
+
+  /// Por qué su autor propone ese precio; lo escribe solo el autor.
+  final String? justificacionPrecio;
   final Decimal? distanciaKm;
   final DateTime? creadaEn;
   final DateTime? respondidaEn;
@@ -376,6 +385,8 @@ class PreferenciasAviso {
     this.nuevasSolicitudes = true,
     this.macrorregiones = const [],
     this.hectareasMinimas,
+    this.departamentosExcluidos = const [],
+    this.tiposAplicacionExcluidos = const [],
     this.ofertas = true,
     this.mensajes = true,
     this.avance = true,
@@ -387,6 +398,12 @@ class PreferenciasAviso {
   /// Vacío: todas las zonas.
   final List<Macrorregion> macrorregiones;
   final Decimal? hectareasMinimas;
+
+  /// Códigos de departamento de los que no se avisa (contrato vigente).
+  final List<String> departamentosExcluidos;
+
+  /// Tipos de aplicación de los que no se avisa (`herbicida`, `desecante`...).
+  final List<String> tiposAplicacionExcluidos;
   final bool ofertas;
   final bool mensajes;
   final bool avance;
@@ -396,6 +413,8 @@ class PreferenciasAviso {
     bool? nuevasSolicitudes,
     List<Macrorregion>? macrorregiones,
     Decimal? Function()? hectareasMinimas,
+    List<String>? departamentosExcluidos,
+    List<String>? tiposAplicacionExcluidos,
     bool? ofertas,
     bool? mensajes,
     bool? avance,
@@ -406,6 +425,10 @@ class PreferenciasAviso {
     hectareasMinimas: hectareasMinimas != null
         ? hectareasMinimas()
         : this.hectareasMinimas,
+    departamentosExcluidos:
+        departamentosExcluidos ?? this.departamentosExcluidos,
+    tiposAplicacionExcluidos:
+        tiposAplicacionExcluidos ?? this.tiposAplicacionExcluidos,
     ofertas: ofertas ?? this.ofertas,
     mensajes: mensajes ?? this.mensajes,
     avance: avance ?? this.avance,

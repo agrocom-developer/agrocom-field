@@ -101,7 +101,7 @@ class _ElegirRolPantallaState extends State<ElegirRolPantalla> {
                         const SizedBox(height: EspaciadoCampo.xs),
                         Expanded(
                           child: BloqueAmbarCampo(
-                            titulo: 'Agrocom',
+                            titulo: 'DronAgro',
                             etiqueta: l10n.marketplaceAccesoFumigacionConDron,
                             cifra: false,
                             radio: 0,

@@ -4,6 +4,9 @@ import '../../../../ui/imagenes_campo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../auth/bloqueo_biometrico.dart';
+import '../../../../auth/cuenta/presentation/fila_seguridad_perfil.dart';
+import '../../../../auth/presentation/bloqueo_biometrico_widgets.dart';
 import '../../../../ui/componentes/componentes_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../dominio/dominio.dart';
@@ -11,6 +14,7 @@ import '../../../../ui/ajustes/ajustes_pantalla.dart';
 import '../../../../ui/ajustes/apariencia_pantalla.dart';
 import '../../../foto_perfil/presentation/foto_perfil_widgets.dart';
 import '../../../ui/marketplace_ui.dart';
+import '../../cuenta/presentation/disponibilidad_pantalla.dart';
 import '../../negociacion/presentation/avisos_pantalla.dart';
 import '../domain/perfil_repositorio.dart';
 import '../../../../notificaciones/bandeja/presentation/bandeja_notificaciones_pantalla.dart';
@@ -28,6 +32,8 @@ class PerfilPantalla extends StatelessWidget {
     this.onVerDrones,
     this.conAvisos = true,
     this.alSalir,
+    this.bloqueo,
+    this.conCuenta = false,
     super.key,
   });
 
@@ -44,6 +50,12 @@ class PerfilPantalla extends StatelessWidget {
   /// Cierra la sesión (menú de tres puntos y Ajustes). Sin él no se ofrece.
   final VoidCallback? alSalir;
 
+  /// Si está, ofrece activar el desbloqueo con huella o rostro (ADR 0026).
+  final BloqueoBiometrico? bloqueo;
+
+  /// Con cuenta real: muestra la fila de disponibilidad.
+  final bool conCuenta;
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -54,6 +66,8 @@ class PerfilPantalla extends StatelessWidget {
         onVerDrones: onVerDrones,
         conAvisos: conAvisos,
         alSalir: alSalir,
+        bloqueo: bloqueo,
+        conCuenta: conCuenta,
       ),
     );
   }
@@ -66,6 +80,8 @@ class PerfilVista extends StatelessWidget {
     this.onVerDrones,
     this.conAvisos = true,
     this.alSalir,
+    this.bloqueo,
+    this.conCuenta = false,
     super.key,
   });
 
@@ -73,6 +89,8 @@ class PerfilVista extends StatelessWidget {
   final VoidCallback? onVerDrones;
   final bool conAvisos;
   final VoidCallback? alSalir;
+  final BloqueoBiometrico? bloqueo;
+  final bool conCuenta;
 
   @override
   Widget build(BuildContext context) {
@@ -97,6 +115,8 @@ class PerfilVista extends StatelessWidget {
               onVerDrones: onVerDrones,
               conAvisos: conAvisos,
               alSalir: alSalir,
+              bloqueo: bloqueo,
+              conCuenta: conCuenta,
             ),
           },
         );
@@ -139,6 +159,8 @@ class _Contenido extends StatelessWidget {
     required this.onVerDrones,
     required this.conAvisos,
     required this.alSalir,
+    required this.bloqueo,
+    required this.conCuenta,
     super.key,
   });
 
@@ -147,6 +169,8 @@ class _Contenido extends StatelessWidget {
   final VoidCallback? onVerDrones;
   final bool conAvisos;
   final VoidCallback? alSalir;
+  final BloqueoBiometrico? bloqueo;
+  final bool conCuenta;
 
   void _abrir(BuildContext context, Widget pantalla) {
     Navigator.of(
@@ -281,6 +305,35 @@ class _Contenido extends StatelessWidget {
                     detalle: t.perfilPil2BandejaDetalle,
                     alToque: () =>
                         _abrir(context, const BandejaNotificacionesPantalla()),
+                  ),
+                ],
+                if (conCuenta) ...[
+                  const SizedBox(height: EspaciadoCampo.m),
+                  FilaAccionCampo(
+                    clave: const Key('perfil-disponibilidad'),
+                    icono: Icons.toggle_on_outlined,
+                    titulo: t.perfilCuentaDisponibilidad,
+                    detalle: t.perfilCuentaDisponibilidadDetalle,
+                    alToque: () =>
+                        _abrir(context, const DisponibilidadPantalla()),
+                  ),
+                ],
+                if (alSalir != null &&
+                    FilaSeguridadPerfil.disponible(context)) ...[
+                  const SizedBox(height: EspaciadoCampo.m),
+                  FilaSeguridadPerfil(
+                    bloqueo: bloqueo,
+                    alCerrarSesion: () {
+                      // Se cierra la pantalla de ajustes antes de salir.
+                      Navigator.of(context).popUntil((r) => r.isFirst);
+                      alSalir!();
+                    },
+                  ),
+                ] else if (bloqueo != null) ...[
+                  const SizedBox(height: EspaciadoCampo.m),
+                  FilaBloqueoBiometrico(
+                    bloqueo: bloqueo!,
+                    motivoActivacion: t.biometriaMotivoActivar,
                   ),
                 ],
               ]),

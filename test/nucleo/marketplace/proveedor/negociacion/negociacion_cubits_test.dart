@@ -37,6 +37,7 @@ class _MercadoQueFalla extends MercadoDemo {
     required TipoOferta tipo,
     Decimal? precioHa,
     String? nota,
+    String? justificacionPrecio,
   }) {
     claves.add(uuidCliente);
     final f = falla;
@@ -50,6 +51,7 @@ class _MercadoQueFalla extends MercadoDemo {
       tipo: tipo,
       precioHa: precioHa,
       nota: nota,
+      justificacionPrecio: justificacionPrecio,
     );
   }
 }
@@ -66,6 +68,7 @@ class _NegociacionQueFalla extends NegociacionDemo {
     required Decimal precioHa,
     required String uuidCliente,
     String? nota,
+    String? justificacionPrecio,
   }) {
     claves.add(uuidCliente);
     final f = falla;
@@ -78,6 +81,7 @@ class _NegociacionQueFalla extends NegociacionDemo {
       precioHa: precioHa,
       uuidCliente: uuidCliente,
       nota: nota,
+      justificacionPrecio: justificacionPrecio,
     );
   }
 

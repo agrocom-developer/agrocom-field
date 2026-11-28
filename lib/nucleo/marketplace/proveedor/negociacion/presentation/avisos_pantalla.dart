@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../notificaciones/notificador_local.dart';
+import '../../../../permisos/domain/permiso.dart';
+import '../../../../permisos/presentation/hoja_permiso.dart';
 import '../../../../ui/paleta_campo.dart';
 import '../../../../ui/tokens_campo.dart';
 import '../../../dominio/falla.dart';
@@ -129,7 +131,11 @@ class AvisosPantalla extends StatelessWidget {
       create: (context) => AvisosCubit(
         context.read<AvisosRepositorio>(),
         l10n,
-        notificador: context.read<DependenciasNegociacion>().notificador,
+        // Con el gestor de permisos, la explicación y el aviso del sistema
+        // salen de la pantalla (ADR 0026) y el cubit no vuelve a pedirlo.
+        notificador: context.read<DependenciasNegociacion>().permisos == null
+            ? context.read<DependenciasNegociacion>().notificador
+            : null,
       )..cargar(),
       child: Scaffold(
         appBar: AppBar(title: Text(l10n.proveedorNegociacionAvisos)),
@@ -189,8 +195,24 @@ class AvisosVista extends StatelessWidget {
                     detalle:
                         l10n.proveedorNegociacionAvisamosCuandoClientePublica,
                     valor: p.nuevasSolicitudes,
-                    alCambiar: (v) =>
-                        cubit.cambiar(p.copiarCon(nuevasSolicitudes: v)),
+                    alCambiar: (v) async {
+                      final permisos = context
+                          .read<DependenciasNegociacion>()
+                          .permisos;
+                      if (v && permisos != null) {
+                        // Los avisos dentro de la app funcionan igual si dice
+                        // «Ahora no»: el permiso solo afecta al aviso del
+                        // sistema.
+                        await pedirPermisoConExplicacion(
+                          context,
+                          permisos,
+                          PermisoApp.notificaciones,
+                        );
+                      }
+                      if (context.mounted) {
+                        await cubit.cambiar(p.copiarCon(nuevasSolicitudes: v));
+                      }
+                    },
                   ),
                   if (p.nuevasSolicitudes) ...[
                     const Divider(height: EspaciadoCampo.xl),

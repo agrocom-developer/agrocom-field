@@ -3,10 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../nucleo/auth/cuenta/domain/cuenta_seguridad.dart';
+import '../../../nucleo/auth/cuenta/presentation/cuenta_ya_registrada_pantalla.dart';
+import '../../../nucleo/auth/cuenta/presentation/recuperar_acceso_pantalla.dart';
+import '../../../nucleo/auth/cuenta/presentation/verificar_telefono_hoja.dart';
 import '../../../nucleo/marketplace/ui/aviso_marketplace.dart';
 import '../../../nucleo/marketplace/ui/boton_principal_marketplace.dart';
 import '../../../nucleo/marketplace/ui/campo_formulario_marketplace.dart';
 import '../../../nucleo/ui/paleta_campo.dart';
+import '../../../nucleo/ui/componentes/encabezado_de_marca.dart';
 import '../../../nucleo/ui/tokens_campo.dart';
 import '../domain/acceso_repositorio.dart';
 import '../domain/reglas_acceso.dart';
@@ -27,17 +32,55 @@ class RegistroClientePantalla extends StatelessWidget {
   final ValueChanged<SesionCliente> alEntrar;
   final VoidCallback alVolver;
 
+  /// `409 cuenta_ya_registrada`: explica que ya existe una cuenta y ofrece
+  /// iniciar sesión (vuelve al ingreso) o recuperar el acceso.
+  static void _avisarCuentaExistente(
+    BuildContext context,
+    String? tipoCuenta,
+    VoidCallback irAlIngreso,
+  ) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (rutaContext) => CuentaYaRegistradaPantalla(
+          app: AppCuenta.cliente,
+          tipoCuenta: tipoCuenta,
+          alIniciarSesion: () {
+            Navigator.of(rutaContext).pop();
+            irAlIngreso();
+          },
+          alRecuperarAcceso: () async {
+            await abrirRecuperarAcceso(rutaContext, app: AppCuenta.cliente);
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           RegistroClienteCubit(context.read<AccesoRepositorio>()),
-      child: BlocListener<RegistroClienteCubit, FormularioAccesoEstado>(
-        listenWhen: (antes, ahora) => ahora.sesion != null,
-        listener: (context, estado) {
-          HapticaCampo.confirmacion();
-          alEntrar(estado.sesion!);
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<RegistroClienteCubit, FormularioAccesoEstado>(
+            listenWhen: (antes, ahora) => ahora.sesion != null,
+            listener: (context, estado) async {
+              HapticaCampo.confirmacion();
+              // La cuenta ya está creada y con sesión: se ofrece verificar el
+              // teléfono con un código, sin obligar («Más tarde»).
+              await ofrecerVerificarTelefono(context);
+              if (context.mounted) alEntrar(estado.sesion!);
+            },
+          ),
+          BlocListener<RegistroClienteCubit, FormularioAccesoEstado>(
+            listenWhen: (antes, ahora) =>
+                ahora.fallo == MotivoFalloAcceso.cuentaYaRegistrada &&
+                antes.fallo != ahora.fallo,
+            listener: (context, estado) =>
+                _avisarCuentaExistente(context, estado.tipoCuenta, alVolver),
+          ),
+        ],
         child: PopScope(
           canPop: false,
           onPopInvokedWithResult: (salio, _) {
@@ -150,6 +193,8 @@ class _FormularioState extends State<_Formulario> {
                   ),
                 ),
                 const SizedBox(height: EspaciadoCampo.s),
+                const DistintivoRol(rol: RolApp.cliente),
+                const SizedBox(height: EspaciadoCampo.m),
                 Text(l10n.accesoCreaCuenta, style: texto.headlineMedium),
                 const SizedBox(height: EspaciadoCampo.s),
                 Text(
@@ -291,7 +336,7 @@ class _FormularioState extends State<_Formulario> {
                   keyboardType: TextInputType.visiblePassword,
                   textInputAction: TextInputAction.done,
                   autofillHints: const [AutofillHints.newPassword],
-                  ayuda: l10n.accesoMinimoCaracteresConLetras(
+                  ayuda: l10n.cuentaContrasenaMinimo(
                     ReglasAcceso.largoMinimoContrasena,
                   ),
                   validator: ReglasAcceso.contrasenaNueva,

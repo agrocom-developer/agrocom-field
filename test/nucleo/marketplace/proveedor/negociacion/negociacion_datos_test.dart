@@ -9,6 +9,7 @@ import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/data/nego
 import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/data/negociacion_red.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/domain/avisador_solicitudes.dart';
 import 'package:agrocom_field/nucleo/marketplace/proveedor/negociacion/domain/negociacion.dart';
+import 'package:agrocom_field/nucleo/notificaciones/domain/canal_aviso.dart';
 import 'package:agrocom_field/nucleo/notificaciones/notificador_local.dart';
 import 'package:decimal/decimal.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -71,6 +72,8 @@ class _NotificadorFalso implements NotificadorLocal {
     required int id,
     required String titulo,
     required String cuerpo,
+    CanalAviso canal = CanalAviso.cuenta,
+    String? carga,
   }) async => mostradas.add((titulo, cuerpo));
 }
 
@@ -147,12 +150,19 @@ void main() {
 
     test('las preferencias viajan de ida y vuelta', () {
       const p = PreferenciasAviso(
-        macrorregiones: [Macrorregion.valles, Macrorregion.chiquitania],
+        departamentosExcluidos: ['04', '09'],
+        tiposAplicacionExcluidos: ['desecante'],
         mensajes: false,
       );
       final json = MapeoNegociacion.preferenciasAJson(p);
+      expect(
+        (json['nuevas_solicitudes'] as Map).containsKey('macrorregiones'),
+        isFalse,
+        reason: 'el contrato vigente rechazaría la clave con 422',
+      );
       final vuelta = MapeoNegociacion.preferencias(json);
-      expect(vuelta.macrorregiones, p.macrorregiones);
+      expect(vuelta.departamentosExcluidos, ['04', '09']);
+      expect(vuelta.tiposAplicacionExcluidos, ['desecante']);
       expect(vuelta.mensajes, isFalse);
       expect(vuelta.nuevasSolicitudes, isTrue);
     });

@@ -254,11 +254,11 @@ void main() {
   });
 
   group('OfertasRed', () {
-    test('lista primero las vigentes, de menor a mayor precio', () async {
+    test('respeta el orden que devuelve el servidor', () async {
       final red = _entornoConServicios();
       final ofertas = await OfertasRed(red.http, red.fuente).deLaSolicitud('5');
-      expect(ofertas.map((o) => o.id), ['22', '21', '23']);
-      expect(ofertas.first.precioHa, Decimal.parse('118'));
+      expect(ofertas.map((o) => o.id), ['21', '22', '23']);
+      expect(ofertas.first.precioHa, Decimal.parse('130'));
       expect(ofertas.last.estado, EstadoOferta.vencida);
     });
 

@@ -36,12 +36,12 @@ android {
         create("piloto") {
             dimension = "rol"
             applicationIdSuffix = ".piloto"
-            resValue(type = "string", name = "app_name", value = "Agrocom Piloto")
+            resValue(type = "string", name = "app_name", value = "DronAgro Piloto")
         }
         create("cliente") {
             dimension = "rol"
             applicationIdSuffix = ".cliente"
-            resValue(type = "string", name = "app_name", value = "Agrocom")
+            resValue(type = "string", name = "app_name", value = "DronAgro")
         }
     }
 
@@ -86,4 +86,7 @@ flutter {
 dependencies {
     // flutter_local_notifications (HU-62, avisos locales) exige desugaring habilitado.
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
+    // local_auth (desbloqueo con huella o rostro, ADR 0026): el aviso del sistema
+    // exige un tema AppCompat, y sus recursos deben estar en la app.
+    implementation("androidx.appcompat:appcompat:1.7.0")
 }

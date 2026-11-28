@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none">
+  <!-- Área medida: cuadrícula con marcas de esquina, para la cifra de
+       hectáreas junto al dato en mono. -->
+  <rect x="4" y="4" width="16" height="16"
+        stroke="#101418" stroke-width="1.6" stroke-linejoin="round"/>
+  <path d="M12 4 L12 20 M4 12 L20 12"
+        stroke="#101418" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M4 1.5 L4 4 L1.5 4 M20 1.5 L20 4 L22.5 4 M4 22.5 L4 20 L1.5 20 M20 22.5 L20 20 L22.5 20"
+        stroke="#101418" stroke-width="1.2" stroke-linecap="round"/>
+</svg>

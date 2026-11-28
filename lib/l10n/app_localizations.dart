@@ -1219,7 +1219,7 @@ abstract class AppLocalizations {
   /// No description provided for @componentesAgrocom.
   ///
   /// In es, this message translates to:
-  /// **'Agrocom'**
+  /// **'DronAgro'**
   String get componentesAgrocom;
 
   /// No description provided for @componentesOfertaServicioQuedanPara.
@@ -1420,7 +1420,7 @@ abstract class AppLocalizations {
   /// No description provided for @accesoPrimeraVezAgrocom.
   ///
   /// In es, this message translates to:
-  /// **'¿Primera vez en Agrocom?'**
+  /// **'¿Primera vez en DronAgro?'**
   String get accesoPrimeraVezAgrocom;
 
   /// No description provided for @accesoCrearCuenta.
@@ -2290,12 +2290,6 @@ abstract class AppLocalizations {
   /// **'Mejor calificación'**
   String get ofertasOrdenCalificacion;
 
-  /// No description provided for @ofertasOrdenDistancia.
-  ///
-  /// In es, this message translates to:
-  /// **'Más cerca'**
-  String get ofertasOrdenDistancia;
-
   /// No description provided for @ofertasOfertaCambio.
   ///
   /// In es, this message translates to:
@@ -2705,7 +2699,7 @@ abstract class AppLocalizations {
   /// No description provided for @solicitudesFumigadoConAgrocom.
   ///
   /// In es, this message translates to:
-  /// **'Fumigado con Agrocom'**
+  /// **'Fumigado con DronAgro'**
   String get solicitudesFumigadoConAgrocom;
 
   /// No description provided for @solicitarQueLoteFumigamos.
@@ -3605,7 +3599,7 @@ abstract class AppLocalizations {
   /// No description provided for @pagoPilotoConfirmoQueRecibio.
   ///
   /// In es, this message translates to:
-  /// **'El piloto confirmó que recibió el pago. Gracias por usar Agrocom.'**
+  /// **'El piloto confirmó que recibió el pago. Gracias por usar DronAgro.'**
   String get pagoPilotoConfirmoQueRecibio;
 
   /// No description provided for @pagoPudimosRevisarPago.
@@ -3707,7 +3701,7 @@ abstract class AppLocalizations {
   /// No description provided for @marketplaceAccesoComoVasUsarAgrocom.
   ///
   /// In es, this message translates to:
-  /// **'¿Cómo vas a usar Agrocom?'**
+  /// **'¿Cómo vas a usar DronAgro?'**
   String get marketplaceAccesoComoVasUsarAgrocom;
 
   /// No description provided for @marketplaceAccesoEligeRol.
@@ -6223,6 +6217,2352 @@ abstract class AppLocalizations {
   /// **'{hectareas} × {precio} por ha'**
   String proveedorEjecucionHectareasPorPrecio(String hectareas, String precio);
 
+  /// No description provided for @permisosCamaraQuienVe.
+  ///
+  /// In es, this message translates to:
+  /// **'Solo las ve el equipo de Agrocom que las revisa y, en las fotos de avance, el cliente del servicio.'**
+  String get permisosCamaraQuienVe;
+
+  /// No description provided for @permisosCamaraSin.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin la cámara no puedes enviar fotos desde la app.'**
+  String get permisosCamaraSin;
+
+  /// No description provided for @permisosUbicacionQuienVe.
+  ///
+  /// In es, this message translates to:
+  /// **'La ve el cliente del servicio en curso y, solo en un auxilio, soporte de Agrocom. Puedes desactivarla cuando quieras.'**
+  String get permisosUbicacionQuienVe;
+
+  /// No description provided for @permisosUbicacionSin.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin la ubicación no puedes compartir tu posición con el cliente ni avisar dónde estás en un auxilio.'**
+  String get permisosUbicacionSin;
+
+  /// No description provided for @permisosNotificacionesQuienVe.
+  ///
+  /// In es, this message translates to:
+  /// **'Las notificaciones solo llegan a este teléfono. En Notificaciones puedes apagar las que no quieras.'**
+  String get permisosNotificacionesQuienVe;
+
+  /// No description provided for @permisosNotificacionesSin.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin notificaciones solo te enteras de las novedades al abrir la app.'**
+  String get permisosNotificacionesSin;
+
+  /// No description provided for @permisosDenegadoAjustes.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes activarlo en los ajustes del teléfono. Al volver, la app lo toma al instante.'**
+  String get permisosDenegadoAjustes;
+
+  /// No description provided for @permisosDenegadoReintento.
+  ///
+  /// In es, this message translates to:
+  /// **'Si cambias de idea, te lo volvemos a pedir cuando lo necesites.'**
+  String get permisosDenegadoReintento;
+
+  /// No description provided for @permisosCerrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar'**
+  String get permisosCerrar;
+
+  /// No description provided for @biometriaBloqueadaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Sesión bloqueada'**
+  String get biometriaBloqueadaTitulo;
+
+  /// No description provided for @biometriaBloqueadaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Usa tu huella o tu rostro para ingresar. Lo que hayas guardado en el teléfono sigue a salvo.'**
+  String get biometriaBloqueadaDetalle;
+
+  /// No description provided for @biometriaDesbloquear.
+  ///
+  /// In es, this message translates to:
+  /// **'Desbloquear'**
+  String get biometriaDesbloquear;
+
+  /// No description provided for @biometriaUsarContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresar con mi contraseña'**
+  String get biometriaUsarContrasena;
+
+  /// No description provided for @biometriaMotivoDesbloqueo.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma que eres tú para abrir DronAgro'**
+  String get biometriaMotivoDesbloqueo;
+
+  /// No description provided for @biometriaMotivoActivar.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma tu huella o rostro para activar el desbloqueo'**
+  String get biometriaMotivoActivar;
+
+  /// No description provided for @biometriaUsaContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos usar la huella o el rostro. Ingresa con tu contraseña.'**
+  String get biometriaUsaContrasena;
+
+  /// No description provided for @biometriaAjusteTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Desbloquear con huella o rostro'**
+  String get biometriaAjusteTitulo;
+
+  /// No description provided for @biometriaAjusteDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Al abrir la app te pedimos tu huella o rostro en vez de ingresar directo. No se envía a DronAgro.'**
+  String get biometriaAjusteDetalle;
+
+  /// No description provided for @biometriaAjusteSinRegistrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Registra una huella o un rostro en los ajustes del teléfono para activarlo.'**
+  String get biometriaAjusteSinRegistrar;
+
+  /// No description provided for @biometriaAjusteSinHardware.
+  ///
+  /// In es, this message translates to:
+  /// **'Este teléfono no tiene lector de huella ni de rostro.'**
+  String get biometriaAjusteSinHardware;
+
+  /// No description provided for @biometriaNoConfirmada.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos confirmar tu huella o rostro. El desbloqueo sigue desactivado.'**
+  String get biometriaNoConfirmada;
+
+  /// No description provided for @cuentaEnRevisionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta está en revisión'**
+  String get cuentaEnRevisionTitulo;
+
+  /// No description provided for @cuentaRechazadaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta fue rechazada'**
+  String get cuentaRechazadaTitulo;
+
+  /// No description provided for @cuentaSuspendidaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta está suspendida'**
+  String get cuentaSuspendidaTitulo;
+
+  /// No description provided for @cuentaEnRevisionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Un administrador revisa tus datos y documentos. Mientras tanto puedes ver tu perfil y tu dron, pero todavía no ves el mapa de solicitudes ni puedes ofertar.'**
+  String get cuentaEnRevisionDetalle;
+
+  /// No description provided for @cuentaRechazadaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Corrige lo que te indicamos, vuelve a subir lo que haga falta y envíala otra vez a revisión.'**
+  String get cuentaRechazadaDetalle;
+
+  /// No description provided for @cuentaSuspendidaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes ver el mapa ni ofertar mientras dure la suspensión. Escríbenos si necesitas ayuda.'**
+  String get cuentaSuspendidaDetalle;
+
+  /// No description provided for @cuentaMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Motivo: {motivo}'**
+  String cuentaMotivo(String motivo);
+
+  /// No description provided for @cuentaQueFalta.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué falta'**
+  String get cuentaQueFalta;
+
+  /// No description provided for @cuentaNadaFalta.
+  ///
+  /// In es, this message translates to:
+  /// **'No te falta ningún documento. Te avisamos cuando te aprueben.'**
+  String get cuentaNadaFalta;
+
+  /// No description provided for @cuentaSubirDocumentos.
+  ///
+  /// In es, this message translates to:
+  /// **'Subir documentos'**
+  String get cuentaSubirDocumentos;
+
+  /// No description provided for @cuentaReenviar.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a enviar a revisión'**
+  String get cuentaReenviar;
+
+  /// No description provided for @cuentaActualizar.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get cuentaActualizar;
+
+  /// No description provided for @cuentaErrorCarga.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos revisar el estado de tu cuenta'**
+  String get cuentaErrorCarga;
+
+  /// No description provided for @cuentaErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a intentarlo en un momento.'**
+  String get cuentaErrorDetalle;
+
+  /// No description provided for @cuentaSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Necesitamos señal para revisar tu cuenta.'**
+  String get cuentaSinRed;
+
+  /// No description provided for @cuentaActualizandoSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizando el estado de tu cuenta'**
+  String get cuentaActualizandoSemantica;
+
+  /// No description provided for @documentosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis documentos'**
+  String get documentosTitulo;
+
+  /// No description provided for @documentosIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Toma una foto de cada documento con la cámara. Se envían por conexión segura y no se guardan en tu teléfono.'**
+  String get documentosIntro;
+
+  /// No description provided for @documentosTipoIdentidad.
+  ///
+  /// In es, this message translates to:
+  /// **'Documento de identidad'**
+  String get documentosTipoIdentidad;
+
+  /// No description provided for @documentosTipoLicenciaPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia de piloto'**
+  String get documentosTipoLicenciaPiloto;
+
+  /// No description provided for @documentosTipoHabilitacionDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Habilitación del dron'**
+  String get documentosTipoHabilitacionDron;
+
+  /// No description provided for @documentosTipoSeguroResponsabilidad.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguro de responsabilidad'**
+  String get documentosTipoSeguroResponsabilidad;
+
+  /// No description provided for @documentosTipoRegistroDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Matrícula del dron'**
+  String get documentosTipoRegistroDron;
+
+  /// No description provided for @documentosTipoCertificadoFumigacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Certificado de fumigación'**
+  String get documentosTipoCertificadoFumigacion;
+
+  /// No description provided for @documentosTipoAntecedentes.
+  ///
+  /// In es, this message translates to:
+  /// **'Antecedentes'**
+  String get documentosTipoAntecedentes;
+
+  /// No description provided for @documentosTipoOtro.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro documento'**
+  String get documentosTipoOtro;
+
+  /// No description provided for @documentosEtapaFaltante.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta'**
+  String get documentosEtapaFaltante;
+
+  /// No description provided for @documentosEtapaSubiendo.
+  ///
+  /// In es, this message translates to:
+  /// **'Subiendo'**
+  String get documentosEtapaSubiendo;
+
+  /// No description provided for @documentosEtapaEnRevision.
+  ///
+  /// In es, this message translates to:
+  /// **'En revisión'**
+  String get documentosEtapaEnRevision;
+
+  /// No description provided for @documentosEtapaAprobado.
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobado'**
+  String get documentosEtapaAprobado;
+
+  /// No description provided for @documentosEtapaRechazado.
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazado'**
+  String get documentosEtapaRechazado;
+
+  /// No description provided for @documentosEtapaVencido.
+  ///
+  /// In es, this message translates to:
+  /// **'Vencido'**
+  String get documentosEtapaVencido;
+
+  /// No description provided for @documentosEtapaError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se envió'**
+  String get documentosEtapaError;
+
+  /// No description provided for @documentosTomarFoto.
+  ///
+  /// In es, this message translates to:
+  /// **'Tomar foto'**
+  String get documentosTomarFoto;
+
+  /// No description provided for @documentosVolverATomar.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver a tomar'**
+  String get documentosVolverATomar;
+
+  /// No description provided for @documentosReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get documentosReintentar;
+
+  /// No description provided for @documentosVence.
+  ///
+  /// In es, this message translates to:
+  /// **'Vence el {fecha}'**
+  String documentosVence(String fecha);
+
+  /// No description provided for @documentosPreguntaVence.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cuándo vence este documento?'**
+  String get documentosPreguntaVence;
+
+  /// No description provided for @documentosErrorSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. La foto sigue aquí: vuelve a intentarlo cuando tengas señal.'**
+  String get documentosErrorSinRed;
+
+  /// No description provided for @documentosErrorCarga.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos abrir tus documentos'**
+  String get documentosErrorCarga;
+
+  /// No description provided for @documentosVacio.
+  ///
+  /// In es, this message translates to:
+  /// **'No te pedimos ningún documento por ahora.'**
+  String get documentosVacio;
+
+  /// No description provided for @documentosVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Si falta algo, te lo mostramos aquí.'**
+  String get documentosVacioDetalle;
+
+  /// No description provided for @documentosSemantica.
+  ///
+  /// In es, this message translates to:
+  /// **'{documento}, {estado}'**
+  String documentosSemantica(String documento, String estado);
+
+  /// No description provided for @disponibilidadTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponibilidad'**
+  String get disponibilidadTitulo;
+
+  /// No description provided for @disponibilidadIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocupado o en trabajo, dejas de recibir notificaciones de solicitudes nuevas. Sigues viendo el mapa y puedes ofertar.'**
+  String get disponibilidadIntro;
+
+  /// No description provided for @disponibilidadDisponible.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponible'**
+  String get disponibilidadDisponible;
+
+  /// No description provided for @disponibilidadDisponibleDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te avisamos de las solicitudes nuevas.'**
+  String get disponibilidadDisponibleDetalle;
+
+  /// No description provided for @disponibilidadOcupado.
+  ///
+  /// In es, this message translates to:
+  /// **'Ocupado'**
+  String get disponibilidadOcupado;
+
+  /// No description provided for @disponibilidadOcupadoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'No te avisamos de solicitudes nuevas.'**
+  String get disponibilidadOcupadoDetalle;
+
+  /// No description provided for @disponibilidadEnTrabajo.
+  ///
+  /// In es, this message translates to:
+  /// **'En trabajo'**
+  String get disponibilidadEnTrabajo;
+
+  /// No description provided for @disponibilidadEnTrabajoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'No te avisamos mientras estás trabajando.'**
+  String get disponibilidadEnTrabajoDetalle;
+
+  /// No description provided for @disponibilidadEmpresaTeMarco.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu empresa te marcó como {estado}'**
+  String disponibilidadEmpresaTeMarco(String estado);
+
+  /// No description provided for @disponibilidadEmpresaOcupada.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu empresa está {estado}: no recibes notificaciones de solicitudes nuevas aunque tú estés disponible.'**
+  String disponibilidadEmpresaOcupada(String estado);
+
+  /// No description provided for @disponibilidadSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Tu disponibilidad no cambió: vuelve a intentarlo cuando tengas señal.'**
+  String get disponibilidadSinRed;
+
+  /// No description provided for @disponibilidadErrorCarga.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tu disponibilidad'**
+  String get disponibilidadErrorCarga;
+
+  /// No description provided for @disponibilidadErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a intentarlo en un momento.'**
+  String get disponibilidadErrorDetalle;
+
+  /// No description provided for @disponibilidadTusAvisos.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus notificaciones'**
+  String get disponibilidadTusAvisos;
+
+  /// No description provided for @disponibilidadAvisosActivos.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones de solicitudes nuevas: activadas'**
+  String get disponibilidadAvisosActivos;
+
+  /// No description provided for @disponibilidadAvisosApagados.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones de solicitudes nuevas: desactivadas'**
+  String get disponibilidadAvisosApagados;
+
+  /// No description provided for @disponibilidadHectareasMinimas.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectáreas mínimas: {hectareas}'**
+  String disponibilidadHectareasMinimas(String hectareas);
+
+  /// No description provided for @disponibilidadCualquiera.
+  ///
+  /// In es, this message translates to:
+  /// **'cualquiera'**
+  String get disponibilidadCualquiera;
+
+  /// No description provided for @disponibilidadDepartamentosExcluidos.
+  ///
+  /// In es, this message translates to:
+  /// **'{cantidad, plural, =0{Sin departamentos excluidos} =1{1 departamento excluido} other{{cantidad} departamentos excluidos}}'**
+  String disponibilidadDepartamentosExcluidos(int cantidad);
+
+  /// No description provided for @disponibilidadTiposExcluidos.
+  ///
+  /// In es, this message translates to:
+  /// **'{cantidad, plural, =0{Sin tipos de aplicación excluidos} =1{1 tipo de aplicación excluido} other{{cantidad} tipos de aplicación excluidos}}'**
+  String disponibilidadTiposExcluidos(int cantidad);
+
+  /// No description provided for @disponibilidadAjustarAvisos.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustar notificaciones'**
+  String get disponibilidadAjustarAvisos;
+
+  /// No description provided for @disponibilidadEstadoActual.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado actual: {estado}'**
+  String disponibilidadEstadoActual(String estado);
+
+  /// No description provided for @perfilCuentaDocumentos.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis documentos'**
+  String get perfilCuentaDocumentos;
+
+  /// No description provided for @perfilCuentaDocumentosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia, matrícula y lo que falta para tu aprobación'**
+  String get perfilCuentaDocumentosDetalle;
+
+  /// No description provided for @perfilCuentaDisponibilidad.
+  ///
+  /// In es, this message translates to:
+  /// **'Disponibilidad'**
+  String get perfilCuentaDisponibilidad;
+
+  /// No description provided for @perfilCuentaDisponibilidadDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ponte ocupado para no recibir notificaciones'**
+  String get perfilCuentaDisponibilidadDetalle;
+
+  /// No description provided for @listaPaginadaSinRed.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión. Conéctate para ver esta lista.'**
+  String get listaPaginadaSinRed;
+
+  /// No description provided for @listaPaginadaReintentar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get listaPaginadaReintentar;
+
+  /// No description provided for @listaPaginadaVacia.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no hay nada para mostrar aquí.'**
+  String get listaPaginadaVacia;
+
+  /// No description provided for @listaPaginadaFin.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay más resultados'**
+  String get listaPaginadaFin;
+
+  /// No description provided for @botonEnvioExito.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get botonEnvioExito;
+
+  /// No description provided for @botonEnvioError.
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo enviar. Toca para reintentar'**
+  String get botonEnvioError;
+
+  /// No description provided for @menuAccionesMas.
+  ///
+  /// In es, this message translates to:
+  /// **'Más acciones'**
+  String get menuAccionesMas;
+
+  /// No description provided for @mapaExpandibleAbrir.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver el mapa en pantalla completa'**
+  String get mapaExpandibleAbrir;
+
+  /// No description provided for @mapaExpandibleCerrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar el mapa'**
+  String get mapaExpandibleCerrar;
+
+  /// No description provided for @mapaExpandibleAcercar.
+  ///
+  /// In es, this message translates to:
+  /// **'Acercar'**
+  String get mapaExpandibleAcercar;
+
+  /// No description provided for @mapaExpandibleAlejar.
+  ///
+  /// In es, this message translates to:
+  /// **'Alejar'**
+  String get mapaExpandibleAlejar;
+
+  /// No description provided for @mapaExpandibleRecentrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Centrar en el lote'**
+  String get mapaExpandibleRecentrar;
+
+  /// No description provided for @iconoDronT10.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T10'**
+  String get iconoDronT10;
+
+  /// No description provided for @iconoDronT20.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T20'**
+  String get iconoDronT20;
+
+  /// No description provided for @iconoDronT25.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T25'**
+  String get iconoDronT25;
+
+  /// No description provided for @iconoDronT30.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T30'**
+  String get iconoDronT30;
+
+  /// No description provided for @iconoDronT40.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T40'**
+  String get iconoDronT40;
+
+  /// No description provided for @iconoDronT50.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron Agras T50'**
+  String get iconoDronT50;
+
+  /// No description provided for @iconoPulverizadorTanque.
+  ///
+  /// In es, this message translates to:
+  /// **'Tanque de pulverizado'**
+  String get iconoPulverizadorTanque;
+
+  /// No description provided for @iconoLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Lote'**
+  String get iconoLote;
+
+  /// No description provided for @iconoCultivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cultivo'**
+  String get iconoCultivo;
+
+  /// No description provided for @iconoBateria.
+  ///
+  /// In es, this message translates to:
+  /// **'Batería'**
+  String get iconoBateria;
+
+  /// No description provided for @iconoMandoRc.
+  ///
+  /// In es, this message translates to:
+  /// **'Mando de radiocontrol'**
+  String get iconoMandoRc;
+
+  /// No description provided for @iconoHectarea.
+  ///
+  /// In es, this message translates to:
+  /// **'Hectárea'**
+  String get iconoHectarea;
+
+  /// No description provided for @iconoCheckEquipo.
+  ///
+  /// In es, this message translates to:
+  /// **'Equipo aprobado'**
+  String get iconoCheckEquipo;
+
+  /// No description provided for @iconoPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Piloto con control remoto'**
+  String get iconoPiloto;
+
+  /// No description provided for @marcaNombre.
+  ///
+  /// In es, this message translates to:
+  /// **'DronAgro'**
+  String get marcaNombre;
+
+  /// No description provided for @marcaDistintivoPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Piloto'**
+  String get marcaDistintivoPiloto;
+
+  /// No description provided for @marcaDistintivoCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Cliente'**
+  String get marcaDistintivoCliente;
+
+  /// No description provided for @marcaEtiquetaPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'DronAgro, app para pilotos'**
+  String get marcaEtiquetaPiloto;
+
+  /// No description provided for @marcaEtiquetaCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'DronAgro, app para clientes'**
+  String get marcaEtiquetaCliente;
+
+  /// No description provided for @portadaPilotoLema.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu trabajo como piloto, también en el lote sin señal'**
+  String get portadaPilotoLema;
+
+  /// No description provided for @portadaPilotoEntrar.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresar a mi cuenta'**
+  String get portadaPilotoEntrar;
+
+  /// No description provided for @capacidadesTituloPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué puedes hacer como piloto'**
+  String get capacidadesTituloPiloto;
+
+  /// No description provided for @capacidadesPilotoMapa.
+  ///
+  /// In es, this message translates to:
+  /// **'Mira en el mapa las solicitudes abiertas, con el lote, las hectáreas y las fotos del terreno.'**
+  String get capacidadesPilotoMapa;
+
+  /// No description provided for @capacidadesPilotoOfertar.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofrece tu precio por hectárea con tu dron, o contraoferta al cliente.'**
+  String get capacidadesPilotoOfertar;
+
+  /// No description provided for @capacidadesPilotoSinSenal.
+  ///
+  /// In es, this message translates to:
+  /// **'Trabaja sin señal en el lote: lo que registras se envía cuando vuelve la red.'**
+  String get capacidadesPilotoSinSenal;
+
+  /// No description provided for @capacidadesPilotoRegistro.
+  ///
+  /// In es, this message translates to:
+  /// **'Marca el inicio, el avance y el cierre con fotos y las hectáreas ejecutadas.'**
+  String get capacidadesPilotoRegistro;
+
+  /// No description provided for @capacidadesPilotoCalificaciones.
+  ///
+  /// In es, this message translates to:
+  /// **'Consulta las calificaciones que recibes y califica al cliente.'**
+  String get capacidadesPilotoCalificaciones;
+
+  /// No description provided for @capacidadesTituloCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué puedes hacer como cliente'**
+  String get capacidadesTituloCliente;
+
+  /// No description provided for @capacidadesVerCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué puedes hacer'**
+  String get capacidadesVerCliente;
+
+  /// No description provided for @capacidadesClientePublicar.
+  ///
+  /// In es, this message translates to:
+  /// **'Publica una solicitud con tu precio por hectárea.'**
+  String get capacidadesClientePublicar;
+
+  /// No description provided for @capacidadesClienteComparar.
+  ///
+  /// In es, this message translates to:
+  /// **'Compara las ofertas de los pilotos.'**
+  String get capacidadesClienteComparar;
+
+  /// No description provided for @capacidadesClienteElegir.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige, contraoferta o acepta la oferta que te convenga.'**
+  String get capacidadesClienteElegir;
+
+  /// No description provided for @capacidadesClienteSeguir.
+  ///
+  /// In es, this message translates to:
+  /// **'Sigue el servicio con fotos, avance y chat.'**
+  String get capacidadesClienteSeguir;
+
+  /// No description provided for @capacidadesClienteCalificar.
+  ///
+  /// In es, this message translates to:
+  /// **'Califica al piloto al terminar.'**
+  String get capacidadesClienteCalificar;
+
+  /// No description provided for @notificacionCanalOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas nuevas'**
+  String get notificacionCanalOfertas;
+
+  /// No description provided for @notificacionCanalServicio.
+  ///
+  /// In es, this message translates to:
+  /// **'Estado del servicio'**
+  String get notificacionCanalServicio;
+
+  /// No description provided for @notificacionCanalSincronizacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronización'**
+  String get notificacionCanalSincronizacion;
+
+  /// No description provided for @notificacionCanalSistema.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones de DronAgro'**
+  String get notificacionCanalSistema;
+
+  /// No description provided for @cuentaCanalWhatsApp.
+  ///
+  /// In es, this message translates to:
+  /// **'WhatsApp'**
+  String get cuentaCanalWhatsApp;
+
+  /// No description provided for @cuentaCanalSms.
+  ///
+  /// In es, this message translates to:
+  /// **'SMS'**
+  String get cuentaCanalSms;
+
+  /// No description provided for @cuentaCanalCorreo.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo'**
+  String get cuentaCanalCorreo;
+
+  /// No description provided for @cuentaCanalWhatsAppDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Al teléfono de tu cuenta'**
+  String get cuentaCanalWhatsAppDetalle;
+
+  /// No description provided for @cuentaCanalSmsDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensaje de texto al teléfono de tu cuenta'**
+  String get cuentaCanalSmsDetalle;
+
+  /// No description provided for @cuentaCanalCorreoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Al correo de respaldo de tu cuenta'**
+  String get cuentaCanalCorreoDetalle;
+
+  /// No description provided for @cuentaCanalNoDisponible.
+  ///
+  /// In es, this message translates to:
+  /// **'No disponible por ahora'**
+  String get cuentaCanalNoDisponible;
+
+  /// No description provided for @cuentaFallaSinConexion.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay conexión. Revisa tu señal y vuelve a intentarlo: lo que escribiste se conserva.'**
+  String get cuentaFallaSinConexion;
+
+  /// No description provided for @cuentaFallaCodigoInvalido.
+  ///
+  /// In es, this message translates to:
+  /// **'El código no es válido o ya venció. Revisa los 6 dígitos o pide uno nuevo.'**
+  String get cuentaFallaCodigoInvalido;
+
+  /// No description provided for @cuentaFallaContrasenaIncorrecta.
+  ///
+  /// In es, this message translates to:
+  /// **'Esa contraseña no es la de tu cuenta. Revísala o confirma con un código.'**
+  String get cuentaFallaContrasenaIncorrecta;
+
+  /// No description provided for @cuentaFallaSinCorreo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta no tiene un correo de respaldo. Elige otro medio.'**
+  String get cuentaFallaSinCorreo;
+
+  /// No description provided for @cuentaFallaSinTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta no tiene un teléfono para ese medio. Elige otro.'**
+  String get cuentaFallaSinTelefono;
+
+  /// No description provided for @cuentaFallaEseMedio.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese medio'**
+  String get cuentaFallaEseMedio;
+
+  /// No description provided for @cuentaFallaCanalNoDisponible.
+  ///
+  /// In es, this message translates to:
+  /// **'{medio} no está disponible por ahora; no es un problema de tu cuenta. {sugerencia}'**
+  String cuentaFallaCanalNoDisponible(String medio, String sugerencia);
+
+  /// No description provided for @cuentaFallaReintentarEnUnMomento.
+  ///
+  /// In es, this message translates to:
+  /// **'Vuelve a intentarlo en un momento.'**
+  String get cuentaFallaReintentarEnUnMomento;
+
+  /// No description provided for @cuentaFallaRecibirPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Recibe el código por {medios}.'**
+  String cuentaFallaRecibirPor(String medios);
+
+  /// No description provided for @cuentaListaMediosO.
+  ///
+  /// In es, this message translates to:
+  /// **'{anteriores} o {ultimo}'**
+  String cuentaListaMediosO(String anteriores, String ultimo);
+
+  /// No description provided for @cuentaFallaLimiteExcedido.
+  ///
+  /// In es, this message translates to:
+  /// **'Pediste varios códigos seguidos. Espera un momento antes de pedir otro.'**
+  String get cuentaFallaLimiteExcedido;
+
+  /// No description provided for @cuentaFallaTelefonoYaVerificado.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu teléfono ya está verificado.'**
+  String get cuentaFallaTelefonoYaVerificado;
+
+  /// No description provided for @cuentaFallaEliminacionBloqueada.
+  ///
+  /// In es, this message translates to:
+  /// **'No puedes eliminar tu cuenta todavía. Resuelve lo pendiente y vuelve a intentarlo.'**
+  String get cuentaFallaEliminacionBloqueada;
+
+  /// No description provided for @cuentaFallaDatosInvalidos.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa los datos y vuelve a intentarlo.'**
+  String get cuentaFallaDatosInvalidos;
+
+  /// No description provided for @cuentaFallaSesionVencida.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu sesión venció. Ingresa de nuevo.'**
+  String get cuentaFallaSesionVencida;
+
+  /// No description provided for @cuentaFallaEnEliminacion.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta está en proceso de eliminación. Puedes conservarla desde aquí.'**
+  String get cuentaFallaEnEliminacion;
+
+  /// No description provided for @cuentaFallaDesconocida.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos completar esto. Vuelve a intentarlo en un momento.'**
+  String get cuentaFallaDesconocida;
+
+  /// No description provided for @cuentaImpedimentoServicioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes un servicio adjudicado o en ejecución'**
+  String get cuentaImpedimentoServicioTitulo;
+
+  /// No description provided for @cuentaImpedimentoServicioSalida.
+  ///
+  /// In es, this message translates to:
+  /// **'Termínalo o cancélalo desde Servicios y vuelve a esta pantalla.'**
+  String get cuentaImpedimentoServicioSalida;
+
+  /// No description provided for @cuentaImpedimentoReclamoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Hay un reclamo abierto en el que participas'**
+  String get cuentaImpedimentoReclamoTitulo;
+
+  /// No description provided for @cuentaImpedimentoReclamoSalida.
+  ///
+  /// In es, this message translates to:
+  /// **'Espera a que se resuelva; después podrás eliminar tu cuenta.'**
+  String get cuentaImpedimentoReclamoSalida;
+
+  /// No description provided for @cuentaImpedimentoPilotosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu empresa tiene pilotos vinculados'**
+  String get cuentaImpedimentoPilotosTitulo;
+
+  /// No description provided for @cuentaImpedimentoPilotosSalida.
+  ///
+  /// In es, this message translates to:
+  /// **'Libéralos o pide a un administrador de Agrocom el cambio de encargado.'**
+  String get cuentaImpedimentoPilotosSalida;
+
+  /// No description provided for @cuentaSeBorra1.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu nombre, usuario, teléfono y correo.'**
+  String get cuentaSeBorra1;
+
+  /// No description provided for @cuentaSeBorra2.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu foto de perfil.'**
+  String get cuentaSeBorra2;
+
+  /// No description provided for @cuentaSeBorra3.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus lotes, fotos de terreno y datos de empresa que no estén en un servicio vigente.'**
+  String get cuentaSeBorra3;
+
+  /// No description provided for @cuentaSeBorra4.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus sesiones en todos los dispositivos.'**
+  String get cuentaSeBorra4;
+
+  /// No description provided for @cuentaSeBorra5.
+  ///
+  /// In es, this message translates to:
+  /// **'El texto de los mensajes que escribiste.'**
+  String get cuentaSeBorra5;
+
+  /// No description provided for @cuentaSeConserva1.
+  ///
+  /// In es, this message translates to:
+  /// **'El registro de cada servicio: precio acordado, hectáreas y fechas. Tu nombre aparece como «Cuenta eliminada».'**
+  String get cuentaSeConserva1;
+
+  /// No description provided for @cuentaSeConserva2.
+  ///
+  /// In es, this message translates to:
+  /// **'El puntaje de las calificaciones, sin tu nombre y sin comentarios.'**
+  String get cuentaSeConserva2;
+
+  /// No description provided for @cuentaSeConserva3.
+  ///
+  /// In es, this message translates to:
+  /// **'Lo que la ley o la prevención de fraude exigen, por un plazo limitado y declarado.'**
+  String get cuentaSeConserva3;
+
+  /// No description provided for @cuentaEfectosInmediatos.
+  ///
+  /// In es, this message translates to:
+  /// **'Al confirmar, se cierran tus sesiones, se cancelan tus solicitudes abiertas y se retiran tus ofertas vigentes. Eso no se restaura si cambias de opinión.'**
+  String get cuentaEfectosInmediatos;
+
+  /// No description provided for @cuentaGraciaDias.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes 7 días para arrepentirte. En ese plazo puedes iniciar sesión solo para conservar tu cuenta. Pasado el plazo, tus datos personales se borran y no se pueden recuperar.'**
+  String get cuentaGraciaDias;
+
+  /// No description provided for @cuentaCodigoPodrasPedirEn.
+  ///
+  /// In es, this message translates to:
+  /// **'Podrás pedir otro código en {tiempo}'**
+  String cuentaCodigoPodrasPedirEn(String tiempo);
+
+  /// No description provided for @cuentaCodigoEnvioA.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un código de 6 dígitos a {destino}.'**
+  String cuentaCodigoEnvioA(String destino);
+
+  /// No description provided for @cuentaCodigoEnvioPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un código de 6 dígitos por {medio}.'**
+  String cuentaCodigoEnvioPor(String medio);
+
+  /// No description provided for @cuentaCodigoEnvio.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un código de 6 dígitos.'**
+  String get cuentaCodigoEnvio;
+
+  /// No description provided for @cuentaCodigoEnvioCondicionalA.
+  ///
+  /// In es, this message translates to:
+  /// **'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos a {destino}.'**
+  String cuentaCodigoEnvioCondicionalA(String destino);
+
+  /// No description provided for @cuentaCodigoEnvioCondicionalPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos por {medio}.'**
+  String cuentaCodigoEnvioCondicionalPor(String medio);
+
+  /// No description provided for @cuentaCodigoEnvioCondicional.
+  ///
+  /// In es, this message translates to:
+  /// **'Si existe una cuenta con esos datos, enviamos un código de 6 dígitos.'**
+  String get cuentaCodigoEnvioCondicional;
+
+  /// No description provided for @cuentaCodigoVence.
+  ///
+  /// In es, this message translates to:
+  /// **'{envio} Vence en 10 minutos.'**
+  String cuentaCodigoVence(String envio);
+
+  /// No description provided for @cuentaCodigoEscribe.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el código'**
+  String get cuentaCodigoEscribe;
+
+  /// No description provided for @cuentaCodigoEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Código'**
+  String get cuentaCodigoEtiqueta;
+
+  /// No description provided for @cuentaCodigoEscribeSeisDigitos.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el código de 6 dígitos'**
+  String get cuentaCodigoEscribeSeisDigitos;
+
+  /// No description provided for @cuentaCodigoTieneSeisDigitos.
+  ///
+  /// In es, this message translates to:
+  /// **'El código tiene 6 dígitos'**
+  String get cuentaCodigoTieneSeisDigitos;
+
+  /// No description provided for @cuentaContrasenaNuevaEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña nueva'**
+  String get cuentaContrasenaNuevaEtiqueta;
+
+  /// No description provided for @cuentaContrasenaMinimo.
+  ///
+  /// In es, this message translates to:
+  /// **'Mínimo {cantidad} caracteres.'**
+  String cuentaContrasenaMinimo(int cantidad);
+
+  /// No description provided for @cuentaCodigoReenviarEn.
+  ///
+  /// In es, this message translates to:
+  /// **'Reenviar código en {tiempo}'**
+  String cuentaCodigoReenviarEn(String tiempo);
+
+  /// No description provided for @cuentaCodigoReenviar.
+  ///
+  /// In es, this message translates to:
+  /// **'Reenviar código'**
+  String get cuentaCodigoReenviar;
+
+  /// No description provided for @cuentaCodigoOtroMedio.
+  ///
+  /// In es, this message translates to:
+  /// **'No me llegó: probar por otro medio'**
+  String get cuentaCodigoOtroMedio;
+
+  /// No description provided for @cuentaCambiarContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar contraseña'**
+  String get cuentaCambiarContrasena;
+
+  /// No description provided for @cuentaIniciarSesion.
+  ///
+  /// In es, this message translates to:
+  /// **'Iniciar sesión'**
+  String get cuentaIniciarSesion;
+
+  /// No description provided for @cuentaListo.
+  ///
+  /// In es, this message translates to:
+  /// **'Listo'**
+  String get cuentaListo;
+
+  /// No description provided for @cuentaCerrarSesion.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar sesión'**
+  String get cuentaCerrarSesion;
+
+  /// No description provided for @cuentaOlvideContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Olvidé mi contraseña'**
+  String get cuentaOlvideContrasena;
+
+  /// No description provided for @cuentaRecuperarTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Recuperar acceso'**
+  String get cuentaRecuperarTitulo;
+
+  /// No description provided for @cuentaRecuperarComoRecibir.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Cómo quieres recibir el código?'**
+  String get cuentaRecuperarComoRecibir;
+
+  /// No description provided for @cuentaRecuperarDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe tu usuario, teléfono o correo. Te enviaremos un código de 6 dígitos para crear una contraseña nueva.'**
+  String get cuentaRecuperarDetalle;
+
+  /// No description provided for @cuentaRecuperarIdentificador.
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario, teléfono o correo'**
+  String get cuentaRecuperarIdentificador;
+
+  /// No description provided for @cuentaRecuperarEscribeIdentificador.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe tu usuario, teléfono o correo'**
+  String get cuentaRecuperarEscribeIdentificador;
+
+  /// No description provided for @cuentaRecuperarExitoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiaste tu contraseña'**
+  String get cuentaRecuperarExitoTitulo;
+
+  /// No description provided for @cuentaRecuperarExitoSinUsuario.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya puedes iniciar sesión con tu usuario y la contraseña nueva.'**
+  String get cuentaRecuperarExitoSinUsuario;
+
+  /// No description provided for @cuentaRecuperarExitoConUsuario.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu usuario es {usuario}. Ya puedes iniciar sesión con la contraseña nueva.'**
+  String cuentaRecuperarExitoConUsuario(String usuario);
+
+  /// No description provided for @cuentaCambiarConfirmaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma que eres tú'**
+  String get cuentaCambiarConfirmaTitulo;
+
+  /// No description provided for @cuentaCambiarConfirmaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un código de 6 dígitos. Elige por dónde lo quieres recibir.'**
+  String get cuentaCambiarConfirmaDetalle;
+
+  /// No description provided for @cuentaCambiarExitoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu contraseña se cambió'**
+  String get cuentaCambiarExitoTitulo;
+
+  /// No description provided for @cuentaCambiarExitoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tus otros dispositivos deberán iniciar sesión de nuevo. Este sigue con la sesión abierta.'**
+  String get cuentaCambiarExitoDetalle;
+
+  /// No description provided for @cuentaSeguridadTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Seguridad y cuenta'**
+  String get cuentaSeguridadTitulo;
+
+  /// No description provided for @cuentaTelefonoVerificado.
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono verificado'**
+  String get cuentaTelefonoVerificado;
+
+  /// No description provided for @cuentaVerificaTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'Verifica tu teléfono'**
+  String get cuentaVerificaTelefono;
+
+  /// No description provided for @cuentaTelefonoFaltaVerificar.
+  ///
+  /// In es, this message translates to:
+  /// **'Falta verificar tu teléfono'**
+  String get cuentaTelefonoFaltaVerificar;
+
+  /// No description provided for @cuentaSeguridadFilaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña, huella y datos de tu cuenta'**
+  String get cuentaSeguridadFilaDetalle;
+
+  /// No description provided for @cuentaVerificarDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Así sabemos que el número es tuyo y podemos ayudarte a recuperar tu cuenta.'**
+  String get cuentaVerificarDetalle;
+
+  /// No description provided for @cuentaVerificar.
+  ///
+  /// In es, this message translates to:
+  /// **'Verificar'**
+  String get cuentaVerificar;
+
+  /// No description provided for @cuentaMasTarde.
+  ///
+  /// In es, this message translates to:
+  /// **'Más tarde'**
+  String get cuentaMasTarde;
+
+  /// No description provided for @cuentaTelefonoQuedoVerificado.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu teléfono quedó verificado'**
+  String get cuentaTelefonoQuedoVerificado;
+
+  /// No description provided for @cuentaAjustesErrorTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos revisar tu teléfono'**
+  String get cuentaAjustesErrorTelefono;
+
+  /// No description provided for @cuentaAjustesTelefonoVerificadoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Podemos ayudarte a recuperar tu cuenta.'**
+  String get cuentaAjustesTelefonoVerificadoDetalle;
+
+  /// No description provided for @cuentaAjustesTelefonoPendienteDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma que el número es tuyo con un código.'**
+  String get cuentaAjustesTelefonoPendienteDetalle;
+
+  /// No description provided for @cuentaAjustesContrasenaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Te enviamos un código para confirmar que eres tú.'**
+  String get cuentaAjustesContrasenaDetalle;
+
+  /// No description provided for @cuentaAjustesCerrarSesionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Este dispositivo dejará de tener acceso a tu cuenta.'**
+  String get cuentaAjustesCerrarSesionDetalle;
+
+  /// No description provided for @cuentaAjustesPrivacidad.
+  ///
+  /// In es, this message translates to:
+  /// **'Privacidad y datos'**
+  String get cuentaAjustesPrivacidad;
+
+  /// No description provided for @cuentaEliminarMiCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar mi cuenta'**
+  String get cuentaEliminarMiCuenta;
+
+  /// No description provided for @cuentaAjustesEliminarDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Borra tus datos personales. Tienes 7 días para arrepentirte.'**
+  String get cuentaAjustesEliminarDetalle;
+
+  /// No description provided for @cuentaYaRegistradaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya tienes una cuenta'**
+  String get cuentaYaRegistradaTitulo;
+
+  /// No description provided for @cuentaYaRegistradaComoPiloto.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese teléfono o documento ya está registrado como piloto. Usa la app de DronAgro que le corresponde.'**
+  String get cuentaYaRegistradaComoPiloto;
+
+  /// No description provided for @cuentaYaRegistradaComoCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese teléfono o documento ya está registrado como cliente. Usa la app de DronAgro que le corresponde.'**
+  String get cuentaYaRegistradaComoCliente;
+
+  /// No description provided for @cuentaYaRegistradaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ese teléfono o documento ya está registrado en DronAgro, así que no creamos otra cuenta. Inicia sesión o recupera tu acceso.'**
+  String get cuentaYaRegistradaDetalle;
+
+  /// No description provided for @cuentaYaRegistradaRegistroIncompleto.
+  ///
+  /// In es, this message translates to:
+  /// **'Si no terminaste tu registro, al iniciar sesión continuarás donde lo dejaste.'**
+  String get cuentaYaRegistradaRegistroIncompleto;
+
+  /// No description provided for @cuentaVolver.
+  ///
+  /// In es, this message translates to:
+  /// **'Volver'**
+  String get cuentaVolver;
+
+  /// No description provided for @cuentaEnEliminacionErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos revisar tu cuenta'**
+  String get cuentaEnEliminacionErrorTitulo;
+
+  /// No description provided for @cuentaEnEliminacionYaNoEnProceso.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta ya no está en proceso de eliminación.'**
+  String get cuentaEnEliminacionYaNoEnProceso;
+
+  /// No description provided for @cuentaEnEliminacionPospuesta.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu plazo ya terminó, pero algo pendiente frena la eliminación. Se vuelve a intentar cada día. Mientras tanto puedes conservar tu cuenta.'**
+  String get cuentaEnEliminacionPospuesta;
+
+  /// No description provided for @cuentaEnEliminacionSeBorrara.
+  ///
+  /// In es, this message translates to:
+  /// **'Se borrará el {fecha} ({dias, plural, =1{queda 1 día} other{quedan {dias} días}}). Hasta entonces puedes arrepentirte.'**
+  String cuentaEnEliminacionSeBorrara(String fecha, int dias);
+
+  /// No description provided for @cuentaEnEliminacionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta se está eliminando'**
+  String get cuentaEnEliminacionTitulo;
+
+  /// No description provided for @cuentaEnEliminacionSigueActiva.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta sigue activa'**
+  String get cuentaEnEliminacionSigueActiva;
+
+  /// No description provided for @cuentaEnEliminacionAviso.
+  ///
+  /// In es, this message translates to:
+  /// **'Mientras tanto no puedes usar la app. Si conservas tu cuenta, las solicitudes y ofertas que se cancelaron al pedir la eliminación no se restauran.'**
+  String get cuentaEnEliminacionAviso;
+
+  /// No description provided for @cuentaConservarMiCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Conservar mi cuenta'**
+  String get cuentaConservarMiCuenta;
+
+  /// No description provided for @cuentaContinuar.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get cuentaContinuar;
+
+  /// No description provided for @cuentaEliminarBloqueadaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no puedes eliminar tu cuenta'**
+  String get cuentaEliminarBloqueadaTitulo;
+
+  /// No description provided for @cuentaEliminarBloqueadaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Hay algo pendiente. Resuélvelo y vuelve a esta pantalla.'**
+  String get cuentaEliminarBloqueadaDetalle;
+
+  /// No description provided for @cuentaEliminarAntesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes de eliminar tu cuenta'**
+  String get cuentaEliminarAntesTitulo;
+
+  /// No description provided for @cuentaEliminarQueSeBorra.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué se borra'**
+  String get cuentaEliminarQueSeBorra;
+
+  /// No description provided for @cuentaEliminarQueSeConserva.
+  ///
+  /// In es, this message translates to:
+  /// **'Qué se conserva'**
+  String get cuentaEliminarQueSeConserva;
+
+  /// No description provided for @cuentaEliminarPendientes.
+  ///
+  /// In es, this message translates to:
+  /// **'Primero sincroniza lo que registraste en el lote: tienes {cantidad, plural, =1{1 registro} other{{cantidad} registros}} sin subir. Hazlo con señal y vuelve aquí.'**
+  String cuentaEliminarPendientes(int cantidad);
+
+  /// No description provided for @cuentaEliminarSincronizarAhora.
+  ///
+  /// In es, this message translates to:
+  /// **'Sincronizar ahora'**
+  String get cuentaEliminarSincronizarAhora;
+
+  /// No description provided for @cuentaBotonEnCurso.
+  ///
+  /// In es, this message translates to:
+  /// **'{texto}, en curso'**
+  String cuentaBotonEnCurso(String texto);
+
+  /// No description provided for @cuentaEliminarConfirmaContrasenaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma con tu contraseña'**
+  String get cuentaEliminarConfirmaContrasenaTitulo;
+
+  /// No description provided for @cuentaEliminarConfirmaContrasenaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta se cerrará en todos tus dispositivos y quedará en espera 7 días antes de borrarse.'**
+  String get cuentaEliminarConfirmaContrasenaDetalle;
+
+  /// No description provided for @cuentaContrasenaEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña'**
+  String get cuentaContrasenaEtiqueta;
+
+  /// No description provided for @cuentaEliminarUsarCodigo.
+  ///
+  /// In es, this message translates to:
+  /// **'Olvidé mi contraseña: usar un código'**
+  String get cuentaEliminarUsarCodigo;
+
+  /// No description provided for @cuentaEliminarConfirmaCodigoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Confirma con un código'**
+  String get cuentaEliminarConfirmaCodigoTitulo;
+
+  /// No description provided for @cuentaEliminarConfirmaCodigoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige por dónde recibir un código de 6 dígitos. Con él confirmas que eres tú, sin la contraseña.'**
+  String get cuentaEliminarConfirmaCodigoDetalle;
+
+  /// No description provided for @cuentaEliminarUsarContrasena.
+  ///
+  /// In es, this message translates to:
+  /// **'Usar mi contraseña'**
+  String get cuentaEliminarUsarContrasena;
+
+  /// No description provided for @cuentaEliminarSolicitadaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta quedó en espera de eliminación'**
+  String get cuentaEliminarSolicitadaTitulo;
+
+  /// No description provided for @cuentaEliminarSolicitadaSinFecha.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes 7 días para arrepentirte.'**
+  String get cuentaEliminarSolicitadaSinFecha;
+
+  /// No description provided for @cuentaEliminarSolicitadaConFecha.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes hasta el {fecha} para arrepentirte. Inicia sesión y toca «Conservar mi cuenta».'**
+  String cuentaEliminarSolicitadaConFecha(String fecha);
+
+  /// No description provided for @cuentaEntendido.
+  ///
+  /// In es, this message translates to:
+  /// **'Entendido'**
+  String get cuentaEntendido;
+
+  /// No description provided for @cuentaConservadaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Conservamos tu cuenta'**
+  String get cuentaConservadaTitulo;
+
+  /// No description provided for @cuentaConservadaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ya puedes volver a usarla. Las solicitudes y ofertas que se cancelaron al pedir la eliminación no se restauran.'**
+  String get cuentaConservadaDetalle;
+
+  /// No description provided for @cuentaDemasiadosIntentosEn.
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Podrás volver a intentarlo en {tiempo}.'**
+  String cuentaDemasiadosIntentosEn(String tiempo);
+
+  /// No description provided for @cuentaDemasiadosIntentosEspera.
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Espera un momento y vuelve a intentarlo.'**
+  String get cuentaDemasiadosIntentosEspera;
+
+  /// No description provided for @cuentaDemasiadosIntentosBreve.
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Espera un momento.'**
+  String get cuentaDemasiadosIntentosBreve;
+
+  /// No description provided for @cuentaVerificarMiTelefono.
+  ///
+  /// In es, this message translates to:
+  /// **'Verificar mi teléfono'**
+  String get cuentaVerificarMiTelefono;
+
+  /// No description provided for @cuentaTerminaRegistroTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Termina tu registro'**
+  String get cuentaTerminaRegistroTitulo;
+
+  /// No description provided for @cuentaTerminaRegistroDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sube los documentos que faltan para que un administrador pueda aprobar tu cuenta.'**
+  String get cuentaTerminaRegistroDetalle;
+
+  /// No description provided for @precioJustificacionEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Justificación del precio (opcional)'**
+  String get precioJustificacionEtiqueta;
+
+  /// No description provided for @precioJustificacionAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Explica por qué propones este precio. La otra parte lo verá.'**
+  String get precioJustificacionAyuda;
+
+  /// No description provided for @precioJustificacionContador.
+  ///
+  /// In es, this message translates to:
+  /// **'{usados} de {maximo}'**
+  String precioJustificacionContador(int usados, int maximo);
+
+  /// No description provided for @precioJustificacionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Justificación del precio'**
+  String get precioJustificacionTitulo;
+
+  /// No description provided for @precioTotalEtiqueta.
+  ///
+  /// In es, this message translates to:
+  /// **'Total estimado'**
+  String get precioTotalEtiqueta;
+
+  /// No description provided for @precioTotalSinPrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe el precio'**
+  String get precioTotalSinPrecio;
+
+  /// No description provided for @precioTotalSoloLectura.
+  ///
+  /// In es, this message translates to:
+  /// **'Se calcula con las hectáreas; no se escribe'**
+  String get precioTotalSoloLectura;
+
+  /// No description provided for @precioTotalCalculo.
+  ///
+  /// In es, this message translates to:
+  /// **'{hectareas} × {precio}'**
+  String precioTotalCalculo(String hectareas, String precio);
+
+  /// No description provided for @ofertasOrdenRecomendado.
+  ///
+  /// In es, this message translates to:
+  /// **'Recomendado'**
+  String get ofertasOrdenRecomendado;
+
+  /// No description provided for @ofertasOrdenReciente.
+  ///
+  /// In es, this message translates to:
+  /// **'Más reciente'**
+  String get ofertasOrdenReciente;
+
+  /// No description provided for @ofertasFiltros.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros'**
+  String get ofertasFiltros;
+
+  /// No description provided for @ofertasFiltrosConActivos.
+  ///
+  /// In es, this message translates to:
+  /// **'Filtros ({cantidad})'**
+  String ofertasFiltrosConActivos(int cantidad);
+
+  /// No description provided for @ofertasFiltrosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ordenar y filtrar ofertas'**
+  String get ofertasFiltrosTitulo;
+
+  /// No description provided for @ofertasFiltrosOrdenarPor.
+  ///
+  /// In es, this message translates to:
+  /// **'Ordenar por'**
+  String get ofertasFiltrosOrdenarPor;
+
+  /// No description provided for @ofertasFiltroPrecioMin.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio mínimo (Bs/ha)'**
+  String get ofertasFiltroPrecioMin;
+
+  /// No description provided for @ofertasFiltroPrecioMax.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio máximo (Bs/ha)'**
+  String get ofertasFiltroPrecioMax;
+
+  /// No description provided for @ofertasFiltroTotalMax.
+  ///
+  /// In es, this message translates to:
+  /// **'Total máximo (Bs)'**
+  String get ofertasFiltroTotalMax;
+
+  /// No description provided for @ofertasFiltroCalificacionMin.
+  ///
+  /// In es, this message translates to:
+  /// **'Calificación mínima'**
+  String get ofertasFiltroCalificacionMin;
+
+  /// No description provided for @ofertasFiltroCalificacionCualquiera.
+  ///
+  /// In es, this message translates to:
+  /// **'Cualquiera'**
+  String get ofertasFiltroCalificacionCualquiera;
+
+  /// No description provided for @ofertasFiltroCalificacionDesde.
+  ///
+  /// In es, this message translates to:
+  /// **'{minima} o más'**
+  String ofertasFiltroCalificacionDesde(String minima);
+
+  /// No description provided for @ofertasFiltroTipo.
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de proveedor'**
+  String get ofertasFiltroTipo;
+
+  /// No description provided for @ofertasFiltroTipoTodos.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get ofertasFiltroTipoTodos;
+
+  /// No description provided for @ofertasFiltroTipoPropio.
+  ///
+  /// In es, this message translates to:
+  /// **'Agrocom'**
+  String get ofertasFiltroTipoPropio;
+
+  /// No description provided for @ofertasFiltroTipoIndependiente.
+  ///
+  /// In es, this message translates to:
+  /// **'Independiente'**
+  String get ofertasFiltroTipoIndependiente;
+
+  /// No description provided for @ofertasFiltroTipoTercero.
+  ///
+  /// In es, this message translates to:
+  /// **'Dueño de drones'**
+  String get ofertasFiltroTipoTercero;
+
+  /// No description provided for @ofertasFiltroTanqueMin.
+  ///
+  /// In es, this message translates to:
+  /// **'Tanque mínimo (litros)'**
+  String get ofertasFiltroTanqueMin;
+
+  /// No description provided for @ofertasFiltrosAplicar.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver ofertas'**
+  String get ofertasFiltrosAplicar;
+
+  /// No description provided for @ofertasFiltrosQuitar.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar filtros'**
+  String get ofertasFiltrosQuitar;
+
+  /// No description provided for @ofertasFiltrosNumeroInvalido.
+  ///
+  /// In es, this message translates to:
+  /// **'Escribe un número, por ejemplo 120'**
+  String get ofertasFiltrosNumeroInvalido;
+
+  /// No description provided for @ofertasFiltrosRangoInvalido.
+  ///
+  /// In es, this message translates to:
+  /// **'El máximo no puede ser menor que el mínimo'**
+  String get ofertasFiltrosRangoInvalido;
+
+  /// No description provided for @ofertasNuevaOferta.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegó una oferta nueva. Compárala con las demás.'**
+  String get ofertasNuevaOferta;
+
+  /// No description provided for @ofertasSinResultadosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ninguna oferta cumple tus filtros'**
+  String get ofertasSinResultadosTitulo;
+
+  /// No description provided for @ofertasSinResultadosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Quita algún filtro para ver las demás ofertas.'**
+  String get ofertasSinResultadosDetalle;
+
+  /// No description provided for @ofertasActualizandoLista.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizando ofertas'**
+  String get ofertasActualizandoLista;
+
+  /// No description provided for @ofertasPorQueEsePrecio.
+  ///
+  /// In es, this message translates to:
+  /// **'Por qué ese precio'**
+  String get ofertasPorQueEsePrecio;
+
+  /// No description provided for @avisosCanalNuevasSolicitudes.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevas solicitudes'**
+  String get avisosCanalNuevasSolicitudes;
+
+  /// No description provided for @avisosCanalNuevasSolicitudesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Solicitudes abiertas que puedes ofertar'**
+  String get avisosCanalNuevasSolicitudesDetalle;
+
+  /// No description provided for @avisosCanalOfertas.
+  ///
+  /// In es, this message translates to:
+  /// **'Ofertas y contraofertas'**
+  String get avisosCanalOfertas;
+
+  /// No description provided for @avisosCanalOfertasDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Precios que recibes, respuestas y adjudicaciones'**
+  String get avisosCanalOfertasDetalle;
+
+  /// No description provided for @avisosCanalMensajes.
+  ///
+  /// In es, this message translates to:
+  /// **'Mensajes'**
+  String get avisosCanalMensajes;
+
+  /// No description provided for @avisosCanalMensajesDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Chat con la otra parte del servicio'**
+  String get avisosCanalMensajesDetalle;
+
+  /// No description provided for @avisosCanalEjecucion.
+  ///
+  /// In es, this message translates to:
+  /// **'Ejecución del servicio'**
+  String get avisosCanalEjecucion;
+
+  /// No description provided for @avisosCanalEjecucionDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio, avance, cierre y precio final'**
+  String get avisosCanalEjecucionDetalle;
+
+  /// No description provided for @avisosCanalCuenta.
+  ///
+  /// In es, this message translates to:
+  /// **'Cuenta y notificaciones'**
+  String get avisosCanalCuenta;
+
+  /// No description provided for @avisosCanalCuentaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aprobación, documentos, calificaciones y notificaciones del sistema'**
+  String get avisosCanalCuentaDetalle;
+
+  /// No description provided for @avisosTodos.
+  ///
+  /// In es, this message translates to:
+  /// **'Todos'**
+  String get avisosTodos;
+
+  /// No description provided for @avisosTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Mis notificaciones'**
+  String get avisosTitulo;
+
+  /// No description provided for @avisosCampana.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones'**
+  String get avisosCampana;
+
+  /// No description provided for @avisosCampanaConPendientes.
+  ///
+  /// In es, this message translates to:
+  /// **'Notificaciones, {cantidad} sin leer'**
+  String avisosCampanaConPendientes(int cantidad);
+
+  /// No description provided for @avisosVacioTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Todavía no tienes notificaciones'**
+  String get avisosVacioTitulo;
+
+  /// No description provided for @avisosVacioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Aquí verás lo que pase con tus solicitudes y ofertas, apenas ocurra.'**
+  String get avisosVacioDetalle;
+
+  /// No description provided for @avisosVacioCanal.
+  ///
+  /// In es, this message translates to:
+  /// **'No hay notificaciones en este grupo'**
+  String get avisosVacioCanal;
+
+  /// No description provided for @avisosErrorTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos cargar tus notificaciones'**
+  String get avisosErrorTitulo;
+
+  /// No description provided for @avisosErrorDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión y vuelve a intentar.'**
+  String get avisosErrorDetalle;
+
+  /// No description provided for @avisosSinLeer.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin leer'**
+  String get avisosSinLeer;
+
+  /// No description provided for @avisosLeida.
+  ///
+  /// In es, this message translates to:
+  /// **'Leída'**
+  String get avisosLeida;
+
+  /// No description provided for @avisosAjustesCanales.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajustes de notificaciones'**
+  String get avisosAjustesCanales;
+
+  /// No description provided for @avisosCanalesTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Canales de notificación'**
+  String get avisosCanalesTitulo;
+
+  /// No description provided for @avisosCanalesIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Elige qué notificaciones suenan en este teléfono y a qué hora. Lo que se te avisa lo decide el servidor con tus preferencias.'**
+  String get avisosCanalesIntro;
+
+  /// No description provided for @avisosCanalObligatorio.
+  ///
+  /// In es, this message translates to:
+  /// **'Siempre activo: son notificaciones de tu cuenta'**
+  String get avisosCanalObligatorio;
+
+  /// No description provided for @avisosCanalActivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Activo'**
+  String get avisosCanalActivo;
+
+  /// No description provided for @avisosCanalSilenciado.
+  ///
+  /// In es, this message translates to:
+  /// **'Silenciado'**
+  String get avisosCanalSilenciado;
+
+  /// No description provided for @avisosHorarioSilencio.
+  ///
+  /// In es, this message translates to:
+  /// **'Horario de silencio'**
+  String get avisosHorarioSilencio;
+
+  /// No description provided for @avisosHorarioSilencioDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'No suena entre {desde} y {hasta}'**
+  String avisosHorarioSilencioDetalle(String desde, String hasta);
+
+  /// No description provided for @avisosSinHorario.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin horario de silencio'**
+  String get avisosSinHorario;
+
+  /// No description provided for @avisosHorarioDesde.
+  ///
+  /// In es, this message translates to:
+  /// **'Desde'**
+  String get avisosHorarioDesde;
+
+  /// No description provided for @avisosHorarioHasta.
+  ///
+  /// In es, this message translates to:
+  /// **'Hasta'**
+  String get avisosHorarioHasta;
+
+  /// No description provided for @avisosQuitarHorario.
+  ///
+  /// In es, this message translates to:
+  /// **'Quitar horario'**
+  String get avisosQuitarHorario;
+
+  /// No description provided for @avisosLlegaronNuevos.
+  ///
+  /// In es, this message translates to:
+  /// **'Llegó una notificación nueva'**
+  String get avisosLlegaronNuevos;
+
+  /// No description provided for @avisosNotificacionDe.
+  ///
+  /// In es, this message translates to:
+  /// **'{canal}: {titulo}'**
+  String avisosNotificacionDe(String canal, String titulo);
+
+  /// No description provided for @avisosVariosNuevos.
+  ///
+  /// In es, this message translates to:
+  /// **'{cantidad} notificaciones nuevas'**
+  String avisosVariosNuevos(int cantidad);
+
+  /// No description provided for @distanciaVer.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver distancia'**
+  String get distanciaVer;
+
+  /// No description provided for @distanciaPregunta.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Qué tan lejos está el lote?'**
+  String get distanciaPregunta;
+
+  /// No description provided for @distanciaAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'Se calcula en tu teléfono con tu posición actual'**
+  String get distanciaAyuda;
+
+  /// No description provided for @distanciaCalculando.
+  ///
+  /// In es, this message translates to:
+  /// **'Calculando la distancia'**
+  String get distanciaCalculando;
+
+  /// No description provided for @distanciaResultado.
+  ///
+  /// In es, this message translates to:
+  /// **'A {km} del lote'**
+  String distanciaResultado(String km);
+
+  /// No description provided for @distanciaResultadoAyuda.
+  ///
+  /// In es, this message translates to:
+  /// **'En línea recta desde donde estás ahora'**
+  String get distanciaResultadoAyuda;
+
+  /// No description provided for @distanciaActualizar.
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar'**
+  String get distanciaActualizar;
+
+  /// No description provided for @distanciaSinPermiso.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin el permiso de ubicación no podemos calcular la distancia.'**
+  String get distanciaSinPermiso;
+
+  /// No description provided for @distanciaDenegadoSiempre.
+  ///
+  /// In es, this message translates to:
+  /// **'Activa la ubicación de la app en los ajustes del teléfono para ver la distancia.'**
+  String get distanciaDenegadoSiempre;
+
+  /// No description provided for @distanciaServicioApagado.
+  ///
+  /// In es, this message translates to:
+  /// **'El GPS de tu teléfono está apagado. Enciéndelo para ver la distancia.'**
+  String get distanciaServicioApagado;
+
+  /// No description provided for @distanciaSinPosicion.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos ubicarte. Sal a un lugar abierto y vuelve a intentarlo.'**
+  String get distanciaSinPosicion;
+
+  /// No description provided for @distanciaSinLote.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta solicitud no tiene un punto en el mapa para medir la distancia.'**
+  String get distanciaSinLote;
+
+  /// No description provided for @distanciaHojaTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Calcular la distancia al lote'**
+  String get distanciaHojaTitulo;
+
+  /// No description provided for @distanciaHojaMotivo.
+  ///
+  /// In es, this message translates to:
+  /// **'Usamos tu posición una sola vez, en tu teléfono, para decirte cuántos kilómetros hay hasta el lote. Te ayuda a decidir tu precio.'**
+  String get distanciaHojaMotivo;
+
+  /// No description provided for @distanciaHojaPrivacidad.
+  ///
+  /// In es, this message translates to:
+  /// **'No se envía a nadie ni se guarda: se descarta apenas ves el resultado.'**
+  String get distanciaHojaPrivacidad;
+
+  /// No description provided for @distanciaHojaContinuar.
+  ///
+  /// In es, this message translates to:
+  /// **'Continuar'**
+  String get distanciaHojaContinuar;
+
+  /// No description provided for @distanciaHojaAhoraNo.
+  ///
+  /// In es, this message translates to:
+  /// **'Ahora no'**
+  String get distanciaHojaAhoraNo;
+
+  /// No description provided for @mapaExpandir.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver el mapa en pantalla completa'**
+  String get mapaExpandir;
+
+  /// No description provided for @mapaCerrarCompleto.
+  ///
+  /// In es, this message translates to:
+  /// **'Cerrar el mapa'**
+  String get mapaCerrarCompleto;
+
+  /// No description provided for @mapaCompletoTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Lote en el mapa'**
+  String get mapaCompletoTitulo;
+
+  /// No description provided for @proveedorNegociacionJustificacionCliente.
+  ///
+  /// In es, this message translates to:
+  /// **'Por qué el cliente propone ese precio'**
+  String get proveedorNegociacionJustificacionCliente;
+
+  /// No description provided for @preparacionTitulo.
+  ///
+  /// In es, this message translates to:
+  /// **'Preparación del equipo'**
+  String get preparacionTitulo;
+
+  /// No description provided for @preparacionIntro.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu equipo antes de salir al lote. Es una guía tuya: no te impide ofertar ni iniciar un servicio.'**
+  String get preparacionIntro;
+
+  /// No description provided for @preparacionProgreso.
+  ///
+  /// In es, this message translates to:
+  /// **'{hechos} de {total} listos'**
+  String preparacionProgreso(int hechos, int total);
+
+  /// No description provided for @preparacionCompleta.
+  ///
+  /// In es, this message translates to:
+  /// **'Todo listo para salir'**
+  String get preparacionCompleta;
+
+  /// No description provided for @preparacionReiniciar.
+  ///
+  /// In es, this message translates to:
+  /// **'Empezar de nuevo'**
+  String get preparacionReiniciar;
+
+  /// No description provided for @preparacionNoGuardo.
+  ///
+  /// In es, this message translates to:
+  /// **'No pudimos guardar el último cambio en tu teléfono. Lo ves aquí, pero puede perderse al cerrar la app.'**
+  String get preparacionNoGuardo;
+
+  /// No description provided for @preparacionAcceso.
+  ///
+  /// In es, this message translates to:
+  /// **'Antes de salir'**
+  String get preparacionAcceso;
+
+  /// No description provided for @preparacionAccesoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa baterías, tanque, boquillas y clima'**
+  String get preparacionAccesoDetalle;
+
+  /// No description provided for @preparacionBaterias.
+  ///
+  /// In es, this message translates to:
+  /// **'Baterías cargadas'**
+  String get preparacionBaterias;
+
+  /// No description provided for @preparacionBateriasDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Las del dron y las de repuesto, con el cargador a mano'**
+  String get preparacionBateriasDetalle;
+
+  /// No description provided for @preparacionTanque.
+  ///
+  /// In es, this message translates to:
+  /// **'Tanque limpio y con el producto'**
+  String get preparacionTanque;
+
+  /// No description provided for @preparacionTanqueDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin residuos de otra aplicación y con la mezcla lista'**
+  String get preparacionTanqueDetalle;
+
+  /// No description provided for @preparacionBoquillas.
+  ///
+  /// In es, this message translates to:
+  /// **'Boquillas limpias'**
+  String get preparacionBoquillas;
+
+  /// No description provided for @preparacionBoquillasDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin tapones y con el caudal que pide la aplicación'**
+  String get preparacionBoquillasDetalle;
+
+  /// No description provided for @preparacionMandoRc.
+  ///
+  /// In es, this message translates to:
+  /// **'Mando RC cargado y enlazado'**
+  String get preparacionMandoRc;
+
+  /// No description provided for @preparacionMandoRcDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Con batería y conectado al dron'**
+  String get preparacionMandoRcDetalle;
+
+  /// No description provided for @preparacionDron.
+  ///
+  /// In es, this message translates to:
+  /// **'Dron y hélices revisados'**
+  String get preparacionDron;
+
+  /// No description provided for @preparacionDronDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Hélices sin daño, brazos firmes y software al día'**
+  String get preparacionDronDetalle;
+
+  /// No description provided for @preparacionEpp.
+  ///
+  /// In es, this message translates to:
+  /// **'Equipo de protección puesto'**
+  String get preparacionEpp;
+
+  /// No description provided for @preparacionEppDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Guantes, mascarilla, lentes y ropa adecuada'**
+  String get preparacionEppDetalle;
+
+  /// No description provided for @preparacionDocumentos.
+  ///
+  /// In es, this message translates to:
+  /// **'Documentos al día'**
+  String get preparacionDocumentos;
+
+  /// No description provided for @preparacionDocumentosDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Licencia, registro del dron y seguro vigentes'**
+  String get preparacionDocumentosDetalle;
+
+  /// No description provided for @preparacionClima.
+  ///
+  /// In es, this message translates to:
+  /// **'Viento y lluvia revisados'**
+  String get preparacionClima;
+
+  /// No description provided for @preparacionClimaDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin viento fuerte ni lluvia en el lote'**
+  String get preparacionClimaDetalle;
+
+  /// No description provided for @preparacionPronostico.
+  ///
+  /// In es, this message translates to:
+  /// **'Pronóstico de las próximas horas'**
+  String get preparacionPronostico;
+
+  /// No description provided for @preparacionPronosticoDetalle.
+  ///
+  /// In es, this message translates to:
+  /// **'Que el clima aguante lo que dura la aplicación'**
+  String get preparacionPronosticoDetalle;
+
   /// No description provided for @perfilUxCalificacionSemantica.
   ///
   /// In es, this message translates to:
@@ -6754,13 +9094,13 @@ abstract class AppLocalizations {
   /// No description provided for @permisosNotificacionesTitulo.
   ///
   /// In es, this message translates to:
-  /// **'Notificaciones de solicitudes nuevas'**
+  /// **'Recibir notificaciones'**
   String get permisosNotificacionesTitulo;
 
   /// No description provided for @permisosNotificacionesMotivo.
   ///
   /// In es, this message translates to:
-  /// **'Te avisamos cuando llegue una solicitud en tus zonas. Puedes desactivarlos cuando quieras.'**
+  /// **'Te avisamos cuando hay una solicitud nueva, cuando el cliente responde tu oferta o cuando te escribe.'**
   String get permisosNotificacionesMotivo;
 
   /// No description provided for @permisosContinuar.

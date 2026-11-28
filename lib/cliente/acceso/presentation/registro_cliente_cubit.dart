@@ -17,7 +17,14 @@ class RegistroClienteCubit extends Cubit<FormularioAccesoEstado> {
       final sesion = await _acceso.registrar(datos);
       emit(FormularioAccesoEstado(sesion: sesion));
     } on AccesoExcepcion catch (e) {
-      emit(FormularioAccesoEstado(fallo: e.motivo, porCampo: e.porCampo));
+      emit(
+        FormularioAccesoEstado(
+          fallo: e.motivo,
+          porCampo: e.porCampo,
+          esperaSegundos: e.esperaSegundos ?? 0,
+          tipoCuenta: e.tipoCuenta,
+        ),
+      );
     } on Object {
       emit(const FormularioAccesoEstado(fallo: MotivoFalloAcceso.desconocido));
     }

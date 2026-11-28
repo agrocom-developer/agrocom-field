@@ -65,7 +65,7 @@ class AccesoRed implements AccesoRepositorio {
   static const rolCliente = 'cliente';
 
   static const _noEsCliente =
-      'Esta cuenta no es de cliente. Usa la app de Agrocom que le corresponde.';
+      'Esta cuenta no es de cliente. Usa la app de DronAgro que le corresponde.';
 
   @override
   Future<bool> onboardingVisto() => _onboarding.visto();
@@ -79,6 +79,15 @@ class AccesoRed implements AccesoRepositorio {
     try {
       return await _sesionDelToken();
     } on ApiExcepcionServidor catch (e) {
+      if (_esCuentaEnEliminacion(e)) {
+        // La sesión sigue viva pero restringida: solo ve el estado de la
+        // eliminación, la cancela o cierra sesión.
+        return const SesionCliente(
+          nombre: '',
+          usuario: '',
+          enEliminacion: true,
+        );
+      }
       if (e.codigo == 401 || e.codigo == 403) {
         // Token vencido, revocado o de otro rol: se descarta.
         await _tokenStore.borrarToken();
@@ -94,7 +103,8 @@ class AccesoRed implements AccesoRepositorio {
     required String contrasena,
   }) async {
     final uuid = await _dispositivo.obtenerUuidDispositivo();
-    final cuerpo = await _pedirToken(usuario, contrasena, uuid);
+    final login = usuario.trim();
+    final cuerpo = await _pedirToken(login, contrasena, uuid);
     final rol = (cuerpo['rol'] as Map?)?['name'];
     await _tokenStore.guardarToken('${cuerpo['token']}');
     if (rol != rolCliente) {
@@ -109,6 +119,17 @@ class AccesoRed implements AccesoRepositorio {
     } on ApiExcepcionRed {
       await _tokenStore.borrarToken();
       throw const AccesoExcepcion(MotivoFalloAcceso.sinConexion);
+    } on ApiExcepcionServidor catch (e) {
+      if (_esCuentaEnEliminacion(e)) {
+        final usuario = (cuerpo['usuario'] as Map?) ?? const {};
+        return SesionCliente(
+          nombre: '${usuario['name'] ?? ''}',
+          usuario: '${usuario['username'] ?? login}',
+          enEliminacion: true,
+        );
+      }
+      await _tokenStore.borrarToken();
+      throw const AccesoExcepcion(MotivoFalloAcceso.desconocido);
     } on ApiExcepcion {
       await _tokenStore.borrarToken();
       throw const AccesoExcepcion(MotivoFalloAcceso.desconocido);
@@ -131,6 +152,7 @@ class AccesoRed implements AccesoRepositorio {
           'password': contrasena,
           'uuid_dispositivo': uuid,
           'nombre_dispositivo': 'Agrocom cliente',
+          'app': 'cliente',
           'role_id': ?rolId,
         },
       );
@@ -159,15 +181,34 @@ class AccesoRed implements AccesoRepositorio {
       throw switch (e.codigo) {
         401 ||
         422 => const AccesoExcepcion(MotivoFalloAcceso.credencialesInvalidas),
-        403 => const AccesoExcepcion(
+        429 => AccesoExcepcion(
+          MotivoFalloAcceso.demasiadosIntentos,
+          esperaSegundos: e.reintentarEn?.inSeconds,
+        ),
+        // `tipo_de_cuenta_incorrecto`: la cuenta es de proveedor.
+        403 => AccesoExcepcion(
           MotivoFalloAcceso.validacion,
-          porCampo: {CampoAcceso.usuario: _noEsCliente},
+          porCampo: {CampoAcceso.usuario: _mensajeCuentaAjena(e.cuerpo)},
         ),
         _ => const AccesoExcepcion(MotivoFalloAcceso.desconocido),
       };
     } on ApiExcepcionDesconocida {
       throw const AccesoExcepcion(MotivoFalloAcceso.desconocido);
     }
+  }
+
+  static bool _esCuentaEnEliminacion(ApiExcepcionServidor e) =>
+      e.codigo == 403 &&
+      e.cuerpo is Map &&
+      (e.cuerpo as Map)['codigo'] == 'cuenta_en_eliminacion';
+
+  /// El texto que explica a qué app va la cuenta; el del servidor manda.
+  static String _mensajeCuentaAjena(Object? cuerpo) {
+    if (cuerpo is Map && cuerpo['message'] is String) {
+      final m = (cuerpo['message'] as String).trim();
+      if (m.isNotEmpty) return m;
+    }
+    return _noEsCliente;
   }
 
   Future<SesionCliente> _sesionDelToken() async {
@@ -214,6 +255,20 @@ class AccesoRed implements AccesoRepositorio {
     } on ApiExcepcionRed {
       throw const AccesoExcepcion(MotivoFalloAcceso.sinConexion);
     } on ApiExcepcionServidor catch (e) {
+      if (e.codigo == 409 &&
+          e.cuerpo is Map &&
+          (e.cuerpo as Map)['codigo'] == 'cuenta_ya_registrada') {
+        throw AccesoExcepcion(
+          MotivoFalloAcceso.cuentaYaRegistrada,
+          tipoCuenta: (e.cuerpo as Map)['tipo_cuenta'] as String?,
+        );
+      }
+      if (e.codigo == 429) {
+        throw AccesoExcepcion(
+          MotivoFalloAcceso.demasiadosIntentos,
+          esperaSegundos: e.reintentarEn?.inSeconds,
+        );
+      }
       if (e.codigo == 422) {
         throw AccesoExcepcion(
           MotivoFalloAcceso.validacion,

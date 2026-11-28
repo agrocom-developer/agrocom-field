@@ -18,7 +18,14 @@ import '../../nucleo/marketplace/foto_preparador.dart';
 import '../../nucleo/marketplace/pago/pago_confirmado.dart';
 import '../../nucleo/marketplace/pago/pagos_repositorio.dart';
 import '../../nucleo/marketplace/terrenos/fotos_terreno_repositorio.dart';
+import '../../nucleo/notificaciones/data/almacenes_locales.dart';
+import '../../nucleo/notificaciones/data/bandeja_red.dart' as avisos_red;
+import '../../nucleo/notificaciones/domain/avisos_de_la_cuenta.dart';
+import '../../nucleo/notificaciones/domain/presentador_avisos.dart';
+import '../../nucleo/notificaciones/notificador_local.dart';
 import '../../nucleo/notificaciones/push/dispositivos_push_repositorio.dart';
+import '../../nucleo/permisos/data/gestor_permisos_plataforma.dart';
+import '../../nucleo/permisos/domain/permiso.dart';
 import '../../nucleo/notificaciones/push/token_push_store.dart';
 import '../acceso/data/acceso_demo.dart';
 import '../acceso/data/acceso_red.dart';
@@ -65,6 +72,12 @@ import '../seguimiento/domain/seguimiento_repositorio.dart';
 import '../solicitar/data/solicitud_demo.dart';
 import '../solicitar/data/solicitud_red.dart';
 import '../solicitar/domain/solicitud_repositorio.dart';
+import '../../nucleo/auth/biometria.dart';
+import '../../nucleo/auth/cuenta/data/cuenta_seguridad_demo.dart';
+import '../../nucleo/auth/cuenta/data/cuenta_seguridad_red.dart';
+import '../../nucleo/auth/cuenta/domain/cuenta_seguridad.dart';
+import '../../nucleo/auth/bloqueo_biometrico.dart';
+import '../../nucleo/auth/bloqueo_biometrico_store.dart';
 import '../solicitudes/data/solicitudes_demo.dart';
 import '../solicitudes/data/solicitudes_red.dart';
 import '../solicitudes/domain/solicitudes_repositorio.dart';
@@ -91,6 +104,7 @@ class DependenciasCliente {
     required this.pagos,
     required this.preparadorFoto,
     required this.push,
+    this.avisos,
     this.contactos,
     this.precioFinal,
     this.contrasena,
@@ -98,8 +112,13 @@ class DependenciasCliente {
     this.bandeja,
     this.notaAcceso,
     this.sesionExpirada,
+    this.bloqueo,
     ConectividadServicio? conectividad,
-  }) : conectividad = conectividad ?? ConectividadFalsa();
+    CuentaSeguridadRepositorio? seguridad,
+    GestorPermisos? permisos,
+  }) : conectividad = conectividad ?? ConectividadFalsa(),
+       seguridad = seguridad ?? CuentaSeguridadDemo(),
+       permisos = permisos ?? GestorPermisosEnMemoria();
 
   /// Repositorios en memoria con datos ficticios (`MODO_DEMO`, ADR 0010).
   ///
@@ -168,8 +187,9 @@ class DependenciasCliente {
         ),
       ),
       precioFinal: PrecioFinalDemo(almacen),
+      seguridad: CuentaSeguridadDemo(),
       notaAcceso:
-          'Modo demo: ingresa con cualquier usuario y una contraseña de 8 '
+          'Modo demo: ingresa con cualquier usuario y una contraseña de 4 '
           'caracteres o más. Los datos son ficticios.',
     );
   }
@@ -244,6 +264,17 @@ class DependenciasCliente {
         CompresorEvidenciaAdaptativo(),
       ),
       push: push,
+      avisos: AvisosDeLaCuenta(
+        bandeja: avisos_red.BandejaRed(
+          obtener: (ruta) => http.obtener(ruta),
+          enviar: (ruta) => http.enviar(ruta),
+        ),
+        presentador: PresentadorAvisos(
+          notificador: NotificadorLocalPlugin(),
+          preferencias: PreferenciasCanalesLocal(),
+          presentados: AvisosPresentadosLocal(),
+        ),
+      ),
       contactos: ContactosRed(http),
       contrasena: ContrasenaRed(marketplace),
       bandeja: BandejaRed(marketplace),
@@ -251,7 +282,13 @@ class DependenciasCliente {
       precioFinal: PrecioFinalRed(http),
       notaAcceso: notaAcceso,
       sesionExpirada: expiracion.stream,
+      bloqueo: BloqueoBiometrico(
+        BiometriaLocalAuth(),
+        BloqueoBiometricoStoreSeguro(),
+      ),
       conectividad: ConectividadReal(),
+      seguridad: CuentaSeguridadRed(api: api, tokenStore: tokenStore),
+      permisos: GestorPermisosPlataforma(),
     );
   }
 
@@ -280,6 +317,10 @@ class DependenciasCliente {
   /// Token de push del aparato; se retira al cerrar sesión.
   final DispositivosPushRepositorio push;
 
+  /// La bandeja «Mis notificaciones» y su presentación local; sin él, la app
+  /// no muestra la campana.
+  final AvisosDeLaCuenta? avisos;
+
   /// Contactos de referencia del cliente empresa; sin él, el cliente no los
   /// gestiona (las pruebas que no los necesitan lo omiten).
   final ContactosRepositorio? contactos;
@@ -297,6 +338,18 @@ class DependenciasCliente {
   /// Precio final y su confirmación; sin él la pantalla muestra solo lo de
   /// la solicitud.
   final PrecioFinalRepositorio? precioFinal;
+
+  /// Seguridad de la cuenta: recuperar el acceso, contraseña, teléfono y
+  /// eliminar la cuenta (códigos por WhatsApp, SMS o correo).
+  final CuentaSeguridadRepositorio seguridad;
+
+  /// Permisos del sistema con su explicación previa (ADR 0026): la cámara se
+  /// pide al tomar una foto, nunca al abrir la app.
+  final GestorPermisos permisos;
+
+  /// Desbloqueo con huella o rostro (ADR 0026). Solo en la app real: la demo
+  /// no guarda sesión.
+  final BloqueoBiometrico? bloqueo;
 
   /// Nota que la pantalla de ingreso muestra bajo el formulario; solo la
   /// define el modo demo.
@@ -323,9 +376,13 @@ class DependenciasCliente {
       RepositoryProvider<AccesoRepositorio>.value(value: acceso),
       RepositoryProvider<InicioClienteRepositorio>.value(value: inicio),
       RepositoryProvider<FotoPerfilRepositorio>.value(value: fotoPerfil),
+      RepositoryProvider<CuentaSeguridadRepositorio>.value(value: seguridad),
+      RepositoryProvider<GestorPermisos>.value(value: permisos),
       RepositoryProvider<FotosTerrenoRepositorio>.value(value: fotosTerreno),
       RepositoryProvider<PagosRepositorio>.value(value: pagos),
       RepositoryProvider<PreparadorFoto>.value(value: preparadorFoto),
+      if (avisos != null)
+        RepositoryProvider<AvisosDeLaCuenta>.value(value: avisos!),
       if (precioFinal != null)
         RepositoryProvider<PrecioFinalRepositorio>.value(value: precioFinal!),
       if (contactos != null)

@@ -249,6 +249,13 @@ void main() {
         tester,
       ) async {
         await abrir(tester, id: 3, tamano: tamano, escala: escala);
+        // Con el texto grande la lista es más larga que la pantalla: se baja
+        // hasta lo que el piloto decide (la propuesta del cliente).
+        await tester.scrollUntilVisible(
+          find.text('El cliente propone'),
+          200,
+          scrollable: find.byType(Scrollable).first,
+        );
         expect(find.text('El cliente propone'), findsOneWidget);
         expect(tester.takeException(), isNull);
         await golden(tester, 'detalle_${sufijo(tamano, escala)}');

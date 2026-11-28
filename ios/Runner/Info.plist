@@ -25,11 +25,17 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Agrocom Piloto usa tu ubicación para centrar el mapa de solicitudes donde estás y, si lo activas, para compartir tu última posición con el cliente solo mientras tienes un servicio en ejecución. No se guarda y puedes desactivarlo cuando quieras.</string>
+	<string>DronAgro Piloto usa tu ubicación para centrar el mapa de solicitudes donde estás y, si lo activas, para compartir tu última posición con el cliente solo mientras tienes un servicio en ejecución; puedes desactivarlo cuando quieras. También la usa una sola vez, si pulsas el botón de auxilio o reportas una incidencia, para avisar a soporte dónde estás.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>DronAgro usa Face ID para desbloquear tu sesión en este teléfono si lo activas. La huella o el rostro no salen del teléfono: DronAgro nunca los recibe.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>Agrocom usa la cámara para tomarte una selfie y fotografiar tu documento, y para tomar fotos del terreno y del avance del servicio. Solo las ve quien tiene que verificarlas o quien participa del servicio.</string>
+	<string>DronAgro usa la cámara para tomarte una selfie y fotografiar tu documento, y para tomar fotos del terreno y del avance del servicio. Solo las ve quien tiene que verificarlas o quien participa del servicio.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Agrocom accede solo a las fotos que eliges para tu perfil, el logo de tu empresa, tus documentos y el terreno. No lee el resto de tu galería.</string>
+	<string>DronAgro accede solo a las fotos que eliges para tu perfil, el logo de tu empresa, tus documentos y el terreno. No lee el resto de tu galería.</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

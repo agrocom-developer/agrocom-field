@@ -3,12 +3,13 @@ import '../../demo/almacen_demo_cliente.dart';
 import '../domain/acceso_repositorio.dart';
 
 /// Acceso en memoria del modo demo (ADR 0010). No hay cuentas reales:
-/// cualquier usuario entra con una contraseña de 8 caracteres o
+/// cualquier usuario entra con una contraseña de 4 caracteres o
 /// más. Tres valores fijos permiten ver los estados de error:
 ///
 /// - usuario [usuarioSinConexion]: responde como si no hubiera red;
 /// - contraseña [contrasenaIncorrecta]: credenciales inválidas;
-/// - registro con [usuarioOcupado]: error de validación junto al campo.
+/// - registro con [usuarioOcupado]: error de validación junto al campo;
+/// - registro con [usuarioYaRegistrado]: `409 cuenta_ya_registrada`.
 class AccesoDemo implements AccesoRepositorio {
   AccesoDemo(
     this._almacen, {
@@ -21,6 +22,7 @@ class AccesoDemo implements AccesoRepositorio {
 
   static const usuarioSinConexion = 'sinred';
   static const usuarioOcupado = 'ocupado';
+  static const usuarioYaRegistrado = 'yaregistrado';
   static const contrasenaIncorrecta = 'incorrecta';
 
   /// El cliente ficticio de los datos demo.
@@ -54,7 +56,7 @@ class AccesoDemo implements AccesoRepositorio {
     if (c == usuarioSinConexion) {
       throw const AccesoExcepcion(MotivoFalloAcceso.sinConexion);
     }
-    if (contrasena == contrasenaIncorrecta || contrasena.length < 8) {
+    if (contrasena == contrasenaIncorrecta || contrasena.length < 4) {
       throw const AccesoExcepcion(MotivoFalloAcceso.credencialesInvalidas);
     }
     final sesion = SesionCliente(
@@ -73,6 +75,12 @@ class AccesoDemo implements AccesoRepositorio {
     final c = datos.usuario.trim().toLowerCase();
     if (c == usuarioSinConexion) {
       throw const AccesoExcepcion(MotivoFalloAcceso.sinConexion);
+    }
+    if (c == usuarioYaRegistrado) {
+      throw const AccesoExcepcion(
+        MotivoFalloAcceso.cuentaYaRegistrada,
+        tipoCuenta: 'cliente',
+      );
     }
     if (c == usuarioOcupado) {
       throw const AccesoExcepcion(

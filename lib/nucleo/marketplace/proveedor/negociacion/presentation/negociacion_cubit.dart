@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../dominio/dominio.dart';
+import '../../../precio/justificacion_precio.dart';
 import '../domain/negociacion.dart';
 import '../domain/negociacion_repositorios.dart';
 
@@ -15,6 +16,7 @@ class RondaVista {
     required this.precioHa,
     required this.total,
     this.nota,
+    this.justificacion,
     this.publicado = false,
   });
 
@@ -25,6 +27,9 @@ class RondaVista {
   final Decimal precioHa;
   final Decimal total;
   final String? nota;
+
+  /// Por qué su autor propone ese precio; la contraparte lo lee.
+  final String? justificacion;
 
   /// La R1: el precio con el que el cliente publicó el lote.
   final bool publicado;
@@ -40,6 +45,7 @@ class NegociacionEstado {
     this.pendiente,
     this.ofertaMia,
     this.precio = 0,
+    this.justificacion = '',
     this.enviando = false,
     this.enviado,
     this.mensaje,
@@ -58,6 +64,9 @@ class NegociacionEstado {
 
   /// El precio por hectárea del stepper, en bolivianos enteros.
   final int precio;
+
+  /// La justificación opcional que el piloto escribe para su oferta.
+  final String justificacion;
   final bool enviando;
 
   /// Lo que acaba de pasar con éxito: `contraoferta`, `oferta` (aceptó el
@@ -119,6 +128,7 @@ class NegociacionEstado {
     OfertaNegociada? Function()? pendiente,
     OfertaNegociada? Function()? ofertaMia,
     int? precio,
+    String? justificacion,
     bool? enviando,
     String? Function()? enviado,
     String? Function()? mensaje,
@@ -130,6 +140,7 @@ class NegociacionEstado {
     pendiente: pendiente != null ? pendiente() : this.pendiente,
     ofertaMia: ofertaMia != null ? ofertaMia() : this.ofertaMia,
     precio: precio ?? this.precio,
+    justificacion: justificacion ?? this.justificacion,
     enviando: enviando ?? this.enviando,
     enviado: enviado != null ? enviado() : this.enviado,
     mensaje: mensaje != null ? mensaje() : this.mensaje,
@@ -182,6 +193,7 @@ class NegociacionCubit extends Cubit<NegociacionEstado> {
           delPiloto: false,
           precioHa: solicitud.precioHaPropuesto,
           total: solicitud.montoPropuesto,
+          justificacion: solicitud.justificacionPrecio,
           publicado: true,
         ),
         for (final o in mias)
@@ -191,6 +203,7 @@ class NegociacionCubit extends Cubit<NegociacionEstado> {
             precioHa: o.precioHa,
             total: o.monto,
             nota: o.nota,
+            justificacion: o.justificacionPrecio,
           ),
       ];
       final referencia = pendiente?.precioHa ?? solicitud.precioHaPropuesto;
@@ -225,6 +238,11 @@ class NegociacionCubit extends Cubit<NegociacionEstado> {
   void cambiarPrecio(int precio) {
     if (precio < 1 || state.enviando) return;
     emit(state.copiarCon(precio: precio, mensaje: () => null, sinRed: false));
+  }
+
+  void cambiarJustificacion(String texto) {
+    if (state.enviando) return;
+    emit(state.copiarCon(justificacion: texto));
   }
 
   /// Acepta lo último que dijo el cliente.
@@ -277,6 +295,9 @@ class NegociacionCubit extends Cubit<NegociacionEstado> {
   /// Envía el precio del stepper como contraoferta.
   Future<void> enviar({String? nota}) => _enviar(() async {
     final precio = Decimal.fromInt(state.precio);
+    // Solo viajan el precio por hectárea y la justificación: el total lo
+    // calcula el servidor.
+    final justificacion = JustificacionPrecio.normalizar(state.justificacion);
     final pendiente = state.pendiente;
     final clave = _clave ??= _uuid.v4();
     if (pendiente != null) {
@@ -285,6 +306,7 @@ class NegociacionCubit extends Cubit<NegociacionEstado> {
         precioHa: precio,
         uuidCliente: clave,
         nota: nota,
+        justificacionPrecio: justificacion,
       );
     } else {
       await _mercado.ofertar(
@@ -293,6 +315,7 @@ class NegociacionCubit extends Cubit<NegociacionEstado> {
         tipo: TipoOferta.contraoferta,
         precioHa: precio,
         nota: nota,
+        justificacionPrecio: justificacion,
       );
     }
     return 'contraoferta';
