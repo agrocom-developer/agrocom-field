@@ -3843,11 +3843,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get permisosNotificacionesQuienVe =>
-      'Los avisos solo llegan a este teléfono. En Avisos puedes apagar los que no quieras.';
+      'Las notificaciones solo llegan a este teléfono. En Notificaciones puedes apagar las que no quieras.';
 
   @override
   String get permisosNotificacionesSin =>
-      'Sin avisos solo te enteras de las novedades al abrir la app.';
+      'Sin notificaciones solo te enteras de las novedades al abrir la app.';
 
   @override
   String get permisosDenegadoAjustes =>
@@ -3865,13 +3865,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get biometriaBloqueadaDetalle =>
-      'Usa tu huella o tu rostro para entrar. Lo que hayas guardado en el teléfono sigue a salvo.';
+      'Usa tu huella o tu rostro para ingresar. Lo que hayas guardado en el teléfono sigue a salvo.';
 
   @override
   String get biometriaDesbloquear => 'Desbloquear';
 
   @override
-  String get biometriaUsarContrasena => 'Entrar con mi contraseña';
+  String get biometriaUsarContrasena => 'Ingresar con mi contraseña';
 
   @override
   String get biometriaMotivoDesbloqueo =>
@@ -3883,14 +3883,14 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get biometriaUsaContrasena =>
-      'No pudimos usar la huella o el rostro. Entra con tu contraseña.';
+      'No pudimos usar la huella o el rostro. Ingresa con tu contraseña.';
 
   @override
   String get biometriaAjusteTitulo => 'Desbloquear con huella o rostro';
 
   @override
   String get biometriaAjusteDetalle =>
-      'Al abrir la app te pedimos tu huella o rostro en vez de entrar directo. No se envía a Agrocom.';
+      'Al abrir la app te pedimos tu huella o rostro en vez de ingresar directo. No se envía a DronAgro.';
 
   @override
   String get biometriaAjusteSinRegistrar =>
@@ -4031,10 +4031,10 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get documentosErrorSinRed =>
-      'Sin conexión. La foto sigue aquí: reintenta cuando tengas señal.';
+      'Sin conexión. La foto sigue aquí: vuelve a intentarlo cuando tengas señal.';
 
   @override
-  String get documentosErrorCarga => 'No pudimos cargar tus documentos';
+  String get documentosErrorCarga => 'No pudimos abrir tus documentos';
 
   @override
   String get documentosVacio => 'No te pedimos ningún documento por ahora.';
@@ -4052,7 +4052,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get disponibilidadIntro =>
-      'Ocupado o en trabajo, dejas de recibir avisos de solicitudes nuevas. Sigues viendo el mapa y puedes ofertar.';
+      'Ocupado o en trabajo, dejas de recibir notificaciones de solicitudes nuevas. Sigues viendo el mapa y puedes ofertar.';
 
   @override
   String get disponibilidadDisponible => 'Disponible';
@@ -4082,12 +4082,12 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String disponibilidadEmpresaOcupada(String estado) {
-    return 'Tu empresa está $estado: no recibes avisos de solicitudes nuevas aunque tú estés disponible.';
+    return 'Tu empresa está $estado: no recibes notificaciones de solicitudes nuevas aunque tú estés disponible.';
   }
 
   @override
   String get disponibilidadSinRed =>
-      'Sin conexión. Tu disponibilidad no cambió: inténtalo cuando tengas señal.';
+      'Sin conexión. Tu disponibilidad no cambió: vuelve a intentarlo cuando tengas señal.';
 
   @override
   String get disponibilidadErrorCarga => 'No pudimos cargar tu disponibilidad';
@@ -4096,15 +4096,15 @@ class AppLocalizationsEs extends AppLocalizations {
   String get disponibilidadErrorDetalle => 'Vuelve a intentarlo en un momento.';
 
   @override
-  String get disponibilidadTusAvisos => 'Tus avisos';
+  String get disponibilidadTusAvisos => 'Tus notificaciones';
 
   @override
   String get disponibilidadAvisosActivos =>
-      'Avisos de solicitudes nuevas: activados';
+      'Notificaciones de solicitudes nuevas: activadas';
 
   @override
   String get disponibilidadAvisosApagados =>
-      'Avisos de solicitudes nuevas: desactivados';
+      'Notificaciones de solicitudes nuevas: desactivadas';
 
   @override
   String disponibilidadHectareasMinimas(String hectareas) {
@@ -4139,7 +4139,7 @@ class AppLocalizationsEs extends AppLocalizations {
   }
 
   @override
-  String get disponibilidadAjustarAvisos => 'Ajustar avisos';
+  String get disponibilidadAjustarAvisos => 'Ajustar notificaciones';
 
   @override
   String disponibilidadEstadoActual(String estado) {
@@ -4158,7 +4158,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get perfilCuentaDisponibilidadDetalle =>
-      'Ponte ocupado para no recibir avisos';
+      'Ponte ocupado para no recibir notificaciones';
 
   @override
   String get listaPaginadaSinRed =>
@@ -4259,7 +4259,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Tu trabajo como piloto, también en el lote sin señal';
 
   @override
-  String get portadaPilotoEntrar => 'Entrar a mi cuenta';
+  String get portadaPilotoEntrar => 'Ingresar a mi cuenta';
 
   @override
   String get capacidadesTituloPiloto => 'Qué puedes hacer como piloto';
@@ -4319,7 +4319,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notificacionCanalSincronizacion => 'Sincronización';
 
   @override
-  String get notificacionCanalSistema => 'Avisos de DronAgro';
+  String get notificacionCanalSistema => 'Notificaciones de DronAgro';
 
   @override
   String get cuentaCanalWhatsApp => 'WhatsApp';
@@ -4399,7 +4399,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cuentaFallaDatosInvalidos =>
-      'Revisa los datos e inténtalo de nuevo.';
+      'Revisa los datos y vuelve a intentarlo.';
 
   @override
   String get cuentaFallaSesionVencida => 'Tu sesión venció. Ingresa de nuevo.';
@@ -4410,7 +4410,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cuentaFallaDesconocida =>
-      'No pudimos completar esto. Inténtalo de nuevo en un momento.';
+      'No pudimos completar esto. Vuelve a intentarlo en un momento.';
 
   @override
   String get cuentaImpedimentoServicioTitulo =>
@@ -4687,7 +4687,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get cuentaEnEliminacionPospuesta =>
-      'Tu plazo ya terminó, pero algo pendiente frena la eliminación. Se reintenta cada día. Mientras tanto puedes conservar tu cuenta.';
+      'Tu plazo ya terminó, pero algo pendiente frena la eliminación. Se vuelve a intentar cada día. Mientras tanto puedes conservar tu cuenta.';
 
   @override
   String cuentaEnEliminacionSeBorrara(String fecha, int dias) {
@@ -4971,11 +4971,11 @@ class AppLocalizationsEs extends AppLocalizations {
       'Inicio, avance, cierre y precio final';
 
   @override
-  String get avisosCanalCuenta => 'Cuenta y avisos';
+  String get avisosCanalCuenta => 'Cuenta y notificaciones';
 
   @override
   String get avisosCanalCuentaDetalle =>
-      'Aprobación, documentos, calificaciones y avisos del sistema';
+      'Aprobación, documentos, calificaciones y notificaciones del sistema';
 
   @override
   String get avisosTodos => 'Todos';
@@ -5021,11 +5021,11 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get avisosCanalesIntro =>
-      'Elige qué avisos suenan en este teléfono y a qué hora. Lo que se te avisa lo decide el servidor con tus preferencias.';
+      'Elige qué notificaciones suenan en este teléfono y a qué hora. Lo que se te avisa lo decide el servidor con tus preferencias.';
 
   @override
   String get avisosCanalObligatorio =>
-      'Siempre activo: son avisos de tu cuenta';
+      'Siempre activo: son notificaciones de tu cuenta';
 
   @override
   String get avisosCanalActivo => 'Activo';
@@ -5105,7 +5105,7 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get distanciaSinPosicion =>
-      'No pudimos ubicarte. Sal a un lugar abierto e intenta de nuevo.';
+      'No pudimos ubicarte. Sal a un lugar abierto y vuelve a intentarlo.';
 
   @override
   String get distanciaSinLote =>
@@ -5536,7 +5536,7 @@ class AppLocalizationsEs extends AppLocalizations {
       'Para centrar el mapa en donde estás y mostrarte las solicitudes cercanas. Solo se usa mientras miras el mapa y no se guarda.';
 
   @override
-  String get permisosNotificacionesTitulo => 'Recibir avisos';
+  String get permisosNotificacionesTitulo => 'Recibir notificaciones';
 
   @override
   String get permisosNotificacionesMotivo =>

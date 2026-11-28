@@ -68,6 +68,7 @@ class PortadaPilotoPantalla extends StatelessWidget {
                       BotonPrincipalMarketplace(
                         key: const Key('portada-piloto-entrar'),
                         texto: l10n.portadaPilotoEntrar,
+                        alto: ObjetivoTactilCampo.guantes,
                         onPressed: alEntrar,
                       ),
                       if (alRegistrarse != null) ...[

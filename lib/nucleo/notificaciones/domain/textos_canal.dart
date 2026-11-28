@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../domain/canal_aviso.dart';
+import 'canal_aviso.dart';
 
 /// Nombre, descripción e ícono de cada canal. El `switch` es exhaustivo: un
 /// canal nuevo no compila hasta tener su texto (ADR 0022).

@@ -6244,13 +6244,13 @@ abstract class AppLocalizations {
   /// No description provided for @permisosNotificacionesQuienVe.
   ///
   /// In es, this message translates to:
-  /// **'Los avisos solo llegan a este teléfono. En Avisos puedes apagar los que no quieras.'**
+  /// **'Las notificaciones solo llegan a este teléfono. En Notificaciones puedes apagar las que no quieras.'**
   String get permisosNotificacionesQuienVe;
 
   /// No description provided for @permisosNotificacionesSin.
   ///
   /// In es, this message translates to:
-  /// **'Sin avisos solo te enteras de las novedades al abrir la app.'**
+  /// **'Sin notificaciones solo te enteras de las novedades al abrir la app.'**
   String get permisosNotificacionesSin;
 
   /// No description provided for @permisosDenegadoAjustes.
@@ -6280,7 +6280,7 @@ abstract class AppLocalizations {
   /// No description provided for @biometriaBloqueadaDetalle.
   ///
   /// In es, this message translates to:
-  /// **'Usa tu huella o tu rostro para entrar. Lo que hayas guardado en el teléfono sigue a salvo.'**
+  /// **'Usa tu huella o tu rostro para ingresar. Lo que hayas guardado en el teléfono sigue a salvo.'**
   String get biometriaBloqueadaDetalle;
 
   /// No description provided for @biometriaDesbloquear.
@@ -6292,7 +6292,7 @@ abstract class AppLocalizations {
   /// No description provided for @biometriaUsarContrasena.
   ///
   /// In es, this message translates to:
-  /// **'Entrar con mi contraseña'**
+  /// **'Ingresar con mi contraseña'**
   String get biometriaUsarContrasena;
 
   /// No description provided for @biometriaMotivoDesbloqueo.
@@ -6310,7 +6310,7 @@ abstract class AppLocalizations {
   /// No description provided for @biometriaUsaContrasena.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos usar la huella o el rostro. Entra con tu contraseña.'**
+  /// **'No pudimos usar la huella o el rostro. Ingresa con tu contraseña.'**
   String get biometriaUsaContrasena;
 
   /// No description provided for @biometriaAjusteTitulo.
@@ -6322,7 +6322,7 @@ abstract class AppLocalizations {
   /// No description provided for @biometriaAjusteDetalle.
   ///
   /// In es, this message translates to:
-  /// **'Al abrir la app te pedimos tu huella o rostro en vez de entrar directo. No se envía a Agrocom.'**
+  /// **'Al abrir la app te pedimos tu huella o rostro en vez de ingresar directo. No se envía a DronAgro.'**
   String get biometriaAjusteDetalle;
 
   /// No description provided for @biometriaAjusteSinRegistrar.
@@ -6574,13 +6574,13 @@ abstract class AppLocalizations {
   /// No description provided for @documentosErrorSinRed.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. La foto sigue aquí: reintenta cuando tengas señal.'**
+  /// **'Sin conexión. La foto sigue aquí: vuelve a intentarlo cuando tengas señal.'**
   String get documentosErrorSinRed;
 
   /// No description provided for @documentosErrorCarga.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos cargar tus documentos'**
+  /// **'No pudimos abrir tus documentos'**
   String get documentosErrorCarga;
 
   /// No description provided for @documentosVacio.
@@ -6610,7 +6610,7 @@ abstract class AppLocalizations {
   /// No description provided for @disponibilidadIntro.
   ///
   /// In es, this message translates to:
-  /// **'Ocupado o en trabajo, dejas de recibir avisos de solicitudes nuevas. Sigues viendo el mapa y puedes ofertar.'**
+  /// **'Ocupado o en trabajo, dejas de recibir notificaciones de solicitudes nuevas. Sigues viendo el mapa y puedes ofertar.'**
   String get disponibilidadIntro;
 
   /// No description provided for @disponibilidadDisponible.
@@ -6658,13 +6658,13 @@ abstract class AppLocalizations {
   /// No description provided for @disponibilidadEmpresaOcupada.
   ///
   /// In es, this message translates to:
-  /// **'Tu empresa está {estado}: no recibes avisos de solicitudes nuevas aunque tú estés disponible.'**
+  /// **'Tu empresa está {estado}: no recibes notificaciones de solicitudes nuevas aunque tú estés disponible.'**
   String disponibilidadEmpresaOcupada(String estado);
 
   /// No description provided for @disponibilidadSinRed.
   ///
   /// In es, this message translates to:
-  /// **'Sin conexión. Tu disponibilidad no cambió: inténtalo cuando tengas señal.'**
+  /// **'Sin conexión. Tu disponibilidad no cambió: vuelve a intentarlo cuando tengas señal.'**
   String get disponibilidadSinRed;
 
   /// No description provided for @disponibilidadErrorCarga.
@@ -6682,19 +6682,19 @@ abstract class AppLocalizations {
   /// No description provided for @disponibilidadTusAvisos.
   ///
   /// In es, this message translates to:
-  /// **'Tus avisos'**
+  /// **'Tus notificaciones'**
   String get disponibilidadTusAvisos;
 
   /// No description provided for @disponibilidadAvisosActivos.
   ///
   /// In es, this message translates to:
-  /// **'Avisos de solicitudes nuevas: activados'**
+  /// **'Notificaciones de solicitudes nuevas: activadas'**
   String get disponibilidadAvisosActivos;
 
   /// No description provided for @disponibilidadAvisosApagados.
   ///
   /// In es, this message translates to:
-  /// **'Avisos de solicitudes nuevas: desactivados'**
+  /// **'Notificaciones de solicitudes nuevas: desactivadas'**
   String get disponibilidadAvisosApagados;
 
   /// No description provided for @disponibilidadHectareasMinimas.
@@ -6724,7 +6724,7 @@ abstract class AppLocalizations {
   /// No description provided for @disponibilidadAjustarAvisos.
   ///
   /// In es, this message translates to:
-  /// **'Ajustar avisos'**
+  /// **'Ajustar notificaciones'**
   String get disponibilidadAjustarAvisos;
 
   /// No description provided for @disponibilidadEstadoActual.
@@ -6754,7 +6754,7 @@ abstract class AppLocalizations {
   /// No description provided for @perfilCuentaDisponibilidadDetalle.
   ///
   /// In es, this message translates to:
-  /// **'Ponte ocupado para no recibir avisos'**
+  /// **'Ponte ocupado para no recibir notificaciones'**
   String get perfilCuentaDisponibilidadDetalle;
 
   /// No description provided for @listaPaginadaSinRed.
@@ -6952,7 +6952,7 @@ abstract class AppLocalizations {
   /// No description provided for @portadaPilotoEntrar.
   ///
   /// In es, this message translates to:
-  /// **'Entrar a mi cuenta'**
+  /// **'Ingresar a mi cuenta'**
   String get portadaPilotoEntrar;
 
   /// No description provided for @capacidadesTituloPiloto.
@@ -7054,7 +7054,7 @@ abstract class AppLocalizations {
   /// No description provided for @notificacionCanalSistema.
   ///
   /// In es, this message translates to:
-  /// **'Avisos de DronAgro'**
+  /// **'Notificaciones de DronAgro'**
   String get notificacionCanalSistema;
 
   /// No description provided for @cuentaCanalWhatsApp.
@@ -7180,7 +7180,7 @@ abstract class AppLocalizations {
   /// No description provided for @cuentaFallaDatosInvalidos.
   ///
   /// In es, this message translates to:
-  /// **'Revisa los datos e inténtalo de nuevo.'**
+  /// **'Revisa los datos y vuelve a intentarlo.'**
   String get cuentaFallaDatosInvalidos;
 
   /// No description provided for @cuentaFallaSesionVencida.
@@ -7198,7 +7198,7 @@ abstract class AppLocalizations {
   /// No description provided for @cuentaFallaDesconocida.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos completar esto. Inténtalo de nuevo en un momento.'**
+  /// **'No pudimos completar esto. Vuelve a intentarlo en un momento.'**
   String get cuentaFallaDesconocida;
 
   /// No description provided for @cuentaImpedimentoServicioTitulo.
@@ -7654,7 +7654,7 @@ abstract class AppLocalizations {
   /// No description provided for @cuentaEnEliminacionPospuesta.
   ///
   /// In es, this message translates to:
-  /// **'Tu plazo ya terminó, pero algo pendiente frena la eliminación. Se reintenta cada día. Mientras tanto puedes conservar tu cuenta.'**
+  /// **'Tu plazo ya terminó, pero algo pendiente frena la eliminación. Se vuelve a intentar cada día. Mientras tanto puedes conservar tu cuenta.'**
   String get cuentaEnEliminacionPospuesta;
 
   /// No description provided for @cuentaEnEliminacionSeBorrara.
@@ -8116,13 +8116,13 @@ abstract class AppLocalizations {
   /// No description provided for @avisosCanalCuenta.
   ///
   /// In es, this message translates to:
-  /// **'Cuenta y avisos'**
+  /// **'Cuenta y notificaciones'**
   String get avisosCanalCuenta;
 
   /// No description provided for @avisosCanalCuentaDetalle.
   ///
   /// In es, this message translates to:
-  /// **'Aprobación, documentos, calificaciones y avisos del sistema'**
+  /// **'Aprobación, documentos, calificaciones y notificaciones del sistema'**
   String get avisosCanalCuentaDetalle;
 
   /// No description provided for @avisosTodos.
@@ -8206,13 +8206,13 @@ abstract class AppLocalizations {
   /// No description provided for @avisosCanalesIntro.
   ///
   /// In es, this message translates to:
-  /// **'Elige qué avisos suenan en este teléfono y a qué hora. Lo que se te avisa lo decide el servidor con tus preferencias.'**
+  /// **'Elige qué notificaciones suenan en este teléfono y a qué hora. Lo que se te avisa lo decide el servidor con tus preferencias.'**
   String get avisosCanalesIntro;
 
   /// No description provided for @avisosCanalObligatorio.
   ///
   /// In es, this message translates to:
-  /// **'Siempre activo: son avisos de tu cuenta'**
+  /// **'Siempre activo: son notificaciones de tu cuenta'**
   String get avisosCanalObligatorio;
 
   /// No description provided for @avisosCanalActivo.
@@ -8344,7 +8344,7 @@ abstract class AppLocalizations {
   /// No description provided for @distanciaSinPosicion.
   ///
   /// In es, this message translates to:
-  /// **'No pudimos ubicarte. Sal a un lugar abierto e intenta de nuevo.'**
+  /// **'No pudimos ubicarte. Sal a un lugar abierto y vuelve a intentarlo.'**
   String get distanciaSinPosicion;
 
   /// No description provided for @distanciaSinLote.
@@ -9094,7 +9094,7 @@ abstract class AppLocalizations {
   /// No description provided for @permisosNotificacionesTitulo.
   ///
   /// In es, this message translates to:
-  /// **'Recibir avisos'**
+  /// **'Recibir notificaciones'**
   String get permisosNotificacionesTitulo;
 
   /// No description provided for @permisosNotificacionesMotivo.

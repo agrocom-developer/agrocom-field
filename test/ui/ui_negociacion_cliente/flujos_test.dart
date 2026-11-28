@@ -63,6 +63,21 @@ void main() {
     await asentar(tester, veces: 2);
   }
 
+  /// Abre los filtros del comparador y elige el orden (el predeterminado es
+  /// «Recomendado»: propios primero y luego por calificación).
+  Future<void> ordenarPor(WidgetTester tester, String codigo) async {
+    await tester.tap(find.byKey(const ValueKey('abrir-filtros')));
+    await asentar(tester);
+    final opcion = find.byKey(ValueKey('orden-$codigo'));
+    await tester.ensureVisible(opcion);
+    await tester.tap(opcion);
+    await asentar(tester);
+    final aplicar = find.byKey(const ValueKey('aplicar-filtros'));
+    await tester.ensureVisible(aplicar);
+    await tester.tap(aplicar);
+    await asentar(tester, veces: 6);
+  }
+
   group('historial', () {
     testWidgets('resume lo fumigado y filtra la lista', (tester) async {
       final almacen = almacenDePrueba();
@@ -160,7 +175,14 @@ void main() {
       );
       await tester.enterText(find.byKey(const ValueKey('hoja-precio')), '118');
       await asentar(tester);
-      expect(find.textContaining('Total estimado: Bs 14.160'), findsOneWidget);
+      // El total es de solo lectura y lo calcula la app: 120 ha por 118.
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('total-solo-lectura')),
+          matching: find.textContaining('14.160'),
+        ),
+        findsOneWidget,
+      );
       await tester.tap(enviar);
       await asentar(tester, veces: 8);
       expect(a.porId('4101')!.precioHaPropuesto, Decimal.fromInt(118));
@@ -287,7 +309,9 @@ void main() {
       expect(precio('of-4101-b', '104'), findsWidgets);
       expect(precio('of-4101-a', '110'), findsWidgets);
       expect(precio('of-4101-c', '121'), findsWidgets);
-      // La de menor precio queda marcada y su detalle dice cuánto se aparta.
+      // Con el orden por precio, la de menor precio queda marcada y su
+      // detalle dice cuánto se aparta.
+      await ordenarPor(tester, 'precio');
       expect(find.text('ELEGIDO'), findsOneWidget);
       expect(find.textContaining('menos que tu precio'), findsOneWidget);
       expect(find.textContaining('Aceptó tu precio'), findsOneWidget);
@@ -313,8 +337,7 @@ void main() {
         variante: _alta,
       );
       await asentar(tester);
-      await tester.tap(find.text('Mejor calificación'));
-      await asentar(tester);
+      await ordenarPor(tester, 'calificacion');
       final mejor = tester.getTopLeft(
         find.byKey(const ValueKey('oferta-of-4101-c')),
       );
@@ -335,6 +358,7 @@ void main() {
         variante: _alta,
       );
       await asentar(tester);
+      await ordenarPor(tester, 'precio');
       await tester.tap(find.byKey(const ValueKey('aceptar-of-4101-b')));
       await asentar(tester);
       expect(
@@ -380,7 +404,7 @@ void main() {
         );
         await asentar(tester);
         await tester.enterText(
-          find.byKey(const ValueKey('hoja-nota')),
+          find.byKey(const ValueKey('campo-justificacion-precio')),
           'Es mi tope',
         );
         await tester.tap(find.byKey(const ValueKey('hoja-precio-enviar')));
@@ -390,7 +414,7 @@ void main() {
             .ofertasDe('4101')
             .firstWhere((o) => o.autor == AutorOferta.cliente);
         expect(nueva.precioHa, Decimal.parse('112.5'));
-        expect(nueva.nota, 'Es mi tope');
+        expect(nueva.justificacionPrecio, 'Es mi tope');
         expect(find.byKey(const ValueKey('aviso-respuesta')), findsOneWidget);
         expect(find.textContaining('Esperando la respuesta'), findsOneWidget);
         expect(
@@ -436,6 +460,7 @@ void main() {
         variante: _alta,
       );
       await asentar(tester);
+      await ordenarPor(tester, 'precio');
       expect(ultima.esDefinitiva, isTrue);
       expect(find.byKey(ValueKey('contraofertar-${ultima.id}')), findsNothing);
       expect(find.byKey(ValueKey('aceptar-${ultima.id}')), findsOneWidget);
@@ -454,6 +479,7 @@ void main() {
         variante: _alta,
       );
       await asentar(tester);
+      await ordenarPor(tester, 'precio');
       almacen.rechazarOferta(almacen.ofertaPorId('of-4101-b')!);
       await tester.tap(find.byKey(const ValueKey('aceptar-of-4101-b')));
       await asentar(tester);
@@ -496,6 +522,7 @@ void main() {
         variante: _alta,
       );
       await asentar(tester);
+      await ordenarPor(tester, 'precio');
       for (final k in [
         'aceptar-of-4101-b',
         'contraofertar-of-4101-b',

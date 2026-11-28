@@ -14,7 +14,7 @@ import '../domain/canal_aviso.dart';
 import '../domain/preferencias_canales.dart';
 import 'bandeja_cubit.dart';
 import 'canales_pantalla.dart';
-import 'textos_canal.dart';
+import '../domain/textos_canal.dart';
 
 /// «Mis notificaciones»: los avisos de la cuenta, los no leídos primero, con
 /// un grupo por canal. Sin push, esta lista es por donde llegan las

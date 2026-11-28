@@ -2,7 +2,7 @@ import 'dart:async';
 
 import '../../../l10n/app_localizations_es.dart';
 import '../notificador_local.dart';
-import '../presentation/textos_canal.dart';
+import 'textos_canal.dart';
 import '../remotas/notificaciones_remotas.dart';
 import 'aviso.dart';
 import 'canal_aviso.dart';

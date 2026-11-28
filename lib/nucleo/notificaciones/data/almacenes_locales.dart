@@ -9,9 +9,14 @@ import '../domain/presentador_avisos.dart';
 /// compiten con los datos de sync ni son sensibles.
 class PreferenciasCanalesLocal implements PreferenciasCanalesStore {
   PreferenciasCanalesLocal([Future<SharedPreferences>? preferencias])
-    : _preferencias = preferencias ?? SharedPreferences.getInstance();
+    : _inyectadas = preferencias;
 
-  final Future<SharedPreferences> _preferencias;
+  final Future<SharedPreferences>? _inyectadas;
+
+  /// Se abre al primer uso, no al construir: así crear las dependencias no
+  /// exige que el motor de la plataforma esté listo.
+  Future<SharedPreferences> get _preferencias =>
+      _inyectadas ?? SharedPreferences.getInstance();
   static const _clave = 'avisos_preferencias_canales';
 
   @override
@@ -37,9 +42,13 @@ class PreferenciasCanalesLocal implements PreferenciasCanalesStore {
 /// Los avisos ya presentados, para no repetir una notificación.
 class AvisosPresentadosLocal implements AvisosPresentadosStore {
   AvisosPresentadosLocal([Future<SharedPreferences>? preferencias])
-    : _preferencias = preferencias ?? SharedPreferences.getInstance();
+    : _inyectadas = preferencias;
 
-  final Future<SharedPreferences> _preferencias;
+  final Future<SharedPreferences>? _inyectadas;
+
+  /// Se abre al primer uso, igual que en [PreferenciasCanalesLocal].
+  Future<SharedPreferences> get _preferencias =>
+      _inyectadas ?? SharedPreferences.getInstance();
   static const _clave = 'avisos_presentados';
 
   @override

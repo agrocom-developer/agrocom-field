@@ -281,17 +281,23 @@ class _VistaState extends State<_Vista> {
                             _Puntos(paso: estado.paso, alElegir: _irPorPunto),
                       ),
                       const Spacer(),
-                      TextButton.icon(
-                        key: const Key('onboarding-capacidades'),
-                        onPressed: () => _verCapacidades(context),
-                        icon: const Icon(Icons.info_outline_rounded),
-                        label: Text(l10n.capacidadesVerCliente),
-                        style: TextButton.styleFrom(
-                          minimumSize: const Size(
-                            0,
-                            ObjetivoTactilCampo.minimo,
+                      Flexible(
+                        child: TextButton.icon(
+                          key: const Key('onboarding-capacidades'),
+                          onPressed: () => _verCapacidades(context),
+                          icon: const Icon(Icons.info_outline_rounded),
+                          label: Text(
+                            l10n.capacidadesVerCliente,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          foregroundColor: _textoSobreFoto,
+                          style: TextButton.styleFrom(
+                            minimumSize: const Size(
+                              0,
+                              ObjetivoTactilCampo.minimo,
+                            ),
+                            foregroundColor: _textoSobreFoto,
+                          ),
                         ),
                       ),
                     ],

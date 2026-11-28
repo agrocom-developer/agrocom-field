@@ -7,7 +7,7 @@ import '../../ui/tokens_campo.dart';
 import '../data/almacenes_locales.dart';
 import '../domain/canal_aviso.dart';
 import '../domain/preferencias_canales.dart';
-import 'textos_canal.dart';
+import '../domain/textos_canal.dart';
 
 class CanalesEstado {
   const CanalesEstado({

@@ -2,7 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../l10n/app_localizations_es.dart';
 import 'domain/canal_aviso.dart';
-import 'presentation/textos_canal.dart';
+import 'domain/textos_canal.dart';
 
 /// Notificaciones locales generadas por reglas que corren en el dispositivo
 /// (HU-62) — sin servidor push ni FCM. Abstracta para poder fakear en tests
